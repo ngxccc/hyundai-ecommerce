@@ -47,7 +47,7 @@ export default defineConfig([
         "error",
         { prefer: "type-imports", fixStyle: "separate-type-imports" },
       ],
-      "import-x/no-cycle": ["error", { maxDepth: "10", ignoreExternal: true }],
+      "import-x/no-cycle": ["error", { maxDepth: 10, ignoreExternal: true }],
       "import-x/no-unresolved": "error",
     },
   },
