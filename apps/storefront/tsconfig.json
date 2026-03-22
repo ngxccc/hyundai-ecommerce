@@ -5,11 +5,12 @@
     "incremental": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "allowArbitraryExtensions": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@/*": ["./src/*"],
       "#/*": ["./public/*"]
-    }
+    },
   },
   "include": [
     "next-env.d.ts",

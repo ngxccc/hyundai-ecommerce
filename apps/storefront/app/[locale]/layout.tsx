@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "@/shared/styles/globals.css";
 import { META_THEME_COLORS, siteConfig } from "@/shared/config/site";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   keywords: [...siteConfig.keywords],
   authors: [{ name: siteConfig.name, url: siteConfig.url }],
   creator: siteConfig.name,
-  manifest: "/manifest.json",
+  manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
     locale: "vi_VN",
@@ -72,6 +72,8 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
+
+  console.log(locale);
 
   if (!routing.locales.includes(locale as Locale)) {
     notFound();

@@ -19,6 +19,7 @@ build/
 # TypeScript & ESLint
 *.tsbuildinfo
 .eslintcache
+messages/*.d.json.ts
 
 # Coverage & Logs
 coverage/
@@ -59,6 +60,6 @@ Thumbs.db
 # AI config files
 /.cursor
 /.opencode
-/.agents
+.agents/
 /.codex
 opencode.json
