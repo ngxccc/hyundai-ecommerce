@@ -1,0 +1,5 @@
+{
+  "extends": "./packages/typescript-config/base.json",
+  "include": ["apps/**/*", "packages/**/*"],
+  "exclude": ["node_modules", "dist", ".next", ".turbo"]
+}

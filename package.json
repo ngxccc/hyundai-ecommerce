@@ -1,0 +1,23 @@
+{
+  "name": "hyundai-ecommerce",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1",
+    "turbo": "^2.8.20",
+    "typescript": "^5.9.3"
+  }
+}
