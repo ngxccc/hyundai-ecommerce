@@ -5,7 +5,7 @@ declare const messages: {
   "HomePage": {
     "brand": "HYUNDAI",
     "branchName": "Nhật Năng",
-    "branchNameUpper": "NHAT NANG",
+    "branchNameUpper": "NHẬT NĂNG",
     "nav": {
       "products": "Sản phẩm",
       "solutions": "Giải pháp",
@@ -53,7 +53,7 @@ declare const messages: {
         "cta": "Tìm hiểu thêm"
       },
       "products": {
-        "title": "HIỆU SUẤT TINH HẢ",
+        "title": "Dòng Hyundai",
         "subtitle": "Đơn vị bán chạy nhất",
         "product1": {
           "name": "HYUNDAI DED-250 Công nghiệp",

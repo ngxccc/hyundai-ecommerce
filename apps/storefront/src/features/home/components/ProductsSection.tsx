@@ -24,7 +24,7 @@ export function ProductsSection() {
     <section className="py-24">
       <div className="mx-auto max-w-7xl px-8">
         <div className="mb-16">
-          <h2 className="font-headline text-on-surface text-4xl font-extrabold tracking-tighter">
+          <h2 className="font-display text-on-surface text-4xl font-extrabold tracking-tighter">
             {t("products.title")}
           </h2>
           <p className="font-label text-primary/60 mt-2 tracking-widest uppercase">
@@ -40,7 +40,7 @@ export function ProductsSection() {
                 </div>
               </div>
               <div className="flex grow flex-col px-2">
-                <h3 className="font-headline text-on-surface mb-2 text-xl font-bold">
+                <h3 className="font-display text-on-surface mb-2 text-xl font-bold">
                   {t(`products.${product.key}.name`)}
                 </h3>
                 <div className="mb-6 flex gap-3">
@@ -53,11 +53,11 @@ export function ProductsSection() {
                     </span>
                   ))}
                 </div>
-                <div className="border-outline-variant/15 mt-auto flex h-16 items-center justify-between border-t pt-6">
+                <div className="border-outline-variant/15 bg-surface-container-low mt-auto flex h-16 items-center justify-between pt-6">
                   <span className="font-label text-primary text-lg font-bold">
                     {t(`products.${product.key}.price`)}
                   </span>
-                  <button className="bg-primary font-headline rounded px-4 py-2 text-[10px] font-bold text-white uppercase">
+                  <button className="bg-primary font-display rounded px-4 py-2 text-[10px] font-bold text-white uppercase">
                     {t(`products.${product.key}.cta`)}
                   </button>
                 </div>

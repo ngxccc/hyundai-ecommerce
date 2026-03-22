@@ -24,14 +24,14 @@ export function NewsSection() {
       <div className="mx-auto max-w-7xl px-8">
         <div className="mb-16 flex items-end justify-between">
           <div>
-            <h2 className="font-headline text-on-surface text-4xl font-extrabold tracking-tighter uppercase">
+            <h2 className="font-display text-on-surface text-4xl font-extrabold tracking-tighter uppercase">
               {t("news.title")}
             </h2>
             <p className="font-label text-primary/60 mt-2 tracking-widest uppercase">
               {t("news.subtitle")}
             </p>
           </div>
-          <button className="font-headline border-primary border-b-2 pb-1 text-sm font-bold tracking-widest uppercase">
+          <button className="font-display border-primary border-b-2 pb-1 text-sm font-bold tracking-widest uppercase">
             {t("news.viewAll")}
           </button>
         </div>
@@ -54,10 +54,10 @@ export function NewsSection() {
                 <span className="font-label text-primary mb-2 block text-xs font-bold tracking-widest uppercase">
                   {t(`news.${article.key}.category`)}
                 </span>
-                <h3 className="font-headline text-on-surface group-hover:text-primary mb-4 text-2xl leading-tight font-bold transition-colors">
+                <h3 className="font-display text-on-surface group-hover:text-primary mb-4 text-2xl leading-tight font-bold transition-colors">
                   {t(`news.${article.key}.title`)}
                 </h3>
-                <p className="text-secondary font-body mb-4 line-clamp-2">
+                <p className="text-secondary mb-4 line-clamp-2 font-sans">
                   {t(`news.${article.key}.desc`)}
                 </p>
                 <span className="font-label text-outline text-[10px] tracking-widest uppercase">

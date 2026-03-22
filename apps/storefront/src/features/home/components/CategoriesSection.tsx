@@ -46,7 +46,7 @@ export function CategoriesSection() {
       <div className="mx-auto max-w-7xl px-8">
         <div className="mb-16 flex items-end justify-between">
           <div>
-            <h2 className="font-headline text-on-surface text-4xl font-extrabold tracking-tighter">
+            <h2 className="font-display text-on-surface text-4xl font-extrabold tracking-tighter">
               {t("categories.title")}
             </h2>
             <p className="font-label text-primary/60 mt-2 tracking-widest uppercase">
@@ -71,11 +71,11 @@ export function CategoriesSection() {
                 className={`absolute inset-0 bg-linear-to-t ${cat.gradient} flex flex-col justify-end to-transparent p-10`}
               >
                 <h3
-                  className={`font-headline ${cat.size} mb-2 font-bold text-white`}
+                  className={`font-display ${cat.size} mb-2 font-bold text-white`}
                 >
                   {t(`categories.${cat.key}.name`)}
                 </h3>
-                <p className="font-body max-w-md text-white/80">
+                <p className="max-w-md font-sans text-white/80">
                   {t(`categories.${cat.key}.desc`)}
                 </p>
               </div>

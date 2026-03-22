@@ -22,7 +22,7 @@ export function TrustSignalsSection() {
   ];
 
   return (
-    <section className="border-outline-variant/10 border-t py-24">
+    <section className="border-outline-variant/10 bg-surface-container-low py-24">
       <div className="mx-auto max-w-7xl px-8">
         <div className="grid grid-cols-1 gap-16 md:grid-cols-3">
           {signals.map((signal) => (
@@ -34,7 +34,7 @@ export function TrustSignalsSection() {
                 className="text-primary mb-6 h-12 w-12"
                 aria-hidden="true"
               />
-              <h4 className="font-headline mb-3 text-xl font-bold">
+              <h4 className="font-display mb-3 text-xl font-bold">
                 {t(`trust.${signal.key}.title`)}
               </h4>
               <p className="text-secondary text-sm">
