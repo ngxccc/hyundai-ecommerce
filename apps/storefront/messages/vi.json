@@ -1,0 +1,38 @@
+{
+  "HomePage": {
+    "brand": "HYUNDAI",
+    "branchName": "Nhật Năng",
+    "branchNameUpper": "NHAT NANG",
+    "nav": {
+      "products": "Sản phẩm",
+      "solutions": "Giải pháp",
+      "services": "Dịch vụ"
+    },
+    "header": {
+      "support": "Hỗ trợ 24/7",
+      "requestQuote": "Yêu cầu báo giá"
+    },
+    "hero": {
+      "badge": "Dòng tải nặng",
+      "titleLine1": "Nguồn điện",
+      "titleLine2": "không gián đoạn.",
+      "description": "Đảm bảo hoạt động liên tục cho doanh nghiệp với máy phát điện công nghiệp Hyundai. Được thiết kế để đạt độ tin cậy tuyệt đối trong điều kiện khắc nghiệt.",
+      "primaryCta": "Khám phá máy phát",
+      "secondaryCta": "Tư vấn",
+      "imageAlt": "Hệ thống máy phát điện công nghiệp Hyundai"
+    },
+    "footer": {
+      "description": "Đồng hành cùng doanh nghiệp bằng giải pháp năng lượng ổn định, kỹ thuật vượt trội và hỗ trợ kỹ thuật 24/7.",
+      "newsletterLabel": "Cập nhật kỹ thuật",
+      "emailPlaceholder": "Nhập email doanh nghiệp",
+      "subscribe": "Đăng ký",
+      "productsTitle": "Sản phẩm",
+      "products": {
+        "industrialGenerators": "Máy phát công nghiệp",
+        "residentialGen": "Máy phát dân dụng",
+        "portablePower": "Nguồn điện di động",
+        "atsPanels": "Tủ ATS"
+      }
+    }
+  }
+}
