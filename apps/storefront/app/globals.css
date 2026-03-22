@@ -1,26 +1,48 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* =========================================
+     HYUNDAI DESIGN SYSTEM: ATMOSPHERIC PRECISION
+     ========================================= */
+
+  /* 1. Surfaces & Backgrounds */
+  --color-surface: #fcf9f6;
+  --color-surface-container-low: #f5f1ed;
+  --color-surface-container: #f0ebe6;
+  --color-surface-container-high: #ebe7e5;
+  --color-surface-highest: #e0dcd9;
+
+  /* 2. Brand & Semantic Colors */
+  --color-primary: #004967; /* Deep Teal */
+  --color-tertiary: #8d0002; /* High-urgency alerts */
+
+  /* 3. Text & Typography Colors */
+  --color-on-surface: #1c1c1a;
+  --color-on-primary: #ffffff;
+  --color-outline: #646261;
+
+  /* 4. Font Families */
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space-grotesk);
+
+  /* 5. Custom Spacing (spacing-20, spacing-24 defined automatically by TW4 based on rem) */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* Base Layer Initialization */
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+  }
+
+  body {
+    @apply bg-surface text-on-surface font-sans antialiased;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Tiện ích Ghost Input như trong Design Manual */
+@layer utilities {
+  .ghost-input {
+    @apply bg-transparent border-b border-surface-container-high transition-colors focus:border-b-2 focus:border-primary outline-none rounded-none;
+  }
 }
