@@ -11,12 +11,15 @@ export function Header() {
     <header className="bg-surface/80 fixed top-0 z-50 w-full backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center gap-8">
-          <span className="font-display text-primary text-2xl font-bold tracking-tighter">
+          <Link
+            className="font-display text-primary text-2xl font-bold tracking-tighter"
+            href="/"
+          >
             {t("brand")}
             <span className="text-on-surface ml-2 align-middle text-sm font-light tracking-widest opacity-60">
               {t("branchName")}
             </span>
-          </span>
+          </Link>
           <nav className="hidden gap-8 md:flex">
             {navItems.map((item) => (
               <Link
