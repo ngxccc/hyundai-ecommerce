@@ -19,26 +19,27 @@ const getBaseUrl = () => {
 };
 
 export const siteConfig = {
-  name: "Hyundai E-commerce",
-  shortName: "Hyundai",
+  name: "Hyundai Nhật Năng | Máy Phát Điện Chính Hãng",
+  shortName: "Hyundai Nhật Năng",
   description:
-    "Hệ sinh thái thương mại điện tử mua sắm xe Hyundai chính hãng, phụ tùng và dịch vụ bảo dưỡng đắng cấp dành cho NgocDev và cộng đồng đam mê xe.",
+    "Đại lý phân phối độc quyền máy phát điện Hyundai chính hãng, bộ lưu điện UPS và giải pháp nguồn điện công nghiệp/dân dụng hàng đầu tại Việt Nam.",
   url: getBaseUrl(),
   ogImage: `${getBaseUrl()}/opengraph-image.jpg`,
   keywords: [
-    "Hyundai",
-    "E-commerce",
-    "Mua xe ô tô",
-    "Phụ tùng chính hãng",
-    "Dịch vụ bảo dưỡng",
+    "Máy phát điện Hyundai",
+    "Máy phát điện công nghiệp",
+    "Máy phát điện 3 pha",
+    "Máy phát điện gia đình",
+    "Giải pháp nguồn điện",
+    "Bảo trì máy phát điện",
   ],
   links: {
-    twitter: "https://twitter.com/hyundaivn",
+    twitter: "https://twitter.com/hyundainhatnang",
     github: "https://github.com/ngocdev/hyundai-ecommerce",
   },
   contact: {
-    hotline: "1900 xxxx",
-    email: "support@hyundai-ecommerce.com",
+    hotline: "091 234 5678",
+    email: "nhatnang@hyundai.vn",
   },
 } as const;
 
