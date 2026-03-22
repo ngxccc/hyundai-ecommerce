@@ -1,9 +1,10 @@
 import eslintJs from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 import { importX } from "eslint-plugin-import-x";
 import globals from "globals";
 
-export default [
+export default defineConfig([
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.js", "**/*.mjs"],
     extends: [
@@ -50,4 +51,4 @@ export default [
       "import-x/no-unresolved": "error",
     },
   },
-];
+]);

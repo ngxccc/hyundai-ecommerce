@@ -1,7 +1,8 @@
 import eslintReact from "@eslint-react/eslint-plugin";
+import { defineConfig } from "eslint/config";
 import globals from "globals";
 
-export default [
+export default defineConfig([
   {
     files: ["**/*.ts", "**/*.tsx"],
     ...eslintReact.configs["recommended-type-checked"],
@@ -18,4 +19,4 @@ export default [
       "react/prop-types": "off",
     },
   },
-];
+]);
