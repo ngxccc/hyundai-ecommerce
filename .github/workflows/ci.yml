@@ -23,6 +23,16 @@ jobs:
       - name: Lint
         run: bun run lint
 
+      - name: 🕵️‍♂️ Check Environment Variables (Debug)
+        run: |
+          echo "Bắt đầu check var nhé..."
+          echo "NODE_ENV hiện tại là: $NODE_ENV"
+          echo "NEXT_PUBLIC_APP_URL hiện tại là: $NEXT_PUBLIC_APP_URL"
+          echo "Check xong!"
+        env: # Phải bơm biến vào step này thì lệnh echo mới thấy được
+          NODE_ENV: ${{ vars.NODE_ENV }}
+          NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
+
       - name: Build with Next.js
         run: bun run build
         env:
