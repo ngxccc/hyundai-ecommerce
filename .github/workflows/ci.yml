@@ -23,5 +23,7 @@ jobs:
       - name: Lint
         run: bun run lint
 
-      - name: Build
+      - name: Build with Next.js
         run: bun run build
+        env:
+          NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
