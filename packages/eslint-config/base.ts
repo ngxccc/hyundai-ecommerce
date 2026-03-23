@@ -53,6 +53,16 @@ export default defineConfig([
     },
   },
 
+  {
+    files: [
+      "src/shared/components/ui/**/*.tsx",
+      "src/shared/components/ui/**/*.ts",
+    ],
+    rules: {
+      "@typescript-eslint/consistent-type-definitions": "warn",
+    },
+  },
+
   // PRETTIER - Must be last to disable conflicting rules
   eslintConfigPrettier,
 ]);
