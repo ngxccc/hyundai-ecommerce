@@ -1,22 +1,9 @@
+import { getBaseUrl } from "../lib/utils";
+
 export const META_THEME_COLORS = {
   light: "#ffffff",
   dark: "#09090b",
 } as const;
-
-const getBaseUrl = () => {
-  if (typeof window !== "undefined") return window.location.origin;
-
-  if (process.env.NEXT_PUBLIC_APP_URL) {
-    return process.env.NEXT_PUBLIC_APP_URL.startsWith("http")
-      ? process.env.NEXT_PUBLIC_APP_URL
-      : `https://${process.env.NEXT_PUBLIC_APP_URL}`;
-  }
-
-  // Fallback về system environment của Vercel (khi tạo preview URL)
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-
-  return "http://localhost:3000";
-};
 
 export const siteConfig = {
   name: "Hyundai Nhật Năng | Máy Phát Điện Chính Hãng",

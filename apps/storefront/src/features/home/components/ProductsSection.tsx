@@ -1,12 +1,21 @@
-import type { Product } from "@/shared/types/common";
+import { getBaseUrl } from "@/shared/lib/utils";
+import type { ProductsResponse, Product } from "@/shared/types/common";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import Link from "next/link";
 
-const fetchProducts = async (): Promise<Product[]> => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+function isProductListResponse(value: unknown): value is ProductsResponse {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "status" in value &&
+    "data" in value &&
+    Array.isArray((value as { data: unknown }).data)
+  );
+}
 
-  const res = await fetch(`${baseUrl}/api/products`, {
+const fetchProducts = async (): Promise<Product[]> => {
+  const res = await fetch(`${getBaseUrl()}/api/products`, {
     // Next 15+ mặc định là no-store, nếu data ít đổi thì set force-cache hoặc ISR
     cache: "no-store",
   });
@@ -15,7 +24,12 @@ const fetchProducts = async (): Promise<Product[]> => {
     throw new Error(`Failed to fetch products: ${res.status}`);
   }
 
-  return res.json() as unknown as Product[];
+  const json: unknown = await res.json();
+  if (!isProductListResponse(json) || !json.status) {
+    throw new Error("Invalid products response");
+  }
+
+  return json.data;
 };
 
 export async function ProductsSection() {

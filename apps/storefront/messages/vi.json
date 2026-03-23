@@ -23,23 +23,7 @@
     },
     "categories": {
       "title": "HẠNG MỤC CHÍNH",
-      "subtitle": "Chuyên môn kỹ thuật",
-      "industrial": {
-        "name": "Máy phát công nghiệp",
-        "desc": "Thiết kế cho độ tin cậy 24/7 trong sản xuất, xây dựng và trung tâm dữ liệu."
-      },
-      "household": {
-        "name": "Dân dụng",
-        "desc": "Giải pháp sao lưu yên tĩnh cho nhà ở."
-      },
-      "ups": {
-        "name": "Hệ thống UPS",
-        "desc": "Bảo vệ điện không trễ."
-      },
-      "hpgreen": {
-        "name": "HPGreen Power",
-        "desc": "Thu thập và lưu trữ năng lượng bền vững cho thế hệ tiếp theo."
-      }
+      "subtitle": "Chuyên môn kỹ thuật"
     },
     "promos": {
       "badge": "Khuyến mại mùa",
