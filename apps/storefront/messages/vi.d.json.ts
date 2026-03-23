@@ -20,7 +20,7 @@ declare const messages: {
       "titleLine1": "Nguồn điện",
       "titleLine2": "không gián đoạn.",
       "description": "Đảm bảo hoạt động liên tục cho doanh nghiệp với máy phát điện công nghiệp Hyundai. Được thiết kế để đạt độ tin cậy tuyệt đối trong điều kiện khắc nghiệt.",
-      "primaryCta": "Khám phá máy phát",
+      "primaryCta": "Khám phá máy phát điện",
       "secondaryCta": "Tư vấn",
       "imageAlt": "Hệ thống máy phát điện công nghiệp Hyundai"
     },
