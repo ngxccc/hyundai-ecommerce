@@ -4,5 +4,11 @@
   "private": true,
   "type": "module",
   "description": "Database configuration and migrations",
-  "main": "index.ts"
+  "main": "index.ts",
+  "dependencies": {
+    "@prisma/client": "7.5.0"
+  },
+  "devDependencies": {
+    "prisma": "^7.5.0"
+  }
 }
