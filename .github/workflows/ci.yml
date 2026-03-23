@@ -26,4 +26,5 @@ jobs:
       - name: Build with Next.js
         run: bun run build
         env:
+          NODE_ENV: ${{ vars.NODE_ENV }}
           NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
