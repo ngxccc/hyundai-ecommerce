@@ -1,5 +1,3 @@
-import { getBaseUrl } from "../lib/utils";
-
 export const META_THEME_COLORS = {
   light: "#ffffff",
   dark: "#09090b",
@@ -10,8 +8,11 @@ export const siteConfig = {
   shortName: "Hyundai Nhật Năng",
   description:
     "Đại lý phân phối độc quyền máy phát điện Hyundai chính hãng, bộ lưu điện UPS và giải pháp nguồn điện công nghiệp/dân dụng hàng đầu tại Việt Nam.",
-  url: getBaseUrl(),
-  ogImage: `${getBaseUrl()}/opengraph-image.jpg`,
+  url:
+    process.env.NODE_ENV === "production"
+      ? process.env.NEXT_PUBLIC_APP_URL
+      : "http://localhost:3000",
+  ogImage: `${process.env.NEXT_PUBLIC_APP_URL}/opengraph-image.jpg`,
   keywords: [
     "Máy phát điện Hyundai",
     "Máy phát điện công nghiệp",

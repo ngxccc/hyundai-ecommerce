@@ -1,5 +1,5 @@
 import { Link } from "@/i18n/routing";
-import { getBaseUrl } from "@/shared/lib/utils";
+import { siteConfig } from "@/shared/config/site";
 import type { ProductsResponse, Product } from "@/shared/types/common";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
@@ -15,7 +15,7 @@ function isProductListResponse(value: unknown): value is ProductsResponse {
 }
 
 const fetchProducts = async (): Promise<Product[]> => {
-  const res = await fetch(`${getBaseUrl()}/api/products`, {
+  const res = await fetch(`${siteConfig.url}/api/products`, {
     // Next 15+ mặc định là no-store, nếu data ít đổi thì set force-cache hoặc ISR
     cache: "no-store",
   });

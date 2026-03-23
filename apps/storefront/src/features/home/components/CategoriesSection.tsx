@@ -1,9 +1,9 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import { getBaseUrl } from "@/shared/lib/utils";
 import type { CategoriesResponse, Category } from "@/shared/types/common";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
+import { siteConfig } from "@/shared/config/site";
 
 const CATEGORY_UI_MAP = {
   industrial: {
@@ -53,7 +53,7 @@ function isCategoryResponse(value: unknown): value is CategoriesResponse {
 }
 
 const fetchCategories = async (): Promise<Category[]> => {
-  const res = await fetch(`${getBaseUrl()}/api/categories`, {
+  const res = await fetch(`${siteConfig.url}/api/categories`, {
     // Next 15+ mặc định là no-store, nếu data ít đổi thì set force-cache hoặc ISR
     cache: "no-store",
   });
@@ -112,6 +112,7 @@ export async function CategoriesSection() {
                       : "(max-width: 768px) 100vw, 33vw"
                   }
                   className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
+                  loading="eager"
                 />
 
                 <div

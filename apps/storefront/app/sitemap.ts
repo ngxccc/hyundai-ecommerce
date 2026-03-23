@@ -1,10 +1,10 @@
-import { getBaseUrl } from "@/shared/lib/utils";
+import { siteConfig } from "@/shared/config/site";
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: getBaseUrl(),
+      url: siteConfig.url!,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
