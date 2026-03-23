@@ -1,9 +1,9 @@
 import Image from "next/image";
-import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { getBaseUrl } from "@/shared/lib/utils";
 import type { CategoriesResponse, Category } from "@/shared/types/common";
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 
 const CATEGORY_UI_MAP = {
   industrial: {
