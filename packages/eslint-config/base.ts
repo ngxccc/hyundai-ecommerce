@@ -3,6 +3,7 @@ import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 import { importX } from "eslint-plugin-import-x";
 import globals from "globals";
+import eslintConfigPrettier from "eslint-config-prettier";
 
 export default defineConfig([
   {
@@ -51,4 +52,7 @@ export default defineConfig([
       "import-x/no-unresolved": "error",
     },
   },
+
+  // PRETTIER - Must be last to disable conflicting rules
+  eslintConfigPrettier,
 ]);
