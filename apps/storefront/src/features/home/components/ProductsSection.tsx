@@ -1,24 +1,27 @@
-"use client";
+import type { Product } from "@/shared/types/common";
+import { getTranslations } from "next-intl/server";
+import Image from "next/image";
+import Link from "next/link";
 
-import { useTranslations } from "next-intl";
+const fetchProducts = async (): Promise<Product[]> => {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
-export function ProductsSection() {
-  const t = useTranslations("HomePage");
+  const res = await fetch(`${baseUrl}/api/products`, {
+    // Next 15+ mặc định là no-store, nếu data ít đổi thì set force-cache hoặc ISR
+    cache: "no-store",
+  });
 
-  const products = [
-    {
-      key: "product1" as const,
-      specs: ["250kVA", "Dầu diesel"],
-    },
-    {
-      key: "product2" as const,
-      specs: ["7.5kW", "Xăng"],
-    },
-    {
-      key: "product3" as const,
-      specs: ["3kVA", "Chuyển đổi kép trực tuyến"],
-    },
-  ];
+  if (!res.ok) {
+    throw new Error(`Failed to fetch products: ${res.status}`);
+  }
+
+  return res.json() as unknown as Product[];
+};
+
+export async function ProductsSection() {
+  const t = await getTranslations("HomePage");
+
+  const products = await fetchProducts();
 
   return (
     <section className="py-24">
@@ -31,35 +34,53 @@ export function ProductsSection() {
             {t("products.subtitle")}
           </p>
         </div>
+
         <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
           {products.map((product) => (
-            <div key={product.key} className="group flex h-full flex-col">
+            <div key={product.id} className="group flex h-full flex-col">
               <div className="bg-surface-container-low relative mb-6 aspect-square overflow-hidden rounded-xl">
-                <div className="font-label bg-surface-container-highest absolute top-4 left-4 px-3 py-1 text-[10px] font-bold uppercase">
-                  Model: {t(`products.${product.key}.model`)}
+                <Image
+                  src={product.imageUrl}
+                  alt={product.name}
+                  fill
+                  className="object-cover transition-transform group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                <div className="font-label bg-surface-container-highest absolute top-4 left-4 z-10 px-3 py-1 text-[10px] font-bold uppercase">
+                  Model: {product.model}
                 </div>
               </div>
+
               <div className="flex grow flex-col px-2">
                 <h3 className="font-display text-on-surface mb-2 text-xl font-bold">
-                  {t(`products.${product.key}.name`)}
+                  {product.name}
                 </h3>
+
                 <div className="mb-6 flex gap-3">
-                  {product.specs.map((spec, i) => (
+                  {product.specs.map((spec) => (
                     <span
-                      key={i}
+                      key={`${product.id}-${spec}`}
                       className="font-label bg-surface-container-high px-2 py-1 text-[11px] font-semibold uppercase"
                     >
                       {spec}
                     </span>
                   ))}
                 </div>
+
                 <div className="border-outline-variant/15 bg-surface-container-low mt-auto flex h-16 items-center justify-between pt-6">
                   <span className="font-label text-primary text-lg font-bold">
-                    {t(`products.${product.key}.price`)}
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(product.price)}
                   </span>
-                  <button className="bg-primary font-display rounded px-4 py-2 text-[10px] font-bold text-white uppercase">
-                    {t(`products.${product.key}.cta`)}
-                  </button>
+
+                  <Link
+                    href={`/products/${product.id}`}
+                    className="bg-primary font-display rounded px-4 py-2 text-[10px] font-bold text-white uppercase transition-opacity hover:opacity-90"
+                  >
+                    {t("products.buy_now_cta")}
+                  </Link>
                 </div>
               </div>
             </div>

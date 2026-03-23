@@ -24,90 +24,70 @@ declare const messages: {
       "secondaryCta": "Tư vấn",
       "imageAlt": "Hệ thống máy phát điện công nghiệp Hyundai"
     },
-      "categories": {
-        "title": "HẠNG MỤC CHÍNH",
-        "subtitle": "Chuyên môn kỹ thuật",
-        "industrial": {
-          "name": "Máy phát công nghiệp",
-          "desc": "Thiết kế cho độ tin cậy 24/7 trong sản xuất, xây dựng và trung tâm dữ liệu."
-        },
-        "household": {
-          "name": "Dân dụng",
-          "desc": "Giải pháp sao lưu yên tĩnh cho nhà ở."
-        },
-        "ups": {
-          "name": "Hệ thống UPS",
-          "desc": "Bảo vệ điện không trễ."
-        },
-        "hpgreen": {
-          "name": "HPGreen Power",
-          "desc": "Thu thập và lưu trữ năng lượng bền vững cho thế hệ tiếp theo."
-        }
+    "categories": {
+      "title": "HẠNG MỤC CHÍNH",
+      "subtitle": "Chuyên môn kỹ thuật",
+      "industrial": {
+        "name": "Máy phát công nghiệp",
+        "desc": "Thiết kế cho độ tin cậy 24/7 trong sản xuất, xây dựng và trung tâm dữ liệu."
       },
-      "promos": {
-        "badge": "Khuyến mại mùa",
-        "title": "MÙA HÈ 2026",
-        "subtitle": "KHUYẾN MẠI CHÍNH XÁC",
-        "desc": "Nâng cấp cơ sở hạ tầng của bạn với tiết kiệm 20% cho tất cả các đơn vị công nghiệp. Thời gian hạn chế.",
-        "discount": "-20%",
-        "cta": "Tìm hiểu thêm"
+      "household": {
+        "name": "Dân dụng",
+        "desc": "Giải pháp sao lưu yên tĩnh cho nhà ở."
       },
-      "products": {
-        "title": "Dòng Hyundai",
-        "subtitle": "Đơn vị bán chạy nhất",
-        "product1": {
-          "name": "HYUNDAI DED-250 Công nghiệp",
-          "model": "HY9000",
-          "specs": ["250kVA", "Dầu diesel"],
-          "price": "Liên hệ báo giá",
-          "cta": "Yêu cầu báo giá"
-        },
-        "product2": {
-          "name": "Hyundai HOME-PRO Whisper",
-          "model": "Home-7k",
-          "specs": ["7.5kW", "Xăng"],
-          "price": "$2,450.00",
-          "cta": "Thêm yêu cầu"
-        },
-        "product3": {
-          "name": "Rack-Mount Elite UPS 3000",
-          "model": "UPS-RM2",
-          "specs": ["3kVA", "Chuyển đổi kép trực tuyến"],
-          "price": "$1,890.00",
-          "cta": "Thêm yêu cầu"
-        }
+      "ups": {
+        "name": "Hệ thống UPS",
+        "desc": "Bảo vệ điện không trễ."
       },
-      "news": {
-        "title": "HIỂU BIẾT KỸ THUẬT",
-        "subtitle": "Kiến thức chuyên gia",
-        "viewAll": "Xem tất cả bài viết",
-        "article1": {
-          "category": "Bảo trì",
-          "title": "Cách tối đa hóa tuổi thọ máy phát của bạn thêm 40%",
-          "desc": "Các hệ thống lọc và làm mát dầu thích hợp là xương sống của độ bền điện lực công nghiệp...",
-          "date": "12 tháng 11, 2026 • 5 phút đọc"
-        },
-        "article2": {
-          "category": "Cải tiến",
-          "title": "Chuyển hướng sang hybrid: Tích hợp năng lượng mặt trời với sao lưu diesel",
-          "desc": "Giảm dấu chân carbon trong khi duy trì 100% thời gian hoạt động không còn là giấc mơ...",
-          "date": "28 tháng 10, 2026 • 8 phút đọc"
-        }
+      "hpgreen": {
+        "name": "HPGreen Power",
+        "desc": "Thu thập và lưu trữ năng lượng bền vững cho thế hệ tiếp theo."
+      }
+    },
+    "promos": {
+      "badge": "Khuyến mại mùa",
+      "title": "MÙA HÈ 2026",
+      "subtitle": "KHUYẾN MẠI CHÍNH XÁC",
+      "desc": "Nâng cấp cơ sở hạ tầng của bạn với tiết kiệm 20% cho tất cả các đơn vị công nghiệp. Thời gian hạn chế.",
+      "discount": "-20%",
+      "cta": "Tìm hiểu thêm"
+    },
+    "products": {
+      "title": "Dòng Hyundai",
+      "subtitle": "Đơn vị bán chạy nhất",
+      "buy_now_cta": "Mua ngay"
+    },
+    "news": {
+      "title": "HIỂU BIẾT KỸ THUẬT",
+      "subtitle": "Kiến thức chuyên gia",
+      "viewAll": "Xem tất cả bài viết",
+      "article1": {
+        "category": "Bảo trì",
+        "title": "Cách tối đa hóa tuổi thọ máy phát của bạn thêm 40%",
+        "desc": "Các hệ thống lọc và làm mát dầu thích hợp là xương sống của độ bền điện lực công nghiệp...",
+        "date": "12 tháng 11, 2026 • 5 phút đọc"
       },
-      "trust": {
-        "warranty": {
-          "title": "Bảo hành được chứng nhận",
-          "desc": "Bảo hành nhà sản xuất chính thức 2 năm cho tất cả các đơn vị điện Hyundai công nghiệp và dân dụng."
-        },
-        "support": {
-          "title": "Hỗ trợ kỹ thuật 24/7",
-          "desc": "Các kỹ sư chuyên gia của chúng tôi luôn sẵn sàng hỗ trợ khẩn cấp cơ sở hạ tầng quan trọng."
-        },
-        "dealer": {
-          "title": "Nhà phân phối được uỷ quyền",
-          "desc": "Kết nối trực tiếp với Hyundai Power Vietnam, đảm bảo phụ tùng chính hãng và giá hợp lý."
-        }
+      "article2": {
+        "category": "Cải tiến",
+        "title": "Chuyển hướng sang hybrid: Tích hợp năng lượng mặt trời với sao lưu diesel",
+        "desc": "Giảm dấu chân carbon trong khi duy trì 100% thời gian hoạt động không còn là giấc mơ...",
+        "date": "28 tháng 10, 2026 • 8 phút đọc"
+      }
+    },
+    "trust": {
+      "warranty": {
+        "title": "Bảo hành được chứng nhận",
+        "desc": "Bảo hành nhà sản xuất chính thức 2 năm cho tất cả các đơn vị điện Hyundai công nghiệp và dân dụng."
       },
+      "support": {
+        "title": "Hỗ trợ kỹ thuật 24/7",
+        "desc": "Các kỹ sư chuyên gia của chúng tôi luôn sẵn sàng hỗ trợ khẩn cấp cơ sở hạ tầng quan trọng."
+      },
+      "dealer": {
+        "title": "Nhà phân phối được uỷ quyền",
+        "desc": "Kết nối trực tiếp với Hyundai Power Vietnam, đảm bảo phụ tùng chính hãng và giá hợp lý."
+      }
+    },
     "footer": {
       "description": "Đồng hành cùng doanh nghiệp bằng giải pháp năng lượng ổn định, kỹ thuật vượt trội và hỗ trợ kỹ thuật 24/7.",
       "newsletterLabel": "Cập nhật kỹ thuật",

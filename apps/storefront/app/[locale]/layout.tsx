@@ -80,7 +80,10 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html
+      lang={locale}
+      className={`${inter.variable} h-full font-sans antialiased`}
+    >
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
           {children}
