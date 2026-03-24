@@ -7,7 +7,7 @@ const MOCK_CATEGORIES_DB = [
     slug: "industrial",
     name: "Industrial Power",
     imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCPkcYjIBimva_BQCq-alfWskfU2-oLC1nfgG6K7131nTYUl8ap-_rpvf5VMzuFhIPay1KbuEWIc-X-FHfmyTA39LVZTvZqv-ABNvwjl20RznJHlSK8a_fPx9BXENN1OojbEq8NyYfhF53vcBCPbEnjG8nIvak-rF5AxCx29v7zAY1SNgWveKSN8cHkhUQk7uwAFyWQUj8k3rHclALDgmx3CAJcFPElHyHzOoX-zRRRr6O-MO7U1JUk0jwQzXX7cTvjlXK3zUvXoiYn",
+      "https://hyundainhatnang.vn/wp-content/uploads/2020/11/MAY-PHAT-DIEN-CONG-NGHIEP-HYUNDAI-NHAT-NANG-vn-1-600x600.jpg",
     description: "Máy phát điện công nghiệp công suất lớn",
   },
   {
@@ -15,7 +15,7 @@ const MOCK_CATEGORIES_DB = [
     slug: "household",
     name: "Household Setup",
     imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBcgepRit8EJYYcrmsaLxVPjbtdQt6InD7FMMxYxisYXtVds7jIQEgp5KnHlo4KhbGszEfLci33v5-Gq89qpr9FEwuqOG4QTKyO-3lqgSzP1yRgMnEt7XYSKJymM3RmZZwv8zFF99udq1YA4DZbuOAnHSlnWUWqygbjNz-Z3B2VoUhmjoifzK29TDmSQpJ-C1wVmS_Z1AC-9toV9tZw5xdYy3ywWD1JCTkiUoid_ow5rMxzaQCImwUjY8svC-a-VNoVDW0o_PdZrdXr",
+      "https://hyundainhatnang.vn/wp-content/uploads/2020/11/may-phat-dien-12kva-3pha-co-vo-cach-am-DHY-12500Se-1.jpg",
     description: "Giải pháp điện dự phòng cho gia đình",
   },
   {
@@ -23,7 +23,7 @@ const MOCK_CATEGORIES_DB = [
     slug: "ups",
     name: "UPS Systems",
     imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDRYugbYlKawKmaUXEpToa9fvl_DuSQYSq2xhtKdwR991tNVYe34YLjEkG6pATbxsyURg2XBjBrsFlyOvEHwkgh0OL4jMHETohKTd9pNY1cdg1EWHY15AO8AyoET4tYVtEypSobqekjG3womVzUB8HjoaoSFn1DZ6IfIcj128Vz9oSabdCuNUqv3AlvgLHb-pbZ4i41msLAP9wFxFNcFX1_Opniv1JS1i1kilWcMB2fVhKoC22PDaoXS6IUhI3lMXi2DJhdQa_eRXVN",
+      "https://hyundainhatnang.vn/wp-content/uploads/2020/11/UPS-HYUNDAI-HD-KT9-3-600x600.jpg",
     description: "Bộ lưu điện liên tục chống sập nguồn",
   },
   {
@@ -31,7 +31,7 @@ const MOCK_CATEGORIES_DB = [
     slug: "hpgreen",
     name: "HPGreen Energy",
     imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDqvjI8hfIGHjiNc6QTD6_ArLQ0tbxgPTPZLEQJBqakStYHqPZBJpLnwiNv-fKnmawpFXAgGCZbyzzp9fcxKWFmqukYTUVLlZlx3_eXIu5HxOBztiIS69gkbn2gW3_un_qE_pNX5XOf2deY5ArHPauicZvyCCzyu2WmgZ61SAfy5vYTxX0pVIuvvBvBF2lxzp4BAazI4UB8ZWZvdp44CztemkGSUyHwBS0mG99sUcrvOEYcd4EQl8MWA0gn_4t9MIq35WQB6OfNWMjJ",
+      "https://hyundainhatnang.vn/wp-content/uploads/2022/07/Tram-sac-du-phong-600W-HPgreen-2-600x600.png",
     description: "Năng lượng xanh thân thiện môi trường",
   },
 ];
