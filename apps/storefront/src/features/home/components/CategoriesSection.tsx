@@ -61,11 +61,11 @@ export async function CategoriesSection() {
   return (
     <section className="bg-background pt-14">
       <div className="mx-auto max-w-7xl px-6 md:px-8">
-        <div className="mb-8 text-center md:text-left">
+        <div className="mb-8 border-b pb-4">
           <h2 className="font-display text-foreground text-4xl font-extrabold tracking-tighter md:text-5xl">
             {t("categories.title")}
           </h2>
-          <p className="text-muted-foreground mt-4 font-sans text-lg">
+          <p className="text-muted-foreground mt-2 font-sans text-lg">
             {t("categories.subtitle")}
           </p>
         </div>

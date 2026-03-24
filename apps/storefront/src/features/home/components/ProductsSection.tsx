@@ -42,7 +42,7 @@ export async function ProductsSection() {
     <section className="bg-background pt-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="mb-8 text-center md:text-left">
+        <div className="mb-8 border-b pb-4">
           <h2 className="font-display text-foreground text-4xl font-extrabold tracking-tighter md:text-5xl">
             {t("title")}
           </h2>
@@ -74,9 +74,11 @@ export async function ProductsSection() {
 
               {/* Vùng Nội dung */}
               <CardContent className="flex grow flex-col gap-2">
-                <h3 className="font-display line-clamp-2 text-2xl leading-tight font-bold">
-                  {product.name}
-                </h3>
+                <Link href={`/products/${product.id}`}>
+                  <h3 className="font-display text-foreground group-hover:text-primary line-clamp-2 text-xl leading-tight font-bold transition-colors">
+                    {product.name}
+                  </h3>
+                </Link>
 
                 {/* Specs List */}
                 <div className="flex flex-wrap gap-2">
@@ -92,7 +94,7 @@ export async function ProductsSection() {
                 </div>
               </CardContent>
 
-              {/* Vùng Giá & Nút (Đẩy xuống đáy) */}
+              {/* Vùng Giá & Nút */}
               <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between border-t p-6">
                 <span className="text-primary text-xl font-bold">
                   {priceFormatter.format(product.price)}
