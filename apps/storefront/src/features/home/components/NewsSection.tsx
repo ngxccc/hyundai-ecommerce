@@ -55,7 +55,7 @@ export async function NewsSection() {
                     sizes="(max-width: 640px) 100vw, 300px"
                     className="object-cover transition-transform duration-700"
                   />
-                  <Badge className="bg-background/80 text-foreground hover:bg-background/90 absolute top-4 left-4 text-[12px] backdrop-blur-sm">
+                  <Badge className="bg-background/80 text-foreground hover:bg-background/90 absolute top-4 left-4 text-xs backdrop-blur-sm">
                     {article.category}
                   </Badge>
                 </CardHeader>
