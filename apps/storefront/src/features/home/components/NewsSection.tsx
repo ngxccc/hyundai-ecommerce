@@ -35,7 +35,7 @@ export async function NewsSection() {
   if (!articles.length) return null;
 
   return (
-    <section className="bg-muted/30 py-24">
+    <section className="bg-background pt-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 flex flex-col items-start justify-between gap-4 border-b pb-6 sm:flex-row sm:items-end">
           <div>
