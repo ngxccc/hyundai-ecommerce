@@ -39,10 +39,10 @@ export async function ProductsSection() {
   if (!products.length) return null;
 
   return (
-    <section className="bg-background py-24">
+    <section className="bg-background pt-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="mb-16 text-center md:text-left">
+        <div className="mb-8 text-center md:text-left">
           <h2 className="font-display text-foreground text-4xl font-extrabold tracking-tighter md:text-5xl">
             {t("title")}
           </h2>

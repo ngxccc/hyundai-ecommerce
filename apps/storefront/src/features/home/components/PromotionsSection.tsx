@@ -48,7 +48,7 @@ export async function PromotionsSection() {
   if (!promos?.length) return null;
 
   return (
-    <section className="py-2" aria-labelledby="promo-heading">
+    <section className="bg-background pt-14" aria-labelledby="promo-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Carousel
           opts={{

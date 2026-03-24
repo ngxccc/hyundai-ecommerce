@@ -59,18 +59,15 @@ export async function CategoriesSection() {
   const categories = await fetchCategories();
 
   return (
-    <section className="bg-background py-14">
+    <section className="bg-background pt-14">
       <div className="mx-auto max-w-7xl px-6 md:px-8">
-        {/* Header Section */}
-        <div className="mb-10 flex flex-col items-start justify-between gap-4 md:mb-12 md:flex-row md:items-end">
-          <div className="max-w-2xl">
-            <h2 className="font-display text-foreground text-4xl font-extrabold tracking-tighter md:text-5xl">
-              {t("categories.title")}
-            </h2>
-            <p className="text-muted-foreground mt-4 font-sans text-lg">
-              {t("categories.subtitle")}
-            </p>
-          </div>
+        <div className="mb-8 text-center md:text-left">
+          <h2 className="font-display text-foreground text-4xl font-extrabold tracking-tighter md:text-5xl">
+            {t("categories.title")}
+          </h2>
+          <p className="text-muted-foreground mt-4 font-sans text-lg">
+            {t("categories.subtitle")}
+          </p>
         </div>
 
         <div className="grid auto-rows-[300px] grid-cols-1 gap-4 md:auto-rows-[360px] md:grid-cols-12 md:gap-6">
