@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    environment: Production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build with Next.js
+        run: bun run build
+        env:
+          NODE_ENV: ${{ vars.NODE_ENV }}
+          NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
