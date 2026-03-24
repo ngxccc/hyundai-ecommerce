@@ -5,7 +5,6 @@ declare const messages: {
   "HomePage": {
     "brand": "HYUNDAI",
     "branchName": "Nhật Năng",
-    "branchNameUpper": "NHẬT NĂNG",
     "nav": {
       "products": "Sản phẩm",
       "solutions": "Giải pháp",
@@ -78,6 +77,13 @@ declare const messages: {
       "emailPlaceholder": "Nhập email doanh nghiệp",
       "subscribe": "Đăng ký",
       "productsTitle": "Sản phẩm",
+      "supportTitle": "Hỗ trợ",
+      "contactQuote": "Liên hệ & Báo giá",
+      "warrantyPolicy": "Chính sách bảo hành",
+      "technicalDocs": "Tài liệu kỹ thuật",
+      "allRightsReserved": "Bảo lưu mọi quyền.",
+      "privacyPolicy": "Chính sách quyền riêng tư.",
+      "termsOfService": "Điều khoản dịch vụ.",
       "products": {
         "industrialGenerators": "Máy phát công nghiệp",
         "residentialGen": "Máy phát dân dụng",

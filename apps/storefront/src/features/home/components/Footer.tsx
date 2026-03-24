@@ -1,69 +1,146 @@
-"use client";
-
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
+import { Button } from "@/shared/components/ui/button";
+import { Send } from "lucide-react";
+import { Input } from "@/shared/components/ui/input";
+
+const FOOTERPRODUCTS = [
+  "industrialGenerators",
+  "residentialGen",
+  "portablePower",
+  "atsPanels",
+] as const;
 
 export function Footer() {
   const t = useTranslations("HomePage");
-  const footerProducts = [
-    "industrialGenerators",
-    "residentialGen",
-    "portablePower",
-    "atsPanels",
-  ] as const;
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  const subscribeToNewsletter = async (formData: FormData) => {
+    "use server";
+    const email = formData.get("email");
+    console.log("Đã nhận được email từ server:", email);
+    // TODO: Gọi DB hoặc API mailchimp ở đây
+  };
 
   return (
-    <footer className="bg-surface pt-24 pb-12">
-      <div className="mx-auto mb-20 grid max-w-7xl grid-cols-1 gap-12 px-8 md:grid-cols-2 lg:grid-cols-4">
-        <div className="col-span-1 md:col-span-2">
-          <span className="font-display text-primary mb-6 block text-2xl font-bold tracking-tighter">
-            {t("brand")}{" "}
-            <span className="text-on-surface font-light opacity-60">
-              {t("branchNameUpper")}
-            </span>
-          </span>
-          <p className="text-outline mb-8 max-w-sm font-sans text-sm">
-            {t("footer.description")}
-          </p>
-          {/* Newsletter Subscribe */}
-          <div className="flex max-w-md items-end gap-4">
-            <div className="flex-1">
-              <label
-                className="font-display text-primary mb-2 block text-[10px] font-bold tracking-widest uppercase"
-                htmlFor="newsletter-email-input"
-              >
-                {t("footer.newsletterLabel")}
-              </label>
-              <input
-                id="newsletter-email-input"
+    <footer className="bg-muted/20 mt-14 border-t pt-14 pb-4">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-14 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+          {/* Cột 1 & 2: Brand + Newsletter */}
+          <div className="col-span-1 lg:col-span-2">
+            <Link
+              href="/"
+              className="font-display text-primary mb-6 block text-3xl font-black tracking-tighter transition-opacity hover:opacity-80"
+            >
+              {t("brand")}{" "}
+              <span className="text-foreground font-light opacity-80">
+                {t("branchName").toUpperCase()}
+              </span>
+            </Link>
+            <p className="text-muted-foreground mb-8 max-w-md font-sans text-sm leading-relaxed">
+              {t("footer.description")}
+            </p>
+
+            {/* Newsletter Form */}
+            <form
+              action={subscribeToNewsletter}
+              className="flex w-full max-w-sm items-center space-x-2"
+            >
+              <Input
+                name="email"
                 type="email"
                 autoComplete="email"
                 placeholder={t("footer.emailPlaceholder")}
-                className="ghost-input text-on-surface w-full py-2 font-sans"
+                required
+                className="bg-background"
               />
-            </div>
-            <button className="font-display text-on-surface hover:text-primary pb-2 text-xs font-bold tracking-widest uppercase transition-colors">
-              {t("footer.subscribe")}
-            </button>
+              <Button
+                type="submit"
+                className="font-bold tracking-wider uppercase"
+              >
+                {t("footer.subscribe")}
+                <Send className="ml-2 h-4 w-4" />
+              </Button>
+            </form>
+          </div>
+
+          {/* Products */}
+          <div>
+            <h5 className="font-display text-foreground mb-4 text-sm font-bold tracking-widest uppercase">
+              {t("footer.productsTitle")}
+            </h5>
+            <nav aria-label="Footer Products Navigation">
+              <ul className="space-y-2">
+                {FOOTERPRODUCTS.map((item) => (
+                  <li key={item}>
+                    <Link
+                      className="text-muted-foreground hover:text-primary font-sans text-sm transition-colors"
+                      href={`/products?category=${item}`}
+                    >
+                      {t(`footer.products.${item}`)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+
+          {/* Support */}
+          <div>
+            <h5 className="font-display text-foreground mb-4 text-sm font-bold tracking-widest uppercase">
+              {t("footer.supportTitle")}
+            </h5>
+            <nav aria-label="Footer Support Navigation">
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="/contact"
+                    className="text-muted-foreground hover:text-primary text-sm transition-colors"
+                  >
+                    {t("footer.contactQuote")}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/warranty"
+                    className="text-muted-foreground hover:text-primary text-sm transition-colors"
+                  >
+                    {t("footer.supportTitle")}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/manuals"
+                    className="text-muted-foreground hover:text-primary text-sm transition-colors"
+                  >
+                    {t("footer.technicalDocs")}
+                  </Link>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
 
-        <div>
-          <h5 className="font-display text-primary mb-6 text-xs font-bold tracking-widest uppercase">
-            {t("footer.productsTitle")}
-          </h5>
-          <ul className="space-y-4">
-            {footerProducts.map((item) => (
-              <li key={item}>
-                <Link
-                  className="text-outline hover:text-primary font-sans text-sm transition-colors"
-                  href="/"
-                >
-                  {t(`footer.products.${item}`)}
-                </Link>
-              </li>
-            ))}
-          </ul>
+        {/* Bottom Bar: Copyright & Legal */}
+        <div className="flex flex-col items-center justify-between gap-2 border-t pt-8 md:flex-row">
+          <p className="text-muted-foreground text-xs md:text-sm">
+            © {new Date().getFullYear()} {t("brand")}{" "}
+            {t("branchName").toUpperCase()}. {t("footer.allRightsReserved")}
+          </p>
+          <div className="text-muted-foreground flex gap-2 text-xs md:text-sm">
+            <Link
+              href="/privacy"
+              className="hover:text-primary transition-colors"
+            >
+              {t("footer.privacyPolicy")}
+            </Link>
+            <Link
+              href="/terms"
+              className="hover:text-primary transition-colors"
+            >
+              {t("footer.termsOfService")}
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
