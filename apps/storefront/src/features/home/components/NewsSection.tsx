@@ -1,70 +1,103 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
+import { siteConfig } from "@/shared/config/site";
+import type { ApiResponse, NewsArticle } from "@/shared/types/common";
+import { Button } from "@/shared/components/ui/button";
+import { ArrowRight, CalendarDays } from "lucide-react";
+import { Link } from "@/i18n/routing";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/shared/components/ui/card";
+import { Badge } from "@/shared/components/ui/badge";
 
-export function NewsSection() {
-  const t = useTranslations("HomePage");
+async function fetchLatestNews(): Promise<NewsArticle[]> {
+  try {
+    const res = await fetch(`${siteConfig.url}/api/news`, {
+      next: { revalidate: 3600 }, // Cache 1 tiếng để tiết kiệm tài nguyên
+    });
 
-  const articles = [
-    {
-      key: "article1" as const,
-      imageSrc:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDoYlmcln5OMZhw4eD3BervSbY8JmKVpGTRLxVQsGLIm0N06hdaqk8h2J91vs-oNpNPxB5YiT2cXaxfzvastmrqscJi5HeU2HJHibR3LSCTCrA4HZNR1gE8091SM5N1UaNmfguf4nx8CeiN2aE54eSv-18QAFXPfEOTvbpSj3LUBZS22EjBqX1CIxbziNun1mIYIpmWZkwra1BZbw4TT_vQ6NWpWqeY_HTnuIHogOvFt58kQ9wLQUk8WOYm9fExbUDaZyjAUf3dqZX0",
-    },
-    {
-      key: "article2" as const,
-      imageSrc:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDjIxCA4XVZTjeNRs_JDa-D5z6yFOZpLwNdw8kZ_vP0QiqxH9NWFPj0S-xocoBFJ8UNgEj-4vY9KX16EU6Ciph1ye8Xj20DZw7NirIJvI_zQrknUtNwloyRHuPMjzXoWibhi5QByb1dwXLqZHknLoPKeDiJnzP98SSJDE89qnTlQlOuh1eTXfNBpy0XhfKh8zLmhQ8fc4dryEOqDmXNBdkF-U_jXdvm1LV3ug4vK_pby1AyI706lvyHjX_5i-9wxfsJPBNK5gwY3yUz",
-    },
-  ];
+    if (!res.ok) return [];
+    const json = (await res.json()) as ApiResponse<NewsArticle[]>;
+    return json.data;
+  } catch (error) {
+    console.error("Failed to fetch news:", error);
+    return []; // Graceful degradation
+  }
+}
+
+export async function NewsSection() {
+  const t = await getTranslations("HomePage.news");
+  const articles = await fetchLatestNews();
+
+  if (!articles.length) return null;
 
   return (
-    <section className="bg-surface-container-low/50 py-24">
-      <div className="mx-auto max-w-7xl px-8">
-        <div className="mb-16 flex items-end justify-between">
+    <section className="bg-muted/30 py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 flex flex-col items-start justify-between gap-4 border-b pb-6 sm:flex-row sm:items-end">
           <div>
-            <h2 className="font-display text-on-surface text-4xl font-extrabold tracking-tighter uppercase">
-              {t("news.title")}
+            <h2 className="font-display text-foreground text-4xl font-extrabold tracking-tighter uppercase">
+              {t("title")}
             </h2>
-            <p className="font-label text-primary/60 mt-2 tracking-widest uppercase">
-              {t("news.subtitle")}
+            <p className="text-muted-foreground mt-2 font-sans text-sm tracking-widest uppercase">
+              {t("subtitle")}
             </p>
           </div>
-          <button className="font-display border-primary border-b-2 pb-1 text-sm font-bold tracking-widest uppercase">
-            {t("news.viewAll")}
-          </button>
+
+          <Button variant="outline" className="group" asChild>
+            <Link href="/news">
+              {t("viewAll")}
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </Button>
         </div>
-        <div className="grid grid-cols-1 gap-16 md:grid-cols-2">
+
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {articles.map((article) => (
-            <article
-              key={article.key}
-              className="group flex flex-col items-start gap-8 md:flex-row"
+            <Card
+              key={article.id}
+              className="group hover:border-primary/40 overflow-hidden p-0 transition-all hover:shadow-lg"
             >
-              <div className="bg-surface-container-highest h-48 w-full shrink-0 overflow-hidden rounded-lg md:w-48">
-                <Image
-                  alt={t(`news.${article.key}.title`)}
-                  src={article.imageSrc}
-                  width={200}
-                  height={200}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-              </div>
-              <div>
-                <span className="font-label text-primary mb-2 block text-xs font-bold tracking-widest uppercase">
-                  {t(`news.${article.key}.category`)}
-                </span>
-                <h3 className="font-display text-on-surface group-hover:text-primary mb-4 text-2xl leading-tight font-bold transition-colors">
-                  {t(`news.${article.key}.title`)}
-                </h3>
-                <p className="text-secondary mb-4 line-clamp-2 font-sans">
-                  {t(`news.${article.key}.desc`)}
-                </p>
-                <span className="font-label text-outline text-[10px] tracking-widest uppercase">
-                  {t(`news.${article.key}.date`)}
-                </span>
-              </div>
-            </article>
+              <article className="flex h-full flex-col sm:flex-row">
+                <CardHeader className="relative aspect-4/3 shrink-0 p-0 sm:aspect-auto sm:w-2/5">
+                  <Image
+                    alt={article.title}
+                    src={article.imageUrl}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 300px"
+                    className="object-cover transition-transform duration-700"
+                  />
+                  <Badge className="bg-background/80 text-foreground hover:bg-background/90 absolute top-4 left-4 text-[12px] backdrop-blur-sm">
+                    {article.category}
+                  </Badge>
+                </CardHeader>
+
+                {/* Vùng Nội dung */}
+                <div className="flex flex-1 flex-col">
+                  <CardContent className="grow p-6 pb-2">
+                    <Link href={`/news/${article.slug}`}>
+                      <h3 className="font-display text-foreground group-hover:text-primary mb-2 line-clamp-2 text-xl leading-tight font-bold transition-colors">
+                        {article.title}
+                      </h3>
+                    </Link>
+                    <p className="text-muted-foreground line-clamp-3 text-sm">
+                      {article.description}
+                    </p>
+                  </CardContent>
+
+                  {/* Vùng Footer */}
+                  <CardFooter className="mt-auto px-6 pt-0 pb-6">
+                    <div className="text-muted-foreground flex items-center text-xs font-medium">
+                      <CalendarDays className="mr-2 h-3.5 w-3.5" />
+                      {article.date}
+                    </div>
+                  </CardFooter>
+                </div>
+              </article>
+            </Card>
           ))}
         </div>
       </div>

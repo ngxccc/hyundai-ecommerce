@@ -32,3 +32,13 @@ export interface PromoCampaign {
   isActive: boolean;
   themeColor: string; // Nâng cao: CMS có thể trả về màu primary luôn!
 }
+
+export interface NewsArticle {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  date: string;
+  imageUrl: string;
+  slug: string;
+}
