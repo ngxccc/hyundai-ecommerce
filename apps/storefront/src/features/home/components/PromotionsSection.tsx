@@ -1,8 +1,6 @@
 import { Link } from "@/i18n/routing";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
-import type { ApiResponse, PromoCampaign } from "@/shared/types/common";
-import { siteConfig } from "@/shared/config/site";
 import {
   Carousel,
   CarouselContent,
@@ -10,6 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/shared/components/ui/carousel";
+import { promoService } from "@/shared/services/promo.service";
 
 const THEME_STYLES: Record<
   string,
@@ -27,23 +26,8 @@ const THEME_STYLES: Record<
   },
 };
 
-async function getActivePromos(): Promise<PromoCampaign[] | null> {
-  try {
-    const res = await fetch(`${siteConfig.url}/api/promotions`, {
-      next: { revalidate: 3600 }, // Cập nhật cache mỗi 1 tiếng
-    });
-
-    if (!res.ok) return null;
-    const result = (await res.json()) as ApiResponse<PromoCampaign[]>;
-    return result.data;
-  } catch (error) {
-    console.error("Failed to fetch promo:", error);
-    return null;
-  }
-}
-
 export async function PromotionsSection() {
-  const promos = await getActivePromos();
+  const promos = await promoService.getPromos();
 
   if (!promos?.length) return null;
 
@@ -73,7 +57,7 @@ export async function PromotionsSection() {
                       aria-hidden="true"
                     />
 
-                    {/* 📦 Cột Trái */}
+                    {/* Cột Trái */}
                     <div className="relative z-10 text-center md:text-left">
                       <Badge
                         variant="outline"
@@ -93,7 +77,7 @@ export async function PromotionsSection() {
                       </p>
                     </div>
 
-                    {/* 🎯 Cột Phải */}
+                    {/* Cột Phải */}
                     <div className="relative z-10 mt-8 flex flex-col items-center md:mt-0 md:items-end">
                       <div className="font-display text-destructive mb-4 text-7xl leading-none font-black tracking-tighter md:text-8xl">
                         {promo.discount}
@@ -112,7 +96,7 @@ export async function PromotionsSection() {
             })}
           </CarouselContent>
 
-          {/* Nút điều hướng (Chỉ hiện trên màn hình lớn) */}
+          {/* Nút điều hướng */}
           <div className="hidden md:block">
             <CarouselPrevious className="absolute top-1/2 -left-12" />
             <CarouselNext className="absolute top-1/2 -right-12" />

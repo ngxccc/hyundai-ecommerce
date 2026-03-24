@@ -1,9 +1,8 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import type { ApiResponse, Category } from "@/shared/types/common";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { siteConfig } from "@/shared/config/site";
+import { categoryService } from "@/shared/services/category.service";
 
 const CATEGORY_UI_MAP = {
   industrial: {
@@ -43,20 +42,12 @@ function isCategoryKey(value: string): value is CategoryKey {
   return value in CATEGORY_UI_MAP;
 }
 
-const fetchCategories = async (): Promise<Category[]> => {
-  const res = await fetch(`${siteConfig.url}/api/categories`, {
-    next: { revalidate: 3600 },
-  });
-
-  if (!res.ok) throw new Error(`Failed to fetch categories: ${res.status}`);
-  const result = (await res.json()) as ApiResponse<Category[]>;
-  return result.data;
-};
-
 export async function CategoriesSection() {
   const t = await getTranslations("HomePage");
 
-  const categories = await fetchCategories();
+  const categories = await categoryService.getCategories();
+
+  if (!categories.length) return null;
 
   return (
     <section className="bg-background pt-14">

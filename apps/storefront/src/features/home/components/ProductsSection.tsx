@@ -1,6 +1,4 @@
 import { Link } from "@/i18n/routing";
-import { siteConfig } from "@/shared/config/site";
-import type { Product, ApiResponse } from "@/shared/types/common";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { Badge } from "@/shared/components/ui/badge";
@@ -11,30 +9,13 @@ import {
   CardFooter,
   CardHeader,
 } from "@/shared/components/ui/card";
-
-const fetchProducts = async (): Promise<Product[]> => {
-  try {
-    const res = await fetch(`${siteConfig.url}/api/products`, {
-      next: { revalidate: 3600 }, // Dùng ISR thay vì no-store để tối ưu hiệu năng
-    });
-
-    if (!res.ok) throw new Error(`Failed to fetch products: ${res.status}`);
-    const result = (await res.json()) as ApiResponse<Product[]>;
-    return result.data;
-  } catch (error) {
-    console.error("Fetch Products Error:", error);
-    return [];
-  }
-};
-
-const priceFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
+import { productService } from "@/shared/services/product.service";
+import { priceFormatter } from "@/shared/lib/utils";
 
 export async function ProductsSection() {
   const t = await getTranslations("HomePage.products");
-  const products = await fetchProducts();
+
+  const products = await productService.getProducts();
 
   if (!products.length) return null;
 

@@ -1,7 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
-import { siteConfig } from "@/shared/config/site";
-import type { ApiResponse, NewsArticle } from "@/shared/types/common";
 import { Button } from "@/shared/components/ui/button";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { Link } from "@/i18n/routing";
@@ -12,25 +10,12 @@ import {
   CardHeader,
 } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
-
-async function fetchLatestNews(): Promise<NewsArticle[]> {
-  try {
-    const res = await fetch(`${siteConfig.url}/api/news`, {
-      next: { revalidate: 3600 }, // Cache 1 tiếng để tiết kiệm tài nguyên
-    });
-
-    if (!res.ok) return [];
-    const json = (await res.json()) as ApiResponse<NewsArticle[]>;
-    return json.data;
-  } catch (error) {
-    console.error("Failed to fetch news:", error);
-    return []; // Graceful degradation
-  }
-}
+import { newsService } from "@/shared/services/news.service";
 
 export async function NewsSection() {
   const t = await getTranslations("HomePage.news");
-  const articles = await fetchLatestNews();
+
+  const articles = await newsService.getLatest();
 
   if (!articles.length) return null;
 

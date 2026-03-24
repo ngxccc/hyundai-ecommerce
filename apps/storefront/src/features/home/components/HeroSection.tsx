@@ -1,7 +1,6 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-
 import { Button } from "@/shared/components/ui/button";
 
 export function HeroSection() {
