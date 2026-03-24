@@ -36,8 +36,6 @@ export async function GET() {
 
     const activePromo = MOCK_PROMOTIONS.filter((p) => p.isActive) ?? null;
 
-    console.log(activePromo);
-
     return NextResponse.json(
       {
         status: true,
