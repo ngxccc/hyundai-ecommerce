@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <div className="selection:bg-primary/20 min-h-screen">
       <Header />
-      <main className="pt-20">
+      <main className="pt-16">
         <HeroSection />
         <CategoriesSection />
         <PromotionsSection />

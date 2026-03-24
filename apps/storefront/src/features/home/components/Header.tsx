@@ -9,7 +9,7 @@ export function Header() {
 
   return (
     <header className="bg-background/90 supports-backdrop-blur:bg-background/60 border-border fixed top-0 z-50 w-full border-b backdrop-blur-xl transition-all">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         {/* Logo & Brand */}
         <div className="flex items-center gap-10">
           <Link

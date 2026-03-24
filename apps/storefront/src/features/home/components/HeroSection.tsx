@@ -7,7 +7,7 @@ export function HeroSection() {
   const t = useTranslations("HomePage");
 
   return (
-    <section className="bg-background relative flex min-h-[92vh] items-center overflow-hidden pt-32 pb-20">
+    <section className="bg-background relative flex min-h-[94vh] items-center overflow-hidden pt-32 pb-20">
       {/* Background Image Area */}
       <div className="absolute inset-0 z-0">
         <Image
