@@ -91,6 +91,30 @@ declare const messages: {
         "atsPanels": "Tủ ATS"
       }
     }
+  },
+
+  "NotFound": {
+    "status": "Status: Terminal",
+    "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
+    "errorMessage": "Kết nối đến phân vùng này đã bị ngắt. Dữ liệu máy phát điện hoặc trang bạn tìm kiếm không tồn tại trên hệ thống.",
+    "actions": {
+      "home": {
+        "tag": "Return to Main",
+        "title": "Về Trang Chủ",
+        "description": "Kết nối lại với trung tâm điều khiển và danh mục máy phát điện công nghiệp.",
+        "button": "Khởi động lại"
+      },
+      "support": {
+        "tag": "Direct Protocol",
+        "title": "Hỗ trợ Kỹ thuật",
+        "description": "Thiết lập kênh liên lạc bảo mật với đội ngũ kỹ sư của chúng tôi qua Zalo hoặc Hotline.",
+        "button": "Mở kết nối"
+      }
+    }
+  },
+
+  "Metadata": {
+    "title": "Hyundai Nhật Năng | Máy Phát Điện Chính Hãng"
   }
 };
 export default messages;

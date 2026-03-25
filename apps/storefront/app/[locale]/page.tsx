@@ -1,27 +1,30 @@
 import {
-  Header,
   HeroSection,
   CategoriesSection,
   PromotionsSection,
   ProductsSection,
   NewsSection,
   TrustSignalsSection,
-  Footer,
 } from "@/features/home/components";
+import type { Locale } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 
-export default function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: Locale }>;
+}) {
+  const { locale } = await params;
+  // Bắt buộc gọi lại ở Page để Next.js render tĩnh (SSG) mượt mà
+  setRequestLocale(locale);
   return (
-    <div className="selection:bg-primary/20 min-h-screen">
-      <Header />
-      <main className="pt-16">
-        <HeroSection />
-        <CategoriesSection />
-        <PromotionsSection />
-        <ProductsSection />
-        <NewsSection />
-        <TrustSignalsSection />
-      </main>
-      <Footer />
-    </div>
+    <>
+      <HeroSection />
+      <CategoriesSection />
+      <PromotionsSection />
+      <ProductsSection />
+      <NewsSection />
+      <TrustSignalsSection />
+    </>
   );
 }
