@@ -31,9 +31,10 @@ export const viewport: Viewport = {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
+  const locale = rawLocale as Locale;
 
   const t = await getTranslations({ locale, namespace: "Metadata" });
 
@@ -85,9 +86,10 @@ export default async function RootLayout({
   params,
 }: Readonly<{
   children: React.ReactNode;
-  params: Promise<{ locale: Locale }>;
+  params: Promise<{ locale: string }>;
 }>) {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
+  const locale = rawLocale as Locale;
 
   if (!routing.locales.includes(locale)) {
     notFound();
