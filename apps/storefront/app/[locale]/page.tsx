@@ -6,8 +6,13 @@ import {
   NewsSection,
   TrustSignalsSection,
 } from "@/features/home/components";
+import { routing } from "@/i18n/routing";
 import type { Locale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export default async function Home({
   params,

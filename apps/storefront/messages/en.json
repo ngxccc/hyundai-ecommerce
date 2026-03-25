@@ -2,37 +2,115 @@
   "HomePage": {
     "brand": "HYUNDAI",
     "branchName": "Nhat Nang",
-    "branchNameUpper": "NHAT NANG",
     "nav": {
       "products": "Products",
       "solutions": "Solutions",
       "services": "Services"
     },
     "header": {
-      "support": "Support 24/7",
-      "requestQuote": "Request Quote"
+      "support": "24/7 Support",
+      "requestQuote": "Request a Quote"
     },
     "hero": {
-      "badge": "Heavy Duty Series",
+      "badge": "Heavy-Duty Series",
       "titleLine1": "Uninterruptible",
-      "titleLine2": "Power.",
-      "description": "Ensure business continuity with Hyundai's industrial-grade generators. Engineered for absolute reliability under extreme conditions.",
+      "titleLine2": "Power Supply.",
+      "description": "Ensure continuous business operations with Hyundai industrial generators. Designed for absolute reliability in harsh conditions.",
       "primaryCta": "Explore Generators",
       "secondaryCta": "Consultation",
-      "imageAlt": "Hyundai Industrial Generator Setup"
+      "imageAlt": "Hyundai Industrial Generator System"
+    },
+    "categories": {
+      "title": "MAIN CATEGORIES",
+      "subtitle": "Technical Expertise"
+    },
+    "promos": {
+      "badge": "Seasonal Promo",
+      "title": "SUMMER 2026",
+      "subtitle": "PRECISION PROMOTION PROGRAM",
+      "desc": "Upgrade your infrastructure and save 20% on all industrial units. Limited time offer.",
+      "discount": "-20%",
+      "cta": "Learn More"
+    },
+    "products": {
+      "title": "Hyundai Series",
+      "subtitle": "Best Selling Units",
+      "buy_now_cta": "Buy Now"
+    },
+    "news": {
+      "title": "TECHNICAL INSIGHTS",
+      "subtitle": "Expert Knowledge",
+      "viewAll": "View All Articles",
+      "article1": {
+        "category": "Maintenance",
+        "title": "How to Maximize Your Generator's Lifespan by 40%",
+        "desc": "Proper oil filtration and cooling systems are the backbone of industrial power durability...",
+        "date": "Nov 12, 2026 • 5 min read"
+      },
+      "article2": {
+        "category": "Innovation",
+        "title": "Going Hybrid: Integrating Solar with Diesel Backup",
+        "desc": "Reducing your carbon footprint while maintaining 100% uptime is no longer a dream...",
+        "date": "Oct 28, 2026 • 8 min read"
+      }
+    },
+    "trust": {
+      "warranty": {
+        "title": "Certified Warranty",
+        "desc": "Official 2-year manufacturer warranty for all industrial and residential Hyundai power units."
+      },
+      "support": {
+        "title": "24/7 Technical Support",
+        "desc": "Our expert engineers are always on standby for critical infrastructure emergency support."
+      },
+      "dealer": {
+        "title": "Authorized Dealer",
+        "desc": "Direct connection with Hyundai Power Vietnam, ensuring genuine parts and reasonable prices."
+      }
     },
     "footer": {
-      "description": "Empowering industries through reliable energy solutions, superior engineering, and dedicated 24/7 technical support.",
+      "description": "Empowering businesses with stable energy solutions, superior engineering, and 24/7 technical support.",
       "newsletterLabel": "Technical Updates",
       "emailPlaceholder": "Enter business email",
       "subscribe": "Subscribe",
       "productsTitle": "Products",
+      "supportTitle": "Support",
+      "contactQuote": "Contact & Quote",
+      "warrantyPolicy": "Warranty Policy",
+      "technicalDocs": "Technical Docs",
+      "allRightsReserved": "All rights reserved.",
+      "privacyPolicy": "Privacy Policy.",
+      "termsOfService": "Terms of Service.",
       "products": {
         "industrialGenerators": "Industrial Generators",
-        "residentialGen": "Residential Gen",
+        "residentialGen": "Residential Generators",
         "portablePower": "Portable Power",
         "atsPanels": "ATS Panels"
       }
     }
+  },
+
+  "NotFound": {
+    "status": "Status: Terminal",
+    "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
+    "errorMessage": "Connection to this partition has been lost. The generator data or page you are looking for does not exist on the system.",
+    "actions": {
+      "home": {
+        "tag": "Return to Main",
+        "title": "Back to Home",
+        "description": "Reconnect with the control center and industrial generator catalog.",
+        "button": "Reboot"
+      },
+      "support": {
+        "tag": "Direct Protocol",
+        "title": "Technical Support",
+        "description": "Establish a secure communication channel with our engineering team via Zalo or Hotline.",
+        "button": "Open Connection"
+      }
+    }
+  },
+
+  "Metadata": {
+    "title": "Hyundai Nhat Nang | Genuine Generators"
   }
 }

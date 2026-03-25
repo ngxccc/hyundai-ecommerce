@@ -28,6 +28,10 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 export async function generateMetadata({
   params,
 }: {
