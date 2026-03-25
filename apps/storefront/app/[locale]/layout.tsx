@@ -12,6 +12,7 @@ import {
 import { NextIntlClientProvider, type Locale } from "next-intl";
 import { Header, Footer } from "@/features/home/components";
 import { Analytics } from "@vercel/analytics/next";
+import { ScrollToTop } from "@/shared/components/ScrollToTop";
 
 const inter = Inter({
   subsets: ["vietnamese", "latin"],
@@ -114,6 +115,7 @@ export default async function RootLayout({
           <Header />
           <main className="flex-1 pt-16">{children}</main>
           <Footer />
+          <ScrollToTop />
         </NextIntlClientProvider>
       </body>
 
