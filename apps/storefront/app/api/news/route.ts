@@ -2,6 +2,8 @@ import { delay } from "@/shared/lib/utils";
 import type { NewsArticle } from "@/shared/types/common";
 import { NextResponse } from "next/server";
 
+export const revalidate = 3600;
+
 const MOCK_NEWS: NewsArticle[] = [
   {
     id: "news-001",

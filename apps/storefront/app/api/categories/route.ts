@@ -1,6 +1,9 @@
 import { delay } from "@/shared/lib/utils";
 import { NextResponse } from "next/server";
 
+// ISR revalidate after 1 hour
+export const revalidate = 3600;
+
 const MOCK_CATEGORIES_DB = [
   {
     id: "cat_01",

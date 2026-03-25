@@ -1,6 +1,8 @@
 import { delay } from "@/shared/lib/utils";
 import { NextResponse } from "next/server";
 
+export const revalidate = 3600;
+
 const MOCK_PRODUCTS = [
   {
     id: "sku-hy-30cle",

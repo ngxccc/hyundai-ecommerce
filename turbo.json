@@ -4,7 +4,13 @@
     "build": {
       "dependsOn": ["^build"],
       "env": ["NEXT_PUBLIC_API_URL", "DATABASE_URL"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**",
+        "!.next/dev/**",
+        "!.next/types/**"
+      ]
     },
     "check-types": {
       "dependsOn": ["^check-types"]

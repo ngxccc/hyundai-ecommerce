@@ -2,6 +2,8 @@ import { delay } from "@/shared/lib/utils";
 import type { PromoCampaign } from "@/shared/types/common";
 import { NextResponse } from "next/server";
 
+export const revalidate = 3600;
+
 const MOCK_PROMOTIONS: PromoCampaign[] = [
   {
     id: "promo-001",
