@@ -1,15 +1,13 @@
-# hyundai-ecommerce
+# ⚡ Hyundai E-Commerce (Heavy-Duty Generator B2B Platform)
 
-To install dependencies:
+Dự án Monorepo Full-stack (Next.js 16 + Drizzle ORM + Neon Serverless Postgres) xây dựng hệ thống thương mại điện tử chuyên dụng cho mặt hàng siêu trọng (Máy phát điện công nghiệp).
 
-```bash
-bun install
-```
+## 📚 Documentation
 
-To run:
+- [⚙️ Architecture & System Design](./docs/01-architecture.md)
+- [📖 Product Requirements & User Stories (MoSCoW)](./docs/02-user-stories.md)
+- [🗄️ Database Schema & ERD](./docs/03-database-schema.md)
 
-```bash
-bun run index.ts
-```
+## 🚀 Tech Stack
 
-This project was created using `bun init` in bun v1.3.8. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+- ...
