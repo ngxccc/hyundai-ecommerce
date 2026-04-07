@@ -97,6 +97,7 @@ erDiagram
     string event_type "VD: SEND_QUOTE_EMAIL, SEND_MAIL"
     jsonb payload "Lưu nội dung mail: order_id, giá tiền..."
     string status "PENDING -> PROCESSED -> FAILED"
+    int retry_count "Số lần thử lại nếu lỗi tối đa là 3"
     timestamp created_at
     timestamp updated_at
   }
