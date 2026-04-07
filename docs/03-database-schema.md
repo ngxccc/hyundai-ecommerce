@@ -91,6 +91,15 @@ erDiagram
     boolean is_selected
     timestamp created_at
   }
+
+  OUTBOX_EVENTS {
+    uuid id PK
+    string event_type "VD: SEND_QUOTE_EMAIL, SEND_MAIL"
+    jsonb payload "Lưu nội dung mail: order_id, giá tiền..."
+    string status "PENDING -> PROCESSED -> FAILED"
+    timestamp created_at
+    timestamp updated_at
+  }
 ```
 
 ---
@@ -115,3 +124,7 @@ Phí ship hàng công nghiệp thay đổi theo từng đơn. Bảng `SHIPPING_B
 ### 2.4. B2B Tiered Pricing (Định giá theo cấp Đại lý)
 
 Bằng việc chuẩn hóa cấp bậc đại lý vào bảng `DEALER_TIERS` và liên kết qua `USERS.dealer_tier_id`, hệ thống có thể quản lý chiết khấu một cách tập trung. Giá cuối cùng (`unit_price` trong `ORDER_ITEMS`) là kết quả của việc lấy `PRODUCTS.base_price` trừ đi `DEALER_TIERS.discount_percentage` ngay tại thời điểm chốt đơn, đảm bảo tính bất biến của lịch sử giao dịch.
+
+### 2.5. Outbox Pattern
+
+Kiến trúc này sẽ giải quyết bài toán Dual-Write, khi user thanh toán ta không thể đưa việc gửi email vào Database Transaction được vì khi email được gửi đi rồi không thể rollback được vậy nên thay vì ta gọi API gửi email ngay khi user thanh toán thì ta sẽ tạo một record vào bảng `outbox_events`. Sau đó, một tiến trình chạy ngầm sẽ lấy thư từ Outbox đi gửi nó sẽ đảm bảo Eventual Consistency - Tính nhất quán cuối
