@@ -9,6 +9,7 @@ Dự án sử dụng **PostgreSQL (Neon Serverless)** làm hệ quản trị CSD
 ```mermaid
 erDiagram
   %% RELATIONSHIPS
+  DEALER_TIERS ||--o{ USERS : "has"
   USERS ||--o{ ORDERS : "places"
   PRODUCTS ||--o{ ORDER_ITEMS : "included in"
   ORDERS ||--|{ ORDER_ITEMS : "contains"
@@ -16,9 +17,19 @@ erDiagram
   WAREHOUSES ||--o{ INVENTORY : "stores"
   PRODUCTS ||--o{ INVENTORY : "stocked as"
 
+  DEALER_TIERS {
+    uuid id PK
+    string name UK "VD: Silver, Gold, Platinum"
+    decimal discount_percentage "Phần trăm chiết khấu (VD: 10.5)"
+    decimal minimum_spend "Yêu cầu chi tiêu tối thiểu để đạt Tier này"
+    timestamp created_at
+    timestamp updated_at
+  }
+
   %% ENTITIES (Thực thể)
   USERS {
     uuid id PK
+    uuid dealer_tier_id FK "Nullable: Chỉ có giá trị nếu role là dealer"
     string email UK
     string password_hash
     string role "enum: admin, dealer, customer"
@@ -30,10 +41,10 @@ erDiagram
     uuid id PK
     string slug UK
     string name
-    decimal base_price
+    decimal base_price "Giá gốc niêm yết (Chưa trừ chiết khấu)"
     jsonb specs "Lưu Công suất, Pha, Nhiên liệu..."
     int total_stock_cache "Tổng tồn kho (Cache để tối ưu Read)"
-    boolean is_quote_only
+    boolean is_quote_onlys
     timestamp created_at
     timestamp updated_at
   }
@@ -58,7 +69,7 @@ erDiagram
     uuid user_id FK
     string status
     decimal shipping_fee
-    decimal total_amount
+    decimal total_amount "Tiền sau khi đã trừ chiết khấu của Tier và shipping_fee"
     timestamp created_at
     timestamp updated_at
   }
@@ -68,7 +79,7 @@ erDiagram
     uuid order_id FK
     uuid product_id FK
     int quantity
-    decimal unit_price "Snapshot giá tại thời điểm mua"
+    decimal unit_price "Snapshot giá sau khi đã TRỪ CHIẾT KHẤU, tiền ship tại thời điểm mua"
   }
 
   SHIPPING_BIDS {
@@ -76,7 +87,7 @@ erDiagram
     uuid order_id FK
     string vendor_name "VD: Viettel Post, Xe cẩu"
     decimal quoted_price
-    text internal_notes
+    text internal_notess
     boolean is_selected
     timestamp created_at
   }
@@ -99,4 +110,8 @@ Tuyệt đối không hardcode các cột như `stock_hn` hay `stock_hcm`. Hệ 
 
 ### 2.3. Bidding System (Hệ thống đàm phán vận chuyển)
 
-Đối với hàng siêu trọng, phí ship thay đổi theo từng đơn. Bảng `SHIPPING_BIDS` đóng vai trò là một "Shadow Entity" (Sổ nháp) để Admin ghi nhận báo giá từ nhiều nhà xe. Chỉ khi Admin bấm chọn 1 Bid, Database Transaction mới được kích hoạt để copy `quoted_price` sang cột `shipping_fee` của bảng `ORDERS` gốc, đảm bảo tính toàn vẹn dữ liệu tài chính.
+Phí ship hàng công nghiệp thay đổi theo từng đơn. Bảng `SHIPPING_BIDS` đóng vai trò là một "Shadow Entity" (Sổ nháp) để Admin lưu các báo giá từ nhà xe. Khi Admin chốt Bid, DB Transaction sẽ copy `quoted_price` sang `ORDERS.shipping_fee`.
+
+### 2.4. B2B Tiered Pricing (Định giá theo cấp Đại lý)
+
+Bằng việc chuẩn hóa cấp bậc đại lý vào bảng `DEALER_TIERS` và liên kết qua `USERS.dealer_tier_id`, hệ thống có thể quản lý chiết khấu một cách tập trung. Giá cuối cùng (`unit_price` trong `ORDER_ITEMS`) là kết quả của việc lấy `PRODUCTS.base_price` trừ đi `DEALER_TIERS.discount_percentage` ngay tại thời điểm chốt đơn, đảm bảo tính bất biến của lịch sử giao dịch.
