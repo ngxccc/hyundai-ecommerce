@@ -79,7 +79,7 @@ erDiagram
     uuid order_id FK
     uuid product_id FK
     int quantity
-    decimal unit_price "Snapshot giá sau khi đã TRỪ CHIẾT KHẤU, tiền ship tại thời điểm mua"
+    decimal unit_price "Snapshot giá MỘT SẢN PHẨM sau khi TRỪ CHIẾT KHẤU, KHÔNG bao gồm phí ship"
   }
 
   SHIPPING_BIDS {
