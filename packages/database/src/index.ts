@@ -11,3 +11,4 @@ export const db = drizzle(sql, { schema });
 
 export * from "./schemas";
 export * from "drizzle-orm";
+export * from "./auth";
