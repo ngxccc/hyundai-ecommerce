@@ -10,6 +10,10 @@ export const ENVIRONMENT_MODES = {
 const envSchema = z.object({
   DATABASE_URL: z.url(MESSAGES.DB_URL_IS_INVALID),
   NODE_ENV: z.enum(ENVIRONMENT_MODES).default(ENVIRONMENT_MODES.DEVELOPMENT),
+  BETTER_AUTH_SECRET: z
+    .string()
+    .min(32, MESSAGES.BETTER_AUTH_SECRET_IS_INVALID),
+  BETTER_AUTH_URL: z.url(MESSAGES.BETTER_AUTH_URL_IS_INVALID),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
