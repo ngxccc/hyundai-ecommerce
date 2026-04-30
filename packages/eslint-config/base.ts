@@ -4,6 +4,7 @@ import tseslint from "typescript-eslint";
 import { importX } from "eslint-plugin-import-x";
 import globals from "globals";
 import eslintConfigPrettier from "eslint-config-prettier";
+import architecture from "./architecture";
 
 export default defineConfig([
   {
@@ -62,6 +63,8 @@ export default defineConfig([
       "@typescript-eslint/consistent-type-definitions": "warn",
     },
   },
+
+  ...architecture,
 
   // PRETTIER - Must be last to disable conflicting rules
   eslintConfigPrettier,
