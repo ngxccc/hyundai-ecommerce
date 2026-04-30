@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "analyze": "next experimental-analyze",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --cache --cache-strategy content --cache-location .eslintcache",
+    "lint:fix": "eslint . --fix --cache --cache-strategy content --cache-location .eslintcache",
     "inspect": "bunx @eslint/config-inspector@latest"
   },
   "dependencies": {

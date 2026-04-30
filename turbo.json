@@ -10,17 +10,35 @@
         "!.next/cache/**",
         "!.next/dev/**",
         "!.next/types/**"
-      ]
+      ],
+      "cache": true
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["^check-types"],
+      "cache": true
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
+      "cache": true,
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "eslint.config.*",
+        "**/*.{js,jsx,ts,tsx}",
+        "packages/eslint-config/**"
+      ]
     },
     "dev": {
       "persistent": true,
       "cache": false
     }
-  }
+  },
+  "globalDependencies": [
+    "tsconfig.json",
+    "package.json",
+    "turbo.json",
+    ".prettierrc",
+    ".prettierignore",
+    "packages/eslint-config/**",
+    "packages/typescript-config/**"
+  ]
 }
