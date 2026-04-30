@@ -19,6 +19,7 @@ export const auth = betterAuth({
     additionalFields: {
       role: { type: "string" },
       dealerTierId: { type: "string", required: false },
+      deletedAt: { type: "date", required: false },
     },
   },
 

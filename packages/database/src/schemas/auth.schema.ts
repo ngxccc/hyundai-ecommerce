@@ -11,7 +11,11 @@ import {
 import { dealerTiers } from "./dealer-tier.schema";
 import { v7 as uuidv7 } from "uuid";
 
-export const roleEnum = pgEnum("role", ["admin", "dealer", "customer"]);
+export const userRoleEnum = pgEnum("user_role", [
+  "admin",
+  "dealer",
+  "customer",
+]);
 
 export const users = pgTable("user", {
   id: uuid("id").primaryKey().$defaultFn(uuidv7),
@@ -19,7 +23,7 @@ export const users = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
-  role: roleEnum("role").default("customer").notNull(),
+  role: userRoleEnum("role").default("customer").notNull(),
   dealerTierId: uuid("dealer_tier_id").references(() => dealerTiers.id, {
     onDelete: "set null",
   }),
@@ -30,6 +34,7 @@ export const users = pgTable("user", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  deletedAt: timestamp("deleted_at", { withTimezone: true, mode: "date" }),
 });
 
 export const sessions = pgTable(
