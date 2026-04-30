@@ -14,6 +14,19 @@ export const db = drizzle({
   relations: schema.schemaRelations,
 });
 
+export async function withTransaction<T>(
+  callback: Parameters<typeof db.transaction>[0],
+): Promise<Awaited<ReturnType<Parameters<typeof db.transaction>[0]>>> {
+  return await db.transaction(async (tx) => {
+    try {
+      return await callback(tx);
+    } catch (error) {
+      console.error("[DB Transaction Error]", error);
+      throw error;
+    }
+  });
+}
+
 export * from "./schemas";
 export * from "./queries";
 export * from "drizzle-orm";
