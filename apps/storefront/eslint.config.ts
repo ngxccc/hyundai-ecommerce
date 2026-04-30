@@ -10,6 +10,7 @@ const eslintConfig = defineConfig(
     "build/**",
     "next-env.d.ts",
     "node_modules/**",
+    "src/shared/components/ui/**",
   ]),
 
   // BASE CONFIG - Applied to all files in entire monorepo
