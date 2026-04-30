@@ -1,2 +1,1 @@
-// Shared types package index
-// Add your type definitions exports here
+export type ProductSpecs = Record<string, string | number>;
