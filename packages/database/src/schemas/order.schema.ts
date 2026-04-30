@@ -10,6 +10,7 @@ import { v7 as uuidv7 } from "uuid";
 import { users } from "./auth.schema";
 import { relations } from "drizzle-orm";
 import { orderItems } from "./order-item.schema";
+import { shippingBids } from "./shipping-bid.schema";
 
 export const orderStatusEnum = pgEnum("order_status", [
   "pending",
@@ -27,7 +28,7 @@ export const orders = pgTable("order", {
     .references(() => users.id, { onDelete: "restrict" }),
   status: orderStatusEnum("status").notNull().default("pending"),
   shippingFee: numeric("shipping_fee", { precision: 15, scale: 2 }).notNull(),
-  shippingAddress: text("shiping_address").notNull(),
+  shippingAddress: text("shipping_address").notNull(),
   totalAmount: numeric("total_amount", { precision: 15, scale: 2 }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
     .defaultNow()
@@ -44,4 +45,8 @@ export const orderRelations = relations(orders, ({ one, many }) => ({
     references: [users.id],
   }),
   items: many(orderItems),
+  bids: many(shippingBids),
 }));
+
+export type Order = typeof orders.$inferSelect;
+export type NewOrder = typeof orders.$inferInsert;
