@@ -12,7 +12,6 @@
     "db:studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
-    "@nhatnang/types": "workspace:*",
     "@better-auth/drizzle-adapter": "^1.6.9",
     "@neondatabase/serverless": "^1.0.2",
     "@paralleldrive/cuid2": "^3.3.0",
@@ -21,6 +20,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@nhatnang/types": "workspace:*",
     "drizzle-kit": "^0.31.10"
   }
 }
