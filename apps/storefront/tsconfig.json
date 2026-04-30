@@ -1,7 +1,6 @@
 {
   "extends": "../../packages/typescript-config/next.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "incremental": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
