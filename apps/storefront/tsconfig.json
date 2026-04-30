@@ -1,5 +1,5 @@
 {
-  "extends": "@nhatnang/typescript-config/next.json",
+  "extends": "@nhatnang/typescript-config/next",
   "compilerOptions": {
     "incremental": true,
     "noUnusedLocals": true,
