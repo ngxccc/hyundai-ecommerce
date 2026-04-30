@@ -1,4 +1,4 @@
-# @repo/eslint-config
+# @nhatnang/eslint-config
 
 Centralized ESLint configuration for the Hyundai E-Commerce monorepo.
 
@@ -13,9 +13,9 @@ Centralized ESLint configuration for the Hyundai E-Commerce monorepo.
 ### In Root Config
 
 ```ts
-import baseConfig from "@repo/eslint-config/base";
-import reactConfig from "@repo/eslint-config/react";
-import nextConfig from "@repo/eslint-config/next";
+import baseConfig from "@nhatnang/eslint-config/base";
+import reactConfig from "@nhatnang/eslint-config/react";
+import nextConfig from "@nhatnang/eslint-config/next";
 ```
 
 ### Configuration Structure

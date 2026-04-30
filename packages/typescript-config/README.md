@@ -1,4 +1,4 @@
-# @repo/typescript-config
+# @nhatnang/typescript-config
 
 Centralized TypeScript configuration for the Hyundai E-Commerce monorepo.
 
