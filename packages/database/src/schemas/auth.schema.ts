@@ -9,11 +9,12 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { dealerTiers } from "./dealer-tier.schema";
+import { v7 as uuidv7 } from "uuid";
 
 export const roleEnum = pgEnum("role", ["admin", "dealer", "customer"]);
 
 export const users = pgTable("user", {
-  id: uuid("id").primaryKey(),
+  id: uuid("id").primaryKey().$defaultFn(uuidv7),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),

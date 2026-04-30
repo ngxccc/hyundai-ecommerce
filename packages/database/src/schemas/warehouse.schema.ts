@@ -11,9 +11,7 @@ import { v7 as uuidv7 } from "uuid";
 export const warehouses = pgTable(
   "warehouse",
   {
-    id: uuid("id")
-      .primaryKey()
-      .$defaultFn(() => uuidv7()),
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
     name: text("name").notNull(),
     streetAddress: text("street_address").notNull(),
     district: text("district").notNull(),

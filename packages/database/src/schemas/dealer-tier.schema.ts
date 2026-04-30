@@ -1,9 +1,10 @@
 import { relations } from "drizzle-orm";
 import { numeric, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { users } from "./auth.schema";
+import { v7 as uuidv7 } from "uuid";
 
 export const dealerTiers = pgTable("dealer_tier", {
-  id: uuid("id").primaryKey(),
+  id: uuid("id").primaryKey().$defaultFn(uuidv7),
   name: text("name").notNull().unique(),
   discountPercentage: numeric("discount_percentage", {
     precision: 5,

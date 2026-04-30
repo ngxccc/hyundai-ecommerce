@@ -15,9 +15,7 @@ import type { ProductSpecs } from "@nhatnang/types";
 export const products = pgTable(
   "product",
   {
-    id: uuid("id")
-      .primaryKey()
-      .$defaultFn(() => uuidv7()),
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
     name: text("name").notNull(),
     slug: text("slug").notNull().unique(),
     price: numeric("price", { precision: 15, scale: 2 }).notNull(),
