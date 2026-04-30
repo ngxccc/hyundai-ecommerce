@@ -6,6 +6,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { warehouses } from "./warehouse.schema";
+import { products } from "./product.schema";
 
 export const warehouseStocks = pgTable(
   "warehouse_stock",
@@ -15,7 +16,7 @@ export const warehouseStocks = pgTable(
       .references(() => warehouses.id, { onDelete: "cascade" }),
     productId: uuid("product_id")
       .notNull()
-      .references(() => warehouses.id, { onDelete: "cascade" }),
+      .references(() => products.id, { onDelete: "cascade" }),
     stock: integer("stock").notNull().default(0),
     minStockWarning: integer("min_stock_warning").notNull().default(2),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
