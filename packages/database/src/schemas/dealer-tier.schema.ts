@@ -1,4 +1,4 @@
-import { numeric, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { numeric, pgTable, text } from "drizzle-orm/pg-core";
 import { baseEntity } from "./helpers.schema";
 
 export const dealerTiers = pgTable("dealer_tier", {
