@@ -43,3 +43,6 @@ export const orderItemRelations = relations(orderItems, ({ one }) => ({
     references: [products.id],
   }),
 }));
+
+export type OrderItem = typeof orderItems.$inferSelect;
+export type NewOrderItem = typeof orderItems.$inferInsert;

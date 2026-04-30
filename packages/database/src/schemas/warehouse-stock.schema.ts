@@ -28,3 +28,6 @@ export const warehouseStocks = pgTable(
   },
   (table) => [primaryKey({ columns: [table.warehouseId, table.productId] })],
 );
+
+export type WarehouseStock = typeof warehouseStocks.$inferSelect;
+export type NewWarehouseStock = typeof warehouseStocks.$inferInsert;

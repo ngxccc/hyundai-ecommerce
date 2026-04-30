@@ -27,3 +27,6 @@ export const warehouses = pgTable(
   },
   (table) => [index("warehouse_name_idx").on(table.name)],
 );
+
+export type Warehouse = typeof warehouses.$inferSelect;
+export type NewWarehouse = typeof warehouses.$inferInsert;

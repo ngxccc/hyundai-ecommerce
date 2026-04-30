@@ -3,3 +3,6 @@ export * from "./auth.schema";
 export * from "./dealer-tier.schema";
 export * from "./warehouse.schema";
 export * from "./warehouse-stock.schema";
+export * from "./order.schema";
+export * from "./order-item.schema";
+export * from "./shipping-bid.schema";

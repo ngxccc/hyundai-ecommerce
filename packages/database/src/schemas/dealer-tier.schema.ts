@@ -28,3 +28,6 @@ export const dealerTiers = pgTable("dealer_tier", {
 export const dealerTierRelations = relations(dealerTiers, ({ many }) => ({
   users: many(users),
 }));
+
+export type DealerTier = typeof dealerTiers.$inferSelect;
+export type NewDealerTier = typeof dealerTiers.$inferInsert;
