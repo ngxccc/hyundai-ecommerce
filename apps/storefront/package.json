@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
+    "@nhatnang/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^25.2.3",
     "@types/react": "^19",
