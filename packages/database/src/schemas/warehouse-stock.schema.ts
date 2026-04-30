@@ -1,31 +1,20 @@
-import {
-  integer,
-  pgTable,
-  primaryKey,
-  timestamp,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { integer, pgTable, primaryKey, uuid } from "drizzle-orm/pg-core";
 import { warehouses } from "./warehouse.schema";
 import { products } from "./product.schema";
+import { baseTimestamps } from "./helpers.schema";
 
 export const warehouseStocks = pgTable(
   "warehouse_stock",
   {
-    warehouseId: uuid("warehouse_id")
+    warehouseId: uuid()
       .notNull()
       .references(() => warehouses.id, { onDelete: "cascade" }),
-    productId: uuid("product_id")
+    productId: uuid()
       .notNull()
       .references(() => products.id, { onDelete: "cascade" }),
-    stock: integer("stock").notNull().default(0),
-    minStockWarning: integer("min_stock_warning").notNull().default(2),
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" })
-      .defaultNow()
-      .$onUpdate(() => /* @__PURE__ */ new Date())
-      .notNull(),
+    stock: integer().notNull().default(0),
+    minStockWarning: integer().notNull().default(2),
+    ...baseTimestamps,
   },
   (table) => [primaryKey({ columns: [table.warehouseId, table.productId] })],
 );

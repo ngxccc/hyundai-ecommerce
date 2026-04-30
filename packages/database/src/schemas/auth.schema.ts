@@ -1,4 +1,3 @@
-import { relations } from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -9,7 +8,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { dealerTiers } from "./dealer-tier.schema";
-import { v7 as uuidv7 } from "uuid";
+import { fullEntity } from "./helpers.schema";
 
 export const userRoleEnum = pgEnum("user_role", [
   "admin",
@@ -18,23 +17,15 @@ export const userRoleEnum = pgEnum("user_role", [
 ]);
 
 export const users = pgTable("user", {
-  id: uuid("id").primaryKey().$defaultFn(uuidv7),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").default(false).notNull(),
-  image: text("image"),
-  role: userRoleEnum("role").default("customer").notNull(),
-  dealerTierId: uuid("dealer_tier_id").references(() => dealerTiers.id, {
+  ...fullEntity,
+  name: text().notNull(),
+  email: text().notNull().unique(),
+  emailVerified: boolean().default(false).notNull(),
+  image: text(),
+  role: userRoleEnum().default("customer").notNull(),
+  dealerTierId: uuid().references(() => dealerTiers.id, {
     onDelete: "set null",
   }),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" })
-    .defaultNow()
-    .$onUpdate(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  deletedAt: timestamp("deleted_at", { withTimezone: true, mode: "date" }),
 });
 
 export const sessions = pgTable(
@@ -114,31 +105,6 @@ export const verifications = pgTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const userRelations = relations(users, ({ many, one }) => ({
-  sessions: many(sessions),
-  accounts: many(accounts),
-
-  // đoạn này giúp có thêm opt tier;
-  // ex: db.query.users.findFirst({ with: { tier: true } })
-  tier: one(dealerTiers, {
-    fields: [users.dealerTierId],
-    references: [dealerTiers.id],
-  }),
-}));
-
-export const sessionRelations = relations(sessions, ({ one }) => ({
-  user: one(users, {
-    fields: [sessions.userId],
-    references: [users.id],
-  }),
-}));
-
-export const accountRelations = relations(accounts, ({ one }) => ({
-  user: one(users, {
-    fields: [accounts.userId],
-    references: [users.id],
-  }),
-}));
-
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+export type Session = typeof sessions.$inferSelect;

@@ -16,11 +16,11 @@
     "@neondatabase/serverless": "^1.0.2",
     "@paralleldrive/cuid2": "^3.3.0",
     "better-auth": "^1.6.9",
-    "drizzle-orm": "^0.45.2",
+    "drizzle-orm": "^1.0.0-beta.22",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@nhatnang/types": "workspace:*",
-    "drizzle-kit": "^0.31.10"
+    "drizzle-kit": "^1.0.0-beta.22"
   }
 }

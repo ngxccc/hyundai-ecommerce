@@ -1,33 +1,20 @@
-import { relations } from "drizzle-orm";
-import { numeric, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { users } from "./auth.schema";
-import { v7 as uuidv7 } from "uuid";
+import { numeric, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { baseEntity } from "./helpers.schema";
 
 export const dealerTiers = pgTable("dealer_tier", {
-  id: uuid("id").primaryKey().$defaultFn(uuidv7),
-  name: text("name").notNull().unique(),
-  discountPercentage: numeric("discount_percentage", {
+  ...baseEntity,
+  name: text().notNull().unique(),
+  discountPercentage: numeric({
     precision: 5,
     scale: 2,
   }).notNull(),
-  minimumSpend: numeric("minimum_spend", {
+  minimumSpend: numeric({
     precision: 15,
     scale: 2,
   })
     .notNull()
     .default("0"),
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" })
-    .defaultNow()
-    .$onUpdate(() => /* @__PURE__ */ new Date())
-    .notNull(),
 });
-
-export const dealerTierRelations = relations(dealerTiers, ({ many }) => ({
-  users: many(users),
-}));
 
 export type DealerTier = typeof dealerTiers.$inferSelect;
 export type NewDealerTier = typeof dealerTiers.$inferInsert;

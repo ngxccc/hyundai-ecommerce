@@ -7,8 +7,14 @@ import * as schema from "./schemas";
 // Tại sao dùng HTTP thay vì TCP? Vì Next.js Serverless Functions scale up liên tục,
 // dùng TCP sẽ cạn kiệt Connection Pool của Database. HTTP giải quyết bài toán này.
 const sql = neon(env.DATABASE_URL);
-export const db = drizzle(sql, { schema });
+export const db = drizzle({
+  client: sql,
+  schema,
+  casing: "snake_case",
+  relations: schema.schemaRelations,
+});
 
 export * from "./schemas";
+export * from "./queries";
 export * from "drizzle-orm";
 export * from "./auth";
