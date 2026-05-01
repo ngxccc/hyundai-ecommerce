@@ -36,19 +36,22 @@ export const getOrdersByStatus = db
 
 // NORMAL QUERIES
 
-export async function createOrder(data: NewOrder) {
+export const createOrder = async (data: NewOrder) => {
   const [order] = await db.insert(orders).values(data).returning();
   return order;
-}
+};
 
-export async function updateOrderStatus(id: string, status: Order["status"]) {
+export const updateOrderStatus = async (
+  id: string,
+  status: Order["status"],
+) => {
   const [updated] = await db
     .update(orders)
     .set({ status, updatedAt: new Date() })
     .where(eq(orders.id, id))
     .returning();
   return updated;
-}
+};
 
 export const getComplexOrder = async (orderId: string) => {
   return await db.query.orders.findFirst({
