@@ -10,8 +10,8 @@ on:
     paths-ignore:
       - "docs/**"
 
-  permissions:
-    contents: write
+permissions:
+  contents: write
 
 jobs:
   lint-and-build:
