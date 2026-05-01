@@ -38,13 +38,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [ "${{ github.actor }}" == "dependabot[bot]" ]; then
-            echo "Dependabot detected! Unlocking cache..."
-            bun install
-          else
-            echo "Default enforcing frozen lockfile..."
-            bun install
-          fi
+          # if [ "${{ github.actor }}" == "dependabot[bot]" ]; then
+          #   echo "Dependabot detected! Unlocking cache..."
+          #   bun install
+          # else
+          #   echo "Default enforcing frozen lockfile..."
+          #   bun install --frozen-lockfile
+          # fi
+
+          bun install
 
       - name: Lint (with ESLint cache)
         run: bun run lint
