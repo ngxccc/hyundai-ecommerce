@@ -1,0 +1,33 @@
+version: 2
+updates:
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "daily"          # Kiểm tra update mỗi ngày
+    open-pull-requests-limit: 12 # Giới hạn số PR mở cùng lúc
+    groups:
+      production-dependencies:
+        patterns:
+          - "*"                  # Nhóm tất cả dependencies lại 1 PR
+      development-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
+    allow:
+      - dependency-type: "production"   # Chỉ update production deps (khuyến khích)
+      - dependency-type: "development"
+
+  # ── GitHub Actions workflows ──
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"         # Actions update ít hơn, tránh lạm dụng
+    open-pull-requests-limit: 5
+
+  # ── (Tùy chọn) Nếu sau này bạn dùng Docker ──
+  # - package-ecosystem: "docker"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "weekly"
