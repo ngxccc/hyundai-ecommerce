@@ -9,6 +9,10 @@ import { warehouses } from "./warehouse.schema";
 import { warehouseStocks } from "./warehouse-stock.schema";
 import { brands } from "./brand.schema";
 import { categories } from "./category.schema";
+import { userAddresses } from "./user-address.schema";
+import { payments } from "./payment.schema";
+import { carts } from "./cart.schema";
+import { cartItems } from "./cart-item.schema";
 
 export const schemaRelations = defineRelations(
   {
@@ -24,16 +28,25 @@ export const schemaRelations = defineRelations(
     warehouseStocks,
     brands,
     categories,
+    userAddresses,
+    payments,
+    carts,
+    cartItems,
   },
   (r) => ({
     users: {
-      sessions: r.many.sessions(),
-      accounts: r.many.accounts(),
-      orders: r.many.orders(),
       tier: r.one.dealerTiers({
         from: r.users.dealerTierId,
         to: r.dealerTiers.id,
       }),
+      cart: r.one.carts({
+        from: r.users.id,
+        to: r.carts.userId,
+      }),
+      orders: r.many.orders(),
+      sessions: r.many.sessions(),
+      accounts: r.many.accounts(),
+      userAddresses: r.many.userAddresses(),
     },
 
     sessions: {
@@ -61,6 +74,10 @@ export const schemaRelations = defineRelations(
         from: r.orders.userId,
         to: r.users.id,
         optional: false,
+      }),
+      payment: r.one.payments({
+        from: r.orders.id,
+        to: r.payments.orderId,
       }),
       items: r.many.orderItems(),
       bids: r.many.shippingBids(),
@@ -121,7 +138,6 @@ export const schemaRelations = defineRelations(
     },
 
     categories: {
-      products: r.many.products(),
       children: r.many.categories({
         from: r.categories.id,
         to: r.categories.parentId,
@@ -129,6 +145,44 @@ export const schemaRelations = defineRelations(
       parent: r.one.categories({
         from: r.categories.parentId,
         to: r.categories.id,
+      }),
+      products: r.many.products(),
+    },
+
+    userAddresses: {
+      user: r.one.users({
+        from: r.userAddresses.userId,
+        to: r.users.id,
+        optional: false,
+      }),
+    },
+
+    payments: {
+      order: r.one.orders({
+        from: r.payments.orderId,
+        to: r.orders.id,
+        optional: false,
+      }),
+    },
+
+    carts: {
+      user: r.one.users({
+        from: r.carts.userId,
+        to: r.users.id,
+      }),
+      items: r.many.cartItems(),
+    },
+
+    cartItems: {
+      cart: r.one.carts({
+        from: r.cartItems.cartId,
+        to: r.carts.id,
+        optional: false,
+      }),
+      product: r.one.products({
+        from: r.cartItems.productId,
+        to: r.products.id,
+        optional: false,
       }),
     },
   }),

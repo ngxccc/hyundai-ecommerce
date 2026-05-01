@@ -1,12 +1,10 @@
 import { integer, numeric, pgTable, text, uuid } from "drizzle-orm/pg-core";
-import { v7 as uuidv7 } from "uuid";
 import { orders } from "./order.schema";
 import { products } from "./product.schema";
 import { baseEntity } from "./helpers.schema";
 
 export const orderItems = pgTable("order_item", {
   ...baseEntity,
-  id: uuid().primaryKey().$defaultFn(uuidv7),
   orderId: uuid()
     .notNull()
     .references(() => orders.id, { onDelete: "cascade" }),
