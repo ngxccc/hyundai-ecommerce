@@ -1,9 +1,9 @@
-import { integer, pgTable, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { integer, snakeCase, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { baseEntity } from "./helpers.schema";
 import { carts } from "./cart.schema";
 import { products } from "./product.schema";
 
-export const cartItems = pgTable(
+export const cartItems = snakeCase.table(
   "cart_item",
   {
     ...baseEntity,

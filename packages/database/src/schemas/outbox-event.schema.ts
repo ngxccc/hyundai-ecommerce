@@ -2,7 +2,7 @@ import {
   integer,
   jsonb,
   pgEnum,
-  pgTable,
+  snakeCase,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
@@ -33,7 +33,7 @@ export type SendEmailPayload = {
 
 export type OutboxPayload = SendQuoteEmailPayload | SendEmailPayload;
 
-export const outboxEvents = pgTable("outbox_event", {
+export const outboxEvents = snakeCase.table("outbox_event", {
   ...baseEntity,
   eventType: eventTypeEnum().notNull(),
   payload: jsonb().$type<OutboxPayload>().notNull(),

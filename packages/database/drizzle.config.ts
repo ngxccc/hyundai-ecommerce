@@ -8,8 +8,11 @@ export default defineConfig({
   dbCredentials: {
     url: env.DATABASE_URL,
   },
-  // tự động cast sang snake_case cho db
-  casing: "snake_case",
+  // cast tên biến ts thành camel
+  // chỉ tác dụng khi pull,
+  introspect: {
+    casing: "camel",
+  },
   // it'll warn if u del wrong table
   strict: true,
   verbose: true,

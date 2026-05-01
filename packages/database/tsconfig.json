@@ -1,0 +1,11 @@
+{
+  "extends": "@nhatnang/typescript-config/base",
+  "compilerOptions": {
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*", "scripts/**/*", "drizzle.config.ts", "eslint.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}

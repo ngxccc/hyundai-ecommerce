@@ -1,13 +1,13 @@
 import {
   boolean,
-  pgTable,
+  snakeCase,
   text,
   uuid,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { baseEntity } from "./helpers.schema";
 
-export const categories = pgTable("category", {
+export const categories = snakeCase.table("category", {
   ...baseEntity,
   name: text().notNull(),
   slug: text().notNull().unique(),

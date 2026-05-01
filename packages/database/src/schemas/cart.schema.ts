@@ -1,8 +1,8 @@
-import { pgTable, uuid } from "drizzle-orm/pg-core";
+import { snakeCase, uuid } from "drizzle-orm/pg-core";
 import { baseEntity } from "./helpers.schema";
 import { users } from "./auth.schema";
 
-export const carts = pgTable("cart", {
+export const carts = snakeCase.table("cart", {
   ...baseEntity,
   // HACK: Nullable userId để hỗ trợ Guest Cart
   // NOTE: cần xử lý logic merge cart khi user đăng nhập

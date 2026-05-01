@@ -1,7 +1,7 @@
-import { boolean, index, pgTable, text } from "drizzle-orm/pg-core";
+import { boolean, index, snakeCase, text } from "drizzle-orm/pg-core";
 import { baseEntity } from "./helpers.schema";
 
-export const warehouses = pgTable(
+export const warehouses = snakeCase.table(
   "warehouse",
   {
     ...baseEntity,

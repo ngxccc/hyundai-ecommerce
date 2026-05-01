@@ -1,9 +1,9 @@
-import { integer, numeric, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { integer, numeric, snakeCase, text, uuid } from "drizzle-orm/pg-core";
 import { orders } from "./order.schema";
 import { products } from "./product.schema";
 import { baseEntity } from "./helpers.schema";
 
-export const orderItems = pgTable("order_item", {
+export const orderItems = snakeCase.table("order_item", {
   ...baseEntity,
   orderId: uuid()
     .notNull()

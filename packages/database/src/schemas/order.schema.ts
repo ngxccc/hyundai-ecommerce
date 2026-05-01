@@ -1,4 +1,4 @@
-import { numeric, pgEnum, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { numeric, pgEnum, snakeCase, text, uuid } from "drizzle-orm/pg-core";
 import { users } from "./auth.schema";
 import { baseEntity } from "./helpers.schema";
 
@@ -11,7 +11,7 @@ export const orderStatusEnum = pgEnum("order_status", [
   "refunded",
 ]);
 
-export const orders = pgTable("order", {
+export const orders = snakeCase.table("order", {
   ...baseEntity,
   userId: uuid()
     .notNull()

@@ -52,4 +52,4 @@ async function forceBaseline() {
   }
 }
 
-forceBaseline();
+await forceBaseline();

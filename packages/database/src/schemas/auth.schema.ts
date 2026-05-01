@@ -1,11 +1,11 @@
 import {
-  pgTable,
   text,
   timestamp,
   boolean,
   index,
   pgEnum,
   uuid,
+  snakeCase,
 } from "drizzle-orm/pg-core";
 import { dealerTiers } from "./dealer-tier.schema";
 import { fullEntity } from "./helpers.schema";
@@ -16,7 +16,7 @@ export const userRoleEnum = pgEnum("user_role", [
   "customer",
 ]);
 
-export const users = pgTable("user", {
+export const users = snakeCase.table("user", {
   ...fullEntity,
   name: text().notNull(),
   email: text().notNull().unique(),
@@ -28,7 +28,7 @@ export const users = pgTable("user", {
   }),
 });
 
-export const sessions = pgTable(
+export const sessions = snakeCase.table(
   "session",
   {
     id: text("id").primaryKey(),
@@ -52,7 +52,7 @@ export const sessions = pgTable(
   (table) => [index("session_user_id_idx").on(table.userId)],
 );
 
-export const accounts = pgTable(
+export const accounts = snakeCase.table(
   "account",
   {
     id: text("id").primaryKey(),
@@ -84,7 +84,7 @@ export const accounts = pgTable(
   (table) => [index("account_user_id_idx").on(table.userId)],
 );
 
-export const verifications = pgTable(
+export const verifications = snakeCase.table(
   "verification",
   {
     id: text("id").primaryKey(),

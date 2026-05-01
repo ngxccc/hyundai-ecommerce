@@ -1,9 +1,9 @@
-import { integer, pgTable, primaryKey, uuid } from "drizzle-orm/pg-core";
+import { integer, snakeCase, primaryKey, uuid } from "drizzle-orm/pg-core";
 import { warehouses } from "./warehouse.schema";
 import { products } from "./product.schema";
 import { baseTimestamps } from "./helpers.schema";
 
-export const warehouseStocks = pgTable(
+export const warehouseStocks = snakeCase.table(
   "warehouse_stock",
   {
     warehouseId: uuid()

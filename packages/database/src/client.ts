@@ -9,12 +9,11 @@ import * as schema from "./schemas";
 const sql = neon(env.DATABASE_URL);
 export const db = drizzle({
   client: sql,
-  schema,
-  casing: "snake_case",
   relations: schema.schemaRelations,
+  jit: true,
 });
 
-export async function withTransaction<T>(
+export async function withTransaction(
   callback: Parameters<typeof db.transaction>[0],
 ): Promise<Awaited<ReturnType<Parameters<typeof db.transaction>[0]>>> {
   return await db.transaction(async (tx) => {

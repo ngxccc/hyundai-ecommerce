@@ -1,7 +1,7 @@
 import {
   boolean,
   numeric,
-  pgTable,
+  snakeCase,
   text,
   uniqueIndex,
   uuid,
@@ -10,7 +10,7 @@ import { orders } from "./order.schema";
 import { sql } from "drizzle-orm";
 import { baseEntity } from "./helpers.schema";
 
-export const shippingBids = pgTable(
+export const shippingBids = snakeCase.table(
   "shipping_bid",
   {
     ...baseEntity,

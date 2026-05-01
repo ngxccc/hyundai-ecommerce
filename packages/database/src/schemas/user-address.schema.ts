@@ -1,8 +1,8 @@
-import { boolean, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { boolean, snakeCase, text, uuid } from "drizzle-orm/pg-core";
 import { fullEntity } from "./helpers.schema";
 import { users } from "./auth.schema";
 
-export const userAddresses = pgTable("user_address", {
+export const userAddresses = snakeCase.table("user_address", {
   ...fullEntity,
   userId: uuid()
     .references(() => users.id, { onDelete: "cascade" })

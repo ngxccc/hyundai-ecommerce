@@ -1,5 +1,5 @@
 import {
-  pgTable,
+  snakeCase,
   text,
   jsonb,
   integer,
@@ -15,7 +15,7 @@ import { fullEntity } from "./helpers.schema";
 import { brands } from "./brand.schema";
 import { categories } from "./category.schema";
 
-export const products = pgTable(
+export const products = snakeCase.table(
   "product",
   {
     ...fullEntity,

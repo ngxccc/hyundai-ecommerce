@@ -1,4 +1,4 @@
-import { numeric, pgEnum, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { numeric, pgEnum, snakeCase, text, uuid } from "drizzle-orm/pg-core";
 import { orders } from "./order.schema";
 import { fullEntity } from "./helpers.schema";
 
@@ -17,7 +17,7 @@ export const paymentStatusEnum = pgEnum("payment_status", [
   "REFUNDED",
 ]);
 
-export const payments = pgTable("payment", {
+export const payments = snakeCase.table("payment", {
   ...fullEntity,
   orderId: uuid()
     .references(() => orders.id, { onDelete: "restrict" })

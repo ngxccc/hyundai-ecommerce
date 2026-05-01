@@ -1,7 +1,7 @@
-import { numeric, pgTable, text } from "drizzle-orm/pg-core";
+import { numeric, snakeCase, text } from "drizzle-orm/pg-core";
 import { baseEntity } from "./helpers.schema";
 
-export const dealerTiers = pgTable("dealer_tier", {
+export const dealerTiers = snakeCase.table("dealer_tier", {
   ...baseEntity,
   name: text().notNull().unique(),
   discountPercentage: numeric({
