@@ -10,9 +10,6 @@ on:
     paths-ignore:
       - "docs/**"
 
-# permissions:
-#   contents: write
-
 jobs:
   lint-and-build:
     name: Lint & Build
@@ -37,25 +34,7 @@ jobs:
             ${{ runner.os }}-bun-
 
       - name: Install dependencies
-        run: |
-          # if [ "${{ github.actor }}" == "dependabot[bot]" ]; then
-          #   echo "Dependabot detected! Unlocking cache..."
-          #   bun install
-          # else
-          #   echo "Default enforcing frozen lockfile..."
-          #   bun install --frozen-lockfile
-          # fi
-
-          bun install
+        run: bun install
 
       - name: Lint (with ESLint cache)
         run: bun run lint
-
-      # - name: Auto-commit Lockfile (Dependabot Only)
-      #   if: github.actor == 'dependabot[bot]'
-      #   run: |
-      #     git config --global user.name "github-actions[bot]"
-      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      #     git add bun.lock bun.lockb || true
-      #     git commit -m "chore(deps): sync bun lockfile" || echo "No changes to commit"
-      #     git push
