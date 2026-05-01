@@ -1,4 +1,6 @@
-import { db, eq, orders, sql, type NewOrder, type Order } from "..";
+import { eq, sql } from "drizzle-orm";
+import { db } from "../client";
+import { orders, type NewOrder, type Order } from "../schemas";
 
 const complexOrderQueryConfig = {
   with: {
