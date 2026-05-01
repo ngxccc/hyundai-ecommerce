@@ -7,10 +7,13 @@ import {
   numeric,
   index,
   uniqueIndex,
+  uuid,
 } from "drizzle-orm/pg-core";
 import type { ProductSpecs } from "@nhatnang/types";
 import { sql } from "drizzle-orm";
 import { fullEntity } from "./helpers.schema";
+import { brands } from "./brand.schema";
+import { categories } from "./category.schema";
 
 export const products = pgTable(
   "product",
@@ -22,7 +25,10 @@ export const products = pgTable(
     description: text(),
     shortDescription: text(),
     images: text().array().default([]).notNull(),
-    brand: text().notNull(),
+    brandId: uuid().references(() => brands.id, { onDelete: "set null" }),
+    categoryId: uuid().references(() => categories.id, {
+      onDelete: "set null",
+    }),
     specs: jsonb().$type<ProductSpecs>().default({}),
     totalStockCache: integer().notNull().default(0),
     isQuoteOnly: boolean().notNull().default(false),
@@ -35,6 +41,9 @@ export const products = pgTable(
     index("product_name_active_idx")
       .on(table.name)
       .where(sql`${table.deletedAt} IS NULL`),
+
+    index("product_brand_idx").on(table.brandId),
+    index("product_category_idx").on(table.categoryId),
   ],
 );
 

@@ -7,6 +7,8 @@ import { shippingBids } from "./shipping-bid.schema";
 import { products } from "./product.schema";
 import { warehouses } from "./warehouse.schema";
 import { warehouseStocks } from "./warehouse-stock.schema";
+import { brands } from "./brand.schema";
+import { categories } from "./category.schema";
 
 export const schemaRelations = defineRelations(
   {
@@ -20,6 +22,8 @@ export const schemaRelations = defineRelations(
     products,
     warehouses,
     warehouseStocks,
+    brands,
+    categories,
   },
   (r) => ({
     users: {
@@ -84,6 +88,14 @@ export const schemaRelations = defineRelations(
     },
 
     products: {
+      brands: r.one.brands({
+        from: r.products.brandId,
+        to: r.brands.id,
+      }),
+      categories: r.one.categories({
+        from: r.products.categoryId,
+        to: r.categories.id,
+      }),
       stocks: r.many.warehouseStocks(),
     },
 
@@ -101,6 +113,22 @@ export const schemaRelations = defineRelations(
         from: r.warehouseStocks.productId,
         to: r.products.id,
         optional: false,
+      }),
+    },
+
+    brands: {
+      products: r.many.products(),
+    },
+
+    categories: {
+      products: r.many.products(),
+      children: r.many.categories({
+        from: r.categories.id,
+        to: r.categories.parentId,
+      }),
+      parent: r.one.categories({
+        from: r.categories.parentId,
+        to: r.categories.id,
       }),
     },
   }),

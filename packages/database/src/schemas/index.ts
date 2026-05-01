@@ -8,3 +8,5 @@ export * from "./order.schema";
 export * from "./order-item.schema";
 export * from "./shipping-bid.schema";
 export * from "./outbox-event.schema";
+export * from "./brand.schema";
+export * from "./category.schema";
