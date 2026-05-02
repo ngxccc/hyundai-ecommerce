@@ -1,0 +1,157 @@
+---
+title: Product Requirements & User Stories
+description: MoSCoW prioritized user stories for the Hyundai E-commerce B2B platform
+---
+
+# Product Requirements & User Stories (MoSCoW)
+
+This project follows the **MoSCoW** prioritization method to clearly define scope, with a strong focus on B2B heavy logistics and industrial equipment transactions.
+
+---
+
+## MUST HAVE
+
+### US-M01: Advanced Technical Specification Filtering
+
+- **Epic:** Product Management
+- **Narrative:**
+  As a factory owner,
+  I want to filter generators by power output (> 500 kVA), number of phases (3-phase), and fuel type (Diesel),
+  so that I can quickly find machines that meet my facility’s electrical requirements without reading every product description.
+- **Acceptance Criteria:**
+  - The system must support filtering on the `specs` JSONB column in the database.
+  - When no products match the filters, a clear “No matching products found” message is displayed.
+
+### US-M02: Manual Quote Request Flow
+
+- **Epic:** Checkout & Heavy Logistics
+- **Narrative:**
+  As a corporate customer,
+  I want to request a detailed quote for high-value equipment (e.g., a 2 billion VND generator),
+  so that I am not forced to make an immediate full payment.
+- **Acceptance Criteria:**
+  - Clicking “Request Quote” creates an order record with status `PENDING_REVIEW`.
+  - The system notifies the admin via email.
+
+### US-M03: Shipping Fee & Quote Finalization (Admin)
+
+- **Epic:** CMS Admin
+- **Narrative:**
+  As an admin,
+  I want to add shipping and crane fees to a quote and change its status to `PRICE_UPDATED`,
+  so that the customer receives a final price and payment link.
+- **Acceptance Criteria:**
+  - Admin can update the `shipping_bids` table and finalize the quote.
+  - A database transaction updates the order total and status.
+
+### US-M04: Concurrency Control for Clearance Sale Items
+
+- **Epic:** Order & Payment Management
+- **Narrative:**
+  As a customer,
+  I want to successfully purchase a limited-stock clearance item,
+  so that I am not charged if another customer has already bought it.
+- **Acceptance Criteria:**
+  - The system uses row-level locking or optimistic concurrency to prevent overselling.
+  - Concurrent purchase attempts return HTTP 409 Conflict with a clear user message.
+
+### US-M05: Authentication & Authorization Foundation
+
+- **Epic:** Authentication & Authorization
+- **Narrative:**
+  As a dealer or admin,
+  I want to log in, log out, and reset my password,
+  so that I can securely access the system with appropriate permissions (RBAC).
+- **Acceptance Criteria:**
+  - Failed login attempts are rate-limited.
+  - Successful login issues a secure session.
+
+### US-M06: Core Product Management (CRUD)
+
+- **Epic:** CMS Admin
+- **Narrative:**
+  As an administrator,
+  I want to create, update, and delete products (including uploading images and entering technical specifications),
+  so that the storefront displays accurate and complete product data.
+- **Acceptance Criteria:**
+  - Products are stored with technical specs in a JSONB column.
+  - Images are uploaded to Cloudinary.
+
+### US-M07: Standard Cart & Full Payment Flow
+
+- **Epic:** Checkout & Heavy Logistics
+- **Narrative:**
+  As an individual buyer,
+  I want to add lower-value products to the cart and complete full payment via VNPay,
+  so that I can purchase without going through the quote process.
+- **Acceptance Criteria:**
+  - Products with `is_quote_only = false` can be added to cart.
+  - The system creates an order with status `PENDING_PAYMENT` and generates a VNPay payment link.
+
+---
+
+## SHOULD HAVE
+
+### US-S01: AI-Powered Product Recommendation Chatbot
+
+- **Epic:** AI Integrations
+- **Narrative:**
+  As a customer,
+  I want to describe my needs (e.g., “500m² factory with 10 air conditioners”),
+  so that the system recommends suitable generators.
+- **Acceptance Criteria:**
+  - The chatbot uses LangGraph for intent routing and tool calling against the product database.
+
+### US-S02: Deposit Payment Support
+
+- **Epic:** Order & Payment Management
+- **Narrative:**
+  As a customer,
+  I want to pay a 30% deposit to reserve high-value equipment.
+- **Acceptance Criteria:**
+  - Successful deposit updates order status to `DEPOSIT_PAID` and reduces stock.
+
+### US-S03: Automatic Quote Expiration
+
+- **Epic:** Background Processing
+- **Narrative:**
+  As an admin,
+  I want quotes that have been priced but not paid within 48 hours to be automatically expired.
+- **Acceptance Criteria:**
+  - A scheduled job marks expired quotes and releases any stock reservations.
+
+### US-S04: Customer Quote History Portal
+
+- **Epic:** Customer Account
+- **Narrative:**
+  As a logged-in corporate customer,
+  I want to view my quote history and current status.
+- **Acceptance Criteria:**
+  - The dashboard shows all past and active quotes with status and actions.
+
+### US-S05: Product Comparison & Datasheet Download
+
+- **Epic:** Product Discovery & UX
+- **Narrative:**
+  As a technical buyer or contractor,
+  I want to compare up to 3 products side-by-side and download original datasheets.
+- **Acceptance Criteria:**
+  - Specs from JSONB are displayed in a comparison table.
+  - Datasheet PDFs can be downloaded directly.
+
+---
+
+## COULD HAVE
+
+- Dynamic shipping cost calculation using Google Maps API and machine weight.
+- Multi-stage payment dashboard (30% / 50% / 20%).
+- Automatic PDF quote generation with official stamps.
+- Dynamic form builder in CMS for adding new product attributes without code changes.
+
+---
+
+## WON'T HAVE
+
+- C2C marketplace functionality.
+- Native mobile applications (iOS/Android).
+- Cryptocurrency or Bitcoin payment integration.

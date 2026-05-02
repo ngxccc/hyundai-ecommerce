@@ -1,0 +1,11 @@
+{
+  "title": "Hyundai Ecommerce",
+  "pages": [
+    "index",
+    "architecture",
+    "user-stories",
+    "database-schema",
+    "sequence-diagrams",
+    "tech-stack"
+  ]
+}

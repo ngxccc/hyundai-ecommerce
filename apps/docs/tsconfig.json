@@ -7,7 +7,8 @@
     "declarationMap": false,
     "paths": {
       "@/*": ["./src/*"],
-      "#/*": ["./public/*"]
+      "#/*": ["./public/*"],
+      "collections/*": ["./.source/*"]
     }
   },
   "include": [
@@ -17,9 +18,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts",
     "**/*.js",
-    "**/*.mjs"
+    "**/*.mjs",
+    ".source/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

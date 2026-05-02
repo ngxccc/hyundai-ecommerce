@@ -10,7 +10,7 @@ import {
   CarouselItem,
 } from "@/shared/components/ui/carousel";
 import type { PromoCampaign } from "@/shared/types/common";
-import { useRef } from "react";
+import { useCallback, useState } from "react";
 
 const THEME_STYLES: Record<
   string,
@@ -29,20 +29,33 @@ const THEME_STYLES: Record<
 };
 
 export function PromoCarousel({ promos }: { promos: PromoCampaign[] }) {
-  // useRef để giữ instance của Autoplay không bị re-render bậy bạ
-  const plugin = useRef(Autoplay({ delay: 5000 }));
+  const [autoplayPlugin] = useState(() =>
+    Autoplay({
+      delay: 5000,
+      stopOnInteraction: true,
+    }),
+  );
+
+  const handleMouseEnter = useCallback(() => {
+    autoplayPlugin.stop();
+  }, [autoplayPlugin]);
+
+  const handleMouseLeave = useCallback(() => {
+    autoplayPlugin.play();
+  }, [autoplayPlugin]);
 
   return (
     <Carousel
       opts={{ align: "start", loop: true }}
-      plugins={[plugin.current]}
+      plugins={[autoplayPlugin]}
       className="w-full"
-      onMouseEnter={plugin.current.stop}
-      onMouseLeave={() => plugin.current.play()}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <CarouselContent>
         {promos.map((promo) => {
-          const theme = THEME_STYLES[promo.themeColor] ?? THEME_STYLES.primary;
+          const theme =
+            THEME_STYLES[promo.themeColor] ?? THEME_STYLES["primary"];
 
           return (
             <CarouselItem key={promo.id}>

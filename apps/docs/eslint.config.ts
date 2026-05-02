@@ -1,0 +1,22 @@
+import { defineConfig, globalIgnores } from "eslint/config";
+import baseConfig from "@nhatnang/eslint-config/base";
+import nextConfig from "@nhatnang/eslint-config/next";
+
+const eslintConfig = defineConfig([
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    // "dist/**",
+    "build/**",
+    "next-env.d.ts",
+    "node_modules/**",
+    // "src/shared/components/ui/**",
+    ".source/**",
+  ]),
+
+  // BASE CONFIG - Applied to all files in entire monorepo
+  ...baseConfig,
+  ...nextConfig,
+]);
+
+export default eslintConfig;

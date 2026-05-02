@@ -1,0 +1,88 @@
+---
+title: Technology Stack
+description: Official technology choices and architecture guidelines for the Hyundai E-commerce B2B platform
+---
+
+# Technology Stack & Architecture Guidelines
+
+This document defines the core technology stack used in the Hyundai E-commerce B2B project. All choices are optimized for a serverless-first architecture, high scalability, and end-to-end type safety.
+
+---
+
+## 1. Core Framework & Runtime
+
+- **Framework**: Next.js 16 (App Router + React Server Components)
+  - Chosen for its native support of Server Actions, Streaming, and Partial Prerendering — ideal for modern e-commerce experiences.
+- **Runtime & Package Manager**: Bun
+  - Extremely fast startup and dependency resolution. Replaces Node.js, npm/pnpm, and traditional script runners.
+
+---
+
+## 2. Database & ORM (Data Layer)
+
+- **Primary Database**: Neon Serverless PostgreSQL
+  - Auto-scaling, branching (Git-like), and built-in PgBouncer connection pooling.
+- **Vector Extension**: pgvector (on Neon)
+  - Enables semantic search directly inside the relational database.
+- **ORM**: Drizzle ORM (v1.0.0-rc.1+)
+  - Lightweight, zero runtime dependencies, full SQL control, and excellent JSONB support. Now includes JIT mappers for significantly improved performance.
+
+---
+
+## 3. State Management & UI Layer
+
+- **Global State**: Zustand
+  - Minimal boilerplate, excellent compatibility with React Server Components, and built-in persist middleware for cart functionality.
+- **Styling**: Tailwind CSS v4
+- **UI Components**: shadcn/ui (Radix Primitives + Tailwind)
+  - Fully customizable, accessible, and unstyled components.
+
+---
+
+## 4. Documentation Platform
+
+- **Documentation Site**: Fumadocs
+  - Modern, MDX-powered documentation framework built for Next.js App Router.
+  - Features: automatic sidebar, full-text search (Orama), Mermaid diagram support, and beautiful dark/light mode.
+  - All technical documentation is now auto-generated or manually maintained under `/content/docs`.
+
+---
+
+## 5. Background Jobs & Caching
+
+- **Job Orchestration**: Inngest
+  - Serverless-first workflow engine with built-in retries, scheduling, and Dead Letter Queue support.
+- **Cache & Rate Limiting**: Upstash Redis (HTTP-based)
+  - Used for guest cart persistence, idempotency keys, and rate limiting.
+
+---
+
+## 6. Authentication & Integrations
+
+- **Authentication**: Better Auth
+  - Lightweight, Drizzle-native authentication solution with excellent support for sessions, OAuth, and RBAC.
+- **Email**: Resend + React Email
+  - Write beautiful transactional emails using React components.
+- **File Storage & CDN**: Cloudinary
+  - Image optimization, PDF storage, and global CDN delivery.
+
+---
+
+## 7. Developer Experience & Tooling
+
+- **Monorepo Manager**: Turborepo
+- **Linting**: ESLint v9 (Flat Config) + `@typescript-eslint`
+- **TypeScript Configuration**: TS 6.x with modern settings:
+  - `module: "preserve"`
+  - `moduleResolution: "bundler"`
+  - `verbatimModuleSyntax: true`
+  - `allowArbitraryExtensions: true`
+- **Dependency Updates**: Dependabot (daily checks with grouped PRs)
+- **CI/CD**: GitHub Actions with Bun cache and frozen-lockfile strategy
+
+---
+
+## 8. AI & Advanced Features (In Progress)
+
+- **AI Agent Framework**: Vercel AI SDK + LangGraph.js
+- **Vector Search**: pgvector + cosine similarity
