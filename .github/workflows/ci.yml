@@ -38,8 +38,11 @@ jobs:
 
       - name: Build to generate types
         env:
-          NEXT_PUBLIC_APP_URL: ${{ vars.REVALIDATE_SECRET }}
+          NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL }}
         run: bun run build
 
       - name: Lint (with ESLint cache)
+        env:
+            TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+            TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
         run: bun run lint
