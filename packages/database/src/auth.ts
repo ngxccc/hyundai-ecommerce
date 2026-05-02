@@ -17,9 +17,14 @@ export const auth = betterAuth({
 
   user: {
     additionalFields: {
-      role: { type: "string" },
+      role: { type: "string", required: true, defaultValue: "customer" },
       dealerTierId: { type: "string", required: false },
       deletedAt: { type: "date", required: false },
+      phone: { type: "string", required: true },
+      companyName: { type: "string", required: true },
+      taxId: { type: "string", required: true },
+      businessType: { type: "string", required: true },
+      province: { type: "string", required: true },
     },
   },
 

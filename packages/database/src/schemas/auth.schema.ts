@@ -16,6 +16,13 @@ export const userRoleEnum = pgEnum("user_role", [
   "customer",
 ]);
 
+export const businessTypeEnum = pgEnum("business_type", [
+  "dealer",
+  "contractor",
+  "end_user",
+  "distributor",
+]);
+
 export const users = snakeCase.table("user", {
   ...fullEntity,
   name: text().notNull(),
@@ -26,6 +33,11 @@ export const users = snakeCase.table("user", {
   dealerTierId: uuid().references(() => dealerTiers.id, {
     onDelete: "set null",
   }),
+  phone: text().notNull(),
+  companyName: text().notNull(),
+  taxId: text().notNull(),
+  businessType: businessTypeEnum().default("end_user").notNull(),
+  province: text().notNull(),
 });
 
 export const sessions = snakeCase.table(
