@@ -37,6 +37,8 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build to generate types
+        env:
+          NEXT_PUBLIC_APP_URL: ${{ vars.REVALIDATE_SECRET }}
         run: bun run build
 
       - name: Lint (with ESLint cache)
