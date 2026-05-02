@@ -3,16 +3,17 @@ import { notFound } from "next/navigation";
 import { ImageResponse } from "next/og";
 import { generate as DefaultImage } from "fumadocs-ui/og";
 import { appName } from "@/lib/shared";
-import type { DocsPageProps } from "@/types/next";
+import type { DocsSlugParams } from "@/types/next";
 
 export const revalidate = false;
 
-export async function GET(_req: Request, { params }: DocsPageProps) {
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<DocsSlugParams> },
+) {
   const { slug } = await params;
 
-  if (!slug) notFound();
-
-  const page = source.getPage(slug.slice(0, -1));
+  const page = source.getPage(slug?.slice(0, -1) ?? []);
 
   if (!page) notFound();
 

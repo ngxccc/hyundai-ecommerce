@@ -1,10 +1,13 @@
 import { getLLMText, getPageMarkdownUrl, source } from "@/lib/source";
-import type { DocsPageProps } from "@/types/next";
+import type { DocsSlugParams } from "@/types/next";
 import { notFound } from "next/navigation";
 
 export const revalidate = false;
 
-export async function GET(_req: Request, { params }: DocsPageProps) {
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<DocsSlugParams> },
+) {
   const { slug } = await params;
   const page = source.getPage(slug?.slice(0, -1));
   if (!page) notFound();
