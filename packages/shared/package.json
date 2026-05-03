@@ -1,0 +1,11 @@
+{
+  "name": "@nhatnang/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared TypeScript",
+  "main": "./src/index.ts",
+  "exports": {
+    "./constants": "./src/constants/index.ts"
+  }
+}
