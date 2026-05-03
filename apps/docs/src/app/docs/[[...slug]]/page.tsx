@@ -13,21 +13,30 @@ import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { gitConfig } from "@/lib/shared";
 import type { DocsPageProps } from "@/types/next";
+import type { MDXContent } from "mdx/types.js";
+import type { TOCItemType } from "fumadocs-core/toc";
+
+interface IPageData {
+  body: MDXContent;
+  toc: TOCItemType[];
+  full?: boolean;
+  title?: string;
+  description?: string;
+}
 
 export default async function Page(props: DocsPageProps) {
   const params = await props.params;
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
-  const MDX = page.data.body;
+  const data = page.data as IPageData;
+  const MDX = data.body;
   const markdownUrl = getPageMarkdownUrl(page).url;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full ?? false}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription className="mb-0">
-        {page.data.description}
-      </DocsDescription>
+    <DocsPage toc={data.toc} full={data.full ?? false}>
+      <DocsTitle>{data.title}</DocsTitle>
+      <DocsDescription className="mb-0">{data.description}</DocsDescription>
       <div className="flex flex-row items-center gap-2 border-b pb-6">
         <MarkdownCopyButton markdownUrl={markdownUrl} />
         <ViewOptionsPopover
@@ -58,9 +67,11 @@ export async function generateMetadata(
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
+  const data = page.data as IPageData;
+
   return {
-    title: page.data.title,
-    description: page.data.description,
+    title: data.title,
+    description: data.description,
     openGraph: {
       images: getPageImage(page).url,
     },

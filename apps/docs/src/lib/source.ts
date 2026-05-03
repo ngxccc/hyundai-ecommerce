@@ -30,7 +30,12 @@ export function getPageMarkdownUrl(page: (typeof source)["$inferPage"]) {
 }
 
 export async function getLLMText(page: (typeof source)["$inferPage"]) {
-  const processed = await page.data.getText("processed");
+  const dataWithPatch = page.data as typeof page.data & {
+    getText: (key: string) => Promise<string>;
+  };
+
+  // Mượt mà, hết báo đỏ!
+  const processed = await dataWithPatch.getText("processed");
 
   return `# ${page.data.title} (${page.url})
 
