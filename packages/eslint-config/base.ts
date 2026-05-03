@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 import { importX } from "eslint-plugin-import-x";
 import globals from "globals";
 import eslintConfigPrettier from "eslint-config-prettier";
-import architecture from "./architecture";
+import architecture from "./architecture.ts";
 
 export default defineConfig([
   {
