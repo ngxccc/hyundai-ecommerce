@@ -1,10 +1,7 @@
 {
-  "extends": "@nhatnang/typescript-config/base",
+  "extends": "@nhatnang/typescript-config/library",
   "compilerOptions": {
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "types": ["node"]
+
   },
   "include": [
     "src/**/*",

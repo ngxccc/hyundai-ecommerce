@@ -1,5 +1,5 @@
+import { MESSAGES } from "@nhatnang/shared/constants";
 import { z } from "zod";
-import { MESSAGES } from "./messages";
 
 export const ENVIRONMENT_MODES = {
   DEVELOPMENT: "development",

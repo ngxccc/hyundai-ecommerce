@@ -33,11 +33,11 @@ export const users = snakeCase.table("user", {
   dealerTierId: uuid().references(() => dealerTiers.id, {
     onDelete: "set null",
   }),
-  phone: text().notNull(),
-  companyName: text().notNull(),
-  taxId: text().notNull(),
+  phone: text().notNull().unique(),
+  companyName: text(),
+  taxId: text(),
   businessType: businessTypeEnum().default("end_user").notNull(),
-  province: text().notNull(),
+  province: text(),
 });
 
 export const sessions = snakeCase.table(

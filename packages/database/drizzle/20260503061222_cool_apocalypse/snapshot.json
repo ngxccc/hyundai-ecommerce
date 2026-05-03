@@ -1,11 +1,22 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "a7e22f3f-6612-4e81-9973-c0de9a12d938",
+  "id": "da288a05-ad3b-46aa-8f99-b23963468ddd",
   "prevIds": [
-    "ea1e65d1-343d-4d62-90b0-93fd561f502d"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
+    {
+      "values": [
+        "dealer",
+        "contractor",
+        "end_user",
+        "distributor"
+      ],
+      "name": "business_type",
+      "entityType": "enums",
+      "schema": "public"
+    },
     {
       "values": [
         "admin",
@@ -773,6 +784,71 @@
       "generated": null,
       "identity": null,
       "name": "dealer_tier_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "user"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "phone",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "user"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "company_name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "user"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "tax_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "user"
+    },
+    {
+      "type": "business_type",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'end_user'",
+      "generated": null,
+      "identity": null,
+      "name": "business_type",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "user"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "province",
       "entityType": "columns",
       "schema": "public",
       "table": "user"
@@ -2886,6 +2962,17 @@
       ],
       "nullsNotDistinct": false,
       "name": "user_email_key",
+      "schema": "public",
+      "table": "user",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "phone"
+      ],
+      "nullsNotDistinct": false,
+      "name": "user_phone_key",
       "schema": "public",
       "table": "user",
       "entityType": "uniques"

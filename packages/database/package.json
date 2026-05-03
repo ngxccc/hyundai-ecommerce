@@ -6,6 +6,10 @@
   "description": "Database configuration and migrations",
   "private": true,
   "type": "module",
+  "exports": {
+    "./schemas": "./src/schemas/index.ts",
+    "./auth": "./src/auth.ts"
+  },
   "scripts": {
     "db:push": "bunx drizzle-kit push --config drizzle.config.ts",
     "db:generate": "bunx drizzle-kit generate --config drizzle.config.ts",
@@ -24,7 +28,7 @@
   },
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
-    "@nhatnang/types": "workspace:*",
+    "@nhatnang/shared": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
     "@types/node": "^25.6.0",
     "drizzle-kit": "^1.0.0-rc.1",
