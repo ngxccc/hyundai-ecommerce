@@ -7,8 +7,10 @@
   "private": true,
   "type": "module",
   "exports": {
+    ".": "./src/index.ts",
     "./schemas": "./src/schemas/index.ts",
-    "./auth": "./src/auth.ts"
+    "./auth": "./src/auth.ts",
+    "./queries": "./src/queries/index.ts"
   },
   "scripts": {
     "db:push": "bunx drizzle-kit push --config drizzle.config.ts",

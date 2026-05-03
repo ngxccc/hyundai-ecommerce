@@ -33,6 +33,11 @@ export const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const registerSchema = createRegisterSchema(t);
 
+  const errorMessages: Record<string, string> = {
+    [AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS]: t("validation.emailAlreadyExists"),
+    [AUTH_ERROR_CODES.PHONE_ALREADY_EXISTS]: t("validation.phoneAlreadyExists"),
+  };
+
   const form = useForm<TRegisterForm>({
     resolver: zodResolver(registerSchema),
     shouldUnregister: true,
@@ -56,16 +61,36 @@ export const RegisterForm = () => {
     try {
       const result = await registerAction(data);
 
-      if (result.success) {
-        toast.success(t("successMessage"));
-        router.push("/login");
-      } else {
-        toast.error(
-          result.errorCode === AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS
-            ? t("validation.emailAlreadyExists")
-            : t("errorMessage"),
-        );
+      if (!result.success) {
+        if (result.fieldErrors) {
+          Object.entries(result.fieldErrors).forEach(([key, messages]) => {
+            const safeKey = key as keyof TRegisterForm;
+            const errorMessage = messages[0]
+              ? (errorMessages[messages[0]] ?? t("errorMessage"))
+              : t("errorMessage");
+
+            form.setError(safeKey, {
+              type: "server",
+              message: errorMessage,
+            });
+          });
+
+          return;
+        }
+
+        const errorCode =
+          typeof result.errorCode === "string" ? result.errorCode : undefined;
+
+        const message = errorCode
+          ? (errorMessages[errorCode] ?? t("errorMessage"))
+          : t("errorMessage");
+
+        toast.error(message);
+        return;
       }
+
+      toast.success(t("successMessage"));
+      router.push("/login");
     } catch (error) {
       console.error("Registration failed:", error);
       toast.error(t("errorMessage"));

@@ -136,6 +136,8 @@
     "validation": {
       "fullNameMin": "Full name must be at least 2 characters",
       "emailInvalid": "Invalid email address",
+      "emailAlreadyExists": "Email already exists",
+      "phoneAlreadyExists": "Phone already exists",
       "phoneMin": "Phone number is invalid",
       "passwordMin": "Password must be at least 6 characters",
       "confirmPasswordRequired": "Please confirm your password",

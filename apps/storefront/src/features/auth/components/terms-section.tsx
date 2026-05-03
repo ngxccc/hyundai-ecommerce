@@ -23,27 +23,33 @@ export const TermsSection = ({ form }: TermsSectionProps) => {
           render={({ field }) => (
             <Checkbox
               id="agreeTerms"
+              className="mt-0.5"
               checked={field.value}
               onCheckedChange={field.onChange}
             />
           )}
         />
-        <FieldLabel htmlFor="agreeTerms" className="text-sm leading-snug">
-          {t("agreeTermsPrefix")}{" "}
-          <Link
-            href="/terms"
-            className="text-primary hover:text-primary/80 underline"
-          >
-            {t("termsOfService")}
-          </Link>{" "}
-          {t("and")}{" "}
-          <Link
-            href="/privacy"
-            className="text-primary hover:text-primary/80 underline"
-          >
-            {t("privacyPolicy")}
-          </Link>{" "}
-          {t("ofHyundaiNhatNang")}
+        <FieldLabel
+          htmlFor="agreeTerms"
+          className="text-foreground block text-sm leading-snug"
+        >
+          <span className="inline">
+            {t("agreeTermsPrefix")}{" "}
+            <Link
+              href="/terms"
+              className="text-primary hover:text-primary/80 underline"
+            >
+              {t("termsOfService")}
+            </Link>{" "}
+            {t("and")}{" "}
+            <Link
+              href="/privacy"
+              className="text-primary hover:text-primary/80 underline"
+            >
+              {t("privacyPolicy")}
+            </Link>{" "}
+            {t("ofHyundaiNhatNang")}
+          </span>
         </FieldLabel>
       </div>
       <FieldError>{form.formState.errors.agreeTerms?.message}</FieldError>
