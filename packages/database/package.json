@@ -16,7 +16,9 @@
     "db:migrate": "bunx drizzle-kit migrate --config drizzle.config.ts",
     "db:studio": "bunx drizzle-kit studio --config drizzle.config.ts",
     "db:seed": "bun src/seed.ts",
-    "docs:gen": "bun run scripts/generate-docs.ts"
+    "docs:gen": "bun run scripts/generate-docs.ts",
+    "lint": "eslint . --cache --cache-strategy content --cache-location .eslintcache",
+    "lint:fix": "eslint . --fix --cache --cache-strategy content --cache-location .eslintcache"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.9",

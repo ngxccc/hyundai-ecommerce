@@ -8,7 +8,8 @@
     "start": "next start -p 3001",
     "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
     "postinstall": "fumadocs-mdx",
-    "lint": "eslint"
+    "lint": "eslint . --cache --cache-strategy content --cache-location .eslintcache",
+    "lint:fix": "eslint . --fix --cache --cache-strategy content --cache-location .eslintcache"
   },
   "dependencies": {
     "fumadocs-core": "16.8.5",
