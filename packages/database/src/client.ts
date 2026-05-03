@@ -1,14 +1,11 @@
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
+import { Pool } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-serverless";
 import { env } from "./env";
 import * as schema from "./schemas";
 
-// Khởi tạo kết nối Serverless.
-// Tại sao dùng HTTP thay vì TCP? Vì Next.js Serverless Functions scale up liên tục,
-// dùng TCP sẽ cạn kiệt Connection Pool của Database. HTTP giải quyết bài toán này.
-const sql = neon(env.DATABASE_URL);
+const pool = new Pool({ connectionString: env.DATABASE_URL });
 export const db = drizzle({
-  client: sql,
+  client: pool,
   relations: schema.schemaRelations,
   jit: true,
 });
