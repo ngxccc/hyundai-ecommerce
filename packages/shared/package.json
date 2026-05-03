@@ -6,6 +6,7 @@
   "description": "Shared TypeScript",
   "main": "./src/index.ts",
   "exports": {
-    "./constants": "./src/constants/index.ts"
+    "./constants": "./src/constants/index.ts",
+    "./types": "./src/types/index.ts"
   }
 }
