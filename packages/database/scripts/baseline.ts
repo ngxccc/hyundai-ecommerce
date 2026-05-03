@@ -35,14 +35,16 @@ async function forceBaseline() {
      * BUG: Risk of Split-Brain state if ran outside of controlled deployment workflows.
      * TODO: Implement environment guards (e.g., if (process.env.NODE_ENV !== "development") throw Error) to prevent accidental wipe on production.
      */
-    await db.execute(sql`
-      TRUNCATE TABLE __drizzle_migrations RESTART IDENTITY;
-    `);
+    await db.transaction(async (tx) => {
+      await tx.execute(sql`
+        TRUNCATE TABLE "drizzle"."__drizzle_migrations" RESTART IDENTITY;
+      `);
 
-    await db.execute(sql`
-      INSERT INTO __drizzle_migrations (hash, created_at, name, applied_at)
-      VALUES (${hash}, ${createdAt}, ${latestMigrationName}, NOW());
-    `);
+      await tx.execute(sql`
+        INSERT INTO "drizzle"."__drizzle_migrations" (hash, created_at, name, applied_at)
+        VALUES (${hash}, ${createdAt}, ${latestMigrationName}, NOW());
+      `);
+    });
 
     console.log("Baselining Complete! DB state synced.");
     process.exit(0);
