@@ -138,7 +138,7 @@
       "emailInvalid": "Email không hợp lệ",
       "emailAlreadyExists": "Email đã tồn tại",
       "phoneAlreadyExists": "Số điện thoại đã tồn tại",
-      "phoneMin": "Số điện thoại không hợp lệ",
+      "phoneInvalid": "Số điện thoại không hợp lệ",
       "passwordMin": "Mật khẩu phải có ít nhất 6 ký tự",
       "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
       "companyNameRequired": "Vui lòng nhập tên công ty",

@@ -14,9 +14,10 @@ const envSchema = z.object({
     .string()
     .min(32, MESSAGES.BETTER_AUTH_SECRET_IS_INVALID),
   BETTER_AUTH_URL: z.url(MESSAGES.BETTER_AUTH_URL_IS_INVALID),
+  RESEND_API_KEY: z.string(),
+  EMAIL_FROM: z.string(),
 });
 
- 
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {

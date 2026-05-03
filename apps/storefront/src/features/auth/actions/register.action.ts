@@ -56,6 +56,7 @@ export async function registerAction(data: TRegisterForm) {
         taxId: validatedData.taxId,
         businessType: validatedData.businessType,
         province: validatedData.province,
+        callbackURL: "/login",
       },
     });
 

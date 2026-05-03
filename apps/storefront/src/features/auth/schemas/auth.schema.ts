@@ -4,7 +4,7 @@ import { businessTypeEnum } from "@nhatnang/database/schemas";
 type TRegisterValidationMessageKey =
   | "validation.fullNameMin"
   | "validation.emailInvalid"
-  | "validation.phoneMin"
+  | "validation.phoneInvalid"
   | "validation.passwordMin"
   | "validation.confirmPasswordRequired"
   | "validation.companyNameRequired"
@@ -56,7 +56,10 @@ export const createRegisterSchema = (t: IRegisterTranslator) =>
     .object({
       fullName: z.string().min(2, t("validation.fullNameMin")),
       email: z.email(t("validation.emailInvalid")),
-      phone: z.string().min(10, t("validation.phoneMin")),
+      phone: z
+        .string()
+        .min(10, t("validation.phoneInvalid"))
+        .max(10, t("validation.phoneInvalid")),
       password: z.string().min(6, t("validation.passwordMin")),
       confirmPassword: z
         .string()

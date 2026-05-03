@@ -4,6 +4,10 @@ import { v7 as uuidv7 } from "uuid";
 import * as schema from "./schemas";
 import { db } from "./client";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
+import { Resend } from "resend";
+import { env } from "./env";
+
+const resend = new Resend(env.RESEND_API_KEY);
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -33,13 +37,25 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     expiresIn: 3600,
-    // eslint-disable-next-line @typescript-eslint/require-await
     sendVerificationEmail: async ({ user, url }) => {
-      // TODO: Tích hợp Resend, AWS SES hoặc Nodemailer ở đây
-      console.log("==========================================");
-      console.log(`🚀 [DEV-MODE] GỬI MAIL CHO: ${user.email}`);
-      console.log(`🔗 Link kích hoạt: ${url}`);
-      console.log("==========================================");
+      const senderEmail =
+        env.EMAIL_FROM ?? "Hyundai Nhat Nang <onboarding@resend.dev>";
+
+      try {
+        await resend.emails.send({
+          from: senderEmail,
+          to: user.email,
+          subject: "Xác thực tài khoản của bạn",
+          // NOTE: Có thể dùng thư viện React Email để ui đẹp thay vì HTML thô
+          html: `
+            <h2>Chào ${user.name},</h2>
+            <p>Vui lòng click vào đường link bên dưới để xác thực tài khoản:</p>
+            <a href="${url}" style="padding: 10px 20px; background: #000; color: #fff; text-decoration: none; border-radius: 5px;">Xác thực ngay</a>
+          `,
+        });
+      } catch (error) {
+        console.error("Lỗi bắn mail Resend:", error);
+      }
     },
   },
 
@@ -69,3 +85,4 @@ export const auth = betterAuth({
 });
 
 export { APIError, isAPIError } from "better-auth/api";
+export { toNextJsHandler } from "better-auth/next-js";
