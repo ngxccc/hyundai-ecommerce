@@ -34,7 +34,7 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     expiresIn: 3600,
     // eslint-disable-next-line @typescript-eslint/require-await
-    sendVerificationEmail: async ({ user, url, token }) => {
+    sendVerificationEmail: async ({ user, url }) => {
       // TODO: Tích hợp Resend, AWS SES hoặc Nodemailer ở đây
       console.log("==========================================");
       console.log(`🚀 [DEV-MODE] GỬI MAIL CHO: ${user.email}`);
