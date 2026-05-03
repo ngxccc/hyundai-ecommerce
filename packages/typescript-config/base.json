@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "jsx": "react-jsx",
     "target": "ESNext",
@@ -14,13 +15,14 @@
     "incremental": true,
     "declaration": false,
     "skipLibCheck": true,
-    "declarationMap": false,
     "noUnusedLocals": true,
+    "declarationMap": false,
     "isolatedModules": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "noUnusedParameters": true,
     "noImplicitOverride": true,
+    "emitDeclarationOnly": false,
     "verbatimModuleSyntax": true,
     "allowArbitraryExtensions": true,
     "noUncheckedIndexedAccess": true,
