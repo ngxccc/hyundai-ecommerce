@@ -1,11 +1,12 @@
 ---
 title: Database Schema
 description: Complete database schema with ERD for Hyundai E-commerce project (auto-generated from Drizzle)
+date: 2026-05-03
 ---
 
 # Database Schema
 
-**Generated automatically** from Drizzle schema on 2026-05-01
+**Generated automatically** from Drizzle schema on 2026-05-03
 
 ---
 
@@ -14,22 +15,22 @@ description: Complete database schema with ERD for Hyundai E-commerce project (a
 ```mermaid
 erDiagram
     accounts ||--o{ user : "user_id"
-    cartItems ||--o{ cart : "cartId"
-    cartItems ||--o{ product : "productId"
-    carts ||--o{ user : "userId"
-    categories ||--o{ category : "parentId"
-    orderItems ||--o{ order : "orderId"
-    orderItems ||--o{ product : "productId"
-    orders ||--o{ user : "userId"
-    payments ||--o{ order : "orderId"
-    products ||--o{ brand : "brandId"
-    products ||--o{ category : "categoryId"
+    cartItems ||--o{ cart : "cart_id"
+    cartItems ||--o{ product : "product_id"
+    carts ||--o{ user : "user_id"
+    categories ||--o{ category : "parent_id"
+    orderItems ||--o{ order : "order_id"
+    orderItems ||--o{ product : "product_id"
+    orders ||--o{ user : "user_id"
+    payments ||--o{ order : "order_id"
+    products ||--o{ brand : "brand_id"
+    products ||--o{ category : "category_id"
     sessions ||--o{ user : "user_id"
-    shippingBids ||--o{ order : "orderId"
-    userAddresses ||--o{ user : "userId"
-    users ||--o{ dealer_tier : "dealerTierId"
-    warehouseStocks ||--o{ warehouse : "warehouseId"
-    warehouseStocks ||--o{ product : "productId"
+    shippingBids ||--o{ order : "order_id"
+    userAddresses ||--o{ user : "user_id"
+    users ||--o{ dealer_tier : "dealer_tier_id"
+    warehouseStocks ||--o{ warehouse : "warehouse_id"
+    warehouseStocks ||--o{ product : "product_id"
 
     accounts {
         text id PK
@@ -41,79 +42,79 @@ erDiagram
     }
     brands {
         uuid id PK
-        timestamptz createdAt
-        timestamptz updatedAt
+        timestamptz created_at
+        timestamptz updated_at
         text name
         text slug
     }
     cartItems {
         uuid id PK
-        uuid cartId FK
-        uuid productId FK
-        timestamptz createdAt
-        timestamptz updatedAt
+        uuid cart_id FK
+        uuid product_id FK
+        timestamptz created_at
+        timestamptz updated_at
         int quantity
     }
     carts {
         uuid id PK
-        uuid userId FK
-        timestamptz createdAt
-        timestamptz updatedAt
+        uuid user_id FK
+        timestamptz created_at
+        timestamptz updated_at
     }
     categories {
         uuid id PK
-        uuid parentId FK
-        timestamptz createdAt
-        timestamptz updatedAt
+        uuid parent_id FK
+        timestamptz created_at
+        timestamptz updated_at
         text name
         text slug
     }
     dealerTiers {
         uuid id PK
-        timestamptz createdAt
-        timestamptz updatedAt
+        timestamptz created_at
+        timestamptz updated_at
         text name
-        numeric discountPercentage
+        numeric discount_percentage
     }
     orderItems {
         uuid id PK
-        uuid orderId FK
-        uuid productId FK
-        timestamptz createdAt
-        timestamptz updatedAt
-        text productName
-        text productSku
+        uuid order_id FK
+        uuid product_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        text product_name
+        text product_sku
     }
     orders {
         uuid id PK
-        uuid userId FK
-        timestamptz createdAt
-        timestamptz updatedAt
+        uuid user_id FK
+        timestamptz created_at
+        timestamptz updated_at
         enum status
-        numeric shippingFee
+        numeric shipping_fee
     }
     outboxEvents {
         uuid id PK
-        timestamptz createdAt
-        timestamptz updatedAt
-        enum eventType
+        timestamptz created_at
+        timestamptz updated_at
+        enum event_type
         jsonb payload
     }
     payments {
         uuid id PK
-        uuid orderId FK
-        timestamptz createdAt
-        timestamptz updatedAt
-        timestamptz deletedAt
+        uuid order_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
         numeric amount
     }
     products {
         uuid id PK
-        uuid brandId FK
-        uuid categoryId FK
-        timestamptz createdAt
-        timestamptz updatedAt
-        timestamptz deletedAt
+        uuid brand_id FK
+        uuid category_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
         text name
     }
     sessions {
@@ -126,26 +127,26 @@ erDiagram
     }
     shippingBids {
         uuid id PK
-        uuid orderId FK
-        timestamptz createdAt
-        timestamptz updatedAt
-        text vendorName
-        numeric quotedPrice
+        uuid order_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        text vendor_name
+        numeric quoted_price
     }
     userAddresses {
         uuid id PK
-        uuid userId FK
-        timestamptz createdAt
-        timestamptz updatedAt
-        timestamptz deletedAt
-        text receiverName
+        uuid user_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+        text receiver_name
     }
     users {
         uuid id PK
-        uuid dealerTierId FK
-        timestamptz createdAt
-        timestamptz updatedAt
-        timestamptz deletedAt
+        uuid dealer_tier_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
         text name
     }
     verifications {
@@ -156,19 +157,19 @@ erDiagram
         timestamptz created_at
     }
     warehouseStocks {
-        uuid warehouseId FK
-        uuid productId FK
+        uuid warehouse_id FK
+        uuid product_id FK
         int stock
-        int minStockWarning
-        timestamptz createdAt
-        timestamptz updatedAt
+        int min_stock_warning
+        timestamptz created_at
+        timestamptz updated_at
     }
     warehouses {
         uuid id PK
-        timestamptz createdAt
-        timestamptz updatedAt
+        timestamptz created_at
+        timestamptz updated_at
         text name
-        text streetAddress
+        text street_address
     }
 
 ```
@@ -235,13 +236,13 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
 | name | text | NO | - | - |
 | slug | text | NO | - | - |
 | logo | text | YES | - | - |
 | description | text | YES | - | - |
-| isActive | bool | NO | true | - |
+| is_active | bool | NO | true | - |
 
 ---
 
@@ -252,20 +253,20 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
-| cartId | uuid | NO | - | - |
-| productId | uuid | NO | - | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| cart_id | uuid | NO | - | - |
+| product_id | uuid | NO | - | - |
 | quantity | int | NO | 1 | - |
 
 ### Foreign Keys
 
-- `cartId` → `cart.id` (ON DELETE cascade)
-- `productId` → `product.id` (ON DELETE cascade)
+- `cart_id` → `cart.id` (ON DELETE cascade)
+- `product_id` → `product.id` (ON DELETE cascade)
 
 ### Indexes
 
-- `cart_product_unique_idx`: (cartId, productId)
+- `cart_product_unique_idx`: (cart_id, product_id)
 
 ---
 
@@ -276,13 +277,13 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
-| userId | uuid | YES | - | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| user_id | uuid | YES | - | - |
 
 ### Foreign Keys
 
-- `userId` → `user.id` (ON DELETE cascade)
+- `user_id` → `user.id` (ON DELETE cascade)
 
 ---
 
@@ -293,18 +294,18 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
 | name | text | NO | - | - |
 | slug | text | NO | - | - |
-| parentId | uuid | YES | - | - |
+| parent_id | uuid | YES | - | - |
 | description | text | YES | - | - |
 | image | text | YES | - | - |
-| isActive | bool | NO | true | - |
+| is_active | bool | NO | true | - |
 
 ### Foreign Keys
 
-- `parentId` → `category.id` (ON DELETE set null)
+- `parent_id` → `category.id` (ON DELETE set null)
 
 ---
 
@@ -315,11 +316,11 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
 | name | text | NO | - | - |
-| discountPercentage | numeric | NO | - | - |
-| minimumSpend | numeric | NO | 0 | - |
+| discount_percentage | numeric | NO | - | - |
+| minimum_spend | numeric | NO | 0 | - |
 
 ---
 
@@ -330,19 +331,19 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
-| orderId | uuid | NO | - | - |
-| productId | uuid | NO | - | - |
-| productName | text | NO | - | - |
-| productSku | text | NO | - | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| order_id | uuid | NO | - | - |
+| product_id | uuid | NO | - | - |
+| product_name | text | NO | - | - |
+| product_sku | text | NO | - | - |
 | quantity | int | NO | 0 | - |
-| unitPrice | numeric | NO | - | - |
+| unit_price | numeric | NO | - | - |
 
 ### Foreign Keys
 
-- `orderId` → `order.id` (ON DELETE cascade)
-- `productId` → `product.id` (ON DELETE restrict)
+- `order_id` → `order.id` (ON DELETE cascade)
+- `product_id` → `product.id` (ON DELETE restrict)
 
 ---
 
@@ -353,17 +354,17 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
-| userId | uuid | NO | - | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| user_id | uuid | NO | - | - |
 | status | enum | NO | pending | - |
-| shippingFee | numeric | NO | - | - |
-| shippingAddress | text | NO | - | - |
-| totalAmount | numeric | NO | - | - |
+| shipping_fee | numeric | NO | - | - |
+| shipping_address | text | NO | - | - |
+| total_amount | numeric | NO | - | - |
 
 ### Foreign Keys
 
-- `userId` → `user.id` (ON DELETE restrict)
+- `user_id` → `user.id` (ON DELETE restrict)
 
 ---
 
@@ -374,14 +375,14 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
-| eventType | enum | NO | - | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| event_type | enum | NO | - | - |
 | payload | jsonb | NO | - | - |
 | status | enum | NO | PENDING | - |
-| retryCount | int | NO | 0 | - |
-| lastError | text | YES | - | - |
-| processedAt | timestamptz | YES | - | - |
+| retry_count | int | NO | 0 | - |
+| last_error | text | YES | - | - |
+| processed_at | timestamptz | YES | - | - |
 
 ---
 
@@ -392,19 +393,19 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
-| deletedAt | timestamptz | YES | - | - |
-| orderId | uuid | NO | - | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| deleted_at | timestamptz | YES | - | - |
+| order_id | uuid | NO | - | - |
 | amount | numeric | NO | - | - |
 | method | enum | NO | - | - |
 | status | enum | NO | PENDING | - |
-| transactionId | text | YES | - | - |
-| rawPayload | text | YES | - | - |
+| transaction_id | text | YES | - | - |
+| raw_payload | text | YES | - | - |
 
 ### Foreign Keys
 
-- `orderId` → `order.id` (ON DELETE restrict)
+- `order_id` → `order.id` (ON DELETE restrict)
 
 ---
 
@@ -415,32 +416,32 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
-| deletedAt | timestamptz | YES | - | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| deleted_at | timestamptz | YES | - | - |
 | name | text | NO | - | - |
 | slug | text | NO | - | - |
 | price | numeric | NO | - | - |
 | description | text | YES | - | - |
-| shortDescription | text | YES | - | - |
+| short_description | text | YES | - | - |
 | images | text | NO | Complex Object | - |
-| brandId | uuid | YES | - | - |
-| categoryId | uuid | YES | - | - |
+| brand_id | uuid | YES | - | - |
+| category_id | uuid | YES | - | - |
 | specs | jsonb | YES | Complex Object | - |
-| totalStockCache | int | NO | 0 | - |
-| isQuoteOnly | bool | NO | false | - |
+| total_stock_cache | int | NO | 0 | - |
+| is_quote_only | bool | NO | false | - |
 
 ### Foreign Keys
 
-- `brandId` → `brand.id` (ON DELETE set null)
-- `categoryId` → `category.id` (ON DELETE set null)
+- `brand_id` → `brand.id` (ON DELETE set null)
+- `category_id` → `category.id` (ON DELETE set null)
 
 ### Indexes
 
 - `product_slug_active_idx`: (slug)
 - `product_name_active_idx`: (name)
-- `product_brand_idx`: (brandId)
-- `product_category_idx`: (categoryId)
+- `product_brand_idx`: (brand_id)
+- `product_category_idx`: (category_id)
 
 ---
 
@@ -476,21 +477,21 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
-| orderId | uuid | NO | - | - |
-| vendorName | text | NO | - | - |
-| quotedPrice | numeric | NO | - | - |
-| internalNote | text | YES | - | - |
-| isSelected | bool | YES | false | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| order_id | uuid | NO | - | - |
+| vendor_name | text | NO | - | - |
+| quoted_price | numeric | NO | - | - |
+| internal_note | text | YES | - | - |
+| is_selected | bool | YES | false | - |
 
 ### Foreign Keys
 
-- `orderId` → `order.id` (ON DELETE cascade)
+- `order_id` → `order.id` (ON DELETE cascade)
 
 ### Indexes
 
-- `one_selected_bid_order_idx`: (orderId)
+- `one_selected_bid_order_idx`: (order_id)
 
 ---
 
@@ -501,20 +502,20 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
-| deletedAt | timestamptz | YES | - | - |
-| userId | uuid | NO | - | - |
-| receiverName | text | NO | - | - |
-| phoneNumber | text | NO | - | - |
-| streetAddress | text | NO | - | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| deleted_at | timestamptz | YES | - | - |
+| user_id | uuid | NO | - | - |
+| receiver_name | text | NO | - | - |
+| phone_number | text | NO | - | - |
+| street_address | text | NO | - | - |
 | district | text | NO | - | - |
 | city | text | NO | - | - |
-| isDefault | bool | NO | false | - |
+| is_default | bool | NO | false | - |
 
 ### Foreign Keys
 
-- `userId` → `user.id` (ON DELETE cascade)
+- `user_id` → `user.id` (ON DELETE cascade)
 
 ---
 
@@ -525,19 +526,24 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
-| deletedAt | timestamptz | YES | - | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| deleted_at | timestamptz | YES | - | - |
 | name | text | NO | - | - |
 | email | text | NO | - | - |
-| emailVerified | bool | NO | false | - |
+| email_verified | bool | NO | false | - |
 | image | text | YES | - | - |
 | role | enum | NO | customer | - |
-| dealerTierId | uuid | YES | - | - |
+| dealer_tier_id | uuid | YES | - | - |
+| phone | text | NO | - | - |
+| company_name | text | YES | - | - |
+| tax_id | text | YES | - | - |
+| business_type | enum | NO | end_user | - |
+| province | text | YES | - | - |
 
 ### Foreign Keys
 
-- `dealerTierId` → `dealer_tier.id` (ON DELETE set null)
+- `dealer_tier_id` → `dealer_tier.id` (ON DELETE set null)
 
 ---
 
@@ -566,17 +572,17 @@ erDiagram
 
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
-| warehouseId | uuid | NO | - | - |
-| productId | uuid | NO | - | - |
+| warehouse_id | uuid | NO | - | - |
+| product_id | uuid | NO | - | - |
 | stock | int | NO | 0 | - |
-| minStockWarning | int | NO | 2 | - |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
+| min_stock_warning | int | NO | 2 | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
 
 ### Foreign Keys
 
-- `warehouseId` → `warehouse.id` (ON DELETE cascade)
-- `productId` → `product.id` (ON DELETE cascade)
+- `warehouse_id` → `warehouse.id` (ON DELETE cascade)
+- `product_id` → `product.id` (ON DELETE cascade)
 
 ---
 
@@ -587,13 +593,13 @@ erDiagram
 | Column | Type | Nullable | Default | Primary |
 |--------|------|----------|---------|---------|
 | id | uuid | NO | Dynamic Fn | YES |
-| createdAt | timestamptz | NO | SQL: now() | - |
-| updatedAt | timestamptz | NO | Auto-update | - |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
 | name | text | NO | - | - |
-| streetAddress | text | NO | - | - |
+| street_address | text | NO | - | - |
 | district | text | NO | - | - |
 | city | text | NO | - | - |
-| isActive | bool | NO | true | - |
+| is_active | bool | NO | true | - |
 
 ### Indexes
 
