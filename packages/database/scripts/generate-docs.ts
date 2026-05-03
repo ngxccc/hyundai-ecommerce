@@ -243,6 +243,7 @@ async function main() {
   const tableExports = Object.entries(schema).filter((entry) => {
     // HACK: dùng hàm is() của Drizzle để check ở Runtime
     return is(entry[1], PgTable);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as [string, PgTable<any>][];
 
   for (const [name, table] of tableExports) {

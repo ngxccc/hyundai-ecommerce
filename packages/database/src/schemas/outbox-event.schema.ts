@@ -19,17 +19,17 @@ export const outboxEventStatusEnum = pgEnum("outbox_event_status", [
   "FAILED",
 ]);
 
-export type SendQuoteEmailPayload = {
+export interface SendQuoteEmailPayload {
   orderId: string;
   customerEmail: string;
   pdfUrl?: string;
-};
+}
 
-export type SendEmailPayload = {
+export interface SendEmailPayload {
   to: string;
   subject: string;
   body: string;
-};
+}
 
 export type OutboxPayload = SendQuoteEmailPayload | SendEmailPayload;
 

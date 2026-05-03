@@ -16,6 +16,7 @@ const envSchema = z.object({
   BETTER_AUTH_URL: z.url(MESSAGES.BETTER_AUTH_URL_IS_INVALID),
 });
 
+ 
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
