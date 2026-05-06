@@ -27,16 +27,16 @@
     "@neondatabase/serverless": "^1.0.2",
     "@paralleldrive/cuid2": "^3.3.0",
     "better-auth": "^1.6.9",
-    "drizzle-orm": "^1.0.0-rc.1",
+    "drizzle-orm": "^1.0.0-rc.2",
     "resend": "^6.12.2",
-    "zod": "^4.3.6"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/shared": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
     "@types/node": "^25.6.0",
-    "drizzle-kit": "^1.0.0-rc.1",
-    "eslint": "^9"
+    "drizzle-kit": "^1.0.0-rc.2",
+    "eslint": "^10"
   }
 }
