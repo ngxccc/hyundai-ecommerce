@@ -1,5 +1,5 @@
 // Throws fatal error if environment is invalid, halting the build immediately
-import "@nhatnang/database";
+import "@nhatnang/database/env";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
