@@ -1,0 +1,48 @@
+{
+  "languages": {
+    "JavaScript": {
+      "formatter": [
+        { "code_action": "source.organizeImports" },
+        { "code_action": "source.fixAll.eslint" },
+        {
+          "external": {
+            "command": "prettier",
+            "arguments": ["--stdin-filepath", "{buffer_path}"],
+          },
+        },
+      ],
+    },
+    "TypeScript": {
+      "formatter": [
+        { "code_action": "source.organizeImports" },
+        { "code_action": "source.fixAll.eslint" },
+        {
+          "external": {
+            "command": "prettier",
+            "arguments": ["--stdin-filepath", "{buffer_path}"],
+          },
+        },
+      ],
+    },
+    "TSX": {
+      "formatter": [
+        { "code_action": "source.organizeImports" },
+        { "code_action": "source.fixAll.eslint" },
+        {
+          "external": {
+            "command": "prettier",
+            "arguments": ["--stdin-filepath", "{buffer_path}"],
+          },
+        },
+      ],
+    },
+    "JSON": {
+      "formatter": {
+        "external": {
+          "command": "prettier",
+          "arguments": ["--stdin-filepath", "{buffer_path}"],
+        },
+      },
+    },
+  },
+}

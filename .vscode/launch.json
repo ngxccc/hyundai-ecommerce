@@ -1,0 +1,46 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Storefront",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bun run dev --filter=storefront",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Debug Docs",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bun run dev --filter=docs",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Debug Generate Docs Script",
+      "type": "bun",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/database",
+      "program": "${workspaceFolder}/packages/database/scripts/generate-docs.ts",
+    },
+    {
+      "name": "Debug ENV DB",
+      "type": "bun",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/database",
+      "program": "${workspaceFolder}/packages/database/src/env.ts",
+    },
+    {
+      "name": "Debug Chrome (Client-side)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/apps/storefront"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full-stack Storefront Debug",
+      "configurations": ["Debug Storefront", "Debug Chrome (Client-side)"]
+    }
+  ]
+}
