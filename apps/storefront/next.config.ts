@@ -1,3 +1,5 @@
+// Throws fatal error if environment is invalid, halting the build immediately
+import "@nhatnang/database";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
@@ -16,6 +18,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "hyundainhatnang.vn" },
     ],
   },
+  transpilePackages: ["@nhatnang/database", "@nhatnang/shared"],
 };
 
 export default withNextIntl(nextConfig);
