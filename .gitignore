@@ -42,7 +42,7 @@ yarn-error.log*
 ehthumbs.db
 Thumbs.db
 .idea/
-.vscode/
+# .vscode/
 *.suo
 *.ntvs*
 *.njsproj
