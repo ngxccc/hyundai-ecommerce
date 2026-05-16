@@ -2,7 +2,7 @@ export const MESSAGES = {
   NEXT_URL_IS_INVALID: "NEXT_PUBLIC_APP_URL is missing or malformed.",
   DB_URL_IS_INVALID: "DATABASE_URL is missing or malformed.",
   EMAIL_FROM_IS_INVALID:
-    "EMAIL_FROM must be RFC 5322 compliant. Example: Hyundai Nhat Nang <noreply@domain.com>",
+    "EMAIL_FROM must be in the format 'Display Name <noreply@domain.com>'. Example: Hyundai Nhat Nang <noreply@domain.com>",
   DOTENV_FILE_NOT_FOUND:
     "Environment file (.env) was not found in the root directory.",
   DOTENV_FILE_CONFIG_INVALID: "Invalid declarations detected in the .env file:",
