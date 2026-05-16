@@ -1,4 +1,6 @@
 import { MESSAGES } from "@nhatnang/shared/constants";
+import { createEnv } from "@t3-oss/env-core";
+import "server-only";
 import { z } from "zod";
 
 export const ENVIRONMENT_MODES = {
@@ -7,27 +9,57 @@ export const ENVIRONMENT_MODES = {
   TEST: "test",
 } as const;
 
-const envSchema = z.object({
-  DATABASE_URL: z.url(MESSAGES.DB_URL_IS_INVALID),
-  NODE_ENV: z.enum(ENVIRONMENT_MODES).default(ENVIRONMENT_MODES.DEVELOPMENT),
-  BETTER_AUTH_SECRET: z
-    .string()
-    .min(32, MESSAGES.BETTER_AUTH_SECRET_IS_INVALID),
-  BETTER_AUTH_URL: z.url(MESSAGES.BETTER_AUTH_URL_IS_INVALID),
-  RESEND_API_KEY: z.string(),
-  EMAIL_FROM: z.string(),
+export const env = createEnv({
+  server: {
+    DATABASE_URL: z.url(MESSAGES.DB_URL_IS_INVALID),
+    NODE_ENV: z
+      .enum([
+        ENVIRONMENT_MODES.DEVELOPMENT,
+        ENVIRONMENT_MODES.PRODUCTION,
+        ENVIRONMENT_MODES.TEST,
+      ])
+      .default(ENVIRONMENT_MODES.DEVELOPMENT),
+    BETTER_AUTH_SECRET: z
+      .string()
+      .min(32, MESSAGES.BETTER_AUTH_SECRET_IS_INVALID),
+    BETTER_AUTH_URL: z.url(MESSAGES.BETTER_AUTH_URL_IS_INVALID),
+    RESEND_API_KEY: z.string().min(1),
+    EMAIL_FROM: z.email(),
+  },
+
+  runtimeEnv: {
+    DATABASE_URL: process.env["DATABASE_URL"],
+    NODE_ENV: process.env["NODE_ENV"],
+    BETTER_AUTH_SECRET: process.env["BETTER_AUTH_SECRET"],
+    BETTER_AUTH_URL: process.env["BETTER_AUTH_URL"],
+    RESEND_API_KEY: process.env["RESEND_API_KEY"],
+    EMAIL_FROM: process.env["EMAIL_FROM"],
+  },
+
+  emptyStringAsUndefined: true,
+
+  onValidationError: (issues) => {
+    console.error(MESSAGES.DOTENV_FILE_CONFIG_INVALID);
+    issues.forEach((issue) => {
+      const pathString = issue.path
+        ? issue.path
+            .map((segment) => {
+              const isObject =
+                typeof segment === "object" &&
+                segment !== null &&
+                "key" in segment;
+
+              const rawKey = isObject ? segment.key : segment;
+
+              return String(rawKey);
+            })
+            .join(".")
+        : "root";
+
+      console.error(` - ${pathString}: ${issue.message}`);
+    });
+    process.exit(1);
+  },
 });
-
-const parsedEnv = envSchema.safeParse(process.env);
-
-if (!parsedEnv.success) {
-  console.error(MESSAGES.DOTENV_FILE_CONFIG_INVALID);
-  parsedEnv.error.issues.forEach((issue) => {
-    console.error(` - ${issue.path.join(".")}: ${issue.message}`);
-  });
-  throw new Error(MESSAGES.DOTENV_CONFIG_ERROR);
-}
-
-export const env = parsedEnv.data;
 
 export const isProduction = env.NODE_ENV === ENVIRONMENT_MODES.PRODUCTION;
