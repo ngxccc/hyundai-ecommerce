@@ -55,3 +55,6 @@ Thumbs.db
 .agents/
 .codex/
 opencode.json
+
+# Turborepo
+.turbo

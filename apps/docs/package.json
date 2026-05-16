@@ -12,26 +12,26 @@
     "lint:fix": "eslint . --fix --cache --cache-strategy content --cache-location .eslintcache"
   },
   "dependencies": {
-    "fumadocs-core": "16.8.5",
-    "fumadocs-mdx": "14.3.2",
-    "fumadocs-ui": "^16.8.5",
-    "lucide-react": "^1.11.0",
-    "next": "^16.2.4",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "tailwind-merge": "^3.5.0"
+    "fumadocs-core": "16.8.11",
+    "fumadocs-mdx": "15.0.5",
+    "fumadocs-ui": "^16.8.11",
+    "lucide-react": "^1.16.0",
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
-    "@tailwindcss/postcss": "^4.2.4",
+    "@tailwindcss/postcss": "^4.3.0",
     "@types/mdx": "^2.0.13",
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.8.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9",
-    "postcss": "^8.5.10",
-    "tailwindcss": "^4.2.4",
+    "postcss": "^8.5.14",
+    "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3"
   }
 }
