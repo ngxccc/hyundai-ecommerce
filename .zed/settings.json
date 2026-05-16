@@ -1,46 +1,52 @@
 {
+  "format_on_save": "on",
+
   "languages": {
-    "JavaScript": {
-      "formatter": [
-        { "code_action": "source.organizeImports" },
-        { "code_action": "source.fixAll.eslint" },
-        {
-          "external": {
-            "command": "prettier",
-            "arguments": ["--stdin-filepath", "{buffer_path}"],
-          },
-        },
-      ],
-    },
     "TypeScript": {
-      "formatter": [
-        { "code_action": "source.organizeImports" },
-        { "code_action": "source.fixAll.eslint" },
-        {
-          "external": {
-            "command": "prettier",
-            "arguments": ["--stdin-filepath", "{buffer_path}"],
-          },
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": ["prettier", "--stdin-filepath", "{buffer_path}"],
         },
-      ],
+      },
     },
     "TSX": {
-      "formatter": [
-        { "code_action": "source.organizeImports" },
-        { "code_action": "source.fixAll.eslint" },
-        {
-          "external": {
-            "command": "prettier",
-            "arguments": ["--stdin-filepath", "{buffer_path}"],
-          },
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": ["prettier", "--stdin-filepath", "{buffer_path}"],
         },
-      ],
+      },
+    },
+    "JavaScript": {
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": ["prettier", "--stdin-filepath", "{buffer_path}"],
+        },
+      },
     },
     "JSON": {
       "formatter": {
         "external": {
-          "command": "prettier",
-          "arguments": ["--stdin-filepath", "{buffer_path}"],
+          "command": "bunx",
+          "arguments": ["prettier", "--stdin-filepath", "{buffer_path}"],
+        },
+      },
+    },
+    "CSS": {
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": ["prettier", "--stdin-filepath", "{buffer_path}"],
+        },
+      },
+    },
+    "Markdown": {
+      "formatter": {
+        "external": {
+          "command": "bunx",
+          "arguments": ["prettier", "--stdin-filepath", "{buffer_path}"],
         },
       },
     },
