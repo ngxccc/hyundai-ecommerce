@@ -1,6 +1,5 @@
 import { MESSAGES } from "@nhatnang/shared/constants";
 import { createEnv } from "@t3-oss/env-core";
-import "server-only";
 import { z } from "zod";
 
 export const ENVIRONMENT_MODES = {
@@ -11,6 +10,7 @@ export const ENVIRONMENT_MODES = {
 
 export const env = createEnv({
   server: {
+    NEXT_PUBLIC_APP_URL: z.url(MESSAGES.NEXT_URL_IS_INVALID),
     DATABASE_URL: z.url(MESSAGES.DB_URL_IS_INVALID),
     NODE_ENV: z
       .enum([
@@ -24,10 +24,16 @@ export const env = createEnv({
       .min(32, MESSAGES.BETTER_AUTH_SECRET_IS_INVALID),
     BETTER_AUTH_URL: z.url(MESSAGES.BETTER_AUTH_URL_IS_INVALID),
     RESEND_API_KEY: z.string().min(1),
-    EMAIL_FROM: z.email(),
+    EMAIL_FROM: z
+      .string()
+      .regex(
+        /^[^<]+<[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}>$/,
+        MESSAGES.EMAIL_FROM_IS_INVALID,
+      ),
   },
 
   runtimeEnv: {
+    NEXT_PUBLIC_APP_URL: process.env["NEXT_PUBLIC_APP_URL"],
     DATABASE_URL: process.env["DATABASE_URL"],
     NODE_ENV: process.env["NODE_ENV"],
     BETTER_AUTH_SECRET: process.env["BETTER_AUTH_SECRET"],
