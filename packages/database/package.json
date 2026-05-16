@@ -8,6 +8,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./env": "./src/env.ts",
     "./schemas": "./src/schemas/index.ts",
     "./auth": "./src/auth.ts",
     "./queries": "./src/queries/index.ts"
