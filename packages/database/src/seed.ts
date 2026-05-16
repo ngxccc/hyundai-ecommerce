@@ -1,9 +1,10 @@
-import { db, dealerTiers } from "./index";
+import { db } from "./index";
 import { brands } from "./schemas/brand.schema";
 import { categories } from "./schemas/category.schema";
 import { products } from "./schemas/product.schema";
 import { warehouses } from "./schemas/warehouse.schema";
 import { warehouseStocks } from "./schemas/warehouse-stock.schema";
+import { dealerTiers } from "./schemas";
 
 async function seed() {
   console.log("🌱 Seeding database...");
