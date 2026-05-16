@@ -121,6 +121,7 @@ We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) 
 - [ ] PDF Quote Generation with official stamps
 - [ ] Dynamic form builder for product attributes
 - [ ] Internationalization (multi-language support)
+- [ ] Migrate Prettier → Biome (xem issue [#15](https://github.com/ngxccc/hyundai-ecommerce/issues/15)) cho performance gain
 
 ---
 
