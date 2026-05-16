@@ -54,6 +54,13 @@ export default defineConfig([
     },
   },
 
+  {
+    files: ["**/*.test.ts", "**/*.test.tsx"],
+    settings: {
+      "import-x/core-modules": ["bun:test"],
+    },
+  },
+
   ...architecture,
 
   // PRETTIER - Must be last to disable conflicting rules
