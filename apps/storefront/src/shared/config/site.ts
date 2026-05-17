@@ -1,4 +1,4 @@
-import { env } from "@nhatnang/database";
+import { env } from "@/env";
 
 export const META_THEME_COLORS = {
   light: "#ffffff",

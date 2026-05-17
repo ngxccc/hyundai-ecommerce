@@ -10,7 +10,6 @@ export const ENVIRONMENT_MODES = {
 
 export const env = createEnv({
   server: {
-    NEXT_PUBLIC_APP_URL: z.url(MESSAGES.NEXT_URL_IS_INVALID),
     DATABASE_URL: z.url(MESSAGES.DB_URL_IS_INVALID),
     NODE_ENV: z
       .enum([
@@ -33,7 +32,6 @@ export const env = createEnv({
   },
 
   runtimeEnv: {
-    NEXT_PUBLIC_APP_URL: process.env["NEXT_PUBLIC_APP_URL"],
     DATABASE_URL: process.env["DATABASE_URL"],
     NODE_ENV: process.env["NODE_ENV"],
     BETTER_AUTH_SECRET: process.env["BETTER_AUTH_SECRET"],
