@@ -10,7 +10,7 @@ export const siteConfig = {
   shortName: "Hyundai Nhật Năng",
   description:
     "Đại lý phân phối độc quyền máy phát điện Hyundai chính hãng, bộ lưu điện UPS và giải pháp nguồn điện công nghiệp/dân dụng hàng đầu tại Việt Nam.",
-  url: env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+  url: env.NEXT_PUBLIC_APP_URL,
   ogImage: `${env.NEXT_PUBLIC_APP_URL}/opengraph-image.jpg`,
   keywords: [
     "Máy phát điện Hyundai",
