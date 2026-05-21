@@ -1,8 +1,15 @@
 import { fetchApi } from "@/shared/lib/api-client";
 import type { NewsArticle } from "@/shared/types/common";
 
+const isProductionBuild =
+  process.env["NEXT_PHASE"] === "phase-production-build";
+
 export const newsService = {
   getLatest: async (): Promise<NewsArticle[]> => {
+    if (isProductionBuild) {
+      return [];
+    }
+
     try {
       return await fetchApi<NewsArticle[]>("/api/news", {
         next: { revalidate: 3600 }, // Cache 1 tiếng
