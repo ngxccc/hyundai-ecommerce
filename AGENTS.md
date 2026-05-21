@@ -11,7 +11,7 @@
   - `packages/database` — Drizzle ORM + Better Auth schemas
   - `packages/types`, `packages/typescript-config`, `packages/eslint-config`
 
-## Agent skills
+## Agent Skills
 
 ### Issue tracker
 
@@ -25,36 +25,69 @@ Use the canonical triage labels with no repo-specific overrides. See [docs/agent
 
 This repo uses a single source of truth in the root `CONTEXT.md`. See [docs/agents/domain.md](docs/agents/domain.md).
 
-## Core Principles (MUST FOLLOW)
+## Skill Activation Rules (MUST FOLLOW)
 
-### 1. Server vs Client Components
+Use the following skills in this exact order for any new feature or major change:
 
-- **Default**: Use Server Components (`"use server"` implicit)
-- Only add `"use client"` when absolutely necessary (hooks, browser APIs, state)
-- Prefer Server Actions over API routes when possible
+1. **grill-me** or **grill-with-docs** (mandatory first step)
+   - Always start with `/grill-me` for simple tasks
+   - Use `/grill-with-docs` when the task touches domain model, auth, or shared packages
+   - Goal: Reach shared understanding before writing any code
 
-### 2. File & Folder Structure
+2. **to-prd** or **to-issues**
+   - Convert the grilled plan into a clear PRD or GitHub issues using vertical slices
+
+3. **improve-codebase-architecture**
+   - Run this before implementing if the change touches multiple modules
+   - Especially important for auth, database, and monorepo structure
+
+4. **tdd**
+   - Always use with `bun:test` runner
+   - Write failing test first → implement → refactor
+   - Never skip this step
+
+5. **Other skills** (use when relevant):
+   - `web-forms-react-hook-form` + `web-forms-zod-validation` → for any form work
+   - `web-ui-shadcn-ui` → when creating new UI components
+   - `web-i18n-next-intl` → when adding new text/translations
+   - `diagnose` → when debugging complex issues
+   - `prototype` → for throwaway experiments
+   - `zoom-out` → when you feel lost in the codebase
+   - `caveman` → when you want ultra-concise responses
+
+**Never** use skills from `agents-inc/skills` unless the task specifically requires infrastructure, CI/CD, or security hardening.
+
+**Default behavior:** If unsure which skill to use, always start with `/grill-me`.
+
+## Core Principles
+
+### Server vs Client Components
+
+- Default to Server Components (`"use server"` is implicit)
+- Only add `"use client"` when absolutely necessary (hooks, browser APIs, client state)
+- Prefer Server Actions over API routes whenever possible
+
+### File & Folder Structure
 
 - Use **feature-based** structure: `src/features/[feature]/`
-- Components go in `components/`
-- Keep `page.tsx` as thin Server Component (only layout + metadata)
-- Business logic → `actions/`, `services/`, `stores/`
+- Place components in `components/`
+- Keep `page.tsx` as a thin Server Component (only layout + metadata)
+- Move business logic into `actions/`, `services/`, or `stores/`
 
-### 3. Component Export Style (IMPORTANT)
+### Component Export Style
 
-**Rules must follow:**
+**Rules:**
 
-- **Page.tsx files** (ex: `register/page.tsx`, `products/[slug]/page.tsx`):
+- `page.tsx` and `layout.tsx` files use default export:
 
   ```tsx
   const RegisterPage = () => {
     return <div>...</div>;
   };
-
   export default RegisterPage;
   ```
 
-- **Child Components / Reusable Components**:
+- All other components use named exports:
 
   ```tsx
   export const RegisterForm = () => {
@@ -62,102 +95,61 @@ This repo uses a single source of truth in the root `CONTEXT.md`. See [docs/agen
   };
   ```
 
-- **Không dùng** `export default` cho component con (trừ Page.tsx)
-- **Luôn tách component** — không gom quá nhiều logic vào 1 file (tối đa ~150-200 dòng)
+- Never use `export default` for child/reusable components
+- Always split components — keep files under ~150-200 lines
 
-### 4. TypeScript Best Practices
+### TypeScript Best Practices
 
-#### 4.1 Type vs Interface
+#### Type vs Interface
 
-- **Ưu tiên `interface`** cho object shapes, props, API responses
-- Chỉ dùng `type` khi cần union, intersection, hoặc mapped types
+- Prefer `interface` for object shapes, props, and API responses
+- Only use `type` for unions, intersections, or mapped types
 
-```tsx
-// ✅ GOOD
-interface UserProps {
-  id: string;
-  name: string;
-  email: string;
-}
+#### Naming Conventions
 
-// ❌ AVOID (trừ khi cần union)
-type User = {
-  id: string;
-  name: string;
-};
-```
+- Interfaces: `IPascalCase` (e.g., `IUser`, `IProduct`)
+- Types: `TPascalCase` (e.g., `TUserRole`, `TBusinessType`)
+- Props: `ComponentNameProps` (e.g., `RegisterFormProps`)
 
-#### 4.2 Naming Conventions cho Types
+#### Function & Component Typing
 
-- **Interface**: `IPascalCase` (ví dụ: `IUser`, `IProduct`, `IOrder`)
-- **Type**: `TPascalCase` (ví dụ: `TUserRole`, `TBusinessType`)
-- **Props**: `ComponentNameProps` (ví dụ: `RegisterFormProps`, `ProductCardProps`)
-
-#### 4.3 Function & Component Typing
+Use clear, explicit typing:
 
 ```tsx
-// ✅ Tốt - Arrow function với type rõ ràng
 export const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
-  const handleSubmit = async (data: RegisterFormData) => {
-    // ...
-  };
-
+  const handleSubmit = async (data: RegisterFormData) => { ... };
   return <form onSubmit={handleSubmit}>...</form>;
 };
 
-// ✅ Tốt - Function declaration (cho page)
 const ProductDetailPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
   return <div>...</div>;
 };
-
 export default ProductDetailPage;
 ```
 
-#### 4.4 Strict Type Safety
+#### Strict Type Safety
 
-- **Không dùng `any`** trừ khi không thể tránh (phải comment lý do)
-- Dùng `unknown` thay vì `any` khi không biết type
-- Luôn validate input từ user/API bằng **Zod**
-- Dùng `satisfies` khi cần type inference chặt chẽ
+- Avoid `any` unless absolutely necessary (add comment explaining why)
+- Use `unknown` instead of `any` when type is unknown
+- Always validate user/API input with **Zod**
+- Use `satisfies` for tight type inference
 
-```tsx
-// ✅ Tốt
-const user = {
-  name: "John",
-  age: 30,
-} satisfies User;
+#### Import/Export Rules
 
-// ❌ Tránh
-const user: any = { ... };
-```
+- Use named exports for child components and utilities
+- Only use `export default` for `page.tsx` and `layout.tsx`
+- Import order: External → Internal → Relative
+- Group imports with comments when needed
 
-#### 4.5 Import/Export Rules
+#### React Hook Form Best Practices (Performance)
 
-- Dùng **named exports** cho component con và utilities
-- Chỉ dùng `export default` cho `page.tsx` và `layout.tsx`
-- Import theo thứ tự: External → Internal → Relative
-- Group imports bằng comment khi cần
+**Always prefer `useWatch` over `watch` or `Controller`**:
 
-```tsx
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+- `form.watch()` causes full component re-renders
+- `useWatch` only re-renders the components that actually use the field
 
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
-
-import { registerSchema } from "@/features/auth/schemas/auth.schema";
-```
-
-#### 4.6 React Hook Form Best Practices (QUAN TRỌNG - Tránh re-render)
-
-**Luôn ưu tiên `useWatch` thay vì `watch` hoặc `Controller`:**
-
-- `form.watch()` → Gây re-render toàn bộ component mỗi khi field thay đổi
-- `Controller` → Cô lập components → **Tối ưu hiệu năng**
-- `useWatch` → Chỉ re-render component nào đang dùng field đó → **Tối ưu hiệu năng**
-
-**✅ Đúng (dùng useWatch):**
+Example:
 
 ```tsx
 import { useWatch } from "react-hook-form";
@@ -173,8 +165,6 @@ export const BusinessInfoSection = ({ form }: BusinessInfoSectionProps) => {
   return (
     <div>
       {isB2B && <CompanyFields />}
-
-      // Dùng Controller khi có thể
       <Controller
         name="businessType"
         control={form.control}
@@ -185,81 +175,73 @@ export const BusinessInfoSection = ({ form }: BusinessInfoSectionProps) => {
 };
 ```
 
-**❌ Tránh:**
-
-```tsx
-// Tránh dùng form.watch() trực tiếp trong component
-const businessType = form.watch("businessType")
-```
-
-### 5. Styling & UI
+### Styling & UI
 
 - Use **shadcn/ui** components from `@/shared/components/ui`
 - Tailwind CSS v4 + custom design system
-- Follow existing component patterns in `src/features/home/components/`
+- Follow existing patterns in `src/features/home/components/`
 
-### 6. Monorepo Rules (Turborepo)
+### Monorepo Rules (Turborepo)
 
 - Never import directly from `apps/` into `packages/`
 - Use workspace protocol: `"@nhatnang/database": "workspace:*"`
 - Run commands with `bun --filter=storefront run dev`
 
-### 7. Authentication (Better Auth)
+### Authentication (Better Auth)
 
 - Always use `authClient` from `@/shared/lib/auth-client`
 - Never manually hash passwords — Better Auth handles it
-- Registration flow must collect: fullName, email, phone, companyName, taxId, businessType, province
+- Registration flow must collect: `fullName`, `email`, `phone`, `companyName`, `taxId`, `businessType`, `province`
 
-### 8. Database (Drizzle)
+### Database (Drizzle)
 
 - All queries go through `packages/database`
 - Use transactions (`withTransaction`) for multi-table operations
 - Never write raw SQL unless absolutely necessary
 
-### 9. Internationalization (i18n) & Hardcoded Text (QUAN TRỌNG)
+### Internationalization & Hardcoded Text
 
 **Frontend (Next.js):**
 
-- **Không được hardcode text** trong component.
-- Tất cả chuỗi text phải được đưa vào thư mục `messages/`:
-  - `messages/en.json` — English
-  - `messages/vi.json` — Tiếng Việt
-- Sử dụng `next-intl` hoặc tương đương để load translation.
-- Ví dụ đúng:
-
-  ```tsx
-  import { useTranslations } from 'next-intl';
-  const t = useTranslations('HomePage');
-  <h1>{t('hero.titleLine1')}</h1>
-  ```
+- Never hardcode text in components
+- All strings must live in the `messages/` folder:
+  - `messages/en.json`
+  - `messages/vi.json`
+- Use `next-intl` (or equivalent) for translations
 
 **Backend / Packages / Shared code:**
 
-- Tạo file riêng cho constants/messages (ví dụ: `constants.ts`, `messages.ts`, `errors.ts`).
-- Không hardcode string trong logic backend.
-- Dễ maintain và chuẩn bị cho i18n sau này.
+- Create dedicated files for constants/messages (`constants.ts`, `messages.ts`, `errors.ts`)
+- Never hardcode strings directly in backend logic
 
-## Commands
+### Commands
 
 - `bun run dev` — Start all apps
 - `bun --filter=storefront run dev` — Start only storefront
 - `bun run build` — Build everything
-- `bun run db:generate` — Generate Drizzle migrations (in packages/database)
+- `bun run db:generate` — Generate Drizzle migrations
 - `bun run lint` — Run ESLint
 
-## What NOT to do
+### What NOT to Do
 
 - Do NOT create new API routes under `app/api` unless necessary (prefer Server Actions)
 - Do NOT use `any` type
 - Do NOT put business logic inside `page.tsx`
 - Do NOT bypass shadcn/ui components
-- Do NOT create huge component files (> 200 dòng) — luôn tách nhỏ
+- Do NOT create huge component files (> 200 lines) — always split
 - Do NOT hardcode text in frontend components (must use `messages/` folder)
 - Do NOT hardcode strings in backend/packages without dedicated constant files
 
-## When in doubt
+### When in Doubt
 
-- Look at existing patterns in:
-  - `src/features/home/components/` (good component examples)
-  - `src/features/auth/` (current auth implementation)
-  - `packages/database/src/schemas/` (Drizzle schema patterns)
+Look at existing patterns in:
+
+- `src/features/home/components/` (good component examples)
+- `src/features/auth/` (current auth implementation)
+- `packages/database/src/schemas/` (Drizzle schema patterns)
+
+### Test Runner Policy
+
+- Always use `bun:test` runner (import from `"bun:test"`)
+- Command: `bun test` or `bun test <file>`
+- Never suggest vitest or jest unless explicitly asked
