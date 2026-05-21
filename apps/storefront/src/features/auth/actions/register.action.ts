@@ -1,26 +1,25 @@
 "use server";
 
-import { auth, isAPIError } from "@nhatnang/database/auth";
-import { createRegisterSchema } from "../schemas/auth.schema";
-import type { TRegisterForm } from "../schemas/auth.schema";
 import { checkDuplicateUser } from "@nhatnang/database/queries";
 import {
   AUTH_ERROR_CODES,
   SYSTEM_ERROR_CODES,
 } from "@nhatnang/shared/constants";
 import { z } from "zod";
-import type { TAuthActionResult } from "../types/auth.types";
+import { authService } from "@nhatnang/database/services";
+import {
+  createRegisterSchema,
+  type TRegisterForm,
+} from "@nhatnang/database/schemas";
 
-export async function registerAction(
-  data: TRegisterForm,
-): Promise<TAuthActionResult<keyof TRegisterForm & string>> {
+export async function registerAction(data: TRegisterForm) {
   const schema = createRegisterSchema((key: string) => key);
   const parsed = await schema.safeParseAsync(data);
 
   if (!parsed.success) {
     return {
       success: false,
-      errorCode: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+      code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
       fieldErrors: z.flattenError(parsed.error).fieldErrors,
     };
   }
@@ -44,39 +43,10 @@ export async function registerAction(
 
     return {
       success: false,
+      code: "VALIDATION_ERROR" as const,
       fieldErrors,
     };
   }
 
-  try {
-    await auth.api.signUpEmail({
-      body: {
-        email: validatedData.email,
-        password: validatedData.password,
-        name: validatedData.fullName,
-        phone: validatedData.phone,
-        companyName: validatedData.companyName,
-        taxId: validatedData.taxId,
-        businessType: validatedData.businessType,
-        province: validatedData.province,
-        callbackURL: "/login",
-      },
-    });
-
-    return { success: true };
-  } catch (error) {
-    console.error("Registration error (server):", error);
-
-    if (isAPIError(error)) {
-      return {
-        success: false,
-        errorCode: error.message,
-      };
-    }
-
-    return {
-      success: false,
-      errorCode: SYSTEM_ERROR_CODES.INTERNAL_SERVER_ERROR,
-    };
-  }
+  return authService.register(validatedData);
 }

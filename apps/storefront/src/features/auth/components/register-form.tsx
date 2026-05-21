@@ -15,10 +15,6 @@ import {
   CardContent,
 } from "@/shared/components/ui/card";
 import { Link } from "@/i18n/routing";
-import {
-  createRegisterSchema,
-  type TRegisterForm,
-} from "@/features/auth/schemas/auth.schema";
 import { PersonalInfoSection } from "./personal-info-section";
 import { BusinessInfoSection } from "./business-info-section";
 import { PasswordSection } from "./password-section";
@@ -26,7 +22,11 @@ import { TermsSection } from "./terms-section";
 import { Form } from "@/shared/components/ui/form";
 import { registerAction } from "../actions/register.action";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
-import type { IAuthErrorMessageMap } from "../types/auth.types";
+import type { IAuthErrorMessageMap } from "@nhatnang/types";
+import {
+  createRegisterSchema,
+  type TRegisterForm,
+} from "@nhatnang/database/schemas";
 
 export const RegisterForm = () => {
   const router = useRouter();
@@ -43,7 +43,7 @@ export const RegisterForm = () => {
     resolver: zodResolver(registerSchema),
     shouldUnregister: true,
     defaultValues: {
-      fullName: "",
+      name: "",
       email: "",
       phone: "",
       password: "",
@@ -63,12 +63,11 @@ export const RegisterForm = () => {
       const result = await registerAction(data);
 
       if (!result.success) {
-        if (result.fieldErrors) {
+        if ("fieldErrors" in result && result.fieldErrors) {
           Object.entries(result.fieldErrors).forEach(([key, messages]) => {
             const safeKey = key as keyof TRegisterForm;
-            const errorMessage = messages[0]
-              ? (errorMessages[messages[0]] ?? t("errorMessage"))
-              : t("errorMessage");
+            const errorCode = messages[0] ?? "errorMessage";
+            const errorMessage = errorMessages[errorCode] ?? t("errorMessage");
 
             form.setError(safeKey, {
               type: "server",
@@ -79,14 +78,10 @@ export const RegisterForm = () => {
           return;
         }
 
-        const errorCode =
-          typeof result.errorCode === "string" ? result.errorCode : undefined;
+        const errorCode = result.code;
+        const errorMessage = errorMessages[errorCode] ?? t("errorMessage");
 
-        const message = errorCode
-          ? (errorMessages[errorCode] ?? t("errorMessage"))
-          : t("errorMessage");
-
-        toast.error(message);
+        toast.error(errorMessage);
         return;
       }
 
