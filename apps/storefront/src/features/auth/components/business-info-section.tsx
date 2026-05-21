@@ -1,6 +1,6 @@
 "use client";
 
-import { Controller, useWatch, type UseFormReturn } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 import { Input } from "@/shared/components/ui/input";
 import {
   Select,
@@ -12,10 +12,9 @@ import {
 import { Field, FieldLabel, FieldError } from "@/shared/components/ui/field";
 import type { TRegisterForm } from "@/features/auth/schemas/auth.schema";
 import { useTranslations } from "next-intl";
+import type { IAuthFormSectionProps } from "@/features/auth/types/auth.types";
 
-interface BusinessInfoSectionProps {
-  form: UseFormReturn<TRegisterForm>;
-}
+interface BusinessInfoSectionProps extends IAuthFormSectionProps<TRegisterForm> {}
 
 export const BusinessInfoSection = ({ form }: BusinessInfoSectionProps) => {
   const t = useTranslations("Register");

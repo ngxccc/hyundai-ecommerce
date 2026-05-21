@@ -17,7 +17,17 @@ type TRegisterValidationMessageKey =
   | "validation.agreeTermsRequired"
   | "validation.confirmPasswordMismatch";
 
-type IRegisterTranslator = (key: TRegisterValidationMessageKey) => string;
+type TLoginValidationMessageKey =
+  | "validation.emailRequired"
+  | "validation.passwordRequired";
+
+export interface ILoginTranslator {
+  (key: TLoginValidationMessageKey): string;
+}
+
+export interface IRegisterTranslator {
+  (key: TRegisterValidationMessageKey): string;
+}
 
 const addFieldIssue = (
   ctx: z.RefinementCtx,
@@ -115,4 +125,11 @@ export const createRegisterSchema = (t: IRegisterTranslator) =>
       }
     });
 
+export const createLoginSchema = (t: ILoginTranslator) =>
+  z.object({
+    email: z.email(t("validation.emailRequired")),
+    password: z.string().min(1, t("validation.passwordRequired")),
+  });
+
+export type TLoginForm = z.infer<ReturnType<typeof createLoginSchema>>;
 export type TRegisterForm = z.infer<ReturnType<typeof createRegisterSchema>>;

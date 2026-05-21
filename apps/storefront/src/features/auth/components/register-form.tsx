@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -26,6 +26,7 @@ import { TermsSection } from "./terms-section";
 import { Form } from "@/shared/components/ui/form";
 import { registerAction } from "../actions/register.action";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
+import type { IAuthErrorMessageMap } from "../types/auth.types";
 
 export const RegisterForm = () => {
   const router = useRouter();
@@ -33,7 +34,7 @@ export const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const registerSchema = createRegisterSchema(t);
 
-  const errorMessages: Record<string, string> = {
+  const errorMessages: IAuthErrorMessageMap = {
     [AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS]: t("validation.emailAlreadyExists"),
     [AUTH_ERROR_CODES.PHONE_ALREADY_EXISTS]: t("validation.phoneAlreadyExists"),
   };
@@ -55,7 +56,7 @@ export const RegisterForm = () => {
     },
   });
 
-  const onSubmit = async (data: TRegisterForm) => {
+  const onSubmit: SubmitHandler<TRegisterForm> = async (data) => {
     setIsLoading(true);
 
     try {

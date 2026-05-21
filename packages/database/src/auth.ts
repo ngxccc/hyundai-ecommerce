@@ -86,3 +86,4 @@ export const auth = betterAuth({
 
 export { APIError, isAPIError } from "better-auth/api";
 export { toNextJsHandler } from "better-auth/next-js";
+export { createAuthClient } from "better-auth/react";

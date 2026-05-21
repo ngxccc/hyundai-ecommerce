@@ -1,15 +1,14 @@
 "use client";
 
-import { Controller, type UseFormReturn } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Link } from "@/i18n/routing";
 import { Field, FieldLabel, FieldError } from "@/shared/components/ui/field";
 import type { TRegisterForm } from "@/features/auth/schemas/auth.schema";
+import type { IAuthFormSectionProps } from "@/features/auth/types/auth.types";
 
-interface TermsSectionProps {
-  form: UseFormReturn<TRegisterForm>;
-}
+interface TermsSectionProps extends IAuthFormSectionProps<TRegisterForm> {}
 
 export const TermsSection = ({ form }: TermsSectionProps) => {
   const t = useTranslations("Register");
