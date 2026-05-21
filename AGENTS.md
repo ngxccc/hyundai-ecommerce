@@ -11,6 +11,20 @@
   - `packages/database` — Drizzle ORM + Better Auth schemas
   - `packages/types`, `packages/typescript-config`, `packages/eslint-config`
 
+## Agent skills
+
+### Issue tracker
+
+GitHub Issues are the source of truth for this repo. See [docs/agents/issue-tracker.md](docs/agents/issue-tracker.md).
+
+### Triage labels
+
+Use the canonical triage labels with no repo-specific overrides. See [docs/agents/triage-labels.md](docs/agents/triage-labels.md).
+
+### Domain docs
+
+This repo uses a single source of truth in the root `CONTEXT.md`. See [docs/agents/domain.md](docs/agents/domain.md).
+
 ## Core Principles (MUST FOLLOW)
 
 ### 1. Server vs Client Components
