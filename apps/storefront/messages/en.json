@@ -138,6 +138,7 @@
       "emailInvalid": "Invalid email address",
       "emailAlreadyExists": "Email already exists",
       "phoneAlreadyExists": "Phone already exists",
+      "phoneInvalid": "Phone number is invalid",
       "phoneMin": "Phone number is invalid",
       "passwordMin": "Password must be at least 6 characters",
       "confirmPasswordRequired": "Please confirm your password",
