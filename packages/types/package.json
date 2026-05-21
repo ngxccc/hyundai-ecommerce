@@ -12,7 +12,6 @@
   "devDependencies": {
     "@nhatnang/typescript-config": "workspace:*",
     "@nhatnang/shared": "workspace:*",
-    "@nhatnang/database": "workspace:*",
     "@types/bun": "latest"
   },
   "peerDependencies": {

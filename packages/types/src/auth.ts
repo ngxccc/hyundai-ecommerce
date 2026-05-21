@@ -3,20 +3,6 @@ import {
   type TAuthErrorCode,
   type TSystemErrorCode,
 } from "@nhatnang/shared/constants";
-import {
-  type TLoginForm,
-  type TRegisterForm,
-} from "@nhatnang/database/schemas";
-
-export type IAuthErrorMessageMap = Record<string, string>;
-
-export interface IAuthFormSectionProps<
-  TForm extends FieldValues = FieldValues,
-> {
-  form: UseFormReturn<TForm>;
-  isLoading?: boolean;
-  disabled?: boolean;
-}
 
 export type TAuthActionResult<T = unknown> =
   | { success: true; data: T }
@@ -31,7 +17,7 @@ export interface RegisterOptions {
   callbackURL?: string;
 }
 
-export interface IAuthService {
+export interface IAuthService<TLoginForm = unknown, TRegisterForm = unknown> {
   loginEmail(
     data: TLoginForm,
     options?: LoginOptions,
@@ -40,5 +26,14 @@ export interface IAuthService {
     data: TRegisterForm,
     options?: RegisterOptions,
   ): Promise<TAuthActionResult<{ userId: string }>>;
-  // TODO: thêm socialLogin, magicLink, resetPassword khi cần
+}
+
+export type IAuthErrorMessageMap = Record<string, string>;
+
+export interface IAuthFormSectionProps<
+  TForm extends FieldValues = FieldValues,
+> {
+  form: UseFormReturn<TForm>;
+  isLoading?: boolean;
+  disabled?: boolean;
 }
