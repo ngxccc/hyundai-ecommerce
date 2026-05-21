@@ -27,7 +27,7 @@ export const env = createEnv({
 
   runtimeEnv: {
     DATABASE_URL: process.env["DATABASE_URL"],
-    NODE_ENV: process.env["NODE_ENV"],
+    NODE_ENV: process.env.NODE_ENV,
     BETTER_AUTH_SECRET: process.env["BETTER_AUTH_SECRET"],
     BETTER_AUTH_URL: process.env["BETTER_AUTH_URL"],
     RESEND_API_KEY: process.env["RESEND_API_KEY"],

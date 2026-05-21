@@ -7,7 +7,7 @@ import type {
 import { auth, isAPIError } from "../auth";
 import type { TLoginForm, TRegisterForm } from "../schemas";
 
-export class AuthService implements IAuthService {
+export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
   async loginEmail(
     data: TLoginForm,
     options?: LoginOptions,
