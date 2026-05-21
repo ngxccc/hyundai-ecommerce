@@ -10,6 +10,7 @@
     ".": "./src/index.ts",
     "./env": "./src/env.ts",
     "./schemas": "./src/schemas/index.ts",
+    "./services": "./src/services/index.ts",
     "./auth": "./src/auth.ts",
     "./queries": "./src/queries/index.ts"
   },
@@ -25,20 +26,21 @@
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.11",
-    "@neondatabase/serverless": "^1.0.2",
+    "@neondatabase/serverless": "^1.1.0",
     "@paralleldrive/cuid2": "^3.3.0",
     "@t3-oss/env-core": "^0.13.11",
     "better-auth": "^1.6.11",
-    "drizzle-orm": "^1.0.0-rc.2-e38a2ba",
+    "drizzle-orm": "^1.0.0-rc.4-5d5b77c",
     "resend": "^6.12.3",
-    "zod": "^4.3.6"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/shared": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
-    "@types/node": "^25.6.0",
-    "drizzle-kit": "^1.0.0-rc.2-e38a2ba",
-    "eslint": "^9"
+    "@nhatnang/types": "workspace:*",
+    "@types/node": "^25.9.1",
+    "drizzle-kit": "^1.0.0-rc.4-5d5b77c",
+    "eslint": "^9.39.4"
   }
 }
