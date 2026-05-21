@@ -9,8 +9,11 @@ import {
   SYSTEM_ERROR_CODES,
 } from "@nhatnang/shared/constants";
 import { z } from "zod";
+import type { TAuthActionResult } from "../types/auth.types";
 
-export async function registerAction(data: TRegisterForm) {
+export async function registerAction(
+  data: TRegisterForm,
+): Promise<TAuthActionResult<keyof TRegisterForm & string>> {
   const schema = createRegisterSchema((key: string) => key);
   const parsed = await schema.safeParseAsync(data);
 

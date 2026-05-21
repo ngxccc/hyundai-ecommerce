@@ -1,14 +1,12 @@
 "use client";
 
-import type { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Input } from "@/shared/components/ui/input";
 import { Field, FieldLabel, FieldError } from "@/shared/components/ui/field";
 import type { TRegisterForm } from "@/features/auth/schemas/auth.schema";
+import type { IAuthFormSectionProps } from "@/features/auth/types/auth.types";
 
-interface PasswordSectionProps {
-  form: UseFormReturn<TRegisterForm>;
-}
+interface PasswordSectionProps extends IAuthFormSectionProps<TRegisterForm> {}
 
 export const PasswordSection = ({ form }: PasswordSectionProps) => {
   const t = useTranslations("Register");

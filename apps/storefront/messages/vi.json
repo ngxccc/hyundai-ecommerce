@@ -153,6 +153,36 @@
     }
   },
 
+  "Login": {
+    "title": "Đăng nhập",
+    "description": "Chào mừng trở lại! Vui lòng đăng nhập để quản lý đơn hàng và thiết bị của bạn.",
+    "submit": "Đăng nhập",
+    "submitting": "Đang xác thực...",
+    "noAccountYet": "Chưa có tài khoản?",
+    "registerNow": "Đăng ký ngay",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@company.vn",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "********",
+    "forgotPassword": "Quên mật khẩu?",
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "orLoginWith": "Hoặc đăng nhập bằng",
+    "social": {
+      "google": "Đăng nhập bằng Google",
+      "facebook": "Đăng nhập bằng Facebook"
+    },
+    "successMessage": "Đăng nhập thành công! Đang chuyển hướng...",
+    "errorMessage": "Đăng nhập thất bại. Vui lòng thử lại sau.",
+    "validation": {
+      "emailRequired": "Vui lòng nhập email",
+      "emailInvalid": "Email không hợp lệ",
+      "passwordRequired": "Vui lòng nhập mật khẩu",
+      "invalidCredentials": "Email hoặc mật khẩu không chính xác",
+      "accountLocked": "Tài khoản bị tạm khóa do nhập sai quá nhiều lần. Vui lòng thử lại sau.",
+      "unverifiedEmail": "Email chưa được xác thực. Vui lòng kiểm tra hộp thư của bạn."
+    }
+  },
+
   "NotFound": {
     "status": "Status: Terminal",
     "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",

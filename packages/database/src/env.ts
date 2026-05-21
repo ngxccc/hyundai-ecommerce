@@ -1,12 +1,6 @@
-import { MESSAGES } from "@nhatnang/shared/constants";
+import { ENVIRONMENT_MODES, MESSAGES } from "@nhatnang/shared/constants";
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
-
-export const ENVIRONMENT_MODES = {
-  DEVELOPMENT: "development",
-  PRODUCTION: "production",
-  TEST: "test",
-} as const;
 
 export const env = createEnv({
   server: {
@@ -65,5 +59,3 @@ export const env = createEnv({
     process.exit(1);
   },
 });
-
-export const isProduction = env.NODE_ENV === ENVIRONMENT_MODES.PRODUCTION;
