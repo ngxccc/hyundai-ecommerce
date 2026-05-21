@@ -37,6 +37,24 @@
       "skillPath": "skills/engineering/improve-codebase-architecture/SKILL.md",
       "computedHash": "ef32aea0a8fab9b365ff9e08a95f8d353e20ca21ea46ec2e73587c86dd341351"
     },
+    "infra-ci-cd-docker": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/infra-ci-cd-docker/SKILL.md",
+      "computedHash": "bfbf2cba8a40c1de6c9feb199f8986af294ed9ad5bfd3234360e3c9dc80e8b52"
+    },
+    "infra-ci-cd-github-actions": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/infra-ci-cd-github-actions/SKILL.md",
+      "computedHash": "54ec512005aa29eda9f17f80ebe5ad7b517fe0014069d9097870f8ca0982be29"
+    },
+    "infra-config-setup-env": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/infra-config-setup-env/SKILL.md",
+      "computedHash": "6defc87c9d2045733a06741010a85692c9b2bf2d86cb040acb3f6f122595d279"
+    },
     "prototype": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -48,6 +66,42 @@
       "sourceType": "github",
       "skillPath": "skills/engineering/setup-matt-pocock-skills/SKILL.md",
       "computedHash": "0164a8b1ef998abca426056c6ed8a7716a9d4692fc6daa5378f68381a6dafd24"
+    },
+    "shared-monorepo-turborepo": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/shared-monorepo-turborepo/SKILL.md",
+      "computedHash": "46ed6857726e606a0aa30b14b3eccf11f1a2010980326ee98ff861bf5dddfc56"
+    },
+    "shared-security-auth-security": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/shared-security-auth-security/SKILL.md",
+      "computedHash": "c8ddf99f2e941306c18be1775021446906303ef988a084342d28b5d81cdf0c9a"
+    },
+    "shared-tooling-biome": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/shared-tooling-biome/SKILL.md",
+      "computedHash": "241ffedc9c991188a248f5a8048d340e7472a260b6af9c302771938fca11a603"
+    },
+    "shared-tooling-eslint-prettier": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/shared-tooling-eslint-prettier/SKILL.md",
+      "computedHash": "40df9202c15de7482c125217a2cd42c707dd5cb48ea9d822439858c5572026a7"
+    },
+    "shared-tooling-git-hooks": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/shared-tooling-git-hooks/SKILL.md",
+      "computedHash": "85baa0e151fc0b1dfdfd7d94fd7674270af7e6e46ee319610fb497e77881de1d"
+    },
+    "shared-tooling-typescript-config": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/shared-tooling-typescript-config/SKILL.md",
+      "computedHash": "11f7b310fe8bb913453a28130c488fdfa1ae2d761702595b850afa0b58635371"
     },
     "tdd": {
       "source": "mattpocock/skills",
@@ -72,6 +126,90 @@
       "sourceType": "github",
       "skillPath": "skills/engineering/triage/SKILL.md",
       "computedHash": "2b6efb6da12d92551772fcc04acf331f4e0e6f7bd9d4cb23ce0b301e0b128feb"
+    },
+    "web-error-handling-error-boundaries": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-error-handling-error-boundaries/SKILL.md",
+      "computedHash": "c1c6656a396471d560571bae3577da8098f112fbe2ae0b1fb703d71233ac08aa"
+    },
+    "web-error-handling-result-types": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-error-handling-result-types/SKILL.md",
+      "computedHash": "e3c1c5eedc3f29a435e659c084a95265b2f0863d6aa8775c8d88b29206772171"
+    },
+    "web-forms-react-hook-form": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-forms-react-hook-form/SKILL.md",
+      "computedHash": "ded351f472242fb2770d8bc85f8b00dc40e55aa4b4778948d2a2f4e52299ae97"
+    },
+    "web-forms-zod-validation": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-forms-zod-validation/SKILL.md",
+      "computedHash": "c2e08189cb310628bf01a425eb99987c53d3cb4f217ac22be7052ccfac75dee9"
+    },
+    "web-framework-react": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-framework-react/SKILL.md",
+      "computedHash": "b8344fb93544df16efcb21d1a57bfc4544575dfbbf18ce25266476865ba1af75"
+    },
+    "web-i18n-next-intl": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-i18n-next-intl/SKILL.md",
+      "computedHash": "8a74fe0ce0d23968f3570757383ba0d3b320efb613940d5f23097483be4a91e9"
+    },
+    "web-i18n-react-intl": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-i18n-react-intl/SKILL.md",
+      "computedHash": "366ba19c56e7ef3a93d06f92b994909a6eceb61e6d781140004da3c7c810a234"
+    },
+    "web-meta-framework-nextjs": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-meta-framework-nextjs/SKILL.md",
+      "computedHash": "8430608ed92a30079c5162d7f07c3ae6ab6fee0faac8d940654b1f07dca4790e"
+    },
+    "web-performance-web-performance": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-performance-web-performance/SKILL.md",
+      "computedHash": "69d0e7754409fe8ccf79062035b47b145f0a8bf307d181c0603d80c1bf5241ee"
+    },
+    "web-server-state-react-query": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-server-state-react-query/SKILL.md",
+      "computedHash": "44609c0f7a733f0a8b032d8897f659b3f534aad33afe591593039756108bf5fc"
+    },
+    "web-state-zustand": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-state-zustand/SKILL.md",
+      "computedHash": "d9d87c310d9e15e05648e68a1847d7ce2149cfabec76e451c21b6d3b1ef3f15d"
+    },
+    "web-styling-tailwind": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-styling-tailwind/SKILL.md",
+      "computedHash": "08a6eaaeb3f0d266f0748db29e5b7b169b7392cb99291b1a443ffd16360345a4"
+    },
+    "web-testing-react-testing-library": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-testing-react-testing-library/SKILL.md",
+      "computedHash": "d03c011751236e8f3b2f714a01dcd29d43ba1480295850bfb2a8fcec5e7f3000"
+    },
+    "web-ui-shadcn-ui": {
+      "source": "agents-inc/skills",
+      "sourceType": "github",
+      "skillPath": "src/skills/web-ui-shadcn-ui/SKILL.md",
+      "computedHash": "0f9b31533c3e7755d9263e79c5fb1639edaacbeed0dff103334fe6c7c0713717"
     },
     "write-a-skill": {
       "source": "mattpocock/skills",
