@@ -1,5 +1,5 @@
 import { promoService } from "@/shared/services/promo.service";
-import { PromoCarousel } from "./PromoCarousel";
+import { PromoCarousel } from "./promo-carousel";
 
 export async function PromotionsSection() {
   const promos = await promoService.getPromos();
