@@ -1,4 +1,5 @@
 import { RegisterForm } from "@/features/auth/components/register-form";
+import { AuthPageShell } from "@/features/auth/components/auth-page-shell";
 import type { Metadata } from "next";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
@@ -18,11 +19,19 @@ export async function generateMetadata({
   };
 }
 
-const RegisterPage = () => {
+const RegisterPage = async ({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) => {
+  const { locale: rawLocale } = await params;
+  const locale = rawLocale as Locale;
+  const t = await getTranslations({ locale, namespace: "AuthPage" });
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
+    <AuthPageShell fallbackLabel={t("loading")} fallbackClassName="max-w-2xl">
       <RegisterForm />
-    </div>
+    </AuthPageShell>
   );
 };
 export default RegisterPage;

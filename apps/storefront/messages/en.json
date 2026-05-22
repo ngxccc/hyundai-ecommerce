@@ -154,6 +154,10 @@
     }
   },
 
+  "AuthPage": {
+    "loading": "Loading..."
+  },
+
   "Login": {
     "title": "Login",
     "description": "Chào mừng trở lại! Vui lòng đăng nhập để quản lý đơn hàng và thiết bị của bạn.",
