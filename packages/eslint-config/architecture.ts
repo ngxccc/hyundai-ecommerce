@@ -3,7 +3,12 @@ import { defineConfig } from "eslint/config";
 export default defineConfig([
   // FEATURE BOUNDARY ENFORCEMENT (Ranh giới thép cho Features)
   {
-    files: ["apps/**/src/features/**/*.ts", "apps/**/src/features/**/*.tsx"],
+    files: [
+      "apps/**/src/features/**/*.ts",
+      "apps/**/src/features/**/*.tsx",
+      "src/features/**/*.ts",
+      "src/features/**/*.tsx",
+    ],
     rules: {
       "no-restricted-imports": [
         "error",
@@ -29,13 +34,7 @@ export default defineConfig([
                 "Features KHÔNG được import từ Next.js App layer (app/). App layer chỉ được gọi feature, không ngược lại.",
             },
             {
-              // 3. NGĂN Barrel File tự import chính nó (Circular via Barrel)
-              group: ["**/index.{ts,tsx}"],
-              message:
-                "Barrel file không được import chính nó. Hãy import file cụ thể thay vì index.ts (tránh circular dependency).",
-            },
-            {
-              // 4. Cấm import từ shared/services trực tiếp trong feature (nên đi qua index)
+              // 3. Cấm import từ shared/services trực tiếp trong feature (nên đi qua index)
               group: ["@/shared/services/*", "!@/shared/services/index"],
               message:
                 "Chỉ import từ @/shared/services (public interface), không import thẳng file con.",
@@ -53,12 +52,74 @@ export default defineConfig([
           allowUnsafeDynamicCyclicDependency: false,
         },
       ],
+
+      // Ngăn import chính file hiện tại qua bất kỳ đường dẫn nào (./index, alias, ...)
+      "import-x/no-self-import": "error",
+    },
+  },
+
+  // APP LAYER FEATURE GATEKEEPING
+  {
+    files: [
+      "apps/**/app/**/*.ts",
+      "apps/**/app/**/*.tsx",
+      "app/**/*.ts",
+      "app/**/*.tsx",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              // Chỉ cho phép import từ public barrel của feature/sub-feature.
+              // Cấm chọc sâu vào file nội bộ bên trong feature.
+              group: [
+                "@/features/*/*/*",
+                "!@/features/*/*/index",
+                "!@/features/*/*/index.ts",
+                "!@/features/*/*/index.tsx",
+              ],
+              message:
+                "App layer chỉ được import từ public barrel của feature. Không được import file nội bộ bên trong feature.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  // FEATURE BARREL SELF-IMPORT GUARD (tránh index.ts import lại chính nó)
+  {
+    files: [
+      "apps/**/src/features/**/index.ts",
+      "apps/**/src/features/**/index.tsx",
+      "src/features/**/index.ts",
+      "src/features/**/index.tsx",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["./index", "./index.ts", "./index.tsx"],
+              message: "Barrel file không được import chính nó (./index).",
+            },
+          ],
+        },
+      ],
     },
   },
 
   // SHARED LAYER PROTECTION
   {
-    files: ["apps/**/src/shared/**/*.ts", "apps/**/src/shared/**/*.tsx"],
+    files: [
+      "apps/**/src/shared/**/*.ts",
+      "apps/**/src/shared/**/*.tsx",
+      "src/shared/**/*.ts",
+      "src/shared/**/*.tsx",
+    ],
     rules: {
       "no-restricted-imports": [
         "warn",
