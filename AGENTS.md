@@ -199,20 +199,38 @@ export const BusinessInfoSection = ({ form }: BusinessInfoSectionProps) => {
 - Use transactions (`withTransaction`) for multi-table operations
 - Never write raw SQL unless absolutely necessary
 
-### Internationalization & Hardcoded Text
+### Internationalization & Hardcoded Text (STRICT RULE)
 
-**Frontend (Next.js):**
+**Zero tolerance for hardcoded text.**
 
-- Never hardcode text in components
-- All strings must live in the `messages/` folder:
-  - `messages/en.json`
-  - `messages/vi.json`
-- Use `next-intl` (or equivalent) for translations
+Every single piece of user-facing text **MUST** come from the i18n system:
 
-**Backend / Packages / Shared code:**
+- Frontend (Next.js): All text must live in `messages/en.json` and `messages/vi.json`
+- Use `next-intl` (`useTranslations`, `getTranslations`, `useFormatter`)
+- Backend / Packages / Shared code: Use dedicated constant files (`messages.ts`, `errors.ts`, `constants.ts`)
 
-- Create dedicated files for constants/messages (`constants.ts`, `messages.ts`, `errors.ts`)
-- Never hardcode strings directly in backend logic
+**Examples of what is FORBIDDEN:**
+
+- Hardcoded strings in JSX: `<h1>Welcome</h1>`, `placeholder="Enter email"`, `toast("Login successful")`
+- Hardcoded error messages: `catch (e) { return "Something went wrong" }`
+- Hardcoded aria-label, title, alt text
+- Hardcoded button text, tooltip, notification
+
+**Correct pattern:**
+
+```tsx
+import { useTranslations } from 'next-intl';
+
+const t = useTranslations('Auth');
+
+<button>{t('login.button')}</button>
+<Toast title={t('login.success')} />
+```
+
+**If you ever feel the urge to hardcode text → STOP.**
+Create the key in `messages/` first, then use it.
+
+This rule applies to **every** file: components, actions, services, error boundaries, and even console logs that users might see.
 
 ### Commands
 
