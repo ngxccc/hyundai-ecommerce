@@ -10,7 +10,7 @@ import {
   CardHeader,
 } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
-import { newsService } from "@/shared/services/news.service";
+import { newsService } from "@/shared/services";
 
 export async function NewsSection() {
   const t = await getTranslations("HomePage.news");
