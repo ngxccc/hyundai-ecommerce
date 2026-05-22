@@ -61,6 +61,12 @@
       "skillPath": "skills/engineering/prototype/SKILL.md",
       "computedHash": "e4d0c8f8cb3fc096ee99405a15491da466545cf4a3694bee5a0c9db2fa621a43"
     },
+    "seo": {
+      "source": "Bhanunamikaze/Agentic-SEO-Skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "fe220c67b1669fc0ab1cbe3dc02073e540d27d096134fe539358c834aa6242c8"
+    },
     "setup-matt-pocock-skills": {
       "source": "mattpocock/skills",
       "sourceType": "github",
