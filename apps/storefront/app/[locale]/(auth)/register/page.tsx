@@ -1,5 +1,4 @@
-import { RegisterForm } from "@/features/auth/components/register-form";
-import { AuthPageShell } from "@/features/auth/components/auth-page-shell";
+import { AuthPageShell, RegisterForm } from "@/features/auth/components";
 import type { Metadata } from "next";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";

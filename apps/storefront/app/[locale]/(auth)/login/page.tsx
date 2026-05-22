@@ -1,5 +1,7 @@
-import { AuthPageShell } from "@/features/auth/components/auth-page-shell";
-import { LoginFormWithSearchParams } from "@/features/auth/components/login-form-with-search-params";
+import {
+  AuthPageShell,
+  LoginFormWithSearchParams,
+} from "@/features/auth/components";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 
