@@ -2,6 +2,7 @@ import { AuthPageShell, RegisterForm } from "@/features/auth/components";
 import type { Metadata } from "next";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 
 export async function generateMetadata({
   params,
@@ -16,6 +17,10 @@ export async function generateMetadata({
     title: t("title"),
     description: t("description"),
   };
+}
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
 }
 
 const RegisterPage = async ({
