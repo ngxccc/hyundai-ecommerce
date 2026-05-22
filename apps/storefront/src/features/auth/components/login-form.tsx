@@ -24,6 +24,7 @@ export const LoginFormInner = ({ callbackUrl }: LoginFormInnerProps) => {
   const errorMessages: IAuthErrorMessageMap = {
     [AUTH_ERROR_CODES.INVALID_CREDENTIALS]: t("validation.invalidCredentials"),
     [AUTH_ERROR_CODES.ACCOUNT_LOCKED]: t("validation.accountLocked"),
+    [AUTH_ERROR_CODES.EMAIL_NOT_VERIFIED]: t("validation.unverifiedEmail"),
   };
 
   const form = useForm<TLoginForm>({
