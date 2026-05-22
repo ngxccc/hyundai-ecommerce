@@ -48,7 +48,7 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
 
       return { success: true, data: { userId: result.user.id } };
     } catch (error) {
-      console.log("Auth Service Error(signin): ", error);
+      console.error("Auth Service Error(signin): ", error);
 
       if (isAPIError(error)) {
         return {
@@ -98,7 +98,7 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
 
       return { success: true, data: { userId: result.user.id } };
     } catch (error) {
-      console.log("Auth Service Error(register): ", error);
+      console.error("Auth Service Error(register): ", error);
 
       if (isAPIError(error)) {
         return {
