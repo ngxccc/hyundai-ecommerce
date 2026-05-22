@@ -125,6 +125,8 @@
         "typescript-eslint": "^8.59.3",
       },
       "devDependencies": {
+        "@nhatnang/typescript-config": "workspace:*",
+        "@types/bun": "^1.3.14",
         "eslint": "^9",
         "typescript": "^6.0.3",
       },
