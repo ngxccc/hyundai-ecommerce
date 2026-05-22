@@ -4,8 +4,29 @@ import type {
   RegisterOptions,
   TAuthActionResult,
 } from "@nhatnang/types";
-import { auth, isAPIError } from "../auth";
+import {
+  AUTH_ERROR_CODES,
+  type TAuthErrorCode,
+  type TSystemErrorCode,
+} from "@nhatnang/shared/constants";
+import { type APIError, auth, isAPIError } from "../auth";
 import type { TLoginForm, TRegisterForm } from "../schemas";
+
+const mapLoginAuthErrorCode = (
+  error: APIError,
+): TAuthErrorCode | TSystemErrorCode => {
+  const errorCode = error.body?.code;
+
+  if (errorCode === AUTH_ERROR_CODES.ACCOUNT_LOCKED) {
+    return "ACCOUNT_LOCKED";
+  }
+
+  if (errorCode === AUTH_ERROR_CODES.EMAIL_NOT_VERIFIED) {
+    return "EMAIL_NOT_VERIFIED";
+  }
+
+  return "INVALID_CREDENTIALS";
+};
 
 export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
   async loginEmail(
@@ -32,8 +53,8 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
       if (isAPIError(error)) {
         return {
           success: false,
+          code: mapLoginAuthErrorCode(error),
           error: error.message,
-          code: "INVALID_CREDENTIALS",
         };
       }
 

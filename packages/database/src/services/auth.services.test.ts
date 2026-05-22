@@ -1,7 +1,10 @@
-import { describe, it, expect, vi } from "bun:test";
+import { beforeEach, describe, expect, it, vi } from "bun:test";
+import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
 
 interface IAuthErrorLike {
   isAPIError?: boolean;
+  code?: string;
+  message?: string;
 }
 
 const isAuthErrorLike = (error: unknown): error is IAuthErrorLike => {
@@ -16,6 +19,14 @@ const isAuthErrorLike = (error: unknown): error is IAuthErrorLike => {
 const mockSignInEmail = vi.fn();
 const mockSignUpEmail = vi.fn();
 
+const createApiError = (code: string, message: string): IAuthErrorLike => {
+  return {
+    isAPIError: true,
+    code,
+    message,
+  };
+};
+
 void vi.mock("../auth", () => {
   return {
     auth: {
@@ -28,6 +39,11 @@ void vi.mock("../auth", () => {
 const { authService } = await import(".");
 
 describe("AuthService", () => {
+  beforeEach(() => {
+    mockSignInEmail.mockReset();
+    mockSignUpEmail.mockReset();
+  });
+
   it("loginEmail returns userId on success", async () => {
     mockSignInEmail.mockResolvedValue({ user: { id: "user-1" } });
 
@@ -46,10 +62,9 @@ describe("AuthService", () => {
   });
 
   it("loginEmail returns INVALID_CREDENTIALS when Better Auth throws API error", async () => {
-    const err = new Error("invalid");
-    // mark it as API error according to the mock's isAPIError predicate
-    (err as IAuthErrorLike).isAPIError = true;
-    mockSignInEmail.mockRejectedValue(err);
+    mockSignInEmail.mockRejectedValue(
+      createApiError("INVALID_EMAIL_OR_PASSWORD", "Invalid credentials"),
+    );
 
     const res = await authService.loginEmail({
       email: "a@x.com",
@@ -63,6 +78,47 @@ describe("AuthService", () => {
     }
 
     expect(res.code).toBe("INVALID_CREDENTIALS");
+    expect(res.error).toBe("Invalid credentials");
+  });
+
+  it("loginEmail returns EMAIL_NOT_VERIFIED when Better Auth rejects unverified email", async () => {
+    mockSignInEmail.mockRejectedValue(
+      createApiError("EMAIL_NOT_VERIFIED", "Email not verified"),
+    );
+
+    const res = await authService.loginEmail({
+      email: "a@x.com",
+      password: "p",
+    });
+
+    expect(res.success).toBe(false);
+
+    if (res.success) {
+      throw new Error("Expected loginEmail to fail");
+    }
+
+    expect(res.code).toBe("EMAIL_NOT_VERIFIED");
+    expect(res.error).toBe("Email not verified");
+  });
+
+  it("loginEmail returns ACCOUNT_LOCKED when account is locked", async () => {
+    mockSignInEmail.mockRejectedValue(
+      createApiError(AUTH_ERROR_CODES.ACCOUNT_LOCKED, "Account locked"),
+    );
+
+    const res = await authService.loginEmail({
+      email: "a@x.com",
+      password: "p",
+    });
+
+    expect(res.success).toBe(false);
+
+    if (res.success) {
+      throw new Error("Expected loginEmail to fail");
+    }
+
+    expect(res.code).toBe(AUTH_ERROR_CODES.ACCOUNT_LOCKED);
+    expect(res.error).toBe("Account locked");
   });
 
   it("register returns userId on success", async () => {
