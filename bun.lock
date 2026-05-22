@@ -95,7 +95,6 @@
         "@neondatabase/serverless": "^1.1.0",
         "@paralleldrive/cuid2": "^3.3.0",
         "@t3-oss/env-core": "^0.13.11",
-        "@types/bun": "^1.3.14",
         "better-auth": "^1.6.11",
         "drizzle-orm": "^1.0.0-rc.4-5d5b77c",
         "resend": "^6.12.3",
@@ -106,6 +105,7 @@
         "@nhatnang/shared": "workspace:*",
         "@nhatnang/types": "workspace:*",
         "@nhatnang/typescript-config": "workspace:*",
+        "@types/bun": "^1.3.14",
         "@types/node": "^25.9.1",
         "drizzle-kit": "^1.0.0-rc.4-5d5b77c",
         "eslint": "^9.39.4",
@@ -142,7 +142,6 @@
         "react-hook-form": "^7.76.0",
       },
       "devDependencies": {
-        "@nhatnang/database": "workspace:*",
         "@nhatnang/shared": "workspace:*",
         "@nhatnang/typescript-config": "workspace:*",
         "@types/bun": "latest",
