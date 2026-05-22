@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { categoryService } from "@/shared/services/category.service";
+import { categoryService } from "@/shared/services";
 
 const CATEGORY_UI_MAP = {
   industrial: {

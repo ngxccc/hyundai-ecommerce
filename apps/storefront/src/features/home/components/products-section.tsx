@@ -9,7 +9,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/shared/components/ui/card";
-import { productService } from "@/shared/services/product.service";
+import { productService } from "@/shared/services";
 import { priceFormatter } from "@/shared/lib/utils";
 
 export async function ProductsSection() {
