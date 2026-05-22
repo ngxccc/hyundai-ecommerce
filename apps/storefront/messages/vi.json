@@ -153,6 +153,10 @@
     }
   },
 
+  "AuthPage": {
+    "loading": "Đang tải..."
+  },
+
   "Login": {
     "title": "Đăng nhập",
     "description": "Chào mừng trở lại! Vui lòng đăng nhập để quản lý đơn hàng và thiết bị của bạn.",
