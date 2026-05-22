@@ -1,22 +1,41 @@
 import { fetchApi } from "../lib/api-client";
+import {
+  BUILD_TIME_PRODUCTS,
+  getProductSlug,
+  PRODUCTS_REVALIDATE_SECONDS,
+} from "../constants/products";
 import type { Product } from "../types/common";
 
 const isProductionBuild =
   process.env["NEXT_PHASE"] === "phase-production-build";
 
+const getBuildSafeProducts = async (): Promise<Product[]> => {
+  if (isProductionBuild) {
+    return BUILD_TIME_PRODUCTS;
+  }
+
+  try {
+    return await fetchApi<Product[]>("/api/products", {
+      next: { revalidate: PRODUCTS_REVALIDATE_SECONDS },
+    });
+  } catch (error) {
+    console.error("Failed to fetch products:", error);
+    return BUILD_TIME_PRODUCTS;
+  }
+};
+
 export const productService = {
   getProducts: async (): Promise<Product[]> => {
-    if (isProductionBuild) {
-      return [];
-    }
+    return await getBuildSafeProducts();
+  },
 
-    try {
-      return await fetchApi<Product[]>("/api/products", {
-        next: { revalidate: 3600 }, // Cache 1 tiếng
-      });
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-      return [];
-    }
+  getStaticProductSlugs: async (): Promise<string[]> => {
+    const products = await getBuildSafeProducts();
+    return products.map(getProductSlug);
+  },
+
+  getProductBySlug: async (slug: string): Promise<Product | null> => {
+    const products = await getBuildSafeProducts();
+    return products.find((product) => getProductSlug(product) === slug) ?? null;
   },
 };

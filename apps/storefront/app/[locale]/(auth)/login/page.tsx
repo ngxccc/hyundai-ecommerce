@@ -2,8 +2,13 @@ import {
   AuthPageShell,
   LoginFormWithSearchParams,
 } from "@/features/auth/components";
+import { routing } from "@/i18n/routing";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 const LoginPage = async ({
   params,
