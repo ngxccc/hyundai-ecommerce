@@ -9,7 +9,9 @@
     },
     "header": {
       "support": "24/7 Support",
-      "requestQuote": "Request a Quote"
+      "requestQuote": "Request a Quote",
+      "login": "Login",
+      "register": "Register"
     },
     "hero": {
       "badge": "Heavy-Duty Series",

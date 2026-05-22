@@ -9,7 +9,9 @@
     },
     "header": {
       "support": "Hỗ trợ 24/7",
-      "requestQuote": "Yêu cầu báo giá"
+      "requestQuote": "Yêu cầu báo giá",
+      "login": "Đăng nhập",
+      "register": "Đăng ký"
     },
     "hero": {
       "badge": "Dòng tải nặng",
