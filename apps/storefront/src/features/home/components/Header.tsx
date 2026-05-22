@@ -6,6 +6,8 @@ import { Link } from "@/i18n/routing";
 export function Header() {
   const t = useTranslations("HomePage");
   const navItems = ["products", "solutions", "services"] as const;
+  const ctaClasses =
+    "font-display h-10 rounded-md px-4 text-xs font-bold uppercase tracking-widest transition-all duration-200";
 
   return (
     <header className="bg-background/90 supports-backdrop-blur:bg-background/60 border-border fixed top-0 z-50 w-full border-b backdrop-blur-xl transition-all">
@@ -40,15 +42,17 @@ export function Header() {
         {/* Actions Area */}
         <div className="flex items-center gap-4">
           {/* Desktop Actions */}
-          <div className="hidden items-center gap-4 md:flex">
+          <div className="hidden items-center gap-3 md:flex">
             <Button
-              variant="ghost"
-              className="font-display text-xs font-bold tracking-widest uppercase"
+              asChild
+              variant="outline"
+              className={`${ctaClasses} border-zinc-200 bg-transparent text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900`}
             >
-              {t("header.support")}
+              <Link href="/login">{t("header.login")}</Link>
             </Button>
-            <Button className="font-display rounded-full px-6 py-5 text-[10px] font-bold tracking-widest uppercase shadow-lg transition-transform hover:-translate-y-0.5">
-              {t("header.requestQuote")}
+
+            <Button asChild className={`${ctaClasses} shadow-md`}>
+              <Link href="/register">{t("header.register")}</Link>
             </Button>
           </div>
 
