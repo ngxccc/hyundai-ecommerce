@@ -160,31 +160,31 @@
 
   "Login": {
     "title": "Login",
-    "description": "Chào mừng trở lại! Vui lòng đăng nhập để quản lý đơn hàng và thiết bị của bạn.",
+    "description": "Welcome back! Please sign in to manage your orders and equipment.",
     "submit": "Login",
-    "submitting": "Đang xác thực...",
-    "noAccountYet": "Chưa có tài khoản?",
-    "registerNow": "Đăng ký ngay",
+    "submitting": "Authenticating...",
+    "noAccountYet": "Don't have an account yet?",
+    "registerNow": "Register now",
     "emailLabel": "Email",
     "emailPlaceholder": "you@company.vn",
-    "passwordLabel": "Mật khẩu",
+    "passwordLabel": "Password",
     "passwordPlaceholder": "********",
-    "forgotPassword": "Quên mật khẩu?",
-    "rememberMe": "Ghi nhớ đăng nhập",
-    "orLoginWith": "Hoặc đăng nhập bằng",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me",
+    "orLoginWith": "Or sign in with",
     "social": {
-      "google": "Đăng nhập bằng Google",
-      "facebook": "Đăng nhập bằng Facebook"
+      "google": "Sign in with Google",
+      "facebook": "Sign in with Facebook"
     },
-    "successMessage": "Đăng nhập thành công! Đang chuyển hướng...",
-    "errorMessage": "Đăng nhập thất bại. Vui lòng thử lại sau.",
+    "successMessage": "Login successful! Redirecting...",
+    "errorMessage": "Login failed. Please try again later.",
     "validation": {
-      "emailRequired": "Vui lòng nhập email",
-      "emailInvalid": "Email không hợp lệ",
-      "passwordRequired": "Vui lòng nhập mật khẩu",
-      "invalidCredentials": "Email hoặc mật khẩu không chính xác",
-      "accountLocked": "Tài khoản bị tạm khóa do nhập sai quá nhiều lần. Vui lòng thử lại sau.",
-      "unverifiedEmail": "Email chưa được xác thực. Vui lòng kiểm tra hộp thư của bạn."
+      "emailRequired": "Please enter your email",
+      "emailInvalid": "Invalid email address",
+      "passwordRequired": "Please enter your password",
+      "invalidCredentials": "Incorrect email or password",
+      "accountLocked": "Your account has been temporarily locked due to too many failed attempts. Please try again later.",
+      "unverifiedEmail": "Your email has not been verified. Please check your inbox."
     }
   },
 
