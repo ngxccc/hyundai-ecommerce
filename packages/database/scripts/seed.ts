@@ -1,10 +1,10 @@
-import { db } from "./index";
-import { brands } from "./schemas/brand.schema";
-import { categories } from "./schemas/category.schema";
-import { products } from "./schemas/product.schema";
-import { warehouses } from "./schemas/warehouse.schema";
-import { warehouseStocks } from "./schemas/warehouse-stock.schema";
-import { dealerTiers } from "./schemas";
+import { db } from "../src/index";
+import { brands } from "../src/schemas/brand.schema";
+import { categories } from "../src/schemas/category.schema";
+import { products } from "../src/schemas/product.schema";
+import { warehouses } from "../src/schemas/warehouse.schema";
+import { warehouseStocks } from "../src/schemas/warehouse-stock.schema";
+import { dealerTiers } from "../src/schemas";
 
 async function seed() {
   console.log("🌱 Seeding database...");
