@@ -9,8 +9,9 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
+    "dev": "doppler run -- turbo run dev",
+    "dev:storefront": "doppler run -- turbo run dev --filter=storefront",
+    "build": "doppler run -- turbo run build",
     "lint": "turbo run lint",
     "prune:storefront": "turbo prune --scope=storefront --docker"
   },
