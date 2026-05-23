@@ -12,7 +12,7 @@ export function HeroSection() {
       <div className="absolute inset-0 z-0">
         <Image
           src="/may-phat-dien-mitsubishi.png"
-          alt=""
+          alt={t("hero.imageAlt")}
           fill
           priority
           sizes="100vw"
