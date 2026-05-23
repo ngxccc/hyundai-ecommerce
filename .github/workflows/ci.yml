@@ -44,13 +44,18 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Run CI Pipeline (Lint, Test)
-        run: bunx turbo run lint test
+        run: bun turbo run lint test
 
       - name: Pull Vercel Environment Information
         run: bunx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
 
       - name: Build Project Artifacts
         run: bunx vercel build --prod --token=$VERCEL_TOKEN
+
+      - name: Apply Expand Migration
+        run: cd packages/database && bun drizzle-kit migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Deploy Project Artifacts to Vercel
         run: bunx vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
