@@ -4,6 +4,7 @@
     "build": {
       "dependsOn": ["^build"],
       "env": [
+        "DOPPLER_TOKEN",
         "NODE_ENV",
         "NEXT_PUBLIC_API_URL",
         "DATABASE_URL",
