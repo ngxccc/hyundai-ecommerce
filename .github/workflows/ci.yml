@@ -49,11 +49,14 @@ jobs:
       - name: Run CI Pipeline (Lint, Test)
         run: bun turbo run lint test
 
-      - name: Build Project Artifacts
-        run: doppler run -- bunx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Pull Vercel Project Settings
+        run: bunx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
 
       - name: Apply Expand Migration
         run: cd packages/database && bun run db:migrate
+
+      - name: Build Project Artifacts
+        run: doppler run -- bunx vercel build --prod --token=$VERCEL_TOKEN
 
       - name: Deploy Project Artifacts to Vercel
         run: bunx vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
