@@ -47,10 +47,10 @@ jobs:
         run: bun turbo run lint test
 
       - name: Pull Vercel Environment Information
-        run: bunx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+        run: bunx vercel pull --yes --environment=production --token=$VERCEL_TOKEN --no-sensitive
 
       - name: Inject Env to Storefront Workspace
-        run: cp .vercel/.env.production.local apps/storefront/.env.production.local
+        run: cp .vercel/.env.production.local apps/storefront/.env.production.local cat .vercel/.env.production.local
 
       - name: Build Project Artifacts
         run: bunx vercel build --prod --token=$VERCEL_TOKEN
