@@ -36,6 +36,11 @@
         "packages/eslint-config/**"
       ]
     },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "cache": true
+    },
     "dev": {
       "persistent": true,
       "cache": false

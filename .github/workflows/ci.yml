@@ -40,8 +40,5 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      # - name: Build to generate types
-      #   run: bun run build
-
-      - name: Lint (with ESLint cache)
-        run: bun run lint
+      - name: Run CI Pipeline (Lint, Test)
+        run: bunx turbo run lint test
