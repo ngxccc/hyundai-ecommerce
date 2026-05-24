@@ -56,7 +56,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Push Schema to Ephemeral DB
-        run: bun turbo run db:push
+        run: bun run --cwd packages/database db:push
 
       - name: Seed CI Database
         run: bun run --cwd packages/database scripts/seed.ts
