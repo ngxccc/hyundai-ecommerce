@@ -9,15 +9,11 @@
       "default": "./src/index.ts"
     }
   },
-  "devDependencies": {
-    "@nhatnang/typescript-config": "workspace:*",
-    "@nhatnang/shared": "workspace:*",
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^6"
-  },
   "dependencies": {
     "react-hook-form": "^7.76.0"
+  },
+  "devDependencies": {
+    "@nhatnang/shared": "workspace:*",
+    "@nhatnang/typescript-config": "workspace:*"
   }
 }
