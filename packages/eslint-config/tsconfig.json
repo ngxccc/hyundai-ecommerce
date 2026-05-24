@@ -2,9 +2,9 @@
   "extends": "@nhatnang/typescript-config/library",
   "compilerOptions": { "types": ["bun"] },
   "include": [
-    "base.ts",
-    "architecture.ts",
-    "next.ts"
+    "src/base.ts",
+    "src/architecture.ts",
+    "src/next.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }
