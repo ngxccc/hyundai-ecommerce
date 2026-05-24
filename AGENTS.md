@@ -134,6 +134,8 @@ export default ProductDetailPage;
 - Use `unknown` instead of `any` when type is unknown
 - Always validate user/API input with **Zod**
 - Use `satisfies` for tight type inference
+- **Server Actions Return Types**: Always explicitly type return unions from Server Actions (e.g., success vs error branches). Do not rely on implicit union inference.
+- **Handling Unions**: Always narrow union types properly before accessing properties to avoid `@typescript-eslint/no-unsafe-member-access` or `@typescript-eslint/no-unsafe-assignment` errors. Use type guards (e.g., `if (!res.success) throw new Error()`) or explicit type casting (e.g., `as TMyActionResult`) when testing.
 
 #### Import/Export Rules
 
@@ -263,3 +265,6 @@ Look at existing patterns in:
 - Always use `bun:test` runner (import from `"bun:test"`)
 - Command: `bun test` or `bun test <file>`
 - Never suggest vitest or jest unless explicitly asked
+- **Mocking**: Mock at system boundaries only (e.g., database queries, external services like `authService`, Next.js runtime like `next/headers`).
+- **Mock setup**: When mocking modules, use `vi.mock()` before dynamically importing the module under test using `await import("./my.action")` to ensure the mock is hoisted correctly by `bun:test`.
+- **DOM Testing**: The project currently does not use DOM testing libraries (e.g., `@testing-library/react`). Focus on testing actions and services.
