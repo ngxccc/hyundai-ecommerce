@@ -61,7 +61,7 @@ jobs:
         run: bunx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
 
       - name: Build Docs Artifact
-        run: bun turbo run build --filter=docs
+        run: bunx vercel build --prod --token=$VERCEL_TOKEN
 
       - name: Deploy Docs to Vercel
         run: bunx vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN

@@ -50,7 +50,8 @@ jobs:
         run: bunx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
 
       - name: Apply Expand Migration to Prod DB
-        run: cd packages/database && bun run db:migrate
+        working-directory: packages/database
+        run: bun run db:migrate
 
       - name: Build Project Artifacts
         run: doppler run -- bunx vercel build --prod --token=$VERCEL_TOKEN
