@@ -15,6 +15,21 @@ export const revalidate = 3600;
 export async function generateStaticParams(): Promise<ProductPageParams[]> {
   const slugs = await productService.getStaticProductSlugs();
 
+  if (slugs.length === 0 && process.env["CI"]) {
+    console.warn(
+      "CI Environment: DB empty, generating fallback slug to test layout",
+    );
+    return routing.locales.flatMap((locale) => [
+      { locale, slug: "fallback-test-product" },
+    ]);
+  }
+
+  // Auto added env by Github Action
+  // if (process.env["CI"]) {
+  //   console.log(`[CI Mode] Truncating ${slugs.length} SKUs down to 10 for fast dry-run build`);
+  //   slugs = slugs.slice(0, 10);
+  // }
+
   return routing.locales.flatMap((locale) =>
     slugs.map((slug) => ({ locale, slug })),
   );

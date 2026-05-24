@@ -3,7 +3,9 @@ import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
 
 interface IAuthErrorLike {
   isAPIError?: boolean;
-  code?: string;
+  body: {
+    code?: string;
+  };
   message?: string;
 }
 
@@ -22,7 +24,9 @@ const mockSignUpEmail = vi.fn();
 const createApiError = (code: string, message: string): IAuthErrorLike => {
   return {
     isAPIError: true,
-    code,
+    body: {
+      code,
+    },
     message,
   };
 };
@@ -148,7 +152,7 @@ describe("AuthService", () => {
 
   it("register returns INVALID_CREDENTIALS when Better Auth throws API error", async () => {
     const err = new Error("exists");
-    (err as IAuthErrorLike).isAPIError = true;
+    (err as unknown as IAuthErrorLike).isAPIError = true;
     mockSignUpEmail.mockRejectedValue(err);
 
     const res = await authService.register({

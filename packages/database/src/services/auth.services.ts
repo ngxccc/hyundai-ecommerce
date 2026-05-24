@@ -104,7 +104,7 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
         return {
           success: false,
           error: error.message,
-          code: "INVALID_CREDENTIALS",
+          code: mapLoginAuthErrorCode(error),
         };
       }
 

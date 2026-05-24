@@ -1,0 +1,65 @@
+name: PR Check (Lint, Test, Build)
+
+on:
+  pull_request:
+    branches: ["main"]
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+
+jobs:
+  integration:
+    name: Code Quality & Dry-run Build
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: fake
+          POSTGRES_PASSWORD: fake
+          POSTGRES_DB: hyundai_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    environment: Staging
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_STAGING }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache Bun
+        uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v4
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Push Schema to Ephemeral DB
+        run: bun run --cwd packages/database db:push
+
+      - name: Seed CI Database
+        run: doppler run -- bun run --cwd packages/database scripts/seed.ts
+
+      - name: Run PR Pipeline (Lint, Test, Build)
+        run: bun turbo run lint test build

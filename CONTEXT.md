@@ -37,6 +37,8 @@ Use these terms consistently in code, docs, and architecture reviews.
 - **Auth action**: a server action that handles login or registration.
 - **Shared contract**: a type or interface used by multiple packages.
 - **Production build**: the Next.js build phase used for prerendering and static generation.
+- **Action result union**: a discriminated union type (usually containing `success: boolean`) returned by server actions to signify either success data or validation/system errors.
+- **System boundary**: an external dependency (like database, 3rd-party API, or framework runtime) that should be mocked during unit testing.
 
 ## Naming Rules
 

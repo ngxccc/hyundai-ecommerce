@@ -17,6 +17,7 @@
     "./queries": "./src/queries/index.ts"
   },
   "scripts": {
+    "test": "bun test src/",
     "db:push": "doppler run -- drizzle-kit push --config drizzle.config.ts",
     "db:generate": "doppler run -- drizzle-kit generate --config drizzle.config.ts",
     "db:migrate": "doppler run -- drizzle-kit migrate --config drizzle.config.ts",
@@ -33,6 +34,7 @@
     "@t3-oss/env-core": "^0.13.11",
     "better-auth": "^1.6.11",
     "drizzle-orm": "^1.0.0-rc.4-5d5b77c",
+    "postgres": "^3.4.9",
     "resend": "^6.12.3",
     "zod": "^4.4.3"
   },
