@@ -12,18 +12,18 @@
     "dev": "doppler run -- turbo run dev",
     "dev:storefront": "doppler run -- turbo run dev --filter=storefront",
     "build": "doppler run -- turbo run build",
-    "lint": "turbo run lint",
-    "prune:storefront": "turbo prune --scope=storefront --docker"
-  },
-  "devDependencies": {
-    "@types/bun": "1.3.14",
-    "@types/uuid": "^11.0.0",
-    "prettier": "^3.8.3",
-    "prettier-plugin-tailwindcss": "^0.8.0",
-    "turbo": "^2.9.14",
-    "typescript": "^6.0.3"
+    "lint": "turbo run lint"
   },
   "dependencies": {
     "uuid": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1",
+    "@types/node": "^25",
+    "@types/uuid": "^11",
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "turbo": "^2.9.14",
+    "typescript": "^6"
   }
 }
