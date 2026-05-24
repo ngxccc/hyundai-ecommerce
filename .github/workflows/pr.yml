@@ -59,7 +59,7 @@ jobs:
         run: bun run --cwd packages/database db:push
 
       - name: Seed CI Database
-        run: bun run --cwd packages/database scripts/seed.ts
+        run: doppler run -- bun run --cwd packages/database scripts/seed.ts
 
       - name: Run PR Pipeline (Lint, Test, Build)
         run: bun turbo run lint test build
