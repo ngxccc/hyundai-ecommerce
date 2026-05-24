@@ -7,6 +7,9 @@
     "./react": "./react.ts",
     "./next": "./next.ts"
   },
+  "scripts": {
+    "test": "bun test"
+  },
   "dependencies": {
     "@eslint-react/eslint-plugin": "^5.7.9",
     "@eslint/js": "^10.0.1",

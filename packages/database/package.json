@@ -17,6 +17,7 @@
     "./queries": "./src/queries/index.ts"
   },
   "scripts": {
+    "test": "bun test src/",
     "db:push": "doppler run -- drizzle-kit push --config drizzle.config.ts",
     "db:generate": "doppler run -- drizzle-kit generate --config drizzle.config.ts",
     "db:migrate": "doppler run -- drizzle-kit migrate --config drizzle.config.ts",
