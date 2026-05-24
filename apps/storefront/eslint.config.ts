@@ -1,6 +1,9 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import baseConfig from "@nhatnang/eslint-config/base";
-import nextConfig from "@nhatnang/eslint-config/next";
+import {
+  baseConfig,
+  nextConfig,
+  defineConfig,
+  globalIgnores,
+} from "@nhatnang/eslint-config";
 
 const eslintConfig = defineConfig(
   globalIgnores([
