@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -14,7 +13,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/shared/components/ui/card";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { PersonalInfoSection } from "./personal-info-section";
 import { BusinessInfoSection } from "./business-info-section";
 import { PasswordSection } from "./password-section";

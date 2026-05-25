@@ -1,6 +1,6 @@
 import {
   AuthPageShell,
-  LoginFormWithSearchParams,
+  LoginForm,
 } from "@/features/auth/components";
 import { routing } from "@/i18n/routing";
 import type { Locale } from "next-intl";
@@ -21,7 +21,7 @@ const LoginPage = async ({
 
   return (
     <AuthPageShell fallbackLabel={t("loading")}>
-      <LoginFormWithSearchParams />
+      <LoginForm />
     </AuthPageShell>
   );
 };
