@@ -21,6 +21,7 @@
     "@types/bun": "^1",
     "@types/node": "^25",
     "@types/uuid": "^11",
+    "eslint": "^9",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "^2.9.14",
