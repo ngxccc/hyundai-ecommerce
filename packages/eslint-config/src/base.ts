@@ -1,5 +1,5 @@
 import eslintJs from "@eslint/js";
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
 import tseslint from "typescript-eslint";
 import { importX } from "eslint-plugin-import-x";
 import globals from "globals";
@@ -7,6 +7,8 @@ import eslintConfigPrettier from "eslint-config-prettier";
 import architecture from "./architecture.ts";
 
 export default defineConfig([
+  globalIgnores(["node_modules/**"]),
+
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.js", "**/*.mjs"],
     extends: [
