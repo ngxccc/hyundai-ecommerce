@@ -1,0 +1,164 @@
+{
+  "Login": {
+    "title": "Login into <br></br>Hyundai Nhat Nang System",
+    "description": "Welcome back! Please sign in to manage your orders and products.",
+    "submit": "Login",
+    "submitting": "Authenticating...",
+    "noAccountYet": "Don't have an account yet?",
+    "registerNow": "Register now",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@company.vn",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "********",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me",
+    "orLoginWith": "Or sign in with",
+    "social": {
+      "google": "Sign in with Google",
+      "facebook": "Sign in with Facebook"
+    },
+    "successMessage": "Login successful! Redirecting...",
+    "errorMessage": "Login failed. Please try again later.",
+    "validation": {
+      "emailRequired": "Please enter your email",
+      "emailInvalid": "Invalid email address",
+      "passwordRequired": "Please enter your password",
+      "invalidCredentials": "Incorrect email or password",
+      "accountLocked": "Your account has been temporarily locked due to too many failed attempts. Please try again later.",
+      "unverifiedEmail": "Your email has not been verified. Please check your inbox."
+    }
+  },
+
+  "NotFound": {
+    "status": "Status: Terminal",
+    "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
+    "errorMessage": "Connection to this partition has been lost. The generator data or page you are looking for does not exist on the system.",
+    "actions": {
+      "home": {
+        "tag": "Return to Main",
+        "title": "Back to Home",
+        "description": "Reconnect with the control center and industrial generator catalog.",
+        "button": "Reboot"
+      },
+      "support": {
+        "tag": "Direct Protocol",
+        "title": "Technical Support",
+        "description": "Establish a secure communication channel with our engineering team via Zalo or Hotline.",
+        "button": "Open Connection"
+      }
+    }
+  },
+
+  "Forbidden": {
+    "status": "403 Forbidden",
+    "errorMessage": "Staff area only. Click here to return to the shopping page.",
+    "button": "Return to Storefront"
+  },
+
+  "AdminDashboard": {
+    "title": "Huyndai Nhat Nang",
+    "nav": {
+      "overview": "Overview",
+      "products": "Products",
+      "orders": "Orders",
+      "customers": "Customers",
+      "settings": "Settings"
+    },
+    "header": {
+      "title": "Overview",
+      "description": "Track your business performance.",
+      "searchPlaceholder": "Search...",
+      "createReport": "Create Report"
+    },
+    "metrics": {
+      "totalRevenue": "Total Revenue",
+      "totalOrders": "Total Orders",
+      "totalProducts": "Total Products",
+      "newCustomers": "New Customers"
+    },
+    "chart": {
+      "title": "Monthly Revenue"
+    },
+    "topProducts": {
+      "title": "Top Selling Products",
+      "viewAll": "View All",
+      "sold": "Sold: {count}"
+    },
+    "recentOrders": {
+      "title": "Recent Orders",
+      "filter": "Filter",
+      "export": "Export",
+      "viewAll": "View all orders",
+      "columns": {
+        "orderId": "Order ID",
+        "customer": "Customer",
+        "product": "Product",
+        "date": "Date",
+        "total": "Total",
+        "status": "Status"
+      },
+      "status": {
+        "completed": "Completed",
+        "processing": "Processing",
+        "shipping": "Shipping",
+        "cancelled": "Cancelled"
+      }
+    }
+  },
+
+  "AdminProducts": {
+    "header": {
+      "title": "Products",
+      "description": "Manage your product catalog.",
+      "searchPlaceholder": "Search products...",
+      "addProduct": "Add New Product"
+    },
+    "filters": {
+      "allCategories": "All Categories",
+      "status": "Status",
+      "brand": "Brand",
+      "fuelType": "Fuel Type",
+      "phase": "Phase",
+      "quoteOnly": "Quote Only",
+      "allBrands": "All Brands",
+      "allFuels": "All Fuels",
+      "allPhases": "All Phases",
+      "statusOptions": {
+        "active": "Active",
+        "outOfStock": "Out of Stock"
+      },
+      "fuelOptions": {
+        "diesel": "Diesel",
+        "gasoline": "Gasoline",
+        "gas": "Gas"
+      },
+      "phaseOptions": {
+        "1phase": "1 Phase",
+        "3phase": "3 Phase"
+      }
+    },
+    "card": {
+      "stock": "Stock: {count}",
+      "status": {
+        "active": "In Stock",
+        "outOfStock": "Out of Stock"
+      },
+      "contact": "Contact"
+    },
+    "pagination": {
+      "showing": "Showing {start}-{end} of {total} products"
+    }
+  },
+
+  "AdminMetadata": {
+    "titleTemplate": "%s | Admin Portal",
+    "defaultTitle": "Dashboard | Admin Portal",
+    "description": "Hyundai Nhat Nang Admin Portal for managing products, orders, and customers.",
+    "dashboard": "Overview",
+    "products": "Product Management"
+  },
+
+  "Metadata": {
+    "title": "Hyundai Nhat Nang | Genuine Generators"
+  }
+}

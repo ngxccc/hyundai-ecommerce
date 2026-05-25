@@ -1,0 +1,26 @@
+{
+  "extends": "@nhatnang/typescript-config/next",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "paths": {
+      "@/*": ["./src/*"],
+      "#/*": ["./public/*"],
+    },
+    "types": ["bun", "node"],
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts",
+    "**/*.js",
+    "**/*.mjs",
+  ],
+  "exclude": ["node_modules"],
+}
