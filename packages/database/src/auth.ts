@@ -6,6 +6,7 @@ import { db } from "./client";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
 import { Resend } from "resend";
 import { env } from "./env";
+import { nextCookies } from "better-auth/next-js";
 
 const resend = new Resend(env.RESEND_API_KEY);
 
@@ -78,7 +79,20 @@ export const auth = betterAuth({
         return uuidv7();
       },
     },
+    sessionStrategy: "jwt",
+    jwt: {
+      expirationTime: "7d",
+    },
   },
+
+  trustedOrigins: [
+    "http://localhost:3000", // Storefront cục bộ
+    "http://localhost:3001", // Admin cục bộ
+    "https://hyundainhatnang.ngxc.io.vn", // Production Storefront
+    "https://admin.hyundainhatnang.ngxc.io.vn", // Production Admin
+  ],
+
+  plugins: [nextCookies()],
 
   // không tương thích với drizzle bản 1-rc
   // experimental: { joins: true },
@@ -86,4 +100,4 @@ export const auth = betterAuth({
 
 export { APIError, isAPIError } from "better-auth/api";
 export { toNextJsHandler } from "better-auth/next-js";
-export { createAuthClient } from "better-auth/react";
+export { toNodeHandler } from "better-auth/node";
