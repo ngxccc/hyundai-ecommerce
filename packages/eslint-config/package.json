@@ -23,7 +23,6 @@
     "typescript-eslint": "^8.59.3"
   },
   "devDependencies": {
-    "@nhatnang/typescript-config": "workspace:*",
-    "eslint": "^9"
+    "@nhatnang/typescript-config": "workspace:*"
   }
 }
