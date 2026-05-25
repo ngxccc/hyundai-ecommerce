@@ -9,6 +9,13 @@
       "cwd": "${workspaceFolder}"
     },
     {
+      "name": "Debug Admin",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bun run dev --filter=admin",
+      "cwd": "${workspaceFolder}"
+    },
+    {
       "name": "Debug Docs",
       "type": "node-terminal",
       "request": "launch",
@@ -20,14 +27,14 @@
       "type": "bun",
       "request": "launch",
       "cwd": "${workspaceFolder}/packages/database",
-      "program": "${workspaceFolder}/packages/database/scripts/generate-docs.ts",
+      "program": "${workspaceFolder}/packages/database/scripts/generate-docs.ts"
     },
     {
       "name": "Debug ENV DB",
       "type": "bun",
       "request": "launch",
       "cwd": "${workspaceFolder}/packages/database",
-      "program": "${workspaceFolder}/packages/database/src/env.ts",
+      "program": "${workspaceFolder}/packages/database/src/env.ts"
     },
     {
       "name": "Debug Chrome (Client-side)",
