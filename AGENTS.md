@@ -183,6 +183,13 @@ export const BusinessInfoSection = ({ form }: BusinessInfoSectionProps) => {
 - Tailwind CSS v4 + custom design system
 - Follow existing patterns in `src/features/home/components/`
 
+#### Mobile-First Styling
+
+- **CRITICAL RULE**: Always design and code UI components using a mobile-first approach.
+- Write default CSS classes for mobile screens first (e.g., `w-full p-4 flex-col`).
+- Use Tailwind's responsive modifiers (`md:`, `lg:`, `xl:`) strictly for larger screens (e.g., `md:flex-row md:w-1/2`).
+- Agents MUST visualize and ensure the layout works perfectly on mobile devices before expanding it for desktop.
+
 ### Monorepo Rules (Turborepo)
 
 - Never import directly from `apps/` into `packages/`
@@ -194,6 +201,7 @@ export const BusinessInfoSection = ({ form }: BusinessInfoSectionProps) => {
 - Always use `authClient` from `@/shared/lib/auth-client`
 - Never manually hash passwords — Better Auth handles it
 - Registration flow must collect: `fullName`, `email`, `phone`, `companyName`, `taxId`, `businessType`, `province`
+- **Session Management Rule**: Do NOT use Zustand or other client global state managers for session state. Always use `auth.api.getSession()` in Server Components and `authClient.useSession()` in Client Components.
 
 ### Database (Drizzle)
 
