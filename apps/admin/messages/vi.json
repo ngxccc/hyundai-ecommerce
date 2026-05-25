@@ -1,0 +1,164 @@
+{
+  "Login": {
+    "title": "Đăng nhập hệ thống <br></br>Hyundai Nhật Năng",
+    "description": "Chào mừng trở lại! Vui lòng đăng nhập để quản lý đơn hàng và sản phẩm của bạn.",
+    "submit": "Đăng nhập",
+    "submitting": "Đang xác thực...",
+    "noAccountYet": "Chưa có tài khoản?",
+    "registerNow": "Đăng ký ngay",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@company.vn",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "********",
+    "forgotPassword": "Quên mật khẩu?",
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "orLoginWith": "Hoặc đăng nhập bằng",
+    "social": {
+      "google": "Đăng nhập bằng Google",
+      "facebook": "Đăng nhập bằng Facebook"
+    },
+    "successMessage": "Đăng nhập thành công! Đang chuyển hướng...",
+    "errorMessage": "Đăng nhập thất bại. Vui lòng thử lại sau.",
+    "validation": {
+      "emailRequired": "Vui lòng nhập email",
+      "emailInvalid": "Email không hợp lệ",
+      "passwordRequired": "Vui lòng nhập mật khẩu",
+      "invalidCredentials": "Email hoặc mật khẩu không chính xác",
+      "accountLocked": "Tài khoản bị tạm khóa do nhập sai quá nhiều lần. Vui lòng thử lại sau.",
+      "unverifiedEmail": "Email chưa được xác thực. Vui lòng kiểm tra hộp thư của bạn."
+    }
+  },
+
+  "NotFound": {
+    "status": "Status: Terminal",
+    "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
+    "errorMessage": "Kết nối đến phân vùng này đã bị ngắt. Dữ liệu máy phát điện hoặc trang bạn tìm kiếm không tồn tại trên hệ thống.",
+    "actions": {
+      "home": {
+        "tag": "Return to Main",
+        "title": "Về Trang Chủ",
+        "description": "Kết nối lại với trung tâm điều khiển và danh mục máy phát điện công nghiệp.",
+        "button": "Khởi động lại"
+      },
+      "support": {
+        "tag": "Direct Protocol",
+        "title": "Hỗ trợ Kỹ thuật",
+        "description": "Thiết lập kênh liên lạc bảo mật với đội ngũ kỹ sư của chúng tôi qua Zalo hoặc Hotline.",
+        "button": "Mở kết nối"
+      }
+    }
+  },
+
+  "Forbidden": {
+    "status": "403 Không có quyền truy cập",
+    "errorMessage": "Khu vực dành cho nhân viên. Bấm vào đây để quay lại trang mua sắm",
+    "button": "Về trang mua sắm"
+  },
+
+  "AdminDashboard": {
+    "title": "Huyndai Nhật Năng",
+    "nav": {
+      "overview": "Tổng quan",
+      "products": "Sản phẩm",
+      "orders": "Đơn hàng",
+      "customers": "Khách hàng",
+      "settings": "Cài đặt"
+    },
+    "header": {
+      "title": "Tổng quan",
+      "description": "Theo dõi hiệu suất kinh doanh của bạn.",
+      "searchPlaceholder": "Tìm kiếm...",
+      "createReport": "Tạo báo cáo"
+    },
+    "metrics": {
+      "totalRevenue": "Tổng doanh thu",
+      "totalOrders": "Tổng đơn hàng",
+      "totalProducts": "Tổng sản phẩm",
+      "newCustomers": "Khách hàng mới"
+    },
+    "chart": {
+      "title": "Doanh thu theo tháng"
+    },
+    "topProducts": {
+      "title": "Sản phẩm bán chạy",
+      "viewAll": "Xem tất cả",
+      "sold": "Đã bán: {count}"
+    },
+    "recentOrders": {
+      "title": "Đơn hàng gần đây",
+      "filter": "Lọc",
+      "export": "Xuất",
+      "viewAll": "Xem tất cả đơn hàng",
+      "columns": {
+        "orderId": "Mã Đơn",
+        "customer": "Khách Hàng",
+        "product": "Sản Phẩm",
+        "date": "Ngày Đặt",
+        "total": "Tổng Tiền",
+        "status": "Trạng Thái"
+      },
+      "status": {
+        "completed": "Hoàn thành",
+        "processing": "Đang xử lý",
+        "shipping": "Đang giao",
+        "cancelled": "Đã hủy"
+      }
+    }
+  },
+
+  "AdminProducts": {
+    "header": {
+      "title": "Sản phẩm",
+      "description": "Quản lý danh sách sản phẩm.",
+      "searchPlaceholder": "Tìm kiếm...",
+      "addProduct": "Thêm sản phẩm mới"
+    },
+    "filters": {
+      "allCategories": "Tất cả danh mục",
+      "status": "Trạng thái",
+      "brand": "Thương hiệu",
+      "fuelType": "Nhiên liệu",
+      "phase": "Số pha",
+      "quoteOnly": "Chỉ báo giá",
+      "allBrands": "Tất cả thương hiệu",
+      "allFuels": "Tất cả nhiên liệu",
+      "allPhases": "Tất cả số pha",
+      "statusOptions": {
+        "active": "Đang bán",
+        "outOfStock": "Hết hàng"
+      },
+      "fuelOptions": {
+        "diesel": "Dầu Diesel",
+        "gasoline": "Xăng",
+        "gas": "Khí Gas"
+      },
+      "phaseOptions": {
+        "1phase": "1 Pha",
+        "3phase": "3 Pha"
+      }
+    },
+    "card": {
+      "stock": "Tồn kho: {count}",
+      "status": {
+        "active": "Đang bán",
+        "outOfStock": "Hết hàng"
+      },
+      "contact": "Liên hệ"
+    },
+    "pagination": {
+      "showing": "Hiển thị {start}-{end} trong {total} sản phẩm"
+    }
+  },
+
+  "AdminMetadata": {
+    "titleTemplate": "%s | Admin Portal",
+    "defaultTitle": "Tổng quan | Admin Portal",
+    "description": "Cổng quản trị Hyundai Nhật Năng - Quản lý sản phẩm, đơn hàng và khách hàng.",
+    "dashboard": "Tổng quan",
+    "products": "Quản lý sản phẩm"
+  },
+
+  "Metadata": {
+    "title": "Hyundai Nhật Năng | Máy Phát Điện Chính Hãng"
+  }
+}
