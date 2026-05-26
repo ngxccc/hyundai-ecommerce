@@ -252,6 +252,14 @@ Create the key in `messages/` first, then use it.
 
 This rule applies to **every** file: components, actions, services, error boundaries, and even console logs that users might see.
 
+#### English for Development & System
+
+While user-facing text uses i18n, **all system messages, developer-facing text, and code comments MUST be in English.**
+
+- ESLint rule messages, build warnings, and console errors meant for developers must be in English.
+- Code comments, docstrings, PRD descriptions, and inline documentation must be in English.
+- System logs (`console.log`, `console.error` not seen by end-users) must be in English.
+
 ### Commands
 
 - `bun run dev` — Start all apps
