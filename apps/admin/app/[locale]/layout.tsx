@@ -12,8 +12,6 @@ import {
 } from "next-intl/server";
 import { Toaster } from "@/shared/components/ui/sonner";
 import { ScrollToTop } from "@/shared/components/ScrollToTop";
-import { AdminSidebar } from "@/features/dashboard/components/admin-sidebar";
-import { getCachedSession } from "@/shared/lib/session";
 
 const inter = Inter({
   subsets: ["vietnamese", "latin"],
@@ -29,8 +27,6 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
 };
-
-export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -72,9 +68,6 @@ export default async function RootLayout({
 
   const messages = await getMessages();
 
-  const session = await getCachedSession();
-  const isAdmin = session?.user?.role === "admin";
-
   return (
     <html
       lang={locale}
@@ -83,14 +76,7 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider messages={messages}>
-          <div className="bg-background text-foreground flex h-screen overflow-hidden font-sans">
-            {isAdmin && <AdminSidebar />}
-            <main className="bg-background relative flex h-screen flex-1 flex-col overflow-y-auto">
-              <div className="mx-auto flex w-full flex-1 flex-col pb-4">
-                {children}
-              </div>
-            </main>
-          </div>
+          {children}
           <Toaster position="top-center" />
           <ScrollToTop />
         </NextIntlClientProvider>
