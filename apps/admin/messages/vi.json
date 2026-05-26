@@ -155,7 +155,11 @@
         "active": "Đang bán",
         "outOfStock": "Hết hàng"
       },
-      "contact": "Liên hệ"
+      "contact": "Liên hệ",
+      "actions": {
+        "edit": "Sửa",
+        "delete": "Xóa"
+      }
     },
     "pagination": {
       "showing": "Hiển thị {start}-{end} trong {total} sản phẩm"
