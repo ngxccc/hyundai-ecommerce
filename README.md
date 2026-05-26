@@ -16,6 +16,7 @@ A modern, high-performance B2B e-commerce system specialized in heavy machinery 
 ## 🚀 Live Sites
 
 - **Main Storefront**: [https://hyundainhatnang.ngxc.io.vn](https://hyundainhatnang.ngxc.io.vn)
+- **Admin Dashboard**: [https://admin.hyundainhatnang.ngxc.io.vn](https://admin.hyundainhatnang.ngxc.io.vn)
 - **Technical Documentation**: [https://docs.hyundainhatnang.ngxc.io.vn](https://docs.hyundainhatnang.ngxc.io.vn)
 
 ---
@@ -29,6 +30,8 @@ A modern, high-performance B2B e-commerce system specialized in heavy machinery 
 - Secure guest + user cart with concurrency control
 - Auto-generated technical documentation (Fumadocs)
 - End-to-end type safety from database to frontend
+- **Internationalization (i18n)**: Fully localized in English and Vietnamese using Next-Intl.
+- **Admin Panel**: Secure dashboard for managing products, quotes, and users.
 
 ---
 
@@ -39,9 +42,11 @@ A modern, high-performance B2B e-commerce system specialized in heavy machinery 
 - **Monorepo**: Turborepo
 - **Database**: Neon Serverless PostgreSQL + Drizzle ORM v1
 - **Authentication**: Better Auth
+- **Internationalization**: Next-Intl
 - **Documentation**: Fumadocs
 - **UI**: shadcn/ui + Tailwind CSS v4
 - **State Management**: Zustand
+- **Secrets Management**: Doppler
 - **Background Jobs**: Inngest
 - **Caching**: Upstash Redis
 
@@ -52,11 +57,13 @@ A modern, high-performance B2B e-commerce system specialized in heavy machinery 
 ```bash
 hyundai-ecommerce/
 ├── apps/
+│   ├── admin/               # Internal Admin Dashboard
 │   ├── storefront/          # Customer-facing website
 │   └── docs/                # Technical documentation site (Fumadocs)
 ├── packages/
 │   ├── database/            # Drizzle schemas, queries & migrations
 │   ├── types/               # Shared TypeScript types
+│   ├── shared/              # Shared utilities and constants
 │   ├── typescript-config/   # Shared TS config
 │   └── eslint-config/       # Shared ESLint configuration
 ├── .github/workflows/       # CI/CD pipelines
@@ -70,21 +77,36 @@ hyundai-ecommerce/
 ### Prerequisites
 
 - [Bun](https://bun.sh) (recommended)
+- [Doppler CLI](https://docs.doppler.com/docs/install-cli) (for fetching secrets during development)
 
 ### Local Development
 
-```bash
-bun install
+1. **Login to Doppler** to sync environment variables:
 
-# Run both apps
-bun run dev
-```
+    ```bash
+    doppler login
+    doppler setup
+    ```
+
+2. **Install dependencies**:
+
+    ```bash
+    bun install
+    ```
+
+3. **Run the development servers**:
+
+    ```bash
+    # Run all apps with Doppler secrets
+    bun run dev
+    ```
 
 Or run separately:
 
 ```bash
-bun --filter=storefront run dev     # → http://localhost:3000
-bun --filter=docs run dev --port 3001   # → http://localhost:3001
+bun run dev:storefront     # → http://localhost:3000
+# Run admin or docs via turbo filter
+doppler run -- turbo run dev --filter=admin
 ```
 
 ---
@@ -115,13 +137,30 @@ We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) 
 
 ## 🗺 Roadmap
 
-- [ ] Admin Panel (CMS)
+### Core Platform
+
+- [x] Internationalization (multi-language support with Next-Intl)
+- [x] Secure Route Groups Architecture for protected layouts
+- [ ] Migrate Prettier → Biome (xem issue [#15](https://github.com/ngxccc/hyundai-ecommerce/issues/15)) cho performance gain
+
+### Admin Panel (CMS)
+
+- **Implemented:**
+  - [x] Admin Authentication (Login/Session via Better Auth)
+  - [x] Dashboard Overview (Metrics Cards, Revenue Chart, Recent Orders, Top Products)
+  - [x] Products Listing (Grid view, Advanced Filtering, Pagination)
+  - [x] Internationalized UI (Sidebar, Header, Datagrid)
+- **Upcoming:**
+  - [ ] Product Creation & Editing (Dynamic forms with validation)
+  - [ ] Order Management & Fulfillment workflow
+  - [ ] User & Role Management (RBAC)
+
+### Storefront & B2B Features
+
 - [ ] Advanced AI Product Recommendation Chatbot
 - [ ] Multi-stage payment (deposit + final payment)
 - [ ] PDF Quote Generation with official stamps
 - [ ] Dynamic form builder for product attributes
-- [ ] Internationalization (multi-language support)
-- [ ] Migrate Prettier → Biome (xem issue [#15](https://github.com/ngxccc/hyundai-ecommerce/issues/15)) cho performance gain
 
 ---
 
