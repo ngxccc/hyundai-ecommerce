@@ -15,11 +15,14 @@ inputs:
 
 runs:
   using: "composite"
-  env:
-    VERCEL_ORG_ID: ${{ inputs.vercel_org_id }}
-    VERCEL_PROJECT_ID: ${{ inputs.vercel_project_id }}
 
   steps:
+    - name: Set Global Env Variables
+      shell: bash
+      run: |
+        echo "VERCEL_ORG_ID=${{ inputs.vercel_org_id }}" >> $GITHUB_ENV
+        echo "VERCEL_PROJECT_ID=${{ inputs.vercel_project_id }}" >> $GITHUB_ENV
+
     - name: Pull Vercel Project Settings
       run: bunx vercel pull --yes --environment=production --token=${{ inputs.vercel_token }}
       shell: bash
