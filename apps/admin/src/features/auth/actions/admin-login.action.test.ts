@@ -30,7 +30,8 @@ describe("adminLoginAction", () => {
   beforeEach(async () => {
     const { authService } = await import("@nhatnang/database/services");
 
-    loginEmailMock = authService.loginEmail.bind(authService) as Mock<
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    loginEmailMock = authService.loginEmail as Mock<
       typeof authService.loginEmail
     >;
     loginEmailMock.mockClear();
