@@ -57,6 +57,8 @@
 
   "AdminDashboard": {
     "title": "Hyundai Nhat Nang",
+    "logoutSuccess": "Logged out successfully",
+    "logoutError": "Logout failed",
     "nav": {
       "overview": "Overview",
       "products": "Products",

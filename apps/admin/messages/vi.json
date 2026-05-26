@@ -57,6 +57,8 @@
 
   "AdminDashboard": {
     "title": "Huyndai Nhật Năng",
+    "logoutSuccess": "Đăng xuất thành công",
+    "logoutError": "Đăng xuất thất bại",
     "nav": {
       "overview": "Tổng quan",
       "products": "Sản phẩm",
