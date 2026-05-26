@@ -155,7 +155,11 @@
         "active": "In Stock",
         "outOfStock": "Out of Stock"
       },
-      "contact": "Contact"
+      "contact": "Contact",
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
     },
     "pagination": {
       "showing": "Showing {start}-{end} of {total} products"

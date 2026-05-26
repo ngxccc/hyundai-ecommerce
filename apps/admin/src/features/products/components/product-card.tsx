@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Edit, Trash2 } from "lucide-react";
 import { Card } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
+import { Button } from "@/shared/components/ui/button";
 import Image from "next/image";
 
 export interface ProductProps {
@@ -40,6 +41,8 @@ export const ProductCard = ({ product }: { product: ProductProps }) => {
         <Image
           src={product.image}
           alt={product.name}
+          width={400}
+          height={300}
           className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
         />
       </div>
@@ -65,18 +68,22 @@ export const ProductCard = ({ product }: { product: ProductProps }) => {
             </p>
           </div>
           <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-            <button
-              className="text-muted-foreground hover:bg-muted rounded-md p-1.5 transition-colors"
-              title="Sửa"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:bg-muted hover:text-foreground h-8 w-8 transition-colors"
+              title={t("actions.edit")}
             >
-              <Edit className="h-5 w-5" />
-            </button>
-            <button
-              className="text-destructive hover:bg-destructive/20 rounded-md p-1.5 transition-colors"
-              title="Xóa"
+              <Edit className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-destructive hover:bg-destructive/20 hover:text-destructive h-8 w-8 transition-colors"
+              title={t("actions.delete")}
             >
-              <Trash2 className="h-5 w-5" />
-            </button>
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </div>
