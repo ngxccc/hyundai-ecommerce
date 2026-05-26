@@ -27,7 +27,7 @@ export const AdminSidebar = () => {
       toast.success("Đăng xuất thành công");
       router.refresh();
       router.push("/login");
-    } catch (e) {
+    } catch {
       toast.error("Đăng xuất thất bại");
     }
   };
@@ -141,15 +141,15 @@ export const AdminSidebar = () => {
             )}
           >
             <div className="bg-secondary text-secondary-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold uppercase">
-              {user?.name?.[0] || "A"}
+              {user?.name?.[0] ?? "A"}
             </div>
             {!isCollapsed && (
               <div className="min-w-0 flex-1">
                 <p className="text-foreground truncate text-sm font-bold">
-                  {user?.name || "Admin"}
+                  {user?.name ?? "Admin"}
                 </p>
                 <p className="text-muted-foreground truncate text-xs">
-                  {user?.email || "admin@hyundainhatnang.vn"}
+                  {user?.email ?? "admin@hyundainhatnang.vn"}
                 </p>
               </div>
             )}

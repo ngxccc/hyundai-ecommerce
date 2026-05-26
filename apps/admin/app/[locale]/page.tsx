@@ -3,9 +3,13 @@ import { MetricsCards } from "@/features/dashboard/components/metrics-cards";
 import { RevenueChart } from "@/features/dashboard/components/revenue-chart";
 import { TopProducts } from "@/features/dashboard/components/top-products";
 import { RecentOrdersTable } from "@/features/dashboard/components/recent-orders-table";
-
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
+import { routing } from "@/i18n/routing";
+
+export const generateStaticParams = () => {
+  return routing.locales.map((locale) => ({ locale }));
+};
 
 export async function generateMetadata({
   params,
@@ -21,7 +25,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function AdminDashboard() {
+export const AdminDashboard = () => {
   return (
     <>
       <AdminHeader />
@@ -45,4 +49,6 @@ export default async function AdminDashboard() {
       </div>
     </>
   );
-}
+};
+
+export default AdminDashboard;

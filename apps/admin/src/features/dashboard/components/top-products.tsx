@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Card } from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
+import Image from "next/image";
 
 const MOCK_PRODUCTS = [
   {
@@ -60,8 +61,7 @@ export const TopProducts = () => {
             className="hover:bg-muted flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors"
           >
             <div className="border-border/50 bg-muted relative h-12 w-12 shrink-0 overflow-hidden rounded border">
-              {/* Note: In a real app, you'd configure next.config.js for these images. Using standard img for now to match the mock */}
-              <img
+              <Image
                 src={product.image}
                 alt={product.name}
                 className="h-full w-full object-cover"

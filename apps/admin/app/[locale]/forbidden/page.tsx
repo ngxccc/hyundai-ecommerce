@@ -3,6 +3,11 @@ import { Button } from "@/shared/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 import { env } from "@/env";
 import type { Locale } from "next-intl";
+import { routing } from "@/i18n/routing";
+
+export const generateStaticParams = () => {
+  return routing.locales.map((locale) => ({ locale }));
+};
 
 export async function generateMetadata({
   params,

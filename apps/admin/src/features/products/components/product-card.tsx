@@ -41,8 +41,6 @@ export const ProductCard = ({ product }: { product: ProductProps }) => {
           src={product.image}
           alt={product.name}
           className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
-          width={1000}
-          height={1000}
         />
       </div>
 

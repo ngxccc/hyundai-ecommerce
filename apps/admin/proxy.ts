@@ -1,4 +1,5 @@
 import { routing } from "@/i18n/routing";
+import { getCachedSession } from "@/shared/lib/session";
 import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -7,87 +8,45 @@ const handleI18nRouting = createMiddleware(routing);
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Protect routes except login, forbidden, API routes, and static assets
   const isAuthRoute = pathname.includes("/login");
   const isForbiddenRoute = pathname.includes("/forbidden");
   const isPublicRoute =
     isAuthRoute || isForbiddenRoute || pathname.startsWith("/api/");
   const defaultLocale = routing.defaultLocale || "vi";
 
-  const redirectToLocalePath = (targetPath: string) => {
+  const redirect = (target: string) => {
     const url = request.nextUrl.clone();
-    url.pathname = targetPath;
+    url.pathname = target;
     return NextResponse.redirect(url);
   };
 
-  const redirectToLogin = () => redirectToLocalePath(`/${defaultLocale}/login`);
+  let user = null;
+  try {
+    const session = await getCachedSession();
 
-  const redirectToForbidden = () =>
-    redirectToLocalePath(`/${defaultLocale}/forbidden`);
-  const redirectAuthenticatedUser = () =>
-    redirectToLocalePath(pathname.replace(/\/login$/, "") || "/");
-
-  if (isAuthRoute) {
-    try {
-      const sessionRes = await fetch(
-        new URL("/api/auth/get-session", request.url),
-        {
-          headers: { cookie: request.headers.get("cookie") || "" },
-        },
-      );
-
-      if (sessionRes.ok) {
-        const session = await sessionRes.json();
-
-        if (session?.user) {
-          if (session.user.role !== "admin") {
-            return redirectToForbidden();
-          }
-
-          return redirectAuthenticatedUser();
-        }
-      }
-    } catch (error) {
-      console.error("Middleware Auth Error:", error);
+    if (session?.user) {
+      user = session?.user;
     }
+  } catch (error) {
+    // HACK: Swallow network exceptions to prevent Edge runtime crashes.
+    // Fallback to unauthenticated state.
+    console.error("Middleware Auth Error:", error);
   }
 
-  if (!isPublicRoute) {
-    try {
-      const sessionRes = await fetch(
-        new URL("/api/auth/get-session", request.url),
-        {
-          headers: { cookie: request.headers.get("cookie") || "" },
-        },
-      );
+  const isAdmin = user?.role === "admin";
 
-      if (sessionRes.ok) {
-        const session = await sessionRes.json();
-        if (!session || !session.user) {
-          // Not logged in -> redirect to login
-          return redirectToLogin();
-        }
-
-        if (session.user.role !== "admin") {
-          // Logged in but not admin -> redirect to forbidden
-          return redirectToForbidden();
-        }
-
-        // Logged in as admin -> allow request to continue
-        // fallthrough to i18n middleware and response header setting
-      } else {
-        // Fetch failed or unauthorized -> redirect to login
-        return redirectToLogin();
-      }
-    } catch (error) {
-      console.error("Middleware Auth Error:", error);
-      // On error, redirect to login
-      return redirectToLogin();
-    }
+  if (user) {
+    if (!isAdmin && !isForbiddenRoute)
+      return redirect(`/${defaultLocale}/forbidden`);
+    if (isAuthRoute && isAdmin)
+      return redirect(pathname.replace(/\/login$/, "") || "/");
+  } else {
+    if (!isPublicRoute) return redirect(`/${defaultLocale}/login`);
   }
 
   const response = handleI18nRouting(request);
 
+  // FIXME: Headers are skipped if an early return redirect occurs above.
   response.headers.set("X-XSS-Protection", "1; mode=block");
   response.headers.set("X-Frame-Options", "SAMEORIGIN");
   response.headers.set("X-Content-Type-Options", "nosniff");

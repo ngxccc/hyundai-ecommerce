@@ -14,6 +14,8 @@ import {
   TableRow,
 } from "@/shared/components/ui/table";
 
+type OrderStatus = "completed" | "processing" | "shipping" | "cancelled";
+
 const MOCK_ORDERS = [
   {
     id: "#ORD-001",
@@ -135,7 +137,7 @@ export const RecentOrdersTable = () => {
                   variant="secondary"
                   className={`border-transparent font-medium ${order.statusClass}`}
                 >
-                  {t(`status.${order.status}` as any)}
+                  {t(`status.${order.status as OrderStatus}`)}
                 </Badge>
               </TableCell>
             </TableRow>
