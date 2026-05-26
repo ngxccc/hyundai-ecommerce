@@ -52,6 +52,7 @@ export const AdminSidebar = () => {
               src="/logo-without-text.png"
               alt="Hyundai Nhat Nang Logo"
               fill
+              sizes="32px"
               className="object-contain"
             />
           </div>
