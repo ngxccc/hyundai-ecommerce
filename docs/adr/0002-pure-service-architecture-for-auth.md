@@ -21,7 +21,7 @@ We evaluated three approaches to abstracting the `authClient`:
 
 We chose **Option 3: Pure TypeScript Service**.
 
-We created `AuthClientService` inside `packages/database/src/services/auth-client.services.ts`.
+We created `AuthService` inside `packages/database/src/services/auth.services.ts`.
 This service implements the exact same `IAuthService` interface used by the backend `AuthService`. It is responsible for:
 
 - Executing the client-side authentication requests via `authClient`.
@@ -33,7 +33,7 @@ React components (like `AdminLoginForm`) will import this pure service to execut
 
 ## Consequences
 
-- **Positive (Decoupling)**: Business logic is decoupled from React. If we ever migrate to Vue, Svelte, or build a React Native mobile app, `AuthClientService` can be reused without modification.
+- **Positive (Decoupling)**: Business logic is decoupled from React. If we ever migrate to Vue, Svelte, or build a React Native mobile app, `AuthService` can be reused without modification.
 - **Positive (Symmetry)**: The Client and Server share the identical `IAuthService` contract, creating a highly symmetrical and predictable monorepo architecture.
 - **Positive (Thin Views)**: UI Components remain thin and focused exclusively on rendering and data binding.
 - **Negative (Boilerplate)**: Requires writing a slight amount of boilerplate (the service class and mapping functions) compared to just calling the SDK inline.
