@@ -64,10 +64,12 @@ Use the following skills in this exact order for any new feature or major change
 ### Server vs Client Boundaries ("use client" / "use server")
 
 **Rules for `"use client"` (UI Boundary):**
+
 - **Push State Down (Leave the Leaves):** Never put `"use client"` at the root of a feature, page, or layout. Push it down to the smallest possible leaf component (e.g., `Button`, `Modal`, `SearchInput`).
 - **Composition (Interleaving):** If a Client Component must wrap other elements (e.g., a Sidebar or a Context Provider), it MUST accept them via the `children` prop. Client components must NEVER directly import Server Components.
 
 **Rules for `"use server"` (Network Boundary):**
+
 - **NEVER use to declare Server Components:** Server Components are the default. Putting `"use server"` at the top of a Server Component is a critical anti-pattern and security risk (it creates public endpoints for every exported function).
 - **Strictly for Server Actions:** Only use `"use server"` inside async functions or at the top of dedicated action files (e.g., `actions.ts`) to mark mutations or data-fetching functions called from the client.
 - **Colocation:** Keep Server Actions isolated in `actions/` or `services/` rather than mixed with component UI code.
