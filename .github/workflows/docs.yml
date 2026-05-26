@@ -35,4 +35,4 @@ jobs:
         with:
           vercel_token: ${{ env.VERCEL_TOKEN }}
           vercel_org_id: ${{ env.VERCEL_ORG_ID }}
-          vercel_project_id: ${{ env.VERCEL_PROJECT_ID }}
+          vercel_project_id: ${{ env.VERCEL_DOCS_PROJECT_ID }}
