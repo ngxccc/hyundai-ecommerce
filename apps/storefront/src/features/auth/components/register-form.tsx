@@ -108,7 +108,7 @@ export const RegisterForm = () => {
       <CardContent>
         <Form {...form}>
           <form
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+             
             onSubmit={form.handleSubmit(onSubmit)}
             method="post"
             className="space-y-6"
