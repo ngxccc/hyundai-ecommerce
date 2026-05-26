@@ -1,5 +1,6 @@
 import { routing } from "@/i18n/routing";
 import { getCachedSession } from "@/shared/lib/session";
+import type { Locale } from "next-intl";
 import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -12,7 +13,11 @@ export async function proxy(request: NextRequest) {
   const isForbiddenRoute = pathname.includes("/forbidden");
   const isPublicRoute =
     isAuthRoute || isForbiddenRoute || pathname.startsWith("/api/");
-  const defaultLocale = routing.defaultLocale || "vi";
+  const segments = pathname.split("/").filter(Boolean);
+  const pathLocale = routing.locales.includes(segments[0] as Locale)
+    ? segments[0]
+    : null;
+  const locale = pathLocale ?? routing.defaultLocale ?? "vi";
 
   const applySecurityHeaders = (res: NextResponse) => {
     res.headers.set("X-XSS-Protection", "1; mode=block");
@@ -21,11 +26,11 @@ export async function proxy(request: NextRequest) {
     res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
     res.headers.set(
       "Permissions-Policy",
-      "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+      "camera=(), microphone=(), geolocation=(), interest-cohort=()",
     );
     res.headers.set(
       "Strict-Transport-Security",
-      "max-age=31536000; includeSubDomains; preload"
+      "max-age=31536000; includeSubDomains; preload",
     );
     return res;
   };
@@ -52,12 +57,11 @@ export async function proxy(request: NextRequest) {
   const isAdmin = user?.role === "admin";
 
   if (user) {
-    if (!isAdmin && !isForbiddenRoute)
-      return redirect(`/${defaultLocale}/forbidden`);
+    if (!isAdmin && !isForbiddenRoute) return redirect(`/${locale}/forbidden`);
     if (isAuthRoute && isAdmin)
       return redirect(pathname.replace(/\/login$/, "") || "/");
   } else {
-    if (!isPublicRoute) return redirect(`/${defaultLocale}/login`);
+    if (!isPublicRoute) return redirect(`/${locale}/login`);
   }
 
   const response = handleI18nRouting(request);
