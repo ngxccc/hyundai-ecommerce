@@ -14,10 +14,26 @@ export async function proxy(request: NextRequest) {
     isAuthRoute || isForbiddenRoute || pathname.startsWith("/api/");
   const defaultLocale = routing.defaultLocale || "vi";
 
+  const applySecurityHeaders = (res: NextResponse) => {
+    res.headers.set("X-XSS-Protection", "1; mode=block");
+    res.headers.set("X-Frame-Options", "SAMEORIGIN");
+    res.headers.set("X-Content-Type-Options", "nosniff");
+    res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    res.headers.set(
+      "Permissions-Policy",
+      "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    );
+    res.headers.set(
+      "Strict-Transport-Security",
+      "max-age=31536000; includeSubDomains; preload"
+    );
+    return res;
+  };
+
   const redirect = (target: string) => {
     const url = request.nextUrl.clone();
     url.pathname = target;
-    return NextResponse.redirect(url);
+    return applySecurityHeaders(NextResponse.redirect(url));
   };
 
   let user = null;
@@ -45,22 +61,7 @@ export async function proxy(request: NextRequest) {
   }
 
   const response = handleI18nRouting(request);
-
-  // FIXME: Headers are skipped if an early return redirect occurs above.
-  response.headers.set("X-XSS-Protection", "1; mode=block");
-  response.headers.set("X-Frame-Options", "SAMEORIGIN");
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  response.headers.set(
-    "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=(), interest-cohort=()",
-  );
-  response.headers.set(
-    "Strict-Transport-Security",
-    "max-age=31536000; includeSubDomains; preload",
-  );
-
-  return response;
+  return applySecurityHeaders(response);
 }
 
 export const config = {
