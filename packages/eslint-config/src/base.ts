@@ -51,6 +51,14 @@ export default defineConfig([
         "error",
         { prefer: "type-imports", fixStyle: "separate-type-imports" },
       ],
+      "@typescript-eslint/no-misused-promises": [
+        "error",
+        {
+          checksVoidReturn: {
+            attributes: false,
+          },
+        },
+      ],
       "import-x/no-cycle": ["error", { maxDepth: 10, ignoreExternal: true }],
       "import-x/no-unresolved": "error",
     },

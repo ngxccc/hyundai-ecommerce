@@ -44,7 +44,7 @@ describe("architecture config", () => {
     expect(result.messages.length).toBe(0);
   });
 
-  it("blocks deep feature import from app layer", async () => {
+  it("allows deep feature import from app layer for safe sub-folders like components", async () => {
     const results = await lintText(
       'import {} from "@/features/auth/components/auth-page-shell";\n',
       "apps/storefront/app/[locale]/(auth)/register/page.tsx",
@@ -53,7 +53,7 @@ describe("architecture config", () => {
     const result = results[0];
     if (!result) throw new Error("Expected ESLint to return one lint result");
 
-    expect(result.messages.length).toBeGreaterThan(0);
+    expect(result.messages.length).toBe(0);
   });
 
   it("allows public barrel import from app layer", async () => {
@@ -68,7 +68,7 @@ describe("architecture config", () => {
     expect(result.messages.length).toBe(0);
   });
 
-  it("blocks deep feature import from app layer with package-local path", async () => {
+  it("allows deep feature import from app layer with package-local path", async () => {
     const results = await lintText(
       'import {} from "@/features/auth/components/auth-page-shell";\n',
       "app/[locale]/(auth)/register/page.tsx",
@@ -77,7 +77,7 @@ describe("architecture config", () => {
     const result = results[0];
     if (!result) throw new Error("Expected ESLint to return one lint result");
 
-    expect(result.messages.length).toBeGreaterThan(0);
+    expect(result.messages.length).toBe(0);
   });
 
   it("blocks barrel self-import in a feature index", async () => {
@@ -90,5 +90,17 @@ describe("architecture config", () => {
     if (!result) throw new Error("Expected ESLint to return one lint result");
 
     expect(result.messages.length).toBeGreaterThan(0);
+  });
+
+  it("allows import from another feature's sub-barrel (e.g. hooks)", async () => {
+    const results = await lintText(
+      'import { useAdminNav } from "@/features/dashboard/hooks";\n',
+      "apps/admin/src/features/products/components/product-header.tsx",
+    );
+
+    const result = results[0];
+    if (!result) throw new Error("Expected ESLint to return one lint result");
+
+    expect(result.messages.length).toBe(0);
   });
 });
