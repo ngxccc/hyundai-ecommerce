@@ -65,6 +65,8 @@ export const TopProducts = () => {
                 src={product.image}
                 alt={product.name}
                 className="h-full w-full object-cover"
+                sizes="48px"
+                fill
               />
             </div>
             <div className="min-w-0 flex-1">

@@ -42,20 +42,20 @@ export default defineConfig([
                 "!@/features/*/*/index.tsx",
               ],
               message:
-                "Private internal access! Chỉ được import từ public interface (index.ts), sub-barrel (hooks, components...) hoặc deep import an toàn của feature. Không được chọc thẳng vào file nội bộ.",
+                "Private internal access! Import is only allowed from public interfaces (index.ts), sub-barrels (hooks, components, etc.), or safe deep imports. Direct access to internal files is forbidden.",
             },
             {
               // 2. NGĂN Feature import ngược từ App Router layer (UI Layer)
               //    Giữ nguyên tắc UI Agnostic + Dependency Rule
               group: ["@/app/**", "@/app/*"],
               message:
-                "Features KHÔNG được import từ Next.js App layer (app/). App layer chỉ được gọi feature, không ngược lại.",
+                "Features MUST NOT import from the Next.js App layer (app/). The App layer can call features, but not vice versa.",
             },
             {
               // 3. Cấm import từ shared/services trực tiếp trong feature (nên đi qua index)
               group: ["@/shared/services/*", "!@/shared/services/index"],
               message:
-                "Chỉ import từ @/shared/services (public interface), không import thẳng file con.",
+                "Only import from @/shared/services (public interface), do not import internal files directly.",
             },
           ],
         },
@@ -105,7 +105,7 @@ export default defineConfig([
                 "!@/features/*/actions/**",
               ],
               message:
-                "App layer chỉ được import từ public barrel hoặc deep import an toàn (components, hooks...) của feature. Không được import các file nội bộ khác.",
+                "The App layer is only allowed to import from public barrels or safe deep imports (components, hooks, etc.) of a feature. Importing other internal files is forbidden.",
             },
           ],
         },
@@ -128,7 +128,7 @@ export default defineConfig([
           patterns: [
             {
               group: ["./index", "./index.ts", "./index.tsx"],
-              message: "Barrel file không được import chính nó (./index).",
+              message: "A barrel file must not import itself (./index).",
             },
           ],
         },
@@ -152,7 +152,7 @@ export default defineConfig([
             {
               group: ["@/features/**"],
               message:
-                "Shared layer không nên import từ features. Shared phải độc lập.",
+                "The Shared layer should not import from Features. The Shared layer must remain independent.",
             },
           ],
         },
