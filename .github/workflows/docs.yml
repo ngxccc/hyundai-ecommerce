@@ -5,9 +5,8 @@ on:
     branches: ["main"]
     paths:
       - "apps/docs/**"
-      - "packages/shared/**"
-      - "packages/typescript-config/**"
       - "packages/eslint-config/**"
+      - "packages/typescript-config/**"
       - "turbo.json"
       - "bun.lock"
       - "package.json"
@@ -20,38 +19,20 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_DOCS_PROJECT_ID }}
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Cache Bun Dependencies
-        uses: actions/cache@v5
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-
-      - name: Install Dependencies
-        run: bun install --frozen-lockfile
+      - name: Setup Environment
+        uses: ./.github/setup-environment
 
       - name: Code Quality Validation
         run: bun turbo run lint --filter=docs
 
-      - name: Pull Vercel Project Settings
-        run: bunx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
-
-      - name: Build Docs Artifact
-        run: bunx vercel build --prod --token=$VERCEL_TOKEN
-
-      - name: Deploy Docs to Vercel
-        run: bunx vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
+      - name: Deploy to Vercel
+        uses: ./.github/vercel-deploy
+        with:
+          vercel_token: ${{ env.VERCEL_TOKEN }}
+          vercel_org_id: ${{ env.VERCEL_ORG_ID }}
+          vercel_project_id: ${{ env.VERCEL_PROJECT_ID }}

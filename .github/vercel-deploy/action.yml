@@ -1,0 +1,41 @@
+name: Deploy to Vercel
+description: Pulls, builds, and deploys artifacts to Vercel with optional Doppler secrets
+
+# Khai báo các cổng nhận dữ liệu từ file Workflow mẹ
+inputs:
+  vercel_token:
+    required: true
+  vercel_org_id:
+    required: true
+  vercel_project_id:
+    required: true
+  doppler_token:
+    required: false
+    default: ''
+
+runs:
+  using: "composite"
+  env:
+    VERCEL_ORG_ID: ${{ inputs.vercel_org_id }}
+    VERCEL_PROJECT_ID: ${{ inputs.vercel_project_id }}
+
+  steps:
+    - name: Pull Vercel Project Settings
+      run: bunx vercel pull --yes --environment=production --token=${{ inputs.vercel_token }}
+      shell: bash
+
+    - name: Build Project Artifacts (with Doppler)
+      if: ${{ inputs.doppler_token != '' }}
+      run: doppler run -- bunx vercel build --prod --token=${{ inputs.vercel_token }}
+      shell: bash
+      env:
+        DOPPLER_TOKEN: ${{ inputs.doppler_token }}
+
+    - name: Build Project Artifacts (Standard)
+      if: ${{ inputs.doppler_token == '' }}
+      run: bunx vercel build --prod --token=${{ inputs.vercel_token }}
+      shell: bash
+
+    - name: Deploy Project Artifacts to Vercel
+      run: bunx vercel deploy --prebuilt --prod --token=${{ inputs.vercel_token }}
+      shell: bash
