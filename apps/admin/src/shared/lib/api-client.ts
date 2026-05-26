@@ -14,6 +14,16 @@ export async function fetchApi<T>(
     );
   }
 
-  const result = (await res.json()) as ApiResponse<T>;
+  const result = (await res.json()) as ApiResponse<T> & {
+    error?: string;
+    message?: string;
+  };
+
+  if (!result.success) {
+    throw new Error(
+      `API logic error at ${endpoint}: ${result.error ?? result.message ?? "Unknown error"}`,
+    );
+  }
+
   return result.data;
 }
