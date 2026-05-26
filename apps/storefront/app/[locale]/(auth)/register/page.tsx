@@ -1,8 +1,9 @@
-import { AuthPageShell, RegisterForm } from "@/features/auth/components";
+import { AuthPageShell } from "@/features/auth/components/auth-page-shell";
 import type { Metadata } from "next";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { RegisterForm } from "@/features/auth/components";
 
 export async function generateMetadata({
   params,

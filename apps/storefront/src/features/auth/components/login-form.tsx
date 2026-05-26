@@ -34,7 +34,9 @@ import {
 export const LoginForm = () => {
   const searchParams = useSearchParams();
   const rawCallbackUrl = searchParams.get("callbackUrl");
-  const callbackUrl = rawCallbackUrl?.startsWith("/") ? rawCallbackUrl : "/dashboard";
+  const callbackUrl = rawCallbackUrl?.startsWith("/")
+    ? rawCallbackUrl
+    : "/dashboard";
 
   const router = useRouter();
   const t = useTranslations("Login");
@@ -87,11 +89,7 @@ export const LoginForm = () => {
 
       <CardContent>
         <Form {...form}>
-          <form
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="email"

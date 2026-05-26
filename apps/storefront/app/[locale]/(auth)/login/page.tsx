@@ -1,7 +1,5 @@
-import {
-  AuthPageShell,
-  LoginForm,
-} from "@/features/auth/components";
+import { LoginForm } from "@/features/auth/components";
+import { AuthPageShell } from "@/features/auth/components/auth-page-shell";
 import { routing } from "@/i18n/routing";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
