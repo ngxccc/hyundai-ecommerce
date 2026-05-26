@@ -46,3 +46,5 @@ jobs:
       - name: Apply Expand Migration to Prod DB
         working-directory: packages/database
         run: bun run db:migrate
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
