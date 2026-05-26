@@ -123,6 +123,16 @@
       "allBrands": "Tất cả thương hiệu",
       "allFuels": "Tất cả nhiên liệu",
       "allPhases": "Tất cả số pha",
+      "categoryOptions": {
+        "generator": "Máy phát điện",
+        "ups": "Trạm sạc dự phòng",
+        "industrial": "Máy công nghiệp"
+      },
+      "brandOptions": {
+        "hyundai": "Hyundai",
+        "mitsubishi": "Mitsubishi",
+        "perkins": "Perkins"
+      },
       "statusOptions": {
         "active": "Đang bán",
         "outOfStock": "Hết hàng"

@@ -22,9 +22,9 @@ export const ProductFilters = () => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">{t("allCategories")}</SelectItem>
-          <SelectItem value="generator">Máy phát điện</SelectItem>
-          <SelectItem value="ups">Trạm sạc dự phòng</SelectItem>
-          <SelectItem value="industrial">Máy công nghiệp</SelectItem>
+          <SelectItem value="generator">{t("categoryOptions.generator")}</SelectItem>
+          <SelectItem value="ups">{t("categoryOptions.ups")}</SelectItem>
+          <SelectItem value="industrial">{t("categoryOptions.industrial")}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -35,9 +35,9 @@ export const ProductFilters = () => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">{t("allBrands")}</SelectItem>
-          <SelectItem value="hyundai">Hyundai</SelectItem>
-          <SelectItem value="mitsubishi">Mitsubishi</SelectItem>
-          <SelectItem value="perkins">Perkins</SelectItem>
+          <SelectItem value="hyundai">{t("brandOptions.hyundai")}</SelectItem>
+          <SelectItem value="mitsubishi">{t("brandOptions.mitsubishi")}</SelectItem>
+          <SelectItem value="perkins">{t("brandOptions.perkins")}</SelectItem>
         </SelectContent>
       </Select>
 
