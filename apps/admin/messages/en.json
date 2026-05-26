@@ -123,6 +123,16 @@
       "allBrands": "All Brands",
       "allFuels": "All Fuels",
       "allPhases": "All Phases",
+      "categoryOptions": {
+        "generator": "Generators",
+        "ups": "Power Stations",
+        "industrial": "Industrial Machines"
+      },
+      "brandOptions": {
+        "hyundai": "Hyundai",
+        "mitsubishi": "Mitsubishi",
+        "perkins": "Perkins"
+      },
       "statusOptions": {
         "active": "Active",
         "outOfStock": "Out of Stock"
