@@ -3,9 +3,16 @@ name: Storefront App CD
 on:
   push:
     branches: ["main"]
-    paths-ignore:
-      - "docs/**"
-      - "*.md"
+    paths:
+      - "apps/storefront/**"
+      - "packages/database/**"
+      - "packages/eslint-config/**"
+      - "packages/shared/**"
+      - "packages/types/**"
+      - "packages/typescript-config/**"
+      - "turbo.json"
+      - "bun.lock"
+      - "package.json"
 
 jobs:
   deploy:
@@ -15,46 +22,25 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Cache Bun
-        uses: actions/cache@v5
-        with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
-
-      - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@v4
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
+      - name: Setup Environment
+        uses: ./.github/setup-environment
 
       - name: Final Safety Check (Lint, Test)
         run: bun turbo run lint test --filter=storefront
 
-      - name: Pull Vercel Project Settings
-        run: bunx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+      - name: Deploy to Vercel
+        uses: ./.github/vercel-deploy
+        with:
+          vercel_token: ${{ env.VERCEL_TOKEN }}
+          vercel_org_id: ${{ env.VERCEL_ORG_ID }}
+          vercel_project_id: ${{ env.VERCEL_PROJECT_ID }}
+          doppler_token: ${{ env.DOPPLER_TOKEN }}
 
       - name: Apply Expand Migration to Prod DB
         working-directory: packages/database
         run: bun run db:migrate
-
-      - name: Build Project Artifacts
-        run: doppler run -- bunx vercel build --prod --token=$VERCEL_TOKEN
-
-      - name: Deploy Project Artifacts to Vercel
-        run: bunx vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
