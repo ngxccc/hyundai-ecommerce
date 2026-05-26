@@ -13,6 +13,7 @@ on:
       - "turbo.json"
       - "bun.lock"
       - "package.json"
+      - ".github/workflows/storefront.yml"
   workflow_dispatch:
 
 jobs:
@@ -37,10 +38,10 @@ jobs:
       - name: Deploy to Vercel
         uses: ./.github/vercel-deploy
         with:
-          vercel_token: ${{ env.VERCEL_TOKEN }}
-          vercel_org_id: ${{ env.VERCEL_ORG_ID }}
-          vercel_project_id: ${{ env.VERCEL_PROJECT_ID }}
-          doppler_token: ${{ env.DOPPLER_TOKEN }}
+          vercel_token: ${{ secrets.VERCEL_TOKEN }}
+          vercel_org_id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel_project_id: ${{ secrets.VERCEL_PROJECT_ID }}
+          doppler_token: ${{ secrets.DOPPLER_TOKEN }}
 
       - name: Apply Expand Migration to Prod DB
         working-directory: packages/database

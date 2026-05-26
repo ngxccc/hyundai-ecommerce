@@ -10,6 +10,7 @@ on:
       - "turbo.json"
       - "bun.lock"
       - "package.json"
+      - ".github/workflows/docs.yml"
   workflow_dispatch:
 
 jobs:
@@ -34,6 +35,6 @@ jobs:
       - name: Deploy to Vercel
         uses: ./.github/vercel-deploy
         with:
-          vercel_token: ${{ env.VERCEL_TOKEN }}
-          vercel_org_id: ${{ env.VERCEL_ORG_ID }}
-          vercel_project_id: ${{ env.VERCEL_DOCS_PROJECT_ID }}
+          vercel_token: ${{ secrets.VERCEL_TOKEN }}
+          vercel_org_id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel_project_id: ${{ secrets.VERCEL_DOCS_PROJECT_ID }}
