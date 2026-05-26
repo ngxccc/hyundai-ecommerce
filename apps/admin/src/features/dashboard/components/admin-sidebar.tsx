@@ -24,11 +24,11 @@ export const AdminSidebar = () => {
   const handleLogout = async () => {
     try {
       await authClient.signOut();
-      toast.success("Đăng xuất thành công");
+      toast.success(t("logoutSuccess"));
       router.refresh();
       router.push("/login");
     } catch {
-      toast.error("Đăng xuất thất bại");
+      toast.error(t("logoutError"));
     }
   };
 
