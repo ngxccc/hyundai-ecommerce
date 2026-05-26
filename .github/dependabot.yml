@@ -6,6 +6,7 @@ updates:
       interval: "daily"          # Kiểm tra update mỗi ngày
     ignore:
       - dependency-name: "eslint" # không cho update eslint
+        update-types: ["version-update:semver-major"]
     open-pull-requests-limit: 12 # Giới hạn số PR mở cùng lúc
     groups:
       production-dependencies:
