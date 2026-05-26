@@ -22,9 +22,27 @@ export default defineConfig([
                 "!@/features/*/index",
                 "!@/features/*/index.ts",
                 "!@/features/*/index.tsx",
+                "!@/features/*/hooks",
+                "!@/features/*/hooks/**",
+                "!@/features/*/components",
+                "!@/features/*/components/**",
+                "!@/features/*/types",
+                "!@/features/*/types/**",
+                "!@/features/*/services",
+                "!@/features/*/services/**",
+                "!@/features/*/stores",
+                "!@/features/*/stores/**",
+                "!@/features/*/utils",
+                "!@/features/*/utils/**",
+                "!@/features/*/actions",
+                "!@/features/*/actions/**",
+                "@/features/*/*/*",
+                "!@/features/*/*/index",
+                "!@/features/*/*/index.ts",
+                "!@/features/*/*/index.tsx",
               ],
               message:
-                "Private internal access! Chỉ được import từ public interface (index.ts) của feature. Không được chọc thẳng vào file nội bộ.",
+                "Private internal access! Chỉ được import từ public interface (index.ts), sub-barrel (hooks, components...) hoặc deep import an toàn của feature. Không được chọc thẳng vào file nội bộ.",
             },
             {
               // 2. NGĂN Feature import ngược từ App Router layer (UI Layer)
@@ -72,16 +90,22 @@ export default defineConfig([
         {
           patterns: [
             {
-              // Chỉ cho phép import từ public barrel của feature/sub-feature.
-              // Cấm chọc sâu vào file nội bộ bên trong feature.
+              // Cho phép import từ public barrel của feature/sub-feature hoặc deep import (để tránh Server/Client leakage).
               group: [
                 "@/features/*/*/*",
                 "!@/features/*/*/index",
                 "!@/features/*/*/index.ts",
                 "!@/features/*/*/index.tsx",
+                "!@/features/*/hooks/**",
+                "!@/features/*/components/**",
+                "!@/features/*/types/**",
+                "!@/features/*/services/**",
+                "!@/features/*/stores/**",
+                "!@/features/*/utils/**",
+                "!@/features/*/actions/**",
               ],
               message:
-                "App layer chỉ được import từ public barrel của feature. Không được import file nội bộ bên trong feature.",
+                "App layer chỉ được import từ public barrel hoặc deep import an toàn (components, hooks...) của feature. Không được import các file nội bộ khác.",
             },
           ],
         },
