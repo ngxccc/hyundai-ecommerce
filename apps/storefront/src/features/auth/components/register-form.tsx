@@ -108,7 +108,6 @@ export const RegisterForm = () => {
       <CardContent>
         <Form {...form}>
           <form
-             
             onSubmit={form.handleSubmit(onSubmit)}
             method="post"
             className="space-y-6"
