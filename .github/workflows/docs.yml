@@ -1,18 +1,8 @@
-name: Docs App CI/CD
+name: Docs App CD
 
 on:
   push:
     branches: ["main"]
-    paths:
-      - "apps/docs/**"
-      - "packages/shared/**"
-      - "packages/typescript-config/**"
-      - "packages/eslint-config/**"
-      - "turbo.json"
-      - "bun.lock"
-      - "package.json"
-  pull_request:
-    types: [opened, synchronize, reopened]
     paths:
       - "apps/docs/**"
       - "packages/shared/**"

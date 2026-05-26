@@ -1,4 +1,4 @@
-name: Production Deployment
+name: Storefront App CD
 
 on:
   push:
@@ -44,7 +44,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Final Safety Check (Lint, Test)
-        run: bun turbo run lint test
+        run: bun turbo run lint test --filter=storefront
 
       - name: Pull Vercel Project Settings
         run: bunx vercel pull --yes --environment=production --token=$VERCEL_TOKEN
