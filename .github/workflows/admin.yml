@@ -1,0 +1,46 @@
+name: Admin App CD
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/admin/**"
+      - "packages/database/**"
+      - "packages/eslint-config/**"
+      - "packages/shared/**"
+      - "packages/types/**"
+      - "packages/typescript-config/**"
+      - "turbo.json"
+      - "bun.lock"
+      - "package.json"
+
+jobs:
+  deploy:
+    name: Release to Vercel
+    runs-on: ubuntu-latest
+    environment: Production
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Setup Environment
+        uses: ./.github/setup-environment
+
+      - name: Final Safety Check (Lint, Test)
+        run: bun turbo run lint test --filter=admin
+
+      - name: Deploy to Vercel
+        uses: ./.github/vercel-deploy
+        with:
+          vercel_token: ${{ env.VERCEL_TOKEN }}
+          vercel_org_id: ${{ env.VERCEL_ORG_ID }}
+          vercel_project_id: ${{ env.VERCEL_ADMIN_PROJECT_ID }}
+          doppler_token: ${{ env.DOPPLER_TOKEN }}
+
+      - name: Apply Expand Migration to Prod DB
+        working-directory: packages/database
+        run: bun run db:migrate
