@@ -61,6 +61,7 @@ export const LoginForm = () => {
         toast.success(t("successMessage"));
         router.push("/");
       } catch (err) {
+        console.warn("Login submit error: ", err);
         toast.error(t("errorMessage"));
       }
     });

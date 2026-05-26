@@ -8,6 +8,8 @@ export const getCachedSession = cache(async () => {
       headers: await headers(),
     });
   } catch (error) {
+    console.warn("Get cached session error: ", error);
+
     return null;
   }
 });

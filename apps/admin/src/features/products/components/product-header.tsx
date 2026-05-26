@@ -11,9 +11,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/shared/components/ui/sheet";
-import { useAdminNav } from "@/features/dashboard/hooks/use-admin-nav";
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/shared/lib/utils";
+import { useAdminNav } from "@/features/dashboard/hooks";
 
 export const ProductHeader = () => {
   const t = useTranslations("AdminProducts.header");

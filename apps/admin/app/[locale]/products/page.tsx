@@ -2,9 +2,13 @@ import { ProductHeader } from "@/features/products/components/product-header";
 import { ProductFilters } from "@/features/products/components/product-filters";
 import { ProductGrid } from "@/features/products/components/product-grid";
 import { ProductPagination } from "@/features/products/components/product-pagination";
-
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
+import { routing } from "@/i18n/routing";
+
+export const generateStaticParams = () => {
+  return routing.locales.map((locale) => ({ locale }));
+};
 
 export async function generateMetadata({
   params,

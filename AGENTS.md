@@ -137,10 +137,13 @@ export default ProductDetailPage;
 - **Server Actions Return Types**: Always explicitly type return unions from Server Actions (e.g., success vs error branches). Do not rely on implicit union inference.
 - **Handling Unions**: Always narrow union types properly before accessing properties to avoid `@typescript-eslint/no-unsafe-member-access` or `@typescript-eslint/no-unsafe-assignment` errors. Use type guards (e.g., `if (!res.success) throw new Error()`) or explicit type casting (e.g., `as TMyActionResult`) when testing.
 
-#### Import/Export Rules
+#### Import/Export & Barrel Files (CRITICAL)
 
 - Use named exports for child components and utilities
 - Only use `export default` for `page.tsx` and `layout.tsx`
+- **No strict feature-level barrel files**: Do NOT force a single `index.ts` file at the root of a feature to export everything.
+- **Sub-barrel Categorization**: Use and allow sub-barrels for categorizing imports (e.g., `import { useNav } from "@/features/foo/hooks"`, or `.../components`, `.../services`).
+- **Server/Client Boundary Safety**: Never mix Server and Client components in the same barrel file. For UI components, deep imports are allowed and encouraged to prevent bundle bloat and client-directive leaks (e.g., `import { ClientNav } from "@/features/dashboard/components/client-nav"`).
 - Import order: External → Internal → Relative
 - Group imports with comments when needed
 

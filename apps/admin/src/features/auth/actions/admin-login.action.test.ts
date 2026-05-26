@@ -1,13 +1,22 @@
-import { expect, test, describe, mock, vi, beforeEach } from "bun:test";
+import {
+  expect,
+  test,
+  describe,
+  mock,
+  vi,
+  beforeEach,
+  type Mock,
+} from "bun:test";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import type { adminLoginAction } from "./admin-login.action";
+import type { AuthService } from "@nhatnang/database/services";
 
 // Mock at system boundaries
-vi.mock("next/headers", () => ({
-  headers: mock(async () => new Map([["x-forwarded-for", "127.0.0.1"]])),
+void vi.mock("next/headers", () => ({
+  headers: mock(() => new Map([["x-forwarded-for", "127.0.0.1"]])),
 }));
 
-vi.mock("@nhatnang/database/services", () => ({
+void vi.mock("@nhatnang/database/services", () => ({
   authService: {
     loginEmail: mock(),
   },
@@ -16,12 +25,15 @@ vi.mock("@nhatnang/database/services", () => ({
 type LoginResult = Awaited<ReturnType<typeof adminLoginAction>>;
 
 describe("adminLoginAction", () => {
-  let authServiceMock: any;
+  let loginEmailMock: Mock<AuthService["loginEmail"]>;
 
   beforeEach(async () => {
     const { authService } = await import("@nhatnang/database/services");
-    authServiceMock = authService;
-    authServiceMock.loginEmail.mockClear();
+
+    loginEmailMock = authService.loginEmail.bind(authService) as Mock<
+      typeof authService.loginEmail
+    >;
+    loginEmailMock.mockClear();
   });
 
   test("returns validation error when input is invalid (empty)", async () => {
@@ -35,7 +47,7 @@ describe("adminLoginAction", () => {
       SYSTEM_ERROR_CODES.VALIDATION_ERROR,
     );
     expect(result).toHaveProperty("fieldErrors");
-    expect(authServiceMock.loginEmail).not.toHaveBeenCalled();
+    expect(loginEmailMock).not.toHaveBeenCalled();
   });
 
   test("calls authService.loginEmail and returns its result when input is valid", async () => {
@@ -46,7 +58,7 @@ describe("adminLoginAction", () => {
       success: true,
       data: { userId: "1" },
     };
-    authServiceMock.loginEmail.mockResolvedValueOnce(mockSuccessResponse);
+    loginEmailMock.mockResolvedValueOnce(mockSuccessResponse);
 
     const validData = {
       email: "admin@example.com",
@@ -56,8 +68,8 @@ describe("adminLoginAction", () => {
 
     const result = await adminLoginAction(validData);
 
-    expect(authServiceMock.loginEmail).toHaveBeenCalledTimes(1);
-    expect(authServiceMock.loginEmail).toHaveBeenCalledWith(
+    expect(loginEmailMock).toHaveBeenCalledTimes(1);
+    expect(loginEmailMock).toHaveBeenCalledWith(
       {
         email: validData.email,
         password: validData.password,

@@ -1,6 +1,11 @@
 import { LoginForm } from "@/features/auth/components/login-form";
+import { routing } from "@/i18n/routing";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
+
+export const generateStaticParams = () => {
+  return routing.locales.map((locale) => ({ locale }));
+};
 
 export async function generateMetadata({
   params,
