@@ -14,6 +14,9 @@ void vi.mock("@nhatnang/database/services", () => ({
     loginEmail: mockLoginEmail,
     register: vi.fn(),
   },
+  userService: {
+    checkDuplicateUser: vi.fn(),
+  },
 }));
 
 void vi.mock("next/headers", () => ({
