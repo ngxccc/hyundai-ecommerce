@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Link } from "@/i18n/routing";
 import { Field, FieldLabel, FieldError } from "@/shared/components/ui/field";
-import type { TRegisterForm } from "@nhatnang/database/schemas";
+import type { TRegisterForm } from "@nhatnang/database/validators";
 import type { IAuthFormSectionProps } from "@nhatnang/types";
 
 export const TermsSection = ({
