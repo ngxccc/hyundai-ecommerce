@@ -242,7 +242,8 @@
       "dragDropImage": "Drag and drop images here",
       "orClickToSelect": "or click to select file",
       "orEnterUrl": "Or enter image URL",
-      "categoryGroup": "Classification"
+      "categoryGroup": "Classification",
+      "noCategoriesFound": "No categories found"
     },
     "categoryOptions": {
       "diesel": "Diesel Generator",
