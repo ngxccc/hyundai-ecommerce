@@ -244,7 +244,8 @@
       "dragDropImage": "Kéo thả ảnh vào đây",
       "orClickToSelect": "hoặc click để chọn file",
       "orEnterUrl": "Hoặc nhập URL hình ảnh",
-      "categoryGroup": "Phân loại"
+      "categoryGroup": "Phân loại",
+      "noCategoriesFound": "Không tìm thấy danh mục nào"
     },
     "categoryOptions": {
       "diesel": "Máy phát điện Diesel",

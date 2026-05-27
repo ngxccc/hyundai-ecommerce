@@ -1,9 +1,26 @@
 import type { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Tag } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shared/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select";
 import { type TNewProduct, type TCategory } from "@nhatnang/database/schemas";
 
 interface ProductCategorySectionProps {
@@ -11,7 +28,10 @@ interface ProductCategorySectionProps {
   categories: TCategory[];
 }
 
-export const ProductCategorySection = ({ form, categories }: ProductCategorySectionProps) => {
+export const ProductCategorySection = ({
+  form,
+  categories,
+}: ProductCategorySectionProps) => {
   const t = useTranslations("AdminProductForm");
 
   return (
@@ -35,7 +55,9 @@ export const ProductCategorySection = ({ form, categories }: ProductCategorySect
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder={t("fields.categoryPlaceholder")} />
+                    <SelectValue
+                      placeholder={t("fields.categoryPlaceholder")}
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -46,7 +68,7 @@ export const ProductCategorySection = ({ form, categories }: ProductCategorySect
                   ))}
                   {categories.length === 0 && (
                     <div className="text-muted-foreground p-2 text-sm">
-                      {t("fields.noCategoriesFound", { defaultMessage: "No categories found" })}
+                      {t("fields.noCategoriesFound")}
                     </div>
                   )}
                 </SelectContent>
