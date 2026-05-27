@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { Field, FieldLabel, FieldError } from "@/shared/components/ui/field";
-import type { TRegisterForm } from "@nhatnang/database/schemas";
+import type { TRegisterForm } from "@nhatnang/database/validators";
 import { useTranslations } from "next-intl";
 import type { IAuthFormSectionProps } from "@nhatnang/types";
 

@@ -1,16 +1,15 @@
 "use server";
 
-import { checkDuplicateUser } from "@nhatnang/database/queries";
 import {
   AUTH_ERROR_CODES,
   SYSTEM_ERROR_CODES,
 } from "@nhatnang/shared/constants";
 import { z } from "zod";
-import { authService } from "@nhatnang/database/services";
+import { authService, userService } from "@nhatnang/database/services";
 import {
   createRegisterSchema,
   type TRegisterForm,
-} from "@nhatnang/database/schemas";
+} from "@nhatnang/database/validators";
 
 export async function registerAction(data: TRegisterForm) {
   const schema = createRegisterSchema((key: string) => key);
@@ -26,7 +25,7 @@ export async function registerAction(data: TRegisterForm) {
 
   const validatedData = parsed.data;
 
-  const duplicateRecord = await checkDuplicateUser(
+  const duplicateRecord = await userService.checkDuplicateUser(
     validatedData.email,
     validatedData.phone,
   );

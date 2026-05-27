@@ -21,11 +21,11 @@ import { TermsSection } from "./terms-section";
 import { Form } from "@/shared/components/ui/form";
 import { registerAction } from "../actions/register.action";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
-import type { IAuthErrorMessageMap } from "@nhatnang/types";
 import {
   createRegisterSchema,
   type TRegisterForm,
-} from "@nhatnang/database/schemas";
+} from "@nhatnang/database/validators";
+import type { IAuthErrorMessageMap } from "@nhatnang/types";
 
 export const RegisterForm = () => {
   const router = useRouter();

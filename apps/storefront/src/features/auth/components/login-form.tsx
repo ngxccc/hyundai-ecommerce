@@ -5,10 +5,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import { createLoginSchema, type TLoginForm } from "@nhatnang/database/schemas";
+import {
+  createLoginSchema,
+  type TLoginForm,
+} from "@nhatnang/database/validators";
 import { loginAction } from "../actions/login.action";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
-import type { IAuthErrorMessageMap } from "@nhatnang/types";
 import { useRouter, Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -30,6 +32,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/components/ui/form";
+import type { IAuthErrorMessageMap } from "@nhatnang/types";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();

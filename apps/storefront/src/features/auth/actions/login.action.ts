@@ -4,7 +4,10 @@ import { headers } from "next/headers";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { z } from "zod";
 import { authService } from "@nhatnang/database/services";
-import { createLoginSchema, type TLoginForm } from "@nhatnang/database/schemas";
+import {
+  createLoginSchema,
+  type TLoginForm,
+} from "@nhatnang/database/validators";
 
 export const loginAction = async (data: TLoginForm) => {
   const schema = createLoginSchema((key) => key);

@@ -17,10 +17,9 @@ void vi.mock("@nhatnang/database/services", () => ({
     loginEmail: vi.fn(),
     register: mockRegister,
   },
-}));
-
-void vi.mock("@nhatnang/database/queries", () => ({
-  checkDuplicateUser: mockCheckDuplicateUser,
+  userService: {
+    checkDuplicateUser: mockCheckDuplicateUser,
+  },
 }));
 
 // Dynamic import AFTER mocks are registered
