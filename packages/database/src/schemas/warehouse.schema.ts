@@ -14,5 +14,5 @@ export const warehouses = snakeCase.table(
   (table) => [index("warehouse_name_idx").on(table.name)],
 );
 
-export type Warehouse = typeof warehouses.$inferSelect;
-export type NewWarehouse = typeof warehouses.$inferInsert;
+export type TWarehouse = typeof warehouses.$inferSelect;
+export type TNewWarehouse = typeof warehouses.$inferInsert;

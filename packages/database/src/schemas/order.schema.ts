@@ -22,5 +22,5 @@ export const orders = snakeCase.table("order", {
   totalAmount: numeric({ precision: 15, scale: 2 }).notNull(),
 });
 
-export type Order = typeof orders.$inferSelect;
-export type NewOrder = typeof orders.$inferInsert;
+export type TOrder = typeof orders.$inferSelect;
+export type TNewOrder = typeof orders.$inferInsert;

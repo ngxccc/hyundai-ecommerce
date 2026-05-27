@@ -17,5 +17,5 @@ export const orderItems = snakeCase.table("order_item", {
   unitPrice: numeric({ precision: 15, scale: 2 }).notNull(),
 });
 
-export type OrderItem = typeof orderItems.$inferSelect;
-export type NewOrderItem = typeof orderItems.$inferInsert;
+export type TOrderItem = typeof orderItems.$inferSelect;
+export type TNewOrderItem = typeof orderItems.$inferInsert;

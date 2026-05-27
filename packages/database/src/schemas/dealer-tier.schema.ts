@@ -16,5 +16,5 @@ export const dealerTiers = snakeCase.table("dealer_tier", {
     .default("0"),
 });
 
-export type DealerTier = typeof dealerTiers.$inferSelect;
-export type NewDealerTier = typeof dealerTiers.$inferInsert;
+export type TDealerTier = typeof dealerTiers.$inferSelect;
+export type TNewDealerTier = typeof dealerTiers.$inferInsert;

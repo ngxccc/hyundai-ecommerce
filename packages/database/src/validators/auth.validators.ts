@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { businessTypeEnum } from "./auth.schema";
+import { businessTypeEnum } from "../schemas/auth.schema";
 
 type TRegisterValidationMessageKey =
   | "validation.fullNameMin"

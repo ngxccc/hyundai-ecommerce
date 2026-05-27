@@ -30,5 +30,5 @@ export const shippingBids = snakeCase.table(
   ],
 );
 
-export type ShippingBid = typeof shippingBids.$inferSelect;
-export type NewShippingBid = typeof shippingBids.$inferInsert;
+export type TShippingBid = typeof shippingBids.$inferSelect;
+export type TNewShippingBid = typeof shippingBids.$inferInsert;

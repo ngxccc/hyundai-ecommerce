@@ -1,16 +1,17 @@
+import type { IDatabase } from "../client";
 import type {
   IAuthService,
   LoginOptions,
   RegisterOptions,
-  TAuthActionResult,
-} from "@nhatnang/types";
+} from "./auth.service.interface";
+import type { TAuthActionResult } from "@nhatnang/types";
 import {
   AUTH_ERROR_CODES,
   type TAuthErrorCode,
   type TSystemErrorCode,
 } from "@nhatnang/shared/constants";
 import { type APIError, auth, isAPIError } from "../auth";
-import type { TLoginForm, TRegisterForm } from "../schemas";
+import type { TLoginForm, TRegisterForm } from "../validators/auth.validators";
 
 const mapLoginAuthErrorCode = (
   error: APIError,
@@ -29,6 +30,8 @@ const mapLoginAuthErrorCode = (
 };
 
 export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
+  constructor(protected readonly db?: IDatabase) {}
+
   async loginEmail(
     data: TLoginForm,
     options?: LoginOptions,
@@ -54,7 +57,7 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
         return {
           success: false,
           code: mapLoginAuthErrorCode(error),
-          error: error.message,
+          error: error instanceof Error ? error.message : "Failed to login",
         };
       }
 
@@ -103,7 +106,7 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
       if (isAPIError(error)) {
         return {
           success: false,
-          error: error.message,
+          error: error instanceof Error ? error.message : "Failed to register",
           code: mapLoginAuthErrorCode(error),
         };
       }
@@ -116,4 +119,3 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
   }
 }
 
-export const authService = new AuthService();

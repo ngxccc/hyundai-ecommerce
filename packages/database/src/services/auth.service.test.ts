@@ -1,5 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from "bun:test";
+import { beforeEach, describe, expect, it } from "bun:test";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
+import { AuthService } from "./auth.service";
+import { mockDb } from "../tests/utils/db-mock";
+import type { IDatabase } from "../client";
+import { mockSignInEmail, mockSignUpEmail } from "../tests/utils/auth-mock";
 
 interface IAuthErrorLike {
   isAPIError?: boolean;
@@ -9,38 +13,14 @@ interface IAuthErrorLike {
   message?: string;
 }
 
-const isAuthErrorLike = (error: unknown): error is IAuthErrorLike => {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "isAPIError" in error &&
-    Boolean((error as IAuthErrorLike).isAPIError)
-  );
-};
-
-const mockSignInEmail = vi.fn();
-const mockSignUpEmail = vi.fn();
-
 const createApiError = (code: string, message: string): IAuthErrorLike => {
-  return {
-    isAPIError: true,
-    body: {
-      code,
-    },
-    message,
-  };
+  const err = new Error(message) as unknown as IAuthErrorLike;
+  err.isAPIError = true;
+  err.body = { code };
+  return err;
 };
 
-void vi.mock("../auth", () => {
-  return {
-    auth: {
-      api: { signInEmail: mockSignInEmail, signUpEmail: mockSignUpEmail },
-    },
-    isAPIError: isAuthErrorLike,
-  };
-});
-
-const { authService } = await import(".");
+const authService = new AuthService(mockDb as unknown as IDatabase);
 
 describe("AuthService", () => {
   beforeEach(() => {
