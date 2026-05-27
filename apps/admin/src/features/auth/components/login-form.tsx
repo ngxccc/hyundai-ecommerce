@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { createLoginSchema, type TLoginForm } from "@nhatnang/database/schemas";
+import { createLoginSchema, type TLoginForm } from "@nhatnang/database/validators";
 import { toast } from "sonner";
 import { ShieldCheck } from "lucide-react";
 

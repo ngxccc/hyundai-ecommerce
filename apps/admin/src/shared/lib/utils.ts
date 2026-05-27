@@ -12,3 +12,9 @@ export const priceFormatter = new Intl.NumberFormat("vi-VN", {
   style: "currency",
   currency: "VND",
 });
+
+export const formatNumberInput = (value: string) => {
+  const number = value.replace(/\D/g, "");
+  if (!number) return "";
+  return new Intl.NumberFormat("vi-VN").format(Number(number));
+};

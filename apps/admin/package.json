@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "test": "bun test src/",
-    "dev": "doppler run -- next dev -p 3001",
+    "dev": "NODE_OPTIONS='--max-old-space-size=4096' doppler run -- next dev -p 3001",
     "build": "doppler run -- next build",
     "start": "doppler run -- next start -p 3001",
     "analyze": "next experimental-analyze",

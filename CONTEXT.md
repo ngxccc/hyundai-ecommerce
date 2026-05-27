@@ -56,3 +56,11 @@ Use these terms consistently in code, docs, and architecture reviews.
 - The database package is the source of truth for auth form schemas.
 - The `@nhatnang/types` package owns shared contracts such as auth action/result types and product specs.
 - Shared packages should contain only contracts that are intentionally reused across modules.
+
+## Architectural Guidelines
+
+- **Schema-Driven Design (SDD)**: Các Entity Types (như `IProduct`, `IUser`) BẮT BUỘC phải được suy luận trực tiếp từ Drizzle Schema (ví dụ `typeof schema.$inferSelect`). Các Service Interface giao tiếp với Database cũng phải được đặt cùng thư mục (co-located) với Service Implementation tại `packages/database` để dùng chung type này, tránh Lỗi Circular Dependency và đảm bảo Single Source of Truth.
+- **TDD & Test Co-location**: Unit tests (using `bun:test`) MUST be co-located directly next to their implementation files (e.g., `product.services.test.ts` next to `product.services.ts`). Do not put them in a separate `__tests__` folder unless strictly necessary.
+- **Zod Schema Separation**: Zod validation schemas used for Server Actions and UI Forms MUST be strictly separated from Drizzle ORM database schemas. They should be placed in dedicated validator files (e.g., `packages/database/src/validators/`) to decouple UI validation logic from database structure.
+- **Fat Service over Repository Pattern**: Đối với các thao tác CRUD cơ bản bằng Drizzle ORM, hãy nhúng trực tiếp Drizzle queries vào bên trong `services/` (Fat Service pattern). Tránh việc tạo ra các hàm mapping 1:1 thừa thãi trong thư mục `queries/`. Thư mục `queries/` chỉ được sử dụng cho các câu truy vấn SQL cực kỳ phức tạp (như Analytics, Aggregation nhiều bảng) để tránh làm phình to (bloat) logic của Service.
+- **Manual Dependency Injection (Constructor Injection)**: Mọi thao tác DB bên trong Service đều phải gọi qua `this.db` được truyền vào qua Constructor. Khi chạy Drizzle Transaction, bắt buộc phải tạo Service instance giả lập: `const txService = new XyzService(tx)`. Mọi Service Singletons (chạy `db` gốc) phải được khởi tạo tập trung tại `packages/database/src/services/registry.ts`.

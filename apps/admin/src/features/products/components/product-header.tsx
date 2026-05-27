@@ -15,14 +15,24 @@ import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/shared/lib/utils";
 import { useAdminNav } from "@/features/dashboard/hooks";
 
-export const ProductHeader = () => {
+interface ProductHeaderProps {
+  title: string;
+  description?: string;
+  showAddButton?: boolean;
+}
+
+export const ProductHeader = ({
+  title,
+  description,
+  showAddButton = true,
+}: ProductHeaderProps) => {
   const t = useTranslations("AdminProducts.header");
   const tDashboard = useTranslations("AdminDashboard");
   const navItems = useAdminNav();
   const pathname = usePathname();
 
   return (
-    <header className="bg-background/80 sticky top-0 z-40 flex w-full items-center justify-between px-4 py-4 backdrop-blur-md md:px-6">
+    <header className="bg-background/80 sticky top-0 z-40 flex w-full items-center justify-between px-4 pt-4 pb-2 backdrop-blur-md md:px-2">
       {/* Mobile navbar */}
       <div className="flex items-center gap-2">
         <Sheet>
@@ -68,13 +78,15 @@ export const ProductHeader = () => {
             </nav>
           </SheetContent>
         </Sheet>
-        <div>
+        <div className="flex flex-col gap-1">
           <h2 className="text-primary text-xl font-bold md:text-2xl">
-            {t("title")}
+            {title}
           </h2>
-          <p className="text-muted-foreground hidden text-sm sm:block">
-            {t("description")}
-          </p>
+          {description && (
+            <p className="text-muted-foreground hidden text-sm sm:block">
+              {description}
+            </p>
+          )}
         </div>
       </div>
 
@@ -97,13 +109,18 @@ export const ProductHeader = () => {
           <span className="bg-destructive absolute top-2 right-2 h-2 w-2 rounded-full"></span>
         </Button>
 
-        <Button
-          className="flex shrink-0 items-center gap-2 rounded-lg shadow-sm"
-          variant="default"
-        >
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">{t("addProduct")}</span>
-        </Button>
+        {showAddButton && (
+          <Button
+            className="flex shrink-0 items-center gap-2 rounded-lg shadow-sm"
+            variant="default"
+            asChild
+          >
+            <Link href="/products/new">
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">{t("addProduct")}</span>
+            </Link>
+          </Button>
+        )}
       </div>
     </header>
   );
