@@ -13,9 +13,9 @@
     "./env": "./src/env.ts",
     "./schemas": "./src/schemas/index.ts",
     "./services": "./src/services/index.ts",
+    "./validators": "./src/validators/index.ts",
     "./auth": "./src/auth.ts",
-    "./auth-client": "./src/auth-client.ts",
-    "./queries": "./src/queries/index.ts"
+    "./auth-client": "./src/auth-client.ts"
   },
   "scripts": {
     "test": "bun test src/",

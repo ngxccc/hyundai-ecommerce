@@ -8,7 +8,7 @@ import { Resend } from "resend";
 import { env } from "./env";
 import { nextCookies } from "better-auth/next-js";
 
-const resend = new Resend(env.RESEND_API_KEY);
+const resend = new Resend(env.RESEND_API_KEY || "re_dummy");
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {

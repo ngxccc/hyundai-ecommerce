@@ -13,7 +13,7 @@ import { sql } from "drizzle-orm";
 import { fullEntity } from "./helpers.schema";
 import { brands } from "./brand.schema";
 import { categories } from "./category.schema";
-import { type ProductSpecs } from "@nhatnang/types";
+import type { TProductSpecs } from "../validators";
 
 export const products = snakeCase.table(
   "product",
@@ -29,7 +29,7 @@ export const products = snakeCase.table(
     categoryId: uuid().references(() => categories.id, {
       onDelete: "set null",
     }),
-    specs: jsonb().$type<ProductSpecs>().default({}),
+    specs: jsonb().$type<TProductSpecs>().default({}),
     totalStockCache: integer().notNull().default(0),
     isQuoteOnly: boolean().notNull().default(false),
   },
@@ -47,5 +47,5 @@ export const products = snakeCase.table(
   ],
 );
 
-export type Product = typeof products.$inferSelect;
-export type NewProduct = typeof products.$inferInsert;
+export type TProduct = typeof products.$inferSelect;
+export type TNewProduct = typeof products.$inferInsert;

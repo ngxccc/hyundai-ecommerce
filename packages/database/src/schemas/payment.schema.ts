@@ -29,5 +29,5 @@ export const payments = snakeCase.table("payment", {
   rawPayload: text(),
 });
 
-export type Payment = typeof payments.$inferSelect;
-export type NewPayment = typeof payments.$inferInsert;
+export type TPayment = typeof payments.$inferSelect;
+export type TNewPayment = typeof payments.$inferInsert;

@@ -11,5 +11,5 @@ export const carts = snakeCase.table("cart", {
     .unique(),
 });
 
-export type Cart = typeof carts.$inferSelect;
-export type NewCart = typeof carts.$inferInsert;
+export type TCart = typeof carts.$inferSelect;
+export type TNewCart = typeof carts.$inferInsert;

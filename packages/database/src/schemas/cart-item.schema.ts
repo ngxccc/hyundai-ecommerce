@@ -20,5 +20,5 @@ export const cartItems = snakeCase.table(
   ],
 );
 
-export type CartItem = typeof cartItems.$inferSelect;
-export type NewCartItem = typeof cartItems.$inferInsert;
+export type TCartItem = typeof cartItems.$inferSelect;
+export type TNewCartItem = typeof cartItems.$inferInsert;

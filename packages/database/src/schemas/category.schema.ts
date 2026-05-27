@@ -19,5 +19,5 @@ export const categories = snakeCase.table("category", {
   isActive: boolean().default(true).notNull(),
 });
 
-export type Category = typeof categories.$inferSelect;
-export type NewCategory = typeof categories.$inferInsert;
+export type TCategory = typeof categories.$inferSelect;
+export type TNewCategory = typeof categories.$inferInsert;

@@ -35,6 +35,8 @@ export const env = createEnv({
   },
 
   emptyStringAsUndefined: true,
+  skipValidation:
+    !!process.env["SKIP_ENV_VALIDATION"] || process.env.NODE_ENV === "test",
 
   onValidationError: (issues) => {
     console.error(MESSAGES.DOTENV_FILE_CONFIG_INVALID);

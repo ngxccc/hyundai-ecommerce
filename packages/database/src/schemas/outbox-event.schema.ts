@@ -43,5 +43,5 @@ export const outboxEvents = snakeCase.table("outbox_event", {
   processedAt: timestamp({ withTimezone: true, mode: "date" }),
 });
 
-export type OutboxEvent = typeof outboxEvents.$inferSelect;
-export type NewOutboxEvent = typeof outboxEvents.$inferInsert;
+export type TOutboxEvent = typeof outboxEvents.$inferSelect;
+export type TNewOutboxEvent = typeof outboxEvents.$inferInsert;

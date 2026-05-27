@@ -19,5 +19,5 @@ export const warehouseStocks = snakeCase.table(
   (table) => [primaryKey({ columns: [table.warehouseId, table.productId] })],
 );
 
-export type WarehouseStock = typeof warehouseStocks.$inferSelect;
-export type NewWarehouseStock = typeof warehouseStocks.$inferInsert;
+export type TWarehouseStock = typeof warehouseStocks.$inferSelect;
+export type TNewWarehouseStock = typeof warehouseStocks.$inferInsert;

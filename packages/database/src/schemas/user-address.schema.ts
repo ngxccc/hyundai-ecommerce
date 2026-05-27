@@ -15,5 +15,5 @@ export const userAddresses = snakeCase.table("user_address", {
   isDefault: boolean().default(false).notNull(),
 });
 
-export type UserAddress = typeof userAddresses.$inferSelect;
-export type NewUserAddress = typeof userAddresses.$inferInsert;
+export type TUserAddress = typeof userAddresses.$inferSelect;
+export type TNewUserAddress = typeof userAddresses.$inferInsert;
