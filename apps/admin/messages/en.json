@@ -166,15 +166,125 @@
     }
   },
 
+  "AdminProductForm": {
+    "title": "Add New Product",
+    "editTitle": "Edit Product",
+    "placeholders": {
+      "model": "e.g., DHY8000SE",
+      "power": "e.g., 6.0 kW",
+      "voltage": "e.g., 230V",
+      "frequency": "e.g., 50Hz",
+      "ratedCurrent": "e.g., 26A",
+      "powerFactor": "e.g., 1.0",
+      "warranty": "e.g., 12 months",
+      "engine": "e.g., Hyundai D400",
+      "engineBrand": "e.g., Hyundai",
+      "coolingSystem": "e.g., Air Cooled",
+      "startingSystem": "e.g., Electric Start",
+      "fuelConsumption": "e.g., 1.5 L/h",
+      "fuelTankCapacity": "e.g., 15 Liters",
+      "alternator": "e.g., Brushed",
+      "alternatorBrand": "e.g., Hyundai",
+      "weight": "e.g., 150 kg",
+      "dimensions": "e.g., 900x520x700 mm",
+      "noiseLevel": "e.g., 72 dB"
+    },
+    "fields": {
+      "name": "Product Name",
+      "namePlaceholder": "Enter product name...",
+      "slug": "URL Slug",
+      "slugPlaceholder": "product-name",
+      "price": "Price",
+      "pricePlaceholder": "e.g. 15000000",
+      "description": "Detailed Description",
+      "shortDescription": "Short Description",
+      "images": "Images (URLs)",
+      "imagesPlaceholder": "https://...",
+      "addImage": "Add Image URL",
+      "removeImage": "Remove",
+      "brand": "Brand",
+      "brandPlaceholder": "Select Brand",
+      "category": "Category",
+      "categoryPlaceholder": "Select Category",
+      "specs": "Technical Specifications",
+      "specKey": "Spec Name",
+      "specValue": "Value",
+      "addSpec": "Add Spec",
+      "removeSpec": "Remove",
+      "specs_general": "General Info",
+      "specs_engine": "Engine & Alternator",
+      "specs_fuel": "Fuel & Cooling",
+      "specs_dimensions": "Dimensions & Weight",
+      "specs_electrical": "Electrical Specs",
+      "model": "Model",
+      "power": "Power",
+      "voltage": "Voltage",
+      "frequency": "Frequency",
+      "phase": "Phase",
+      "engine": "Engine",
+      "engineBrand": "Engine Brand",
+      "alternator": "Alternator",
+      "alternatorBrand": "Alternator Brand",
+      "fuelType": "Fuel Type",
+      "fuelConsumption": "Fuel Consumption",
+      "fuelTankCapacity": "Fuel Tank Capacity",
+      "weight": "Weight",
+      "dimensions": "Dimensions",
+      "noiseLevel": "Noise Level",
+      "warranty": "Warranty",
+      "ratedCurrent": "Rated Current",
+      "powerFactor": "Power Factor",
+      "startingSystem": "Starting System",
+      "coolingSystem": "Cooling System",
+      "isQuoteOnly": "Quote Only (Hide Buy button)",
+      "selectPhase": "Select Phase",
+      "selectFuel": "Select Fuel Type",
+      "dragDropImage": "Drag and drop images here",
+      "orClickToSelect": "or click to select file",
+      "orEnterUrl": "Or enter image URL",
+      "categoryGroup": "Classification"
+    },
+    "categoryOptions": {
+      "diesel": "Diesel Generator",
+      "gasoline": "Gasoline Generator",
+      "parts": "Spare Parts"
+    },
+    "fuelOptions": {
+      "diesel": "Diesel",
+      "gasoline": "Gasoline",
+      "gas": "Gas"
+    },
+    "phaseOptions": {
+      "1phase": "1 Phase",
+      "3phase": "3 Phase"
+    },
+    "buttons": {
+      "submit": "Save Product",
+      "submitting": "Saving...",
+      "cancel": "Cancel"
+    },
+    "messages": {
+      "successCreate": "Product created successfully!",
+      "successUpdate": "Product updated successfully!",
+      "error": "An error occurred, please try again."
+    },
+    "validation": {
+      "nameRequired": "Product name is required",
+      "slugRequired": "URL slug is required",
+      "priceRequired": "Price is required",
+      "invalidUrl": "Must be a valid URL",
+      "invalidBrand": "Invalid brand selected",
+      "invalidCategory": "Invalid category selected",
+      "specKeyRequired": "Spec name is required",
+      "specValueRequired": "Spec value is required"
+    }
+  },
+
   "AdminMetadata": {
     "titleTemplate": "%s | Admin Portal",
     "defaultTitle": "Dashboard | Admin Portal",
     "description": "Hyundai Nhat Nang Admin Portal for managing products, orders, and customers.",
     "dashboard": "Overview",
     "products": "Product Management"
-  },
-
-  "Metadata": {
-    "title": "Hyundai Nhat Nang | Genuine Generators"
   }
 }

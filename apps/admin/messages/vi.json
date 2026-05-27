@@ -166,15 +166,127 @@
     }
   },
 
+  "AdminProductForm": {
+    "title": "Thêm sản phẩm",
+    "description": "Nhập thông tin chi tiết cho máy phát điện mới vào hệ thống.",
+    "editTitle": "Cập nhật sản phẩm",
+    "editDescription": "Chỉnh sửa các thông tin của máy phát điện.",
+    "placeholders": {
+      "model": "Ví dụ: DHY8000SE",
+      "power": "Ví dụ: 6.0 kW",
+      "voltage": "Ví dụ: 230V",
+      "frequency": "Ví dụ: 50Hz",
+      "ratedCurrent": "Ví dụ: 26A",
+      "powerFactor": "Ví dụ: 1.0",
+      "warranty": "Ví dụ: 12 tháng",
+      "engine": "Ví dụ: Hyundai D400",
+      "engineBrand": "Ví dụ: Hyundai",
+      "coolingSystem": "Ví dụ: Làm mát bằng không khí",
+      "startingSystem": "Ví dụ: Đề nổ",
+      "fuelConsumption": "Ví dụ: 1.5 L/h",
+      "fuelTankCapacity": "Ví dụ: 15 Lít",
+      "alternator": "Ví dụ: Có chổi than",
+      "alternatorBrand": "Ví dụ: Hyundai",
+      "weight": "Ví dụ: 150 kg",
+      "dimensions": "Ví dụ: 900x520x700 mm",
+      "noiseLevel": "Ví dụ: 72 dB"
+    },
+    "fields": {
+      "name": "Tên sản phẩm",
+      "namePlaceholder": "Nhập tên sản phẩm...",
+      "slug": "Đường dẫn (Slug)",
+      "slugPlaceholder": "ten-san-pham",
+      "price": "Giá bán",
+      "pricePlaceholder": "VD: 15000000",
+      "description": "Mô tả chi tiết",
+      "shortDescription": "Mô tả ngắn",
+      "images": "Danh sách hình ảnh (URL)",
+      "imagesPlaceholder": "https://...",
+      "addImage": "Thêm ảnh",
+      "removeImage": "Xóa ảnh",
+      "brand": "Thương hiệu",
+      "brandPlaceholder": "Chọn thương hiệu",
+      "category": "Danh mục",
+      "categoryPlaceholder": "Chọn danh mục",
+      "specs": "Thông số kỹ thuật",
+      "specKey": "Tên thông số",
+      "specValue": "Giá trị",
+      "addSpec": "Thêm thông số",
+      "removeSpec": "Xóa thông số",
+      "specs_general": "Thông số chung",
+      "specs_engine": "Động cơ & Củ phát",
+      "specs_fuel": "Nhiên liệu & Làm mát",
+      "specs_dimensions": "Kích thước & Trọng lượng",
+      "specs_electrical": "Thông số khác",
+      "model": "Model",
+      "power": "Công suất",
+      "voltage": "Điện áp",
+      "frequency": "Tần số",
+      "phase": "Số pha",
+      "engine": "Động cơ",
+      "engineBrand": "Thương hiệu động cơ",
+      "alternator": "Củ phát điện",
+      "alternatorBrand": "Thương hiệu củ phát",
+      "fuelType": "Loại nhiên liệu",
+      "fuelConsumption": "Mức tiêu hao nhiên liệu",
+      "fuelTankCapacity": "Dung tích bình nhiên liệu",
+      "weight": "Trọng lượng",
+      "dimensions": "Kích thước (D x R x C)",
+      "noiseLevel": "Độ ồn",
+      "warranty": "Bảo hành",
+      "ratedCurrent": "Dòng điện định mức",
+      "powerFactor": "Hệ số công suất",
+      "startingSystem": "Hệ thống khởi động",
+      "coolingSystem": "Hệ thống làm mát",
+      "isQuoteOnly": "Sản phẩm chỉ báo giá (ẩn nút Mua ngay)",
+      "selectPhase": "Chọn số pha",
+      "selectFuel": "Chọn nhiên liệu",
+      "dragDropImage": "Kéo thả ảnh vào đây",
+      "orClickToSelect": "hoặc click để chọn file",
+      "orEnterUrl": "Hoặc nhập URL hình ảnh",
+      "categoryGroup": "Phân loại"
+    },
+    "categoryOptions": {
+      "diesel": "Máy phát điện Diesel",
+      "gasoline": "Máy phát điện Xăng",
+      "parts": "Phụ tùng"
+    },
+    "fuelOptions": {
+      "diesel": "Dầu Diesel",
+      "gasoline": "Xăng",
+      "gas": "Khí Gas"
+    },
+    "phaseOptions": {
+      "1phase": "1 Pha",
+      "3phase": "3 Pha"
+    },
+    "buttons": {
+      "submit": "Lưu sản phẩm",
+      "submitting": "Đang lưu...",
+      "cancel": "Hủy"
+    },
+    "messages": {
+      "successCreate": "Thêm sản phẩm thành công!",
+      "successUpdate": "Cập nhật sản phẩm thành công!",
+      "error": "Có lỗi xảy ra, vui lòng thử lại."
+    },
+    "validation": {
+      "nameRequired": "Vui lòng nhập tên sản phẩm",
+      "slugRequired": "Vui lòng nhập đường dẫn",
+      "priceRequired": "Vui lòng nhập giá bán",
+      "invalidUrl": "Đường dẫn URL không hợp lệ",
+      "invalidBrand": "Thương hiệu không hợp lệ",
+      "invalidCategory": "Danh mục không hợp lệ",
+      "specKeyRequired": "Tên thông số không được trống",
+      "specValueRequired": "Giá trị không được trống"
+    }
+  },
+
   "AdminMetadata": {
     "titleTemplate": "%s | Admin Portal",
     "defaultTitle": "Tổng quan | Admin Portal",
     "description": "Cổng quản trị Hyundai Nhật Năng - Quản lý sản phẩm, đơn hàng và khách hàng.",
     "dashboard": "Tổng quan",
     "products": "Quản lý sản phẩm"
-  },
-
-  "Metadata": {
-    "title": "Hyundai Nhật Năng | Máy Phát Điện Chính Hãng"
   }
 }
