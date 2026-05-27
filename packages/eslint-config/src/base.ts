@@ -65,7 +65,7 @@ export default defineConfig([
   },
 
   {
-    files: ["**/*.test.ts", "**/*.test.tsx"],
+    files: ["**/*.test.ts", "**/*.test.tsx", "**/tests/**"],
     settings: {
       "import-x/core-modules": ["bun:test"],
     },
