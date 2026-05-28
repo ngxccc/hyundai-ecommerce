@@ -9,5 +9,5 @@ export interface IProductService {
   update(id: string, data: TUpdateProductData): Promise<TProduct | undefined>;
   delete(id: string): Promise<boolean>;
   getById(id: string): Promise<TProduct | undefined>;
-  getAll(limit?: number, cursorId?: string): unknown;
+  getAll(limit?: number, cursor?: { after?: string; before?: string }): unknown;
 }
