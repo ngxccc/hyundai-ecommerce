@@ -50,19 +50,44 @@ export class ProductService implements IProductService {
     return product;
   }
 
-  async getAll(limit = 20, cursorId?: string) {
+  async getAll(limit = 20, cursor?: { after?: string; before?: string }) {
+    const isGoingBack = !!cursor?.before;
+
+    let whereClause = undefined;
+    if (cursor?.after) {
+      whereClause = { createdAt: { lt: new Date(cursor.after) } };
+    } else if (cursor?.before) {
+      whereClause = { createdAt: { gt: new Date(cursor.before) } };
+    }
+
     const allProducts = await this.db.query.products.findMany({
       orderBy: {
-        createdAt: "desc",
+        createdAt: isGoingBack ? "asc" : "desc",
       },
-      limit,
-      where: {
-        id: { lt: cursorId },
-      },
+      limit: limit + 1, // Fetch one extra to determine if there is a next page
+      where: whereClause,
       with: {
         categories: true,
       },
     });
-    return allProducts;
+
+    const hasMore = allProducts.length > limit;
+    let data = hasMore ? allProducts.slice(0, -1) : allProducts;
+
+    if (isGoingBack) {
+      data = data.reverse();
+    }
+
+    const nextCursor =
+      (!isGoingBack && hasMore) || (isGoingBack && cursor?.before)
+        ? data[data.length - 1]?.createdAt?.toISOString()
+        : undefined;
+
+    const prevCursor =
+      (isGoingBack && hasMore) || (!isGoingBack && cursor?.after)
+        ? data[0]?.createdAt?.toISOString()
+        : undefined;
+
+    return { data, nextCursor, prevCursor };
   }
 }
