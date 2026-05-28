@@ -7,7 +7,7 @@ import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import type { TProductGridItem } from "../types";
+import type { TProductGridItem } from "../product-form-types";
 
 export const ProductCard = ({ product }: { product: TProductGridItem }) => {
   const t = useTranslations("AdminProducts.card");

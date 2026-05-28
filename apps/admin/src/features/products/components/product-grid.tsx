@@ -1,7 +1,7 @@
 "use client";
 
 import { ProductCard } from "./product-card";
-import type { TProductGridList } from "../types";
+import type { TProductGridList } from "../product-form-types";
 
 interface ProductGridProps {
   products: TProductGridList;

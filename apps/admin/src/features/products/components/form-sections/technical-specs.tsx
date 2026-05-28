@@ -55,7 +55,7 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               render={({
                 field,
               }: {
-                field: ControllerRenderProps<TNewProduct, "specs">;
+                field: ControllerRenderProps<TNewProduct, "specs.model">;
               }) => (
                 <FormItem>
                   <FormLabel>{t("fields.model")} *</FormLabel>
@@ -76,7 +76,7 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               render={({
                 field,
               }: {
-                field: ControllerRenderProps<TNewProduct, "specs">;
+                field: ControllerRenderProps<TNewProduct, "specs.power">;
               }) => (
                 <FormItem>
                   <FormLabel>{t("fields.power")} *</FormLabel>
@@ -97,7 +97,7 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               render={({
                 field,
               }: {
-                field: ControllerRenderProps<TNewProduct, "specs">;
+                field: ControllerRenderProps<TNewProduct, "specs.voltage">;
               }) => (
                 <FormItem>
                   <FormLabel>{t("fields.voltage")}</FormLabel>
@@ -118,7 +118,7 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               render={({
                 field,
               }: {
-                field: ControllerRenderProps<TNewProduct, "specs">;
+                field: ControllerRenderProps<TNewProduct, "specs.frequency">;
               }) => (
                 <FormItem>
                   <FormLabel>{t("fields.frequency")}</FormLabel>
