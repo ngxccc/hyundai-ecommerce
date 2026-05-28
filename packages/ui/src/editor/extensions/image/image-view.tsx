@@ -252,7 +252,11 @@ function ImageView({
   return (
     <NodeViewWrapper
       as={inline ? "span" : "div"}
-      className="image-view"
+      className={`image-view ${!inline ? "flex w-full" : ""} ${
+        !inline && align === "center" ? "justify-center" : ""
+      } ${!inline && align === "right" ? "justify-end" : ""} ${
+        !inline && (align === "left" || !align) ? "justify-start" : ""
+      }`}
       style={{
         float: inlineFloat ? align : undefined,
         margin: inlineFloat
@@ -260,24 +264,18 @@ function ImageView({
             ? "1em 1em 1em 0"
             : "1em 0 1em 1em"
           : undefined,
-        display: inline ? "inline" : "block",
-        textAlign: inlineFloat ? undefined : align,
-        width: imgAttrs.style?.width ?? "auto",
-        ...(inlineFloat ? {} : imageMaxStyle),
+        display: inline ? "inline" : "flex",
       }}
     >
       <div
         data-drag-handle
         draggable="true"
         style={imageMaxStyle}
-        className={`image-view__body ${selected ? "image-view__body--focused" : ""} ${
-          resizing ? "image-view__body--resizing" : ""
-        }`}
+        className={`relative inline-block ${selected ? "outline-primary outline-2" : "outline-2"}`}
       >
         <img
           alt={imgAttrs.alt}
-          className="image-view__body__image block"
-          height="auto"
+          className="block"
           onClick={selectImage}
           onLoad={onImageLoad}
           src={imgAttrs.src}
@@ -285,11 +283,27 @@ function ImageView({
         />
 
         {editor.view.editable && (selected || resizing) && (
-          <div className="image-resizer">
+          <div className="pointer-events-none absolute top-0 left-0 h-full w-full">
             {resizeDirections?.map((direction) => {
               return (
                 <span
-                  className={`image-resizer__handler image-resizer__handler--${direction}`}
+                  className={`bg-primary pointer-events-auto absolute z-10 h-3 w-3 border-2 border-white ${
+                    direction === "tl"
+                      ? "-top-1.5 -left-1.5 cursor-nwse-resize"
+                      : ""
+                  } ${
+                    direction === "tr"
+                      ? "-top-1.5 -right-1.5 cursor-nesw-resize"
+                      : ""
+                  } ${
+                    direction === "bl"
+                      ? "-bottom-1.5 -left-1.5 cursor-nesw-resize"
+                      : ""
+                  } ${
+                    direction === "br"
+                      ? "-right-1.5 -bottom-1.5 cursor-nwse-resize"
+                      : ""
+                  }`}
                   key={`image-dir-${direction}`}
                   onMouseDown={(e) => onMouseDown(e, direction)}
                 />

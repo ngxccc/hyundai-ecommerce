@@ -1,0 +1,52 @@
+/* Image Resizer (Editor) */
+.image-view__body {
+  position: relative;
+  display: inline-block;
+}
+
+.image-view__body--focused {
+  outline: 2px solid var(--primary);
+}
+
+.image-resizer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.image-resizer__handler {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: var(--primary);
+  border: 2px solid white;
+  pointer-events: all;
+  z-index: 10;
+}
+
+.image-resizer__handler--tl {
+  top: -6px;
+  left: -6px;
+  cursor: nwse-resize;
+}
+
+.image-resizer__handler--tr {
+  top: -6px;
+  right: -6px;
+  cursor: nesw-resize;
+}
+
+.image-resizer__handler--bl {
+  bottom: -6px;
+  left: -6px;
+  cursor: nesw-resize;
+}
+
+.image-resizer__handler--br {
+  bottom: -6px;
+  right: -6px;
+  cursor: nwse-resize;
+}

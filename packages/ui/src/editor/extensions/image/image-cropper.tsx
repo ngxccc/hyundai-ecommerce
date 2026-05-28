@@ -63,7 +63,7 @@ export interface ImageCropperProps {
   dictionary?: (key: string) => string;
 }
 
-export function ImageCropper({
+export const ImageCropper = ({
   editor,
   imageInline,
   onClose,
@@ -71,7 +71,7 @@ export function ImageCropper({
   alt,
   uploadOptions,
   dictionary: t = (k: string) => k,
-}: ImageCropperProps) {
+}: ImageCropperProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isCropping, setIsCropping] = useState(false);
 
