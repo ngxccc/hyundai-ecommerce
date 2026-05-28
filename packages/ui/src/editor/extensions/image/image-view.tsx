@@ -6,6 +6,7 @@ import {
   IMAGE_MIN_SIZE,
   IMAGE_THROTTLE_WAIT_TIME,
 } from "@nhatnang/ui/lib/constants";
+import { cn } from "@nhatnang/ui/lib/utils";
 
 interface Size {
   width: number;
@@ -271,7 +272,11 @@ function ImageView({
         data-drag-handle
         draggable="true"
         style={imageMaxStyle}
-        className={`relative inline-block ${selected ? "outline-primary outline-2" : "outline-2"}`}
+        className={cn(
+          `hover:outline-primary relative inline-block cursor-pointer outline-2 outline-transparent transition-colors ${
+            selected ? "outline-primary" : ""
+          }`,
+        )}
       >
         <img
           alt={imgAttrs.alt}
