@@ -186,7 +186,7 @@ export const EditorToolbar = ({
         <Link2 className="h-4 w-4" />
       </Button>
 
-      <RichTextImage editor={editor} dictionary={dictionary} />
+      <RichTextImage editor={editor} {...(dictionary ? { dictionary } : {})} />
 
       <div className="flex-1" />
 
