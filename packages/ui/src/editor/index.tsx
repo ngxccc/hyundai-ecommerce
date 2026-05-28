@@ -2,7 +2,6 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
-import { Link } from "@tiptap/extension-link";
 import type { JSONContent } from "@tiptap/core";
 import { useEffect, useState } from "react";
 import { cn } from "@nhatnang/ui/lib/utils";
@@ -28,11 +27,12 @@ export const RichTextEditor = ({
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      Image,
-      Link.configure({
-        openOnClick: false,
+      StarterKit.configure({
+        link: {
+          openOnClick: false,
+        },
       }),
+      Image,
     ],
     immediatelyRender: false,
     editorProps: {
@@ -73,7 +73,10 @@ export const RichTextEditor = ({
         onToggleInvisibles={() => setShowInvisibles(!showInvisibles)}
         dictionary={dictionary ?? ((k: string) => k)}
       />
-      <ImageBubbleMenu editor={editor} />
+      <ImageBubbleMenu
+        editor={editor}
+        dictionary={dictionary ?? ((k: string) => k)}
+      />
       <EditorContent editor={editor} />
     </div>
   );

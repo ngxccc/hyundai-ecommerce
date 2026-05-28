@@ -10,8 +10,17 @@ import {
 } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { cn } from "@nhatnang/ui/lib/utils";
+import { CropExistingImage } from "./crop-existing-image";
 
-export const ImageBubbleMenu = ({ editor }: { editor: Editor | null }) => {
+interface ImageBubbleMenuProps {
+  editor: Editor | null;
+  dictionary?: (key: string) => string;
+}
+
+export const ImageBubbleMenu = ({
+  editor,
+  dictionary,
+}: ImageBubbleMenuProps) => {
   if (!editor) return null;
 
   return (
@@ -21,6 +30,7 @@ export const ImageBubbleMenu = ({ editor }: { editor: Editor | null }) => {
       className="border-border bg-background flex items-center gap-1 rounded-md border p-1 shadow-md"
     >
       <Button
+        type="button"
         size="sm"
         variant="ghost"
         className={cn(
@@ -38,6 +48,7 @@ export const ImageBubbleMenu = ({ editor }: { editor: Editor | null }) => {
         <AlignLeft className="h-4 w-4" />
       </Button>
       <Button
+        type="button"
         size="sm"
         variant="ghost"
         className={cn(
@@ -55,6 +66,7 @@ export const ImageBubbleMenu = ({ editor }: { editor: Editor | null }) => {
         <AlignCenter className="h-4 w-4" />
       </Button>
       <Button
+        type="button"
         size="sm"
         variant="ghost"
         className={cn(
@@ -74,7 +86,10 @@ export const ImageBubbleMenu = ({ editor }: { editor: Editor | null }) => {
 
       <div className="bg-border mx-1 h-4 w-px" />
 
+      <CropExistingImage editor={editor} dictionary={dictionary} />
+
       <Button
+        type="button"
         size="sm"
         variant="ghost"
         className={cn(
@@ -95,6 +110,7 @@ export const ImageBubbleMenu = ({ editor }: { editor: Editor | null }) => {
       </Button>
 
       <Button
+        type="button"
         size="sm"
         variant="ghost"
         className={cn(
@@ -117,6 +133,7 @@ export const ImageBubbleMenu = ({ editor }: { editor: Editor | null }) => {
       <div className="bg-border mx-1 h-4 w-px" />
 
       <Button
+        type="button"
         size="sm"
         variant="ghost"
         className="text-destructive hover:bg-destructive/10 hover:text-destructive h-8 w-8 p-0"
