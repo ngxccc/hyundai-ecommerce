@@ -1,5 +1,5 @@
 import { useId, useMemo, useRef, useState } from "react";
-import { ImageIcon, Loader2 } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -20,8 +20,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "@nhatnang/ui/components/ui/tabs";
-import { ImageCropper } from "./image-cropper";
 import { validateFiles } from "@nhatnang/ui/lib/file-utils";
+import { ImageUploadTab } from "./components/image-upload-tab";
+import { ImageLinkTab } from "./components/image-link-tab";
 
 interface RichTextImageUploadOptions {
   upload?: (file: File) => Promise<string>;
@@ -38,7 +39,7 @@ interface RichTextImageUploadOptions {
   }) => void;
 }
 
-type ResolvedRichTextImageUploadOptions = Omit<
+export type ResolvedRichTextImageUploadOptions = Omit<
   RichTextImageUploadOptions,
   | "acceptMimes"
   | "maxSize"
@@ -84,11 +85,11 @@ export interface RichTextImageProps {
   dictionary?: (key: string) => string;
 }
 
-export function RichTextImage({
+export const RichTextImage = ({
   editor,
   uploadOptions: userOptions,
   dictionary: t = (k: string) => k,
-}: RichTextImageProps) {
+}: RichTextImageProps) => {
   const [open, setOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -285,68 +286,27 @@ export function RichTextImage({
               )}
 
               <TabsContent value="upload" className="mt-4">
-                <div className="flex w-full items-center gap-2">
-                  <Button
-                    className="flex-1"
-                    disabled={isUploading}
-                    onClick={handleClick}
-                    size="sm"
-                  >
-                    {isUploading ? (
-                      <>
-                        {t("editor.imageUpload.uploading")}
-
-                        <Loader2 className="ml-1 h-4 w-4 animate-spin" />
-                      </>
-                    ) : (
-                      t("editor.image.dialog.tab.upload")
-                    )}
-                  </Button>
-
-                  <ImageCropper
-                    alt={alt}
-                    disabled={isUploading}
-                    editor={editor}
-                    imageInline={imageInline}
-                    onClose={() => {
-                      setAlt("");
-                    }}
-                    uploadOptions={uploadOptions}
-                    dictionary={t}
-                  />
-                </div>
-
-                <input
-                  accept={
-                    uploadOptions.acceptMimes.length > 0
-                      ? uploadOptions.acceptMimes.join(",")
-                      : "image/*"
-                  }
-                  multiple={uploadOptions.multiple}
-                  onChange={handleFile}
-                  ref={fileInput}
-                  style={{ display: "none" }}
-                  type="file"
+                <ImageUploadTab
+                  isUploading={isUploading}
+                  onUploadClick={handleClick}
+                  t={t}
+                  alt={alt}
+                  setAlt={setAlt}
+                  editor={editor}
+                  imageInline={imageInline}
+                  uploadOptions={uploadOptions}
+                  onFileChange={handleFile}
+                  fileInputRef={fileInput}
                 />
               </TabsContent>
 
               <TabsContent value="link">
-                <form onSubmit={handleLink}>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      autoFocus
-                      onChange={(e) => setLink(e.target.value)}
-                      placeholder={t("editor.image.dialog.placeholder")}
-                      required
-                      type="url"
-                      value={link}
-                    />
-
-                    <Button type="submit">
-                      {t("editor.image.dialog.button.apply")}
-                    </Button>
-                  </div>
-                </form>
+                <ImageLinkTab
+                  link={link}
+                  setLink={setLink}
+                  t={t}
+                  onSubmit={handleLink}
+                />
               </TabsContent>
             </Tabs>
           </DialogContent>
