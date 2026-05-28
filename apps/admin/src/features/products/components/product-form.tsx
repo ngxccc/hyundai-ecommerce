@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
 import {
   createProductAction,
   updateProductAction,
@@ -15,12 +14,15 @@ import { Button } from "@nhatnang/ui/components/ui/button";
 import { Form } from "@nhatnang/ui/components/ui/form";
 import { formatNumberInput } from "@/shared/lib/utils";
 import {
-  type TNewProduct,
   type TProduct,
   type TCategory,
   type TBrand,
+  type TNewProduct,
 } from "@nhatnang/database/schemas";
-import { createProductSchema } from "@nhatnang/database/validators";
+import {
+  createProductSchema,
+  type TCreateProductInput,
+} from "@nhatnang/database/validators";
 
 import {
   ProductGeneralInfo,
@@ -58,7 +60,7 @@ export const ProductForm = ({
     categoryId: null,
     isQuoteOnly: false,
     specs: {},
-  } satisfies TNewProduct;
+  } satisfies TCreateProductInput;
 
   const form = useForm<TNewProduct>({
     resolver: zodResolver(createProductSchema(t)),
@@ -85,7 +87,7 @@ export const ProductForm = ({
         price: data.price ? data.price.replace(/\./g, "") : "",
         images: images.filter((image) => image.trim().length > 0),
         isQuoteOnly: data.isQuoteOnly ?? false,
-      } satisfies TNewProduct;
+      } satisfies TCreateProductInput;
       const result = isEditing
         ? await updateProductAction(initialData.id, payload)
         : await createProductAction(payload);
