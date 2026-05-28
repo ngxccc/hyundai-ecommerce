@@ -48,6 +48,20 @@ Use these terms consistently in code, docs, and architecture reviews.
 - Use "Storefront" for the app, not "frontend".
 - Use "Product" for catalog items, not "item".
 - Use "Quote" for negotiated pricing flows, not "request" unless the request is specifically the initial quote request.
+
+## Architecture Decision Records (ADR)
+
+When creating ADRs in `docs/adr/`, follow these strict rules:
+
+- **Language**: English only.
+- **Numbering**: Must follow sequential numbering (e.g., `0004-xyz.md`).
+- **Structure**: Must contain exactly these sections in order:
+  1. `# <Number>. <Title>`
+  2. `Date: <YYYY-MM-DD>`
+  3. `## Status` (e.g., Accepted)
+  4. `## Context`
+  5. `## Decision`
+  6. `## Consequences`
 - Use "Dealer", "Contractor", "Distributor", and "End user" exactly as written when referring to account types.
 
 ## Notes
