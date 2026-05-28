@@ -9,6 +9,10 @@ const handleI18nRouting = createMiddleware(routing);
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  if (pathname.startsWith("/_next/")) {
+    return NextResponse.next();
+  }
+
   const isAuthRoute = pathname.includes("/login");
   const isForbiddenRoute = pathname.includes("/forbidden");
   const isPublicRoute =
@@ -71,6 +75,6 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/(vi|en)/:path*",
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|manifest.json|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|_next|favicon.ico|sitemap.xml|robots.txt|manifest.json|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
