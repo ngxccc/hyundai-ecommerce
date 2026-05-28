@@ -2,9 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { Edit, Trash2 } from "lucide-react";
-import { Card } from "@/shared/components/ui/card";
-import { Badge } from "@/shared/components/ui/badge";
-import { Button } from "@/shared/components/ui/button";
+import { Card } from "@nhatnang/ui/components/ui/card";
+import { Badge } from "@nhatnang/ui/components/ui/badge";
+import { Button } from "@nhatnang/ui/components/ui/button";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import type { TProductGridItem } from "../types";

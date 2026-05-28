@@ -1,14 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Card } from "@/shared/components/ui/card";
+import { Card } from "@nhatnang/ui/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
+} from "@nhatnang/ui/components/ui/select";
 
 export const RevenueChart = () => {
   const t = useTranslations("AdminDashboard.chart");

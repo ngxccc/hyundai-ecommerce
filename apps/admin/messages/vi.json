@@ -1,4 +1,39 @@
 {
+  "Editor": {
+    "editor": {
+      "image": {
+        "dialog": {
+          "title": "Chèn hình ảnh",
+          "tab": {
+            "upload": "Tải lên",
+            "url": "Từ URL",
+            "uploadCrop": "Tải lên & Cắt ảnh"
+          },
+          "placeholder": "https://...",
+          "button": {
+            "apply": "Áp dụng"
+          }
+        },
+        "tooltip": "Chèn hình ảnh"
+      },
+      "link": {
+        "dialog": {
+          "inline": "Hiển thị cùng dòng (Inline)"
+        }
+      },
+      "imageUpload": {
+        "alt": "Văn bản thay thế (Alt text)",
+        "uploading": "Đang tải lên...",
+        "cancel": "Hủy",
+        "crop": "Cắt ảnh"
+      },
+      "upload": {
+        "error": "Lỗi khi tải ảnh lên",
+        "tooLarge": "Dung lượng file quá lớn",
+        "invalidMime": "Định dạng file không hợp lệ"
+      }
+    }
+  },
   "Login": {
     "title": "Đăng nhập hệ thống <br></br>Hyundai Nhật Năng",
     "description": "Chào mừng trở lại! Vui lòng đăng nhập để quản lý đơn hàng và sản phẩm của bạn.",

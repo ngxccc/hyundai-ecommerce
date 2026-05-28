@@ -2,15 +2,15 @@
 
 import { useTranslations } from "next-intl";
 import { Search, Bell, Plus, Menu } from "lucide-react";
-import { Input } from "@/shared/components/ui/input";
-import { Button } from "@/shared/components/ui/button";
+import { Input } from "@nhatnang/ui/components/ui/input";
+import { Button } from "@nhatnang/ui/components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/shared/components/ui/sheet";
+} from "@nhatnang/ui/components/ui/sheet";
 import { useAdminNav } from "../hooks/use-admin-nav";
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/shared/lib/utils";

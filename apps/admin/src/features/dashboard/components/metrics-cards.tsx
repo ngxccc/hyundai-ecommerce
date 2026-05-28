@@ -10,7 +10,7 @@ import {
   TrendingDown,
   Minus,
 } from "lucide-react";
-import { Card } from "@/shared/components/ui/card";
+import { Card } from "@nhatnang/ui/components/ui/card";
 
 export const MetricsCards = () => {
   const t = useTranslations("AdminDashboard.metrics");

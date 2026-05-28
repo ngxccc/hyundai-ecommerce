@@ -2,9 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { Filter, Download } from "lucide-react";
-import { Card } from "@/shared/components/ui/card";
-import { Button } from "@/shared/components/ui/button";
-import { Badge } from "@/shared/components/ui/badge";
+import { Card } from "@nhatnang/ui/components/ui/card";
+import { Button } from "@nhatnang/ui/components/ui/button";
+import { Badge } from "@nhatnang/ui/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/shared/components/ui/table";
+} from "@nhatnang/ui/components/ui/table";
 
 type OrderStatus = "completed" | "processing" | "shipping" | "cancelled";
 

@@ -7,8 +7,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/shared/components/ui/card";
-import { Button } from "@/shared/components/ui/button";
+} from "@nhatnang/ui/components/ui/card";
+import { Button } from "@nhatnang/ui/components/ui/button";
 
 const NotFoundPage = () => {
   const t = useTranslations("NotFound");

@@ -1,20 +1,20 @@
 import type { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { FileText } from "lucide-react";
-import { RichTextEditor } from "@/shared/components/editor";
+import { RichTextEditor } from "@nhatnang/ui/editor";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/shared/components/ui/card";
+} from "@nhatnang/ui/components/ui/card";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/shared/components/ui/form";
+} from "@nhatnang/ui/components/ui/form";
 import { type TNewProduct } from "@nhatnang/database/schemas";
 import { type JSONContent } from "@tiptap/core";
 
@@ -26,6 +26,7 @@ export const ProductDescriptionSection = ({
   form,
 }: ProductDescriptionSectionProps) => {
   const t = useTranslations("AdminProductForm");
+  const tEditor = useTranslations("Editor");
 
   const initialDescription = form.getValues(
     "description",
@@ -51,6 +52,7 @@ export const ProductDescriptionSection = ({
               <FormControl>
                 <div className="flex flex-col gap-2">
                   <RichTextEditor
+                    dictionary={(k) => tEditor(k as never)}
                     value={initialDescription}
                     onChange={(val) =>
                       form.setValue("description", val, {

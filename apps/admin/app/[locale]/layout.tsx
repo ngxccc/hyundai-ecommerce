@@ -10,7 +10,7 @@ import {
   getTranslations,
   setRequestLocale,
 } from "next-intl/server";
-import { Toaster } from "@/shared/components/ui/sonner";
+import { Toaster } from "@nhatnang/ui/components/ui/sonner";
 import { ScrollToTop } from "@/shared/components/ScrollToTop";
 
 const inter = Inter({

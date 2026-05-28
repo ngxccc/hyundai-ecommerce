@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@nhatnang/ui/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 import { env } from "@/env";
 import type { Locale } from "next-intl";

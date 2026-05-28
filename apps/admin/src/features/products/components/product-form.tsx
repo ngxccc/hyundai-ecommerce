@@ -11,8 +11,8 @@ import {
   createProductAction,
   updateProductAction,
 } from "../actions/product.actions";
-import { Button } from "@/shared/components/ui/button";
-import { Form } from "@/shared/components/ui/form";
+import { Button } from "@nhatnang/ui/components/ui/button";
+import { Form } from "@nhatnang/ui/components/ui/form";
 import { formatNumberInput } from "@/shared/lib/utils";
 import {
   type TNewProduct,

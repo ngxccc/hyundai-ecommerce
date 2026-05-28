@@ -1,4 +1,4 @@
-import type { UseFormReturn } from "react-hook-form";
+import type { ControllerRenderProps, UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Tag } from "lucide-react";
 import {
@@ -6,22 +6,26 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/shared/components/ui/card";
+} from "@nhatnang/ui/components/ui/card";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/shared/components/ui/form";
+} from "@nhatnang/ui/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
-import { type TNewProduct, type TCategory, type TBrand } from "@nhatnang/database/schemas";
+} from "@nhatnang/ui/components/ui/select";
+import {
+  type TNewProduct,
+  type TCategory,
+  type TBrand,
+} from "@nhatnang/database/schemas";
 
 interface ProductCategorySectionProps {
   form: UseFormReturn<TNewProduct>;
@@ -48,7 +52,11 @@ export const ProductCategorySection = ({
         <FormField
           control={form.control}
           name="categoryId"
-          render={({ field }) => (
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<TNewProduct, "categoryId">;
+          }) => (
             <FormItem>
               <FormLabel>{t("fields.category")}</FormLabel>
               <Select
@@ -82,7 +90,11 @@ export const ProductCategorySection = ({
         <FormField
           control={form.control}
           name="brandId"
-          render={({ field }) => (
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<TNewProduct, "brandId">;
+          }) => (
             <FormItem>
               <FormLabel>{t("fields.brand")}</FormLabel>
               <Select
@@ -91,9 +103,7 @@ export const ProductCategorySection = ({
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue
-                      placeholder={t("fields.brandPlaceholder")}
-                    />
+                    <SelectValue placeholder={t("fields.brandPlaceholder")} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
