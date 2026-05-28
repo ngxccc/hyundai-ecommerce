@@ -9,6 +9,7 @@ Accepted
 ## Context
 
 When displaying lists of products and other items across the system (Admin & Storefront), we needed a pagination mechanism. Initially, there were two main options:
+
 1. **Offset-based pagination**: Using `LIMIT` and `OFFSET` based on specific page numbers.
 2. **Cursor-based pagination**: Using `LIMIT` and filtering conditions (e.g., `WHERE id < cursorId` or `WHERE createdAt < cursorDate`).
 
@@ -16,7 +17,7 @@ The default Shadcn UI `Pagination` component is designed around displaying exact
 
 ## Decision
 
-We will **use Cursor-based pagination** as the standard across the platform. 
+We will **use Cursor-based pagination** as the standard across the platform.
 To accommodate this in the UI, we will use the `Icons Only` composition of the Shadcn `Pagination` component (which only includes "Previous" and "Next" buttons) instead of displaying exact page numbers.
 
 ## Consequences
