@@ -30,7 +30,7 @@ export async function proxy(request: NextRequest) {
     res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
     res.headers.set(
       "Permissions-Policy",
-      "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+      "camera=(), microphone=(), geolocation=()",
     );
     res.headers.set(
       "Strict-Transport-Security",
