@@ -1,42 +1,47 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/shared/components/ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/shared/components/ui/pagination";
 
-export const ProductPagination = () => {
-  const t = useTranslations("AdminProducts.pagination");
+interface ProductPaginationProps {
+  nextCursor?: string | undefined;
+  prevCursor?: string | undefined;
+}
+
+export const ProductPagination = ({
+  nextCursor,
+  prevCursor,
+}: ProductPaginationProps) => {
+  // const t = useTranslations("AdminProducts.pagination");
 
   return (
-    <div className="border-border/50 flex flex-col items-center gap-4 border-t pt-6 sm:flex-row sm:justify-between">
-      <p className="text-muted-foreground text-center text-sm sm:text-left">
-        {t("showing", { start: "1", end: "4", total: "124" })}
-      </p>
-      <div className="flex gap-1">
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8 disabled:opacity-50"
-          disabled
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <Button variant="default" size="icon" className="h-8 w-8 text-sm">
-          1
-        </Button>
-        <Button variant="outline" size="icon" className="h-8 w-8 text-sm">
-          2
-        </Button>
-        <Button variant="outline" size="icon" className="h-8 w-8 text-sm">
-          3
-        </Button>
-        <span className="text-muted-foreground flex h-8 w-8 items-center justify-center text-sm">
-          ...
-        </span>
-        <Button variant="outline" size="icon" className="h-8 w-8">
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
+    <div className="border-border/50 flex flex-col items-center justify-between gap-4 border-t pt-6">
+      {/* We do not know total count with cursor pagination, so we can just show a simplified message */}
+      {/* <p className="text-muted-foreground text-center text-sm sm:text-left">
+        {t("showingCursor")}
+      </p> */}
+
+      <Pagination className="mx-0 w-auto">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href={prevCursor ? `?before=${prevCursor}` : "#"}
+              className={!prevCursor ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              href={nextCursor ? `?after=${nextCursor}` : "#"}
+              className={!nextCursor ? "pointer-events-none opacity-50" : ""}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 };

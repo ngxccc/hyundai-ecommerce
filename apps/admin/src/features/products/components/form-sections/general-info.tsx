@@ -16,6 +16,7 @@ import {
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import { Checkbox } from "@/shared/components/ui/checkbox";
+import { Textarea } from "@/shared/components/ui/textarea";
 import { formatNumberInput } from "@/shared/lib/utils";
 import { type TNewProduct } from "@nhatnang/database/schemas";
 
@@ -83,6 +84,24 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
                     }}
                   />
                 </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="shortDescription"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("fields.shortDescription")}</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder={t("fields.shortDescriptionPlaceholder")}
+                  className="min-h-0 resize-none"
+                  {...field}
+                  value={field.value ?? ""}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

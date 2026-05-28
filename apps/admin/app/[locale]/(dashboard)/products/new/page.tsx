@@ -2,11 +2,15 @@ import { getTranslations } from "next-intl/server";
 import { ProductForm } from "@/features/products/components/product-form";
 import { ProductHeader } from "@/features/products/components";
 import { AdminBreadcrumbs } from "@/features/dashboard/components";
-import { categoryService } from "@nhatnang/database/services";
+import { categoryService, brandService } from "@nhatnang/database/services";
 
 export default async function CreateProductPage() {
-  const t = await getTranslations("AdminProductForm");
-  const categories = await categoryService.getAll();
+  const [t, tNav, categories, brands] = await Promise.all([
+    getTranslations("AdminProductForm"),
+    getTranslations("AdminBreadcrumbs"),
+    categoryService.getAll(),
+    brandService.getAll(),
+  ]);
 
   return (
     <>
@@ -18,13 +22,13 @@ export default async function CreateProductPage() {
       <div className="flex-1 space-y-4 p-3">
         <AdminBreadcrumbs
           items={[
-            { label: "Bảng điều khiển", href: "/" },
-            { label: "Sản phẩm", href: "/products" },
+            { label: tNav("dashboard"), href: "/" },
+            { label: tNav("products"), href: "/products" },
             { label: t("title") },
           ]}
         />
         <div className="mx-auto">
-          <ProductForm categories={categories} />
+          <ProductForm categories={categories} brands={brands} />
         </div>
       </div>
     </>

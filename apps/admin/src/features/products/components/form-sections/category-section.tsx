@@ -21,16 +21,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
-import { type TNewProduct, type TCategory } from "@nhatnang/database/schemas";
+import { type TNewProduct, type TCategory, type TBrand } from "@nhatnang/database/schemas";
 
 interface ProductCategorySectionProps {
   form: UseFormReturn<TNewProduct>;
   categories: TCategory[];
+  brands: TBrand[];
 }
 
 export const ProductCategorySection = ({
   form,
   categories,
+  brands,
 }: ProductCategorySectionProps) => {
   const t = useTranslations("AdminProductForm");
 
@@ -69,6 +71,40 @@ export const ProductCategorySection = ({
                   {categories.length === 0 && (
                     <div className="text-muted-foreground p-2 text-sm">
                       {t("fields.noCategoriesFound")}
+                    </div>
+                  )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="brandId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("fields.brand")}</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value ?? ""}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={t("fields.brandPlaceholder")}
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {brands.map((brand) => (
+                    <SelectItem key={brand.id} value={brand.id}>
+                      {brand.name}
+                    </SelectItem>
+                  ))}
+                  {brands.length === 0 && (
+                    <div className="text-muted-foreground p-2 text-sm">
+                      {t("fields.noBrandsFound")}
                     </div>
                   )}
                 </SelectContent>

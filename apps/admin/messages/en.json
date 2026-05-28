@@ -162,7 +162,8 @@
       }
     },
     "pagination": {
-      "showing": "Showing {start}-{end} of {total} products"
+      "showing": "Showing {start}-{end} of {total} products",
+      "showingCursor": "Showing product list"
     }
   },
 
@@ -287,5 +288,9 @@
     "description": "Hyundai Nhat Nang Admin Portal for managing products, orders, and customers.",
     "dashboard": "Overview",
     "products": "Product Management"
+  },
+  "AdminBreadcrumbs": {
+    "dashboard": "Dashboard",
+    "products": "Products"
   }
 }

@@ -162,7 +162,8 @@
       }
     },
     "pagination": {
-      "showing": "Hiển thị {start}-{end} trong {total} sản phẩm"
+      "showing": "Hiển thị {start}-{end} trong {total} sản phẩm",
+      "showingCursor": "Đang hiển thị danh sách sản phẩm"
     }
   },
 
@@ -200,6 +201,7 @@
       "pricePlaceholder": "VD: 15000000",
       "description": "Mô tả chi tiết",
       "shortDescription": "Mô tả ngắn",
+      "shortDescriptionPlaceholder": "Nhập mô tả ngắn gọn cho sản phẩm...",
       "images": "Danh sách hình ảnh (URL)",
       "imagesPlaceholder": "https://...",
       "addImage": "Thêm ảnh",
@@ -245,7 +247,8 @@
       "orClickToSelect": "hoặc click để chọn file",
       "orEnterUrl": "Hoặc nhập URL hình ảnh",
       "categoryGroup": "Phân loại",
-      "noCategoriesFound": "Không tìm thấy danh mục nào"
+      "noCategoriesFound": "Không tìm thấy danh mục nào",
+      "noBrandsFound": "Không tìm thấy thương hiệu nào"
     },
     "categoryOptions": {
       "diesel": "Máy phát điện Diesel",
@@ -289,5 +292,9 @@
     "description": "Cổng quản trị Hyundai Nhật Năng - Quản lý sản phẩm, đơn hàng và khách hàng.",
     "dashboard": "Tổng quan",
     "products": "Quản lý sản phẩm"
+  },
+  "AdminBreadcrumbs": {
+    "dashboard": "Bảng điều khiển",
+    "products": "Sản phẩm"
   }
 }
