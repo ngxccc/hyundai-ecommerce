@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -129,4 +130,12 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Paragraph marks (Invisibles) */
+.prose.show-invisibles p::after {
+  content: '¶';
+  color: hsl(var(--muted-foreground) / 0.5);
+  padding-left: 0.25rem;
+  font-weight: normal;
 }

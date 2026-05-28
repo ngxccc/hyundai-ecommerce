@@ -14,7 +14,12 @@ import {
 import { Button } from "@/shared/components/ui/button";
 import { Form } from "@/shared/components/ui/form";
 import { formatNumberInput } from "@/shared/lib/utils";
-import { type TNewProduct, type TProduct, type TCategory  } from "@nhatnang/database/schemas";
+import {
+  type TNewProduct,
+  type TProduct,
+  type TCategory,
+  type TBrand,
+} from "@nhatnang/database/schemas";
 import { createProductSchema } from "@nhatnang/database/validators";
 
 import {
@@ -22,14 +27,17 @@ import {
   ProductTechnicalSpecs,
   ProductImagesSection,
   ProductCategorySection,
+  ProductDescriptionSection,
 } from "./form-sections";
 
 export const ProductForm = ({
   initialData,
   categories,
+  brands,
 }: {
   initialData?: TProduct;
   categories: TCategory[];
+  brands: TBrand[];
 }) => {
   const t = useTranslations("AdminProductForm");
 
@@ -39,14 +47,28 @@ export const ProductForm = ({
   const [images, setImages] = useState<string[]>(
     initialData?.images?.length ? initialData.images : [""],
   );
+  const emptyFormValues = {
+    name: "",
+    slug: "",
+    price: "",
+    description: undefined,
+    shortDescription: "",
+    images: [],
+    brandId: null,
+    categoryId: null,
+    isQuoteOnly: false,
+    specs: {},
+  } satisfies TNewProduct;
 
   const form = useForm<TNewProduct>({
     resolver: zodResolver(createProductSchema(t)),
     defaultValues: {
       name: initialData?.name ?? "",
       slug: initialData?.slug ?? "",
-      price: initialData?.price ? formatNumberInput(initialData.price) : "",
-      description: initialData?.description ?? "",
+      price: initialData?.price
+        ? formatNumberInput(String(Number(initialData.price)))
+        : "",
+      description: initialData?.description ?? undefined,
       shortDescription: initialData?.shortDescription ?? "",
       images: initialData?.images ?? [],
       brandId: initialData?.brandId ?? null,
@@ -72,7 +94,11 @@ export const ProductForm = ({
         toast.success(
           isEditing ? t("messages.successUpdate") : t("messages.successCreate"),
         );
-        router.push("/products");
+
+        if (!isEditing) {
+          form.reset(emptyFormValues);
+          setImages([""]);
+        }
       } else {
         toast.error(result.error ?? t("messages.error"));
       }
@@ -102,13 +128,18 @@ export const ProductForm = ({
           {/* Left Column */}
           <div className="space-y-6 lg:col-span-2">
             <ProductGeneralInfo form={form} />
+            <ProductDescriptionSection form={form} />
             <ProductTechnicalSpecs form={form} />
           </div>
 
           {/* Right Column */}
           <div className="space-y-6">
             <ProductImagesSection images={images} setImages={setImages} />
-            <ProductCategorySection form={form} categories={categories} />
+            <ProductCategorySection
+              form={form}
+              categories={categories}
+              brands={brands}
+            />
           </div>
         </div>
       </form>

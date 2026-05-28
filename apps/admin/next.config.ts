@@ -13,9 +13,9 @@ const withNextIntl = createNextIntlPlugin({
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "lh3.googleusercontent.com" },
-      { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "hyundainhatnang.vn" },
+      { protocol: "https", hostname: "hyundainhatnang.com" },
+      { protocol: "https", hostname: "placehold.co" },
     ],
   },
   transpilePackages: ["@nhatnang/database", "@nhatnang/shared"],

@@ -17,7 +17,7 @@ The default Shadcn UI `Pagination` component is designed around displaying exact
 
 ## Decision
 
-We will **use Bidirectional Cursor-based pagination** as the standard across the platform. 
+We will **use Bidirectional Cursor-based pagination** as the standard across the platform.
 We will employ a pattern heavily inspired by GraphQL/Relay connections, utilizing two distinct URL parameters: `after` (for moving forward) and `before` (for moving backward).
 
 To accommodate this in the UI, we will use the `Icons Only` composition of the Shadcn `Pagination` component (which only includes "Previous" and "Next" buttons) instead of displaying exact page numbers. When a user clicks "Previous", the UI will append the `before` cursor to the URL, triggering a backward database query. When clicking "Next", it will use the `after` cursor.
