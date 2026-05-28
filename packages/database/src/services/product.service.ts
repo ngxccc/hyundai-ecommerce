@@ -50,7 +50,7 @@ export class ProductService implements IProductService {
     return product;
   }
 
-  async getAll(limit = 20, cursorId?: string): Promise<TProduct[]> {
+  async getAll(limit = 20, cursorId?: string) {
     const allProducts = await this.db.query.products.findMany({
       orderBy: {
         createdAt: "desc",
@@ -58,6 +58,9 @@ export class ProductService implements IProductService {
       limit,
       where: {
         id: { lt: cursorId },
+      },
+      with: {
+        categories: true,
       },
     });
     return allProducts;

@@ -33,6 +33,7 @@
     "@neondatabase/serverless": "^1.1.0",
     "@paralleldrive/cuid2": "^3.3.0",
     "@t3-oss/env-core": "^0.13.11",
+    "@tiptap/core": "^3.23.6",
     "better-auth": "^1.6.11",
     "drizzle-orm": "^1.0.0-rc.4-273829f",
     "postgres": "^3.4.9",

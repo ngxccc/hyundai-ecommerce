@@ -42,7 +42,7 @@ export const createProductSchema = (t: IProductTranslator) =>
     name: z.string().min(1, t("validation.nameRequired")),
     slug: z.string().min(1, t("validation.slugRequired")),
     price: z.string().min(1, t("validation.priceRequired")),
-    description: z.string().nullable().optional(),
+    description: z.record(z.string(), z.any()).nullable().optional(),
     shortDescription: z.string().nullable().optional(),
     images: z.array(z.url(t("validation.invalidUrl"))).default([]),
     brandId: z.uuid(t("validation.invalidBrand")).nullable().optional(),
