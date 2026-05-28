@@ -137,7 +137,8 @@ export const ImageCropper = ({
       if (uploadOptions.upload) {
         src = await uploadOptions.upload(fileCrop);
       } else {
-        src = URL.createObjectURL(fileCrop);
+        const base64 = await readImageAsBase64(fileCrop);
+        src = base64.src;
       }
 
       editor

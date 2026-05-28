@@ -307,7 +307,7 @@ export const Image = /* @__PURE__ */ TiptapImage.extend<IImageOptions>({
         },
       },
       {
-        tag: 'img[src]:not([src^="data:"])',
+        tag: "img[src]",
       },
     ];
   },

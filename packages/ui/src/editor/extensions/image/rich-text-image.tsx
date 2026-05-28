@@ -20,7 +20,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@nhatnang/ui/components/ui/tabs";
-import { validateFiles } from "@nhatnang/ui/lib/file-utils";
+import { validateFiles, readImageAsBase64 } from "@nhatnang/ui/lib/file-utils";
 import { ImageUploadTab } from "./components/image-upload-tab";
 import { ImageLinkTab } from "./components/image-link-tab";
 
@@ -110,7 +110,8 @@ export const RichTextImage = ({
   const inlineCheckboxId = useId();
 
   async function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
-    const files = event.currentTarget.files;
+    const inputElement = event.currentTarget;
+    const files = inputElement.files;
     if (
       !editor ||
       editor.isDestroyed ||
@@ -118,7 +119,7 @@ export const RichTextImage = ({
       files.length === 0 ||
       isUploading
     ) {
-      event.currentTarget.value = "";
+      inputElement.value = "";
       return;
     }
 
@@ -131,7 +132,7 @@ export const RichTextImage = ({
     });
 
     if (validFiles.length <= 0) {
-      event.currentTarget.value = "";
+      inputElement.value = "";
       return;
     }
 
@@ -140,9 +141,11 @@ export const RichTextImage = ({
       if (uploadOptions.multiple) {
         // Handle multiple files upload
         const uploadPromises = validFiles.map(async (file) => {
-          return uploadOptions.upload
-            ? uploadOptions.upload(file)
-            : URL.createObjectURL(file);
+          if (uploadOptions.upload) {
+            return uploadOptions.upload(file);
+          }
+          const base64 = await readImageAsBase64(file);
+          return base64.src;
         });
 
         const srcs = await Promise.all(uploadPromises);
@@ -155,12 +158,17 @@ export const RichTextImage = ({
             .run();
         });
       } else {
-        // Single file upload (take the first valid file)
         const file = validFiles[0];
         if (!file) return;
-        const src = uploadOptions.upload
-          ? await uploadOptions.upload(file)
-          : URL.createObjectURL(file);
+        
+        let src = "";
+        if (uploadOptions.upload) {
+          src = await uploadOptions.upload(file);
+        } else {
+          const base64 = await readImageAsBase64(file);
+          src = base64.src;
+        }
+        
         editor
           .chain()
           .focus()
@@ -183,7 +191,7 @@ export const RichTextImage = ({
       }
     } finally {
       setIsUploading(false);
-      event.currentTarget.value = "";
+      inputElement.value = "";
     }
   }
 
