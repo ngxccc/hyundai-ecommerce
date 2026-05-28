@@ -1,8 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Card } from "@/shared/components/ui/card";
-import { Button } from "@/shared/components/ui/button";
+import { Card } from "@nhatnang/ui/components/ui/card";
+import { Button } from "@nhatnang/ui/components/ui/button";
 import Image from "next/image";
 
 const MOCK_PRODUCTS = [

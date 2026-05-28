@@ -1,4 +1,4 @@
-import type { UseFormReturn } from "react-hook-form";
+import type { UseFormReturn, ControllerRenderProps } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Info } from "lucide-react";
 import {
@@ -6,17 +6,17 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/shared/components/ui/card";
+} from "@nhatnang/ui/components/ui/card";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import { Checkbox } from "@/shared/components/ui/checkbox";
-import { Textarea } from "@/shared/components/ui/textarea";
+} from "@nhatnang/ui/components/ui/form";
+import { Input } from "@nhatnang/ui/components/ui/input";
+import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
+import { Textarea } from "@nhatnang/ui/components/ui/textarea";
 import { formatNumberInput } from "@/shared/lib/utils";
 import { type TNewProduct } from "@nhatnang/database/schemas";
 
@@ -40,7 +40,11 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
           <FormField
             control={form.control}
             name="name"
-            render={({ field }) => (
+            render={({
+              field,
+            }: {
+              field: ControllerRenderProps<TNewProduct, "name">;
+            }) => (
               <FormItem>
                 <FormLabel>{t("fields.name")} *</FormLabel>
                 <FormControl>
@@ -53,7 +57,11 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
           <FormField
             control={form.control}
             name="slug"
-            render={({ field }) => (
+            render={({
+              field,
+            }: {
+              field: ControllerRenderProps<TNewProduct, "slug">;
+            }) => (
               <FormItem>
                 <FormLabel>{t("fields.slug")} *</FormLabel>
                 <FormControl>
@@ -67,7 +75,11 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
         <FormField
           control={form.control}
           name="price"
-          render={({ field }) => (
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<TNewProduct, "price">;
+          }) => (
             <FormItem>
               <FormLabel>{t("fields.price")} *</FormLabel>
               <FormControl>
@@ -92,7 +104,11 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
         <FormField
           control={form.control}
           name="shortDescription"
-          render={({ field }) => (
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<TNewProduct, "shortDescription">;
+          }) => (
             <FormItem>
               <FormLabel>{t("fields.shortDescription")}</FormLabel>
               <FormControl>
@@ -110,7 +126,11 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
         <FormField
           control={form.control}
           name="isQuoteOnly"
-          render={({ field }) => (
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<TNewProduct, "isQuoteOnly">;
+          }) => (
             <FormItem className="flex flex-row items-start space-y-0 space-x-3 rounded-md border p-3 shadow-sm">
               <FormControl>
                 <Checkbox

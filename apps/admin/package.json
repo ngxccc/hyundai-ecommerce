@@ -44,6 +44,7 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@nhatnang/ui": "workspace:*",
     "@nhatnang/database": "workspace:*",
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/shared": "workspace:*",

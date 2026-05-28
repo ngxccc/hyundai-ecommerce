@@ -4,12 +4,15 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { createLoginSchema, type TLoginForm } from "@nhatnang/database/validators";
+import {
+  createLoginSchema,
+  type TLoginForm,
+} from "@nhatnang/database/validators";
 import { toast } from "sonner";
 import { ShieldCheck } from "lucide-react";
 
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
+import { Button } from "@nhatnang/ui/components/ui/button";
+import { Input } from "@nhatnang/ui/components/ui/input";
 import {
   Form,
   FormControl,
@@ -17,14 +20,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/shared/components/ui/form";
+} from "@nhatnang/ui/components/ui/form";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/shared/components/ui/card";
+} from "@nhatnang/ui/components/ui/card";
 import { adminLoginAction } from "../actions/admin-login.action";
 import { useRouter } from "@/i18n/routing";
 

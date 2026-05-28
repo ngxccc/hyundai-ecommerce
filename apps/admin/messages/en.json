@@ -1,4 +1,39 @@
 {
+  "Editor": {
+    "editor": {
+      "image": {
+        "dialog": {
+          "title": "Insert Image",
+          "tab": {
+            "upload": "Upload",
+            "url": "From URL",
+            "uploadCrop": "Upload & Crop"
+          },
+          "placeholder": "https://...",
+          "button": {
+            "apply": "Apply"
+          }
+        },
+        "tooltip": "Insert Image"
+      },
+      "link": {
+        "dialog": {
+          "inline": "Display inline"
+        }
+      },
+      "imageUpload": {
+        "alt": "Alternative text (Alt)",
+        "uploading": "Uploading...",
+        "cancel": "Cancel",
+        "crop": "Crop"
+      },
+      "upload": {
+        "error": "Error uploading image",
+        "tooLarge": "File is too large",
+        "invalidMime": "Invalid file type"
+      }
+    }
+  },
   "Login": {
     "title": "Login to <br></br>Hyundai Nhat Nang System",
     "description": "Welcome back! Please sign in to manage your orders and products.",

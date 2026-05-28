@@ -1,10 +1,27 @@
-import type { UseFormReturn } from "react-hook-form";
+import type { ControllerRenderProps, UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { Settings, Wrench } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nhatnang/ui/components/ui/card";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@nhatnang/ui/components/ui/form";
+import { Input } from "@nhatnang/ui/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@nhatnang/ui/components/ui/select";
 import { type TNewProduct } from "@nhatnang/database/schemas";
 
 interface ProductTechnicalSpecsProps {
@@ -35,7 +52,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.model"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct, "specs">;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.model")} *</FormLabel>
                   <FormControl>
@@ -52,7 +73,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.power"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct, "specs">;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.power")} *</FormLabel>
                   <FormControl>
@@ -69,7 +94,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.voltage"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct, "specs">;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.voltage")}</FormLabel>
                   <FormControl>
@@ -86,7 +115,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.frequency"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct, "specs">;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.frequency")}</FormLabel>
                   <FormControl>
@@ -103,7 +136,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.phase"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.phase")}</FormLabel>
                   <Select
@@ -133,7 +170,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.ratedCurrent"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.ratedCurrent")}</FormLabel>
                   <FormControl>
@@ -150,7 +191,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.powerFactor"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.powerFactor")}</FormLabel>
                   <FormControl>
@@ -167,7 +212,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.warranty"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.warranty")}</FormLabel>
                   <FormControl>
@@ -197,7 +246,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.engine"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.engine")}</FormLabel>
                   <FormControl>
@@ -214,7 +267,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.engineBrand"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.engineBrand")}</FormLabel>
                   <FormControl>
@@ -231,7 +288,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.fuelType"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.fuelType")}</FormLabel>
                   <Select
@@ -264,7 +325,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.coolingSystem"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.coolingSystem")}</FormLabel>
                   <FormControl>
@@ -281,7 +346,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.startingSystem"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.startingSystem")}</FormLabel>
                   <FormControl>
@@ -298,7 +367,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.fuelConsumption"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.fuelConsumption")}</FormLabel>
                   <FormControl>
@@ -315,7 +388,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.fuelTankCapacity"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.fuelTankCapacity")}</FormLabel>
                   <FormControl>
@@ -332,7 +409,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.alternator"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.alternator")}</FormLabel>
                   <FormControl>
@@ -349,7 +430,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.alternatorBrand"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.alternatorBrand")}</FormLabel>
                   <FormControl>
@@ -366,7 +451,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.weight"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.weight")}</FormLabel>
                   <FormControl>
@@ -383,7 +472,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.dimensions"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.dimensions")}</FormLabel>
                   <FormControl>
@@ -400,7 +493,11 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.noiseLevel"
-              render={({ field }) => (
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<TNewProduct>;
+              }) => (
                 <FormItem>
                   <FormLabel>{t("fields.noiseLevel")}</FormLabel>
                   <FormControl>

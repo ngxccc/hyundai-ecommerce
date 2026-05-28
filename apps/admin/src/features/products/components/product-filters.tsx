@@ -7,8 +7,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
-import { Checkbox } from "@/shared/components/ui/checkbox";
+} from "@nhatnang/ui/components/ui/select";
+import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 
 export const ProductFilters = () => {
   const t = useTranslations("AdminProducts.filters");
@@ -22,9 +22,13 @@ export const ProductFilters = () => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">{t("allCategories")}</SelectItem>
-          <SelectItem value="generator">{t("categoryOptions.generator")}</SelectItem>
+          <SelectItem value="generator">
+            {t("categoryOptions.generator")}
+          </SelectItem>
           <SelectItem value="ups">{t("categoryOptions.ups")}</SelectItem>
-          <SelectItem value="industrial">{t("categoryOptions.industrial")}</SelectItem>
+          <SelectItem value="industrial">
+            {t("categoryOptions.industrial")}
+          </SelectItem>
         </SelectContent>
       </Select>
 
@@ -36,7 +40,9 @@ export const ProductFilters = () => {
         <SelectContent>
           <SelectItem value="all">{t("allBrands")}</SelectItem>
           <SelectItem value="hyundai">{t("brandOptions.hyundai")}</SelectItem>
-          <SelectItem value="mitsubishi">{t("brandOptions.mitsubishi")}</SelectItem>
+          <SelectItem value="mitsubishi">
+            {t("brandOptions.mitsubishi")}
+          </SelectItem>
           <SelectItem value="perkins">{t("brandOptions.perkins")}</SelectItem>
         </SelectContent>
       </Select>

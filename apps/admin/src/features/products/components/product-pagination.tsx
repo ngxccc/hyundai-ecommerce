@@ -6,7 +6,7 @@ import {
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
-} from "@/shared/components/ui/pagination";
+} from "@nhatnang/ui/components/ui/pagination";
 
 interface ProductPaginationProps {
   nextCursor?: string | undefined;

@@ -7,7 +7,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/shared/components/ui/breadcrumb";
+} from "@nhatnang/ui/components/ui/breadcrumb";
 
 export interface AdminBreadcrumbsProps {
   items: { label: string; href?: string }[];

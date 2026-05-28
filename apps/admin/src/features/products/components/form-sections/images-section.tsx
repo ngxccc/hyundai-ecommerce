@@ -1,17 +1,29 @@
 import React from "react";
 import { useTranslations } from "next-intl";
 import { Image as ImageIcon, Plus, Trash2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
-import { FormControl, FormItem, FormMessage } from "@/shared/components/ui/form";
-import { Input } from "@/shared/components/ui/input";
-import { Button } from "@/shared/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@nhatnang/ui/components/ui/card";
+import {
+  FormControl,
+  FormItem,
+  FormMessage,
+} from "@nhatnang/ui/components/ui/form";
+import { Input } from "@nhatnang/ui/components/ui/input";
+import { Button } from "@nhatnang/ui/components/ui/button";
 
 interface ProductImagesSectionProps {
   images: string[];
   setImages: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-export const ProductImagesSection = ({ images, setImages }: ProductImagesSectionProps) => {
+export const ProductImagesSection = ({
+  images,
+  setImages,
+}: ProductImagesSectionProps) => {
   const t = useTranslations("AdminProductForm");
 
   return (
@@ -39,7 +51,10 @@ export const ProductImagesSection = ({ images, setImages }: ProductImagesSection
             </label>
             <div className="flex flex-col gap-3">
               {images.map((image, index) => (
-                <div key={`${index}-${image}`} className="flex items-start gap-2">
+                <div
+                  key={`${index}-${image}`}
+                  className="flex items-start gap-2"
+                >
                   <FormItem className="flex-1 space-y-0">
                     <FormControl>
                       <Input
@@ -65,7 +80,9 @@ export const ProductImagesSection = ({ images, setImages }: ProductImagesSection
                     onClick={() =>
                       setImages((current) =>
                         current.length > 1
-                          ? current.filter((_, currentIndex) => currentIndex !== index)
+                          ? current.filter(
+                              (_, currentIndex) => currentIndex !== index,
+                            )
                           : [""],
                       )
                     }
