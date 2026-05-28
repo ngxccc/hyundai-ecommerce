@@ -9,6 +9,7 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
+import type { JSONContent } from "@tiptap/core";
 import { sql } from "drizzle-orm";
 import { fullEntity } from "./helpers.schema";
 import { brands } from "./brand.schema";
@@ -22,7 +23,7 @@ export const products = snakeCase.table(
     name: text().notNull(),
     slug: text().notNull(),
     price: numeric({ precision: 15, scale: 2 }).notNull(),
-    description: text(),
+    description: jsonb().$type<JSONContent>(),
     shortDescription: text(),
     images: text().array().default([]).notNull(),
     brandId: uuid().references(() => brands.id, { onDelete: "set null" }),

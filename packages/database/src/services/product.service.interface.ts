@@ -1,4 +1,4 @@
-import type { TBrand, TNewProduct, TProduct } from "../schemas";
+import type { TNewProduct, TProduct } from "../schemas";
 
 export type TUpdateProductData = Partial<{
   [K in keyof TNewProduct]: TNewProduct[K] | undefined;
@@ -9,9 +9,5 @@ export interface IProductService {
   update(id: string, data: TUpdateProductData): Promise<TProduct | undefined>;
   delete(id: string): Promise<boolean>;
   getById(id: string): Promise<TProduct | undefined>;
-  getAll(limit: number, cursorId?: string): Promise<TProduct[]>;
-}
-
-export interface IBrandService {
-  getAll(): Promise<TBrand[]>;
+  getAll(limit?: number, cursorId?: string): unknown;
 }
