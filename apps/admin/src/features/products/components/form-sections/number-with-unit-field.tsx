@@ -73,7 +73,7 @@ export const NumberWithUnitField = <
     const val = e.target.value;
 
     if (val === "") {
-      field.onChange(undefined);
+      field.onChange(null); // Use null instead of undefined to properly clear in React Hook Form
       return;
     }
 
