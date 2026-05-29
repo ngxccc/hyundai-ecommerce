@@ -21,14 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@nhatnang/ui/components/ui/select";
-import {
-  type TNewProduct,
-  type TCategory,
-  type TBrand,
-} from "@nhatnang/database/schemas";
+import { type TCategory, type TBrand } from "@nhatnang/database/schemas";
+import type { TCreateProductInput } from "@nhatnang/database/validators";
 
 interface ProductCategorySectionProps {
-  form: UseFormReturn<TNewProduct>;
+  form: UseFormReturn<TCreateProductInput>;
   categories: TCategory[];
   brands: TBrand[];
 }
@@ -55,7 +52,7 @@ export const ProductCategorySection = ({
           render={({
             field,
           }: {
-            field: ControllerRenderProps<TNewProduct, "categoryId">;
+            field: ControllerRenderProps<TCreateProductInput, "categoryId">;
           }) => (
             <FormItem>
               <FormLabel>{t("fields.category")}</FormLabel>
@@ -93,7 +90,7 @@ export const ProductCategorySection = ({
           render={({
             field,
           }: {
-            field: ControllerRenderProps<TNewProduct, "brandId">;
+            field: ControllerRenderProps<TCreateProductInput, "brandId">;
           }) => (
             <FormItem>
               <FormLabel>{t("fields.brand")}</FormLabel>

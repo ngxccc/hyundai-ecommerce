@@ -15,11 +15,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@nhatnang/ui/components/ui/form";
-import type { TNewProduct } from "@nhatnang/database/schemas";
 import { type JSONContent } from "@nhatnang/ui";
+import type { TCreateProductInput } from "@nhatnang/database/validators";
 
 interface ProductDescriptionSectionProps {
-  form: UseFormReturn<TNewProduct>;
+  form: UseFormReturn<TCreateProductInput>;
 }
 
 export const ProductDescriptionSection = ({

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -17,7 +17,6 @@ import {
   type TProduct,
   type TCategory,
   type TBrand,
-  type TNewProduct,
 } from "@nhatnang/database/schemas";
 import {
   createProductSchema,
@@ -62,8 +61,10 @@ export const ProductForm = ({
     specs: {},
   } satisfies TCreateProductInput;
 
-  const form = useForm<TNewProduct>({
-    resolver: zodResolver(createProductSchema(t)),
+  const form = useForm<TCreateProductInput>({
+    resolver: zodResolver(
+      createProductSchema(t),
+    ) as Resolver<TCreateProductInput>,
     defaultValues: {
       name: initialData?.name ?? "",
       slug: initialData?.slug ?? "",
@@ -80,14 +81,14 @@ export const ProductForm = ({
     },
   });
 
-  const onSubmit = (data: TNewProduct) => {
+  const onSubmit = (data: TCreateProductInput) => {
     startTransition(async () => {
       const payload = {
         ...data,
         price: data.price ? data.price.replace(/\./g, "") : "",
         images: images.filter((image) => image.trim().length > 0),
         isQuoteOnly: data.isQuoteOnly ?? false,
-      } satisfies TCreateProductInput;
+      };
       const result = isEditing
         ? await updateProductAction(initialData.id, payload)
         : await createProductAction(payload);
@@ -106,7 +107,7 @@ export const ProductForm = ({
           Object.entries(result.fieldErrors).forEach(([field, errors]) => {
             const message = errors?.[0];
             if (message) {
-              form.setError(field as keyof TNewProduct, {
+              form.setError(field as keyof TCreateProductInput, {
                 type: "server",
                 message,
               });

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { type JSONContent } from "@nhatnang/ui";
 
 export type TProductValidationMessageKey =
   | "validation.nameRequired"
@@ -44,13 +45,13 @@ export const createProductSchema = (t: IProductTranslator) =>
     name: z.string().min(1, t("validation.nameRequired")),
     slug: z.string().min(1, t("validation.slugRequired")),
     price: z.string().min(1, t("validation.priceRequired")),
-    description: z.record(z.string(), z.any()).nullable().optional(),
+    description: z.custom<JSONContent>().nullable().optional(),
     shortDescription: z.string().nullable().optional(),
-    images: z.array(z.url(t("validation.invalidUrl"))).default([]),
+    images: z.array(z.url(t("validation.invalidUrl"))),
     brandId: z.uuid(t("validation.invalidBrand")).nullable().optional(),
     categoryId: z.uuid(t("validation.invalidCategory")).nullable().optional(),
     specs: productSpecsSchema.nullable().optional(),
-    isQuoteOnly: z.boolean().default(false),
+    isQuoteOnly: z.boolean(),
   });
 
 export const updateProductSchema = (t: IProductTranslator) =>
