@@ -151,6 +151,7 @@
       "addProduct": "Add New Product"
     },
     "filters": {
+      "searchPlaceholder": "Search model or name...",
       "allCategories": "All Categories",
       "status": "Status",
       "brand": "Brand",

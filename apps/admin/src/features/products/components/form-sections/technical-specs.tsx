@@ -155,10 +155,10 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="1 Phase">
+                      <SelectItem value="1phase">
                         {t("phaseOptions.1phase")}
                       </SelectItem>
-                      <SelectItem value="3 Phase">
+                      <SelectItem value="3phase">
                         {t("phaseOptions.3phase")}
                       </SelectItem>
                     </SelectContent>
@@ -307,13 +307,13 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Diesel">
+                      <SelectItem value="diesel">
                         {t("fuelOptions.diesel")}
                       </SelectItem>
-                      <SelectItem value="Gasoline">
+                      <SelectItem value="gasoline">
                         {t("fuelOptions.gasoline")}
                       </SelectItem>
-                      <SelectItem value="Gas">
+                      <SelectItem value="gas">
                         {t("fuelOptions.gas")}
                       </SelectItem>
                     </SelectContent>

@@ -3,7 +3,11 @@ import { ProductGrid } from "@/features/products/components/product-grid";
 import { ProductPagination } from "@/features/products/components/product-pagination";
 import { ProductHeader } from "@/features/products/components";
 import { AdminBreadcrumbs } from "@/features/dashboard/components";
-import { productService } from "@nhatnang/database/services";
+import {
+  productService,
+  categoryService,
+  brandService,
+} from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -32,17 +36,48 @@ export default async function AdminProductsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const after = typeof params["after"] === "string" ? params["after"] : undefined;
-  const before = typeof params["before"] === "string" ? params["before"] : undefined;
+  const after =
+    typeof params["after"] === "string" ? params["after"] : undefined;
+  const before =
+    typeof params["before"] === "string" ? params["before"] : undefined;
+  const categoryId =
+    typeof params["categoryId"] === "string" ? params["categoryId"] : undefined;
+  const brandId =
+    typeof params["brandId"] === "string" ? params["brandId"] : undefined;
+  const fuelType =
+    typeof params["fuelType"] === "string" ? params["fuelType"] : undefined;
+  const phase =
+    typeof params["phase"] === "string" ? params["phase"] : undefined;
+  const status =
+    typeof params["status"] === "string" ? params["status"] : undefined;
+  const isQuoteOnly = params["isQuoteOnly"] === "true";
+  const search =
+    typeof params["search"] === "string" ? params["search"] : undefined;
 
-  const options: { after?: string; before?: string } = {};
-  if (after) options.after = after;
-  if (before) options.before = before;
+  const options = {
+    after,
+    before,
+    categoryId,
+    brandId,
+    fuelType,
+    phase,
+    status,
+    search,
+    isQuoteOnly: isQuoteOnly ? true : undefined,
+  };
 
-  const [t, tNav, { data: products, nextCursor, prevCursor }] = await Promise.all([
+  const [
+    t,
+    tNav,
+    { data: products, nextCursor, prevCursor },
+    categories,
+    brands,
+  ] = await Promise.all([
     getTranslations("AdminProducts.header"),
     getTranslations("AdminBreadcrumbs"),
     productService.getAll(20, options),
+    categoryService.getAll(),
+    brandService.getAll(),
   ]);
 
   return (
@@ -62,7 +97,7 @@ export default async function AdminProductsPage({
         />
         <div className="mx-auto flex w-full flex-col gap-6 pb-8">
           {/* Filters */}
-          <ProductFilters />
+          <ProductFilters categories={categories} brands={brands} />
 
           {/* Product Grid */}
           <ProductGrid products={products} />

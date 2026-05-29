@@ -151,6 +151,7 @@
       "addProduct": "Thêm sản phẩm mới"
     },
     "filters": {
+      "searchPlaceholder": "Tìm kiếm theo model hoặc tên...",
       "allCategories": "Tất cả danh mục",
       "status": "Trạng thái",
       "brand": "Thương hiệu",
