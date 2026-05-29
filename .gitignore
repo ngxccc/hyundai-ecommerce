@@ -10,9 +10,6 @@ out/
 build/
 next-env.d.ts
 
-# Turborepo
-.turbo/
-
 # TypeScript & ESLint
 *.tsbuildinfo
 .eslintcache
@@ -59,3 +56,4 @@ opencode.json
 
 # Turborepo
 .turbo
+.vercel

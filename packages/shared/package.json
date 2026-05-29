@@ -8,6 +8,7 @@
       "import": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./constants": "./src/constants/index.ts"
+    "./constants": "./src/constants/index.ts",
+    "./lib/*": "./src/lib/*.ts"
   }
 }
