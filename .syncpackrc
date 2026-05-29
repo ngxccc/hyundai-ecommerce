@@ -1,5 +1,28 @@
 {
   "indent": "  ",
+
+  "sortFirst": [
+    "name",
+    "version",
+    "description",
+    "private",
+    "type",
+    "exports",
+    "packageManager",
+    "workspaces",
+    "scripts",
+    "dependencies",
+    "devDependencies",
+    "peerDependencies"
+  ],
+
+  "sortAz": [
+    "scripts",
+    "dependencies",
+    "devDependencies",
+    "peerDependencies"
+  ],
+
   "semverGroups": [
     {
       "range": "^",
@@ -9,7 +32,7 @@
   ],
   "versionGroups": [
     {
-      "dependencies": ["tailwindcss", "next"],
+      "dependencies": ["next"],
       "packages": ["**"],
       "isIgnored": true
     },

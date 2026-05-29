@@ -18,15 +18,15 @@
     "./auth-client": "./src/auth-client.ts"
   },
   "scripts": {
-    "test": "bun test src/",
-    "db:push": "doppler run -- drizzle-kit push --config drizzle.config.ts",
     "db:generate": "doppler run -- drizzle-kit generate --config drizzle.config.ts",
     "db:migrate": "doppler run -- drizzle-kit migrate --config drizzle.config.ts",
-    "db:studio": "doppler run -- drizzle-kit studio --config drizzle.config.ts",
+    "db:push": "doppler run -- drizzle-kit push --config drizzle.config.ts",
     "db:seed": "doppler run -- src/seed.ts",
+    "db:studio": "doppler run -- drizzle-kit studio --config drizzle.config.ts",
     "docs:gen": "bun run scripts/generate-docs.ts",
     "lint": "eslint . --cache --cache-strategy content --cache-location .eslintcache",
-    "lint:fix": "eslint . --fix --cache --cache-strategy content --cache-location .eslintcache"
+    "lint:fix": "eslint . --fix --cache --cache-strategy content --cache-location .eslintcache",
+    "test": "bun test src/"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.11",
