@@ -18,11 +18,12 @@ import { Input } from "@nhatnang/ui/components/ui/input";
 import {
   Select,
   SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectItem,
 } from "@nhatnang/ui/components/ui/select";
 import { type TNewProduct } from "@nhatnang/database/schemas";
+import { NumberWithUnitField } from "./number-with-unit-field";
 
 interface ProductTechnicalSpecsProps {
   form: UseFormReturn<TNewProduct>;
@@ -78,17 +79,16 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               }: {
                 field: ControllerRenderProps<TNewProduct, "specs.power">;
               }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.power")} *</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("placeholders.power")}
-                      {...field}
-                      value={toInputValue(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <NumberWithUnitField
+                  label={t("fields.power") + " *"}
+                  placeholder={t("placeholders.power")}
+                  field={field}
+                  units={[
+                    { value: "kw", label: "KW", multiplier: 1 },
+                    { value: "w", label: "W", multiplier: 0.001 },
+                    { value: "kva", label: "KVA", multiplier: 1 },
+                  ]}
+                />
               )}
             />
             <FormField
@@ -99,17 +99,15 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               }: {
                 field: ControllerRenderProps<TNewProduct, "specs.voltage">;
               }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.voltage")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("placeholders.voltage")}
-                      {...field}
-                      value={toInputValue(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <NumberWithUnitField
+                  label={t("fields.voltage")}
+                  placeholder={t("placeholders.voltage")}
+                  field={field}
+                  units={[
+                    { value: "v", label: "V", multiplier: 1 },
+                    { value: "kv", label: "KV", multiplier: 1000 },
+                  ]}
+                />
               )}
             />
             <FormField
@@ -120,17 +118,12 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               }: {
                 field: ControllerRenderProps<TNewProduct, "specs.frequency">;
               }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.frequency")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("placeholders.frequency")}
-                      {...field}
-                      value={toInputValue(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <NumberWithUnitField
+                  label={t("fields.frequency")}
+                  placeholder={t("placeholders.frequency")}
+                  field={field}
+                  units={[{ value: "hz", label: "Hz", multiplier: 1 }]}
+                />
               )}
             />
             <FormField
@@ -173,19 +166,14 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               render={({
                 field,
               }: {
-                field: ControllerRenderProps<TNewProduct>;
+                field: ControllerRenderProps<TNewProduct, "specs.ratedCurrent">;
               }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.ratedCurrent")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("placeholders.ratedCurrent")}
-                      {...field}
-                      value={toInputValue(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <NumberWithUnitField
+                  label={t("fields.ratedCurrent")}
+                  placeholder={t("placeholders.ratedCurrent")}
+                  field={field}
+                  units={[{ value: "a", label: "A", multiplier: 1 }]}
+                />
               )}
             />
             <FormField
@@ -194,19 +182,14 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               render={({
                 field,
               }: {
-                field: ControllerRenderProps<TNewProduct>;
+                field: ControllerRenderProps<TNewProduct, "specs.powerFactor">;
               }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.powerFactor")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("placeholders.powerFactor")}
-                      {...field}
-                      value={toInputValue(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <NumberWithUnitField
+                  label={t("fields.powerFactor")}
+                  placeholder={t("placeholders.powerFactor")}
+                  field={field}
+                  units={[{ value: "ratio", label: "Hệ số", multiplier: 1 }]}
+                />
               )}
             />
             <FormField
@@ -215,19 +198,17 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               render={({
                 field,
               }: {
-                field: ControllerRenderProps<TNewProduct>;
+                field: ControllerRenderProps<TNewProduct, "specs.warranty">;
               }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.warranty")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("placeholders.warranty")}
-                      {...field}
-                      value={toInputValue(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <NumberWithUnitField
+                  label={t("fields.warranty")}
+                  placeholder={t("placeholders.warranty")}
+                  field={field}
+                  units={[
+                    { value: "month", label: "Tháng", multiplier: 1 },
+                    { value: "year", label: "Năm", multiplier: 12 },
+                  ]}
+                />
               )}
             />
           </div>
@@ -370,19 +351,17 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               render={({
                 field,
               }: {
-                field: ControllerRenderProps<TNewProduct>;
+                field: ControllerRenderProps<
+                  TNewProduct,
+                  "specs.fuelConsumption"
+                >;
               }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.fuelConsumption")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("placeholders.fuelConsumption")}
-                      {...field}
-                      value={toInputValue(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <NumberWithUnitField
+                  label={t("fields.fuelConsumption")}
+                  placeholder={t("placeholders.fuelConsumption")}
+                  field={field}
+                  units={[{ value: "lh", label: "L/h", multiplier: 1 }]}
+                />
               )}
             />
             <FormField
@@ -391,19 +370,17 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               render={({
                 field,
               }: {
-                field: ControllerRenderProps<TNewProduct>;
+                field: ControllerRenderProps<
+                  TNewProduct,
+                  "specs.fuelTankCapacity"
+                >;
               }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.fuelTankCapacity")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("placeholders.fuelTankCapacity")}
-                      {...field}
-                      value={toInputValue(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <NumberWithUnitField
+                  label={t("fields.fuelTankCapacity")}
+                  placeholder={t("placeholders.fuelTankCapacity")}
+                  field={field}
+                  units={[{ value: "l", label: "Lít", multiplier: 1 }]}
+                />
               )}
             />
             <FormField
@@ -451,43 +428,61 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
             <FormField
               control={form.control}
               name="specs.weight"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<TNewProduct>;
-              }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.weight")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("placeholders.weight")}
-                      {...field}
-                      value={toInputValue(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              render={({ field }: { field: ControllerRenderProps<TNewProduct, "specs.weight"> }) => (
+                <NumberWithUnitField
+                  label={t("fields.weight")}
+                  placeholder={t("placeholders.weight")}
+                  field={field}
+                  units={[
+                    { value: "kg", label: "KG", multiplier: 1 },
+                    { value: "ton", label: "Tấn", multiplier: 1000 },
+                  ]}
+                />
               )}
             />
             <FormField
               control={form.control}
-              name="specs.dimensions"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<TNewProduct>;
-              }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.dimensions")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("placeholders.dimensions")}
-                      {...field}
-                      value={toInputValue(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              name="specs.length"
+              render={({ field }: { field: ControllerRenderProps<TNewProduct, "specs.length"> }) => (
+                <NumberWithUnitField
+                  label={t("fields.length")}
+                  placeholder={t("placeholders.length")}
+                  field={field}
+                  units={[
+                    { value: "mm", label: "mm", multiplier: 1 },
+                    { value: "cm", label: "cm", multiplier: 10 },
+                  ]}
+                />
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="specs.width"
+              render={({ field }: { field: ControllerRenderProps<TNewProduct, "specs.width"> }) => (
+                <NumberWithUnitField
+                  label={t("fields.width")}
+                  placeholder={t("placeholders.width")}
+                  field={field}
+                  units={[
+                    { value: "mm", label: "mm", multiplier: 1 },
+                    { value: "cm", label: "cm", multiplier: 10 },
+                  ]}
+                />
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="specs.height"
+              render={({ field }: { field: ControllerRenderProps<TNewProduct, "specs.height"> }) => (
+                <NumberWithUnitField
+                  label={t("fields.height")}
+                  placeholder={t("placeholders.height")}
+                  field={field}
+                  units={[
+                    { value: "mm", label: "mm", multiplier: 1 },
+                    { value: "cm", label: "cm", multiplier: 10 },
+                  ]}
+                />
               )}
             />
             <FormField
@@ -496,19 +491,14 @@ export const ProductTechnicalSpecs = ({ form }: ProductTechnicalSpecsProps) => {
               render={({
                 field,
               }: {
-                field: ControllerRenderProps<TNewProduct>;
+                field: ControllerRenderProps<TNewProduct, "specs.noiseLevel">;
               }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.noiseLevel")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("placeholders.noiseLevel")}
-                      {...field}
-                      value={toInputValue(field.value)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <NumberWithUnitField
+                  label={t("fields.noiseLevel")}
+                  placeholder={t("placeholders.noiseLevel")}
+                  field={field}
+                  units={[{ value: "db", label: "dB", multiplier: 1 }]}
+                />
               )}
             />
           </div>

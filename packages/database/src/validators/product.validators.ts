@@ -15,23 +15,25 @@ export type IProductTranslator = (key: TProductValidationMessageKey) => string;
 export const productSpecsSchema = z
   .object({
     model: z.string().optional(),
-    power: z.string().optional(),
-    voltage: z.string().optional(),
-    frequency: z.string().optional(),
+    power: z.coerce.number().optional(), // Base Unit: KW
+    voltage: z.coerce.number().optional(), // Base Unit: V
+    frequency: z.coerce.number().optional(), // Base Unit: Hz
     phase: z.enum(["1phase", "3phase"]).optional(),
     engine: z.string().optional(),
     engineBrand: z.string().optional(),
     alternator: z.string().optional(),
     alternatorBrand: z.string().optional(),
     fuelType: z.enum(["diesel", "gasoline", "gas"]).optional(),
-    fuelConsumption: z.string().optional(),
-    fuelTankCapacity: z.string().optional(),
-    weight: z.string().optional(),
-    dimensions: z.string().optional(),
-    noiseLevel: z.string().optional(),
-    warranty: z.string().optional(),
-    ratedCurrent: z.string().optional(),
-    powerFactor: z.string().optional(),
+    fuelConsumption: z.coerce.number().optional(), // Base Unit: L/h
+    fuelTankCapacity: z.coerce.number().optional(), // Base Unit: Lít
+    weight: z.coerce.number().optional(), // Base Unit: KG
+    length: z.coerce.number().optional(), // Base Unit: mm
+    width: z.coerce.number().optional(), // Base Unit: mm
+    height: z.coerce.number().optional(), // Base Unit: mm
+    noiseLevel: z.coerce.number().optional(), // Base Unit: dB
+    warranty: z.coerce.number().optional(), // Base Unit: Tháng
+    ratedCurrent: z.coerce.number().optional(), // Base Unit: A
+    powerFactor: z.coerce.number().optional(), // Base Unit: Hệ số (0.8 - 1.0)
     startingSystem: z.string().optional(),
     coolingSystem: z.string().optional(),
   })
