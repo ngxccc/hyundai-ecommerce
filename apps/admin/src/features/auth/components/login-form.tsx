@@ -8,9 +8,7 @@ import {
   createLoginSchema,
   type TLoginForm,
 } from "@nhatnang/database/validators";
-import { toast } from "sonner";
 import { ShieldCheck } from "lucide-react";
-
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Input } from "@nhatnang/ui/components/ui/input";
 import {
@@ -30,6 +28,7 @@ import {
 } from "@nhatnang/ui/components/ui/card";
 import { adminLoginAction } from "../actions/admin-login.action";
 import { useRouter } from "@/i18n/routing";
+import { toast } from "@nhatnang/ui/components/ui/sonner";
 
 export const LoginForm = () => {
   const t = useTranslations("Login");

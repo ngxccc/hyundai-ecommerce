@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
+import { toast } from "@nhatnang/ui/components/ui/sonner";
 import { useRouter } from "next/navigation";
 import {
   createProductAction,

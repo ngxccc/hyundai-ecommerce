@@ -8,7 +8,7 @@ import { cn } from "@nhatnang/ui/lib/utils";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { useAdminNav } from "../hooks/use-admin-nav";
-import { toast } from "sonner";
+import { toast } from "@nhatnang/ui/components/ui/sonner";
 import { authClient } from "@nhatnang/database/auth-client";
 
 export const AdminSidebar = () => {
