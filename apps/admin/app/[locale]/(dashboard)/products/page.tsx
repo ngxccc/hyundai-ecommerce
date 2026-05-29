@@ -53,6 +53,17 @@ export default async function AdminProductsPage({
   const isQuoteOnly = params["isQuoteOnly"] === "true";
   const search =
     typeof params["search"] === "string" ? params["search"] : undefined;
+  const engineBrand =
+    typeof params["engineBrand"] === "string" ? params["engineBrand"] : undefined;
+  const alternatorBrand =
+    typeof params["alternatorBrand"] === "string" ? params["alternatorBrand"] : undefined;
+  const voltageStr = typeof params["voltage"] === "string" ? params["voltage"] : undefined;
+  const minPowerStr = typeof params["minPower"] === "string" ? params["minPower"] : undefined;
+  const maxPowerStr = typeof params["maxPower"] === "string" ? params["maxPower"] : undefined;
+
+  const voltage = voltageStr ? Number(voltageStr) : undefined;
+  const minPower = minPowerStr ? Number(minPowerStr) : undefined;
+  const maxPower = maxPowerStr ? Number(maxPowerStr) : undefined;
 
   const options = {
     after,
@@ -61,6 +72,11 @@ export default async function AdminProductsPage({
     brandId,
     fuelType,
     phase,
+    voltage: voltage !== undefined && !isNaN(voltage) ? voltage : undefined,
+    minPower: minPower !== undefined && !isNaN(minPower) ? minPower : undefined,
+    maxPower: maxPower !== undefined && !isNaN(maxPower) ? maxPower : undefined,
+    engineBrand,
+    alternatorBrand,
     status,
     search,
     isQuoteOnly: isQuoteOnly ? true : undefined,

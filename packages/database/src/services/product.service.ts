@@ -63,6 +63,11 @@ export class ProductService implements IProductService {
       search?: string | undefined;
       fuelType?: string | undefined;
       phase?: string | undefined;
+      voltage?: number | undefined;
+      minPower?: number | undefined;
+      maxPower?: number | undefined;
+      engineBrand?: string | undefined;
+      alternatorBrand?: string | undefined;
       isQuoteOnly?: boolean | undefined;
     },
   ) {
@@ -106,6 +111,36 @@ export class ProductService implements IProductService {
         ? {
             RAW: (table: TProduct) =>
               sql`${table.specs}->>'phase' = ${options.phase}`,
+          }
+        : undefined,
+      options?.voltage !== undefined
+        ? {
+            RAW: (table: TProduct) =>
+              sql`CASE WHEN ${table.specs}->>'voltage' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'voltage')::numeric ELSE NULL END = ${options.voltage}`,
+          }
+        : undefined,
+      options?.minPower !== undefined
+        ? {
+            RAW: (table: TProduct) =>
+              sql`CASE WHEN ${table.specs}->>'power' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'power')::numeric ELSE NULL END >= ${options.minPower}`,
+          }
+        : undefined,
+      options?.maxPower !== undefined
+        ? {
+            RAW: (table: TProduct) =>
+              sql`CASE WHEN ${table.specs}->>'power' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'power')::numeric ELSE NULL END <= ${options.maxPower}`,
+          }
+        : undefined,
+      options?.engineBrand
+        ? {
+            RAW: (table: TProduct) =>
+              sql`${table.specs}->>'engineBrand' ILIKE ${`%${options.engineBrand}%`}`,
+          }
+        : undefined,
+      options?.alternatorBrand
+        ? {
+            RAW: (table: TProduct) =>
+              sql`${table.specs}->>'alternatorBrand' ILIKE ${`%${options.alternatorBrand}%`}`,
           }
         : undefined,
     ].filter(Boolean) as [];
