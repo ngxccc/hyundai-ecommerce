@@ -6,20 +6,22 @@ Single source of truth for the domain language, architecture, and processes used
 
 This is a greenfield B2B e-commerce platform for industrial equipment (generators and power systems).
 
-- **Monorepo**: Turborepo
+- **Monorepo**: Turborepo (v2.9.16)
 - **Package Manager**: Bun (v1.3.6)
-- **Framework**: Next.js 16 (App Router)
-  - `apps/storefront`: Customer-facing web app
+- **Framework**: Next.js 16.2.6 (App Router) & React 19
+  - `apps/storefront`: Customer-facing web app (UI: shadcn/ui 4.8.3, Tailwind CSS)
   - `apps/admin`: Internal dashboard for staff/admins
   - `apps/docs`: Technical documentation site
-- **Database**: PostgreSQL with Drizzle ORM (located in `packages/database`)
-- **Auth**: Better Auth
+- **Database**: PostgreSQL with Drizzle ORM (v1.0.0-rc.3, located in `packages/database`)
+- **Auth**: Better Auth (v1.6.11)
+- **Validation**: Zod (v4.4.3)
 - **Testing**: Bun Test (`bun:test`)
 - **Shared Packages**: `database`, `shared`, `ui`, `types`, `eslint-config`, `typescript-config`
 
 ## 2. Core Business Flow: Quote & Deal Negotiation
 
 The most critical flow in the system is not self-service checkout, but rather a CRM-style B2B Quote/Deal negotiation process:
+
 1. **Initiation**: A user (Dealer, Contractor, etc.) fills out a request/contact form for a quote.
 2. **Notification**: The system alerts the Admin or Sales staff.
 3. **Negotiation**: Takes place offline or via external channels (Zalo, phone calls) or future in-app integrations.
@@ -39,6 +41,7 @@ The most critical flow in the system is not self-service checkout, but rather a 
 - **Dealer tier**: a pricing or access level for business customers.
 
 ### Account Types (`business_type`)
+
 - **Dealer**: a reseller or distributor partner. Can have a `dealer_tier` (discount percentage and minimum spend).
 - **Contractor**: a construction or installation customer.
 - **Distributor**: an official distribution partner.
