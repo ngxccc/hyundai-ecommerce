@@ -17,7 +17,7 @@ import {
 import { Input } from "@nhatnang/ui/components/ui/input";
 import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Textarea } from "@nhatnang/ui/components/ui/textarea";
-import { formatNumberInput } from "@/shared/lib/utils";
+import { formatNumberInput } from "@nhatnang/ui/lib/utils";
 import type { TNewProduct } from "@nhatnang/database/schemas";
 
 interface ProductGeneralInfoProps {

@@ -12,18 +12,18 @@
     "dev": "doppler run -- turbo run dev",
     "dev:storefront": "doppler run -- turbo run dev --filter=storefront",
     "build": "doppler run -- turbo run build",
-    "lint": "turbo run lint"
-  },
-  "dependencies": {
-    "uuid": "^14.0.0"
+    "lint": "turbo run lint",
+    "deps:lint": "syncpack list",
+    "deps:fix": "syncpack fix",
+    "format:pkg": "syncpack format --check"
   },
   "devDependencies": {
     "@types/bun": "^1",
     "@types/node": "^25",
-    "@types/uuid": "^11",
     "eslint": "^9",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
+    "syncpack": "^15.3.1",
     "turbo": "^2.9.14",
     "typescript": "^6"
   }

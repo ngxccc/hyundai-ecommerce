@@ -12,7 +12,7 @@ import {
   SheetTrigger,
 } from "@nhatnang/ui/components/ui/sheet";
 import { Link, usePathname } from "@/i18n/routing";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@nhatnang/ui/lib/utils";
 import { useAdminNav } from "@/features/dashboard/hooks";
 
 interface ProductHeaderProps {

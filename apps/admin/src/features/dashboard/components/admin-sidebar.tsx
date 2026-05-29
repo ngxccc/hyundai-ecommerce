@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import Image from "next/image";
 import { LogOut, ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@nhatnang/ui/lib/utils";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { useAdminNav } from "../hooks/use-admin-nav";

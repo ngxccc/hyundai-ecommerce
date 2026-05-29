@@ -15,8 +15,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@nhatnang/ui/components/ui/form";
-import { type JSONContent } from "@tiptap/core";
 import type { TNewProduct } from "@nhatnang/database/schemas";
+import { type JSONContent } from "@nhatnang/ui";
 
 interface ProductDescriptionSectionProps {
   form: UseFormReturn<TNewProduct>;
