@@ -102,6 +102,17 @@ export const ProductForm = ({
           setImages([""]);
         }
       } else {
+        if (result.fieldErrors) {
+          Object.entries(result.fieldErrors).forEach(([field, errors]) => {
+            const message = errors?.[0];
+            if (message) {
+              form.setError(field as keyof TNewProduct, {
+                type: "server",
+                message,
+              });
+            }
+          });
+        }
         toast.error(result.error ?? t("messages.error"));
       }
     });
