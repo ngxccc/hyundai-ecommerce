@@ -35,7 +35,7 @@ export default async function EditProductPage({
         description={t("editDescription")}
         showAddButton={false}
       />
-      <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="flex-1 space-y-4 p-2">
         <AdminBreadcrumbs
           items={[
             { label: tNav("dashboard"), href: "/" },
