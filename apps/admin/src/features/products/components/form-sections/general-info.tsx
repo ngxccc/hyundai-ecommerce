@@ -17,11 +17,11 @@ import {
 import { Input } from "@nhatnang/ui/components/ui/input";
 import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Textarea } from "@nhatnang/ui/components/ui/textarea";
-import type { TNewProduct } from "@nhatnang/database/schemas";
 import { formatNumberInput } from "@nhatnang/shared/lib/utils";
+import type { TCreateProductInput } from "@nhatnang/database/validators";
 
 interface ProductGeneralInfoProps {
-  form: UseFormReturn<TNewProduct>;
+  form: UseFormReturn<TCreateProductInput>;
 }
 
 export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
@@ -43,7 +43,7 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TNewProduct, "name">;
+              field: ControllerRenderProps<TCreateProductInput, "name">;
             }) => (
               <FormItem>
                 <FormLabel>{t("fields.name")} *</FormLabel>
@@ -60,7 +60,7 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TNewProduct, "slug">;
+              field: ControllerRenderProps<TCreateProductInput, "slug">;
             }) => (
               <FormItem>
                 <FormLabel>{t("fields.slug")} *</FormLabel>
@@ -78,7 +78,7 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
           render={({
             field,
           }: {
-            field: ControllerRenderProps<TNewProduct, "price">;
+            field: ControllerRenderProps<TCreateProductInput, "price">;
           }) => (
             <FormItem>
               <FormLabel>{t("fields.price")} *</FormLabel>
@@ -107,7 +107,10 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
           render={({
             field,
           }: {
-            field: ControllerRenderProps<TNewProduct, "shortDescription">;
+            field: ControllerRenderProps<
+              TCreateProductInput,
+              "shortDescription"
+            >;
           }) => (
             <FormItem>
               <FormLabel>{t("fields.shortDescription")}</FormLabel>
@@ -129,7 +132,7 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
           render={({
             field,
           }: {
-            field: ControllerRenderProps<TNewProduct, "isQuoteOnly">;
+            field: ControllerRenderProps<TCreateProductInput, "isQuoteOnly">;
           }) => (
             <FormItem className="flex flex-row items-start space-y-0 space-x-3 rounded-md border p-3 shadow-sm">
               <FormControl>
