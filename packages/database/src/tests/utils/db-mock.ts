@@ -5,25 +5,41 @@ interface IReturningChain {
 }
 
 interface IWhereChain {
-  where: Mock<(...args: unknown[]) => IReturningChain>;
+  where: Mock<(...args: unknown[]) => IReturningChain & { prepare: Mock<(...args: unknown[]) => unknown> }>;
+}
+
+interface IOnConflictDoUpdateChain {
+  onConflictDoUpdate: Mock<(...args: unknown[]) => IReturningChain>;
 }
 
 interface IValuesChain {
-  values: Mock<(...args: unknown[]) => IReturningChain>;
+  values: Mock<(...args: unknown[]) => IOnConflictDoUpdateChain & IReturningChain>;
 }
 
 interface ISetChain {
   set: Mock<(...args: unknown[]) => IWhereChain>;
 }
 
+interface IFromChain {
+  from: Mock<(...args: unknown[]) => IWhereChain>;
+}
+
 export const mockReturning = vi.fn();
+export const mockPrepare = vi.fn();
 export const mockWhere = vi
+  .fn()
+  .mockImplementation(() => ({ returning: mockReturning, prepare: mockPrepare }));
+export const mockOnConflictDoUpdate = vi
   .fn()
   .mockImplementation(() => ({ returning: mockReturning }));
 export const mockValues = vi
   .fn()
-  .mockImplementation(() => ({ returning: mockReturning }));
+  .mockImplementation(() => ({
+    returning: mockReturning,
+    onConflictDoUpdate: mockOnConflictDoUpdate,
+  }));
 export const mockSet = vi.fn().mockImplementation(() => ({ where: mockWhere }));
+export const mockFrom = vi.fn().mockImplementation(() => ({ where: mockWhere }));
 
 export const mockInsert = vi
   .fn<(...args: unknown[]) => IValuesChain>()
@@ -37,30 +53,33 @@ export const mockDelete = vi
   .fn<(...args: unknown[]) => IWhereChain>()
   .mockImplementation(() => ({ where: mockWhere }));
 
+export const mockSelect = vi
+  .fn<(...args: unknown[]) => IFromChain>()
+  .mockImplementation(() => ({ from: mockFrom }));
+
 export const mockFindFirst = vi.fn();
 export const mockFindMany = vi.fn();
+
+const queryMocks = {
+  findFirst: mockFindFirst,
+  findMany: mockFindMany,
+};
+
 export const mockDb = {
   insert: mockInsert,
   update: mockUpdate,
   delete: mockDelete,
+  select: mockSelect,
   query: {
-    products: {
-      findFirst: mockFindFirst,
-      findMany: mockFindMany,
-    },
+    products: queryMocks,
+    brands: queryMocks,
+    categories: queryMocks,
+    users: queryMocks,
+    orders: queryMocks,
+    warehouseStocks: queryMocks,
   },
 };
 
 await vi.mock("../../client", () => ({
-  db: {
-    insert: mockInsert,
-    update: mockUpdate,
-    delete: mockDelete,
-    query: {
-      products: {
-        findFirst: mockFindFirst,
-        findMany: mockFindMany,
-      },
-    },
-  },
+  db: mockDb,
 }));
