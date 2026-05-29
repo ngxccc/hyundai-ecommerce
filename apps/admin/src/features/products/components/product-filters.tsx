@@ -45,20 +45,45 @@ export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
     [pathname, router, searchParams],
   );
 
-  const [searchTerm, setSearchTerm] = useState(
-    searchParams.get("search") ?? "",
-  );
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") ?? "");
+  const [engineBrand, setEngineBrand] = useState(searchParams.get("engineBrand") ?? "");
+  const [alternatorBrand, setAlternatorBrand] = useState(searchParams.get("alternatorBrand") ?? "");
+  const [minPower, setMinPower] = useState(searchParams.get("minPower") ?? "");
+  const [maxPower, setMaxPower] = useState(searchParams.get("maxPower") ?? "");
+  const [voltage, setVoltage] = useState(searchParams.get("voltage") ?? "");
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       const currentSearch = searchParams.get("search") ?? "";
-      if (searchTerm !== currentSearch) {
-        handleFilterChange("search", searchTerm);
-      }
+      if (searchTerm !== currentSearch) handleFilterChange("search", searchTerm);
+
+      const currentEngineBrand = searchParams.get("engineBrand") ?? "";
+      if (engineBrand !== currentEngineBrand) handleFilterChange("engineBrand", engineBrand);
+
+      const currentAlternatorBrand = searchParams.get("alternatorBrand") ?? "";
+      if (alternatorBrand !== currentAlternatorBrand) handleFilterChange("alternatorBrand", alternatorBrand);
+
+      const currentMinPower = searchParams.get("minPower") ?? "";
+      if (minPower !== currentMinPower) handleFilterChange("minPower", minPower);
+
+      const currentMaxPower = searchParams.get("maxPower") ?? "";
+      if (maxPower !== currentMaxPower) handleFilterChange("maxPower", maxPower);
+
+      const currentVoltage = searchParams.get("voltage") ?? "";
+      if (voltage !== currentVoltage) handleFilterChange("voltage", voltage);
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, searchParams, handleFilterChange]);
+  }, [
+    searchTerm,
+    engineBrand,
+    alternatorBrand,
+    minPower,
+    maxPower,
+    voltage,
+    searchParams,
+    handleFilterChange,
+  ]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -156,6 +181,53 @@ export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
             </SelectItem>
           </SelectContent>
         </Select>
+
+        {/* Specs Text Inputs */}
+        <div className="relative w-full">
+          <Input
+            placeholder={t("engineBrand")}
+            className="bg-card w-full shadow-sm"
+            value={engineBrand}
+            onChange={(e) => setEngineBrand(e.target.value)}
+          />
+        </div>
+        <div className="relative w-full">
+          <Input
+            placeholder={t("alternatorBrand")}
+            className="bg-card w-full shadow-sm"
+            value={alternatorBrand}
+            onChange={(e) => setAlternatorBrand(e.target.value)}
+          />
+        </div>
+
+        {/* Specs Number Inputs */}
+        <div className="relative w-full">
+          <Input
+            type="number"
+            placeholder={t("minPower")}
+            className="bg-card w-full shadow-sm"
+            value={minPower}
+            onChange={(e) => setMinPower(e.target.value)}
+          />
+        </div>
+        <div className="relative w-full">
+          <Input
+            type="number"
+            placeholder={t("maxPower")}
+            className="bg-card w-full shadow-sm"
+            value={maxPower}
+            onChange={(e) => setMaxPower(e.target.value)}
+          />
+        </div>
+        <div className="relative w-full">
+          <Input
+            type="number"
+            placeholder={t("voltage")}
+            className="bg-card w-full shadow-sm"
+            value={voltage}
+            onChange={(e) => setVoltage(e.target.value)}
+          />
+        </div>
 
         {/* Quote Only Toggle */}
         <div className="border-border bg-card flex w-full items-center space-x-2 rounded-md border px-4 py-2 shadow-sm">
