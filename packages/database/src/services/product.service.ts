@@ -35,7 +35,8 @@ export class ProductService implements IProductService {
 
   async delete(id: string): Promise<boolean> {
     const [deletedProduct] = await this.db
-      .delete(products)
+      .update(products)
+      .set({ deletedAt: new Date() })
       .where(eq(products.id, id))
       .returning({ id: products.id });
     return !!deletedProduct;
@@ -45,6 +46,7 @@ export class ProductService implements IProductService {
     const product = await this.db.query.products.findFirst({
       where: {
         id, // eq products.id == id
+        deletedAt: { isNull: true },
       },
     });
     return product;
@@ -89,9 +91,7 @@ export class ProductService implements IProductService {
             ],
           }
         : undefined,
-      options?.status === "active"
-        ? { deletedAt: { isNull: true } }
-        : undefined,
+      { deletedAt: { isNull: true } },
       options?.status === "active" ? { totalStockCache: { gt: 0 } } : undefined,
       options?.status === "outOfStock"
         ? { totalStockCache: { lte: 0 } }

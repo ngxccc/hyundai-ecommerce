@@ -1,13 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Card } from "@nhatnang/ui/components/ui/card";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import type { TProductGridItem } from "../product-form-types";
+import { DeleteProductButton } from "./delete-product-button";
 
 export const ProductCard = ({ product }: { product: TProductGridItem }) => {
   const t = useTranslations("AdminProducts.card");
@@ -78,14 +79,10 @@ export const ProductCard = ({ product }: { product: TProductGridItem }) => {
                 <Edit className="h-4 w-4" />
               </Button>
             </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-destructive hover:bg-destructive/20 hover:text-destructive h-8 w-8 transition-colors"
-              title={t("actions.delete")}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+            <DeleteProductButton
+              productId={product.id}
+              productName={product.name}
+            />
           </div>
         </div>
       </div>

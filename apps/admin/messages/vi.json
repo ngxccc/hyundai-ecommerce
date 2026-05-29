@@ -197,6 +197,19 @@
         "delete": "Xóa"
       }
     },
+    "messages": {
+      "deleteSuccess": "Xóa sản phẩm thành công",
+      "deleteError": "Lỗi khi xóa sản phẩm"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Bạn có chắc chắn muốn xóa?",
+        "description": "Sản phẩm \"{productName}\" sẽ bị xóa khỏi danh sách. Bạn không thể hoàn tác hành động này.",
+        "cancel": "Hủy",
+        "deleting": "Đang xóa...",
+        "confirm": "Xóa sản phẩm"
+      }
+    },
     "pagination": {
       "showing": "Hiển thị {start}-{end} trong {total} sản phẩm",
       "showingCursor": "Đang hiển thị danh sách sản phẩm"

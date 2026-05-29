@@ -197,6 +197,19 @@
         "delete": "Delete"
       }
     },
+    "messages": {
+      "deleteSuccess": "Product deleted successfully",
+      "deleteError": "Failed to delete product"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete?",
+        "description": "Product \"{productName}\" will be removed. This action cannot be undone.",
+        "cancel": "Cancel",
+        "deleting": "Deleting...",
+        "confirm": "Delete Product"
+      }
+    },
     "pagination": {
       "showing": "Showing {start}-{end} of {total} products",
       "showingCursor": "Showing product list"
