@@ -1,5 +1,6 @@
 "use client";
 
+import { Link } from "@/i18n/routing";
 import {
   Pagination,
   PaginationContent,
@@ -30,15 +31,25 @@ export const ProductPagination = ({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              href={prevCursor ? `?before=${prevCursor}` : "#"}
+              asChild
               className={!prevCursor ? "pointer-events-none opacity-50" : ""}
-            />
+            >
+              <Link
+                href={prevCursor ? `?before=${prevCursor}` : ""}
+                scroll={false}
+              />
+            </PaginationPrevious>
           </PaginationItem>
           <PaginationItem>
             <PaginationNext
-              href={nextCursor ? `?after=${nextCursor}` : "#"}
+              asChild
               className={!nextCursor ? "pointer-events-none opacity-50" : ""}
-            />
+            >
+              <Link
+                href={nextCursor ? `?after=${nextCursor}` : ""}
+                scroll={false}
+              />
+            </PaginationNext>
           </PaginationItem>
         </PaginationContent>
       </Pagination>

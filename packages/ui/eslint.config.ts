@@ -1,6 +1,12 @@
-import { baseConfig, defineConfig } from "@nhatnang/eslint-config";
+import {
+  baseConfig,
+  defineConfig,
+  globalIgnores,
+} from "@nhatnang/eslint-config";
 
 const eslintConfig = defineConfig(
+  globalIgnores(["src/components/ui/**"]),
+
   // BASE CONFIG - Applied to all files in entire monorepo
   ...baseConfig,
 );
