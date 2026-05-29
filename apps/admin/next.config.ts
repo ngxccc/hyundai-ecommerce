@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "placehold.co" },
     ],
   },
-  transpilePackages: ["@nhatnang/database", "@nhatnang/shared"],
+  transpilePackages: ["@nhatnang/database", "@nhatnang/shared", "@nhatnang/ui"],
 };
 
 export default withNextIntl(nextConfig);
