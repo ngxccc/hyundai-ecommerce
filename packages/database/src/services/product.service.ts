@@ -10,6 +10,23 @@ import {
 import { type IDatabase } from "../client";
 import { eq, sql } from "drizzle-orm";
 
+export interface TGetAllOptions {
+  after?: string | undefined;
+  before?: string | undefined;
+  categoryId?: string | undefined;
+  brandId?: string | undefined;
+  status?: string | undefined;
+  search?: string | undefined;
+  fuelType?: string | undefined;
+  phase?: string | undefined;
+  voltage?: number | undefined;
+  minPower?: number | undefined;
+  maxPower?: number | undefined;
+  engineBrand?: string | undefined;
+  alternatorBrand?: string | undefined;
+  isQuoteOnly?: boolean | undefined;
+}
+
 export class ProductService implements IProductService {
   constructor(protected readonly db: IDatabase) {}
 
@@ -52,98 +69,87 @@ export class ProductService implements IProductService {
     return product;
   }
 
-  async getAll(
-    limit = 20,
-    options?: {
-      after?: string | undefined;
-      before?: string | undefined;
-      categoryId?: string | undefined;
-      brandId?: string | undefined;
-      status?: string | undefined;
-      search?: string | undefined;
-      fuelType?: string | undefined;
-      phase?: string | undefined;
-      voltage?: number | undefined;
-      minPower?: number | undefined;
-      maxPower?: number | undefined;
-      engineBrand?: string | undefined;
-      alternatorBrand?: string | undefined;
-      isQuoteOnly?: boolean | undefined;
-    },
-  ) {
-    const isGoingBack = !!options?.before;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private buildGetAllFilters(options?: TGetAllOptions): any[] {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const andFilters: any[] = [];
 
-    const andFilters = [
-      options?.after
-        ? { createdAt: { lt: new Date(options.after) } }
-        : undefined,
-      options?.before
-        ? { createdAt: { gt: new Date(options.before) } }
-        : undefined,
-      options?.categoryId
-        ? { categoryId: { eq: options.categoryId } }
-        : undefined,
-      options?.brandId ? { brandId: { eq: options.brandId } } : undefined,
-      options?.isQuoteOnly ? { isQuoteOnly: { eq: true } } : undefined,
-      options?.search
-        ? {
-            OR: [
-              { name: { ilike: `%${options.search}%` } },
-              {
-                RAW: (table: TProduct) =>
-                  sql`${table.specs}->>'model' ILIKE ${`%${options.search}%`}`,
-              },
-            ],
-          }
-        : undefined,
-      { deletedAt: { isNull: true } },
-      options?.status === "active" ? { totalStockCache: { gt: 0 } } : undefined,
-      options?.status === "outOfStock"
-        ? { totalStockCache: { lte: 0 } }
-        : undefined,
-      options?.fuelType
-        ? {
+    if (options?.after)
+      andFilters.push({ createdAt: { lt: new Date(options.after) } });
+    if (options?.before)
+      andFilters.push({ createdAt: { gt: new Date(options.before) } });
+    if (options?.categoryId)
+      andFilters.push({ categoryId: { eq: options.categoryId } });
+    if (options?.brandId) andFilters.push({ brandId: { eq: options.brandId } });
+    if (options?.isQuoteOnly) andFilters.push({ isQuoteOnly: { eq: true } });
+    if (options?.search) {
+      andFilters.push({
+        OR: [
+          { name: { ilike: `%${options.search}%` } },
+          {
             RAW: (table: TProduct) =>
-              sql`${table.specs}->>'fuelType' = ${options.fuelType}`,
-          }
-        : undefined,
-      options?.phase
-        ? {
-            RAW: (table: TProduct) =>
-              sql`${table.specs}->>'phase' = ${options.phase}`,
-          }
-        : undefined,
-      options?.voltage !== undefined
-        ? {
-            RAW: (table: TProduct) =>
-              sql`CASE WHEN ${table.specs}->>'voltage' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'voltage')::numeric ELSE NULL END = ${options.voltage}`,
-          }
-        : undefined,
-      options?.minPower !== undefined
-        ? {
-            RAW: (table: TProduct) =>
-              sql`CASE WHEN ${table.specs}->>'power' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'power')::numeric ELSE NULL END >= ${options.minPower}`,
-          }
-        : undefined,
-      options?.maxPower !== undefined
-        ? {
-            RAW: (table: TProduct) =>
-              sql`CASE WHEN ${table.specs}->>'power' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'power')::numeric ELSE NULL END <= ${options.maxPower}`,
-          }
-        : undefined,
-      options?.engineBrand
-        ? {
-            RAW: (table: TProduct) =>
-              sql`${table.specs}->>'engineBrand' ILIKE ${`%${options.engineBrand}%`}`,
-          }
-        : undefined,
-      options?.alternatorBrand
-        ? {
-            RAW: (table: TProduct) =>
-              sql`${table.specs}->>'alternatorBrand' ILIKE ${`%${options.alternatorBrand}%`}`,
-          }
-        : undefined,
-    ].filter(Boolean) as [];
+              sql`${table.specs}->>'model' ILIKE ${`%${options.search}%`}`,
+          },
+        ],
+      });
+    }
+
+    andFilters.push({ deletedAt: { isNull: true } });
+
+    if (options?.status === "active")
+      andFilters.push({ totalStockCache: { gt: 0 } });
+    if (options?.status === "outOfStock")
+      andFilters.push({ totalStockCache: { lte: 0 } });
+
+    if (options?.fuelType) {
+      andFilters.push({
+        RAW: (table: TProduct) =>
+          sql`${table.specs}->>'fuelType' = ${options.fuelType}`,
+      });
+    }
+    if (options?.phase) {
+      andFilters.push({
+        RAW: (table: TProduct) =>
+          sql`${table.specs}->>'phase' = ${options.phase}`,
+      });
+    }
+    if (options?.voltage !== undefined) {
+      andFilters.push({
+        RAW: (table: TProduct) =>
+          sql`CASE WHEN ${table.specs}->>'voltage' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'voltage')::numeric ELSE NULL END = ${options.voltage}`,
+      });
+    }
+    if (options?.minPower !== undefined) {
+      andFilters.push({
+        RAW: (table: TProduct) =>
+          sql`CASE WHEN ${table.specs}->>'power' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'power')::numeric ELSE NULL END >= ${options.minPower}`,
+      });
+    }
+    if (options?.maxPower !== undefined) {
+      andFilters.push({
+        RAW: (table: TProduct) =>
+          sql`CASE WHEN ${table.specs}->>'power' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'power')::numeric ELSE NULL END <= ${options.maxPower}`,
+      });
+    }
+    if (options?.engineBrand) {
+      andFilters.push({
+        RAW: (table: TProduct) =>
+          sql`${table.specs}->>'engineBrand' ILIKE ${`%${options.engineBrand}%`}`,
+      });
+    }
+    if (options?.alternatorBrand) {
+      andFilters.push({
+        RAW: (table: TProduct) =>
+          sql`${table.specs}->>'alternatorBrand' ILIKE ${`%${options.alternatorBrand}%`}`,
+      });
+    }
+
+    return andFilters;
+  }
+
+  async getAll(limit = 20, options?: TGetAllOptions) {
+    const isGoingBack = !!options?.before;
+    const andFilters = this.buildGetAllFilters(options);
 
     const allProducts = await this.db.query.products.findMany({
       orderBy: (products, { asc, desc }) =>

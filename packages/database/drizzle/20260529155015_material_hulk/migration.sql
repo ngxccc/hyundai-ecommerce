@@ -1,0 +1,3 @@
+ALTER TABLE "product" ALTER COLUMN "description" SET DATA TYPE jsonb USING "description"::jsonb;--> statement-breakpoint
+CREATE INDEX "product_power_idx" ON "product" ((CASE WHEN "specs"->>'power' ~ '^\s*\d+(\.\d+)?\s*$' THEN ("specs"->>'power')::numeric ELSE NULL END));--> statement-breakpoint
+CREATE INDEX "product_voltage_idx" ON "product" ((CASE WHEN "specs"->>'voltage' ~ '^\s*\d+(\.\d+)?\s*$' THEN ("specs"->>'voltage')::numeric ELSE NULL END));
