@@ -19,7 +19,7 @@ export default async function CreateProductPage() {
         description={t("description")}
         showAddButton={false}
       />
-      <div className="flex-1 space-y-4 p-3">
+      <div className="flex-1 space-y-4 p-2">
         <AdminBreadcrumbs
           items={[
             { label: tNav("dashboard"), href: "/" },
