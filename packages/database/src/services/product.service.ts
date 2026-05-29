@@ -8,7 +8,7 @@ import {
   type TNewProduct,
 } from "../schemas/product.schema";
 import { type IDatabase } from "../client";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 export class ProductService implements IProductService {
   constructor(protected readonly db: IDatabase) {}
@@ -50,22 +50,71 @@ export class ProductService implements IProductService {
     return product;
   }
 
-  async getAll(limit = 20, cursor?: { after?: string; before?: string }) {
-    const isGoingBack = !!cursor?.before;
+  async getAll(
+    limit = 20,
+    options?: {
+      after?: string | undefined;
+      before?: string | undefined;
+      categoryId?: string | undefined;
+      brandId?: string | undefined;
+      status?: string | undefined;
+      search?: string | undefined;
+      fuelType?: string | undefined;
+      phase?: string | undefined;
+      isQuoteOnly?: boolean | undefined;
+    },
+  ) {
+    const isGoingBack = !!options?.before;
 
-    let whereClause = undefined;
-    if (cursor?.after) {
-      whereClause = { createdAt: { lt: new Date(cursor.after) } };
-    } else if (cursor?.before) {
-      whereClause = { createdAt: { gt: new Date(cursor.before) } };
-    }
+    const andFilters = [
+      options?.after
+        ? { createdAt: { lt: new Date(options.after) } }
+        : undefined,
+      options?.before
+        ? { createdAt: { gt: new Date(options.before) } }
+        : undefined,
+      options?.categoryId
+        ? { categoryId: { eq: options.categoryId } }
+        : undefined,
+      options?.brandId ? { brandId: { eq: options.brandId } } : undefined,
+      options?.isQuoteOnly ? { isQuoteOnly: { eq: true } } : undefined,
+      options?.search
+        ? {
+            OR: [
+              { name: { ilike: `%${options.search}%` } },
+              {
+                RAW: (table: TProduct) =>
+                  sql`${table.specs}->>'model' ILIKE ${`%${options.search}%`}`,
+              },
+            ],
+          }
+        : undefined,
+      options?.status === "active"
+        ? { deletedAt: { isNull: true } }
+        : undefined,
+      options?.status === "active" ? { totalStockCache: { gt: 0 } } : undefined,
+      options?.status === "outOfStock"
+        ? { totalStockCache: { lte: 0 } }
+        : undefined,
+      options?.fuelType
+        ? {
+            RAW: (table: TProduct) =>
+              sql`${table.specs}->>'fuelType' = ${options.fuelType}`,
+          }
+        : undefined,
+      options?.phase
+        ? {
+            RAW: (table: TProduct) =>
+              sql`${table.specs}->>'phase' = ${options.phase}`,
+          }
+        : undefined,
+    ].filter(Boolean) as [];
 
     const allProducts = await this.db.query.products.findMany({
-      orderBy: {
-        createdAt: isGoingBack ? "asc" : "desc",
-      },
+      orderBy: (products, { asc, desc }) =>
+        isGoingBack ? [asc(products.createdAt)] : [desc(products.createdAt)],
       limit: limit + 1, // Fetch one extra to determine if there is a next page
-      where: whereClause,
+      where: andFilters.length > 0 ? { AND: andFilters } : undefined,
       with: {
         categories: true,
       },
@@ -79,12 +128,12 @@ export class ProductService implements IProductService {
     }
 
     const nextCursor =
-      (!isGoingBack && hasMore) || (isGoingBack && cursor?.before)
+      (!isGoingBack && hasMore) || (isGoingBack && options?.before)
         ? data[data.length - 1]?.createdAt?.toISOString()
         : undefined;
 
     const prevCursor =
-      (isGoingBack && hasMore) || (!isGoingBack && cursor?.after)
+      (isGoingBack && hasMore) || (!isGoingBack && options?.after)
         ? data[0]?.createdAt?.toISOString()
         : undefined;
 
