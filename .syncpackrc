@@ -1,0 +1,22 @@
+{
+  "indent": "  ",
+  "semverGroups": [
+    {
+      "range": "^",
+      "dependencies": ["**"],
+      "packages": ["**"]
+    }
+  ],
+  "versionGroups": [
+    {
+      "dependencies": ["tailwindcss", "next"],
+      "packages": ["**"],
+      "isIgnored": true
+    },
+    {
+      "dependencies": ["@nhatnang/**"],
+      "packages": ["**"],
+      "isIgnored": true
+    }
+  ]
+}

@@ -12,22 +12,22 @@
     "lint:fix": "eslint . --fix --cache --cache-strategy content --cache-location .eslintcache"
   },
   "dependencies": {
-    "fumadocs-core": "16.9.1",
-    "fumadocs-mdx": "15.0.8",
+    "fumadocs-core": "^16.9.1",
+    "fumadocs-mdx": "^15.0.8",
     "fumadocs-ui": "^16.8.11",
     "lucide-react": "^1.16.0",
     "next": "^16.2.6",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
+    "react": "^19",
+    "react-dom": "^19",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
-    "@tailwindcss/postcss": "^4.3.0",
+    "@tailwindcss/postcss": "^4",
     "@types/mdx": "^2.0.13",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "postcss": "^8.5.14",
     "tailwindcss": "^4.3.0"
   }

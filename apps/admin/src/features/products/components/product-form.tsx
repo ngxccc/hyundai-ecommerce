@@ -12,7 +12,7 @@ import {
 } from "../actions/product.actions";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Form } from "@nhatnang/ui/components/ui/form";
-import { formatNumberInput } from "@/shared/lib/utils";
+import { formatNumberInput } from "@nhatnang/ui/lib/utils";
 import {
   type TProduct,
   type TCategory,
