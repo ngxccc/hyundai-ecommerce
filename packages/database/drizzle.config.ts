@@ -1,6 +1,8 @@
 import { defineConfig } from "drizzle-kit";
 import { env } from "./src/env";
 
+// install latest version from:
+// https://github.com/drizzle-team/drizzle-orm/releases
 export default defineConfig({
   schema: "./src/schemas/index.ts",
   out: "./drizzle",
