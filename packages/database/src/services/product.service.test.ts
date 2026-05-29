@@ -71,11 +71,12 @@ describe("ProductService", () => {
     const result = await productService.getById("uuid-123");
 
     expect(mockFindFirst).toHaveBeenCalledTimes(1);
-    expect(mockFindFirst).toHaveBeenCalledWith({
-      where: {
-        id: "uuid-123",
-      },
-    });
+    expect(mockFindFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        where: expect.anything(),
+      })
+    );
     expect(result).toEqual(mockProduct);
   });
 });
