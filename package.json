@@ -9,13 +9,14 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "doppler run -- turbo run build",
+    "deps:fix": "syncpack fix",
+    "deps:lint": "syncpack list",
     "dev": "doppler run -- turbo run dev",
     "dev:storefront": "doppler run -- turbo run dev --filter=storefront",
-    "build": "doppler run -- turbo run build",
-    "lint": "turbo run lint",
-    "deps:lint": "syncpack list",
-    "deps:fix": "syncpack fix",
-    "format:pkg": "syncpack format --check"
+    "format:pkg": "syncpack format",
+    "format:pkg:check": "syncpack format --check",
+    "lint": "turbo run lint"
   },
   "devDependencies": {
     "@types/bun": "^1",
