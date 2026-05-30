@@ -526,5 +526,20 @@
         "confirm": "Xóa thương hiệu"
       }
     }
+  },
+  "errors": {
+    "unauthorized": "Không có quyền truy cập",
+    "forbidden": "Bị từ chối: Yêu cầu quyền quản trị",
+    "createBrandFailed": "Tạo thương hiệu thất bại",
+    "updateBrandFailed": "Cập nhật thương hiệu thất bại",
+    "deleteBrandFailed": "Xóa thương hiệu thất bại",
+    "createCategoryFailed": "Tạo danh mục thất bại",
+    "updateCategoryFailed": "Cập nhật danh mục thất bại",
+    "deleteCategoryFailed": "Xóa danh mục thất bại",
+    "createProductFailed": "Tạo sản phẩm thất bại. Đường dẫn (slug) có thể đã được sử dụng.",
+    "updateProductFailed": "Cập nhật sản phẩm thất bại. Đường dẫn (slug) có thể đã được sử dụng.",
+    "deleteProductFailed": "Xóa sản phẩm thất bại",
+    "productNotFound": "Không tìm thấy sản phẩm hoặc đã bị xóa",
+    "default": "Đã xảy ra lỗi không xác định"
   }
 }

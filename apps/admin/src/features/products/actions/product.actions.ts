@@ -10,7 +10,8 @@ import {
 } from "@nhatnang/database/validators";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { z } from "zod";
-import { requireAuth } from "@/shared/lib/action-auth";
+import { requireAuth, AuthError } from "@/shared/lib/action-auth";
+import { getTranslations } from "next-intl/server";
 
 export const createProductAction = async (data: TCreateProductInput) => {
   try {
@@ -33,11 +34,16 @@ export const createProductAction = async (data: TCreateProductInput) => {
     revalidatePath("/products");
     return { success: true, data: newProduct };
   } catch (error) {
+    const t = await getTranslations("errors");
+    if (error instanceof AuthError) {
+      const message =
+        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
+      return { success: false as const, error: message };
+    }
     console.error("[createProductAction]", error);
     return {
       success: false as const,
-      error:
-        error instanceof Error ? error.message : "Failed to create product",
+      error: t("createProductFailed"),
     };
   }
 };
@@ -67,11 +73,16 @@ export async function updateProductAction(
     revalidatePath(`/products/${id}/edit`);
     return { success: true, data: updatedProduct };
   } catch (error) {
+    const t = await getTranslations("errors");
+    if (error instanceof AuthError) {
+      const message =
+        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
+      return { success: false as const, error: message };
+    }
     console.error("[updateProductAction]", error);
     return {
       success: false as const,
-      error:
-        error instanceof Error ? error.message : "Failed to update product",
+      error: t("updateProductFailed"),
     };
   }
 }
@@ -80,15 +91,28 @@ export async function deleteProductAction(id: string) {
   try {
     await requireAuth();
     const success = await productService.delete(id);
+    
+    const t = await getTranslations("errors");
+    if (!success) {
+      return {
+        success: false as const,
+        error: t("productNotFound"),
+      };
+    }
 
     revalidatePath("/products");
     return { success: true, data: success };
   } catch (error) {
+    const t = await getTranslations("errors");
+    if (error instanceof AuthError) {
+      const message =
+        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
+      return { success: false as const, error: message };
+    }
     console.error("[deleteProductAction]", error);
     return {
       success: false as const,
-      error:
-        error instanceof Error ? error.message : "Failed to delete product",
+      error: t("deleteProductFailed"),
     };
   }
 }
