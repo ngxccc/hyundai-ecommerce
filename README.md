@@ -151,9 +151,13 @@ We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) 
   - [x] Products Listing (Grid view, Advanced Filtering, Pagination)
   - [x] Internationalized UI (Sidebar, Header, Datagrid)
 - **Upcoming:**
-  - [x] Product Creation & Editing (Dynamic forms with validation)
+  - [ ] Categories & Brands Management (Prerequisite for products)
+  - [ ] Product Creation & Editing (Dynamic forms with validation)
+  - [ ] Warehouse & Inventory Management (Multi-warehouse stock tracking)
   - [ ] Order Management & Fulfillment workflow
-  - [ ] User & Role Management (RBAC)
+  - [ ] Shipping & Logistics Bidding Management
+  - [ ] User, Role & Dealer Tier Management (RBAC & B2B Tiers)
+  - [ ] Payment & Financial Tracking
 
 ### Storefront & B2B Features
 

@@ -20,6 +20,7 @@
 - In utility or helper layers, prefer result objects over throwing when the local repo pattern expects recoverable errors.
 - Handle edge cases and error paths deliberately.
 - Prioritize readable, maintainable code over clever abstractions.
+- **Strict TypeScript**: Always adhere to strict TypeScript. Avoid using `any` wherever possible. Instead, use proper typing, Type Guards (e.g., `isPostgresError`, `isUniqueConstraintError`), and narrow down types explicitly.
 
 ## Tooling
 
@@ -31,6 +32,8 @@
 ## Quality Gates
 
 - Ensure code is syntactically valid and compiles where applicable.
+- **Strict TypeScript Check**: Always run the TypeScript compiler (`npx tsc --noEmit` or `bun run tsc --noEmit`) during the testing or verification phase to catch structural and strict typing errors that standard linters or fast test runners might miss. Do not rely solely on `bun test` or `eslint`.
+- **Next-Intl Translation Caching/Typing**: If you encounter an "Expected 2-3 arguments" error from `next-intl`'s `useTranslations` (usually due to missing namespace keys), do NOT cast `useTranslations` or `t` to `any`. Instead, manually update `apps/admin/messages/vi.d.json.ts` with the new translation keys so that TypeScript recognizes the new namespaces and properties.
 - Run the most relevant tests for the change before calling work complete.
 - Use code review or reviewer agents for meaningful implementation changes.
 - Do not wave away failing tests just to force a green status.
