@@ -1,6 +1,6 @@
 import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/features/dashboard/components";
-import { BrandTable } from "@/features/brands/components/brand-table";
+import { BrandGrid } from "@/features/brands/components/brand-grid";
 import { brandService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
@@ -44,7 +44,7 @@ export default async function AdminBrandsPage() {
             { label: tNav("brands") },
           ]}
         />
-        <BrandTable brands={brands} />
+        <BrandGrid brands={brands} />
       </div>
     </>
   );

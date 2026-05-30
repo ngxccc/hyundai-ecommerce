@@ -1,5 +1,0 @@
-{
-  "name": "riper5-strict-mode",
-  "version": "1.0.0",
-  "description": "Enforces RIPER-5 structure for Antigravity AI, preventing usage of internal artifacts for plans and reports."
-}

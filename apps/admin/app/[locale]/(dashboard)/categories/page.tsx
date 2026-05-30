@@ -1,6 +1,6 @@
 import { CategoryHeader } from "@/features/categories/components";
 import { AdminBreadcrumbs } from "@/features/dashboard/components";
-import { CategoryTable } from "@/features/categories/components/category-table";
+import { CategoryGrid } from "@/features/categories/components/category-grid";
 import { categoryService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
@@ -44,7 +44,7 @@ export default async function AdminCategoriesPage() {
             { label: tNav("categories") },
           ]}
         />
-        <CategoryTable categories={categories} />
+        <CategoryGrid categories={categories} />
       </div>
     </>
   );
