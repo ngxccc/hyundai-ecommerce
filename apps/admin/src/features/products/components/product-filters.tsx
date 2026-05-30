@@ -117,7 +117,7 @@ export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
     voltage !== "";
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <div className="flex w-full items-center gap-2">
         <div className="relative w-full">
           <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
@@ -140,7 +140,7 @@ export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         {/* Category Filter */}
         <Select
           defaultValue={searchParams.get("categoryId") ?? "all"}

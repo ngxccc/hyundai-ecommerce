@@ -1,4 +1,4 @@
-import { CategoryHeader } from "@/features/categories/components";
+import { CategoryHeader, CategoryFilters } from "@/features/categories/components";
 import { AdminBreadcrumbs } from "@/features/dashboard/components";
 import { CategoryGrid } from "@/features/categories/components/category-grid";
 import { categoryService } from "@nhatnang/database/services";
@@ -24,10 +24,25 @@ export async function generateMetadata({
   };
 }
 
-export default async function AdminCategoriesPage() {
+export default async function AdminCategoriesPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const tNav = await getTranslations("AdminDashboard.nav");
   const tHeader = await getTranslations("AdminCategories.header");
   const categories = await categoryService.getAll();
+
+  const resolvedSearchParams = await searchParams;
+  const search = typeof resolvedSearchParams["search"] === "string" ? resolvedSearchParams["search"] : undefined;
+
+  const filteredCategories = search
+    ? categories.filter(
+        (c) =>
+          c.name.toLowerCase().includes(search.toLowerCase()) ||
+          c.description?.toLowerCase().includes(search.toLowerCase()),
+      )
+    : categories;
 
   return (
     <>
@@ -44,7 +59,8 @@ export default async function AdminCategoriesPage() {
             { label: tNav("categories") },
           ]}
         />
-        <CategoryGrid categories={categories} />
+        <CategoryFilters />
+        <CategoryGrid categories={filteredCategories} allCategories={categories} />
       </div>
     </>
   );

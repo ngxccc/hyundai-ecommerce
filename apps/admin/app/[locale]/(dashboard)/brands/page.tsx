@@ -1,4 +1,4 @@
-import { BrandHeader } from "@/features/brands/components";
+import { BrandHeader, BrandFilters } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/features/dashboard/components";
 import { BrandGrid } from "@/features/brands/components/brand-grid";
 import { brandService } from "@nhatnang/database/services";
@@ -24,10 +24,25 @@ export async function generateMetadata({
   };
 }
 
-export default async function AdminBrandsPage() {
+export default async function AdminBrandsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const tNav = await getTranslations("AdminDashboard.nav");
   const tHeader = await getTranslations("AdminBrands.header");
   const brands = await brandService.getAll();
+
+  const resolvedSearchParams = await searchParams;
+  const search = typeof resolvedSearchParams["search"] === "string" ? resolvedSearchParams["search"] : undefined;
+
+  const filteredBrands = search
+    ? brands.filter(
+        (b) =>
+          b.name.toLowerCase().includes(search.toLowerCase()) ||
+          b.description?.toLowerCase().includes(search.toLowerCase()),
+      )
+    : brands;
 
   return (
     <>
@@ -44,7 +59,8 @@ export default async function AdminBrandsPage() {
             { label: tNav("brands") },
           ]}
         />
-        <BrandGrid brands={brands} />
+        <BrandFilters />
+        <BrandGrid brands={filteredBrands} />
       </div>
     </>
   );
