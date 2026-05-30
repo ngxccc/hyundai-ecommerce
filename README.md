@@ -83,23 +83,23 @@ hyundai-ecommerce/
 
 1. **Login to Doppler** to sync environment variables:
 
-    ```bash
-    doppler login
-    doppler setup
-    ```
+   ```bash
+   doppler login
+   doppler setup
+   ```
 
 2. **Install dependencies**:
 
-    ```bash
-    bun install
-    ```
+   ```bash
+   bun install
+   ```
 
 3. **Run the development servers**:
 
-    ```bash
-    # Run all apps with Doppler secrets
-    bun run dev
-    ```
+   ```bash
+   # Run all apps with Doppler secrets
+   bun run dev
+   ```
 
 Or run separately:
 
@@ -151,7 +151,7 @@ We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) 
   - [x] Products Listing (Grid view, Advanced Filtering, Pagination)
   - [x] Internationalized UI (Sidebar, Header, Datagrid)
 - **Upcoming:**
-  - [ ] Product Creation & Editing (Dynamic forms with validation)
+  - [x] Product Creation & Editing (Dynamic forms with validation)
   - [ ] Order Management & Fulfillment workflow
   - [ ] User & Role Management (RBAC)
 

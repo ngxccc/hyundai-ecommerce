@@ -91,13 +91,25 @@ async function seed() {
       name: "Máy phát điện Hyundai DHY-5000LE",
       slug: "may-phat-dien-hyundai-dhy-5000le",
       price: "12500000",
-      description:
-        "Máy phát điện chạy dầu diesel Hyundai DHY-5000LE, công suất 5kVA, đề nổ điện, có bánh xe di chuyển tiện lợi.",
+      description: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Máy phát điện chạy dầu diesel Hyundai DHY-5000LE, công suất 5kVA, đề nổ điện, có bánh xe di chuyển tiện lợi.",
+              },
+            ],
+          },
+        ],
+      },
       shortDescription: "Máy phát điện diesel 5kVA, đề điện",
       images: ["https://cdn.example.com/hyundai-dhy-5000le-1.jpg"],
       brandId: hyundaiId,
       categoryId: childCat1Id,
-      specs: { power: "5kVA", engine: "Diesel 186FA", weight: "95kg" },
+      specs: { power: 5, engine: "Diesel 186FA", weight: 95 },
       totalStockCache: 25,
       isQuoteOnly: false,
     },
@@ -106,13 +118,25 @@ async function seed() {
       name: "Máy phát điện Mitsubishi MGE-10000",
       slug: "may-phat-dien-mitsubishi-mge-10000",
       price: "28900000",
-      description:
-        "Máy phát điện công nghiệp Mitsubishi MGE-10000, công suất 10kVA, động cơ Mitsubishi chất lượng cao.",
+      description: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Máy phát điện công nghiệp Mitsubishi MGE-10000, công suất 10kVA, động cơ Mitsubishi chất lượng cao.",
+              },
+            ],
+          },
+        ],
+      },
       shortDescription: "Máy phát điện công nghiệp 10kVA",
       images: ["https://cdn.example.com/mitsubishi-mge-10000-1.jpg"],
       brandId: mitsubishiId,
       categoryId: childCat2Id,
-      specs: { power: "10kVA", engine: "Mitsubishi S4S", weight: "185kg" },
+      specs: { power: 10, engine: "Mitsubishi S4S", weight: 185 },
       totalStockCache: 8,
       isQuoteOnly: false,
     },
@@ -121,13 +145,25 @@ async function seed() {
       name: "Máy phát điện Kubota GL-6500",
       slug: "may-phat-dien-kubota-gl-6500",
       price: "21500000",
-      description:
-        "Máy phát điện diesel Kubota GL-6500 công suất 6.5kVA, động cơ Kubota bền bỉ, tiết kiệm nhiên liệu.",
+      description: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Máy phát điện diesel Kubota GL-6500 công suất 6.5kVA, động cơ Kubota bền bỉ, tiết kiệm nhiên liệu.",
+              },
+            ],
+          },
+        ],
+      },
       shortDescription: "Máy phát điện Kubota 6.5kVA",
       images: ["https://cdn.example.com/kubota-gl-6500-1.jpg"],
       brandId: kubotaId,
       categoryId: childCat1Id,
-      specs: { power: "6.5kVA", engine: "Kubota Z482", weight: "112kg" },
+      specs: { power: 6.5, engine: "Kubota Z482", weight: 112 },
       totalStockCache: 12,
       isQuoteOnly: false,
     },
