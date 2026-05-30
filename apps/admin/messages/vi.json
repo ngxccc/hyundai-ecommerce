@@ -481,6 +481,19 @@
         "edit": "Sửa",
         "delete": "Xóa"
       }
+    },
+    "messages": {
+      "deleteSuccess": "Xóa danh mục thành công",
+      "deleteError": "Không thể xóa danh mục"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Bạn có chắc chắn muốn xóa?",
+        "description": "Danh mục \"{categoryName}\" sẽ bị xóa. Hành động này không thể hoàn tác.",
+        "cancel": "Hủy",
+        "deleting": "Đang xóa...",
+        "confirm": "Xóa danh mục"
+      }
     }
   },
   "AdminBrands": {
@@ -498,6 +511,19 @@
       "actions": {
         "edit": "Sửa",
         "delete": "Xóa"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Xóa thương hiệu thành công",
+      "deleteError": "Không thể xóa thương hiệu"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Bạn có chắc chắn muốn xóa?",
+        "description": "Thương hiệu \"{brandName}\" sẽ bị xóa. Hành động này không thể hoàn tác.",
+        "cancel": "Hủy",
+        "deleting": "Đang xóa...",
+        "confirm": "Xóa thương hiệu"
       }
     }
   }

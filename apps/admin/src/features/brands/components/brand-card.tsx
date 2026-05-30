@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Edit, Trash } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Card } from "@nhatnang/ui/components/ui/card";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -9,36 +9,15 @@ import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import type { TBrand } from "@nhatnang/database/schemas";
 
-// DeleteBrandButton is not explicitly requested as a standalone component yet,
-// so we'll just inline a basic delete button or assume we use a server action.
-// The user noted: "chỉ cần gọi thẳng Server Action xóa ngay lập tức giống hệt như Table cũ".
-import { useTransition } from "react";
-import { deleteBrandAction } from "../actions/brand.actions";
-import { toast } from "@nhatnang/ui/components/ui/sonner";
-import { useRouter } from "next/navigation";
+import { DeleteBrandButton } from "./delete-brand-button";
 
 export const BrandCard = ({ brand }: { brand: TBrand }) => {
   const t = useTranslations("AdminBrands.card");
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
 
   const status = brand.isActive ? "active" : "inactive";
   const image = brand.logo?.length ? brand.logo : "https://placehold.co/400x300/png?text=No+Image";
 
-  const handleDelete = () => {
-    // Note: To match Table behavior perfectly, we trigger it immediately
-    if (confirm("Are you sure you want to delete this brand?")) {
-      startTransition(async () => {
-        const result = await deleteBrandAction(brand.id);
-        if (result.success) {
-          toast.success("Brand deleted successfully");
-          router.refresh();
-        } else {
-          toast.error(result.error ?? "Failed to delete brand");
-        }
-      });
-    }
-  };
+
 
   return (
     <Card className="group relative flex flex-col gap-0 p-3 shadow-sm">
@@ -88,16 +67,10 @@ export const BrandCard = ({ brand }: { brand: TBrand }) => {
                 <Edit className="h-4 w-4" />
               </Button>
             </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-destructive hover:bg-destructive/20 hover:text-destructive h-8 w-8 transition-colors"
-              title={t("actions.delete")}
-              onClick={handleDelete}
-              disabled={isPending}
-            >
-              <Trash className="h-4 w-4" />
-            </Button>
+            <DeleteBrandButton
+              brandId={brand.id}
+              brandName={brand.name}
+            />
           </div>
         </div>
       </div>
