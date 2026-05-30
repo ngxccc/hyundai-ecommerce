@@ -7,6 +7,7 @@ This folder holds implementation plans that are currently in progress.
 Use date-stamped names: `[feature]_PLAN_[dd-mm-yy].md`
 
 Examples:
+
 - `user-auth_PLAN_15-03-26.md`
 - `dashboard-redesign_PLAN_22-04-26.md`
 
