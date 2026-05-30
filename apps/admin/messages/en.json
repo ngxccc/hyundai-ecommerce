@@ -467,6 +467,16 @@
       "addCategory": "Add Category",
       "title": "Categories",
       "description": "Manage all categories."
+    },
+    "card": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
     }
   },
   "AdminBrands": {
@@ -475,6 +485,16 @@
       "addBrand": "Add Brand",
       "title": "Brands",
       "description": "Manage all brands."
+    },
+    "card": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
     }
   }
 }

@@ -471,6 +471,16 @@
       "addCategory": "Thêm danh mục",
       "title": "Danh mục",
       "description": "Quản lý danh sách danh mục."
+    },
+    "card": {
+      "status": {
+        "active": "Hoạt động",
+        "inactive": "Vô hiệu"
+      },
+      "actions": {
+        "edit": "Sửa",
+        "delete": "Xóa"
+      }
     }
   },
   "AdminBrands": {
@@ -479,6 +489,16 @@
       "addBrand": "Thêm thương hiệu",
       "title": "Thương hiệu",
       "description": "Quản lý danh sách thương hiệu."
+    },
+    "card": {
+      "status": {
+        "active": "Hoạt động",
+        "inactive": "Vô hiệu"
+      },
+      "actions": {
+        "edit": "Sửa",
+        "delete": "Xóa"
+      }
     }
   }
 }
