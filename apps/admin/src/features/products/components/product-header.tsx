@@ -1,8 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Search, Bell, Plus, Menu } from "lucide-react";
-import { Input } from "@nhatnang/ui/components/ui/input";
+import { Bell, Plus, Menu } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import {
   Sheet,
@@ -91,15 +90,6 @@ export const ProductHeader = ({
       </div>
 
       <div className="flex items-center gap-2 md:gap-4">
-        <div className="relative hidden md:block">
-          <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-          <Input
-            className="w-62.5 rounded-full pr-4 pl-10 shadow-sm"
-            placeholder={t("searchPlaceholder")}
-            type="text"
-          />
-        </div>
-
         <Button
           variant="ghost"
           size="icon"

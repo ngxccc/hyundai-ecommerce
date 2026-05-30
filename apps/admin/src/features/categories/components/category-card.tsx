@@ -14,7 +14,7 @@ import { deleteCategoryAction } from "../actions/category.actions";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
 import { useRouter } from "next/navigation";
 
-export const CategoryCard = ({ category }: { category: TCategory }) => {
+export const CategoryCard = ({ category, parentName }: { category: TCategory; parentName?: string | undefined }) => {
   const t = useTranslations("AdminCategories.card");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -68,6 +68,11 @@ export const CategoryCard = ({ category }: { category: TCategory }) => {
         <h3 className="text-primary mb-1 line-clamp-2 text-base font-semibold">
           {category.name}
         </h3>
+        {parentName && (
+          <p className="mb-2 text-xs text-blue-600 dark:text-blue-400">
+            ↳ {parentName}
+          </p>
+        )}
         <p className="text-muted-foreground mb-4 text-sm line-clamp-2">
           {category.description ?? "No description"}
         </p>
