@@ -1,1 +1,6 @@
 * text=auto eol=lf
+
+# Ignore Agent scripts in GitHub language stats
+.claude/** linguist-vendored
+.agents/** linguist-vendored
+process/riper5-plugin/** linguist-vendored
