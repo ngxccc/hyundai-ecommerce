@@ -20,13 +20,13 @@ export const DimensionSpecs = ({ form }: SpecsProps) => {
 
   return (
     <Card className="py-4 shadow-sm">
-      <CardHeader className="border-b pb-1!">
+      <CardHeader className="border-b px-4 pb-1!">
         <CardTitle className="text-primary flex items-center gap-2 text-lg">
           <Maximize className="text-primary h-5 w-5" />
           {t("fields.specs_dimensions")}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4 px-4">
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <FormField
             control={form.control}

@@ -349,10 +349,6 @@
     "dashboard": "Tổng quan",
     "products": "Quản lý sản phẩm"
   },
-  "AdminBreadcrumbs": {
-    "dashboard": "Bảng điều khiển",
-    "products": "Sản phẩm"
-  },
   "AdminBrandForm": {
     "title": "Thêm thương hiệu",
     "description": "Nhập thông tin chi tiết cho thương hiệu mới vào hệ thống.",
@@ -372,7 +368,10 @@
       "slug": "Đường dẫn (Slug)",
       "description": "Mô tả",
       "isActive": "Hoạt động",
-      "logo": "URL Logo"
+      "logo": "URL Logo",
+      "dragDropImage": "Kéo thả ảnh vào đây",
+      "orClickToSelect": "hoặc click để chọn file",
+      "orEnterUrl": "Hoặc nhập trực tiếp URL ảnh"
     },
     "placeholders": {
       "name": "VD: Hyundai",
@@ -412,7 +411,10 @@
       "parentId": "Danh mục cha",
       "description": "Mô tả",
       "isActive": "Hoạt động",
-      "image": "URL Hình ảnh"
+      "image": "URL Hình ảnh",
+      "dragDropImage": "Kéo thả ảnh vào đây",
+      "orClickToSelect": "hoặc click để chọn file",
+      "orEnterUrl": "Hoặc nhập trực tiếp URL ảnh"
     },
     "placeholders": {
       "name": "VD: Máy phát điện",

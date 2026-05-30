@@ -35,10 +35,12 @@ export const ProductForm = ({
   initialData,
   categories,
   brands,
+  breadcrumbs,
 }: {
   initialData?: TProduct;
   categories: TCategory[];
   brands: TBrand[];
+  breadcrumbs?: React.ReactNode;
 }) => {
   const t = useTranslations("AdminProductForm");
 
@@ -122,9 +124,9 @@ export const ProductForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div></div>
-          <div className="flex items-center gap-3 self-end">
+        <div className="bg-background/80 sticky top-15 z-30 mb-2 flex w-full items-center justify-between rounded-none py-2 backdrop-blur-md sm:top-20 sm:pt-1 sm:pb-2">
+          <div className="hidden flex-1 sm:block">{breadcrumbs}</div>
+          <div className="flex w-full items-center justify-end gap-3 sm:w-fit">
             <Button
               type="button"
               variant="outline"

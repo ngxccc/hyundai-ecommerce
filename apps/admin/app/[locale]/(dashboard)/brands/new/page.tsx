@@ -39,15 +39,17 @@ export default async function AdminNewBrandPage() {
       />
 
       <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("overview"), href: "/" },
-            { label: tNav("brands"), href: "/brands" },
-            { label: tForm("title") },
-          ]}
+        <BrandForm
+          breadcrumbs={
+            <AdminBreadcrumbs
+              items={[
+                { label: tNav("overview"), href: "/" },
+                { label: tNav("brands"), href: "/brands" },
+                { label: tForm("title") },
+              ]}
+            />
+          }
         />
-
-        <BrandForm />
       </div>
     </>
   );

@@ -39,13 +39,13 @@ export const ProductCategorySection = ({
 
   return (
     <Card className="py-4 shadow-sm">
-      <CardHeader className="border-b pb-1!">
+      <CardHeader className="border-b px-4 pb-1!">
         <CardTitle className="text-primary flex items-center gap-2 text-lg">
           <Tag className="text-primary h-5 w-5" />
           {t("fields.categoryGroup")}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-5">
+      <CardContent className="space-y-4 px-4">
         <FormField
           control={form.control}
           name="categoryId"
