@@ -30,7 +30,7 @@ export const AdminDashboard = () => {
     <>
       <AdminHeader />
 
-      <div className="mx-auto flex w-full flex-col gap-6 p-2">
+      <div className="mx-auto flex w-full flex-col gap-2 p-2">
         {/* KPI Cards */}
         <MetricsCards />
 

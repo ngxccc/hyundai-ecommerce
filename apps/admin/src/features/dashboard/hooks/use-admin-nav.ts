@@ -5,6 +5,8 @@ import {
   ShoppingCart,
   Users,
   Settings,
+  Tags,
+  FolderTree
 } from "lucide-react";
 
 export const useAdminNav = () => {
@@ -13,6 +15,8 @@ export const useAdminNav = () => {
   const navItems = [
     { icon: LayoutDashboard, label: t("overview"), href: "/" },
     { icon: Package, label: t("products"), href: "/products" },
+    { icon: FolderTree, label: t("categories"), href: "/categories" },
+    { icon: Tags, label: t("brands"), href: "/brands" },
     { icon: ShoppingCart, label: t("orders"), href: "/orders" },
     { icon: Users, label: t("customers"), href: "/customers" },
     { icon: Settings, label: t("settings"), href: "/settings" },
