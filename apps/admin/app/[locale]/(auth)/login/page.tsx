@@ -26,7 +26,7 @@ export async function generateMetadata({
 
 const AdminLoginPage = () => {
   return (
-    <div className="bg-muted/20 flex h-full flex-col items-center justify-center p-3">
+    <div className="bg-muted/20 flex flex-1 flex-col items-center justify-center p-3">
       <div className="w-full max-w-md">
         <LoginForm />
       </div>
