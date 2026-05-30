@@ -97,5 +97,5 @@ When creating ADRs in `docs/adr/`, follow these strict rules:
 
 ## 9. Frontend & UI Guidelines
 
-- **Admin Form Layout**: When building forms in `apps/admin`, remove `<h2>` titles from the form component itself. Instead, pass `title` and `description` (via `t()`) to a shared `<Header>` component. Action buttons (Save, Cancel) must be placed at the bottom right of the form using `flex justify-end gap-x-4`.
+- **Admin Form Layout**: When building forms in `apps/admin`, remove `<h2>` titles from the form component itself. Instead, pass `title` and `description` (via `t()`) to a shared `<Header>` component.
 - **Next-Intl Keys**: Flatten the translation keys in `messages/vi.json` and `messages/en.json` when used inside forms or components. Grouping keys into objects (e.g., `"title": { "main": "...", "sub": "..." }`) causes Next-Intl's strict type checker (`vi.d.json.ts`) to throw `Expected 2-3 arguments` errors. Use flat keys like `"title"` and `"description"`.

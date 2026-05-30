@@ -10,9 +10,11 @@ import {
 } from "@nhatnang/database/validators";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { z } from "zod";
+import { requireAuth } from "@/shared/lib/action-auth";
 
 export const createBrandAction = async (data: TCreateBrandInput) => {
   try {
+    await requireAuth();
     const schema = getCreateBrandSchema((key) => key);
     const parsed = await schema.safeParseAsync(data);
 
@@ -42,6 +44,7 @@ export const createBrandAction = async (data: TCreateBrandInput) => {
 
 export async function updateBrandAction(id: string, data: TUpdateBrandInput) {
   try {
+    await requireAuth();
     const schema = getUpdateBrandSchema((key) => key);
     const parsed = await schema.safeParseAsync({ ...data, id });
 
@@ -72,6 +75,7 @@ export async function updateBrandAction(id: string, data: TUpdateBrandInput) {
 
 export async function deleteBrandAction(id: string) {
   try {
+    await requireAuth();
     const result = await brandService.delete(id);
     if (result.success) {
       revalidatePath("/brands");
