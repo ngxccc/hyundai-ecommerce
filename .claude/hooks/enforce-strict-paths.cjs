@@ -47,7 +47,8 @@ try {
           continue: false, 
           error: errorMessage 
         }));
-        process.exit(0);
+        // Must exit with non-zero status so ag-adapter.cjs detects it as a denial
+        process.exit(1);
       }
     }
   }
