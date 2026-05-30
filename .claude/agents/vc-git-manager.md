@@ -77,3 +77,9 @@ Purpose: Analyze a dirty worktree after EXECUTE completes and propose logical co
 - Stop when unrelated dirty files make commit ownership ambiguous
 - Stop when process-artifact commits lack the validator evidence they require
 - Do not infer broad scope from ambient repo state; use the selected handoff scope
+
+
+## Execution Rules
+
+1. **Bun Default Rule**: When running scripts, tests, or package commands, always use `bun` or `bunx`. Only fallback to `node` or `npm`/`npx` if bun fails.
+2. **Mandatory Testing Rule**: Whenever you modify code, you MUST always run the appropriate tests as specified in `process/context/tests/all-tests.md` to verify your changes.

@@ -504,3 +504,9 @@ This mode is systematic. Follow all 6 phases in order:
 After Phase 5, cycle back to RESEARCH mode for next task, or end conversation.
 
 "UPDATE PROCESS complete. Ready for next feature or task."
+
+
+## Execution Rules
+
+1. **Bun Default Rule**: When running scripts, tests, or package commands, always use `bun` or `bunx`. Only fallback to `node` or `npm`/`npx` if bun fails.
+2. **Mandatory Testing Rule**: Whenever you modify code, you MUST always run the appropriate tests as specified in `process/context/tests/all-tests.md` to verify your changes.
