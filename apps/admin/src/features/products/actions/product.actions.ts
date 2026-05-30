@@ -10,9 +10,11 @@ import {
 } from "@nhatnang/database/validators";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { z } from "zod";
+import { requireAuth } from "@/shared/lib/action-auth";
 
 export const createProductAction = async (data: TCreateProductInput) => {
   try {
+    await requireAuth();
     const schema = createProductSchema((key) => key);
     const parsed = await schema.safeParseAsync(data);
 
@@ -45,6 +47,7 @@ export async function updateProductAction(
   data: TUpdateProductInput,
 ) {
   try {
+    await requireAuth();
     const schema = updateProductSchema((key) => key);
     const parsed = await schema.safeParseAsync(data);
 
@@ -75,6 +78,7 @@ export async function updateProductAction(
 
 export async function deleteProductAction(id: string) {
   try {
+    await requireAuth();
     const success = await productService.delete(id);
 
     revalidatePath("/products");

@@ -10,9 +10,11 @@ import {
 } from "@nhatnang/database/validators";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { z } from "zod";
+import { requireAuth } from "@/shared/lib/action-auth";
 
 export const createCategoryAction = async (data: TCreateCategoryInput) => {
   try {
+    await requireAuth();
     const schema = getCreateCategorySchema((key) => key);
     const parsed = await schema.safeParseAsync(data);
 
@@ -46,6 +48,7 @@ export async function updateCategoryAction(
   data: TUpdateCategoryInput,
 ) {
   try {
+    await requireAuth();
     const schema = getUpdateCategorySchema((key) => key);
     const parsed = await schema.safeParseAsync({ ...data, id });
 
@@ -77,6 +80,7 @@ export async function updateCategoryAction(
 
 export async function deleteCategoryAction(id: string) {
   try {
+    await requireAuth();
     const result = await categoryService.delete(id);
     if (result.success) {
       revalidatePath("/categories");
