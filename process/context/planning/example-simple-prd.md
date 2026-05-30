@@ -1,7 +1,7 @@
 # Duma Neobrutalist Redesign - Plan
 
-**Date:** 26-11-25  
-**Complexity:** Simple  
+**Date:** 26-11-25
+**Complexity:** Simple
 **Status:** ⏳ PLANNED
 
 ## Overview
@@ -10,27 +10,39 @@ Rebuild the Duma social activity discovery app with identical features and mock 
 
 ## Quick Links
 
-- [Goals and Success Metrics](#goals-and-success-metrics)
-- [Execution Brief](#execution-brief)
-- [Scope](#scope)
-- [Assumptions and Constraints](#assumptions-and-constraints)
-- [Functional Requirements](#functional-requirements)
-- [Non-Functional Requirements](#non-functional-requirements)
-- [Acceptance Criteria](#acceptance-criteria)
-- [Implementation Checklist](#implementation-checklist)
-- [Risks and Mitigations](#risks-and-mitigations)
-- [Integration Notes](#integration-notes)
-- [Cursor + RIPER-5 Guidance](#cursor--riper-5-guidance)
+- [Duma Neobrutalist Redesign - Plan](#duma-neobrutalist-redesign---plan)
+  - [Overview](#overview)
+  - [Quick Links](#quick-links)
+  - [Goals and Success Metrics](#goals-and-success-metrics)
+  - [Execution Brief](#execution-brief)
+    - [Phase 1: Project Setup](#phase-1-project-setup)
+    - [Phase 2: Design System](#phase-2-design-system)
+    - [Phase 3: Data Layer](#phase-3-data-layer)
+    - [Phase 4: Core Components](#phase-4-core-components)
+    - [Phase 5: Feature Implementation](#phase-5-feature-implementation)
+    - [Post-Implementation Testing](#post-implementation-testing)
+    - [Expected Outcome](#expected-outcome)
+  - [Scope](#scope)
+  - [Assumptions and Constraints](#assumptions-and-constraints)
+  - [Functional Requirements](#functional-requirements)
+  - [Non-Functional Requirements](#non-functional-requirements)
+  - [Acceptance Criteria](#acceptance-criteria)
+  - [Implementation Checklist](#implementation-checklist)
+  - [Risks and Mitigations](#risks-and-mitigations)
+  - [Integration Notes](#integration-notes)
+  - [Cursor + RIPER-5 Guidance](#cursor--riper-5-guidance)
 
 ## Goals and Success Metrics
 
 **Goals:**
+
 - Replicate all features from original Duma app (SwipeFeed, Activity Cards, Drawers, My Activities, Hosted Activities, Profile, Chat, Bottom Nav)
 - Implement neobrutalist + Gumroad minimalist design: rounded corners, bold colors, friendly typography, creative layouts
 - Migrate to modern tech stack: pnpm, Next.js App Router, Tailwind CSS 4, latest React Router/Query
 - Deliver fully functional prototype with all mock data working
 
 **Success Metrics:**
+
 - All 9 core features work identically to original
 - Design matches neobrutalist aesthetic (bold borders, rounded elements, playful colors)
 - App runs on `localhost:3000` without errors
@@ -44,18 +56,23 @@ Rebuild the Duma social activity discovery app with identical features and mock 
 **IMPORTANT:** This is a SIMPLE (one-session) plan - implement continuously without approval gates. The phases below are logical groupings for understanding flow, NOT stop points.
 
 ### Phase 1: Project Setup
+
 **What happens:** Initialize Next.js with pnpm, upgrade to Tailwind CSS 4, install dependencies (React Query, shadcn/ui, lucide-react).
 
 ### Phase 2: Design System
+
 **What happens:** Create neobrutalist color palette, CSS variables, typography scale in `globals.css`.
 
 ### Phase 3: Data Layer
+
 **What happens:** Create `lib/mockData.ts` with all interfaces and mock data, set up React Query provider.
 
 ### Phase 4: Core Components
+
 **What happens:** Build neobrutalist-styled UI components (Button, Card, Badge, Avatar, Drawer), Bottom Navigation, tab routing.
 
 ### Phase 5: Feature Implementation
+
 **What happens:** Build SwipeFeed, ActivityCard, Drawers, MyActivities, HostedActivities, Profile, Chat components.
 
 ### Post-Implementation Testing
@@ -70,6 +87,7 @@ After completing all implementation steps, verify the following:
 6. **Console Test:** Check browser console - no errors or warnings
 
 ### Expected Outcome
+
 - Fully functional Duma clone with neobrutalist design
 - All mock data rendering correctly
 - Smooth navigation and animations
@@ -80,6 +98,7 @@ After completing all implementation steps, verify the following:
 ## Scope
 
 **In-Scope:**
+
 - All original features: SwipeFeed, ActivityCard, ActivityDetailDrawer, UserProfileDrawer, MyActivities, HostedActivities, Profile, Chat, BottomNav
 - Complete mock data migration (users, activities, conversations, join requests)
 - Neobrutalist design system (rounded buttons, bold borders, playful colors, friendly typography)
@@ -87,6 +106,7 @@ After completing all implementation steps, verify the following:
 - Responsive mobile-first layout
 
 **Out-of-Scope:**
+
 - Backend integration or real API calls
 - Authentication system
 - Real-time features
@@ -96,6 +116,7 @@ After completing all implementation steps, verify the following:
 ## Assumptions and Constraints
 
 **Assumptions:**
+
 - Original app structure and data are well-understood from context file
 - Neobrutalist design principles are: bold borders (2-4px), rounded corners (8-16px), playful colors, friendly typography, generous spacing
 - Next.js App Router can handle client-side routing needs
@@ -103,6 +124,7 @@ After completing all implementation steps, verify the following:
 - Tailwind CSS 4 configuration is compatible with Next.js
 
 **Constraints:**
+
 - Must use pnpm (not npm/yarn)
 - Must use Next.js App Router (not Pages Router)
 - Must use Tailwind CSS 4 (not v3)
@@ -330,18 +352,23 @@ After completing all implementation steps, verify the following:
 ## Risks and Mitigations
 
 **Risk 1:** Tailwind CSS 4 compatibility issues with Next.js
+
 - **Mitigation:** Use official Next.js + Tailwind CSS 4 documentation, test configuration early
 
 **Risk 2:** React Router conflicts with Next.js App Router
+
 - **Mitigation:** Use client-side state for tab navigation instead of React Router, or use Next.js built-in routing for pages if needed
 
 **Risk 3:** React Query setup with Next.js App Router
+
 - **Mitigation:** Follow latest React Query + Next.js App Router patterns from official docs, use proper provider setup
 
 **Risk 4:** Neobrutalist design not matching vision
+
 - **Mitigation:** Create design tokens early, test components incrementally, reference Gumroad/neobrutalist examples
 
 **Risk 5:** Data migration errors
+
 - **Mitigation:** Copy mock data carefully, verify all interfaces match, test data access early
 
 ## Integration Notes
@@ -357,6 +384,7 @@ After completing all implementation steps, verify the following:
 ## Cursor + RIPER-5 Guidance
 
 **Cursor Plan Mode:**
+
 - Import this checklist into Cursor Plan mode
 - Execute all steps continuously (1-17) in one session
 - No approval gates between steps - maintain momentum
@@ -364,6 +392,7 @@ After completing all implementation steps, verify the following:
 - Run Post-Implementation Testing (Section 3) after all steps complete
 
 **RIPER-5 Mode (SIMPLE - Fast Track):**
+
 - **RESEARCH:** ✅ Complete - Reviewed original app structure, data, and tech stack
 - **INNOVATE:** ✅ Complete - Decided on neobrutalist design approach and tech stack migration
 - **PLAN:** ✅ Current - This plan document
@@ -371,9 +400,9 @@ After completing all implementation steps, verify the following:
 - **REVIEW:** After execution - Run Post-Implementation Testing, validate against acceptance criteria
 
 **Key Difference from COMPLEX Plans:**
+
 - SIMPLE plans = continuous one-session implementation
 - COMPLEX plans = phase-by-phase with approval gates
 - For this SIMPLE plan: implement all steps → test at end → done
 
 **Next Step:** Begin implementation with Step 1: Initialize Next.js Project with pnpm
-

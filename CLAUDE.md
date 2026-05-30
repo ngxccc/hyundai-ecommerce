@@ -96,7 +96,7 @@ The complete RIPER-5 protocol is defined in the agent files at `.claude/agents/`
 - UI/frontend → surface vc-frontend-design skill + vc-research-agent
 - Refactor/simplify → vc-code-simplifier (pure style) or RESEARCH→PLAN→EXECUTE (behavioral)
 - Missing context → suggest the `vc-generate-context` skill
-- Existing plan file → scan process/general-plans/active/ and process/features/*/active/, confirm with user, resume from last phase
+- Existing plan file → scan process/general-plans/active/ and process/features/\*/active/, confirm with user, resume from last phase
 
 **Intent clarification**: Before auto-routing, the orchestrator scores request ambiguity per
 `process/development-protocols/intent-clarification.md`. Clear requests (score 0-1) auto-route
@@ -164,6 +164,7 @@ Default new feature plans use date-stamped naming: `[feature]_PLAN_[dd-mm-yy].md
 ### `process/features/`
 
 Feature-scoped storage for large feature clusters. Each feature folder contains:
+
 - `active/` - In-progress plans
 - `completed/` - Archived completed plans
 - `backlog/` - Deferred/future plans
@@ -175,6 +176,7 @@ See `process/context/all-context.md` for current feature list.
 **Routing rule:** When a feature has 5+ artifacts, store new plans/reports in `process/features/{feature}/`. General or cross-cutting items go in `process/general-plans/` (with `reports/` and `references/` inside).
 
 When routing to a subagent for a feature-scoped task, include `Feature: {feature-name}` in the prompt and override paths:
+
 - `Reports: {work_context}/process/features/{feature}/reports/`
 - `Plans: {work_context}/process/features/{feature}/active/`
 
@@ -182,18 +184,19 @@ When routing to a subagent for a feature-scoped task, include `Feature: {feature
 
 **At plan creation time — decision logic:**
 
-| Signal | Action |
-|--------|--------|
-| `process/features/{topic}/` already exists | Use it — pass `Feature: {topic}` to subagent |
-| Topic clearly belongs to an existing feature | Use that feature's folder |
-| New multi-phase project (3+ planned phases) | Create feature folder upfront |
-| User says "this is a big feature" or names a product area | Create feature folder upfront |
-| Single plan, no backlog, unclear scope | Use `process/general-plans/active/` (general) |
-| Cross-cutting work touching multiple features | Use general folders |
+| Signal                                                    | Action                                        |
+| --------------------------------------------------------- | --------------------------------------------- |
+| `process/features/{topic}/` already exists                | Use it — pass `Feature: {topic}` to subagent  |
+| Topic clearly belongs to an existing feature              | Use that feature's folder                     |
+| New multi-phase project (3+ planned phases)               | Create feature folder upfront                 |
+| User says "this is a big feature" or names a product area | Create feature folder upfront                 |
+| Single plan, no backlog, unclear scope                    | Use `process/general-plans/active/` (general) |
+| Cross-cutting work touching multiple features             | Use general folders                           |
 
 **Promotion protocol (general → feature folder):**
 
 When general artifacts for a single topic reach 5+, or when a user requests it:
+
 1. Create `process/features/{new-feature}/` with subdirs: `active/`, `completed/`, `backlog/`, `reports/`, `references/`
 2. Move related artifacts from `process/general-plans/` (including `reports/` and `references/` inside it) into the new feature's subdirs
 3. Update the **Current features** list in `process/context/all-context.md`
@@ -307,7 +310,7 @@ Claude Code provides specialized subagents for each RIPER-5 mode. Each subagent 
 **vc-plan-agent**
 
 - Purpose: Creating detailed specifications
-- Tools: Read, Write (process/general-plans/active/ or process/features/*/active/ only), Grep, Glob, Bash
+- Tools: Read, Write (process/general-plans/active/ or process/features/\*/active/ only), Grep, Glob, Bash
 - Use: Writing implementation plans
 - Invoke: After INNOVATE, user says "go" or "ENTER PLAN MODE"
 
@@ -372,34 +375,34 @@ Before routing, scan `.claude/skills/` directory names and match keywords from t
 
 **Skill Registry** — all available skills with trigger keywords:
 
-| Skill | Purpose | Trigger Keywords |
-|---|---|---|
-| `vc-frontend-design` | Polished UI from designs/screenshots/videos | UI, design, layout, component, page, interface, visual, CSS, Tailwind, login page, dashboard |
-| `vc-debug` | Root cause-analysis helper used alongside `vc-debugger` | debug, root cause, investigate, why is this |
-| `vc-scenario` | Edge case generation across 12 dimensions | edge cases, test scenarios, what could go wrong |
-| `vc-security` | STRIDE + OWASP security audit | security, vulnerability, auth, XSS, SQL injection |
-| `vc-autoresearch` | Autonomous metric optimization loop | improve coverage, reduce bundle, optimize metric |
-| `vc-predict` | 5-persona pre-implementation debate | risks, predict issues, architectural review |
-| `vc-scout` | Fast parallel codebase scouting | find files, where is, search codebase |
-| `vc-tech-graph` | Publish-grade technical diagrams as SVG or PNG for durable process artifacts | generate diagram, architecture diagram, flowchart, sequence diagram, system visual |
-| `vc-watzup` | Read-only branch, local/remote ref, worktree, and active-plan handoff summary with advisory selected-plan hints | what's in flight, handoff, worktree status, active plans, next steps |
-| `vc-xia` | Repo comparison and adaptation-prep research | copy from repo, compare repo, adapt from repo, study how they built it, analyze feature parity |
-| `vc-repomix` | Pack local or remote repos into references-only artifacts | pack repo, snapshot codebase, repo context, compare repo, feature port, security audit |
-| `vc-docs` | Project documentation management | docs, README, document codebase |
-| `vc-docs-seeker` | Library docs via context7 | how does X work, API docs, version, syntax |
-| `vc-web-testing` | Playwright/Vitest/k6 test automation | tests, e2e, integration test, performance test |
-| `vc-sequential-thinking` | Step-by-step reasoning | complex problem, think through, analyze step by step |
-| `vc-problem-solving` | Cognitive unblocking techniques | stuck, can't figure out, complex, spiral |
-| `vc-context-engineering` | Token/context optimization | context limit, token usage, optimize context |
-| `vc-preview` | Visual diagrams, slides, file viewer | diagram, visualize, slides, preview |
-| `vc-mcp-management` | MCP server tools | MCP, model context protocol |
-| `vc-chrome-devtools` | Puppeteer browser automation | browser, screenshot, scrape, automate browser |
-| `vc-agent-browser` | AI browser automation CLI | long browser session, browserbase, visual testing |
-| `vc-team` | Multi-agent parallel collaboration | parallel agents, multi-agent, team |
-| `vc-setup` | Scaffold agent harness into new project | seed, harness, bootstrap, new project, scaffold, setup |
-| `vc-update` | Pull latest harness from remote kit repo | update harness, pull kit, sync harness, upgrade agents |
-| `vc-publish` | Push harness improvements to remote kit repo | publish kit, push harness, release kit, update remote |
-| `vc-audit-vc` | Agent harness health audit (agents, skills, README.md, protocol wiring) | harness, agent parity, skill audit, guide sync |
+| Skill                    | Purpose                                                                                                         | Trigger Keywords                                                                               |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `vc-frontend-design`     | Polished UI from designs/screenshots/videos                                                                     | UI, design, layout, component, page, interface, visual, CSS, Tailwind, login page, dashboard   |
+| `vc-debug`               | Root cause-analysis helper used alongside `vc-debugger`                                                         | debug, root cause, investigate, why is this                                                    |
+| `vc-scenario`            | Edge case generation across 12 dimensions                                                                       | edge cases, test scenarios, what could go wrong                                                |
+| `vc-security`            | STRIDE + OWASP security audit                                                                                   | security, vulnerability, auth, XSS, SQL injection                                              |
+| `vc-autoresearch`        | Autonomous metric optimization loop                                                                             | improve coverage, reduce bundle, optimize metric                                               |
+| `vc-predict`             | 5-persona pre-implementation debate                                                                             | risks, predict issues, architectural review                                                    |
+| `vc-scout`               | Fast parallel codebase scouting                                                                                 | find files, where is, search codebase                                                          |
+| `vc-tech-graph`          | Publish-grade technical diagrams as SVG or PNG for durable process artifacts                                    | generate diagram, architecture diagram, flowchart, sequence diagram, system visual             |
+| `vc-watzup`              | Read-only branch, local/remote ref, worktree, and active-plan handoff summary with advisory selected-plan hints | what's in flight, handoff, worktree status, active plans, next steps                           |
+| `vc-xia`                 | Repo comparison and adaptation-prep research                                                                    | copy from repo, compare repo, adapt from repo, study how they built it, analyze feature parity |
+| `vc-repomix`             | Pack local or remote repos into references-only artifacts                                                       | pack repo, snapshot codebase, repo context, compare repo, feature port, security audit         |
+| `vc-docs`                | Project documentation management                                                                                | docs, README, document codebase                                                                |
+| `vc-docs-seeker`         | Library docs via context7                                                                                       | how does X work, API docs, version, syntax                                                     |
+| `vc-web-testing`         | Playwright/Vitest/k6 test automation                                                                            | tests, e2e, integration test, performance test                                                 |
+| `vc-sequential-thinking` | Step-by-step reasoning                                                                                          | complex problem, think through, analyze step by step                                           |
+| `vc-problem-solving`     | Cognitive unblocking techniques                                                                                 | stuck, can't figure out, complex, spiral                                                       |
+| `vc-context-engineering` | Token/context optimization                                                                                      | context limit, token usage, optimize context                                                   |
+| `vc-preview`             | Visual diagrams, slides, file viewer                                                                            | diagram, visualize, slides, preview                                                            |
+| `vc-mcp-management`      | MCP server tools                                                                                                | MCP, model context protocol                                                                    |
+| `vc-chrome-devtools`     | Puppeteer browser automation                                                                                    | browser, screenshot, scrape, automate browser                                                  |
+| `vc-agent-browser`       | AI browser automation CLI                                                                                       | long browser session, browserbase, visual testing                                              |
+| `vc-team`                | Multi-agent parallel collaboration                                                                              | parallel agents, multi-agent, team                                                             |
+| `vc-setup`               | Scaffold agent harness into new project                                                                         | seed, harness, bootstrap, new project, scaffold, setup                                         |
+| `vc-update`              | Pull latest harness from remote kit repo                                                                        | update harness, pull kit, sync harness, upgrade agents                                         |
+| `vc-publish`             | Push harness improvements to remote kit repo                                                                    | publish kit, push harness, release kit, update remote                                          |
+| `vc-audit-vc`            | Agent harness health audit (agents, skills, README.md, protocol wiring)                                         | harness, agent parity, skill audit, guide sync                                                 |
 
 **Rule:** When 1+ skills match the request, mention them to the user OR include them in the subagent prompt context. Never silently skip relevant skills.
 
@@ -434,20 +437,21 @@ Before routing, scan `.claude/skills/` directory names and match keywords from t
   → Activate `vc-docs-seeker` skill before routing to `vc-research-agent`
 
 - **Refactor / Simplify** (keywords: "refactor", "clean up", "simplify", "reorganize")
-  - *Pure style/readability* (named file, no behavior change): route directly to `vc-code-simplifier` agent
-  - *Behavioral or architectural refactor*: full RESEARCH → PLAN → EXECUTE, then `vc-code-simplifier` as cleanup
+  - _Pure style/readability_ (named file, no behavior change): route directly to `vc-code-simplifier` agent
+  - _Behavioral or architectural refactor_: full RESEARCH → PLAN → EXECUTE, then `vc-code-simplifier` as cleanup
 
 - **Debug / Root Cause** (keywords: "debug", "why", "root cause", "investigate")
   → `vc-debugger` agent = default owner. Helper skills like `vc-scout`, `vc-sequential-thinking`, and `vc-problem-solving` may be layered in as needed.
 
 **When multiple intents match** (e.g., UI bug with docs question), use this precedence:
-1. Existing plan file in process/general-plans/active/ or process/features/*/active/ → always resume first
+
+1. Existing plan file in process/general-plans/active/ or process/features/\*/active/ → always resume first
 2. Explicit mode command (ENTER X MODE) → obey immediately
 3. Bug/debug → debugging routing before feature routing
 4. Feature request → RIPER-5 flow
 5. UI specialization → surface vc-frontend-design alongside any of the above
 6. Docs question → surface vc-docs-seeker alongside any of the above
-When still ambiguous, ask the user one clarifying question before routing.
+   When still ambiguous, ask the user one clarifying question before routing.
 
 ### 2. Gather Context
 
