@@ -63,7 +63,6 @@
       "unverifiedEmail": "Email chưa được xác thực. Vui lòng kiểm tra hộp thư của bạn."
     }
   },
-
   "NotFound": {
     "status": "Status: Terminal",
     "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
@@ -83,13 +82,11 @@
       }
     }
   },
-
   "Forbidden": {
     "status": "403 Không có quyền truy cập",
     "errorMessage": "Khu vực dành cho nhân viên. Bấm vào đây để quay lại trang mua sắm",
     "button": "Về trang mua sắm"
   },
-
   "AdminDashboard": {
     "title": "Hyundai Nhật Năng",
     "logoutSuccess": "Đăng xuất thành công",
@@ -99,7 +96,9 @@
       "products": "Sản phẩm",
       "orders": "Đơn hàng",
       "customers": "Khách hàng",
-      "settings": "Cài đặt"
+      "settings": "Cài đặt",
+      "categories": "Danh mục",
+      "brands": "Thương hiệu"
     },
     "header": {
       "title": "Tổng quan",
@@ -142,7 +141,6 @@
       }
     }
   },
-
   "AdminProducts": {
     "header": {
       "title": "Sản phẩm",
@@ -221,7 +219,6 @@
       "showingCursor": "Đang hiển thị danh sách sản phẩm"
     }
   },
-
   "AdminProductForm": {
     "title": "Thêm sản phẩm",
     "description": "Nhập thông tin chi tiết cho máy phát điện mới vào hệ thống.",
@@ -345,7 +342,6 @@
       "specValueRequired": "Giá trị không được trống"
     }
   },
-
   "AdminMetadata": {
     "titleTemplate": "%s | Admin Portal",
     "defaultTitle": "Tổng quan | Admin Portal",
@@ -356,5 +352,131 @@
   "AdminBreadcrumbs": {
     "dashboard": "Bảng điều khiển",
     "products": "Sản phẩm"
+  },
+  "AdminBrandForm": {
+    "title": "Thêm thương hiệu",
+    "description": "Nhập thông tin chi tiết cho thương hiệu mới vào hệ thống.",
+    "editTitle": "Sửa thương hiệu",
+    "editDescription": "Chỉnh sửa các thông tin của thương hiệu.",
+    "buttons": {
+      "cancel": "Hủy",
+      "create": "Thêm",
+      "save": "Lưu"
+    },
+    "sections": {
+      "general": "Thông tin chung",
+      "media": "Hình ảnh"
+    },
+    "fields": {
+      "name": "Tên",
+      "slug": "Đường dẫn (Slug)",
+      "description": "Mô tả",
+      "isActive": "Hoạt động",
+      "logo": "URL Logo"
+    },
+    "placeholders": {
+      "name": "VD: Hyundai",
+      "slug": "VD: hyundai",
+      "description": "Mô tả thương hiệu...",
+      "logo": "https://..."
+    },
+    "messages": {
+      "successCreate": "Thêm thương hiệu thành công",
+      "successUpdate": "Cập nhật thương hiệu thành công",
+      "error": "Đã xảy ra lỗi"
+    },
+    "validation": {
+      "slugExists": "Slug đã tồn tại",
+      "nameRequired": "Vui lòng nhập tên thương hiệu",
+      "slugRequired": "Vui lòng nhập đường dẫn",
+      "invalidUrl": "Đường dẫn URL không hợp lệ"
+    }
+  },
+  "AdminCategoryForm": {
+    "title": "Thêm danh mục",
+    "description": "Nhập thông tin chi tiết cho danh mục mới vào hệ thống.",
+    "editTitle": "Sửa danh mục",
+    "editDescription": "Chỉnh sửa các thông tin của danh mục.",
+    "buttons": {
+      "cancel": "Hủy",
+      "create": "Thêm",
+      "save": "Lưu"
+    },
+    "sections": {
+      "general": "Thông tin chung",
+      "media": "Hình ảnh"
+    },
+    "fields": {
+      "name": "Tên",
+      "slug": "Đường dẫn (Slug)",
+      "parentId": "Danh mục cha",
+      "description": "Mô tả",
+      "isActive": "Hoạt động",
+      "image": "URL Hình ảnh"
+    },
+    "placeholders": {
+      "name": "VD: Máy phát điện",
+      "slug": "VD: may-phat-dien",
+      "parentId": "Chọn danh mục",
+      "description": "Mô tả danh mục...",
+      "image": "https://..."
+    },
+    "labels": {
+      "none": "Không có (Root)"
+    },
+    "messages": {
+      "successCreate": "Thêm danh mục thành công",
+      "successUpdate": "Cập nhật danh mục thành công",
+      "error": "Đã xảy ra lỗi"
+    },
+    "validation": {
+      "slugExists": "Slug đã tồn tại",
+      "nameRequired": "Vui lòng nhập tên danh mục",
+      "slugRequired": "Vui lòng nhập đường dẫn",
+      "invalidUrl": "Đường dẫn URL không hợp lệ",
+      "invalidParent": "Danh mục cha không hợp lệ"
+    }
+  },
+  "AdminBrandTable": {
+    "columns": {
+      "name": "Tên",
+      "slug": "Slug",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "status": {
+      "active": "Hoạt động",
+      "inactive": "Vô hiệu"
+    },
+    "empty": "Không tìm thấy thương hiệu nào."
+  },
+  "AdminCategoryTable": {
+    "columns": {
+      "name": "Tên",
+      "slug": "Slug",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "status": {
+      "active": "Hoạt động",
+      "inactive": "Vô hiệu"
+    },
+    "empty": "Không tìm thấy danh mục nào."
+  },
+  "AdminCategories": {
+    "header": {
+      "searchPlaceholder": "Tìm kiếm danh mục...",
+      "addCategory": "Thêm danh mục",
+      "title": "Danh mục",
+      "description": "Quản lý danh sách danh mục."
+    }
+  },
+  "AdminBrands": {
+    "header": {
+      "searchPlaceholder": "Tìm kiếm thương hiệu...",
+      "addBrand": "Thêm thương hiệu",
+      "title": "Thương hiệu",
+      "description": "Quản lý danh sách thương hiệu."
+    }
   }
 }

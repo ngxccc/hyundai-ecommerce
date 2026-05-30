@@ -63,7 +63,6 @@
       "unverifiedEmail": "Your email has not been verified. Please check your inbox."
     }
   },
-
   "NotFound": {
     "status": "Status: Terminal",
     "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
@@ -83,13 +82,11 @@
       }
     }
   },
-
   "Forbidden": {
     "status": "403 Forbidden",
     "errorMessage": "Staff area only. Click here to return to the shopping page.",
     "button": "Return to Storefront"
   },
-
   "AdminDashboard": {
     "title": "Hyundai Nhat Nang",
     "logoutSuccess": "Logged out successfully",
@@ -99,7 +96,9 @@
       "products": "Products",
       "orders": "Orders",
       "customers": "Customers",
-      "settings": "Settings"
+      "settings": "Settings",
+      "categories": "Categories",
+      "brands": "Brands"
     },
     "header": {
       "title": "Overview",
@@ -142,7 +141,6 @@
       }
     }
   },
-
   "AdminProducts": {
     "header": {
       "title": "Products",
@@ -221,7 +219,6 @@
       "showingCursor": "Showing product list"
     }
   },
-
   "AdminProductForm": {
     "title": "Add New Product",
     "editTitle": "Edit Product",
@@ -341,7 +338,6 @@
       "specValueRequired": "Spec value is required"
     }
   },
-
   "AdminMetadata": {
     "titleTemplate": "%s | Admin Portal",
     "defaultTitle": "Dashboard | Admin Portal",
@@ -352,5 +348,131 @@
   "AdminBreadcrumbs": {
     "dashboard": "Dashboard",
     "products": "Products"
+  },
+  "AdminBrandForm": {
+    "title": "Add Brand",
+    "description": "Enter details for the new brand.",
+    "editTitle": "Edit Brand",
+    "editDescription": "Edit brand information.",
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save"
+    },
+    "sections": {
+      "general": "General Information",
+      "media": "Media"
+    },
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "description": "Description",
+      "isActive": "Active",
+      "logo": "Logo URL"
+    },
+    "placeholders": {
+      "name": "e.g. Hyundai",
+      "slug": "e.g. hyundai",
+      "description": "Brand description...",
+      "logo": "https://..."
+    },
+    "messages": {
+      "successCreate": "Brand created successfully",
+      "successUpdate": "Brand updated successfully",
+      "error": "An error occurred"
+    },
+    "validation": {
+      "slugExists": "Slug already exists",
+      "nameRequired": "Please enter a brand name",
+      "slugRequired": "Please enter a slug",
+      "invalidUrl": "Invalid URL format"
+    }
+  },
+  "AdminCategoryForm": {
+    "title": "Add Category",
+    "description": "Enter details for the new category.",
+    "editTitle": "Edit Category",
+    "editDescription": "Edit category information.",
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save"
+    },
+    "sections": {
+      "general": "General Information",
+      "media": "Media"
+    },
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "parentId": "Parent Category",
+      "description": "Description",
+      "isActive": "Active",
+      "image": "Image URL"
+    },
+    "placeholders": {
+      "name": "e.g. Generators",
+      "slug": "e.g. generators",
+      "parentId": "Select a category",
+      "description": "Category description...",
+      "image": "https://..."
+    },
+    "labels": {
+      "none": "None (Root)"
+    },
+    "messages": {
+      "successCreate": "Category created successfully",
+      "successUpdate": "Category updated successfully",
+      "error": "An error occurred"
+    },
+    "validation": {
+      "slugExists": "Slug already exists",
+      "nameRequired": "Please enter a category name",
+      "slugRequired": "Please enter a slug",
+      "invalidUrl": "Invalid URL format",
+      "invalidParent": "Invalid parent category"
+    }
+  },
+  "AdminBrandTable": {
+    "columns": {
+      "name": "Name",
+      "slug": "Slug",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "empty": "No brands found."
+  },
+  "AdminCategoryTable": {
+    "columns": {
+      "name": "Name",
+      "slug": "Slug",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "empty": "No categories found."
+  },
+  "AdminCategories": {
+    "header": {
+      "searchPlaceholder": "Search categories...",
+      "addCategory": "Add Category",
+      "title": "Categories",
+      "description": "Manage all categories."
+    }
+  },
+  "AdminBrands": {
+    "header": {
+      "searchPlaceholder": "Search brands...",
+      "addBrand": "Add Brand",
+      "title": "Brands",
+      "description": "Manage all brands."
+    }
   }
 }

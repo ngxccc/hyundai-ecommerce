@@ -54,12 +54,19 @@ export default async function AdminProductsPage({
   const search =
     typeof params["search"] === "string" ? params["search"] : undefined;
   const engineBrand =
-    typeof params["engineBrand"] === "string" ? params["engineBrand"] : undefined;
+    typeof params["engineBrand"] === "string"
+      ? params["engineBrand"]
+      : undefined;
   const alternatorBrand =
-    typeof params["alternatorBrand"] === "string" ? params["alternatorBrand"] : undefined;
-  const voltageStr = typeof params["voltage"] === "string" ? params["voltage"] : undefined;
-  const minPowerStr = typeof params["minPower"] === "string" ? params["minPower"] : undefined;
-  const maxPowerStr = typeof params["maxPower"] === "string" ? params["maxPower"] : undefined;
+    typeof params["alternatorBrand"] === "string"
+      ? params["alternatorBrand"]
+      : undefined;
+  const voltageStr =
+    typeof params["voltage"] === "string" ? params["voltage"] : undefined;
+  const minPowerStr =
+    typeof params["minPower"] === "string" ? params["minPower"] : undefined;
+  const maxPowerStr =
+    typeof params["maxPower"] === "string" ? params["maxPower"] : undefined;
 
   const voltage = voltageStr ? Number(voltageStr) : undefined;
   const minPower = minPowerStr ? Number(minPowerStr) : undefined;
@@ -104,7 +111,7 @@ export default async function AdminProductsPage({
         showAddButton={true}
       />
 
-      <div className="mx-auto flex w-full flex-col gap-6 p-2">
+      <div className="mx-auto flex w-full flex-col gap-2 p-2">
         <AdminBreadcrumbs
           items={[
             { label: tNav("dashboard"), href: "/" },
