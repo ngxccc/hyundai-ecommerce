@@ -118,7 +118,7 @@ export default async function AdminProductsPage({
             { label: tNav("products") },
           ]}
         />
-        <div className="mx-auto flex w-full flex-col gap-6 pb-8">
+        <div className="mx-auto flex w-full flex-col gap-4 pb-8">
           {/* Filters */}
           <ProductFilters categories={categories} brands={brands} />
 
