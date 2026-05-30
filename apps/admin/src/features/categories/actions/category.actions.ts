@@ -10,7 +10,8 @@ import {
 } from "@nhatnang/database/validators";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { z } from "zod";
-import { requireAuth } from "@/shared/lib/action-auth";
+import { requireAuth, AuthError } from "@/shared/lib/action-auth";
+import { getTranslations } from "next-intl/server";
 
 export const createCategoryAction = async (data: TCreateCategoryInput) => {
   try {
@@ -34,11 +35,16 @@ export const createCategoryAction = async (data: TCreateCategoryInput) => {
     }
     return result;
   } catch (error) {
+    const t = await getTranslations("errors");
+    if (error instanceof AuthError) {
+      const message =
+        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
+      return { success: false as const, error: message };
+    }
     console.error("[createCategoryAction]", error);
     return {
       success: false as const,
-      error:
-        error instanceof Error ? error.message : "Failed to create category",
+      error: t("createCategoryFailed"),
     };
   }
 };
@@ -69,11 +75,16 @@ export async function updateCategoryAction(
     }
     return result;
   } catch (error) {
+    const t = await getTranslations("errors");
+    if (error instanceof AuthError) {
+      const message =
+        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
+      return { success: false as const, error: message };
+    }
     console.error("[updateCategoryAction]", error);
     return {
       success: false as const,
-      error:
-        error instanceof Error ? error.message : "Failed to update category",
+      error: t("updateCategoryFailed"),
     };
   }
 }
@@ -87,11 +98,16 @@ export async function deleteCategoryAction(id: string) {
     }
     return result;
   } catch (error) {
+    const t = await getTranslations("errors");
+    if (error instanceof AuthError) {
+      const message =
+        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
+      return { success: false as const, error: message };
+    }
     console.error("[deleteCategoryAction]", error);
     return {
       success: false as const,
-      error:
-        error instanceof Error ? error.message : "Failed to delete category",
+      error: t("deleteCategoryFailed"),
     };
   }
 }

@@ -10,7 +10,8 @@ import {
 } from "@nhatnang/database/validators";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { z } from "zod";
-import { requireAuth } from "@/shared/lib/action-auth";
+import { requireAuth, AuthError } from "@/shared/lib/action-auth";
+import { getTranslations } from "next-intl/server";
 
 export const createBrandAction = async (data: TCreateBrandInput) => {
   try {
@@ -34,10 +35,16 @@ export const createBrandAction = async (data: TCreateBrandInput) => {
     }
     return result;
   } catch (error) {
+    const t = await getTranslations("errors");
+    if (error instanceof AuthError) {
+      const message =
+        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
+      return { success: false as const, error: message };
+    }
     console.error("[createBrandAction]", error);
     return {
       success: false as const,
-      error: error instanceof Error ? error.message : "Failed to create brand",
+      error: t("createBrandFailed"),
     };
   }
 };
@@ -65,10 +72,16 @@ export async function updateBrandAction(id: string, data: TUpdateBrandInput) {
     }
     return result;
   } catch (error) {
+    const t = await getTranslations("errors");
+    if (error instanceof AuthError) {
+      const message =
+        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
+      return { success: false as const, error: message };
+    }
     console.error("[updateBrandAction]", error);
     return {
       success: false as const,
-      error: error instanceof Error ? error.message : "Failed to update brand",
+      error: t("updateBrandFailed"),
     };
   }
 }
@@ -82,10 +95,16 @@ export async function deleteBrandAction(id: string) {
     }
     return result;
   } catch (error) {
+    const t = await getTranslations("errors");
+    if (error instanceof AuthError) {
+      const message =
+        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
+      return { success: false as const, error: message };
+    }
     console.error("[deleteBrandAction]", error);
     return {
       success: false as const,
-      error: error instanceof Error ? error.message : "Failed to delete brand",
+      error: t("deleteBrandFailed"),
     };
   }
 }
