@@ -3,21 +3,34 @@ name: Storefront App CD
 on:
   push:
     branches: ["main"]
-    paths:
-      - "apps/storefront/**"
-      - "packages/database/**"
-      - "packages/eslint-config/**"
-      - "packages/shared/**"
-      - "packages/types/**"
-      - "packages/typescript-config/**"
-      - "turbo.json"
-      - "bun.lock"
-      - "package.json"
-      - ".github/workflows/storefront.yml"
   workflow_dispatch:
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      storefront: ${{ steps.filter.outputs.storefront }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            storefront:
+              - "apps/storefront/**"
+              - "packages/database/**"
+              - "packages/eslint-config/**"
+              - "packages/shared/**"
+              - "packages/types/**"
+              - "packages/typescript-config/**"
+              - "turbo.json"
+              - "bun.lock"
+              - "package.json"
+              - ".github/workflows/storefront.yml"
+
   deploy:
+    needs: changes
+    if: ${{ needs.changes.outputs.storefront == 'true' }}
     name: Release to Vercel
     runs-on: ubuntu-latest
     environment: Production

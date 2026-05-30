@@ -3,21 +3,34 @@ name: Admin App CD
 on:
   push:
     branches: ["main"]
-    paths:
-      - "apps/admin/**"
-      - "packages/database/**"
-      - "packages/eslint-config/**"
-      - "packages/shared/**"
-      - "packages/types/**"
-      - "packages/typescript-config/**"
-      - "turbo.json"
-      - "bun.lock"
-      - "package.json"
-      - ".github/workflows/admin.yml"
   workflow_dispatch:
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      admin: ${{ steps.filter.outputs.admin }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            admin:
+              - "apps/admin/**"
+              - "packages/database/**"
+              - "packages/eslint-config/**"
+              - "packages/shared/**"
+              - "packages/types/**"
+              - "packages/typescript-config/**"
+              - "turbo.json"
+              - "bun.lock"
+              - "package.json"
+              - ".github/workflows/admin.yml"
+
   deploy:
+    needs: changes
+    if: ${{ needs.changes.outputs.admin == 'true' }}
     name: Release to Vercel
     runs-on: ubuntu-latest
     environment: Production
