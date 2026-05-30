@@ -66,11 +66,19 @@ try {
     };
   }
 
-  const result = spawnSync('node', [targetScript], {
+  let result = spawnSync('bun', ['run', targetScript], {
     input: JSON.stringify(claudeInput),
     stdio: ['pipe', 'pipe', 'pipe'],
     cwd: workspaceRoot // Execute Claude hooks from workspace root
   });
+
+  if (result.error && result.error.code === 'ENOENT') {
+    result = spawnSync('node', [targetScript], {
+      input: JSON.stringify(claudeInput),
+      stdio: ['pipe', 'pipe', 'pipe'],
+      cwd: workspaceRoot
+    });
+  }
 
   const stderrStr = result.stderr ? result.stderr.toString().trim() : '';
   const stdoutStr = result.stdout ? result.stdout.toString().trim() : '';
