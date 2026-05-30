@@ -5,7 +5,7 @@ interface IReturningChain {
 }
 
 interface IWhereChain {
-  where: Mock<(...args: unknown[]) => IReturningChain & { prepare: Mock<(...args: unknown[]) => unknown> }>;
+  where: Mock<(...args: unknown[]) => IReturningChain & { prepare: Mock<(...args: unknown[]) => unknown>; limit: Mock<(...args: unknown[]) => unknown> }>;
 }
 
 interface IOnConflictDoUpdateChain {
@@ -26,9 +26,10 @@ interface IFromChain {
 
 export const mockReturning = vi.fn();
 export const mockPrepare = vi.fn();
+export const mockLimit = vi.fn();
 export const mockWhere = vi
   .fn()
-  .mockImplementation(() => ({ returning: mockReturning, prepare: mockPrepare }));
+  .mockImplementation(() => ({ returning: mockReturning, prepare: mockPrepare, limit: mockLimit }));
 export const mockOnConflictDoUpdate = vi
   .fn()
   .mockImplementation(() => ({ returning: mockReturning }));

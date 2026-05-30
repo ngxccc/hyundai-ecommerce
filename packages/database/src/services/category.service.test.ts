@@ -7,6 +7,7 @@ import {
   mockDelete,
   mockReturning,
   mockWhere,
+  mockLimit,
 } from "../tests/utils/db-mock";
 import { CategoryService } from "./category.service";
 import type { IDatabase } from "../client";
@@ -15,7 +16,7 @@ const categoryService = new CategoryService(mockDb as unknown as IDatabase);
 
 describe("CategoryService", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   test("getAll() should return a list of categories using query", async () => {
@@ -106,6 +107,35 @@ describe("CategoryService", () => {
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
     expect(result).toEqual({ success: true, data: mockCategory });
+  });
+
+  test("getById() should return category when found", async () => {
+    const mockCategory = {
+      id: "1",
+      name: "Generators",
+      slug: "generators",
+      parentId: null,
+      description: null,
+      image: null,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    mockLimit.mockResolvedValueOnce([mockCategory]);
+
+    const result = await categoryService.getById("1");
+
+    expect(mockLimit).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(mockCategory);
+  });
+
+  test("getById() should return undefined when not found", async () => {
+    mockLimit.mockResolvedValueOnce([]);
+
+    const result = await categoryService.getById("99");
+
+    expect(mockLimit).toHaveBeenCalledTimes(1);
+    expect(result).toBeUndefined();
   });
 
   test("delete() should delete category", async () => {

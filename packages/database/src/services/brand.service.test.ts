@@ -7,6 +7,7 @@ import {
   mockDelete,
   mockReturning,
   mockWhere,
+  mockLimit,
 } from "../tests/utils/db-mock";
 import { BrandService } from "./brand.service";
 import type { IDatabase } from "../client";
@@ -15,7 +16,7 @@ const brandService = new BrandService(mockDb as unknown as IDatabase);
 
 describe("BrandService", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   test("getAll() should return a list of brands", async () => {
@@ -108,6 +109,35 @@ describe("BrandService", () => {
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
     expect(result).toEqual({ success: true, data: mockBrand });
+  });
+
+  test("getById() should return brand when found", async () => {
+    const mockBrand = {
+      id: "1",
+      name: "Hyundai",
+      slug: "hyundai",
+      logo: null,
+      description: null,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      deletedAt: null,
+    };
+    mockLimit.mockResolvedValueOnce([mockBrand]);
+
+    const result = await brandService.getById("1");
+
+    expect(mockLimit).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(mockBrand);
+  });
+
+  test("getById() should return undefined when not found", async () => {
+    mockLimit.mockResolvedValueOnce([]);
+
+    const result = await brandService.getById("99");
+
+    expect(mockLimit).toHaveBeenCalledTimes(1);
+    expect(result).toBeUndefined();
   });
 
   test("delete() should delete brand", async () => {
