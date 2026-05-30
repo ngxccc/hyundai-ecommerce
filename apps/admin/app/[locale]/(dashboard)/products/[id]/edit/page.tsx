@@ -19,7 +19,7 @@ export default async function EditProductPage({
   const [product, t, tNav, categories, brands] = await Promise.all([
     productService.getById(id),
     getTranslations("AdminProductForm"),
-    getTranslations("AdminBreadcrumbs"),
+    getTranslations("AdminDashboard.nav"),
     categoryService.getAll(),
     brandService.getAll(),
   ]);
@@ -36,18 +36,20 @@ export default async function EditProductPage({
         showAddButton={false}
       />
       <div className="flex-1 space-y-4 p-2">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("dashboard"), href: "/" },
-            { label: tNav("products"), href: "/products" },
-            { label: t("editTitle") },
-          ]}
-        />
         <div className="mx-auto">
           <ProductForm
             initialData={product}
             categories={categories}
             brands={brands}
+            breadcrumbs={
+              <AdminBreadcrumbs
+                items={[
+                  { label: tNav("overview"), href: "/" },
+                  { label: tNav("products"), href: "/products" },
+                  { label: t("editTitle") },
+                ]}
+              />
+            }
           />
         </div>
       </div>

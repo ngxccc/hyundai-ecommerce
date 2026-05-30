@@ -42,15 +42,18 @@ export default async function AdminNewCategoryPage() {
       />
 
       <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("overview"), href: "/" },
-            { label: tNav("categories"), href: "/categories" },
-            { label: tForm("title") },
-          ]}
+        <CategoryForm
+          categories={categories}
+          breadcrumbs={
+            <AdminBreadcrumbs
+              items={[
+                { label: tNav("overview"), href: "/" },
+                { label: tNav("categories"), href: "/categories" },
+                { label: tForm("title") },
+              ]}
+            />
+          }
         />
-
-        <CategoryForm categories={categories} />
       </div>
     </>
   );

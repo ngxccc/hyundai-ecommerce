@@ -1,7 +1,7 @@
 "use client";
 
-import { useTransition } from "react";
-import { useForm, type Resolver } from "react-hook-form";
+import { useTransition, type ReactNode } from "react";
+import { useForm, useWatch, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
@@ -40,16 +40,19 @@ import {
   getCreateCategorySchema,
   type TCreateCategoryInput,
 } from "@nhatnang/database/validators";
-import { Save, Loader2, X } from "lucide-react";
+import { Save, Loader2, X, Info } from "lucide-react";
 
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
+import { CategoryImageSection } from "./images-section";
 
 export const CategoryForm = ({
   initialData,
   categories,
+  breadcrumbs,
 }: {
   initialData?: TCategory;
   categories: TCategory[];
+  breadcrumbs?: ReactNode;
 }) => {
   const t = useTranslations("AdminCategoryForm");
 
@@ -70,6 +73,12 @@ export const CategoryForm = ({
       isActive: initialData?.isActive ?? true,
     },
   });
+
+  const image =
+    useWatch({
+      control: form.control,
+      name: "image",
+    }) ?? "";
 
   const onSubmit = (data: TCreateCategoryInput) => {
     startTransition(async () => {
@@ -107,26 +116,38 @@ export const CategoryForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div></div>
-          <div className="flex items-center gap-3 self-end">
-            <Button type="button" variant="outline" onClick={() => router.push("/categories")} disabled={isPending}>
+        <div className="bg-background/80 sticky top-15 z-30 -mx-4 mb-2 flex items-center justify-between rounded-none px-4 pb-2 backdrop-blur-md sm:top-20 sm:-mx-6 sm:px-6 sm:pt-1 sm:pb-2">
+          <div className="hidden flex-1 sm:block">{breadcrumbs}</div>
+          <div className="flex w-full items-center justify-end gap-3 sm:w-fit">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push("/categories")}
+              disabled={isPending}
+            >
               <X className="mr-2 h-4 w-4" />
               {t("buttons.cancel")}
             </Button>
             <Button type="submit" disabled={isPending}>
-              {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+              {isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Save className="mr-2 h-4 w-4" />
+              )}
               {isEditing ? t("buttons.save") : t("buttons.create")}
             </Button>
           </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <Card className="col-span-1">
-            <CardHeader>
-              <CardTitle>{t("sections.general")}</CardTitle>
+          <Card className="col-span-1 gap-4 py-4 shadow-sm">
+            <CardHeader className="border-b px-4 pb-1!">
+              <CardTitle className="text-primary flex items-center gap-2 text-lg">
+                <Info className="text-primary h-5 w-5" />
+                {t("sections.general")}
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 px-4">
               <FormField
                 control={form.control}
                 name="name"
@@ -209,6 +230,7 @@ export const CategoryForm = ({
                         disabled={isPending}
                         {...field}
                         value={field.value ?? ""}
+                        className="min-h-0 resize-none"
                       />
                     </FormControl>
                     <FormMessage />
@@ -237,32 +259,14 @@ export const CategoryForm = ({
             </CardContent>
           </Card>
 
-          <Card className="col-span-1">
-            <CardHeader>
-              <CardTitle>{t("sections.media")}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.image")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="url"
-                        placeholder={t("placeholders.image")}
-                        disabled={isPending}
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
+          <div className="col-span-1">
+            <CategoryImageSection
+              image={image}
+              setImage={(val) =>
+                form.setValue("image", val, { shouldValidate: true })
+              }
+            />
+          </div>
         </div>
       </form>
     </Form>

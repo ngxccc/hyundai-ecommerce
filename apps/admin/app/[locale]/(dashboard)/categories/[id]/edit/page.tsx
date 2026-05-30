@@ -50,15 +50,19 @@ export default async function AdminEditCategoryPage({
       />
 
       <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("overview"), href: "/" },
-            { label: tNav("categories"), href: "/categories" },
-            { label: tForm("editTitle") },
-          ]}
+        <CategoryForm
+          initialData={category}
+          categories={categories}
+          breadcrumbs={
+            <AdminBreadcrumbs
+              items={[
+                { label: tNav("overview"), href: "/" },
+                { label: tNav("categories"), href: "/categories" },
+                { label: tForm("editTitle") },
+              ]}
+            />
+          }
         />
-
-        <CategoryForm initialData={category} categories={categories} />
       </div>
     </>
   );

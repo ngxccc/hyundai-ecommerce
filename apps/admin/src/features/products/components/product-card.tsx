@@ -68,7 +68,7 @@ export const ProductCard = ({ product }: { product: TProductGridItem }) => {
               {product.isQuoteOnly ? t("contact") : formattedPrice}
             </p>
           </div>
-          <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          <div className="flex gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
             <Link href={`/products/${product.id}/edit`}>
               <Button
                 variant="ghost"

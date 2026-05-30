@@ -97,7 +97,7 @@ export default async function AdminProductsPage({
     brands,
   ] = await Promise.all([
     getTranslations("AdminProducts.header"),
-    getTranslations("AdminBreadcrumbs"),
+    getTranslations("AdminDashboard.nav"),
     productService.getAll(20, options),
     categoryService.getAll(),
     brandService.getAll(),
@@ -114,7 +114,7 @@ export default async function AdminProductsPage({
       <div className="mx-auto flex w-full flex-col gap-2 p-2">
         <AdminBreadcrumbs
           items={[
-            { label: tNav("dashboard"), href: "/" },
+            { label: tNav("overview"), href: "/" },
             { label: tNav("products") },
           ]}
         />

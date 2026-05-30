@@ -345,10 +345,6 @@
     "dashboard": "Overview",
     "products": "Product Management"
   },
-  "AdminBreadcrumbs": {
-    "dashboard": "Dashboard",
-    "products": "Products"
-  },
   "AdminBrandForm": {
     "title": "Add Brand",
     "description": "Enter details for the new brand.",
@@ -368,7 +364,10 @@
       "slug": "Slug",
       "description": "Description",
       "isActive": "Active",
-      "logo": "Logo URL"
+      "logo": "Logo URL",
+      "dragDropImage": "Drag and drop image here",
+      "orClickToSelect": "or click to select file",
+      "orEnterUrl": "Or enter image URL directly"
     },
     "placeholders": {
       "name": "e.g. Hyundai",
@@ -408,7 +407,10 @@
       "parentId": "Parent Category",
       "description": "Description",
       "isActive": "Active",
-      "image": "Image URL"
+      "image": "Image URL",
+      "dragDropImage": "Drag and drop image here",
+      "orClickToSelect": "or click to select file",
+      "orEnterUrl": "Or enter image URL directly"
     },
     "placeholders": {
       "name": "e.g. Generators",

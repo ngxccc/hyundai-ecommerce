@@ -47,15 +47,18 @@ export default async function AdminEditBrandPage({
       />
 
       <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("overview"), href: "/" },
-            { label: tNav("brands"), href: "/brands" },
-            { label: tForm("editTitle") },
-          ]}
+        <BrandForm
+          initialData={brand}
+          breadcrumbs={
+            <AdminBreadcrumbs
+              items={[
+                { label: tNav("overview"), href: "/" },
+                { label: tNav("brands"), href: "/brands" },
+                { label: tForm("editTitle") },
+              ]}
+            />
+          }
         />
-
-        <BrandForm initialData={brand} />
       </div>
     </>
   );

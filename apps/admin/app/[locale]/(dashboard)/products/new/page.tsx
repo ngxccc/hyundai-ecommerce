@@ -7,7 +7,7 @@ import { categoryService, brandService } from "@nhatnang/database/services";
 export default async function CreateProductPage() {
   const [t, tNav, categories, brands] = await Promise.all([
     getTranslations("AdminProductForm"),
-    getTranslations("AdminBreadcrumbs"),
+    getTranslations("AdminDashboard.nav"),
     categoryService.getAll(),
     brandService.getAll(),
   ]);
@@ -20,15 +20,20 @@ export default async function CreateProductPage() {
         showAddButton={false}
       />
       <div className="flex-1 space-y-4 p-2">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("dashboard"), href: "/" },
-            { label: tNav("products"), href: "/products" },
-            { label: t("title") },
-          ]}
-        />
         <div className="mx-auto">
-          <ProductForm categories={categories} brands={brands} />
+          <ProductForm
+            categories={categories}
+            brands={brands}
+            breadcrumbs={
+              <AdminBreadcrumbs
+                items={[
+                  { label: tNav("overview"), href: "/" },
+                  { label: tNav("products"), href: "/products" },
+                  { label: t("title") },
+                ]}
+              />
+            }
+          />
         </div>
       </div>
     </>
