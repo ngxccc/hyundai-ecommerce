@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Edit, Trash } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Card } from "@nhatnang/ui/components/ui/card";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -9,32 +9,15 @@ import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import type { TCategory } from "@nhatnang/database/schemas";
 
-import { useTransition } from "react";
-import { deleteCategoryAction } from "../actions/category.actions";
-import { toast } from "@nhatnang/ui/components/ui/sonner";
-import { useRouter } from "next/navigation";
+import { DeleteCategoryButton } from "./delete-category-button";
 
 export const CategoryCard = ({ category, parentName }: { category: TCategory; parentName?: string | undefined }) => {
   const t = useTranslations("AdminCategories.card");
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
 
   const status = category.isActive ? "active" : "inactive";
   const image = category.image?.length ? category.image : "https://placehold.co/400x300/png?text=No+Image";
 
-  const handleDelete = () => {
-    if (confirm("Are you sure you want to delete this category?")) {
-      startTransition(async () => {
-        const result = await deleteCategoryAction(category.id);
-        if (result.success) {
-          toast.success("Category deleted successfully");
-          router.refresh();
-        } else {
-          toast.error(result.error ?? "Failed to delete category");
-        }
-      });
-    }
-  };
+
 
   return (
     <Card className="group relative flex flex-col gap-0 p-3 shadow-sm">
@@ -89,16 +72,10 @@ export const CategoryCard = ({ category, parentName }: { category: TCategory; pa
                 <Edit className="h-4 w-4" />
               </Button>
             </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-destructive hover:bg-destructive/20 hover:text-destructive h-8 w-8 transition-colors"
-              title={t("actions.delete")}
-              onClick={handleDelete}
-              disabled={isPending}
-            >
-              <Trash className="h-4 w-4" />
-            </Button>
+            <DeleteCategoryButton
+              categoryId={category.id}
+              categoryName={category.name}
+            />
           </div>
         </div>
       </div>

@@ -477,6 +477,19 @@
         "edit": "Edit",
         "delete": "Delete"
       }
+    },
+    "messages": {
+      "deleteSuccess": "Category deleted successfully",
+      "deleteError": "Failed to delete category"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete?",
+        "description": "Category \"{categoryName}\" will be removed. This action cannot be undone.",
+        "cancel": "Cancel",
+        "deleting": "Deleting...",
+        "confirm": "Delete Category"
+      }
     }
   },
   "AdminBrands": {
@@ -494,6 +507,19 @@
       "actions": {
         "edit": "Edit",
         "delete": "Delete"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Brand deleted successfully",
+      "deleteError": "Failed to delete brand"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete?",
+        "description": "Brand \"{brandName}\" will be removed. This action cannot be undone.",
+        "cancel": "Cancel",
+        "deleting": "Deleting...",
+        "confirm": "Delete Brand"
       }
     }
   }
