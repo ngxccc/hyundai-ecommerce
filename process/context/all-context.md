@@ -94,3 +94,8 @@ When creating ADRs in `docs/adr/`, follow these strict rules:
 - The database package is the source of truth for auth form schemas.
 - The `@nhatnang/types` package owns shared contracts such as auth action/result types and product specs.
 - Shared packages should contain only contracts that are intentionally reused across modules.
+
+## 9. Frontend & UI Guidelines
+
+- **Admin Form Layout**: When building forms in `apps/admin`, remove `<h2>` titles from the form component itself. Instead, pass `title` and `description` (via `t()`) to a shared `<Header>` component. Action buttons (Save, Cancel) must be placed at the bottom right of the form using `flex justify-end gap-x-4`.
+- **Next-Intl Keys**: Flatten the translation keys in `messages/vi.json` and `messages/en.json` when used inside forms or components. Grouping keys into objects (e.g., `"title": { "main": "...", "sub": "..." }`) causes Next-Intl's strict type checker (`vi.d.json.ts`) to throw `Expected 2-3 arguments` errors. Use flat keys like `"title"` and `"description"`.
