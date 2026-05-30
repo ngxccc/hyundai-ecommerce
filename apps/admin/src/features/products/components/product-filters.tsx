@@ -13,7 +13,8 @@ import {
 } from "@nhatnang/ui/components/ui/select";
 import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Input } from "@nhatnang/ui/components/ui/input";
-import { Search } from "lucide-react";
+import { Button } from "@nhatnang/ui/components/ui/button";
+import { Search, X } from "lucide-react";
 import type { TCategory, TBrand } from "@nhatnang/database/schemas";
 
 interface ProductFiltersProps {
@@ -45,29 +46,50 @@ export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
     [pathname, router, searchParams],
   );
 
-  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") ?? "");
-  const [engineBrand, setEngineBrand] = useState(searchParams.get("engineBrand") ?? "");
-  const [alternatorBrand, setAlternatorBrand] = useState(searchParams.get("alternatorBrand") ?? "");
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("search") ?? "",
+  );
+  const [engineBrand, setEngineBrand] = useState(
+    searchParams.get("engineBrand") ?? "",
+  );
+  const [alternatorBrand, setAlternatorBrand] = useState(
+    searchParams.get("alternatorBrand") ?? "",
+  );
   const [minPower, setMinPower] = useState(searchParams.get("minPower") ?? "");
   const [maxPower, setMaxPower] = useState(searchParams.get("maxPower") ?? "");
   const [voltage, setVoltage] = useState(searchParams.get("voltage") ?? "");
 
+  const handleResetFilters = useCallback(() => {
+    setSearchTerm("");
+    setEngineBrand("");
+    setAlternatorBrand("");
+    setMinPower("");
+    setMaxPower("");
+    setVoltage("");
+    router.push(pathname);
+  }, [pathname, router]);
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       const currentSearch = searchParams.get("search") ?? "";
-      if (searchTerm !== currentSearch) handleFilterChange("search", searchTerm);
+      if (searchTerm !== currentSearch)
+        handleFilterChange("search", searchTerm);
 
       const currentEngineBrand = searchParams.get("engineBrand") ?? "";
-      if (engineBrand !== currentEngineBrand) handleFilterChange("engineBrand", engineBrand);
+      if (engineBrand !== currentEngineBrand)
+        handleFilterChange("engineBrand", engineBrand);
 
       const currentAlternatorBrand = searchParams.get("alternatorBrand") ?? "";
-      if (alternatorBrand !== currentAlternatorBrand) handleFilterChange("alternatorBrand", alternatorBrand);
+      if (alternatorBrand !== currentAlternatorBrand)
+        handleFilterChange("alternatorBrand", alternatorBrand);
 
       const currentMinPower = searchParams.get("minPower") ?? "";
-      if (minPower !== currentMinPower) handleFilterChange("minPower", minPower);
+      if (minPower !== currentMinPower)
+        handleFilterChange("minPower", minPower);
 
       const currentMaxPower = searchParams.get("maxPower") ?? "";
-      if (maxPower !== currentMaxPower) handleFilterChange("maxPower", maxPower);
+      if (maxPower !== currentMaxPower)
+        handleFilterChange("maxPower", maxPower);
 
       const currentVoltage = searchParams.get("voltage") ?? "";
       if (voltage !== currentVoltage) handleFilterChange("voltage", voltage);
@@ -85,16 +107,37 @@ export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
     handleFilterChange,
   ]);
 
+  const hasFilters =
+    searchParams.toString() !== "" ||
+    searchTerm !== "" ||
+    engineBrand !== "" ||
+    alternatorBrand !== "" ||
+    minPower !== "" ||
+    maxPower !== "" ||
+    voltage !== "";
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative w-full">
-        <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-        <Input
-          placeholder={t("searchPlaceholder")}
-          className="bg-card w-full pl-9 shadow-sm"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      <div className="flex w-full items-center gap-2">
+        <div className="relative w-full">
+          <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+          <Input
+            placeholder={t("searchPlaceholder")}
+            className="bg-card w-full pl-9 shadow-sm"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        {hasFilters && (
+          <Button
+            variant="outline"
+            onClick={handleResetFilters}
+            className="shrink-0 gap-2"
+          >
+            <X className="h-4 w-4" />
+            <span className="hidden sm:inline">{t("resetFilters")}</span>
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
@@ -145,7 +188,9 @@ export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
           <SelectContent>
             <SelectItem value="all">{t("allFuels")}</SelectItem>
             <SelectItem value="diesel">{t("fuelOptions.diesel")}</SelectItem>
-            <SelectItem value="gasoline">{t("fuelOptions.gasoline")}</SelectItem>
+            <SelectItem value="gasoline">
+              {t("fuelOptions.gasoline")}
+            </SelectItem>
             <SelectItem value="gas">{t("fuelOptions.gas")}</SelectItem>
           </SelectContent>
         </Select>

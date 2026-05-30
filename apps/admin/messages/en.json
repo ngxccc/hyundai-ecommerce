@@ -152,6 +152,7 @@
     },
     "filters": {
       "searchPlaceholder": "Search model or name...",
+      "resetFilters": "Reset Filters",
       "allCategories": "All Categories",
       "status": "Status",
       "brand": "Brand",

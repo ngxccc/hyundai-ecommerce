@@ -152,6 +152,7 @@
     },
     "filters": {
       "searchPlaceholder": "Tìm kiếm theo model hoặc tên...",
+      "resetFilters": "Xoá bộ lọc",
       "allCategories": "Tất cả danh mục",
       "status": "Trạng thái",
       "brand": "Thương hiệu",
