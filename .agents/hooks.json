@@ -21,6 +21,10 @@
           {
             "type": "command",
             "command": "node ./ag-adapter.cjs PreToolUse .claude/hooks/privacy-block.cjs"
+          },
+          {
+            "type": "command",
+            "command": "node ./ag-adapter.cjs PreToolUse .claude/hooks/enforce-strict-paths.cjs"
           }
         ]
       }
