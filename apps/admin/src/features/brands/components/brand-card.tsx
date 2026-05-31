@@ -56,7 +56,7 @@ export const BrandCard = ({ brand }: { brand: TBrand }) => {
         </p>
 
         <div className="mt-auto flex items-end justify-end">
-          <div className="flex gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+          <div className="flex gap-1 transition-opacity opacity-40 sm:group-hover:opacity-100">
             <Link href={`/brands/${brand.id}/edit`}>
               <Button
                 variant="ghost"

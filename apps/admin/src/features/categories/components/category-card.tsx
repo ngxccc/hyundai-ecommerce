@@ -11,13 +11,19 @@ import type { TCategory } from "@nhatnang/database/schemas";
 
 import { DeleteCategoryButton } from "./delete-category-button";
 
-export const CategoryCard = ({ category, parentName }: { category: TCategory; parentName?: string | undefined }) => {
+export const CategoryCard = ({
+  category,
+  parentName,
+}: {
+  category: TCategory;
+  parentName?: string | undefined;
+}) => {
   const t = useTranslations("AdminCategories.card");
 
   const status = category.isActive ? "active" : "inactive";
-  const image = category.image?.length ? category.image : "https://placehold.co/400x300/png?text=No+Image";
-
-
+  const image = category.image?.length
+    ? category.image
+    : "https://placehold.co/400x300/png?text=No+Image";
 
   return (
     <Card className="group relative flex flex-col gap-0 p-3 shadow-sm">
@@ -56,12 +62,12 @@ export const CategoryCard = ({ category, parentName }: { category: TCategory; pa
             ↳ {parentName}
           </p>
         )}
-        <p className="text-muted-foreground mb-4 text-sm line-clamp-2">
+        <p className="text-muted-foreground mb-4 line-clamp-2 text-sm">
           {category.description ?? "No description"}
         </p>
 
         <div className="mt-auto flex items-end justify-end">
-          <div className="flex gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+          <div className="flex gap-1 opacity-40 transition-opacity sm:group-hover:opacity-100">
             <Link href={`/categories/${category.id}/edit`}>
               <Button
                 variant="ghost"
