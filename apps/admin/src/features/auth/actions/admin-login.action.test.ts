@@ -59,7 +59,7 @@ describe("adminLoginAction", () => {
       success: true,
       data: { userId: "1" },
     };
-    loginEmailMock.mockResolvedValueOnce(mockSuccessResponse);
+    loginEmailMock.mockResolvedValueOnce({ userId: "1" });
 
     const validData = {
       email: "admin@example.com",

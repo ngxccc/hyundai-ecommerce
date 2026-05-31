@@ -42,7 +42,7 @@ export const DeleteBrandButton = ({
         setIsOpen(false);
         router.refresh();
       } else {
-        toast.error(result.error ?? t("messages.deleteError"));
+        toast.error("error" in result && result.error ? result.error : t("messages.deleteError"));
       }
     });
   };

@@ -4,7 +4,7 @@ import type {
   LoginOptions,
   RegisterOptions,
 } from "./auth.service.interface";
-import type { TAuthActionResult } from "@nhatnang/types";
+
 import {
   AUTH_ERROR_CODES,
   type TAuthErrorCode,
@@ -35,7 +35,7 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
   async loginEmail(
     data: TLoginForm,
     options?: LoginOptions,
-  ): Promise<TAuthActionResult<{ userId: string }>> {
+  ): Promise<{ userId: string }> {
     const { email, password } = data;
     try {
       const result = await auth.api.signInEmail({
@@ -49,29 +49,22 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
         ...(options?.headers && { headers: options.headers }),
       });
 
-      return { success: true, data: { userId: result.user.id } };
+      return { userId: result.user.id };
     } catch (error) {
       console.error("Auth Service Error(signin): ", error);
 
       if (isAPIError(error)) {
-        return {
-          success: false,
-          code: mapLoginAuthErrorCode(error),
-          error: error instanceof Error ? error.message : "Failed to login",
-        };
+        throw new Error(`errors.${mapLoginAuthErrorCode(error)}`, { cause: error });
       }
 
-      return {
-        success: false,
-        code: "INTERNAL_SERVER_ERROR",
-      };
+      throw new Error("errors.INTERNAL_SERVER_ERROR", { cause: error });
     }
   }
 
   async register(
     data: TRegisterForm,
     options?: RegisterOptions,
-  ): Promise<TAuthActionResult<{ userId: string }>> {
+  ): Promise<{ userId: string }> {
     try {
       const {
         email,
@@ -99,22 +92,15 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
         asResponse: false,
       });
 
-      return { success: true, data: { userId: result.user.id } };
+      return { userId: result.user.id };
     } catch (error) {
       console.error("Auth Service Error(register): ", error);
 
       if (isAPIError(error)) {
-        return {
-          success: false,
-          error: error instanceof Error ? error.message : "Failed to register",
-          code: mapLoginAuthErrorCode(error),
-        };
+        throw new Error(`errors.${mapLoginAuthErrorCode(error)}`, { cause: error });
       }
 
-      return {
-        success: false,
-        code: "INTERNAL_SERVER_ERROR",
-      };
+      throw new Error("errors.INTERNAL_SERVER_ERROR", { cause: error });
     }
   }
 }

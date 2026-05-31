@@ -35,11 +35,6 @@ export const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const errorMessages: Record<string, string> = {
-    INVALID_CREDENTIALS: t("validation.invalidCredentials"),
-    ACCOUNT_LOCKED: t("validation.accountLocked"),
-    EMAIL_NOT_VERIFIED: t("validation.unverifiedEmail"),
-  };
 
   const form = useForm<TLoginForm>({
     resolver: zodResolver(createLoginSchema(t)),
@@ -55,8 +50,11 @@ export const LoginForm = () => {
         const result = await adminLoginAction(data);
 
         if (!result.success) {
-          const errorMessage = errorMessages[result.code] ?? t("errorMessage");
-          toast.error(errorMessage);
+          if ("error" in result && result.error) {
+            toast.error(result.error);
+          } else {
+            toast.error(t("errorMessage"));
+          }
           return;
         }
 

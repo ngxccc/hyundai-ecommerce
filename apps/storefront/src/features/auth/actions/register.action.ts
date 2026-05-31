@@ -6,6 +6,7 @@ import {
 } from "@nhatnang/shared/constants";
 import { z } from "zod";
 import { authService, userService } from "@nhatnang/database/services";
+import { getTranslations } from "next-intl/server";
 import {
   createRegisterSchema,
   type TRegisterForm,
@@ -47,5 +48,23 @@ export async function registerAction(data: TRegisterForm) {
     };
   }
 
-  return authService.register(validatedData);
+  try {
+    const responseData = await authService.register(validatedData);
+    return { success: true as const, data: responseData };
+  } catch (error) {
+    const t = await getTranslations("errors");
+    console.error("[registerAction]", error);
+
+    let errorMessage = t("registerFailed");
+    if (error instanceof Error && error.message.startsWith("errors.")) {
+      const key = error.message.replace("errors.", "");
+      // @ts-expect-error - dynamic key
+      errorMessage = t(key);
+    }
+
+    return {
+      success: false as const,
+      error: errorMessage,
+    };
+  }
 }

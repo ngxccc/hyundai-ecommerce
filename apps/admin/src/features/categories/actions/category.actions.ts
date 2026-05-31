@@ -29,11 +29,9 @@ export const createCategoryAction = async (data: TCreateCategoryInput) => {
 
     const validatedData = parsed.data;
 
-    const result = await categoryService.create(validatedData);
-    if (result.success) {
-      revalidatePath("/categories");
-    }
-    return result;
+    const categoryData = await categoryService.create(validatedData);
+    revalidatePath("/categories");
+    return { success: true as const, data: categoryData };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
@@ -42,9 +40,15 @@ export const createCategoryAction = async (data: TCreateCategoryInput) => {
       return { success: false as const, error: message };
     }
     console.error("[createCategoryAction]", error);
+    let errorMessage = t("createCategoryFailed");
+    if (error instanceof Error && error.message.startsWith("errors.")) {
+      const key = error.message.replace("errors.", "");
+      // @ts-expect-error - dynamic key
+      errorMessage = t(key);
+    }
     return {
       success: false as const,
-      error: t("createCategoryFailed"),
+      error: errorMessage,
     };
   }
 };
@@ -68,12 +72,10 @@ export async function updateCategoryAction(
 
     const validatedData = parsed.data;
 
-    const result = await categoryService.update(validatedData);
-    if (result.success) {
-      revalidatePath("/categories");
-      revalidatePath(`/categories/${id}/edit`);
-    }
-    return result;
+    const categoryData = await categoryService.update(validatedData);
+    revalidatePath("/categories");
+    revalidatePath(`/categories/${id}/edit`);
+    return { success: true as const, data: categoryData };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
@@ -82,9 +84,15 @@ export async function updateCategoryAction(
       return { success: false as const, error: message };
     }
     console.error("[updateCategoryAction]", error);
+    let errorMessage = t("updateCategoryFailed");
+    if (error instanceof Error && error.message.startsWith("errors.")) {
+      const key = error.message.replace("errors.", "");
+      // @ts-expect-error - dynamic key
+      errorMessage = t(key);
+    }
     return {
       success: false as const,
-      error: t("updateCategoryFailed"),
+      error: errorMessage,
     };
   }
 }
@@ -92,11 +100,9 @@ export async function updateCategoryAction(
 export async function deleteCategoryAction(id: string) {
   try {
     await requireAuth();
-    const result = await categoryService.delete(id);
-    if (result.success) {
-      revalidatePath("/categories");
-    }
-    return result;
+    const categoryData = await categoryService.delete(id);
+    revalidatePath("/categories");
+    return { success: true as const, data: categoryData };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
@@ -105,9 +111,15 @@ export async function deleteCategoryAction(id: string) {
       return { success: false as const, error: message };
     }
     console.error("[deleteCategoryAction]", error);
+    let errorMessage = t("deleteCategoryFailed");
+    if (error instanceof Error && error.message.startsWith("errors.")) {
+      const key = error.message.replace("errors.", "");
+      // @ts-expect-error - dynamic key
+      errorMessage = t(key);
+    }
     return {
       success: false as const,
-      error: t("deleteCategoryFailed"),
+      error: errorMessage,
     };
   }
 }

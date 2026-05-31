@@ -4,7 +4,11 @@ import { headers } from "next/headers";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { z } from "zod";
 import { authService } from "@nhatnang/database/services";
-import { createLoginSchema, type TLoginForm } from "@nhatnang/database/validators";
+import { getTranslations } from "next-intl/server";
+import {
+  createLoginSchema,
+  type TLoginForm,
+} from "@nhatnang/database/validators";
 
 export const adminLoginAction = async (data: TLoginForm) => {
   const schema = createLoginSchema((key) => key);
@@ -18,10 +22,25 @@ export const adminLoginAction = async (data: TLoginForm) => {
     };
   }
 
-  // Use the standard loginEmail from authService
-  const result = await authService.loginEmail(parsed.data, {
-    headers: await headers(),
-  });
+  try {
+    const data = await authService.loginEmail(parsed.data, {
+      headers: await headers(),
+    });
+    return { success: true as const, data };
+  } catch (error) {
+    const t = await getTranslations("errors");
+    console.error("[adminLoginAction]", error);
 
-  return result;
+    let errorMessage = t("loginFailed");
+    if (error instanceof Error && error.message.startsWith("errors.")) {
+      const key = error.message.replace("errors.", "");
+      // @ts-expect-error - dynamic key
+      errorMessage = t(key);
+    }
+
+    return {
+      success: false as const,
+      error: errorMessage,
+    };
+  }
 };

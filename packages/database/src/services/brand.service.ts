@@ -3,7 +3,7 @@ import { brands, type TBrand } from "../schemas/brand.schema";
 import { type IDatabase } from "../client";
 import { eq } from "drizzle-orm";
 import type { TCreateBrandInput, TUpdateBrandInput } from "../validators";
-import type { TActionResult } from "@nhatnang/types";
+
 import { isUniqueConstraintError } from "../utils";
 
 export class BrandService implements IBrandService {
@@ -23,78 +23,57 @@ export class BrandService implements IBrandService {
     return brand;
   }
 
-  async create(input: TCreateBrandInput): Promise<TActionResult<TBrand>> {
+  async create(input: TCreateBrandInput): Promise<TBrand> {
     try {
       const [newBrand] = await this.db.insert(brands).values(input).returning();
-      if (!newBrand)
-        return {
-          success: false,
-          code: "INTERNAL_SERVER_ERROR",
-          error: "Failed to create brand",
-        };
-      return { success: true, data: newBrand };
+      if (!newBrand) throw new Error("errors.createBrandFailed");
+      return newBrand;
     } catch (error: unknown) {
       if (isUniqueConstraintError(error)) {
-        return {
-          success: false,
-          code: "VALIDATION_ERROR",
-          error: "validation.slugExists",
-        };
+        throw new Error("errors.validation.slugExists", { cause: error });
       }
-      return {
-        success: false,
-        code: "INTERNAL_SERVER_ERROR",
-        error:
-          error instanceof Error ? error.message : "Failed to create brand",
-      };
+      if (
+        error instanceof Error &&
+        error.message === "errors.createBrandFailed"
+      ) {
+        throw error;
+      }
+      throw new Error("errors.createBrandFailed", { cause: error });
     }
   }
 
   async update({
     id,
     ...data
-  }: TUpdateBrandInput): Promise<TActionResult<TBrand>> {
+  }: TUpdateBrandInput): Promise<TBrand> {
     try {
       const [updatedBrand] = await this.db
         .update(brands)
         .set(data)
         .where(eq(brands.id, id))
         .returning();
-      if (!updatedBrand)
-        return {
-          success: false,
-          code: "VALIDATION_ERROR",
-          error: "Brand not found",
-        };
-      return { success: true, data: updatedBrand };
+      if (!updatedBrand) throw new Error("errors.brandNotFound");
+      return updatedBrand;
     } catch (error: unknown) {
       if (isUniqueConstraintError(error)) {
-        return {
-          success: false,
-          code: "VALIDATION_ERROR",
-          error: "validation.slugExists",
-        };
+        throw new Error("errors.validation.slugExists", { cause: error });
       }
-      return {
-        success: false,
-        code: "INTERNAL_SERVER_ERROR",
-        error:
-          error instanceof Error ? error.message : "Failed to update brand",
-      };
+      if (
+        error instanceof Error &&
+        error.message === "errors.brandNotFound"
+      ) {
+        throw error;
+      }
+      throw new Error("errors.updateBrandFailed", { cause: error });
     }
   }
 
-  async delete(id: string): Promise<TActionResult<boolean>> {
+  async delete(id: string): Promise<boolean> {
     try {
       await this.db.delete(brands).where(eq(brands.id, id));
-      return { success: true, data: true };
+      return true;
     } catch (error: unknown) {
-      return {
-        success: false,
-        code: "INTERNAL_SERVER_ERROR",
-        error:
-          error instanceof Error ? error.message : "Failed to delete brand",
-      };
+      throw new Error("errors.deleteBrandFailed", { cause: error });
     }
   }
 }

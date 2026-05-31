@@ -613,10 +613,10 @@
   "errors": {
     "unauthorized": "Không có quyền truy cập",
     "forbidden": "Bị từ chối: Yêu cầu quyền quản trị",
-    "createBrandFailed": "Tạo thương hiệu thất bại",
+    "createBrandFailed": "Thêm thương hiệu thất bại",
     "updateBrandFailed": "Cập nhật thương hiệu thất bại",
     "deleteBrandFailed": "Xóa thương hiệu thất bại",
-    "createCategoryFailed": "Tạo danh mục thất bại",
+    "createCategoryFailed": "Thêm danh mục thất bại",
     "updateCategoryFailed": "Cập nhật danh mục thất bại",
     "deleteCategoryFailed": "Xóa danh mục thất bại",
     "createProductFailed": "Tạo sản phẩm thất bại. Đường dẫn (slug) có thể đã được sử dụng.",
@@ -628,7 +628,12 @@
     "deleteWarehouseFailed": "Xóa kho thất bại",
     "warehouseNotFound": "Không tìm thấy kho",
     "updateWarehouseStockFailed": "Cập nhật tồn kho thất bại",
-    "default": "Đã xảy ra lỗi không xác định"
+    "default": "Đã xảy ra lỗi không xác định",
+    "loginFailed": "Đăng nhập thất bại",
+    "INVALID_CREDENTIALS": "Tài khoản hoặc mật khẩu không đúng",
+    "EMAIL_NOT_VERIFIED": "Email chưa được xác minh",
+    "ACCOUNT_LOCKED": "Tài khoản đã bị khóa",
+    "INTERNAL_SERVER_ERROR": "Lỗi hệ thống"
   },
   "AdminInventory": {
     "title": "Quản lý tồn kho",

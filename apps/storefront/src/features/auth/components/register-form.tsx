@@ -20,6 +20,7 @@ import { PasswordSection } from "./password-section";
 import { TermsSection } from "./terms-section";
 import { Form } from "@/shared/components/ui/form";
 import { registerAction } from "../actions/register.action";
+
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
 import {
   createRegisterSchema,
@@ -77,10 +78,11 @@ export const RegisterForm = () => {
           return;
         }
 
-        const errorCode = result.code;
-        const errorMessage = errorMessages[errorCode] ?? t("errorMessage");
-
-        toast.error(errorMessage);
+        if ("error" in result && result.error) {
+          toast.error(result.error);
+        } else {
+          toast.error(t("errorMessage"));
+        }
         return;
       }
 

@@ -102,12 +102,13 @@ export const CategoryForm = ({
         router.refresh();
       } else {
         if (
+          "code" in result &&
           result.code === SYSTEM_ERROR_CODES.VALIDATION_ERROR &&
-          result.error === "validation.slugExists"
+          "error" in result && result.error === "validation.slugExists"
         ) {
           form.setError("slug", { message: t("validation.slugExists") });
         } else {
-          toast.error(result.error ?? t("messages.error"));
+          toast.error("error" in result && result.error ? result.error : t("messages.error"));
         }
       }
     });

@@ -29,11 +29,9 @@ export const createBrandAction = async (data: TCreateBrandInput) => {
 
     const validatedData = parsed.data;
 
-    const result = await brandService.create(validatedData);
-    if (result.success) {
-      revalidatePath("/brands");
-    }
-    return result;
+    const brandData = await brandService.create(validatedData);
+    revalidatePath("/brands");
+    return { success: true as const, data: brandData };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
@@ -42,9 +40,15 @@ export const createBrandAction = async (data: TCreateBrandInput) => {
       return { success: false as const, error: message };
     }
     console.error("[createBrandAction]", error);
+    let errorMessage = t("createBrandFailed");
+    if (error instanceof Error && error.message.startsWith("errors.")) {
+      const key = error.message.replace("errors.", "");
+      // @ts-expect-error - dynamic key
+      errorMessage = t(key);
+    }
     return {
       success: false as const,
-      error: t("createBrandFailed"),
+      error: errorMessage,
     };
   }
 };
@@ -65,12 +69,10 @@ export async function updateBrandAction(id: string, data: TUpdateBrandInput) {
 
     const validatedData = parsed.data;
 
-    const result = await brandService.update(validatedData);
-    if (result.success) {
-      revalidatePath("/brands");
-      revalidatePath(`/brands/${id}/edit`);
-    }
-    return result;
+    const brandData = await brandService.update(validatedData);
+    revalidatePath("/brands");
+    revalidatePath(`/brands/${id}/edit`);
+    return { success: true as const, data: brandData };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
@@ -79,9 +81,15 @@ export async function updateBrandAction(id: string, data: TUpdateBrandInput) {
       return { success: false as const, error: message };
     }
     console.error("[updateBrandAction]", error);
+    let errorMessage = t("updateBrandFailed");
+    if (error instanceof Error && error.message.startsWith("errors.")) {
+      const key = error.message.replace("errors.", "");
+      // @ts-expect-error - dynamic key
+      errorMessage = t(key);
+    }
     return {
       success: false as const,
-      error: t("updateBrandFailed"),
+      error: errorMessage,
     };
   }
 }
@@ -89,11 +97,9 @@ export async function updateBrandAction(id: string, data: TUpdateBrandInput) {
 export async function deleteBrandAction(id: string) {
   try {
     await requireAuth();
-    const result = await brandService.delete(id);
-    if (result.success) {
-      revalidatePath("/brands");
-    }
-    return result;
+    const brandData = await brandService.delete(id);
+    revalidatePath("/brands");
+    return { success: true as const, data: brandData };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
@@ -102,9 +108,15 @@ export async function deleteBrandAction(id: string) {
       return { success: false as const, error: message };
     }
     console.error("[deleteBrandAction]", error);
+    let errorMessage = t("deleteBrandFailed");
+    if (error instanceof Error && error.message.startsWith("errors.")) {
+      const key = error.message.replace("errors.", "");
+      // @ts-expect-error - dynamic key
+      errorMessage = t(key);
+    }
     return {
       success: false as const,
-      error: t("deleteBrandFailed"),
+      error: errorMessage,
     };
   }
 }

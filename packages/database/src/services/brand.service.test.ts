@@ -69,21 +69,18 @@ describe("BrandService", () => {
 
     expect(mockInsert).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual({ success: true, data: mockBrand });
+    expect(result).toEqual(mockBrand);
   });
 
-  test("create() should return error validation.slugExists on duplicate key error", async () => {
+  test("create() should return error validation.slugExists on duplicate key error", () => {
     mockReturning.mockRejectedValueOnce({ code: "23505" });
-    const result = await brandService.create({
-      name: "Hyundai",
-      slug: "hyundai",
-      isActive: true,
-    });
-    expect(result).toEqual({
-      success: false,
-      code: "VALIDATION_ERROR",
-      error: "validation.slugExists",
-    });
+    expect(
+      brandService.create({
+        name: "Hyundai",
+        slug: "hyundai",
+        isActive: true,
+      }),
+    ).rejects.toThrow("errors.validation.slugExists");
   });
 
   test("update() should update and return brand", async () => {
@@ -108,7 +105,7 @@ describe("BrandService", () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual({ success: true, data: mockBrand });
+    expect(result).toEqual(mockBrand);
   });
 
   test("getById() should return brand when found", async () => {
@@ -147,6 +144,6 @@ describe("BrandService", () => {
 
     expect(mockDelete).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
-    expect(result).toEqual({ success: true, data: true });
+    expect(result).toEqual(true);
   });
 });

@@ -70,21 +70,18 @@ describe("CategoryService", () => {
 
     expect(mockInsert).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual({ success: true, data: mockCategory });
+    expect(result).toEqual(mockCategory);
   });
 
-  test("create() should return error validation.slugExists on duplicate key error", async () => {
+  test("create() should return error validation.slugExists on duplicate key error", () => {
     mockReturning.mockRejectedValueOnce({ code: "23505" });
-    const result = await categoryService.create({
-      name: "Gensets",
-      slug: "gensets",
-      isActive: true,
-    });
-    expect(result).toEqual({
-      success: false,
-      code: "VALIDATION_ERROR",
-      error: "validation.slugExists",
-    });
+    expect(
+      categoryService.create({
+        name: "Gensets",
+        slug: "gensets",
+        isActive: true,
+      }),
+    ).rejects.toThrow("errors.validation.slugExists");
   });
 
   test("update() should update and return category", async () => {
@@ -106,7 +103,7 @@ describe("CategoryService", () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual({ success: true, data: mockCategory });
+    expect(result).toEqual(mockCategory);
   });
 
   test("getById() should return category when found", async () => {
@@ -145,6 +142,6 @@ describe("CategoryService", () => {
 
     expect(mockDelete).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
-    expect(result).toEqual({ success: true, data: true });
+    expect(result).toEqual(true);
   });
 });

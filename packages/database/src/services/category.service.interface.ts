@@ -1,6 +1,6 @@
 import type { TCategory } from "../schemas";
 import type { TCreateCategoryInput, TUpdateCategoryInput } from "../validators";
-import type { TActionResult } from "@nhatnang/types";
+
 
 export interface ICategoryService {
   /**
@@ -10,9 +10,9 @@ export interface ICategoryService {
 
   getById(id: string): Promise<TCategory | undefined>;
 
-  create(input: TCreateCategoryInput): Promise<TActionResult<TCategory>>;
+  create(input: TCreateCategoryInput): Promise<TCategory>;
 
-  update(input: TUpdateCategoryInput): Promise<TActionResult<TCategory>>;
+  update(input: TUpdateCategoryInput): Promise<TCategory>;
 
-  delete(id: string): Promise<TActionResult<boolean>>;
+  delete(id: string): Promise<boolean>;
 }
