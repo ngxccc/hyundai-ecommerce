@@ -1,7 +1,6 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
 import { useState } from "react";
 import Image from "next/image";
 import {
@@ -33,6 +32,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@nhatnang/ui/components/ui/dropdown-menu";
+import { useTheme } from "@nhatnang/ui";
 
 export const AdminSidebar = () => {
   const t = useTranslations("AdminDashboard");
