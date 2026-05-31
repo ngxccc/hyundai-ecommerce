@@ -16,7 +16,7 @@ const brandService = new BrandService(mockDb as unknown as IDatabase);
 
 describe("BrandService", () => {
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   test("getAll() should return a list of brands", async () => {

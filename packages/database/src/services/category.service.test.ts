@@ -16,7 +16,7 @@ const categoryService = new CategoryService(mockDb as unknown as IDatabase);
 
 describe("CategoryService", () => {
   beforeEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   test("getAll() should return a list of categories using query", async () => {

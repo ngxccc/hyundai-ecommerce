@@ -540,6 +540,11 @@
     "updateProductFailed": "Cập nhật sản phẩm thất bại. Đường dẫn (slug) có thể đã được sử dụng.",
     "deleteProductFailed": "Xóa sản phẩm thất bại",
     "productNotFound": "Không tìm thấy sản phẩm hoặc đã bị xóa",
+    "createWarehouseFailed": "Tạo kho thất bại",
+    "updateWarehouseFailed": "Cập nhật kho thất bại",
+    "deleteWarehouseFailed": "Xóa kho thất bại",
+    "warehouseNotFound": "Không tìm thấy kho",
+    "updateWarehouseStockFailed": "Cập nhật tồn kho thất bại",
     "default": "Đã xảy ra lỗi không xác định"
   }
 }
