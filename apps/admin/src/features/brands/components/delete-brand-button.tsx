@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Trash } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -31,6 +31,7 @@ export const DeleteBrandButton = ({
   const t = useTranslations("AdminBrands");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -38,6 +39,7 @@ export const DeleteBrandButton = ({
 
       if (result.success) {
         toast.success(t("messages.deleteSuccess"));
+        setIsOpen(false);
         router.refresh();
       } else {
         toast.error(result.error ?? t("messages.deleteError"));
@@ -46,7 +48,7 @@ export const DeleteBrandButton = ({
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button
           variant="ghost"
