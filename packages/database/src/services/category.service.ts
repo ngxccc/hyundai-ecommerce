@@ -25,20 +25,15 @@ export class CategoryService implements ICategoryService {
   async create(input: TCreateCategoryInput): Promise<TCategory> {
     try {
       const [newCategory] = await this.db.insert(categories).values(input).returning();
-      if (!newCategory) throw new Error("errors.createCategoryFailed");
-      return newCategory;
+      if (newCategory) return newCategory;
     } catch (error: unknown) {
       if (isUniqueConstraintError(error)) {
         throw new Error("errors.validation.slugExists", { cause: error });
       }
-      if (
-        error instanceof Error &&
-        error.message === "errors.createCategoryFailed"
-      ) {
-        throw error;
-      }
       throw new Error("errors.createCategoryFailed", { cause: error });
     }
+
+    throw new Error("errors.createCategoryFailed");
   }
 
   async update({
@@ -51,20 +46,15 @@ export class CategoryService implements ICategoryService {
         .set(data)
         .where(eq(categories.id, id))
         .returning();
-      if (!updatedCategory) throw new Error("errors.categoryNotFound");
-      return updatedCategory;
+      if (updatedCategory) return updatedCategory;
     } catch (error: unknown) {
       if (isUniqueConstraintError(error)) {
         throw new Error("errors.validation.slugExists", { cause: error });
       }
-      if (
-        error instanceof Error &&
-        error.message === "errors.categoryNotFound"
-      ) {
-        throw error;
-      }
       throw new Error("errors.updateCategoryFailed", { cause: error });
     }
+
+    throw new Error("errors.categoryNotFound");
   }
 
   async delete(id: string): Promise<boolean> {

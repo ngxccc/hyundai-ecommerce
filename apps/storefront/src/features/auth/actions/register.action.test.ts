@@ -3,7 +3,7 @@ import {
   AUTH_ERROR_CODES,
   SYSTEM_ERROR_CODES,
 } from "@nhatnang/shared/constants";
-import type { TAuthActionResult } from "@nhatnang/types";
+import type { TActionResult } from "@nhatnang/types";
 
 // ---------------------------------------------------------------------------
 // Mocks — system boundaries only
@@ -35,9 +35,12 @@ interface IValidationErrorResult {
   fieldErrors: Record<string, string[] | undefined>;
 }
 
+type TActionSuccessResult = TActionResult<{ userId: string }>;
+
 type TRegisterActionResult =
   | IValidationErrorResult
-  | TAuthActionResult<{ userId: string }>;
+  | TActionSuccessResult
+  | TActionResult;
 
 // ---------------------------------------------------------------------------
 // Test data helpers
@@ -245,10 +248,7 @@ describe("registerAction", () => {
   // ── Service delegation ──────────────────────────────────────────────────
 
   it("delegates to authService.register with validated data when no duplicate", async () => {
-    const serviceResult: TAuthActionResult<{ userId: string }> = {
-      success: true,
-      data: { userId: "user-new" },
-    };
+    const serviceResult = { userId: "user-new" };
     mockRegister.mockResolvedValue(serviceResult);
 
     await registerAction(validEndUser);
@@ -268,15 +268,10 @@ describe("registerAction", () => {
   });
 
   it("returns success result from authService", async () => {
-    const serviceResult: TAuthActionResult<{ userId: string }> = {
-      success: true,
-      data: { userId: "user-789" },
-    };
+    const serviceResult = { userId: "user-789" };
     mockRegister.mockResolvedValue(serviceResult);
 
-    const result = (await registerAction(validEndUser)) as TAuthActionResult<{
-      userId: string;
-    }>;
+    const result = (await registerAction(validEndUser)) as TActionSuccessResult;
 
     expect(result.success).toBe(true);
 
@@ -288,15 +283,9 @@ describe("registerAction", () => {
   });
 
   it("forwards error result from authService", async () => {
-    const serviceError: TAuthActionResult<{ userId: string }> = {
-      success: false,
-      code: "INTERNAL_SERVER_ERROR",
-    };
-    mockRegister.mockResolvedValue(serviceError);
+    mockRegister.mockRejectedValue(new Error("errors.INTERNAL_SERVER_ERROR"));
 
-    const result = (await registerAction(validEndUser)) as TAuthActionResult<{
-      userId: string;
-    }>;
+    const result = (await registerAction(validEndUser)) as TActionResult;
 
     expect(result.success).toBe(false);
 
@@ -304,6 +293,6 @@ describe("registerAction", () => {
       throw new Error("Expected registerAction to fail");
     }
 
-    expect(result.code).toBe("INTERNAL_SERVER_ERROR");
+    expect(result.error).toBe("translated.INTERNAL_SERVER_ERROR");
   });
 });

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "bun:test";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import type { TAuthActionResult } from "@nhatnang/types";
+import type { TActionResult } from "@nhatnang/types";
 
 // ---------------------------------------------------------------------------
 // Mocks — system boundaries only
@@ -8,6 +8,7 @@ import type { TAuthActionResult } from "@nhatnang/types";
 
 const mockLoginEmail = vi.fn();
 const mockHeaders = vi.fn();
+const mockGetTranslations = vi.fn();
 
 void vi.mock("@nhatnang/database/services", () => ({
   authService: {
@@ -21,6 +22,10 @@ void vi.mock("@nhatnang/database/services", () => ({
 
 void vi.mock("next/headers", () => ({
   headers: mockHeaders,
+}));
+
+void vi.mock("next-intl/server", () => ({
+  getTranslations: mockGetTranslations,
 }));
 
 // Dynamic import AFTER mocks are registered
@@ -38,7 +43,8 @@ interface IValidationErrorResult {
 
 type TLoginActionResult =
   | IValidationErrorResult
-  | TAuthActionResult<{ userId: string }>;
+  | TActionResult<{ userId: string }>
+  | TActionResult;
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -51,6 +57,8 @@ describe("loginAction", () => {
     mockLoginEmail.mockReset();
     mockHeaders.mockReset();
     mockHeaders.mockResolvedValue(fakeHeaders);
+    mockGetTranslations.mockReset();
+    mockGetTranslations.mockResolvedValue((key: string) => `translated.${key}`);
   });
 
   // ── Validation ──────────────────────────────────────────────────────────
@@ -114,11 +122,7 @@ describe("loginAction", () => {
   // ── Service delegation ──────────────────────────────────────────────────
 
   it("delegates to authService.loginEmail with parsed data and headers", async () => {
-    const serviceResult: TAuthActionResult<{ userId: string }> = {
-      success: true,
-      data: { userId: "user-123" },
-    };
-    mockLoginEmail.mockResolvedValue(serviceResult);
+    mockLoginEmail.mockResolvedValue({ userId: "user-123" });
 
     await loginAction({ email: "valid@example.com", password: "secure123" });
 
@@ -130,16 +134,12 @@ describe("loginAction", () => {
   });
 
   it("returns success result from authService", async () => {
-    const serviceResult: TAuthActionResult<{ userId: string }> = {
-      success: true,
-      data: { userId: "user-456" },
-    };
-    mockLoginEmail.mockResolvedValue(serviceResult);
+    mockLoginEmail.mockResolvedValue({ userId: "user-456" });
 
     const result = (await loginAction({
       email: "valid@example.com",
       password: "secure123",
-    })) as TAuthActionResult<{ userId: string }>;
+    })) as TActionResult<{ userId: string }>;
 
     expect(result.success).toBe(true);
 
@@ -151,17 +151,12 @@ describe("loginAction", () => {
   });
 
   it("forwards error result from authService", async () => {
-    const serviceError: TAuthActionResult<{ userId: string }> = {
-      success: false,
-      code: "INVALID_CREDENTIALS",
-      error: "Invalid email or password",
-    };
-    mockLoginEmail.mockResolvedValue(serviceError);
+    mockLoginEmail.mockRejectedValue(new Error("errors.INVALID_CREDENTIALS"));
 
-    const result = (await loginAction({
+    const result = await loginAction({
       email: "valid@example.com",
       password: "wrong-password",
-    })) as TAuthActionResult<{ userId: string }>;
+    });
 
     expect(result.success).toBe(false);
 
@@ -169,7 +164,6 @@ describe("loginAction", () => {
       throw new Error("Expected loginAction to fail");
     }
 
-    expect(result.code).toBe("INVALID_CREDENTIALS");
-    expect(result.error).toBe("Invalid email or password");
+    expect(result.error).toBe("translated.INVALID_CREDENTIALS");
   });
 });

@@ -26,7 +26,6 @@ import {
   createRegisterSchema,
   type TRegisterForm,
 } from "@nhatnang/database/validators";
-import type { IAuthErrorMessageMap } from "@nhatnang/types";
 
 export const RegisterForm = () => {
   const router = useRouter();
@@ -34,7 +33,7 @@ export const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const registerSchema = createRegisterSchema(t);
 
-  const errorMessages: IAuthErrorMessageMap = {
+  const errorMessages: Record<string, string> = {
     [AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS]: t("validation.emailAlreadyExists"),
     [AUTH_ERROR_CODES.PHONE_ALREADY_EXISTS]: t("validation.phoneAlreadyExists"),
   };

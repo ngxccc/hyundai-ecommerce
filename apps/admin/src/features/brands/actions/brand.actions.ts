@@ -34,22 +34,33 @@ export const createBrandAction = async (data: TCreateBrandInput) => {
     return { success: true as const, data: brandData };
   } catch (error) {
     const t = await getTranslations("errors");
+
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return {
+        success: false as const,
+        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+      };
     }
+
     console.error("[createBrandAction]", error);
-    let errorMessage = t("createBrandFailed");
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error - dynamic key
-      errorMessage = t(key);
+
+    if (error instanceof Error) {
+      if (error.message === "errors.validation.slugExists") {
+        return {
+          success: false as const,
+          code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+          fieldErrors: { slug: [t("validation.slugExists")] },
+        };
+      }
+
+      if (error.message.startsWith("errors.")) {
+        const key = error.message.replace("errors.", "");
+        // @ts-expect-error - dynamic key
+        return { success: false as const, error: t(key) };
+      }
     }
-    return {
-      success: false as const,
-      error: errorMessage,
-    };
+
+    return { success: false as const, error: t("createBrandFailed") };
   }
 };
 
@@ -75,22 +86,33 @@ export async function updateBrandAction(id: string, data: TUpdateBrandInput) {
     return { success: true as const, data: brandData };
   } catch (error) {
     const t = await getTranslations("errors");
+
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return {
+        success: false as const,
+        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+      };
     }
+
     console.error("[updateBrandAction]", error);
-    let errorMessage = t("updateBrandFailed");
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error - dynamic key
-      errorMessage = t(key);
+
+    if (error instanceof Error) {
+      if (error.message === "errors.validation.slugExists") {
+        return {
+          success: false as const,
+          code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+          fieldErrors: { slug: [t("validation.slugExists")] },
+        };
+      }
+
+      if (error.message.startsWith("errors.")) {
+        const key = error.message.replace("errors.", "");
+        // @ts-expect-error - dynamic key
+        return { success: false as const, error: t(key) };
+      }
     }
-    return {
-      success: false as const,
-      error: errorMessage,
-    };
+
+    return { success: false as const, error: t("updateBrandFailed") };
   }
 }
 
@@ -102,21 +124,22 @@ export async function deleteBrandAction(id: string) {
     return { success: true as const, data: brandData };
   } catch (error) {
     const t = await getTranslations("errors");
+
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return {
+        success: false as const,
+        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+      };
     }
+
     console.error("[deleteBrandAction]", error);
-    let errorMessage = t("deleteBrandFailed");
+
     if (error instanceof Error && error.message.startsWith("errors.")) {
       const key = error.message.replace("errors.", "");
       // @ts-expect-error - dynamic key
-      errorMessage = t(key);
+      return { success: false as const, error: t(key) };
     }
-    return {
-      success: false as const,
-      error: errorMessage,
-    };
+
+    return { success: false as const, error: t("deleteBrandFailed") };
   }
 }

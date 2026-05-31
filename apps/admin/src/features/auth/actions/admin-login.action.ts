@@ -31,16 +31,12 @@ export const adminLoginAction = async (data: TLoginForm) => {
     const t = await getTranslations("errors");
     console.error("[adminLoginAction]", error);
 
-    let errorMessage = t("loginFailed");
     if (error instanceof Error && error.message.startsWith("errors.")) {
       const key = error.message.replace("errors.", "");
       // @ts-expect-error - dynamic key
-      errorMessage = t(key);
+      return { success: false as const, error: t(key) };
     }
 
-    return {
-      success: false as const,
-      error: errorMessage,
-    };
+    return { success: false as const, error: t("loginFailed") };
   }
 };

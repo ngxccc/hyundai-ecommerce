@@ -30,17 +30,13 @@ export const loginAction = async (data: TLoginForm) => {
   } catch (error) {
     const t = await getTranslations("errors");
     console.error("[loginAction]", error);
-
-    let errorMessage = t("loginFailed");
+    
     if (error instanceof Error && error.message.startsWith("errors.")) {
       const key = error.message.replace("errors.", "");
       // @ts-expect-error - dynamic key
-      errorMessage = t(key);
+      return { success: false as const, error: t(key) };
     }
 
-    return {
-      success: false as const,
-      error: errorMessage,
-    };
+    return { success: false as const, error: t("loginFailed") };
   }
 };

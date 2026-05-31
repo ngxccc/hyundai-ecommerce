@@ -34,22 +34,33 @@ export const createCategoryAction = async (data: TCreateCategoryInput) => {
     return { success: true as const, data: categoryData };
   } catch (error) {
     const t = await getTranslations("errors");
+
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return {
+        success: false as const,
+        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+      };
     }
+
     console.error("[createCategoryAction]", error);
-    let errorMessage = t("createCategoryFailed");
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error - dynamic key
-      errorMessage = t(key);
+
+    if (error instanceof Error) {
+      if (error.message === "errors.validation.slugExists") {
+        return {
+          success: false as const,
+          code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+          fieldErrors: { slug: [t("validation.slugExists")] },
+        };
+      }
+
+      if (error.message.startsWith("errors.")) {
+        const key = error.message.replace("errors.", "");
+        // @ts-expect-error - dynamic key
+        return { success: false as const, error: t(key) };
+      }
     }
-    return {
-      success: false as const,
-      error: errorMessage,
-    };
+
+    return { success: false as const, error: t("createCategoryFailed") };
   }
 };
 
@@ -78,22 +89,33 @@ export async function updateCategoryAction(
     return { success: true as const, data: categoryData };
   } catch (error) {
     const t = await getTranslations("errors");
+
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return {
+        success: false as const,
+        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+      };
     }
+
     console.error("[updateCategoryAction]", error);
-    let errorMessage = t("updateCategoryFailed");
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error - dynamic key
-      errorMessage = t(key);
+
+    if (error instanceof Error) {
+      if (error.message === "errors.validation.slugExists") {
+        return {
+          success: false as const,
+          code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+          fieldErrors: { slug: [t("validation.slugExists")] },
+        };
+      }
+
+      if (error.message.startsWith("errors.")) {
+        const key = error.message.replace("errors.", "");
+        // @ts-expect-error - dynamic key
+        return { success: false as const, error: t(key) };
+      }
     }
-    return {
-      success: false as const,
-      error: errorMessage,
-    };
+
+    return { success: false as const, error: t("updateCategoryFailed") };
   }
 }
 
@@ -105,21 +127,22 @@ export async function deleteCategoryAction(id: string) {
     return { success: true as const, data: categoryData };
   } catch (error) {
     const t = await getTranslations("errors");
+
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return {
+        success: false as const,
+        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+      };
     }
+
     console.error("[deleteCategoryAction]", error);
-    let errorMessage = t("deleteCategoryFailed");
+
     if (error instanceof Error && error.message.startsWith("errors.")) {
       const key = error.message.replace("errors.", "");
       // @ts-expect-error - dynamic key
-      errorMessage = t(key);
+      return { success: false as const, error: t(key) };
     }
-    return {
-      success: false as const,
-      error: errorMessage,
-    };
+
+    return { success: false as const, error: t("deleteCategoryFailed") };
   }
 }
