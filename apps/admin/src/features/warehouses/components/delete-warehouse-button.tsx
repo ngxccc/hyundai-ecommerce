@@ -1,0 +1,89 @@
+"use client";
+
+import { useTransition, useState } from "react";
+import { useTranslations } from "next-intl";
+import { Trash } from "lucide-react";
+import { Button } from "@nhatnang/ui/components/ui/button";
+import { toast } from "@nhatnang/ui/components/ui/sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@nhatnang/ui/components/ui/alert-dialog";
+import { deleteWarehouseAction } from "../actions/warehouse.actions";
+import { useRouter } from "next/navigation";
+
+interface DeleteWarehouseButtonProps {
+  warehouseId: string;
+  warehouseName: string;
+}
+
+export const DeleteWarehouseButton = ({
+  warehouseId,
+  warehouseName,
+}: DeleteWarehouseButtonProps) => {
+  const t = useTranslations("AdminWarehouses");
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDelete = () => {
+    startTransition(async () => {
+      const result = await deleteWarehouseAction(warehouseId);
+
+      if (result.success) {
+        toast.success(t("messages.deleteSuccess"));
+        setIsOpen(false);
+        router.refresh();
+      } else {
+        toast.error(result.error ?? t("messages.deleteError"));
+      }
+    });
+  };
+
+  return (
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-destructive hover:bg-destructive/20 hover:text-destructive h-8 w-8 transition-colors"
+          title={t("card.actions.delete")}
+        >
+          <Trash className="h-4 w-4" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("dialogs.delete.title")}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {t("dialogs.delete.description", { warehouseName })}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isPending}>
+            {t("dialogs.delete.cancel")}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={(e) => {
+              e.preventDefault();
+              handleDelete();
+            }}
+            disabled={isPending}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {isPending
+              ? t("dialogs.delete.deleting")
+              : t("dialogs.delete.confirm")}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
