@@ -10,7 +10,7 @@ import {
   type TLoginForm,
 } from "@nhatnang/database/validators";
 import { loginAction } from "../actions/login.action";
-import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
+
 import { useRouter, Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -32,7 +32,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shared/components/ui/form";
-import type { IAuthErrorMessageMap } from "@nhatnang/types";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -45,11 +44,6 @@ export const LoginForm = () => {
   const t = useTranslations("Login");
   const [isPending, startTransition] = useTransition();
 
-  const errorMessages: IAuthErrorMessageMap = {
-    [AUTH_ERROR_CODES.INVALID_CREDENTIALS]: t("validation.invalidCredentials"),
-    [AUTH_ERROR_CODES.ACCOUNT_LOCKED]: t("validation.accountLocked"),
-    [AUTH_ERROR_CODES.EMAIL_NOT_VERIFIED]: t("validation.unverifiedEmail"),
-  };
 
   const form = useForm<TLoginForm>({
     resolver: zodResolver(createLoginSchema(t)),
@@ -65,8 +59,11 @@ export const LoginForm = () => {
         const result = await loginAction(data);
 
         if (!result.success) {
-          const errorMessage = errorMessages[result.code] ?? t("errorMessage");
-          toast.error(errorMessage);
+          if ("error" in result && result.error) {
+            toast.error(result.error);
+          } else {
+            toast.error(t("errorMessage"));
+          }
           return;
         }
 

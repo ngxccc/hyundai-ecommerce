@@ -1,4 +1,4 @@
-import { type TAuthActionResult } from "@nhatnang/types";
+
 
 export interface LoginOptions {
   headers?: HeadersInit;
@@ -13,9 +13,9 @@ export interface IAuthService<TLoginForm = unknown, TRegisterForm = unknown> {
   loginEmail(
     data: TLoginForm,
     options?: LoginOptions,
-  ): Promise<TAuthActionResult<{ userId: string }>>;
+  ): Promise<{ userId: string }>;
   register(
     data: TRegisterForm,
     options?: RegisterOptions,
-  ): Promise<TAuthActionResult<{ userId: string }>>;
+  ): Promise<{ userId: string }>;
 }

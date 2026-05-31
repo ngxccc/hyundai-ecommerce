@@ -36,53 +36,33 @@ describe("AuthService", () => {
       password: "p",
     });
 
-    expect(res.success).toBe(true);
-
-    if (!res.success) {
-      throw new Error("Expected loginEmail to succeed");
-    }
-
-    expect(res.data.userId).toBe("user-1");
+    expect(res).toEqual({ userId: "user-1" });
   });
 
-  it("loginEmail returns INVALID_CREDENTIALS when Better Auth throws API error", async () => {
+  it("loginEmail returns INVALID_CREDENTIALS when Better Auth throws API error", () => {
     mockSignInEmail.mockRejectedValue(
       createApiError("INVALID_EMAIL_OR_PASSWORD", "Invalid credentials"),
     );
 
-    const res = await authService.loginEmail({
-      email: "a@x.com",
-      password: "p",
-    });
-
-    expect(res.success).toBe(false);
-
-    if (res.success) {
-      throw new Error("Expected loginEmail to fail");
-    }
-
-    expect(res.code).toBe("INVALID_CREDENTIALS");
-    expect(res.error).toBe("Invalid credentials");
+    expect(
+      authService.loginEmail({
+        email: "a@x.com",
+        password: "p",
+      }),
+    ).rejects.toThrow("errors.INVALID_CREDENTIALS");
   });
 
-  it("loginEmail returns EMAIL_NOT_VERIFIED when Better Auth rejects unverified email", async () => {
+  it("loginEmail returns EMAIL_NOT_VERIFIED when Better Auth rejects unverified email", () => {
     mockSignInEmail.mockRejectedValue(
       createApiError("EMAIL_NOT_VERIFIED", "Email not verified"),
     );
 
-    const res = await authService.loginEmail({
-      email: "a@x.com",
-      password: "p",
-    });
-
-    expect(res.success).toBe(false);
-
-    if (res.success) {
-      throw new Error("Expected loginEmail to fail");
-    }
-
-    expect(res.code).toBe("EMAIL_NOT_VERIFIED");
-    expect(res.error).toBe("Email not verified");
+    expect(
+      authService.loginEmail({
+        email: "a@x.com",
+        password: "p",
+      }),
+    ).rejects.toThrow("errors.EMAIL_NOT_VERIFIED");
   });
 
   it("loginEmail returns ACCOUNT_LOCKED when account is locked", async () => {
@@ -90,19 +70,13 @@ describe("AuthService", () => {
       createApiError(AUTH_ERROR_CODES.ACCOUNT_LOCKED, "Account locked"),
     );
 
-    const res = await authService.loginEmail({
-      email: "a@x.com",
-      password: "p",
-    });
-
-    expect(res.success).toBe(false);
-
-    if (res.success) {
-      throw new Error("Expected loginEmail to fail");
-    }
-
-    expect(res.code).toBe(AUTH_ERROR_CODES.ACCOUNT_LOCKED);
-    expect(res.error).toBe("Account locked");
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    await expect(
+      authService.loginEmail({
+        email: "a@x.com",
+        password: "p",
+      }),
+    ).rejects.toThrow(`errors.${AUTH_ERROR_CODES.ACCOUNT_LOCKED}`);
   });
 
   it("register returns userId on success", async () => {
@@ -121,39 +95,27 @@ describe("AuthService", () => {
       province: "Hanoi",
     });
 
-    expect(res.success).toBe(true);
-
-    if (!res.success) {
-      throw new Error("Expected register to succeed");
-    }
-
-    expect(res.data.userId).toBe("user-2");
+    expect(res).toEqual({ userId: "user-2" });
   });
 
-  it("register returns INVALID_CREDENTIALS when Better Auth throws API error", async () => {
+  it("register returns INVALID_CREDENTIALS when Better Auth throws API error", () => {
     const err = new Error("exists");
     (err as unknown as IAuthErrorLike).isAPIError = true;
     mockSignUpEmail.mockRejectedValue(err);
 
-    const res = await authService.register({
-      email: "b@x.com",
-      password: "p",
-      name: "Name",
-      phone: "0123",
-      confirmPassword: "p",
-      businessType: "dealer",
-      agreeTerms: true,
-      companyName: "Company",
-      taxId: "12345678",
-      province: "Hanoi",
-    });
-
-    expect(res.success).toBe(false);
-
-    if (res.success) {
-      throw new Error("Expected register to fail");
-    }
-
-    expect(res.code).toBe("INVALID_CREDENTIALS");
+    expect(
+      authService.register({
+        email: "b@x.com",
+        password: "p",
+        name: "Name",
+        phone: "0123",
+        confirmPassword: "p",
+        businessType: "dealer",
+        agreeTerms: true,
+        companyName: "Company",
+        taxId: "12345678",
+        province: "Hanoi",
+      }),
+    ).rejects.toThrow("errors.INVALID_CREDENTIALS");
   });
 });

@@ -91,7 +91,6 @@
       }
     }
   },
-
   "Register": {
     "title": "Register Account",
     "description": "Create an account to experience professional industrial equipment shopping",
@@ -155,11 +154,9 @@
       "confirmPasswordMismatch": "Confirmation password does not match"
     }
   },
-
   "AuthPage": {
     "loading": "Loading..."
   },
-
   "Login": {
     "title": "Login",
     "description": "Welcome back! Please sign in to manage your orders and equipment.",
@@ -189,7 +186,6 @@
       "unverifiedEmail": "Your email has not been verified. Please check your inbox."
     }
   },
-
   "NotFound": {
     "status": "Status: Terminal",
     "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
@@ -209,8 +205,15 @@
       }
     }
   },
-
   "Metadata": {
     "title": "Hyundai Nhat Nang | Genuine Generators"
+  },
+  "errors": {
+    "loginFailed": "Login failed",
+    "registerFailed": "Registration failed",
+    "INVALID_CREDENTIALS": "Invalid credentials",
+    "EMAIL_NOT_VERIFIED": "Email not verified",
+    "ACCOUNT_LOCKED": "Account locked",
+    "INTERNAL_SERVER_ERROR": "Internal server error"
   }
 }
