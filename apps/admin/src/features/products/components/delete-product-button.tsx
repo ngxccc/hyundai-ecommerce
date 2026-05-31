@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Trash2 } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@nhatnang/ui/components/ui/alert-dialog";
 import { deleteProductAction } from "../actions/product.actions";
+import { useRouter } from "next/navigation";
 
 interface DeleteProductButtonProps {
   productId: string;
@@ -28,7 +29,9 @@ export const DeleteProductButton = ({
   productName,
 }: DeleteProductButtonProps) => {
   const t = useTranslations("AdminProducts");
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -36,6 +39,8 @@ export const DeleteProductButton = ({
 
       if (result.success) {
         toast.success(t("messages.deleteSuccess"));
+        setIsOpen(false);
+        router.refresh();
       } else {
         toast.error(result.error ?? t("messages.deleteError"));
       }
@@ -43,7 +48,7 @@ export const DeleteProductButton = ({
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button
           variant="ghost"
