@@ -6,7 +6,6 @@ import type {
   TCreateWarehouseInput,
   TUpdateWarehouseInput,
 } from "../validators";
-import type { TActionResult } from "@nhatnang/types";
 
 export class WarehouseService implements IWarehouseService {
   constructor(protected readonly db: IDatabase) {}
@@ -28,76 +27,62 @@ export class WarehouseService implements IWarehouseService {
     return warehouse;
   }
 
-  async create(
-    input: TCreateWarehouseInput,
-  ): Promise<TActionResult<TWarehouse>> {
+  async create(data: TCreateWarehouseInput): Promise<TWarehouse> {
     try {
       const [newWarehouse] = await this.db
         .insert(warehouses)
-        .values(input)
+        .values(data)
         .returning();
-      if (!newWarehouse)
-        return {
-          success: false,
-          code: "INTERNAL_SERVER_ERROR",
-          error: "errors.createWarehouseFailed",
-        };
-      return { success: true, data: newWarehouse };
-    } catch {
-      return {
-        success: false,
-        code: "INTERNAL_SERVER_ERROR",
-        error: "errors.createWarehouseFailed",
-      };
+      if (!newWarehouse) {
+        throw new Error("errors.createWarehouseFailed");
+      }
+      return newWarehouse;
+    } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        error.message === "errors.createWarehouseFailed"
+      ) {
+        throw error;
+      }
+      throw new Error("errors.createWarehouseFailed", { cause: error });
     }
   }
 
-  async update({
-    id,
-    ...data
-  }: TUpdateWarehouseInput): Promise<TActionResult<TWarehouse>> {
+  async update({ id, ...data }: TUpdateWarehouseInput): Promise<TWarehouse> {
     try {
       if (!id) {
-        return {
-          success: false,
-          code: "VALIDATION_ERROR",
-          error: "errors.warehouseNotFound",
-        };
+        throw new Error("errors.warehouseNotFound");
       }
       const [updatedWarehouse] = await this.db
         .update(warehouses)
         .set(data)
         .where(eq(warehouses.id, id))
         .returning();
-      if (!updatedWarehouse)
-        return {
-          success: false,
-          code: "VALIDATION_ERROR",
-          error: "errors.warehouseNotFound",
-        };
-      return { success: true, data: updatedWarehouse };
-    } catch {
-      return {
-        success: false,
-        code: "INTERNAL_SERVER_ERROR",
-        error: "errors.updateWarehouseFailed",
-      };
+      if (!updatedWarehouse) {
+        throw new Error("errors.warehouseNotFound");
+      }
+      return updatedWarehouse;
+    } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        (error.message === "errors.warehouseNotFound" ||
+          error.message === "errors.updateWarehouseFailed")
+      ) {
+        throw error;
+      }
+      throw new Error("errors.updateWarehouseFailed", { cause: error });
     }
   }
 
-  async delete(id: string): Promise<TActionResult<boolean>> {
+  async delete(id: string): Promise<boolean> {
     try {
       await this.db
         .update(warehouses)
         .set({ isActive: false })
         .where(eq(warehouses.id, id));
-      return { success: true, data: true };
-    } catch {
-      return {
-        success: false,
-        code: "INTERNAL_SERVER_ERROR",
-        error: "errors.deleteWarehouseFailed",
-      };
+      return true;
+    } catch (error: unknown) {
+      throw new Error("errors.deleteWarehouseFailed", { cause: error });
     }
   }
 }

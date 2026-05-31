@@ -4,45 +4,42 @@ import { warehouseStocks } from "../schemas/warehouse-stock.schema";
 import { products } from "../schemas/product.schema";
 import type { IWarehouseStockService } from "./warehouse-stock.service.interface";
 import type { TUpdateWarehouseStockInput } from "../validators";
-import type { TActionResult } from "@nhatnang/types";
 
 export class WarehouseStockService implements IWarehouseStockService {
   constructor(protected readonly db: IDatabase) {}
 
   async setStock(
-    input: TUpdateWarehouseStockInput,
-  ): Promise<TActionResult<typeof warehouseStocks.$inferSelect>> {
+    stockData: TUpdateWarehouseStockInput,
+  ): Promise<typeof warehouseStocks.$inferSelect> {
     try {
       const [record] = await this.db
         .insert(warehouseStocks)
-        .values(input)
+        .values(stockData)
         .onConflictDoUpdate({
           target: [warehouseStocks.warehouseId, warehouseStocks.productId],
           set: {
-            stock: input.stock,
-            minStockWarning: input.minStockWarning,
+            stock: stockData.stock,
+            minStockWarning: stockData.minStockWarning,
             updatedAt: new Date(),
           },
         })
         .returning();
 
       if (!record) {
-        return {
-          success: false,
-          code: "INTERNAL_SERVER_ERROR",
-          error: "errors.updateWarehouseStockFailed",
-        };
+        throw new Error("errors.updateWarehouseStockFailed");
       }
 
-      await this.syncTotalStock(input.productId);
+      await this.syncTotalStock(stockData.productId);
 
-      return { success: true, data: record };
-    } catch {
-      return {
-        success: false,
-        code: "INTERNAL_SERVER_ERROR",
-        error: "errors.updateWarehouseStockFailed",
-      };
+      return record;
+    } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        error.message === "errors.updateWarehouseStockFailed"
+      ) {
+        throw error;
+      }
+      throw new Error("errors.updateWarehouseStockFailed", { cause: error });
     }
   }
 
