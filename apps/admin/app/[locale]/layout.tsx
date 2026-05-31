@@ -12,6 +12,7 @@ import {
 } from "next-intl/server";
 import { Toaster } from "@nhatnang/ui/components/ui/sonner";
 import { ScrollToTop } from "@/shared/components/ScrollToTop";
+import { ThemeProvider } from "@/shared/components/theme-provider";
 
 const inter = Inter({
   subsets: ["vietnamese", "latin"],
@@ -75,11 +76,18 @@ export default async function RootLayout({
       suppressHydrationWarning // suppressHydrationWarning để chặn lỗi từ Extensions của trình duyệt
     >
       <body className="flex min-h-full flex-col">
-        <NextIntlClientProvider messages={messages}>
-          {children}
-          <Toaster position="top-center" />
-          <ScrollToTop />
-        </NextIntlClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider messages={messages}>
+            {children}
+            <Toaster position="top-center" />
+            <ScrollToTop />
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

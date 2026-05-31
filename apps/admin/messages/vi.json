@@ -140,6 +140,19 @@
         "shipping": "Đang giao",
         "cancelled": "Đã hủy"
       }
+    },
+    "userMenu": {
+      "myAccount": "Tài khoản của tôi",
+      "profile": "Hồ sơ cá nhân",
+      "settings": "Cài đặt",
+      "language": "Ngôn ngữ",
+      "vietnamese": "Tiếng Việt",
+      "english": "Tiếng Anh",
+      "logout": "Đăng xuất",
+      "theme": "Giao diện",
+      "light": "Sáng",
+      "dark": "Tối",
+      "system": "Hệ thống"
     }
   },
   "AdminProducts": {

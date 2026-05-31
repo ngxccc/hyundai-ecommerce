@@ -1,20 +1,49 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
 import { useState } from "react";
 import Image from "next/image";
-import { LogOut, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  User,
+  Settings,
+  Globe,
+  Palette,
+} from "lucide-react";
 import { cn } from "@nhatnang/ui/lib/utils";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { useAdminNav } from "../hooks/use-admin-nav";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
 import { authClient } from "@nhatnang/database/auth-client";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
+  DropdownMenuSubContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@nhatnang/ui/components/ui/dropdown-menu";
 
 export const AdminSidebar = () => {
   const t = useTranslations("AdminDashboard");
   const pathname = usePathname();
   const router = useRouter();
+  const locale = useLocale();
+  const { theme, setTheme } = useTheme();
+
+  const handleLanguageChange = (newLocale: string) => {
+    router.replace(pathname, { locale: newLocale as "vi" | "en" });
+  };
   const [isCollapsed, setIsCollapsed] = useState(false);
   const navItems = useAdminNav();
 
@@ -123,7 +152,7 @@ export const AdminSidebar = () => {
       </nav>
 
       {/* Footer / User Area */}
-      <div className="border-border/50 mt-auto flex items-center border-t p-4">
+      <div className="border-border/50 hover:bg-muted/50 mt-auto flex items-center justify-center border-t p-2 transition-colors">
         {isPending ? (
           <div className="flex w-full animate-pulse gap-3">
             <div className="bg-secondary h-10 w-10 rounded-full" />
@@ -135,36 +164,104 @@ export const AdminSidebar = () => {
             )}
           </div>
         ) : (
-          <div
-            className={cn(
-              "flex w-full items-center gap-3",
-              isCollapsed && "justify-center",
-            )}
-          >
-            <div className="bg-secondary text-secondary-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold uppercase">
-              {user?.name?.[0] ?? "A"}
-            </div>
-            {!isCollapsed && (
-              <div className="min-w-0 flex-1">
-                <p className="text-foreground truncate text-sm font-bold">
-                  {user?.name ?? "Admin"}
-                </p>
-                <p className="text-muted-foreground truncate text-xs">
-                  {user?.email ?? "admin@hyundainhatnang.vn"}
-                </p>
-              </div>
-            )}
-            {!isCollapsed && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleLogout}
-                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div
+                role="button"
+                className={cn(
+                  "-mx-2 flex w-full cursor-pointer items-center gap-3 rounded-md p-2",
+                  isCollapsed && "justify-center",
+                )}
               >
-                <LogOut className="h-5 w-5" />
-              </Button>
-            )}
-          </div>
+                <div className="bg-secondary text-secondary-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold uppercase">
+                  {user?.name?.[0] ?? "U"}
+                </div>
+                {!isCollapsed && (
+                  <div className="min-w-0 flex-1 text-left">
+                    <p className="text-foreground truncate text-sm font-bold">
+                      {user?.name ?? "Unknow"}
+                    </p>
+                    <p className="text-muted-foreground truncate text-xs">
+                      {user?.email ?? "unknow"}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              side="right"
+              sideOffset={8}
+              className="w-56"
+            >
+              <DropdownMenuLabel>{t("userMenu.myAccount")}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <User className="mr-2 h-4 w-4" />
+                <span>{t("userMenu.profile")}</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>{t("userMenu.settings")}</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Palette className="mr-2 h-4 w-4" />
+                  <span>{t("userMenu.theme")}</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuRadioGroup
+                      value={theme ?? "system"}
+                      onValueChange={setTheme}
+                    >
+                      <DropdownMenuRadioItem value="light">
+                        {t("userMenu.light")}
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="dark">
+                        {t("userMenu.dark")}
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="system">
+                        {t("userMenu.system")}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Globe className="mr-2 h-4 w-4" />
+                  <span>{t("userMenu.language")}</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuRadioGroup
+                      value={locale}
+                      onValueChange={handleLanguageChange}
+                    >
+                      <DropdownMenuRadioItem value="vi">
+                        {t("userMenu.vietnamese")}
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="en">
+                        {t("userMenu.english")}
+                      </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>{t("userMenu.logout")}</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
     </aside>
