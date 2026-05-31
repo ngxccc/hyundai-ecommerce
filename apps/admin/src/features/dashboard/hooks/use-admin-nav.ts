@@ -4,10 +4,9 @@ import {
   Package,
   ShoppingCart,
   Users,
-  Settings,
   Tags,
   FolderTree,
-  Warehouse
+  Warehouse,
 } from "lucide-react";
 
 export const useAdminNav = () => {
@@ -21,7 +20,6 @@ export const useAdminNav = () => {
     { icon: Warehouse, label: t("warehouses"), href: "/warehouses" },
     { icon: ShoppingCart, label: t("orders"), href: "/orders" },
     { icon: Users, label: t("customers"), href: "/customers" },
-    { icon: Settings, label: t("settings"), href: "/settings" },
   ];
 
   return navItems;
