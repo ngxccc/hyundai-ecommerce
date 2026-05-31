@@ -1,5 +1,5 @@
 import type { TWarehouse } from "../schemas/warehouse.schema";
-import type { TActionResult } from "@nhatnang/types";
+
 import type {
   TCreateWarehouseInput,
   TUpdateWarehouseInput,
@@ -8,7 +8,7 @@ import type {
 export interface IWarehouseService {
   getAll(): Promise<TWarehouse[]>;
   getById(id: string): Promise<TWarehouse | undefined>;
-  create(data: TCreateWarehouseInput): Promise<TActionResult<TWarehouse>>;
-  update(data: TUpdateWarehouseInput): Promise<TActionResult<TWarehouse>>;
-  delete(id: string): Promise<TActionResult<boolean>>;
+  create(data: TCreateWarehouseInput): Promise<TWarehouse>;
+  update(data: TUpdateWarehouseInput): Promise<TWarehouse>;
+  delete(id: string): Promise<boolean>;
 }

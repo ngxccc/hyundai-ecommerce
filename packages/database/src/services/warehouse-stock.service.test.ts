@@ -48,6 +48,6 @@ describe("WarehouseStockService", () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(2);
 
-    expect(result).toEqual({ success: true, data: mockStockRecord });
+    expect(result).toEqual(mockStockRecord);
   });
 });

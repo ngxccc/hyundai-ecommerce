@@ -68,7 +68,7 @@ describe("WarehouseService", () => {
 
     expect(mockInsert).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual({ success: true, data: mockWarehouse });
+    expect(result).toEqual(mockWarehouse);
   });
 
   test("update() should update and return warehouse", async () => {
@@ -92,7 +92,7 @@ describe("WarehouseService", () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual({ success: true, data: mockWarehouse });
+    expect(result).toEqual(mockWarehouse);
   });
 
   test("getById() should return warehouse when found", async () => {
@@ -121,6 +121,6 @@ describe("WarehouseService", () => {
 
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
-    expect(result).toEqual({ success: true, data: true });
+    expect(result).toEqual(true);
   });
 });
