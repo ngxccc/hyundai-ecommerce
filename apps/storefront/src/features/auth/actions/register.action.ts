@@ -55,16 +55,12 @@ export async function registerAction(data: TRegisterForm) {
     const t = await getTranslations("errors");
     console.error("[registerAction]", error);
 
-    let errorMessage = t("registerFailed");
     if (error instanceof Error && error.message.startsWith("errors.")) {
       const key = error.message.replace("errors.", "");
       // @ts-expect-error - dynamic key
-      errorMessage = t(key);
+      return { success: false as const, error: t(key) };
     }
 
-    return {
-      success: false as const,
-      error: errorMessage,
-    };
+    return { success: false as const, error: t("registerFailed") };
   }
 }

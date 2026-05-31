@@ -26,20 +26,15 @@ export class BrandService implements IBrandService {
   async create(input: TCreateBrandInput): Promise<TBrand> {
     try {
       const [newBrand] = await this.db.insert(brands).values(input).returning();
-      if (!newBrand) throw new Error("errors.createBrandFailed");
-      return newBrand;
+      if (newBrand) return newBrand;
     } catch (error: unknown) {
       if (isUniqueConstraintError(error)) {
         throw new Error("errors.validation.slugExists", { cause: error });
       }
-      if (
-        error instanceof Error &&
-        error.message === "errors.createBrandFailed"
-      ) {
-        throw error;
-      }
       throw new Error("errors.createBrandFailed", { cause: error });
     }
+
+    throw new Error("errors.createBrandFailed");
   }
 
   async update({
@@ -52,20 +47,15 @@ export class BrandService implements IBrandService {
         .set(data)
         .where(eq(brands.id, id))
         .returning();
-      if (!updatedBrand) throw new Error("errors.brandNotFound");
-      return updatedBrand;
+      if (updatedBrand) return updatedBrand;
     } catch (error: unknown) {
       if (isUniqueConstraintError(error)) {
         throw new Error("errors.validation.slugExists", { cause: error });
       }
-      if (
-        error instanceof Error &&
-        error.message === "errors.brandNotFound"
-      ) {
-        throw error;
-      }
       throw new Error("errors.updateBrandFailed", { cause: error });
     }
+
+    throw new Error("errors.brandNotFound");
   }
 
   async delete(id: string): Promise<boolean> {
