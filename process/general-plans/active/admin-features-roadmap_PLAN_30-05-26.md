@@ -42,7 +42,7 @@ This plan outlines the CMS features roadmap sorted by **descending priority** (T
 - **Reason:** The heart of the E-commerce system. Listing and dynamic forms already exist, but image upload is missing. There is also an existing issue noted in [#38](https://github.com/ngxccc/hyundai-ecommerce/issues/38). The current task is to improve the rich text editor in `packages/ui/src/editor` by adding necessary features since it currently only has basic functionality.
 - **Features:** Improve Rich Text Editor (Tiptap) for product descriptions, and implement Image Upload capabilities.
 
-### 3. Warehouse & Inventory Management
+### 3. Warehouse & Inventory Management (✅ Completed)
 
 - **DB Foundation:** `warehouses`, `warehouseStocks` schema.
 - **Reason:** For heavy industrial machinery (generators), managing inventory across multiple physical warehouses is essential before starting sales.

@@ -140,6 +140,19 @@
         "shipping": "Shipping",
         "cancelled": "Cancelled"
       }
+    },
+    "userMenu": {
+      "myAccount": "My Account",
+      "profile": "Profile",
+      "settings": "Settings",
+      "language": "Language",
+      "vietnamese": "Vietnamese",
+      "english": "English",
+      "logout": "Log out",
+      "theme": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
     }
   },
   "AdminProducts": {
