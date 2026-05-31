@@ -199,7 +199,8 @@
       "contact": "Contact",
       "actions": {
         "edit": "Edit",
-        "delete": "Delete"
+        "delete": "Delete",
+        "inventory": "Inventory"
       }
     },
     "messages": {
@@ -612,5 +613,38 @@
     "warehouseNotFound": "Warehouse not found",
     "updateWarehouseStockFailed": "Failed to update warehouse stock",
     "default": "An unexpected error occurred"
+  },
+  "AdminInventory": {
+    "title": "Inventory Management",
+    "description": "Manage stock for product: {name}",
+    "tableTitle": "Warehouse Stock",
+    "tableDescription": "Set product stock quantities for each warehouse.",
+    "table": {
+      "warehouse": "Warehouse",
+      "status": "Status",
+      "stock": "Stock Quantity",
+      "minStock": "Min Stock Warning",
+      "actions": "Actions"
+    },
+    "status": {
+      "inStock": "In Stock",
+      "lowStock": "Low Stock",
+      "inactive": "Inactive",
+      "outOfStock": "Out of Stock"
+    },
+    "buttons": {
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "empty": "No warehouses found.",
+    "messages": {
+      "successSave": "Stock updated successfully.",
+      "errorSave": "Failed to update stock."
+    },
+    "errors": {
+      "invalidStock": "Invalid stock quantity",
+      "invalidMinStockWarning": "Invalid min stock warning",
+      "updateWarehouseStockFailed": "Failed to update warehouse stock in database"
+    }
   }
 }

@@ -199,7 +199,8 @@
       "contact": "Liên hệ",
       "actions": {
         "edit": "Sửa",
-        "delete": "Xóa"
+        "delete": "Xóa",
+        "inventory": "Tồn kho"
       }
     },
     "messages": {
@@ -616,5 +617,38 @@
     "warehouseNotFound": "Không tìm thấy kho",
     "updateWarehouseStockFailed": "Cập nhật tồn kho thất bại",
     "default": "Đã xảy ra lỗi không xác định"
+  },
+  "AdminInventory": {
+    "title": "Quản lý tồn kho",
+    "description": "Quản lý số lượng cho sản phẩm: {name}",
+    "tableTitle": "Tồn kho tại các chi nhánh",
+    "tableDescription": "Thiết lập số lượng tồn kho cho từng kho hàng.",
+    "table": {
+      "warehouse": "Kho hàng",
+      "status": "Trạng thái",
+      "stock": "Tồn kho",
+      "minStock": "Cảnh báo hết",
+      "actions": "Thao tác"
+    },
+    "status": {
+      "inStock": "Còn hàng",
+      "lowStock": "Sắp hết hàng",
+      "inactive": "Ngừng HĐ",
+      "outOfStock": "Hết hàng"
+    },
+    "buttons": {
+      "save": "Lưu",
+      "saving": "Đang lưu..."
+    },
+    "empty": "Không có kho hàng nào.",
+    "messages": {
+      "successSave": "Cập nhật tồn kho thành công.",
+      "errorSave": "Lỗi khi cập nhật tồn kho."
+    },
+    "errors": {
+      "invalidStock": "Số lượng tồn kho không hợp lệ",
+      "invalidMinStockWarning": "Cảnh báo tồn kho không hợp lệ",
+      "updateWarehouseStockFailed": "Không thể cập nhật tồn kho vào cơ sở dữ liệu"
+    }
   }
 }

@@ -2,7 +2,7 @@
 
 Date: 31-05-26
 Complexity: Complex (Standard)
-Status: ⏳ PLANNED
+Status: ✅ VERIFIED
 
 ## Overview
 
@@ -204,7 +204,7 @@ Located in `packages/database/src/schemas/`:
 - Verification checklist:
   - [x] Manual test passed (via unit tests).
   - [x] Data in DB verified (test DB).
-  - [ ] User confirmed working.
+  - [x] User confirmed working.
 
 ### RFC-002: Warehouse Management UI
 
@@ -224,9 +224,9 @@ Located in `packages/database/src/schemas/`:
 - Manual test steps: Navigate to `/warehouses`, create a new warehouse, edit it, and deactivate it.
 - Expected behavior: UI updates optimistically or revalidates correctly. Database reflects changes.
 - Verification checklist:
-  - [ ] Manual test passed.
-  - [ ] Data in DB verified (`SELECT * FROM warehouse`).
-  - [ ] User confirmed working.
+  - [x] Manual test passed.
+  - [x] Data in DB verified (`SELECT * FROM warehouse`).
+  - [x] User confirmed working.
 
 ### RFC-003: Inventory Stock Management UI
 
@@ -246,9 +246,9 @@ Located in `packages/database/src/schemas/`:
 - Manual test steps: Navigate to a product's inventory view. Update stock count for a specific warehouse.
 - Expected behavior: Changes save successfully, reflecting immediately in the UI.
 - Verification checklist:
-  - [ ] Manual test passed.
-  - [ ] Data in DB verified (`SELECT * FROM warehouse_stock`).
-  - [ ] User confirmed working.
+  - [x] Manual test passed.
+  - [x] Data in DB verified (`SELECT * FROM warehouse_stock`).
+  - [x] User confirmed working.
 
 ---
 
