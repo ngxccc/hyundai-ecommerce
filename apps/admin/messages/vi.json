@@ -97,6 +97,7 @@
       "orders": "Đơn hàng",
       "customers": "Khách hàng",
       "settings": "Cài đặt",
+      "warehouses": "Kho hàng",
       "categories": "Danh mục",
       "brands": "Thương hiệu"
     },
@@ -525,6 +526,75 @@
         "deleting": "Đang xóa...",
         "confirm": "Xóa thương hiệu"
       }
+    }
+  },
+  "AdminWarehouses": {
+    "header": {
+      "searchPlaceholder": "Tìm kiếm kho...",
+      "addWarehouse": "Thêm kho",
+      "title": "Quản lý kho",
+      "description": "Quản lý danh sách kho và địa chỉ."
+    },
+    "card": {
+      "status": {
+        "active": "Hoạt động",
+        "inactive": "Vô hiệu"
+      },
+      "actions": {
+        "edit": "Sửa",
+        "delete": "Xóa"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Xóa kho thành công",
+      "deleteError": "Không thể xóa kho"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Bạn có chắc chắn muốn xóa?",
+        "description": "Kho \"{warehouseName}\" sẽ bị vô hiệu hóa. Hành động này có thể ảnh hưởng đến các đơn hàng sử dụng kho này.",
+        "cancel": "Hủy",
+        "deleting": "Đang xóa...",
+        "confirm": "Xóa kho"
+      }
+    }
+  },
+  "AdminWarehouseForm": {
+    "title": "Thêm kho mới",
+    "description": "Nhập thông tin chi tiết cho kho mới.",
+    "editTitle": "Sửa kho",
+    "editDescription": "Chỉnh sửa các thông tin của kho.",
+    "buttons": {
+      "cancel": "Hủy",
+      "create": "Thêm",
+      "save": "Lưu"
+    },
+    "sections": {
+      "general": "Thông tin chung"
+    },
+    "fields": {
+      "name": "Tên kho",
+      "streetAddress": "Địa chỉ",
+      "district": "Quận/Huyện",
+      "city": "Tỉnh/Thành phố",
+      "isActive": "Trạng thái hoạt động"
+    },
+    "placeholders": {
+      "name": "VD: Kho Tổng TP.HCM",
+      "streetAddress": "VD: 123 Đường ABC",
+      "district": "VD: Quận 1",
+      "city": "VD: TP.HCM"
+    },
+    "validation": {
+      "nameRequired": "Vui lòng nhập tên kho",
+      "streetAddressRequired": "Vui lòng nhập địa chỉ",
+      "districtRequired": "Vui lòng nhập quận/huyện",
+      "cityRequired": "Vui lòng nhập tỉnh/thành phố"
+    },
+    "messages": {
+      "successCreate": "Thêm kho thành công",
+      "successUpdate": "Cập nhật kho thành công",
+      "error": "Đã xảy ra lỗi"
     }
   },
   "errors": {

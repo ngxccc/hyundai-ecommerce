@@ -97,6 +97,7 @@
       "orders": "Orders",
       "customers": "Customers",
       "settings": "Settings",
+      "warehouses": "Warehouses",
       "categories": "Categories",
       "brands": "Brands"
     },
@@ -521,6 +522,75 @@
         "deleting": "Deleting...",
         "confirm": "Delete Brand"
       }
+    }
+  },
+  "AdminWarehouses": {
+    "header": {
+      "searchPlaceholder": "Search warehouses...",
+      "addWarehouse": "Add Warehouse",
+      "title": "Warehouses",
+      "description": "Manage warehouse locations."
+    },
+    "card": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Warehouse deleted successfully",
+      "deleteError": "Failed to delete warehouse"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete?",
+        "description": "Warehouse \"{warehouseName}\" will be deactivated.",
+        "cancel": "Cancel",
+        "deleting": "Deleting...",
+        "confirm": "Delete Warehouse"
+      }
+    }
+  },
+  "AdminWarehouseForm": {
+    "title": "Add Warehouse",
+    "description": "Enter details for the new warehouse.",
+    "editTitle": "Edit Warehouse",
+    "editDescription": "Edit warehouse information.",
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save"
+    },
+    "sections": {
+      "general": "General Information"
+    },
+    "fields": {
+      "name": "Warehouse Name",
+      "streetAddress": "Street Address",
+      "district": "District",
+      "city": "City",
+      "isActive": "Active Status"
+    },
+    "placeholders": {
+      "name": "e.g. Main Warehouse",
+      "streetAddress": "e.g. 123 Main St",
+      "district": "e.g. District 1",
+      "city": "e.g. HCM City"
+    },
+    "validation": {
+      "nameRequired": "Warehouse name is required",
+      "streetAddressRequired": "Street address is required",
+      "districtRequired": "District is required",
+      "cityRequired": "City is required"
+    },
+    "messages": {
+      "successCreate": "Warehouse created successfully",
+      "successUpdate": "Warehouse updated successfully",
+      "error": "An error occurred"
     }
   },
   "errors": {
