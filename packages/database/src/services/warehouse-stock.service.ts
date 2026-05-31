@@ -58,4 +58,11 @@ export class WarehouseStockService implements IWarehouseStockService {
       .set({ totalStockCache: totalStock })
       .where(eq(products.id, productId));
   }
+
+  async getByProductId(productId: string): Promise<typeof warehouseStocks.$inferSelect[]> {
+    return this.db
+      .select()
+      .from(warehouseStocks)
+      .where(eq(warehouseStocks.productId, productId));
+  }
 }

@@ -14,4 +14,9 @@ export interface IWarehouseStockService {
    * Calculate total stock across all warehouses and sync to product.totalStockCache
    */
   syncTotalStock(productId: string): Promise<void>;
+
+  /**
+   * Get all warehouse stock records for a specific product
+   */
+  getByProductId(productId: string): Promise<TWarehouseStock[]>;
 }

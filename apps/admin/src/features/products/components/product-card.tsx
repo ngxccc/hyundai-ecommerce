@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Edit } from "lucide-react";
+import { Edit, Package } from "lucide-react";
 import { Card } from "@nhatnang/ui/components/ui/card";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -68,7 +68,17 @@ export const ProductCard = ({ product }: { product: TProductGridItem }) => {
               {product.isQuoteOnly ? t("contact") : formattedPrice}
             </p>
           </div>
-          <div className="flex gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+          <div className="flex gap-1 transition-opacity sm:opacity-40 sm:group-hover:opacity-100">
+            <Link href={`/products/${product.id}/inventory`}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:bg-muted hover:text-foreground h-8 w-8 transition-colors"
+                title={t("actions.inventory")}
+              >
+                <Package className="h-4 w-4" />
+              </Button>
+            </Link>
             <Link href={`/products/${product.id}/edit`}>
               <Button
                 variant="ghost"
