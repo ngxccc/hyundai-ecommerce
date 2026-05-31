@@ -78,6 +78,7 @@ export const mockDb = {
     users: queryMocks,
     orders: queryMocks,
     warehouseStocks: queryMocks,
+    warehouses: queryMocks,
   },
 };
 

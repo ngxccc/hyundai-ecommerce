@@ -536,6 +536,11 @@
     "updateProductFailed": "Failed to update product. The slug might already be in use.",
     "deleteProductFailed": "Failed to delete product",
     "productNotFound": "Product not found or already deleted",
+    "createWarehouseFailed": "Failed to create warehouse",
+    "updateWarehouseFailed": "Failed to update warehouse",
+    "deleteWarehouseFailed": "Failed to delete warehouse",
+    "warehouseNotFound": "Warehouse not found",
+    "updateWarehouseStockFailed": "Failed to update warehouse stock",
     "default": "An unexpected error occurred"
   }
 }
