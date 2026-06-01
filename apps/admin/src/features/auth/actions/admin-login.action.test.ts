@@ -20,6 +20,12 @@ void vi.mock("@nhatnang/database/services", () => ({
   authService: {
     loginEmail: mock(),
   },
+  productService: {
+    create: mock(),
+    update: mock(),
+    delete: mock(),
+    getById: mock(),
+  },
 }));
 
 type LoginResult = Awaited<ReturnType<typeof adminLoginAction>>;

@@ -49,3 +49,40 @@ export const uploadToCloudinary = async (
     return null;
   }
 };
+
+export const getPublicIdFromUrl = (url: string): string | null => {
+  if (!url || typeof url !== "string") return null;
+  if (!url.includes("cloudinary.com")) return null;
+
+  try {
+    const parts = url.split("/");
+    const uploadIndex = parts.findIndex((p) => p === "upload");
+    if (uploadIndex === -1) return null;
+
+    const nextSegment = parts[uploadIndex + 1];
+    if (!nextSegment) return null;
+    const startIndex = /^v\d+$/.test(nextSegment)
+      ? uploadIndex + 2
+      : uploadIndex + 1;
+
+    const publicIdWithExtension = parts.slice(startIndex).join("/");
+    return publicIdWithExtension.replace(/\.[^/.]+$/, "");
+  } catch {
+    return null;
+  }
+};
+
+export const deleteFromCloudinary = async (url: string): Promise<boolean> => {
+  try {
+    const publicId = getPublicIdFromUrl(url);
+    if (!publicId) return false;
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const result = await cloudinary.uploader.destroy(publicId);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    return result.result === "ok";
+  } catch (error) {
+    console.error("[Cloudinary Service Delete Error]", error);
+    return false;
+  }
+};
