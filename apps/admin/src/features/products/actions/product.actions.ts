@@ -12,10 +12,17 @@ import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { z } from "zod";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
+import { after } from "next/server";
+import { uploadToCloudinary } from "@/shared/services";
 
-export const createProductAction = async (data: TCreateProductInput) => {
+export const createProductAction = async (formData: FormData) => {
   try {
     await requireAuth();
+
+    const payloadStr = formData.get("payload");
+    if (!payloadStr) throw new Error("Missing payload");
+    const data = JSON.parse(payloadStr as string) as TCreateProductInput;
+
     const schema = createProductSchema((key) => key);
     const parsed = await schema.safeParseAsync(data);
 
@@ -30,6 +37,29 @@ export const createProductAction = async (data: TCreateProductInput) => {
     const validatedData = parsed.data;
 
     const newProduct = await productService.create(validatedData);
+
+    // Background Image Upload
+    if (newProduct?.id) {
+      const rawImages = formData.getAll("images") as (File | string)[];
+      if (rawImages.length > 0) {
+        after(async () => {
+          try {
+            const uploadedUrls: string[] = [];
+            for (const item of rawImages) {
+              const url = await uploadToCloudinary(item, "products");
+              if (url) uploadedUrls.push(url);
+            }
+            if (uploadedUrls.length > 0) {
+              await productService.update(newProduct.id, {
+                images: [...(validatedData.images || []), ...uploadedUrls],
+              });
+            }
+          } catch (e) {
+            console.error("[Background Upload Failed]", e);
+          }
+        });
+      }
+    }
 
     revalidatePath("/products");
     return { success: true, data: newProduct };
@@ -48,12 +78,14 @@ export const createProductAction = async (data: TCreateProductInput) => {
   }
 };
 
-export async function updateProductAction(
-  id: string,
-  data: TUpdateProductInput,
-) {
+export async function updateProductAction(id: string, formData: FormData) {
   try {
     await requireAuth();
+
+    const payloadStr = formData.get("payload");
+    if (!payloadStr) throw new Error("Missing payload");
+    const data = JSON.parse(payloadStr as string) as TUpdateProductInput;
+
     const schema = updateProductSchema((key) => key);
     const parsed = await schema.safeParseAsync(data);
 
@@ -68,6 +100,27 @@ export async function updateProductAction(
     const validatedData = parsed.data;
 
     const updatedProduct = await productService.update(id, validatedData);
+
+    // Background Image Upload
+    const rawImages = formData.getAll("images") as (File | string)[];
+    if (rawImages.length > 0) {
+      after(async () => {
+        try {
+          const uploadedUrls: string[] = [];
+          for (const item of rawImages) {
+            const url = await uploadToCloudinary(item, "products");
+            if (url) uploadedUrls.push(url);
+          }
+          if (uploadedUrls.length > 0) {
+            await productService.update(id, {
+              images: [...(validatedData.images ?? []), ...uploadedUrls],
+            });
+          }
+        } catch (e) {
+          console.error("[Background Upload Failed]", e);
+        }
+      });
+    }
 
     revalidatePath("/products");
     revalidatePath(`/products/${id}/edit`);
@@ -91,7 +144,7 @@ export async function deleteProductAction(id: string) {
   try {
     await requireAuth();
     const success = await productService.delete(id);
-    
+
     const t = await getTranslations("errors");
     if (!success) {
       return {
