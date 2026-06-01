@@ -19,6 +19,12 @@ const nextConfig: NextConfig = {
     ],
   },
   transpilePackages: ["@nhatnang/database", "@nhatnang/shared", "@nhatnang/ui"],
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "20mb",
+    },
+    middlewareClientMaxBodySize: 20971520,
+  },
 };
 
 export default withNextIntl(nextConfig);

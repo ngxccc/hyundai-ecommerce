@@ -12,10 +12,10 @@ export const env = createEnv({
       ])
       .default(ENVIRONMENT_MODES.DEVELOPMENT),
     CLOUDINARY_API_SECRET: z.string().min(1),
+    CLOUDINARY_API_KEY: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.url(MESSAGES.NEXT_URL_IS_INVALID),
-    NEXT_PUBLIC_CLOUDINARY_API_KEY: z.string().min(1),
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string().min(1),
   },
 
@@ -25,8 +25,7 @@ export const env = createEnv({
       process.env["NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME"],
     NODE_ENV: process.env.NODE_ENV,
     CLOUDINARY_API_SECRET: process.env["CLOUDINARY_API_SECRET"],
-    NEXT_PUBLIC_CLOUDINARY_API_KEY:
-      process.env["NEXT_PUBLIC_CLOUDINARY_API_KEY"],
+    CLOUDINARY_API_KEY: process.env["CLOUDINARY_API_KEY"],
   },
 
   emptyStringAsUndefined: true,

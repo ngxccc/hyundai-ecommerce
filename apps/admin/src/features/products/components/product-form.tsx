@@ -85,51 +85,38 @@ export const ProductForm = ({
 
   const onSubmit = (data: TCreateProductInput) => {
     startTransition(async () => {
-      const uploadedImageUrls: string[] = [];
+      const existingImageUrls: string[] = [];
+      const imagesToUpload: (File | string)[] = [];
 
       for (const item of images) {
         if (item instanceof File) {
-          const formData = new FormData();
-          formData.append("file", item);
-          try {
-            const res = await fetch("/api/cloudinary/upload", {
-              method: "POST",
-              body: formData,
-            });
-            const result = (await res.json()) as { secure_url?: string };
-            if (result.secure_url) uploadedImageUrls.push(result.secure_url);
-          } catch (e) {
-            console.error("Upload failed", e);
-          }
+          imagesToUpload.push(item);
         } else if (
           typeof item === "string" &&
           !item.includes("cloudinary.com")
         ) {
-          try {
-            const res = await fetch("/api/cloudinary/upload", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ url: item }),
-            });
-            const result = (await res.json()) as { secure_url?: string };
-            if (result.secure_url) uploadedImageUrls.push(result.secure_url);
-          } catch (e) {
-            console.error("Upload failed", e);
-          }
+          imagesToUpload.push(item);
         } else {
-          uploadedImageUrls.push(item);
+          existingImageUrls.push(item);
         }
       }
 
       const payload = {
         ...data,
         price: data.price ? data.price.replace(/\./g, "") : "",
-        images: uploadedImageUrls.filter((image) => image.trim().length > 0),
+        images: existingImageUrls.filter((image) => image.trim().length > 0),
         isQuoteOnly: data.isQuoteOnly ?? false,
       };
+
+      const finalFormData = new FormData();
+      finalFormData.append("payload", JSON.stringify(payload));
+      for (const item of imagesToUpload) {
+        finalFormData.append("images", item);
+      }
+
       const result = isEditing
-        ? await updateProductAction(initialData.id, payload)
-        : await createProductAction(payload);
+        ? await updateProductAction(initialData.id, finalFormData)
+        : await createProductAction(finalFormData);
 
       if (result.success) {
         toast.success(
