@@ -71,6 +71,7 @@ export const mockDb = {
   update: mockUpdate,
   delete: mockDelete,
   select: mockSelect,
+  transaction: vi.fn().mockImplementation((cb: (tx: unknown) => unknown) => cb(mockDb)),
   query: {
     products: queryMocks,
     brands: queryMocks,
@@ -79,6 +80,7 @@ export const mockDb = {
     orders: queryMocks,
     warehouseStocks: queryMocks,
     warehouses: queryMocks,
+    quotes: queryMocks,
   },
 };
 

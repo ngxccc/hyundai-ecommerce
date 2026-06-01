@@ -14,3 +14,5 @@ export * from "./user-address.schema";
 export * from "./payment.schema";
 export * from "./cart.schema";
 export * from "./cart-item.schema";
+export * from "./quotes.schema";
+

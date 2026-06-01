@@ -13,6 +13,7 @@ import { userAddresses } from "./user-address.schema";
 import { payments } from "./payment.schema";
 import { carts } from "./cart.schema";
 import { cartItems } from "./cart-item.schema";
+import { quotes, quoteItems, quoteMessages } from "./quotes.schema";
 
 export const schemaRelations = defineRelations(
   {
@@ -32,6 +33,9 @@ export const schemaRelations = defineRelations(
     payments,
     carts,
     cartItems,
+    quotes,
+    quoteItems,
+    quoteMessages,
   },
   (r) => ({
     users: {
@@ -47,6 +51,8 @@ export const schemaRelations = defineRelations(
       sessions: r.many.sessions(),
       accounts: r.many.accounts(),
       userAddresses: r.many.userAddresses(),
+      quotes: r.many.quotes(),
+      quoteMessages: r.many.quoteMessages(),
     },
 
     sessions: {
@@ -114,6 +120,7 @@ export const schemaRelations = defineRelations(
         to: r.categories.id,
       }),
       stocks: r.many.warehouseStocks(),
+      quoteItems: r.many.quoteItems(),
     },
 
     warehouses: {
@@ -182,6 +189,42 @@ export const schemaRelations = defineRelations(
       product: r.one.products({
         from: r.cartItems.productId,
         to: r.products.id,
+        optional: false,
+      }),
+    },
+
+    quotes: {
+      user: r.one.users({
+        from: r.quotes.userId,
+        to: r.users.id,
+        optional: false,
+      }),
+      items: r.many.quoteItems(),
+      messages: r.many.quoteMessages(),
+    },
+
+    quoteItems: {
+      quote: r.one.quotes({
+        from: r.quoteItems.quoteId,
+        to: r.quotes.id,
+        optional: false,
+      }),
+      product: r.one.products({
+        from: r.quoteItems.productId,
+        to: r.products.id,
+        optional: false,
+      }),
+    },
+
+    quoteMessages: {
+      quote: r.one.quotes({
+        from: r.quoteMessages.quoteId,
+        to: r.quotes.id,
+        optional: false,
+      }),
+      sender: r.one.users({
+        from: r.quoteMessages.senderId,
+        to: r.users.id,
         optional: false,
       }),
     },
