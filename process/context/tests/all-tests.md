@@ -25,3 +25,7 @@ When validating your implementation, follow these strict phases:
 - Provide **full mock objects** representing the exact Type structure expected by TypeScript.
 - Use built-in type guards (e.g., `isUniqueConstraintError`) to ensure tests and production code cleanly handle expected failure branches.
 - **Drizzle DB Mocking (`db-mock.ts`)**: When testing Services with `mockDb`, DO NOT use `vi.resetAllMocks()` in your `beforeEach()` hook, as this will destroy the chained implementations (`where`, `limit`, `values`) established in `db-mock.ts`. Use `vi.clearAllMocks()` instead. If your service uses a new Drizzle chain method (like `.limit()`), you must first add it to the mock chain in `packages/database/src/tests/utils/db-mock.ts`.
+
+## Deeper Reference Docs
+
+- `browser-automation.md` - Guidelines and patterns for Puppeteer and Playwright browser automation.
