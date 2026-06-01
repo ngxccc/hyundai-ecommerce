@@ -1,7 +1,13 @@
 import { env } from "@/env";
 import { v2 as cloudinary } from "cloudinary";
+import { type NextRequest, NextResponse } from "next/server";
+import { getTranslations } from "next-intl/server";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const requestedLocale = request.nextUrl.searchParams.get("locale") ?? request.cookies.get("NEXT_LOCALE")?.value ?? "vi";
+  const locale = (requestedLocale === "en" || requestedLocale === "vi") ? requestedLocale : "vi";
+  const t = await getTranslations({ locale, namespace: "Cloudinary" });
+
   try {
     const body = (await request.json()) as {
       paramsToSign: Record<string, string>;
@@ -13,8 +19,9 @@ export async function POST(request: Request) {
       env.CLOUDINARY_API_SECRET,
     );
 
-    return Response.json({ signature });
+    return NextResponse.json({ signature });
   } catch {
-    return Response.json({ error: "Failed to sign" }, { status: 500 });
+    return NextResponse.json({ error: t("signFailed") }, { status: 500 });
   }
 }
+
