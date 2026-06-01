@@ -1,4 +1,11 @@
 {
+  "Cloudinary": {
+    "signFailed": "Failed to sign upload request",
+    "noFileProvided": "No file provided",
+    "noUrlProvided": "No URL provided",
+    "unsupportedContentType": "Unsupported content type",
+    "uploadFailed": "Upload failed"
+  },
   "Editor": {
     "editor": {
       "image": {

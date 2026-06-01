@@ -1,4 +1,11 @@
 {
+  "Cloudinary": {
+    "signFailed": "Không thể ký yêu cầu tải lên",
+    "noFileProvided": "Không có file nào được cung cấp",
+    "noUrlProvided": "Không có đường dẫn URL nào được cung cấp",
+    "unsupportedContentType": "Định dạng nội dung không được hỗ trợ",
+    "uploadFailed": "Tải lên thất bại"
+  },
   "Editor": {
     "editor": {
       "image": {

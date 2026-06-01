@@ -1,6 +1,7 @@
-import type { NextRequest} from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
+import { getTranslations } from "next-intl/server";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -10,6 +11,10 @@ cloudinary.config({
 });
 
 export async function POST(req: NextRequest) {
+  const requestedLocale = req.nextUrl.searchParams.get("locale") ?? req.cookies.get("NEXT_LOCALE")?.value ?? "vi";
+  const locale = (requestedLocale === "en" || requestedLocale === "vi") ? requestedLocale : "vi";
+  const t = await getTranslations({ locale, namespace: "Cloudinary" });
+
   try {
     const contentType = req.headers.get("content-type") ?? "";
 
@@ -20,7 +25,7 @@ export async function POST(req: NextRequest) {
 
       if (!file) {
         return NextResponse.json(
-          { error: "No file provided" },
+          { error: t("noFileProvided") },
           { status: 400 },
         );
       }
@@ -46,7 +51,7 @@ export async function POST(req: NextRequest) {
 
       if (!url) {
         return NextResponse.json(
-          { error: "No URL provided" },
+          { error: t("noUrlProvided") },
           { status: 400 },
         );
       }
@@ -59,14 +64,15 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { error: "Unsupported content type" },
+      { error: t("unsupportedContentType") },
       { status: 400 },
     );
   } catch (error: unknown) {
     console.error("[Cloudinary Upload Error]", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Upload failed" },
+      { error: error instanceof Error ? error.message : t("uploadFailed") },
       { status: 500 },
     );
   }
 }
+
