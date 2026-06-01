@@ -369,7 +369,8 @@
     "buttons": {
       "cancel": "Cancel",
       "create": "Create",
-      "save": "Save"
+      "save": "Save",
+      "addUrl": "Add URL"
     },
     "sections": {
       "general": "General Information",
@@ -394,7 +395,8 @@
     "messages": {
       "successCreate": "Brand created successfully",
       "successUpdate": "Brand updated successfully",
-      "error": "An error occurred"
+      "error": "An error occurred",
+      "maxImagesReached": "You can only add 1 image until you remove the current one."
     },
     "validation": {
       "slugExists": "Slug already exists",
@@ -411,7 +413,8 @@
     "buttons": {
       "cancel": "Cancel",
       "create": "Create",
-      "save": "Save"
+      "save": "Save",
+      "addUrl": "Add URL"
     },
     "sections": {
       "general": "General Information",
@@ -441,7 +444,8 @@
     "messages": {
       "successCreate": "Category created successfully",
       "successUpdate": "Category updated successfully",
-      "error": "An error occurred"
+      "error": "An error occurred",
+      "maxImagesReached": "You can only add 1 image until you remove the current one."
     },
     "validation": {
       "slugExists": "Slug already exists",

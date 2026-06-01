@@ -1,7 +1,7 @@
 "use client";
 
-import { useTransition, type ReactNode } from "react";
-import { useForm, useWatch, type Resolver } from "react-hook-form";
+import { useState, useTransition, type ReactNode } from "react";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
@@ -33,7 +33,10 @@ import {
 import { Save, Loader2, X, Info } from "lucide-react";
 
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { BrandImageSection } from "./images-section";
+import {
+  AdminImageUploadSection,
+  type AdminImageItem,
+} from "@/shared/components/admin-image-upload-section";
 
 export const BrandForm = ({
   initialData,
@@ -61,20 +64,43 @@ export const BrandForm = ({
     },
   });
 
-  const logo = useWatch({ control: form.control, name: "logo" }) ?? "";
+  const [logoImages, setLogoImages] = useState<AdminImageItem[]>(
+    initialData?.logo ? [initialData.logo] : []
+  );
 
   const onSubmit = (data: TCreateBrandInput) => {
     startTransition(async () => {
+      const existingImageUrls: string[] = [];
+      const imagesToUpload: (File | string)[] = [];
+
+      for (const item of logoImages) {
+        if (item instanceof File) {
+          imagesToUpload.push(item);
+        } else if (
+          typeof item === "string" &&
+          !item.includes("cloudinary.com")
+        ) {
+          imagesToUpload.push(item);
+        } else {
+          existingImageUrls.push(item);
+        }
+      }
+
       const payload = {
         ...data,
+        logo: existingImageUrls.length > 0 ? existingImageUrls[0] : "",
       };
 
+      const finalFormData = new FormData();
+      finalFormData.append("payload", JSON.stringify(payload));
+      if (imagesToUpload.length > 0) {
+        const fileOrStr = imagesToUpload[0];
+        if (fileOrStr) finalFormData.append("logo", fileOrStr);
+      }
+
       const result = isEditing
-        ? await updateBrandAction(initialData.id, {
-            ...payload,
-            id: initialData.id,
-          })
-        : await createBrandAction(payload);
+        ? await updateBrandAction(initialData.id, finalFormData)
+        : await createBrandAction(finalFormData);
 
       if (result.success) {
         toast.success(
@@ -209,11 +235,16 @@ export const BrandForm = ({
           </Card>
 
           <div className="col-span-1">
-            <BrandImageSection
-              logo={logo}
-              setLogo={(val) =>
-                form.setValue("logo", val, { shouldValidate: true })
-              }
+            <AdminImageUploadSection
+              title={t("sections.media")}
+              images={logoImages}
+              setImages={setLogoImages}
+              urlPlaceholder={t("placeholders.logo")}
+              addUrlLabel={t("buttons.addUrl")}
+              dragDropLabel={t("fields.dragDropImage")}
+              clickToSelectLabel={t("fields.orClickToSelect")}
+              limitReachedMessage={t("messages.maxImagesReached")}
+              maxImages={1}
             />
           </div>
         </div>

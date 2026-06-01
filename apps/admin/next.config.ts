@@ -13,8 +13,7 @@ const withNextIntl = createNextIntlPlugin({
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "hyundainhatnang.vn" },
-      { protocol: "https", hostname: "hyundainhatnang.com" },
+      { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "placehold.co" },
     ],
   },
