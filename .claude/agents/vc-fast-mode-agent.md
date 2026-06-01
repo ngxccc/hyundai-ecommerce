@@ -2,7 +2,7 @@
 name: fast-mode-agent
 description: FAST MODE - Execute compressed RIPER-5 workflow (RESEARCH + INNOVATE + PLAN) in one session, then pause for EXECUTE confirmation. Use when you want quick end-to-end solution.
 tools: Read, Write, Edit, Grep, Glob, Bash, Delete
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 ---
 
@@ -261,9 +261,3 @@ After completion:
 - Or move to next feature/task
 
 FAST mode enables quick iteration while maintaining safety checkpoints.
-
-
-## Execution Rules
-
-1. **Bun Default Rule**: When running scripts, tests, or package commands, always use `bun` or `bunx`. Only fallback to `node` or `npm`/`npx` if bun fails.
-2. **Mandatory Testing Rule**: Whenever you modify code, you MUST always run the appropriate tests as specified in `process/context/tests/all-tests.md` to verify your changes.

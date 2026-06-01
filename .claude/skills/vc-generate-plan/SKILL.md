@@ -1,6 +1,6 @@
 ---
 name: vc:generate-plan
-description: Create or update Flowser implementation plans in the repo's SIMPLE or COMPLEX format. Use when turning an idea, PRD, or approved direction into a saved plan artifact.
+description: Create or update implementation plans in the repo's SIMPLE or COMPLEX format. Use when turning an idea, PRD, or approved direction into a saved plan artifact.
 metadata:
   author: flowser
   version: "1.0.0"
@@ -8,7 +8,7 @@ metadata:
 
 # Generate Plan
 
-Use this skill to produce the authoritative implementation plan artifact set for Flowser work.
+Use this skill to produce the authoritative implementation plan artifact set for the project's work.
 
 This skill is the canonical planning contract for the repo. Planning discipline previously spread across `vc:plan` now belongs here plus the `plan-agent` prompt.
 
@@ -26,7 +26,7 @@ Optional input: a feature idea plus `simple` or `complex` when the user already 
 3. If complexity is not obvious, ask whether the plan is `SIMPLE` or `COMPLEX`.
 4. Save the plan to `process/general-plans/active/` unless the work belongs to an existing `process/features/{feature}/active/` folder.
 5. Read `process/context/all-context.md` when present to choose relevant context docs.
-6. For complex plans, read `process/context/planning/example-complex-prd.md` before writing.
+6. For complex plans, read `process/development-protocols/references/example-complex-prd.md` before writing.
 7. Include automated and manual verification gates from `process/context/tests/all-tests.md`.
 8. For new or newly touched direct `*_PLAN_*.md` plans, include explicit sections for `Touchpoints`, `Public Contracts`, `Blast Radius`, `Verification Evidence`, and `Resume and Execution Handoff`.
 9. Keep resume/dependency notes Markdown-structured for now; do not invent a second machine-only schema.

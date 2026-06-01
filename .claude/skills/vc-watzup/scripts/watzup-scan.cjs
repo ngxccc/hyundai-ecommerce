@@ -91,7 +91,7 @@ Options:
   --max-branches <n>       Branches to summarize in handoff output
   --commits-per-branch <n> Commit subjects per summarized branch
   --plan-limit <n>         Unfinished plans to include in short output
-  --max-plan-refs <n>      Ranked refs to inspect for tracked Flowser plan files`);
+  --max-plan-refs <n>      Ranked refs to inspect for tracked project plan files`);
 }
 
 function runGit(args, cwd, { ok = [0] } = {}) {

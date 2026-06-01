@@ -1,6 +1,6 @@
 ---
 name: vc:merge-worktree
-description: Merge a git worktree branch back into the main Flowser checkout and clean up the worktree. Use when the user asks to merge, archive, or clean up a completed worktree.
+description: Merge a git worktree branch back into the main checkout and clean up the worktree. Use when the user asks to merge, archive, or clean up a completed worktree.
 argument-hint: "[worktree path or branch]"
 metadata:
   author: flowser

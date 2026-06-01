@@ -23,11 +23,11 @@ Auto-skip rule: single-file or trivial changes always skip fan-out regardless of
 
 Thresholds:
 
-| Score | Label  | Orchestrator action                                                     |
-| ----- | ------ | ----------------------------------------------------------------------- |
-| 0-1   | LOW    | Skip fan-out. Do not mention it.                                        |
-| 2     | MEDIUM | Mention availability: "Parallel fan-out available for deeper coverage." |
-| 3+    | HIGH   | Recommend fan-out: "Recommend parallel fan-out -- [reason]."            |
+| Score | Label | Orchestrator action |
+|-------|-------|---------------------|
+| 0-1 | LOW | Skip fan-out. Do not mention it. |
+| 2 | MEDIUM | Mention availability: "Parallel fan-out available for deeper coverage." |
+| 3+ | HIGH | Recommend fan-out: "Recommend parallel fan-out -- [reason]." |
 
 ## Two Tiers
 
@@ -117,12 +117,12 @@ against a domain -- that is analytical research, not planning or execution).
 
 **Validation dimensions** (each is one parallel agent):
 
-| Dimension        | Focus                                                       | Context to attach                                  |
-| ---------------- | ----------------------------------------------------------- | -------------------------------------------------- |
-| Infra/setup fit  | Does this work with container/worker/proxy architecture?    | `container/all-container.md`, `infra/all-infra.md` |
-| Test coverage    | Is the verification strategy realistic given test infra?    | `tests/all-tests.md`                               |
-| Breaking changes | API contracts, schemas, auth flows, public contract changes | Plan's public contracts and blast radius sections  |
-| Security surface | Quick STRIDE/OWASP scan                                     | `vc-security` skill context                        |
+| Dimension | Focus | Context to attach |
+|-----------|-------|-------------------|
+| Infra/setup fit | Does this work with container/worker/proxy architecture? | `container/all-container.md`, `infra/all-infra.md` |
+| Test coverage | Is the verification strategy realistic given test infra? | `tests/all-tests.md` |
+| Breaking changes | API contracts, schemas, auth flows, public contract changes | Plan's public contracts and blast radius sections |
+| Security surface | Quick STRIDE/OWASP scan | `vc-security` skill context |
 
 **Per-agent output:** structured pass/fail/concern list against the plan.
 
@@ -167,12 +167,12 @@ for the same scope.
 
 **Review dimensions with spawn types:**
 
-| Dimension     | Agent type       | Context to attach                          |
-| ------------- | ---------------- | ------------------------------------------ |
-| Code quality  | `code-reviewer`  | Changed files, plan checklist              |
-| Test gaps     | `tester`         | Changed files, `tests/all-tests.md`        |
-| Security      | `research-agent` | Changed files, `vc-security` skill context |
-| API contracts | `code-reviewer`  | Plan's public contracts section            |
+| Dimension | Agent type | Context to attach |
+|-----------|-----------|-------------------|
+| Code quality | `code-reviewer` | Changed files, plan checklist |
+| Test gaps | `tester` | Changed files, `tests/all-tests.md` |
+| Security | `research-agent` | Changed files, `vc-security` skill context |
+| API contracts | `code-reviewer` | Plan's public contracts section |
 
 **Per-agent output:** structured review with severity-rated findings.
 
@@ -184,7 +184,7 @@ for the same scope.
 
 Each parallel agent must produce a structured summary:
 
-```text
+```
 Dimension: [name]
 Status: PASS | CONCERN | FAIL
 Findings:

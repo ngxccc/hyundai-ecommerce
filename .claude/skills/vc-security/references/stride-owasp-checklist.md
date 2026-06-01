@@ -7,7 +7,7 @@ Reference checklist for `vc:security` audits. Use during Step 2 (STRIDE Analysis
 ## STRIDE Checklist
 
 ### Spoofing (Authentication)
-> **Note (Flowser project):** This project uses Clerk for externalized auth. Local password hashing (bcrypt/argon2) does not apply — password security is managed by Clerk. Focus checks on Clerk session validation, webhook signature verification, and Clerk-issued JWT handling.
+> **Note (example project):** This project uses Clerk for externalized auth. Local password hashing (bcrypt/argon2) does not apply — password security is managed by Clerk. Focus checks on Clerk session validation, webhook signature verification, and Clerk-issued JWT handling.
 - [ ] All endpoints require authentication (unless intentionally public)
 - [ ] Passwords hashed with bcrypt/argon2 — not MD5 or SHA1 (N/A for Clerk-auth projects)
 - [ ] JWT tokens have expiration (`exp`) and are validated server-side

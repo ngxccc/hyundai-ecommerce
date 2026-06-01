@@ -56,7 +56,7 @@ Inspect as relevant:
 - `process/general-plans/active/*` and `process/features/*/active/*`.
 - `process/context/all-context.md` for context routing and group ownership.
 - Existing `process/context/**/*.md` files, loading only relevant grouped docs.
-- `process/context/planning/example-complex-prd.md` for plan/PRD depth expectations.
+- `process/development-protocols/references/example-complex-prd.md` for plan/PRD depth expectations.
 
 ## Full Scan Structure
 

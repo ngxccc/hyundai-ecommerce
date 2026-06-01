@@ -1,6 +1,6 @@
 ---
 name: vc:audit-context
-description: Audit Flowser context routing, shared-skill discoverability, and Claude/Codex wiring. Use when context docs or skill surfaces move, split, or drift.
+description: Audit project context routing, shared-skill discoverability, and Claude/Codex wiring. Use when context docs or skill surfaces move, split, or drift.
 metadata:
   author: flowser
   version: "1.0.0"
@@ -8,7 +8,7 @@ metadata:
 
 # Audit Context
 
-Use this skill to verify that Flowser's durable context layer is discoverable and organized.
+Use this skill to verify that the project's durable context layer is discoverable and organized.
 
 Optional input: a context group, agent, skill, or folder scope to prioritize during the audit.
 

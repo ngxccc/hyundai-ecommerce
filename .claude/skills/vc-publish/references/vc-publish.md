@@ -36,8 +36,8 @@ The `--json` output provides all metadata needed for diffing:
   "files": ["...sorted managed file paths..."],
   "kitOnly": ["...sorted kit-exclusive file paths..."],
   "merge": [".claude/settings.json"],
-  "copyIfMissing": ["process/context/planning/example-simple-prd.md"],
-  "strip": ["CLAUDE.md", "AGENTS.md"],
+  "copyIfMissing": [],
+  "strip": [],
   "symlinks": { ".agents/skills": "../.claude/skills" }
 }
 ```
@@ -71,7 +71,7 @@ When publishing, CLAUDE.md and AGENTS.md must be harness-only.
 - MCP server instructions (project-specific config)
 - Project-specific routing rules
 - Absolute paths (`/Users/...`)
-- Product name references ("Flowser", "flowser-turborepo")
+- Product name references (the project's product name and repo/directory name)
 
 ### Strategy
 
@@ -105,7 +105,58 @@ Maintain harness-only CLAUDE.md and AGENTS.md directly in the kit repo as canoni
 
 ## Leak Detection Patterns
 
-Grep the kit repo for these patterns BEFORE committing:
+Step 8 is a **resolved-set, two-check** gate. It scans the full shipped TEXT
+surface (not just `CLAUDE.md`/`AGENTS.md`) so brand leaks in skill/agent prose and
+dangling context-doc references are caught at publish time.
+
+**Resolve the shipped set** via the kit resolver, then keep only TEXT surfaces:
+
+```bash
+node <kitRepoPath>/resolve-manifest.mjs --root <kitRepoPath> --json
+```
+
+Restrict the resolved `files` to:
+- `.claude/skills/**` matching `*.md`, `*.cjs`, `*.mjs`, `*.py`, `*.js`, `*.json`
+- `.claude/agents/**` matching `*.md`
+- `.codex/**`
+- `process/development-protocols/**`
+- plus `CLAUDE.md`, `AGENTS.md`
+
+Exclude binaries and `**/node_modules/**`.
+
+### Check (a) -- product-name grep over the resolved text set
+
+Scan for the product names in the grep below ONLY. `tRPC`/`Prisma` are **dropped**
+from this skill-prose scan to avoid false positives in legitimate generic test
+guidance; the hosted-database product name is **kept** (see the pattern):
+
+```bash
+grep -rIin "flowser\|CloakBrowser\|OpenClaw\|Supabase" <resolved-text-files>
+```
+
+Allowlist the Bucket-4 lines that MUST keep the literal to function (otherwise the
+gate flags itself):
+
+- `author: flowser` frontmatter (maintainer tag, not a project leak)
+- the `isFlowserActivePlanPath` internal code identifier
+- this skill's OWN scrub-grep pattern lines (the narrow grep block below)
+- the new `validate-kit-portability.mjs` validator's own pattern strings
+- the internal `session-init.cjs` "Flowser plan generation" comment
+
+### Check (b) -- non-portable context-path grep
+
+Any concrete backticked `process/context/...` file reference in the resolved text
+set, MINUS the shipped/seeded survivors, is a dangling-link leak (it would dangle on
+a clean install) → FAIL with file:line.
+
+Survivors (allowed): `process/context/all-context.md`,
+`process/context/tests/all-tests.md`. Portable directory references (e.g.
+`process/context/tests/`) and the `process/context/...` placeholder are fine.
+
+### Existing narrow CLAUDE.md/AGENTS.md grep (kept as-is)
+
+This narrow grep stays on just those two files; `tRPC`/`Prisma` plus the
+hosted-database product name all REMAIN here, as shown in the pattern below:
 
 ```bash
 # Project-specific product names
@@ -121,7 +172,14 @@ grep -r "localhost:[0-9]" CLAUDE.md AGENTS.md
 grep -ri "supabase\.co\|vercel\.app\|clerk\.dev" CLAUDE.md AGENTS.md
 ```
 
-If any match: print every match with file path and line number, ask user to fix, do NOT commit until clean.
+The brand grep matches product names ONLY. It does NOT match `.ck.json`/`.ckignore`
+-- those Phase-2 legacy-fallback literals are intentional and must NOT be flagged.
+Do not add `ck`/`ckignore` to any leak grep.
+
+If any check matches: print every match with file path and line number, revert the
+kit worktree (`git -C <kitRepoPath> checkout .`), and STOP before commit/push. The
+standing `validate-kit-portability.mjs` validator (run by `vc-audit-vc`) mirrors
+checks (a) and (b) for between-release drift.
 
 ## Diff Summary Output Format
 

@@ -91,7 +91,7 @@ Compare the remote manifest `version` against `currentVersion`.
 - **Modifications:** Files in both lists -- compare content via `diff` between `$TMPDIR/{path}` and `{projectRoot}/{path}`.
   - If identical: **unchanged**.
   - If different: **modified** (note line count changes).
-- **Merge files:** Files in the `merge` list that have local changes. Show the diff but note they will NOT be overwritten. The user must manually reconcile.
+- **Merge files:** Files in the `merge` list (e.g. `.claude/settings.json`) that have local changes. Preserve local version entirely, show diff, flag for manual review.
 - **Copy-if-missing files:** Files in the `copyIfMissing` list that already exist locally. Show the diff but note they will NOT be overwritten.
 
 ### Step 7: Check Symlinks
@@ -120,7 +120,7 @@ MERGE (preserved, manual review needed):
   [differs]   .claude/settings.json  (+2 -1)
 
 COPY-IF-MISSING (skipped, already present):
-  [skipped]   process/context/planning/example-simple-prd.md
+  (none)
 
 SYMLINKS:
   [ok]        .agents/skills -> ../.claude/skills
@@ -194,7 +194,8 @@ Version written to .vc-version: {remoteVersion}
 - Always show the dry-run diff before applying. Never apply without user confirmation.
 - Clean up the temp clone directory even on error or abort.
 - If `.vc-version` is missing, treat as version `0.0.0` (first update, apply everything).
-- Files in the `merge` list are never overwritten if they exist locally. Show the diff for manual review.
+- `CLAUDE.md` and `AGENTS.md` are harness-only files — overwritten freely on update. Project-specific content belongs in `process/context/all-context.md`, not in these files.
+- Files in the `merge` list (e.g. `.claude/settings.json`) are never overwritten if they exist locally. Show the diff for manual review.
 - Files in the `copyIfMissing` list are only installed if they don't already exist locally.
 - Removals are detected by comparing the local `.vc-installed-files` snapshot against the new resolved file list.
 

@@ -19,7 +19,6 @@ The manifest uses glob-based patterns resolved by `resolve-manifest.mjs`.
     "CLAUDE.md",
     "AGENTS.md",
     "process/development-protocols/**",
-    "process/context/planning/example-*.md",
     "process/_seeds/**",
     "process/_seeds/**/.gitkeep",
     "process/_seeds/**/.gitignore",
@@ -34,9 +33,9 @@ The manifest uses glob-based patterns resolved by `resolve-manifest.mjs`.
     ".codex/statusline.cjs",
     ".claude/skills/vc-chrome-devtools/scripts/node_modules/**"
   ],
-  "strip": ["CLAUDE.md", "AGENTS.md"],
+  "strip": [],
   "merge": [".claude/settings.json"],
-  "copyIfMissing": ["process/context/planning/example-*.md"],
+  "copyIfMissing": [],
   "symlinks": { ".agents/skills": "../.claude/skills" },
   "kitOnly": [
     "README.md", "README-preview*.html", "CONTRIBUTING.md", "SECURITY.md",
@@ -96,8 +95,8 @@ node "$TMPDIR/resolve-manifest.mjs" --root "$TMPDIR" --kit-only
   "files": ["...sorted managed file paths..."],
   "kitOnly": ["...sorted kit-exclusive file paths..."],
   "merge": [".claude/settings.json"],
-  "copyIfMissing": ["process/context/planning/example-simple-prd.md", "process/context/planning/example-complex-prd.md"],
-  "strip": ["CLAUDE.md", "AGENTS.md"],
+  "copyIfMissing": [],
+  "strip": [],
   "symlinks": { ".agents/skills": "../.claude/skills" }
 }
 ```
@@ -151,6 +150,8 @@ If the user has intentional local changes to a managed file:
 
 Files in the `merge` list are NEVER overwritten if they exist locally. The dry-run shows the diff so the user can manually reconcile. On fresh install (no existing file), the kit version is installed.
 
+`CLAUDE.md` and `AGENTS.md` are harness-only files — overwritten freely on update like any other managed file. Project-specific content (context groups, tech stack, features) belongs in `process/context/all-context.md`, which vc-update never touches.
+
 ### Copy-if-missing files (example PRDs)
 
 Files in the `copyIfMissing` list are only installed if they don't already exist locally. This prevents overwriting user-customized planning examples while still providing them on fresh install.
@@ -196,8 +197,7 @@ MERGE (preserved, manual review needed):
   [differs]   .claude/settings.json  (+2 -1)
 
 COPY-IF-MISSING (skipped, already present):
-  [skipped]   process/context/planning/example-simple-prd.md
-  [skipped]   process/context/planning/example-complex-prd.md
+  (none)
 
 SYMLINKS:
   [ok]  .agents/skills -> ../.claude/skills

@@ -1,6 +1,6 @@
 # Usage Patterns
 
-Practical Repomix workflows adapted to Flowser's references-only artifact rules.
+Practical Repomix workflows adapted to the project's references-only artifact rules.
 
 ## AI Analysis Workflows
 
@@ -8,7 +8,7 @@ Practical Repomix workflows adapted to Flowser's references-only artifact rules.
 
 ```bash
 pnpm dlx repomix . \
-  --include "apps/flowser/src/**,packages/api/src/**,packages/validators/src/**,*.md" \
+  --include "apps/<app>/src/**,packages/api/src/**,packages/validators/src/**,*.md" \
   --remove-comments \
   --style markdown \
   -o process/general-plans/references/repomix-full-repo-slice-27-05-26.md
@@ -77,7 +77,7 @@ Workflow:
 
 ```bash
 pnpm dlx repomix . \
-  --include "packages/api/src/**,packages/db/**,apps/flowser/src/**" \
+  --include "packages/api/src/**,packages/db/**,apps/<app>/src/**" \
   --style xml \
   -o process/general-plans/references/repomix-predeploy-review-27-05-26.xml
 ```
@@ -117,7 +117,7 @@ Use for API docs, architecture docs, onboarding, or internal documentation refre
 
 ```bash
 pnpm dlx repomix . \
-  --include "packages/*/src/**/*.ts,apps/flowser/src/**/*.tsx,*.md" \
+  --include "packages/*/src/**/*.ts,apps/<app>/src/**/*.tsx,*.md" \
   -i "**/*.test.ts,**/*.spec.ts,coverage/**" \
   --style markdown \
   -o process/general-plans/references/repomix-architecture-27-05-26.md
@@ -177,7 +177,7 @@ Use the JSON config mode if you want mixed local and remote repositories with cu
 
 ### Git hooks and CI
 
-Repomix can be useful in release or audit workflows, but Flowser does not treat it as a default workflow-owner tool. If you automate it:
+Repomix can be useful in release or audit workflows, but this kit does not treat it as a default workflow-owner tool. If you automate it:
 
 - keep outputs under a `references/` folder
 - keep security checks enabled
@@ -204,7 +204,7 @@ Typical exclusions:
 
 ```bash
 pnpm dlx repomix . \
-  --include "apps/flowser/src/**/*.{js,jsx,ts,tsx},packages/ui/src/**/*.{ts,tsx}" \
+  --include "apps/<app>/src/**/*.{js,jsx,ts,tsx},packages/ui/src/**/*.{ts,tsx}" \
   -i "build/,*.test.*,coverage/**"
 ```
 

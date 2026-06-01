@@ -44,7 +44,7 @@ Use imagemagick CLI or browser Canvas API for:
 - Request approval
 
 ### 5. Document
-Update `process/context/uxui/uiux.md` with durable 3D design guidance when approved:
+Update the project's UI/UX context doc (if present) with durable 3D design guidance when approved:
 - 3D design patterns
 - Shader libraries
 - Reusable components

@@ -161,19 +161,44 @@ function extractPaths(toolInput) {
 }
 
 /**
- * Load .ck.json config to check if privacy block is disabled
- * @param {string} [configDir] - Directory containing .ck.json (defaults to .claude in cwd)
+ * Load .vc.json config to check if privacy block is disabled
+ * @param {string} [configDir] - Directory containing .vc.json (defaults to .claude in cwd)
  * @returns {boolean} true if privacy block should be skipped
  */
 function isPrivacyBlockDisabled(configDir) {
   try {
-    const configPath = configDir
-      ? path.join(configDir, '.ck.json')
-      : path.join(process.cwd(), '.claude', '.ck.json');
+    const baseDir = configDir || path.join(process.cwd(), '.claude');
+    // New-first, legacy (.ck.json) fallback for backward compatibility.
+    const newPath = path.join(baseDir, '.vc.json');
+    const legacyPath = path.join(baseDir, '.ck.json');
+    const configPath = fs.existsSync(newPath) ? newPath : legacyPath;
     const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     return config.privacyBlock === false;
   } catch {
     return false; // Default to enabled on error (file not found or invalid JSON)
+  }
+}
+
+/**
+ * Check if a file basename is in the project's privacyAllowlist in .vc.json.
+ * Allowlisted files bypass the block without the APPROVED: prefix.
+ * Use sparingly — only for project-owned test/config files the agent manages.
+ * @param {string} testPath - Path to check
+ * @param {string} [configDir] - Directory containing .vc.json
+ * @returns {boolean} true if the basename is explicitly allowlisted
+ */
+function isPrivacyAllowlisted(testPath, configDir) {
+  try {
+    const baseDir = configDir || path.join(process.cwd(), '.claude');
+    const newPath = path.join(baseDir, '.vc.json');
+    const legacyPath = path.join(baseDir, '.ck.json');
+    const configPath = fs.existsSync(newPath) ? newPath : legacyPath;
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    const allowlist = Array.isArray(config.privacyAllowlist) ? config.privacyAllowlist : [];
+    const basename = path.basename(testPath);
+    return allowlist.includes(basename);
+  } catch {
+    return false;
   }
 }
 
@@ -211,7 +236,7 @@ function buildPromptData(filePath) {
  * @param {Object} params.toolInput - Tool input with file_path, path, command, etc.
  * @param {Object} [params.options]
  * @param {boolean} [params.options.disabled] - Skip checks if true
- * @param {string} [params.options.configDir] - Directory for .ck.json config
+ * @param {string} [params.options.configDir] - Directory for .vc.json config
  * @param {boolean} [params.options.allowBash] - Allow Bash tool without blocking (default: true)
  * @returns {{
  *   blocked: boolean,
@@ -249,6 +274,11 @@ function checkPrivacy({ toolName, toolInput, options = {} }) {
       };
     }
 
+    // Check project-level allowlist in .vc.json
+    if (isPrivacyAllowlisted(testPath, configDir)) {
+      return { blocked: false, approved: true, filePath: testPath };
+    }
+
     // Block - sensitive file without approval
     return {
       blocked: true,
@@ -278,6 +308,7 @@ module.exports = {
   isSuspiciousPath,
   extractPaths,
   isPrivacyBlockDisabled,
+  isPrivacyAllowlisted,
   buildPromptData,
 
   // Constants

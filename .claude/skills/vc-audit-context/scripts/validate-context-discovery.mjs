@@ -206,7 +206,7 @@ for (const [claudeFile, codexFile] of criticalHookParityPairs) {
 }
 
 const staleWorkflowPatterns = [
-  { pattern: "docs-manager", reason: "use update-process-agent for Flowser context/process docs" },
+  { pattern: "docs-manager", reason: "use update-process-agent for project context/process docs" },
   { pattern: "project-manager", reason: "use update-process-agent for plan/process sync" },
   { pattern: "docs/codebase-summary", reason: "use process/context/all-context.md routing" },
   { pattern: "docs/design-guidelines", reason: "use process/context/uxui/uiux.md or feature references" },

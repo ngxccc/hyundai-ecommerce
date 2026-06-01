@@ -39,7 +39,7 @@ fi
 
 ## Project-Specific Setup
 
-For Flowser-specific connection patterns and when to prefer chrome-devtools over agent-browser or docker exec, see `process/context/tests/all-tests.md` in the consuming repo. This skill file is a generic tool reference only.
+For project-specific connection patterns and when to prefer chrome-devtools over agent-browser or docker exec, see `process/context/tests/all-tests.md` in the consuming repo. This skill file is a generic tool reference only.
 
 ---
 

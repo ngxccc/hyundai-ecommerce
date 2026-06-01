@@ -10,14 +10,31 @@ const path = require('path');
 const os = require('os');
 const { execFileSync } = require('child_process');
 
-const LOCAL_CONFIG_PATH = '.claude/.ck.json';
-const GLOBAL_CONFIG_PATH = path.join(os.homedir(), '.claude', '.ck.json');
+const LOCAL_CONFIG_PATH = '.claude/.vc.json';
+const GLOBAL_CONFIG_PATH = path.join(os.homedir(), '.claude', '.vc.json');
+// Legacy (pre-rename) config paths — read-only backward-compat fallback.
+const LEGACY_LOCAL_CONFIG_PATH = '.claude/.ck.json';
+const LEGACY_GLOBAL_CONFIG_PATH = path.join(os.homedir(), '.claude', '.ck.json');
 const SESSION_STATE_LOCK_TIMEOUT_MS = 500;
 const SESSION_STATE_LOCK_RETRY_MS = 10;
 const SESSION_STATE_LOCK_STALE_MS = 5000;
 
 // Legacy export for backward compatibility
 const CONFIG_PATH = LOCAL_CONFIG_PATH;
+
+/**
+ * Resolve a config/ignore path with new-first/legacy-fallback semantics.
+ * Returns the new path if it exists; else the legacy path if it exists;
+ * else the new path (so "not found" still reports the canonical name).
+ * @param {string} newPath - Preferred (new-brand) path
+ * @param {string} legacyPath - Legacy (pre-rename) path
+ * @returns {string} Effective path to read
+ */
+function resolveConfigPath(newPath, legacyPath) {
+  if (fs.existsSync(newPath)) return newPath;
+  if (fs.existsSync(legacyPath)) return legacyPath;
+  return newPath;
+}
 
 const DEFAULT_CONFIG = {
   plan: {
@@ -553,8 +570,8 @@ function sanitizeConfig(config, projectRoot) {
  *
  * Resolution order (each layer overrides the previous):
  *   1. DEFAULT_CONFIG (hardcoded defaults)
- *   2. Global config (~/.claude/.ck.json) - user preferences
- *   3. Local config (./.claude/.ck.json) - project-specific overrides
+ *   2. Global config (~/.claude/.vc.json) - user preferences
+ *   3. Local config (./.claude/.vc.json) - project-specific overrides
  *
  * @param {Object} options - Options for config loading
  * @param {boolean} options.includeProject - Include project section (default: true)
@@ -565,9 +582,9 @@ function loadConfig(options = {}) {
   const { includeProject = true, includeAssertions = true, includeLocale = true } = options;
   const projectRoot = process.cwd();
 
-  // Load configs from both locations
-  const globalConfig = loadConfigFromPath(GLOBAL_CONFIG_PATH);
-  const localConfig = loadConfigFromPath(LOCAL_CONFIG_PATH);
+  // Load configs from both locations (new-first, legacy fallback per slot)
+  const globalConfig = loadConfigFromPath(resolveConfigPath(GLOBAL_CONFIG_PATH, LEGACY_GLOBAL_CONFIG_PATH));
+  const localConfig = loadConfigFromPath(resolveConfigPath(LOCAL_CONFIG_PATH, LEGACY_LOCAL_CONFIG_PATH));
 
   // No config files found - use defaults
   if (!globalConfig && !localConfig) {
@@ -893,9 +910,12 @@ module.exports = {
   CONFIG_PATH,
   LOCAL_CONFIG_PATH,
   GLOBAL_CONFIG_PATH,
+  LEGACY_LOCAL_CONFIG_PATH,
+  LEGACY_GLOBAL_CONFIG_PATH,
   DEFAULT_CONFIG,
   INVALID_FILENAME_CHARS,
   deepMerge,
+  resolveConfigPath,
   loadConfigFromPath,
   loadConfig,
   normalizePath,

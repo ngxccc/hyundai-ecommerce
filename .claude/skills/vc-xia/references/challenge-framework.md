@@ -12,7 +12,7 @@ Use these prompts to stress-test an adaptation decision before it becomes implem
 4. Maintenance burden: who owns the imported behavior after adaptation?
 5. Dependency chain: what new dependencies, services, runtime behavior, or operational costs would this introduce?
 
-## Flowser-Specific Challenges
+## Project-Specific Challenges
 
 | Question | Red Flag | Green Flag |
 | --- | --- | --- |

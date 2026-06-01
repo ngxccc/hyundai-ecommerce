@@ -58,7 +58,7 @@ function createFixtureRepo() {
     '',
     '**Status**: ACTIVE',
   ].join('\n'));
-  commitAll(repo, 'feat: add unfinished flowser plan');
+  commitAll(repo, 'feat: add unfinished project plan');
 
   git(repo, ['checkout', '-b', 'remote-work', 'main']);
   writeFile(path.join(repo, 'process', 'features', 'demo', 'active', 'PLAN.md'), [
@@ -102,7 +102,7 @@ test('parseArgs rejects missing and invalid values', () => {
   assert.throws(() => parseArgs(['--max-branches', 'nope']), /positive integer/);
 });
 
-test('readPlan marks pending phase tables as unfinished for Flowser plans', () => {
+test('readPlan marks pending phase tables as unfinished for project plans', () => {
   const plan = readPlan([
     '# Pending Plan',
     '',
@@ -117,7 +117,7 @@ test('readPlan marks pending phase tables as unfinished for Flowser plans', () =
   assert.equal(plan.unfinished, true);
 });
 
-test('buildPayload scans remote refs, worktrees, and Flowser process plans without fetch by default', () => {
+test('buildPayload scans remote refs, worktrees, and project process plans without fetch by default', () => {
   const fixture = createFixtureRepo();
   try {
     const payload = buildPayload({

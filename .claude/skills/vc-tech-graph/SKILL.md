@@ -6,7 +6,7 @@ argument-hint: "[diagram-type or system description] [--style <n>] [--output <pa
 metadata:
   author: flowser
   version: "1.1.0"
-  attribution: "Adapted from upstream fireworks-tech-graph concepts and assets, narrowed for Flowser"
+  attribution: "Adapted from upstream fireworks-tech-graph concepts and assets, narrowed for this kit"
 ---
 
 # Tech Graph
@@ -23,7 +23,7 @@ This is a helper skill only.
 
 ## Capability Surface
 
-The local Flowser skill now includes upstream-style assets:
+The local skill now includes upstream-style assets:
 
 - 7 visual style references
 - style-to-diagram guidance matrix
@@ -39,7 +39,7 @@ Load the smallest references that fit the request:
 - `references/style-1-flat-icon.md` through `references/style-7-openai.md` for exact visual language
 - `references/icons.md` for semantic shapes and product-icon guidance
 - `references/svg-layout-best-practices.md` for spacing, routing, label, and export discipline
-- `references/tech-graph-workflow.md` for Flowser-specific routing and proof rules
+- `references/tech-graph-workflow.md` for project-specific routing and proof rules
 
 ## Routing Matrix
 
@@ -65,7 +65,7 @@ Prefer `.svg` as the source artifact. Generate `.png` alongside it when:
 - you want a visual proof artifact
 - you need to inspect the render rather than only the XML
 
-If the user does not specify an output path, route outputs to the matching Flowser process folder rather than ad hoc locations like `~/Desktop` or `/tmp`.
+If the user does not specify an output path, route outputs to the matching project process folder rather than ad hoc locations like `~/Desktop` or `/tmp`.
 
 ## Diagram Types
 
@@ -127,7 +127,7 @@ bash .claude/skills/tech-graph/scripts/generate-diagram.sh -o <file.svg>
   - renders the regression fixtures
   - validates every generated SVG
   - exports PNG proofs when `rsvg-convert` is present
-  - writes batch outputs to a Flowser process artifact folder by default
+  - writes batch outputs to a project process artifact folder by default
 - `scripts/validate-svg.sh`
   - checks XML structure and closing tags
   - uses `rsvg-convert` as an extra validator when available
@@ -137,7 +137,7 @@ bash .claude/skills/tech-graph/scripts/generate-diagram.sh -o <file.svg>
 - Required for SVG validation: shell, Python 3, and basic Unix tools
 - Optional but recommended for PNG export: `rsvg-convert`
 
-Flowser allows degraded SVG-only mode when `rsvg-convert` is unavailable. The skill should warn clearly instead of failing silently.
+This kit allows degraded SVG-only mode when `rsvg-convert` is unavailable. The skill should warn clearly instead of failing silently.
 
 ## Good Trigger Phrases
 
@@ -149,4 +149,4 @@ Flowser allows degraded SVG-only mode when `rsvg-convert` is unavailable. The sk
 - `generate a UML state machine`
 - `build a comparison matrix for these systems`
 
-Load `references/tech-graph-workflow.md` for the Flowser-specific routing, proof, and preview-boundary rules.
+Load `references/tech-graph-workflow.md` for the project-specific routing, proof, and preview-boundary rules.

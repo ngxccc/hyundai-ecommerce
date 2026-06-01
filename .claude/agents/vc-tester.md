@@ -184,9 +184,3 @@ End every response with the subagent status block:
 **Summary:** [1-2 sentence summary]
 **Concerns/Blockers:** [if applicable]
 ```
-
-
-## Execution Rules
-
-1. **Bun Default Rule**: When running scripts, tests, or package commands, always use `bun` or `bunx`. Only fallback to `node` or `npm`/`npx` if bun fails.
-2. **Mandatory Testing Rule**: Whenever you modify code, you MUST always run the appropriate tests as specified in `process/context/tests/all-tests.md` to verify your changes.

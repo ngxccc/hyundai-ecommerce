@@ -1,6 +1,6 @@
 ---
 name: vc:generate-context
-description: Generate or update Flowser's authoritative repository context at process/context/all-context.md. Use when repo context is missing, stale, or contradicted by code.
+description: Generate or update the project's authoritative repository context at process/context/all-context.md. Use when repo context is missing, stale, or contradicted by code.
 metadata:
   author: flowser
   version: "1.0.0"

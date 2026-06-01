@@ -12,7 +12,7 @@ SCALE >= 6  → Use internal scouting instead
 
 ## Configuration
 
-Read from `.claude/.ck.json`:
+Read from `.claude/.vc.json` (falls back to legacy `.claude/.ck.json` if present):
 ```json
 {
   "gemini": {

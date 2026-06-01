@@ -83,7 +83,7 @@ acceptable for legacy or upstream-style skills unless the user asks for strict c
 
 The generated catalog lives at:
 
-- `process/context/generated-skills-catalog.json`
+- process/context/generated-skills-catalog.json
 
 It is deterministic and should be regenerated whenever shared skill inventory, routing, or allowlist policy changes.
 

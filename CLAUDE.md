@@ -21,6 +21,12 @@ Read these files as needed:
 - `process/development-protocols/parallel-fan-out.md`
 - `process/development-protocols/intent-clarification.md`
 
+Reference docs (harness methodology, not project-specific):
+
+- `process/development-protocols/references/example-simple-prd.md` - Reference for simple plan structure
+- `process/development-protocols/references/example-complex-prd.md` - Reference for complex plan depth
+- `process/development-protocols/references/program-goal-charter-template.md` - Program Goal Charter template for phase programs
+
 ### Orchestrator Role (Main Claude Code Session)
 
 > **Delegation rules, subagent status codes (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), and context isolation protocol:** see `process/development-protocols/orchestration.md`.
@@ -154,8 +160,6 @@ Default new feature plans use date-stamped naming: `[feature]_PLAN_[dd-mm-yy].md
 
 - `all-context.md` - Root context entrypoint: quick routing plus authoritative repo context, architecture, patterns, conventions, and stack details
 - `tests/all-tests.md` - Testing quick-start, runner selection, commands, debugging procedures, and routing to deeper testing docs
-- `planning/example-simple-prd.md` - Reference for simple plan structure
-- `planning/example-complex-prd.md` - Reference for complex plan depth
 
 **Context discovery rule:** Read `process/context/all-context.md` first, then load only the relevant root file or context group. Context groups are durable knowledge domains, not feature folders. Every group must have an `all-{group}.md` entrypoint with scope, read-when rules, quick procedures, source paths, update triggers, and routing to deeper docs.
 

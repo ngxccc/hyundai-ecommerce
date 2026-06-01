@@ -50,7 +50,7 @@ function colorize(text, color) {
 }
 
 /**
- * Get .ckignore config path
+ * Get .vcignore config path
  *
  * @param {string} claudeDir - Path to .claude directory
  * @param {string} [configPath] - Explicit config path to prefer
@@ -61,9 +61,9 @@ function formatConfigPath(claudeDir, configPath) {
     return configPath;
   }
   if (claudeDir) {
-    return path.join(claudeDir, '.ckignore');
+    return path.join(claudeDir, '.vcignore');
   }
-  return '.claude/.ckignore';
+  return '.claude/.vcignore';
 }
 
 /**

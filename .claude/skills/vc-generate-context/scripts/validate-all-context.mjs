@@ -51,7 +51,7 @@ if (exists(contextFile)) {
   if (!/Repo HEAD|git rev-parse HEAD|commit/i.test(text)) {
     warn(`${contextFile} does not include repo HEAD or commit metadata`);
   }
-  if (!/References|Source references|Key files|OpenClaw Documentation/i.test(text)) {
+  if (!/References|Source references|Key files/i.test(text)) {
     warn(`${contextFile} does not include an obvious source references section`);
   }
   if (!/Open Questions|Outstanding Work/i.test(text)) {

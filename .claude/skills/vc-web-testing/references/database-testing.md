@@ -1,6 +1,6 @@
 # Database Testing
 
-> **Project Note (Flowser):** The main app database is Prisma over PostgreSQL. API tests usually use the PGlite-backed Prisma helper from `@sassy/db/test`, while container-local skill apps may still use SQLite and Drizzle. Choose the database pattern by layer instead of treating Drizzle/SQLite as the main app database.
+> **Project Note:** The main app database is Prisma over PostgreSQL. API tests usually use the PGlite-backed Prisma helper from `@sassy/db/test`, while container-local skill apps may still use SQLite and Drizzle. Choose the database pattern by layer instead of treating Drizzle/SQLite as the main app database.
 >
 > ```typescript
 > import { closeTestPrismaClient, createTestPrismaClient } from "@sassy/db/test";

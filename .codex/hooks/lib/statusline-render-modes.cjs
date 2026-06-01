@@ -4,7 +4,7 @@
  * Statusline render mode implementations: full / compact / minimal
  *
  * All rendering is config-driven via a resolved layout object (from resolveLayout()).
- * When no statuslineLayout is present in .ck.json, output is IDENTICAL to the
+ * When no statuslineLayout is present in .vc.json, output is IDENTICAL to the
  * pre-refactor hardcoded renderer — zero regression guarantee.
  *
  * Mode function signatures: (ctx, layout) => void  (writes via console.log)

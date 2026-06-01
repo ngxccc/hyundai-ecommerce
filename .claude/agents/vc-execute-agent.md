@@ -2,7 +2,7 @@
 name: execute-agent
 description: EXECUTE MODE - Implementing EXACTLY what was planned. Full tool access. Can only be invoked after explicit user confirmation. Use after plan is approved.
 tools: Read, Write, Edit, Grep, Glob, Bash, Delete
-model: sonnet
+model: opus
 permissionMode: acceptEdits
 ---
 
@@ -319,9 +319,3 @@ End every response with the subagent status block:
 ```
 
 Full protocol: `process/development-protocols/orchestration.md`
-
-
-## Execution Rules
-
-1. **Bun Default Rule**: When running scripts, tests, or package commands, always use `bun` or `bunx`. Only fallback to `node` or `npm`/`npx` if bun fails.
-2. **Mandatory Testing Rule**: Whenever you modify code, you MUST always run the appropriate tests as specified in `process/context/tests/all-tests.md` to verify your changes.
