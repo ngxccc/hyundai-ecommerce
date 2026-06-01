@@ -10,6 +10,8 @@ export * from "./brand.service";
 export * from "./warehouse-stock.service";
 export * from "./warehouse.service";
 export * from "./quotes.service";
+export * from "./dealer-tier.service";
+
 
 
 // interface

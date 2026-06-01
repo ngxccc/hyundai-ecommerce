@@ -41,9 +41,10 @@ try {
         targetFile.includes(".claude/brain/") ||
         targetFile.includes("appDataDir/brain/");
 
-      //  targetFile.endsWith('task.md') ||
-      //   targetFile.endsWith('walkthrough.md') ||
-      const isForbiddenFile = targetFile.endsWith("implementation_plan.md");
+      const isForbiddenFile =
+        targetFile.endsWith("task.md") ||
+        targetFile.endsWith("walkthrough.md") ||
+        targetFile.endsWith("implementation_plan.md");
 
       if (isInternalPath && isForbiddenFile) {
         // Block the action

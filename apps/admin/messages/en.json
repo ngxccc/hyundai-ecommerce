@@ -103,6 +103,7 @@
       "products": "Products",
       "orders": "Orders",
       "customers": "Customers",
+      "dealerTiers": "Dealer Tiers",
       "warehouses": "Warehouses",
       "categories": "Categories",
       "brands": "Brands"
@@ -643,6 +644,8 @@
     "EMAIL_NOT_VERIFIED": "Email not verified",
     "ACCOUNT_LOCKED": "Account locked",
     "INTERNAL_SERVER_ERROR": "Internal server error",
+    "createDealerTierFailed": "Failed to create dealer discount tier",
+    "updateCustomerFailed": "Failed to update B2B customer configuration",
     "validation": {
       "slugExists": "Slug already exists"
     }
@@ -679,5 +682,90 @@
       "invalidMinStockWarning": "Invalid min stock warning",
       "updateWarehouseStockFailed": "Failed to update warehouse stock in database"
     }
+  },
+  "AdminCustomers": {
+    "title": "Customers Directory",
+    "description": "Manage standard and B2B corporate customer portfolios.",
+    "searchPlaceholder": "Search by name, email, or phone...",
+    "tabs": {
+      "all": "All Customers",
+      "dealer": "Dealers",
+      "contractor": "Contractors",
+      "distributor": "Distributors",
+      "end_user": "End Users"
+    },
+    "table": {
+      "name": "Name",
+      "contact": "Contact info",
+      "company": "Company",
+      "type": "Business Type",
+      "tier": "Dealer Tier",
+      "role": "System Role",
+      "actions": "Actions",
+      "discountLabel": "-{percent}% discount"
+    },
+    "actions": {
+      "promote": "Manage B2B status",
+      "edit": "Edit",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel"
+    },
+    "dialog": {
+      "title": "Configure B2B Customer Account",
+      "description": "Promote standard consumers to B2B dealers or modify their corporate pricing tier assignments.",
+      "businessTypeLabel": "Business Type",
+      "dealerTierLabel": "Corporate Discount Tier",
+      "none": "No Discount Tier"
+    },
+    "messages": {
+      "successUpdate": "Customer profile updated successfully.",
+      "errorUpdate": "Failed to update customer parameters."
+    },
+    "roles": {
+      "admin": "Admin",
+      "dealer": "B2B Dealer",
+      "customer": "Customer"
+    },
+    "card": {
+      "assignedTier": "Assigned Pricing Tier"
+    },
+    "empty": "No customers found matching filters."
+  },
+  "AdminDealerTiers": {
+    "title": "Dealer Tiers Configurator",
+    "description": "Set up discount percentages and minimum spend metrics for corporate accounts.",
+    "addTier": "Create New Tier",
+    "table": {
+      "name": "Tier Name",
+      "discount": "Discount (%)",
+      "minSpend": "Minimum Spend",
+      "actions": "Actions"
+    },
+    "form": {
+      "title": "New Discount Tier",
+      "name": "Tier Name",
+      "namePlaceholder": "e.g. Gold Partner",
+      "discount": "Discount Percentage",
+      "discountPlaceholder": "e.g. 15.00",
+      "minSpend": "Minimum Spend",
+      "minSpendPlaceholder": "e.g. 500000000",
+      "submit": "Create Tier",
+      "submitting": "Creating..."
+    },
+    "messages": {
+      "successCreate": "Dealer discount tier created successfully.",
+      "errorCreate": "Failed to create dealer tier."
+    },
+    "validation": {
+      "tierNameRequired": "Tier name is required",
+      "discountPercentageRequired": "Discount percentage is required",
+      "discountPercentageBounds": "Discount percentage must be between 0 and 100",
+      "minimumSpendBounds": "Minimum spend must be a positive number"
+    },
+    "card": {
+      "spendThreshold": "Spend threshold:"
+    },
+    "empty": "No discount tiers configured yet."
   }
 }

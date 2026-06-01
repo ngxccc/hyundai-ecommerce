@@ -1,9 +1,34 @@
 import { expect, test, describe, vi, beforeEach } from "bun:test";
-import { mockDb, mockFindFirst } from "../tests/utils/db-mock";
+import {
+  mockDb,
+  mockFindFirst,
+  mockFindMany,
+  mockUpdate,
+  mockReturning,
+} from "../tests/utils/db-mock";
 import { UserService } from "./user.service";
+import { type TUser } from "../schemas";
 import type { IDatabase } from "../client";
 
 const userService = new UserService(mockDb as unknown as IDatabase);
+
+const mockUser: TUser = {
+  id: "user-123",
+  name: "Dealer Test",
+  email: "test@test.com",
+  emailVerified: true,
+  image: null,
+  role: "dealer",
+  dealerTierId: "tier-1",
+  phone: "0901234567",
+  companyName: "Hyundai Corp",
+  taxId: null,
+  businessType: "dealer",
+  province: "HCM",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  deletedAt: null,
+};
 
 describe("UserService", () => {
   beforeEach(() => {
@@ -11,36 +36,52 @@ describe("UserService", () => {
   });
 
   test("findByPhone() should call db query with phone", async () => {
-    const mockUser = { id: "user-123" };
-     
-    mockFindFirst.mockResolvedValueOnce(mockUser);
+    const mockRes = { id: "user-123" };
+    mockFindFirst.mockResolvedValueOnce(mockRes);
 
     const result = await userService.findByPhone("0901234567");
 
     expect(mockFindFirst).toHaveBeenCalledTimes(1);
-     
-    expect(result).toEqual(mockUser);
+    expect(result).toEqual(mockRes);
   });
 
   test("findByEmail() should call db query with email", async () => {
-    const mockUser = { id: "user-123" };
-     
-    mockFindFirst.mockResolvedValueOnce(mockUser);
+    const mockRes = { id: "user-123" };
+    mockFindFirst.mockResolvedValueOnce(mockRes);
 
     const result = await userService.findByEmail("test@test.com");
 
-     
-    expect(result).toEqual(mockUser);
+    expect(result).toEqual(mockRes);
   });
 
   test("checkDuplicateUser() should check both", async () => {
-    const mockUser = { email: "test@test.com", phone: "0901234567" };
-     
-    mockFindFirst.mockResolvedValueOnce(mockUser);
+    const mockRes = { email: "test@test.com", phone: "0901234567" };
+    mockFindFirst.mockResolvedValueOnce(mockRes);
 
     const result = await userService.checkDuplicateUser("test@test.com", "0901234567");
 
-     
+    expect(result).toEqual(mockRes);
+  });
+
+  test("update() should update and return user", async () => {
+    mockReturning.mockResolvedValueOnce([mockUser]);
+
+    const result = await userService.update("user-123", {
+      role: "dealer",
+      dealerTierId: "tier-1",
+    });
+
+    expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(result).toEqual(mockUser);
+  });
+
+  test("list() should return list of users", async () => {
+    const mockUsers = [mockUser];
+    mockFindMany.mockResolvedValueOnce(mockUsers);
+
+    const result = await userService.list({ role: "dealer" });
+
+    expect(mockFindMany).toHaveBeenCalledTimes(1);
+    expect(result).toEqual(mockUsers);
   });
 });

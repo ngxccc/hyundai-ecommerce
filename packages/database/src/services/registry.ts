@@ -8,6 +8,7 @@ import { BrandService } from "./brand.service";
 import { WarehouseStockService } from "./warehouse-stock.service";
 import { WarehouseService } from "./warehouse.service";
 import { QuotesService } from "./quotes.service";
+import { DealerTierService } from "./dealer-tier.service";
 
 export const authService = new AuthService(db);
 export const productService = new ProductService(db);
@@ -18,4 +19,6 @@ export const brandService = new BrandService(db);
 export const warehouseStockService = new WarehouseStockService(db);
 export const warehouseService = new WarehouseService(db);
 export const quotesService = new QuotesService(db);
+export const dealerTierService = new DealerTierService(db);
+
 
