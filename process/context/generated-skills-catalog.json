@@ -1,0 +1,694 @@
+{
+  "owner": "audit-context",
+  "generatedFrom": {
+    "skillsRoot": ".claude/skills",
+    "routingPolicy": ".claude/skills/vc-audit-context/references/skill-routing-policy.json",
+    "canonicalRoutingSurfaces": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  },
+  "skillCount": 31,
+  "skills": [
+    {
+      "folder": "vc-agent-browser",
+      "name": "vc:agent-browser",
+      "description": "AI-optimized browser automation CLI with context-efficient snapshots. Use for long autonomous sessions, self-verifying workflows, video recording, and cloud browser testing (Browserbase).",
+      "aliases": [
+        "vc-agent-browser",
+        "vc:agent-browser"
+      ],
+      "normalizedName": "vcagentbrowser",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/browserbase-cloud-setup.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-audit-context",
+      "name": "vc:audit-context",
+      "description": "Audit Flowser context routing, shared-skill discoverability, and Claude/Codex wiring. Use when context docs or skill surfaces move, split, or drift.",
+      "aliases": [
+        "vc-audit-context",
+        "vc:audit-context"
+      ],
+      "normalizedName": "vcauditcontext",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/audit-context.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-audit-plans",
+      "name": "vc:audit-plans",
+      "description": "Audit active Flowser plan files for staleness, completion, and routing truth. Use when cleaning up plans, reconciling active work, or archiving completed artifacts.",
+      "aliases": [
+        "vc-audit-plans",
+        "vc:audit-plans"
+      ],
+      "normalizedName": "vcauditplans",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/audit-plans.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-audit-vc",
+      "name": "vc:audit-vc",
+      "description": "Audit agent harness health: Claude/Codex agent parity, skill registry consistency, README.md sync, and protocol file wiring. Use when agents, skills, README.md, or development-protocol files move, split, or drift.",
+      "aliases": [
+        "vc-audit-vc",
+        "vc:audit-vc"
+      ],
+      "normalizedName": "vcauditvc",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-autoresearch",
+      "name": "vc:autoresearch",
+      "description": "Autonomous iterative optimization loop for measurable metrics like coverage, performance, or bundle size. Use when repeated experiments can be judged by a mechanical score.",
+      "aliases": [
+        "vc-autoresearch",
+        "vc:autoresearch"
+      ],
+      "normalizedName": "vcautoresearch",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/autonomous-loop-protocol.md",
+        "references/git-memory-pattern.md",
+        "references/guard-and-noise.md",
+        "references/metric-library.md",
+        "references/results-logging.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-chrome-devtools",
+      "name": "vc:chrome-devtools",
+      "description": "Automate browsers with Puppeteer CLI scripts and persistent sessions. Use for screenshots, performance analysis, network monitoring, web scraping, form automation, JavaScript debugging.",
+      "aliases": [
+        "vc-chrome-devtools",
+        "vc:chrome-devtools"
+      ],
+      "normalizedName": "vcchromedevtools",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-context-engineering",
+      "name": "vc:context-engineering",
+      "description": "Check context limits, optimize token usage, and debug context failures. Use when asking about rate limits, usage warnings, memory systems, or context-aware agent design.",
+      "aliases": [
+        "vc-context-engineering",
+        "vc:context-engineering"
+      ],
+      "normalizedName": "vccontextengineering",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/context-compression.md",
+        "references/context-degradation.md",
+        "references/context-fundamentals.md",
+        "references/context-optimization.md",
+        "references/evaluation.md",
+        "references/memory-systems.md",
+        "references/multi-agent-patterns.md",
+        "references/project-development.md",
+        "references/runtime-awareness.md",
+        "references/tool-design.md",
+        "scripts/compression_evaluator.py",
+        "scripts/context_analyzer.py"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-debug",
+      "name": "vc:debug",
+      "description": "Debug systematically with root-cause analysis before fixes. Use for bugs, test failures, unexpected behavior, performance issues, CI failures, or system investigation.",
+      "aliases": [
+        "vc-debug",
+        "vc:debug"
+      ],
+      "normalizedName": "vcdebug",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/defense-in-depth.md",
+        "references/frontend-verification.md",
+        "references/investigation-methodology.md",
+        "references/log-and-ci-analysis.md",
+        "references/performance-diagnostics.md",
+        "references/reporting-standards.md",
+        "references/root-cause-tracing.md",
+        "references/systematic-debugging.md",
+        "references/task-management-debugging.md",
+        "references/verification.md",
+        "scripts/find-polluter.sh"
+      ],
+      "mentionedSkills": [
+        "vc-chrome-devtools",
+        "vc-docs-seeker",
+        "vc-problem-solving",
+        "vc-scout"
+      ]
+    },
+    {
+      "folder": "vc-docs",
+      "name": "vc:docs",
+      "description": "Use when you need to analyze a codebase and initialize, update, or summarize project documentation.",
+      "aliases": [
+        "vc-docs",
+        "vc:docs"
+      ],
+      "normalizedName": "vcdocs",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/init-workflow.md",
+        "references/summarize-workflow.md",
+        "references/update-workflow.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-docs-seeker",
+      "name": "vc:docs-seeker",
+      "description": "Search library/framework documentation via llms.txt (context7.com). Use for API docs, GitHub repository analysis, technical documentation lookup, latest library features.",
+      "aliases": [
+        "vc-docs-seeker",
+        "vc:docs-seeker"
+      ],
+      "normalizedName": "vcdocsseeker",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/advanced.md",
+        "references/context7-patterns.md",
+        "references/errors.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-frontend-design",
+      "name": "vc:frontend-design",
+      "description": "Create polished frontend interfaces from designs/screenshots/videos. Use for web components, 3D experiences, replicating UI designs, quick prototypes, immersive interfaces, avoiding AI slop.",
+      "aliases": [
+        "vc-frontend-design",
+        "vc:frontend-design"
+      ],
+      "normalizedName": "vcfrontenddesign",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-generate-context",
+      "name": "vc:generate-context",
+      "description": "Generate or update Flowser's authoritative repository context at process/context/all-context.md. Use when repo context is missing, stale, or contradicted by code.",
+      "aliases": [
+        "vc-generate-context",
+        "vc:generate-context"
+      ],
+      "normalizedName": "vcgeneratecontext",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/generate-context.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-generate-plan",
+      "name": "vc:generate-plan",
+      "description": "Create or update Flowser implementation plans in the repo's SIMPLE or COMPLEX format. Use when turning an idea, PRD, or approved direction into a saved plan artifact.",
+      "aliases": [
+        "vc-generate-plan",
+        "vc:generate-plan"
+      ],
+      "normalizedName": "vcgenerateplan",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/generate-plan.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-mcp-management",
+      "name": "vc:mcp-management",
+      "description": "Manage MCP servers - discover, analyze, execute tools/prompts/resources. Use for MCP integrations, intelligent tool selection, multi-server management, context-efficient capability discovery.",
+      "aliases": [
+        "vc-mcp-management",
+        "vc:mcp-management"
+      ],
+      "normalizedName": "vcmcpmanagement",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "assets/tools.json",
+        "references/configuration.md",
+        "references/gemini-cli-integration.md",
+        "references/mcp-protocol.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-merge-worktree",
+      "name": "vc:merge-worktree",
+      "description": "Merge a git worktree branch back into the main Flowser checkout and clean up the worktree. Use when the user asks to merge, archive, or clean up a completed worktree.",
+      "aliases": [
+        "vc-merge-worktree",
+        "vc:merge-worktree"
+      ],
+      "normalizedName": "vcmergeworktree",
+      "routedFrom": [],
+      "allowlisted": true,
+      "allowlistReason": "Operational utility intentionally surfaced only on explicit worktree merge/cleanup requests instead of default step-0 routing.",
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-predict",
+      "name": "vc:predict",
+      "description": "5 expert personas debate proposed changes before implementation. Catches architectural, security, performance, and UX issues early. Use before major features or risky changes.",
+      "aliases": [
+        "vc-predict",
+        "vc:predict"
+      ],
+      "normalizedName": "vcpredict",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": [
+        "vc-scenario"
+      ]
+    },
+    {
+      "folder": "vc-preview",
+      "name": "vc:preview",
+      "description": "Use when you need to inspect files or generate visual explanations, slides, diagrams, or HTML recaps.",
+      "aliases": [
+        "vc-preview",
+        "vc:preview"
+      ],
+      "normalizedName": "vcpreview",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/generation-modes.md",
+        "references/view-mode.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-problem-solving",
+      "name": "vc:problem-solving",
+      "description": "Apply systematic problem-solving techniques when stuck. Use for complexity spirals, innovation blocks, recurring patterns, assumption constraints, simplification cascades, scale uncertainty.",
+      "aliases": [
+        "vc-problem-solving",
+        "vc:problem-solving"
+      ],
+      "normalizedName": "vcproblemsolving",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/attribution.md",
+        "references/collision-zone-thinking.md",
+        "references/inversion-exercise.md",
+        "references/meta-pattern-recognition.md",
+        "references/scale-game.md",
+        "references/simplification-cascades.md",
+        "references/when-stuck.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-publish",
+      "name": "vc:publish",
+      "description": "Push agent harness improvements from the current development repo to the remote kit repository. Use when you want to publish local harness changes back to the shared kit. Diffs managed files, shows what changed, bumps version, and pushes.",
+      "aliases": [
+        "vc-publish",
+        "vc:publish"
+      ],
+      "normalizedName": "vcpublish",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/vc-publish.md"
+      ],
+      "mentionedSkills": [
+        "vc-update"
+      ]
+    },
+    {
+      "folder": "vc-repomix",
+      "name": "vc:repomix",
+      "description": "Use when you need to pack a local or remote repository into an AI-friendly reference artifact for research, audits, feature-porting prep, context review, or security-oriented repo analysis.",
+      "aliases": [
+        "vc-repomix",
+        "vc:repomix"
+      ],
+      "normalizedName": "vcrepomix",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/configuration.md",
+        "references/repomix-workflow.md",
+        "references/usage-patterns.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-scenario",
+      "name": "vc:scenario",
+      "description": "Generate comprehensive edge cases and test scenarios by decomposing features across 12 dimensions. Use before implementation or testing to catch issues early.",
+      "aliases": [
+        "vc-scenario",
+        "vc:scenario"
+      ],
+      "normalizedName": "vcscenario",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": [
+        "vc-predict"
+      ]
+    },
+    {
+      "folder": "vc-scout",
+      "name": "vc:scout",
+      "description": "Fast codebase scouting using shell search and optional parallel research agents. Use for file discovery, task context gathering, and quick scoped searches across directories.",
+      "aliases": [
+        "vc-scout",
+        "vc:scout"
+      ],
+      "normalizedName": "vcscout",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/external-scouting.md",
+        "references/internal-scouting.md",
+        "references/task-management-scouting.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-security",
+      "name": "vc:security",
+      "description": "STRIDE + OWASP-based security audit with optional auto-fix. Scans code for vulnerabilities, categorizes by severity, and can iteratively fix findings using vc:autoresearch pattern.",
+      "aliases": [
+        "vc-security",
+        "vc:security"
+      ],
+      "normalizedName": "vcsecurity",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/stride-owasp-checklist.md"
+      ],
+      "mentionedSkills": [
+        "vc-autoresearch",
+        "vc-predict",
+        "vc-scenario"
+      ]
+    },
+    {
+      "folder": "vc-sequential-thinking",
+      "name": "vc:sequential-thinking",
+      "description": "Apply step-by-step analysis for complex problems with revision capability. Use for multi-step reasoning, hypothesis verification, adaptive planning, problem decomposition, course correction.",
+      "aliases": [
+        "vc-sequential-thinking",
+        "vc:sequential-thinking"
+      ],
+      "normalizedName": "vcsequentialthinking",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/advanced-strategies.md",
+        "references/advanced-techniques.md",
+        "references/core-patterns.md",
+        "references/examples-api.md",
+        "references/examples-architecture.md",
+        "references/examples-debug.md",
+        "scripts/format-thought.js",
+        "scripts/process-thought.js"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-setup",
+      "name": "vc:setup",
+      "description": "Interactive agent harness setup for any project. Detects your stack, asks about your project, scaffolds process directories, deep-scans the codebase, and populates context with real content. Works on fresh projects and existing projects with pre-existing configs — always asks before reorganizing.",
+      "aliases": [
+        "vc-setup",
+        "vc:setup"
+      ],
+      "normalizedName": "vcsetup",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/vc-setup.md"
+      ],
+      "mentionedSkills": [
+        "vc-update"
+      ]
+    },
+    {
+      "folder": "vc-team",
+      "name": "vc:team",
+      "description": "Orchestrate Agent Teams for parallel multi-session collaboration. Use for research, implementation, review, and debug workflows requiring independent teammates.",
+      "aliases": [
+        "vc-team",
+        "vc:team"
+      ],
+      "normalizedName": "vcteam",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-tech-graph",
+      "name": "vc:tech-graph",
+      "description": "Use when you need publish-grade SVG or PNG technical diagrams for architecture, flow, sequence, UML, state, or comparison visuals, with preview used afterward for review rather than generation.",
+      "aliases": [
+        "vc-tech-graph",
+        "vc:tech-graph"
+      ],
+      "normalizedName": "vctechgraph",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/icons.md",
+        "references/style-1-flat-icon.md",
+        "references/style-7-openai.md",
+        "references/style-diagram-matrix.md",
+        "references/svg-layout-best-practices.md",
+        "references/tech-graph-workflow.md",
+        "scripts/generate-diagram.sh",
+        "scripts/generate-from-template.py",
+        "scripts/test-all-styles.sh",
+        "scripts/validate-svg.sh"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-update",
+      "name": "vc:update",
+      "description": "Pull latest agent harness improvements from the remote kit repository. Shows a dry-run diff summary, waits for confirmation, then applies updates.",
+      "aliases": [
+        "vc-update",
+        "vc:update"
+      ],
+      "normalizedName": "vcupdate",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/vc-update.md"
+      ],
+      "mentionedSkills": [
+        "vc-setup"
+      ]
+    },
+    {
+      "folder": "vc-watzup",
+      "name": "vc:watzup",
+      "description": "Use when you need a read-only handoff summary of current branch state, local/remote refs, worktrees, active Flowser plans, selected-plan hints, and suggested next checks.",
+      "aliases": [
+        "vc-watzup",
+        "vc:watzup"
+      ],
+      "normalizedName": "vcwatzup",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/watzup-workflow.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-web-testing",
+      "name": "vc:web-testing",
+      "description": "Web testing with Playwright, Vitest, k6. E2E/unit/integration/load/security/visual/a11y testing. Use for test automation, flakiness, Core Web Vitals, mobile gestures, cross-browser.",
+      "aliases": [
+        "vc-web-testing",
+        "vc:web-testing"
+      ],
+      "normalizedName": "vcwebtesting",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-xia",
+      "name": "vc:xia",
+      "description": "Use when you need to compare a local or remote repository, extract a feature idea, or prepare an adaptation study without planning or implementing it yet.",
+      "aliases": [
+        "vc-xia",
+        "vc:xia"
+      ],
+      "normalizedName": "vcxia",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/challenge-framework.md",
+        "references/xia-workflow.md"
+      ],
+      "mentionedSkills": []
+    }
+  ]
+}

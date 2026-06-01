@@ -98,4 +98,34 @@ When creating ADRs in `docs/adr/`, follow these strict rules:
 ## 9. Frontend & UI Guidelines
 
 - **Admin Form Layout**: When building forms in `apps/admin`, remove `<h2>` titles from the form component itself. Instead, pass `title` and `description` (via `t()`) to a shared `<Header>` component.
-- **Next-Intl Keys**: Flatten the translation keys in `messages/vi.json` and `messages/en.json` when used inside forms or components. Grouping keys into objects (e.g., `"title": { "main": "...", "sub": "..." }`) causes Next-Intl's strict type checker (`vi.d.json.ts`) to throw `Expected 2-3 arguments` errors. Use flat keys like `"title"` and `"description"`.
+- **Next-Intl Keys**: Flatten the translation keys in `messages/vi.json` and `messages/en.json` when used inside forms or components. Grouping keys into objects (e.g., `"title": { "main": "...", "sub": "..." }`) causes Next-Intl's strict type checker (`vi.d.json.ts`) to throw `Expected 2-3 arguments` errors. Use flat keys like `"title"` and `"description"`
+
+## 10. Context Directory Routing
+
+We organize our repository's documentation and durable knowledge base into Context Groups using the `all-*.md` convention:
+
+| Group / File                     | Read when                                             | Scope                                                  |
+| -------------------------------- | ----------------------------------------------------- | ------------------------------------------------------ |
+| `process/context/all-context.md` | General planning, research, review, or implementation | Root router and architectural guidelines               |
+| `planning/all-planning.md`       | Creating a new plan or checking complexity            | Plan shapes, PRD calibration, planning conventions     |
+| `tests/all-tests.md`             | Testing, verification, debugging test failures        | Test runners, commands, protocol, and database mocking |
+| `uxui/all-uxui.md`               | Frontend design, CSS styling, components              | Aesthetic theme, Tailwind CSS, admin form guidelines   |
+
+## 11. Context Group Lifecycle
+
+Context groups are durable knowledge domains, not feature folders.
+
+Create a group when:
+
+- A topic has 3+ durable docs.
+- A single doc exceeds roughly 800 lines with separable subtopics.
+- Multiple agents repeatedly need only one slice of a large context file.
+- The topic maps to a stable operational domain (tests, infra, database, auth, UI, workflows, etc.).
+
+Do not create a group when:
+
+- The content is a temporary report.
+- The content is a plan or execution artifact.
+- The topic is feature-specific and belongs in `process/features/...`.
+
+Move or split one group at a time. Use `all-{group}.md` entrypoints. Run the `audit-context` skill after every context organization change.
