@@ -26,10 +26,10 @@ import {
 import {
   ProductGeneralInfo,
   ProductTechnicalSpecs,
-  ProductImagesSection,
   ProductCategorySection,
   ProductDescriptionSection,
 } from "./form-sections";
+import { AdminImageUploadSection } from "@/shared/components/admin-image-upload-section";
 
 export const ProductForm = ({
   initialData,
@@ -173,7 +173,15 @@ export const ProductForm = ({
 
           {/* Right Column */}
           <div className="space-y-6">
-            <ProductImagesSection images={images} setImages={setImages} />
+            <AdminImageUploadSection
+              title={t("fields.images")}
+              images={images}
+              setImages={setImages}
+              urlPlaceholder={t("fields.imagesPlaceholder")}
+              addUrlLabel={t("buttons.addUrl")}
+              dragDropLabel={t("fields.dragDropImage")}
+              clickToSelectLabel={t("fields.orClickToSelect")}
+            />
             <ProductCategorySection
               form={form}
               categories={categories}

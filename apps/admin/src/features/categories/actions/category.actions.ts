@@ -12,10 +12,16 @@ import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { z } from "zod";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
+import { after } from "next/server";
+import { uploadToCloudinary, deleteFromCloudinary } from "@/shared/services";
 
-export const createCategoryAction = async (data: TCreateCategoryInput) => {
+export const createCategoryAction = async (formData: FormData) => {
   try {
     await requireAuth();
+
+    const payloadStr = formData.get("payload");
+    if (!payloadStr) throw new Error("Missing payload");
+    const data = JSON.parse(payloadStr as string) as TCreateCategoryInput;
     const schema = getCreateCategorySchema((key) => key);
     const parsed = await schema.safeParseAsync(data);
 
@@ -30,6 +36,22 @@ export const createCategoryAction = async (data: TCreateCategoryInput) => {
     const validatedData = parsed.data;
 
     const categoryData = await categoryService.create(validatedData);
+
+    // Background Tasks: Image Upload
+    const imageFile = formData.get("image") as File | null;
+    if (imageFile) {
+      after(async () => {
+        try {
+          const url = await uploadToCloudinary(imageFile, "categories");
+          if (url) {
+            await categoryService.update({ id: categoryData.id, image: url });
+          }
+        } catch (e) {
+          console.error("[Background Task Failed]", e);
+        }
+      });
+    }
+
     revalidatePath("/categories");
     return { success: true as const, data: categoryData };
   } catch (error) {
@@ -66,10 +88,15 @@ export const createCategoryAction = async (data: TCreateCategoryInput) => {
 
 export async function updateCategoryAction(
   id: string,
-  data: TUpdateCategoryInput,
+  formData: FormData,
 ) {
   try {
     await requireAuth();
+
+    const payloadStr = formData.get("payload");
+    if (!payloadStr) throw new Error("Missing payload");
+    const data = JSON.parse(payloadStr as string) as TUpdateCategoryInput;
+
     const schema = getUpdateCategorySchema((key) => key);
     const parsed = await schema.safeParseAsync({ ...data, id });
 
@@ -83,7 +110,34 @@ export async function updateCategoryAction(
 
     const validatedData = parsed.data;
 
+    const existingCategory = await categoryService.getById(id);
+    const oldImage = existingCategory?.image;
+    const newImageUrl = validatedData.image;
+
     const categoryData = await categoryService.update(validatedData);
+
+    // Background Tasks: Image Upload & Cleanup
+    const imageFile = formData.get("image") as File | null;
+    if (imageFile || (oldImage && oldImage !== newImageUrl)) {
+      after(async () => {
+        try {
+          // Cleanup removed image
+          if (oldImage && oldImage !== newImageUrl) {
+            await deleteFromCloudinary(oldImage);
+          }
+
+          if (imageFile) {
+            const url = await uploadToCloudinary(imageFile, "categories");
+            if (url) {
+              await categoryService.update({ id: categoryData.id, image: url });
+            }
+          }
+        } catch (e) {
+          console.error("[Background Task Failed]", e);
+        }
+      });
+    }
+
     revalidatePath("/categories");
     revalidatePath(`/categories/${id}/edit`);
     return { success: true as const, data: categoryData };

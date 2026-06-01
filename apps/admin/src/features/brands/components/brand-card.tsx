@@ -6,6 +6,7 @@ import { Card } from "@nhatnang/ui/components/ui/card";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import Image from "next/image";
+import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
 import type { TBrand } from "@nhatnang/database/schemas";
 
@@ -35,13 +36,23 @@ export const BrandCard = ({ brand }: { brand: TBrand }) => {
       </div>
 
       <div className="bg-muted relative mb-4 aspect-4/3 overflow-hidden rounded-lg">
-        <Image
-          src={image}
-          alt={brand.name}
-          width={400}
-          height={300}
-          className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
-        />
+        {image.includes("cloudinary.com") ? (
+          <CldImage
+            src={image}
+            alt={brand.name}
+            width={400}
+            height={300}
+            className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
+          />
+        ) : (
+          <Image
+            src={image}
+            alt={brand.name}
+            width={400}
+            height={300}
+            className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
+          />
+        )}
       </div>
 
       <div className="flex flex-1 flex-col">

@@ -12,10 +12,16 @@ import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { z } from "zod";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
+import { after } from "next/server";
+import { uploadToCloudinary, deleteFromCloudinary } from "@/shared/services";
 
-export const createBrandAction = async (data: TCreateBrandInput) => {
+export const createBrandAction = async (formData: FormData) => {
   try {
     await requireAuth();
+
+    const payloadStr = formData.get("payload");
+    if (!payloadStr) throw new Error("Missing payload");
+    const data = JSON.parse(payloadStr as string) as TCreateBrandInput;
     const schema = getCreateBrandSchema((key) => key);
     const parsed = await schema.safeParseAsync(data);
 
@@ -30,6 +36,22 @@ export const createBrandAction = async (data: TCreateBrandInput) => {
     const validatedData = parsed.data;
 
     const brandData = await brandService.create(validatedData);
+
+    // Background Tasks: Image Upload
+    const logoFile = formData.get("logo") as File | null;
+    if (logoFile) {
+      after(async () => {
+        try {
+          const url = await uploadToCloudinary(logoFile, "brands");
+          if (url) {
+            await brandService.update({ id: brandData.id, logo: url });
+          }
+        } catch (e) {
+          console.error("[Background Task Failed]", e);
+        }
+      });
+    }
+
     revalidatePath("/brands");
     return { success: true as const, data: brandData };
   } catch (error) {
@@ -64,9 +86,14 @@ export const createBrandAction = async (data: TCreateBrandInput) => {
   }
 };
 
-export async function updateBrandAction(id: string, data: TUpdateBrandInput) {
+export async function updateBrandAction(id: string, formData: FormData) {
   try {
     await requireAuth();
+
+    const payloadStr = formData.get("payload");
+    if (!payloadStr) throw new Error("Missing payload");
+    const data = JSON.parse(payloadStr as string) as TUpdateBrandInput;
+
     const schema = getUpdateBrandSchema((key) => key);
     const parsed = await schema.safeParseAsync({ ...data, id });
 
@@ -80,7 +107,34 @@ export async function updateBrandAction(id: string, data: TUpdateBrandInput) {
 
     const validatedData = parsed.data;
 
+    const existingBrand = await brandService.getById(id);
+    const oldLogo = existingBrand?.logo;
+    const newLogoUrl = validatedData.logo;
+
     const brandData = await brandService.update(validatedData);
+
+    // Background Tasks: Image Upload & Cleanup
+    const logoFile = formData.get("logo") as File | null;
+    if (logoFile || (oldLogo && oldLogo !== newLogoUrl)) {
+      after(async () => {
+        try {
+          // Cleanup removed image if it was replaced by a new file or explicitly removed
+          if (oldLogo && oldLogo !== newLogoUrl) {
+            await deleteFromCloudinary(oldLogo);
+          }
+
+          if (logoFile) {
+            const url = await uploadToCloudinary(logoFile, "brands");
+            if (url) {
+              await brandService.update({ id: brandData.id, logo: url });
+            }
+          }
+        } catch (e) {
+          console.error("[Background Task Failed]", e);
+        }
+      });
+    }
+
     revalidatePath("/brands");
     revalidatePath(`/brands/${id}/edit`);
     return { success: true as const, data: brandData };

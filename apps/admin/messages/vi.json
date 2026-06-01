@@ -373,7 +373,8 @@
     "buttons": {
       "cancel": "Hủy",
       "create": "Thêm",
-      "save": "Lưu"
+      "save": "Lưu",
+      "addUrl": "Thêm URL"
     },
     "sections": {
       "general": "Thông tin chung",
@@ -398,7 +399,8 @@
     "messages": {
       "successCreate": "Thêm thương hiệu thành công",
       "successUpdate": "Cập nhật thương hiệu thành công",
-      "error": "Đã xảy ra lỗi"
+      "error": "Đã xảy ra lỗi",
+      "maxImagesReached": "Bạn chỉ có thể thêm 1 hình ảnh cho đến khi xóa ảnh hiện tại."
     },
     "validation": {
       "slugExists": "Slug đã tồn tại",
@@ -415,7 +417,8 @@
     "buttons": {
       "cancel": "Hủy",
       "create": "Thêm",
-      "save": "Lưu"
+      "save": "Lưu",
+      "addUrl": "Thêm URL"
     },
     "sections": {
       "general": "Thông tin chung",
@@ -445,7 +448,8 @@
     "messages": {
       "successCreate": "Thêm danh mục thành công",
       "successUpdate": "Cập nhật danh mục thành công",
-      "error": "Đã xảy ra lỗi"
+      "error": "Đã xảy ra lỗi",
+      "maxImagesReached": "Bạn chỉ có thể thêm 1 hình ảnh cho đến khi xóa ảnh hiện tại."
     },
     "validation": {
       "slugExists": "Slug đã tồn tại",
