@@ -103,6 +103,7 @@
       "products": "Sản phẩm",
       "orders": "Đơn hàng",
       "customers": "Khách hàng",
+      "dealerTiers": "Phân hạng đại lý",
       "warehouses": "Kho hàng",
       "categories": "Danh mục",
       "brands": "Thương hiệu"
@@ -647,6 +648,8 @@
     "EMAIL_NOT_VERIFIED": "Email chưa được xác minh",
     "ACCOUNT_LOCKED": "Tài khoản đã bị khóa",
     "INTERNAL_SERVER_ERROR": "Lỗi hệ thống",
+    "createDealerTierFailed": "Tạo phân hạng đại lý thất bại",
+    "updateCustomerFailed": "Cập nhật cấu hình B2B khách hàng thất bại",
     "validation": {
       "slugExists": "Đường dẫn đã tồn tại"
     }
@@ -683,5 +686,90 @@
       "invalidMinStockWarning": "Cảnh báo tồn kho không hợp lệ",
       "updateWarehouseStockFailed": "Không thể cập nhật tồn kho vào cơ sở dữ liệu"
     }
+  },
+  "AdminCustomers": {
+    "title": "Danh sách Khách hàng",
+    "description": "Quản lý hồ sơ khách hàng cá nhân và doanh nghiệp B2B.",
+    "searchPlaceholder": "Tìm kiếm theo tên, email hoặc số điện thoại...",
+    "tabs": {
+      "all": "Tất cả khách hàng",
+      "dealer": "Đại lý",
+      "contractor": "Nhà thầu",
+      "distributor": "Nhà phân phối",
+      "end_user": "Người dùng cuối"
+    },
+    "table": {
+      "name": "Họ và tên",
+      "contact": "Thông tin liên hệ",
+      "company": "Công ty",
+      "type": "Loại hình kinh doanh",
+      "tier": "Phân hạng đại lý",
+      "role": "Vai trò hệ thống",
+      "actions": "Thao tác",
+      "discountLabel": "-{percent}% chiết khấu"
+    },
+    "actions": {
+      "promote": "Quản lý trạng thái B2B",
+      "edit": "Chỉnh sửa",
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "cancel": "Hủy bỏ"
+    },
+    "dialog": {
+      "title": "Cấu hình tài khoản B2B",
+      "description": "Nâng cấp tài khoản thông thường lên đại lý B2B hoặc thay đổi phân hạng chiết khấu doanh nghiệp.",
+      "businessTypeLabel": "Loại hình kinh doanh",
+      "dealerTierLabel": "Phân hạng chiết khấu",
+      "none": "Không có phân hạng"
+    },
+    "messages": {
+      "successUpdate": "Cập nhật thông tin khách hàng thành công.",
+      "errorUpdate": "Lỗi khi cập nhật cấu hình khách hàng."
+    },
+    "roles": {
+      "admin": "Quản trị viên",
+      "dealer": "Đại lý B2B",
+      "customer": "Khách hàng"
+    },
+    "card": {
+      "assignedTier": "Phân hạng chiết khấu đã gán"
+    },
+    "empty": "Không tìm thấy khách hàng nào phù hợp với bộ lọc."
+  },
+  "AdminDealerTiers": {
+    "title": "Cấu hình Phân hạng Đại lý",
+    "description": "Thiết lập phần trăm chiết khấu và doanh số tối thiểu cho các tài khoản đại lý.",
+    "addTier": "Tạo Phân hạng Mới",
+    "table": {
+      "name": "Tên phân hạng",
+      "discount": "Chiết khấu (%)",
+      "minSpend": "Doanh số tối thiểu",
+      "actions": "Thao tác"
+    },
+    "form": {
+      "title": "Tạo Phân hạng Chiết khấu Mới",
+      "name": "Tên phân hạng",
+      "namePlaceholder": "Ví dụ: Đối tác Vàng",
+      "discount": "Tỷ lệ chiết khấu (%)",
+      "discountPlaceholder": "Ví dụ: 15.00",
+      "minSpend": "Doanh số tối thiểu",
+      "minSpendPlaceholder": "Ví dụ: 500000000",
+      "submit": "Tạo phân hạng",
+      "submitting": "Đang tạo..."
+    },
+    "messages": {
+      "successCreate": "Tạo phân hạng chiết khấu thành công.",
+      "errorCreate": "Lỗi khi tạo phân hạng chiết khấu."
+    },
+    "validation": {
+      "tierNameRequired": "Tên phân hạng không được bỏ trống",
+      "discountPercentageRequired": "Phần trăm chiết khấu không được bỏ trống",
+      "discountPercentageBounds": "Phần trăm chiết khấu phải từ 0 đến 100",
+      "minimumSpendBounds": "Doanh số tối thiểu phải là số dương"
+    },
+    "card": {
+      "spendThreshold": "Hạn mức doanh số:"
+    },
+    "empty": "Chưa có phân hạng chiết khấu nào được thiết lập."
   }
 }
