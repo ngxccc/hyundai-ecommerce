@@ -334,7 +334,8 @@
     "buttons": {
       "submit": "Save Product",
       "submitting": "Saving...",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "addUrl": "Add URL"
     },
     "messages": {
       "successCreate": "Product created successfully!",
@@ -349,7 +350,8 @@
       "invalidBrand": "Invalid brand selected",
       "invalidCategory": "Invalid category selected",
       "specKeyRequired": "Spec name is required",
-      "specValueRequired": "Spec value is required"
+      "specValueRequired": "Spec value is required",
+      "invalidNumber": "Must be a valid number"
     }
   },
   "AdminMetadata": {
