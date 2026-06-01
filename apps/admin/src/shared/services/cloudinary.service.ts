@@ -10,7 +10,7 @@ cloudinary.config({
 
 export const uploadToCloudinary = async (
   item: File | string,
-  folder = "products",
+  folder: string,
 ): Promise<string | null> => {
   try {
     if (item instanceof File) {
