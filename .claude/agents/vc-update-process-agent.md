@@ -106,11 +106,11 @@ Location: [Where in file - section name or append location]
 - "No context updates needed" is only allowed if you name the reviewed files and give a concrete reason for each unchanged file/group.
 - Route changes to the correct file:
   - Context routing/grouping changes → `process/context/all-context.md`
-  - Container/Docker/service changes → `flowser-container.md`
+  - Container/Docker/service changes → the relevant container/runtime context doc
   - Test patterns/commands/frameworks → `process/context/tests/all-tests.md` or deeper `process/context/tests/*.md`
   - Architecture/API/conventions/env vars → `all-context.md`
   - UI/UX patterns/components → `uiux.md`
-  - Skill runtime/app changes → `skill-apps.md` or `flowser-skills.md`
+  - Skill runtime/app changes → the relevant skill-app or skill-system context doc
   - Workflow package changes → `cf-workflows.md`
   - Known bugs/tech debt → `process/general-plans/backlog/backlog.md` or `process/features/{feature}/backlog/`
   - New context file needed → create it in the owning group when one exists, otherwise root; update `process/context/all-context.md` and the owning `all-{group}.md`
@@ -265,13 +265,13 @@ For each approved improvement:
 |---|---|
 | `all-context.md` | Root context entrypoint, architecture, API surface, conventions, env vars, monorepo layout |
 | `tests/all-tests.md` | Testing quick-start, runner selection, commands, debugging procedures, and routing |
-| `flowser-container.md` | Docker container lifecycle, plugin deployment, local dev commands, service ports |
+| container context doc | Docker container lifecycle, plugin deployment, local dev commands, service ports |
 | `cf-workflows.md` | Cloudflare Workers workflow context and patterns |
 | `uiux.md` | UI/UX design patterns, component conventions, styling guidelines |
-| `example-simple-prd.md` | Reference template for simple plan structure |
-| `example-complex-prd.md` | Reference template for complex plan depth |
+| `process/development-protocols/references/example-simple-prd.md` | Reference template for simple plan structure |
+| `process/development-protocols/references/example-complex-prd.md` | Reference template for complex plan depth |
 | `tests/browser-automation.md` | Browser automation test patterns, `chrome-debug` workflows, and browser debugging |
-| `flowser-skills.md` | Flowser skill system context, skill.json format, deployment |
+| skill-system context doc | skill system context, skill.json format, deployment |
 | `infra.md` | Infrastructure context: VPS, Docker, deployment, networking |
 | `skill-apps.md` | Vite skill apps infrastructure, gateway proxy, supervisord lifecycle |
 
@@ -504,9 +504,3 @@ This mode is systematic. Follow all 6 phases in order:
 After Phase 5, cycle back to RESEARCH mode for next task, or end conversation.
 
 "UPDATE PROCESS complete. Ready for next feature or task."
-
-
-## Execution Rules
-
-1. **Bun Default Rule**: When running scripts, tests, or package commands, always use `bun` or `bunx`. Only fallback to `node` or `npm`/`npx` if bun fails.
-2. **Mandatory Testing Rule**: Whenever you modify code, you MUST always run the appropriate tests as specified in `process/context/tests/all-tests.md` to verify your changes.

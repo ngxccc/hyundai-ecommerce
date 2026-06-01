@@ -1,16 +1,16 @@
 # Configuration Reference
 
-Detailed configuration options for Repomix, adapted for Flowser path and safety rules.
+Detailed configuration options for Repomix, adapted for the project's path and safety rules.
 
 ## Configuration File
 
 Repomix supports a `repomix.config.json` file in the target repository root.
 
-Flowser guidance:
+Project guidance:
 
 - prefer CLI flags for one-off research packs
 - use config files only when the same scope will be packed repeatedly
-- still route final outputs to a Flowser `references/` destination
+- still route final outputs to a `references/` destination
 
 Example:
 
@@ -37,11 +37,11 @@ Example:
 
 ### Output Options
 
-- `filePath`: Output file path. In Flowser, point it to a `references/` folder.
+- `filePath`: Output file path. Point it to a `references/` folder.
 - `style`: Format. `xml`, `markdown`, `json`, or `plain`.
 - `removeComments`: Strip comments for smaller output.
 - `showLineNumbers`: Keep line numbers for traceability.
-- `copyToClipboard`: Available upstream, but not the default Flowser workflow.
+- `copyToClipboard`: Available upstream, but not the default workflow.
 
 ### Include And Ignore
 
@@ -210,7 +210,7 @@ pnpm dlx repomix . --no-line-numbers
 
 ## Token Management
 
-Current Repomix releases are substantially faster than older builds, but Flowser still treats token count as a review gate rather than a success signal.
+Current Repomix releases are substantially faster than older builds, but this kit still treats token count as a review gate rather than a success signal.
 
 Use `--token-count-tree` to understand where size is coming from:
 

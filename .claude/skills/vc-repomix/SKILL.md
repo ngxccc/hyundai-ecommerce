@@ -33,7 +33,7 @@ If the task only needs a few files, ordinary `rg` plus targeted reads is cheaper
 
 ## Output Policy
 
-Generated artifacts belong in Flowser `references/` folders only:
+Generated artifacts belong in the project's `references/` folders only:
 
 - General or cross-cutting work:
   - `process/general-plans/references/`
@@ -76,7 +76,7 @@ Do not default to clipboard-first flows.
 
 ```bash
 pnpm dlx repomix . \
-  --include "apps/flowser/src/**/*.tsx,packages/ui/src/**/*.tsx,process/context/**/*.md" \
+  --include "apps/<app>/src/**/*.tsx,packages/ui/src/**/*.tsx,process/context/**/*.md" \
   --ignore "**/*.test.*,coverage/**" \
   --remove-comments \
   --style markdown \
@@ -174,16 +174,16 @@ Remote mode is for read-only research and comparison.
 
 ## Optional Batch Helper
 
-For multiple repositories, Flowser ships an adapted wrapper:
+For multiple repositories, this kit ships an adapted wrapper:
 
 ```bash
 python3 .claude/skills/repomix/scripts/repomix_batch.py --help
 ```
 
-The wrapper keeps the same Flowser constraints:
+The wrapper keeps the same constraints:
 
 - default output directory is `process/general-plans/references/`
-- output directories must stay under a Flowser `references/` folder
+- output directories must stay under the project's `references/` folder
 - `pnpm dlx repomix` remains the default execution path
 - security checks stay enabled unless explicitly disabled
 
@@ -215,7 +215,7 @@ If remote access fails:
 
 For detailed information, see:
 
-- [Flowser workflow](./references/repomix-workflow.md)
+- [Workflow](./references/repomix-workflow.md)
 - [Configuration reference](./references/configuration.md)
 - [Usage patterns](./references/usage-patterns.md)
 

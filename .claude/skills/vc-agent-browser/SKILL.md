@@ -50,7 +50,7 @@ agent-browser snapshot -i
 
 ## Project-Specific Setup
 
-For Flowser-specific connection patterns, logged-in session reuse through `chrome-debug`, and when to use `agent-browser` vs `chrome-devtools` vs direct non-browser verification, see `process/context/tests/browser-automation.md` in the consuming repo. This skill file stays a generic tool reference only and should not redefine Flowser's broader testing policy.
+For project-specific connection patterns, logged-in session reuse through `chrome-debug`, and when to use `agent-browser` vs `chrome-devtools` vs direct non-browser verification, see the project's browser-automation testing notes in the consuming repo, if present. This skill file stays a generic tool reference only and should not redefine the project's broader testing policy.
 
 ---
 

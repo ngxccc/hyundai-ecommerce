@@ -124,6 +124,72 @@ Before creating any plan files for a new large program, present a short recommen
 4. **Approval checkpoint**
    - ask whether to proceed with creating the plan artifacts
 
+5. **Compressed session-goal block (printed in chat)**
+   - once the umbrella plan and its Program Goal Charter exist, emit a compressed, copy-pasteable
+     "session goal" block directly in chat (do NOT write it to a file)
+   - this is the launch packet a user pastes to start an unattended, long-running session
+   - keep it to roughly 8-12 lines with this shape:
+
+   ```text
+   SESSION GOAL: [PROGRAM NAME]
+   Charter + umbrella plan: process/features/{feature}/active/{umbrella-plan}.md
+   Autonomy: Run autonomously under this persistent goal. Execute phases on your own
+   recommendation via the 10-step loop in phase-programs.md; report conflicts, errors, and
+   learnings in the phase report (the report is the communication channel, not a question).
+   Only pause for outward-facing / irreversible / costful / destructive actions
+   (see feedback_autonomous_phase_execution.md).
+   Hard stop conditions / safety constraints:
+   - [hard safety constraint 1 from the charter]
+   - [hard safety constraint 2 from the charter]
+   Next phase: process/features/{feature}/active/{next-phase-plan}.md
+   ```
+
+   - the block must name the charter/umbrella plan path, state the autonomy rule (citing
+     `feedback_autonomous_phase_execution.md`: execute phases on own recommendation under a
+     persistent goal; only pause for outward-facing/irreversible/costful actions), and list the
+     charter's hard stop-conditions/safety constraints verbatim
+   - **Hard rule:** the session-goal block MUST be under 4000 characters total — it is pasted into a
+     persistent `/goal` whose ceiling is ~4000 chars. If the program's safety constraints +
+     definition-of-done won't compress under 4000 chars, summarize and reference the charter's plan
+     path for the full detail rather than inlining everything.
+
+### Autonomous Session-Goal Variant
+
+This is an explicit opt-in variant. It does NOT weaken the default supervised loop; it only applies
+when the user sets a persistent autonomous session-goal (e.g. a standing `/goal`).
+
+When the user sets a persistent autonomous session-goal:
+
+- the per-phase Execution Approval Checkpoint (10-step loop step 2) is treated as STANDING-GRANTED.
+  The agent does not pause for approval between phases.
+- the agent self-decides, executes, and reports learnings after each phase. On failure it diagnoses,
+  writes a new plan/fix, and continues.
+- the safety boundary REPLACES the approval gate: never take irreversible or costful actions
+  (deploys, live/costful provider gates, billing, destructive schema/data ops). These are DEFERRED
+  AND REPORTED — never executed and never paused-on.
+- every step must stay rollback-able: commit each phase before the next, keep process/plan commits
+  separate from execution commits, and prefer disposable targets.
+- all other loop steps still apply unchanged: re-research at phase entry, validate, regression check,
+  durable capture, commit, inter-phase UPDATE PROCESS, and honest phase status.
+
+**Shared-runtime 2-tier policy:** direct interaction with the shared E2E container — including
+rebuilding the image and recreating/restarting it via the project's dedicated managed script —
+is normal, autonomous test work. It is NOT forbidden. Only irrecoverable persistent-state loss,
+prod-state mutation, production image push/deploy, and live/costful gates are deferred-and-reported.
+See your project's container/test context docs for the exact sanctioned commands. Do not re-list
+those commands here.
+
+- **🟢 GREEN — fully autonomous (the default):** direct shared-container interaction — exec,
+  read logs, send messages, edit/write files, push secrets, probe health; run any documented
+  script in your project's test context docs; rebuild the image and recreate/restart the shared
+  container via the project's managed script to apply changes (named volume preserved);
+  create/rebuild/recreate/remove E2E-owned disposable targets freely; reversible
+  stop/start parking of the shared container, restored and verified leave-as-found.
+- **🔴 RED — defer-and-report (never autonomous):** wipe/delete the shared container's named
+  volume (irrecoverable data loss) or otherwise destroy persistent state without recovery;
+  mutate production DB/storage/streaming state; push production images or deploy; run
+  live/costful/provider-backed gates without per-lane approval.
+
 This keeps the agent in an advisory role first, instead of prematurely locking the structure.
 
 ## When To Use A Phase Program
@@ -154,7 +220,8 @@ a time.
 For a phase program, create or confirm:
 
 1. a feature folder under `process/features/{feature}/`
-2. one umbrella orchestration plan in that feature's `active/` folder
+2. one umbrella orchestration plan in that feature's `active/` folder, which **must include a
+   Program Goal Charter** (see "Program Goal Charter" above)
 3. one plan file per phase in that feature's `active/` folder
 4. a `reports/` file for every executed phase
 5. `references/` files for research that should survive future sessions
@@ -175,6 +242,47 @@ process/features/{feature}/
   completed/
   backlog/
 ```
+
+## Program Goal Charter
+
+Every phase program must carry a **Program Goal Charter** as part of its umbrella orchestration plan.
+The charter is the durable "north star" the user would otherwise hand-paste at the start of every
+run. Generate it automatically when building the umbrella plan, fill in only program-specific content,
+and keep it tight.
+
+Required charter structure (placeholders are program-specific only):
+
+```text
+# [PROGRAM NAME] — Program Goal Charter
+
+North star:
+- [one sentence stating the real end goal]
+
+Definition of done:
+- [the concrete capabilities an unattended agent must be able to perform when the program is complete]
+
+What "verified" means (program level):
+- [the exact bar for promoting work to ✅ VERIFIED for this program — gate surface, evidence, coverage]
+
+Scope tiers → phase mapping:
+- Tier 1 [name] → Phases [n, n, ...]
+- Tier 2 [name] → Phases [n, n, ...]
+- Tier 3 [name] → Phases [n, n, ...]
+- This program retires Tiers [1-N].
+
+Explicitly out of scope (deferred tier):
+- [the tier and items intentionally not addressed by this program]
+
+Hard safety constraints (non-negotiable, per phase):
+- [program-specific irreversible/destructive boundaries, e.g. "never mutate prod X"]
+```
+
+Important: execution discipline (the required 10-step per-phase loop, re-research at phase entry, and
+honest phase status) is already governed by this protocol's existing sections. Do NOT re-paste that
+prose into the charter — the charter is program-specific intent and safety only, not workflow rules.
+
+A blank template plus a filled-in reference example live at
+`process/development-protocols/references/program-goal-charter-template.md`.
 
 ## Program Setup Sequence
 
@@ -354,7 +462,7 @@ After validating the current phase's own gates (step 4), check that previously v
 
 Record regression results in the phase report as:
 
-```text
+```
 Regression: [surface] — [PASS | FIXED | BLOCKED]
 Command: [exact command or manual step]
 Result: [1-line outcome]
@@ -372,12 +480,12 @@ When a regression is detected in step 5:
 
 **Classify the regression:**
 
-| Type                | Definition                                     | Example                                            |
-| ------------------- | ---------------------------------------------- | -------------------------------------------------- |
-| product breakage    | previously working product behavior is broken  | API endpoint returns 500, container fails to start |
-| test breakage       | previously passing test now fails              | Vitest suite red, Playwright spec timeout          |
-| harness drift       | process/agent/skill artifacts are inconsistent | context doc references a deleted file              |
-| stale command drift | a previously recorded command no longer works  | pnpm script renamed, env var removed               |
+| Type | Definition | Example |
+|---|---|---|
+| product breakage | previously working product behavior is broken | API endpoint returns 500, container fails to start |
+| test breakage | previously passing test now fails | Vitest suite red, Playwright spec timeout |
+| harness drift | process/agent/skill artifacts are inconsistent | context doc references a deleted file |
+| stale command drift | a previously recorded command no longer works | pnpm script renamed, env var removed |
 
 **Decision tree:**
 

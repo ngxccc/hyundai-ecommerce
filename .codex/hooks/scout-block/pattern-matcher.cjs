@@ -2,7 +2,7 @@
 /**
  * pattern-matcher.cjs - Gitignore-spec compliant pattern matching
  *
- * Uses 'ignore' package for .ckignore parsing and path matching.
+ * Uses 'ignore' package for .vcignore parsing and path matching.
  * Supports negation patterns (!) for allowlisting.
  */
 
@@ -10,7 +10,7 @@ const Ignore = require('./vendor/ignore.cjs');
 const fs = require('fs');
 const path = require('path');
 
-// Default patterns if .ckignore doesn't exist or is empty
+// Default patterns if .vcignore doesn't exist or is empty
 // Only includes directories with HEAVY file counts (1000+ files typical)
 const DEFAULT_PATTERNS = [
   // JavaScript/TypeScript - package dependencies & build outputs
@@ -44,17 +44,17 @@ function readPatternsFromFile(filePath) {
       .map(line => line.trim())
       .filter(line => line && !line.startsWith('#'));
   } catch (error) {
-    console.error('WARN: Failed to read .ckignore:', error.message);
+    console.error('WARN: Failed to read .vcignore:', error.message);
     return [];
   }
 }
 
 /**
- * Load patterns from the shipped .ckignore plus an optional project override.
+ * Load patterns from the shipped .vcignore plus an optional project override.
  * Falls back to DEFAULT_PATTERNS if the shipped file doesn't exist or is empty.
  *
- * @param {string} ckignorePath - Path to shipped/global .ckignore file
- * @param {string} [projectCkignorePath] - Optional project-local .ckignore path
+ * @param {string} ckignorePath - Path to shipped/global .vcignore file
+ * @param {string} [projectCkignorePath] - Optional project-local .vcignore path
  * @returns {string[]} Array of patterns
  */
 function loadPatterns(ckignorePath, projectCkignorePath) {
@@ -68,7 +68,7 @@ function loadPatterns(ckignorePath, projectCkignorePath) {
  * Create a matcher from patterns
  * Normalizes patterns to match anywhere in the path tree
  *
- * @param {string[]} patterns - Array of patterns from .ckignore
+ * @param {string[]} patterns - Array of patterns from .vcignore
  * @returns {Object} Matcher object with ig instance and pattern info
  */
 function createMatcher(patterns) {
@@ -165,7 +165,7 @@ function matchPath(matcher, testPath) {
 /**
  * Find which original pattern matched (for error messages)
  *
- * @param {string[]} originalPatterns - Original patterns from .ckignore
+ * @param {string[]} originalPatterns - Original patterns from .vcignore
  * @param {string} path - The path that was blocked
  * @returns {string} The pattern that matched
  */

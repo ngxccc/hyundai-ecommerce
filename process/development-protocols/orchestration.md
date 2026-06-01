@@ -127,6 +127,11 @@ Controller rules for phase programs:
 4. after each phase, update reports and downstream phase plans before advancing
 5. if the original program reaches a narrower scoped goal than the user's larger vision, split the
    remaining work into follow-up feature folders instead of stretching one project forever
+6. the umbrella plan must carry a Program Goal Charter (north star, definition of done, what
+   "verified" means, scope tiers → phase mapping, out-of-scope tier, hard safety constraints), and
+   the kickoff must print the compressed copy-pasteable session-goal block in chat — see
+   `process/development-protocols/phase-programs.md` ("Program Goal Charter" and "Kickoff
+   Recommendation Format" step 5)
 
 ## Intent Clarification
 

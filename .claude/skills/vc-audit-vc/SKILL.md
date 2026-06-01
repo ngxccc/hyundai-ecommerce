@@ -35,9 +35,13 @@ For context routing, grouping, and discoverability audits, use the `audit-contex
    ```bash
    node .claude/skills/vc-audit-vc/scripts/validate-seeds.mjs
    ```
-6. If any script reports failures, inspect the referenced files and patch the smallest
+6. Run the kit portability validator:
+   ```bash
+   node .claude/skills/vc-audit-vc/scripts/validate-kit-portability.mjs
+   ```
+7. If any script reports failures, inspect the referenced files and patch the smallest
    relevant surface.
-7. Re-run the failed validators until they pass.
+8. Re-run the failed validators until they pass.
 
 ## Rules
 

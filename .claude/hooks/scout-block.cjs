@@ -2,8 +2,8 @@
 /**
  * scout-block.cjs - Cross-platform hook for blocking directory access
  *
- * Blocks access to directories listed in the shipped .claude/.ckignore baseline
- * plus an optional project-local .claude/.ckignore override at the git root.
+ * Blocks access to directories listed in the shipped .claude/.vcignore baseline
+ * plus an optional project-local .claude/.vcignore override at the git root.
  * Uses gitignore-spec compliant pattern matching via 'ignore' package
  *
  * Blocking Rules:
@@ -13,8 +13,8 @@
  *   - Allowed: npm build, go build, cargo build, make, mvn, gradle, docker build, kubectl, terraform
  *
  * Configuration:
- * - Edit .claude/.ckignore to customize shipped baseline patterns
- * - Add <project-root>/.claude/.ckignore to override locally without changing the baseline
+ * - Edit .claude/.vcignore to customize shipped baseline patterns
+ * - Add <project-root>/.claude/.vcignore to override locally without changing the baseline
  * - Supports negation patterns (!) to allow specific paths
  *
  * Exit Codes:
@@ -95,7 +95,12 @@ try {
         claudeDir,
         cwd: payloadCwd,
         projectConfigDirName: '.claude',
-        ckignorePath: path.join(claudeDir, '.ckignore'),
+        // New-first (.vcignore), legacy (.ckignore) fallback for backward compatibility.
+        ckignorePath: fs.existsSync(path.join(claudeDir, '.vcignore'))
+          ? path.join(claudeDir, '.vcignore')
+          : (fs.existsSync(path.join(claudeDir, '.ckignore'))
+            ? path.join(claudeDir, '.ckignore')
+            : path.join(claudeDir, '.vcignore')),
         checkBroadPatterns: true
       }
     });

@@ -19,7 +19,7 @@ Use this helper when you need a bounded repository artifact for research, compar
 - the task only needs a few files and ordinary `rg` or targeted reads are cheaper
 - the output would become so large that it is less useful than a targeted file set
 
-## Flowser Output Rules
+## Output Rules
 
 - General artifact:
   - `process/general-plans/references/`

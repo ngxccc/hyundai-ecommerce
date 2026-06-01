@@ -101,7 +101,8 @@ function runStatuslineSync({ payload, cwd = TEST_ROOT, env = {}, inputRaw = null
   };
   if (!Object.prototype.hasOwnProperty.call(env, 'NO_COLOR')) delete runtimeEnv.NO_COLOR;
   scrubAnthropicRuntimeEnv(runtimeEnv, env);
-  if (!Object.prototype.hasOwnProperty.call(env, 'HOME') && fs.existsSync(path.join(cwd, '.claude', '.ck.json'))) {
+  if (!Object.prototype.hasOwnProperty.call(env, 'HOME')
+    && (fs.existsSync(path.join(cwd, '.claude', '.vc.json')) || fs.existsSync(path.join(cwd, '.claude', '.ck.json')))) {
     runtimeEnv.HOME = cwd;
   }
   const result = spawnSync('node', [STATUSLINE_PATH], {
@@ -133,7 +134,8 @@ function runStatuslineWithDelayedChunks({ chunks, delaysMs, cwd = TEST_ROOT, env
     };
     if (!Object.prototype.hasOwnProperty.call(env, 'NO_COLOR')) delete runtimeEnv.NO_COLOR;
     scrubAnthropicRuntimeEnv(runtimeEnv, env);
-    if (!Object.prototype.hasOwnProperty.call(env, 'HOME') && fs.existsSync(path.join(cwd, '.claude', '.ck.json'))) {
+    if (!Object.prototype.hasOwnProperty.call(env, 'HOME')
+      && (fs.existsSync(path.join(cwd, '.claude', '.vc.json')) || fs.existsSync(path.join(cwd, '.claude', '.ck.json')))) {
       runtimeEnv.HOME = cwd;
     }
     const child = spawn('node', [STATUSLINE_PATH], {
@@ -179,12 +181,12 @@ function runStatuslineWithDelayedChunks({ chunks, delaysMs, cwd = TEST_ROOT, env
   });
 }
 
-function createTempConfigProject(mode, extraConfig = {}) {
+function createTempConfigProject(mode, extraConfig = {}, { configFileName = '.vc.json' } = {}) {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), `statusline-mode-${mode}-`));
   const ckDir = path.join(tmpDir, '.claude');
   fs.mkdirSync(ckDir, { recursive: true });
   fs.writeFileSync(
-    path.join(ckDir, '.ck.json'),
+    path.join(ckDir, configFileName),
     JSON.stringify({ statusline: mode, statuslineQuota: true, ...extraConfig }, null, 2)
   );
   return tmpDir;
@@ -322,6 +324,28 @@ async function main() {
       assertSuccessfulRun(result, 'Mode none scenario');
       const { stdout } = result;
       assertTrue(stdout.trim() === '', 'Mode none should produce empty output');
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    }
+  });
+
+  await test('Legacy .ck.json-only config still loads via fallback', async () => {
+    // Project has ONLY the legacy .ck.json (no .vc.json) — central loader fallback
+    // must still resolve it so existing installs keep working.
+    const tmpDir = createTempConfigProject('none', {}, { configFileName: '.ck.json' });
+    try {
+      const payload = {
+        model: { display_name: 'Claude' },
+        workspace: { current_dir: '/tmp' },
+        context_window: { context_window_size: 200000 }
+      };
+      const result = runStatuslineSync({ payload, cwd: tmpDir });
+      assertSuccessfulRun(result, 'Legacy .ck.json fallback scenario');
+      const { stdout } = result;
+      assertTrue(
+        stdout.trim() === '',
+        'Legacy .ck.json with mode none should still produce empty output via fallback'
+      );
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }

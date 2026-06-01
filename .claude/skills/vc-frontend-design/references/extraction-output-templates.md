@@ -148,7 +148,7 @@ Based on analysis, recommend:
 
 3. **Document Decisions**
    - Save feature-specific extraction reports under `process/features/<feature>/references/`
-   - Promote durable shared UI guidance to `process/context/uxui/uiux.md` through `process/context/all-context.md`
+   - Promote durable shared UI guidance to the project's UI/UX context doc (if present) through `process/context/all-context.md`
    - Create design system spec from extraction
    - Reference when generating new assets
 

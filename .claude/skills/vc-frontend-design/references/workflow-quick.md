@@ -27,7 +27,7 @@ Use Claude's built-in multimodal vision:
 ### 4. Report & Approve
 - Summarize changes briefly
 - Request user approval
-- Update `process/context/uxui/uiux.md` if the approved pattern should become durable project knowledge
+- Update the project's UI/UX context doc (if present) if the approved pattern should become durable project knowledge
 
 ## When to Use
 - Simple components

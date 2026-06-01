@@ -163,7 +163,7 @@ Create the `process/` directory with seed files and instructional content.
 | `process/plans/` exists, `process/general-plans/` does not | Move `process/plans/*` to `process/general-plans/active/`, then remove empty `process/plans/` |
 | `process/reports/` exists at top level | Move `process/reports/*` to `process/general-plans/reports/`, then remove empty `process/reports/` |
 | `process/skills/` exists at top level | Move `process/skills/*` to `process/general-plans/references/`, then remove empty `process/skills/` |
-| `process/context/example-*.md` (PRDs outside planning/) | Move to `process/context/planning/` |
+| Example PRDs at old locations (e.g. `process/context/example-*.md` or under `process/context/planning/`) that are not in `process/development-protocols/references/` | Move to `process/development-protocols/references/` |
 | process/context/backlog.md at top of context/ | Move to `process/general-plans/backlog/backlog.md` |
 
 **Migration rules:**

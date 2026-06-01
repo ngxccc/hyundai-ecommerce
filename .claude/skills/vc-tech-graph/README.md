@@ -1,13 +1,13 @@
-# Flowser Tech Graph
+# Tech Graph
 
 > Describe a system, flow, or architecture and turn it into a publish-grade SVG, then PNG when raster export is needed.
 
-This skill materially adapts upstream `fireworks-tech-graph` assets for Flowser.
+This skill materially adapts upstream `fireworks-tech-graph` assets for this kit.
 
 - Upstream references, templates, fixtures, and attribution are vendored locally.
-- Flowser keeps `tech-graph` as a helper skill only.
+- This kit keeps `tech-graph` as a helper skill only.
 - `preview` remains the companion for explanation, HTML framing, comparison, and review after generation.
-- Durable outputs belong in Flowser process folders, not ad hoc paths.
+- Durable outputs belong in the project's process folders, not ad hoc paths.
 
 ## What You Get
 
@@ -19,7 +19,7 @@ This skill materially adapts upstream `fireworks-tech-graph` assets for Flowser.
 - style matrix, icon reference, and SVG layout guidance
 - support for architecture, data-flow, flowchart, sequence, comparison, timeline, state, class, use-case, ER, agent, memory, and network-topology visuals
 
-## Flowser Output Policy
+## Output Policy
 
 Preferred destinations for final artifacts:
 
@@ -30,7 +30,7 @@ Preferred destinations for final artifacts:
 
 Use `references/` for durable architecture or system artifacts. Use `reports/visuals/` for proof snapshots tied to execution or review.
 
-If `rsvg-convert` is missing, Flowser runs in explicit SVG-only mode. Validation still runs and the SVG remains the source of truth.
+If `rsvg-convert` is missing, the skill runs in explicit SVG-only mode. Validation still runs and the SVG remains the source of truth.
 
 ## Preview Boundary
 
@@ -153,7 +153,7 @@ TECH_GRAPH_TEST_OUTPUT_DIR=/absolute/output/path bash .claude/skills/tech-graph/
 ## Typical Flow
 
 1. Classify the diagram family.
-2. Pick the Flowser output destination.
+2. Pick the project output destination.
 3. Load `references/style-diagram-matrix.md` and the selected style reference.
 4. Use a template or fixture structure when it speeds up clean layout.
 5. Generate the SVG.
@@ -200,7 +200,7 @@ rsvg-convert --version
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| PNG not generated | `rsvg-convert` not installed | Expected Flowser SVG-only mode. Install `librsvg` only if PNG export is required. |
+| PNG not generated | `rsvg-convert` not installed | Expected SVG-only mode. Install `librsvg` only if PNG export is required. |
 | PNG is blank or all-black | SVG imports external fonts/resources | Remove external imports and keep everything inline. |
 | Diagram cut off | viewBox too small | Increase width/height or re-space the layout. |
 | Labels collide | layout too dense | Use the layout best-practices reference and widen gutters before adding more content. |
@@ -208,4 +208,4 @@ rsvg-convert --version
 
 ## Attribution
 
-This Flowser skill includes locally adapted upstream material from `fireworks-tech-graph` under the MIT license in [LICENSE](./LICENSE).
+This skill includes locally adapted upstream material from `fireworks-tech-graph` under the MIT license in [LICENSE](./LICENSE).

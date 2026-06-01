@@ -145,7 +145,8 @@ function findGitRoot(startDir) {
 }
 
 /**
- * Find an optional project-local .ckignore at the git root config directory.
+ * Find an optional project-local .vcignore at the git root config directory.
+ * Prefers .vcignore, falls back to legacy .ckignore for backward compatibility.
  * This keeps overrides stable regardless of the caller cwd inside the repo.
  *
  * @param {string} startDir - Directory to start searching from
@@ -156,8 +157,10 @@ function findProjectCkignore(startDir, configDirName) {
   if (!configDirName || typeof configDirName !== 'string') return null;
   const gitRoot = findGitRoot(startDir);
   if (!gitRoot) return null;
-  const candidate = path.join(gitRoot, configDirName, '.ckignore');
-  return fs.existsSync(candidate) ? candidate : null;
+  const candidate = path.join(gitRoot, configDirName, '.vcignore');
+  if (fs.existsSync(candidate)) return candidate;
+  const legacyCandidate = path.join(gitRoot, configDirName, '.ckignore');
+  return fs.existsSync(legacyCandidate) ? legacyCandidate : null;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -171,10 +174,10 @@ function findProjectCkignore(startDir, configDirName) {
  * @param {string} params.toolName - Name of tool (Bash, Glob, Read, etc.)
  * @param {Object} params.toolInput - Tool input with file_path, path, pattern, command
  * @param {Object} [params.options]
- * @param {string} [params.options.ckignorePath] - Path to .ckignore file
- * @param {string} [params.options.projectCkignorePath] - Explicit project-local .ckignore path
+ * @param {string} [params.options.ckignorePath] - Path to .vcignore file
+ * @param {string} [params.options.projectCkignorePath] - Explicit project-local .vcignore path
  * @param {string} [params.options.claudeDir] - Path to .claude or .opencode directory
- * @param {string} [params.options.cwd] - Working directory used to discover a project .ckignore
+ * @param {string} [params.options.cwd] - Working directory used to discover a project .vcignore
  * @param {string} [params.options.projectConfigDirName] - Git-root config dir for project-local overrides
  * @param {boolean} [params.options.checkBroadPatterns] - Check for overly broad glob patterns (default: true)
  * @returns {{
@@ -238,8 +241,14 @@ function checkScoutBlock({ toolName, toolInput, options = {} }) {
     }
   }
 
-  // Resolve .ckignore path
-  const resolvedCkignorePath = ckignorePath || path.join(claudeDir, '.ckignore');
+  // Resolve .vcignore path (new-first, legacy .ckignore fallback)
+  const resolvedCkignorePath = ckignorePath || (
+    fs.existsSync(path.join(claudeDir, '.vcignore'))
+      ? path.join(claudeDir, '.vcignore')
+      : (fs.existsSync(path.join(claudeDir, '.ckignore'))
+        ? path.join(claudeDir, '.ckignore')
+        : path.join(claudeDir, '.vcignore'))
+  );
   const discoveredProjectCkignorePath = projectCkignorePath || findProjectCkignore(cwd, projectConfigDirName);
   const resolvedProjectCkignorePath = discoveredProjectCkignorePath
     && path.resolve(discoveredProjectCkignorePath) !== path.resolve(resolvedCkignorePath)

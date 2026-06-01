@@ -19,7 +19,7 @@ You MUST:
 - Split true phase programs into a plan set so each phase can be reattached, researched, executed, and validated independently across sessions
 - For direct `*_PLAN_*.md` plans, make execution trust explicit with first-class sections for `Touchpoints`, `Public Contracts`, `Blast Radius`, `Verification Evidence`, and `Resume and Execution Handoff`
 
-IMPORTANT FOR COMPLEX MODE: Use `process/context/planning/example-complex-prd.md` as a reference for the expected level of depth and structure. Mirror that level of specificity when generating the complex plan.
+IMPORTANT FOR COMPLEX MODE: Use `process/development-protocols/references/example-complex-prd.md` as a reference for the expected level of depth and structure. Mirror that level of specificity when generating the complex plan.
 
 IMPORTANT FOR LARGE PROGRAMS: If the work will actually execute as a sequence of separately
 validated phases, do not force everything into one giant plan file. Use the repo's phase-program
@@ -48,23 +48,21 @@ Every phase in the plan MUST include explicit verification criteria. A phase is 
 
 Use these precise status markers:
 
-| Marker       | Meaning                             |
-| ------------ | ----------------------------------- |
-| ⏳ PLANNED   | Not started                         |
+| Marker | Meaning |
+|--------|---------|
+| ⏳ PLANNED | Not started |
 | 🔨 CODE DONE | Code written, NOT tested end-to-end |
-| 🧪 TESTING   | Code done, currently testing        |
-| ✅ VERIFIED  | Tested AND user confirmed working   |
-| 🚧 BLOCKED   | Has issues preventing completion    |
+| 🧪 TESTING | Code done, currently testing |
+| ✅ VERIFIED | Tested AND user confirmed working |
+| 🚧 BLOCKED | Has issues preventing completion |
 
 **NEVER mark a phase as ✅ VERIFIED based only on:**
-
 - "Build succeeds"
 - "No TypeScript errors"
 - "Files created"
 - "Curl returns 200"
 
 **ONLY mark ✅ VERIFIED when:**
-
 - Full user flow tested manually
 - Data verified in database/storage
 - User confirms it works as expected
@@ -88,7 +86,7 @@ For each RFC or phase that touches a testable package, add a **Test Stage** with
 
 In the Implementation Checklist, interleave test steps with code steps:
 
-```text
+```
 - [ ] Implement <feature> in <file>
 - [ ] Write tests in src/__tests__/<subject>.test.ts covering: <scenarios>
 - [ ] Run `bun test` (or `pnpm test`) — all tests green
@@ -105,7 +103,7 @@ In the Implementation Checklist, interleave test steps with code steps:
 - The assistant will ask 3–5 questions per round (max 2–3 rounds) only if needed
 - Output is saved to `process/general-plans/active/[name]_PLAN_[dd-mm-yy].md` (general) or `process/features/{feature}/active/[name]_PLAN_[dd-mm-yy].md` (feature-scoped)
 - Read `process/context/all-context.md` first when it exists, then load only the relevant context docs or groups for the feature
-- For complex initiatives, review `process/context/planning/example-complex-prd.md` for how detailed the output should be
+- For complex initiatives, review `process/development-protocols/references/example-complex-prd.md` for how detailed the output should be
 
 ## Complexity selection
 
@@ -125,13 +123,13 @@ If COMPLEX, also classify whether it is:
 
 ### Complex decision table
 
-| Situation                                                                                       | Use                                                           |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| One main execution stream, even if long                                                         | **standard complex**                                          |
-| 3 or more dependent milestones with separate proof boundaries                                   | **phase program**                                             |
-| Multi-package or multi-runtime work where each milestone must be re-researched before execution | **phase program**                                             |
-| A broad project that can still be honestly executed from one authoritative file                 | **standard complex**                                          |
-| Foundation work now, bigger expansion later                                                     | **phase program** with explicit foundation vs expansion split |
+| Situation | Use |
+|---|---|
+| One main execution stream, even if long | **standard complex** |
+| 3 or more dependent milestones with separate proof boundaries | **phase program** |
+| Multi-package or multi-runtime work where each milestone must be re-researched before execution | **phase program** |
+| A broad project that can still be honestly executed from one authoritative file | **standard complex** |
+| Foundation work now, bigger expansion later | **phase program** with explicit foundation vs expansion split |
 
 ## Interactive Q&A (when needed)
 
@@ -177,7 +175,7 @@ Every generated file must still follow the same rigor below where applicable:
 
 ### Phase Completion Rules (REQUIRED - include in every plan)
 
-```text
+```
 ## Phase Completion Rules
 
 A phase is NOT complete until:
@@ -240,7 +238,7 @@ After each phase, document:
 
 ### If COMPLEX (multi-phase)
 
-Before generating, review `process/context/planning/example-complex-prd.md` to calibrate the expected depth. Your output should be comparable in structure and specificity.
+Before generating, review `process/development-protocols/references/example-complex-prd.md` to calibrate the expected depth. Your output should be comparable in structure and specificity.
 
 1. Context and Goals
 2. **Phase Completion Rules** (copy from above - REQUIRED)
@@ -261,19 +259,16 @@ Before generating, review `process/context/planning/example-complex-prd.md` to c
      - **Step 3: Implementation** - Execute approved plan exactly as specified, no deviations
      - **Step 4: Testing & Verification** - Execute specific test scenarios, verify in database, document results
      - **Step 5: User Confirmation** - After each stage, the executor MUST present a structured post-stage summary:
-
-       ```text
+       ```
        **What's Functional Now**: What user can do/see after this stage
        **What Was Tested**: Verification performed (DB queries, API calls, build checks, etc.)
        **What You Can Test**: Specific manual steps user can take to verify
          - e.g., commands to run, URLs to visit, UI actions to perform
        **Ready For**: Next stage
        ```
-
        User manually tests using the steps provided, confirms working, and approves to proceed.
-
    - **CRITICAL: Do NOT proceed to next phase until current phase is ✅ VERIFIED**
-   - Include example phase execution showing the complete workflow — the example MUST show the PAUSE between research and implementation (see `process/context/planning/example-complex-prd.md` lines 132-166 for the pattern to match)
+   - Include example phase execution showing the complete workflow — the example MUST show the PAUSE between research and implementation (see `process/development-protocols/references/example-complex-prd.md` lines 132-166 for the pattern to match)
 
 ### If COMPLEX and also a phase program
 
@@ -292,22 +287,22 @@ In addition to the normal complex-plan structure:
 5. Separate **foundation proof** from **full expansion** when those are different scopes
 6. Never hand EXECUTE a whole phase program at once; the next instruction must identify the single
    phase plan that should enter execution first
-7. Non-Goals and Constraints
-8. Architecture Decisions (Final)
+5. Non-Goals and Constraints
+6. Architecture Decisions (Final)
    - Numbered decisions with Rationale and Implications
-9. Architecture Clarification (Service Separation if any)
-10. High-level Data Flow (ASCII ok)
-11. Security Posture
-12. Component Details
+7. Architecture Clarification (Service Separation if any)
+8. High-level Data Flow (ASCII ok)
+9. Security Posture
+10. Component Details
     - Responsibilities
     - Key Flows
     - Future Enhancements
-13. Backend Endpoints and Workers
-14. Infrastructure Deployment
-15. Database Schema (Prisma-style)
-16. API Surface (tRPC/REST/GraphQL)
-17. Real-time Event Model (if applicable)
-18. Phased Delivery Plan
+11. Backend Endpoints and Workers
+12. Infrastructure Deployment
+13. Database Schema (Prisma-style)
+14. API Surface (tRPC/REST/GraphQL)
+15. Real-time Event Model (if applicable)
+16. Phased Delivery Plan
 
 - Current Status (with ✅/🔨/🧪/⏳/🚧)
 - Phases: each with:
@@ -320,8 +315,8 @@ In addition to the normal complex-plan structure:
   - What's Functional Now
   - Ready For Next
 
-1. Features List (MoSCoW + IDs)
-2. RFCs (STRICT sequential order; within this same [feature or system's name]\_PLAN.md)
+17. Features List (MoSCoW + IDs)
+18. RFCs (STRICT sequential order; within this same [feature or system's name]\_PLAN.md)
 
 - RFC-001 ... RFC-00N
 - For each RFC:
@@ -347,18 +342,18 @@ In addition to the normal complex-plan structure:
   - What's Functional Now / Ready For
   - Implementation Checklist (copyable)
 
-1. Rules (for this project)
+19. Rules (for this project)
 
 - Tech stack, code standards, architecture patterns, performance, security, documentation
 
-1. Verification (Comprehensive Review)
+20. Verification (Comprehensive Review)
 
 - Gap Analysis
 - Improvement Recommendations
 - Improved PRD (if applicable)
 - Quality Assessment (scores with reasons)
 
-1. Change Management (for updates mid-flight)
+21. Change Management (for updates mid-flight)
 
 - Change Classification (New/Modify/Remove/Scope/Technical/Timeline)
 - Impact Analysis (components, timeline, dependencies, UX)
@@ -367,9 +362,9 @@ In addition to the normal complex-plan structure:
 - Communication plan
 - Added Risks and mitigations
 
-1. Ops Runbook (level-appropriate)
-2. Acceptance Criteria (versioned)
-3. Future Work
+22. Ops Runbook (level-appropriate)
+23. Acceptance Criteria (versioned)
+24. Future Work
 
 ### Stronger Direct-Plan Contract
 
@@ -429,11 +424,9 @@ For legacy active structures such as `PLAN.md` plus `phase-*.md`:
 - Save to `process/general-plans/active/[name]_PLAN_[dd-mm-yy].md` (general) or `process/features/{feature}/active/[name]_PLAN_[dd-mm-yy].md` (feature-scoped)
 - Use `process/context/all-context.md` to pick context files. Do not bulk-load every context doc when a focused group or entrypoint is enough.
 - Validate the saved plan before reporting it as ready:
-
   ```bash
   node .claude/skills/vc-generate-plan/scripts/validate-plan-artifact.mjs <plan-path>
   ```
-
 - Use `--strict` only when intentionally enforcing warnings as blocking failures for a newly generated artifact.
 
 ### Begin
@@ -442,7 +435,7 @@ For legacy active structures such as `PLAN.md` plus `phase-*.md`:
 2. Is this SIMPLE (one-session) or COMPLEX (multi-phase)?
 3. If information is missing, ask up to 3–5 questions, then proceed.
 4. Generate [feature or system's name]\_PLAN\_[dd-mm-yy].md per the selected mode.
-5. For COMPLEX, cross-check structure and depth against `process/context/planning/example-complex-prd.md`.
+5. For COMPLEX, cross-check structure and depth against `process/development-protocols/references/example-complex-prd.md`.
 6. Run `validate-plan-artifact.mjs` against the generated plan and fix blocking failures.
 7. Conclude with a one-line next-step instruction for Cursor Plan mode.
 8. **Remind user: Each phase requires verification before proceeding to next.**

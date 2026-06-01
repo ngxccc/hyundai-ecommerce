@@ -36,7 +36,7 @@ Choose workflow based on input type:
 2. **Plan** with `ui-ux-designer` subagent - create phased implementation
 3. **Implement** - match source precisely
 4. **Verify** - compare to original
-5. **Document** - read `process/context/all-context.md`, then update `process/context/all-context.md`, `process/context/uxui/uiux.md`, or the relevant grouped context file if approved
+5. **Document** - read `process/context/all-context.md`, then update `process/context/all-context.md`, the project's UI/UX context doc (if present), or the relevant grouped context file if approved
 
 See specific workflow files for detailed steps.
 

@@ -128,7 +128,7 @@ function getSectionRenderer(id) {
  * Resolve effective layout from statuslineLayout config, falling back to defaults.
  * Supports both new lines[][] format and legacy sections[] format.
  * When statuslineLayout is undefined/null, returns defaults — identical pre-refactor behavior.
- * @param {Object|undefined} statuslineLayout - From .ck.json config
+ * @param {Object|undefined} statuslineLayout - From .vc.json config
  * @returns {{ sections, theme, responsiveBreakpoint, maxAgentRows, todoTruncation }}
  */
 function resolveLayout(statuslineLayout) {

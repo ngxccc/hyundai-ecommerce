@@ -327,8 +327,6 @@ process/
     planning/
       all-planning.md
       all-planning.md.seed           -- structural reference companion
-      example-simple-prd.md
-      example-complex-prd.md
     tests/
       all-tests.md
       all-tests.md.seed              -- structural reference companion
@@ -392,7 +390,7 @@ Detect old directory layouts and reorganize them into the harness standard struc
 | `process/plans/` exists, no `process/general-plans/` | Create `process/general-plans/active/` and `process/general-plans/completed/`. For each file in `process/plans/`: scan for "COMPLETE", "DONE", or checkmark markers -- move matches to `completed/`, move the rest to `active/`. Remove empty `process/plans/`. |
 | `process/reports/` exists at top level | Move `process/reports/*` to `process/general-plans/reports/`. Remove empty `process/reports/`. |
 | `process/skills/` exists at top level | Move `process/skills/*` to `process/general-plans/references/`. Remove empty `process/skills/`. |
-| `process/context/example-*.md` outside `planning/` | Move to `process/context/planning/`. |
+| Example PRDs at old locations (under `process/context/` or `process/context/planning/`) not yet moved to `process/development-protocols/references/` | Move to `process/development-protocols/references/`. |
 | process/context/backlog.md | Move to `process/general-plans/backlog/backlog.md` |
 
 **Migration rules:**

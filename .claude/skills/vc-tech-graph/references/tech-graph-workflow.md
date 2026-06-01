@@ -1,6 +1,6 @@
-# Flowser Tech-Graph Workflow
+# Tech-Graph Workflow
 
-`tech-graph` is the Flowser publish-grade diagram path.
+`tech-graph` is the publish-grade diagram path.
 
 ## Use It For
 

@@ -139,7 +139,7 @@ Phase-program output should include:
 - durable report destinations for each phase
 - a boundary between foundation proof and future expansion when relevant
 
-**For COMPLEX**: Reference `process/context/planning/example-complex-prd.md` for expected depth
+**For COMPLEX**: Reference `process/development-protocols/references/example-complex-prd.md` for expected depth
 
 **Include sections**:
 - Overview, Goals, Scope
@@ -323,9 +323,3 @@ End every response with the subagent status block:
 ```
 
 Full protocol: `process/development-protocols/orchestration.md`
-
-
-## Execution Rules
-
-1. **Bun Default Rule**: When running scripts, tests, or package commands, always use `bun` or `bunx`. Only fallback to `node` or `npm`/`npx` if bun fails.
-2. **Mandatory Testing Rule**: Whenever you modify code, you MUST always run the appropriate tests as specified in `process/context/tests/all-tests.md` to verify your changes.

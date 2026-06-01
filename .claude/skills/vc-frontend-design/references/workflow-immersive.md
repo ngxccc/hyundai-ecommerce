@@ -55,7 +55,7 @@ Use Claude's built-in multimodal vision:
 - Review against inspiration
 - Report to user
 - Request approval
-- Update `process/context/uxui/uiux.md` if the approved pattern should become durable project knowledge
+- Update the project's UI/UX context doc (if present) if the approved pattern should become durable project knowledge
 
 ## Quality Standards
 Match award-winning sites:

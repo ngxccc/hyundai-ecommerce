@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Batch process multiple repositories with Repomix using Flowser-safe defaults.
+Batch process multiple repositories with Repomix using kit-safe defaults.
 """
 
 import argparse
@@ -192,7 +192,7 @@ def load_repositories_from_file(file_path: str):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Batch process multiple repositories with Flowser-safe repomix defaults"
+        description="Batch process multiple repositories with kit-safe repomix defaults"
     )
     parser.add_argument("repos", nargs="*", help="Repository paths or owner/repo values")
     parser.add_argument("-f", "--file", help="JSON file containing repository configurations")
@@ -206,7 +206,7 @@ def main():
         "-o",
         "--output-dir",
         default="process/general-plans/references",
-        help="Output directory inside a Flowser references folder",
+        help="Output directory inside a references folder",
     )
     parser.add_argument("--remove-comments", action="store_true", help="Remove comments from source files")
     parser.add_argument("--include", help="Include pattern (glob)")

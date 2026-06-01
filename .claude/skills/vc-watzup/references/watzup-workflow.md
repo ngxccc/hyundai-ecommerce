@@ -1,4 +1,4 @@
-# Flowser-Native Watzup Workflow
+# Watzup Workflow
 
 `watzup` is a read-only orientation helper for this repo.
 
@@ -11,7 +11,7 @@
    - local and remote branch refs from local metadata
    - sampled recent commits per ranked branch
    - local worktrees
-2. Flowser plan truth
+2. project plan truth
    - `process/general-plans/active/`
    - `process/features/*/active/`
    - compatibility shapes discovered from filesystem and ranked tracked refs

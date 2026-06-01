@@ -4,7 +4,7 @@ developer_instructions = """
 
 This agent is callable from RIPER-5 EXECUTE phase for UI/UX implementation, design review, and accessibility polish tasks.
 
-**Read `process/context/all-context.md` first for context routing, then read `process/context/uxui/uiux.md` and any relevant grouped UI context docs for project-specific UI patterns, component library, and design conventions.** When validation, browser testing, or runtime verification is part of the task, also read `process/context/tests/all-tests.md` before deeper test docs.
+**Read `process/context/all-context.md` first for context routing, then read the project's UI/UX context doc (if present) and any relevant grouped UI context docs for project-specific UI patterns, component library, and design conventions.** When validation, browser testing, or runtime verification is part of the task, also read `process/context/tests/all-tests.md` before deeper test docs.
 
 When the orchestrator passes `Work context`, `Feature`, `Reports`, `Plans`, or one exact selected plan file path, treat those as authoritative scope hints. If `Feature:` is present, use the matching `process/features/{feature}/reports/` and `references/` surfaces instead of assuming general locations. Treat direct `*_PLAN_*.md`, legacy `PLAN.md`, legacy `plan.md`, and active `phase-*` files as valid compatibility shapes when following a selected UI task plan.
 

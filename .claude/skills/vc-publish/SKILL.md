@@ -65,7 +65,7 @@ If this file is missing, ask the user for the kit repo checkout path and offer t
    - Files in dev `files` but NOT in kit `files`: **new** (will be added to kit).
    - Files in kit `files` but NOT in dev `files`: **removed** (will be removed from kit).
    - Files in both: compare content via `diff`. Classify as **modified** or **unchanged**.
-   - `strip` files (CLAUDE.md, AGENTS.md): always flag for content review regardless of diff status.
+   - `merge` files (CLAUDE.md, AGENTS.md): always flag for content review regardless of diff status.
 
 ### Step 5: Print Diff Summary
 
@@ -79,8 +79,8 @@ FILES:
   [modified]  .claude/agents/vc-execute-agent.md  (+8 -3)
   [modified]  .claude/hooks/lib/scout-checker.cjs  (+2 -1)
   [new]       .claude/skills/vc-new-skill/SKILL.md
-  [strip]     CLAUDE.md (needs content review)
-  [strip]     AGENTS.md (needs content review)
+  [merge]     CLAUDE.md (needs content review)
+  [merge]     AGENTS.md (needs content review)
   [unchanged] .claude/settings.json
   ... (350 more unchanged)
 
@@ -92,6 +92,7 @@ Total changes: 4 files modified, 1 new, 0 removed
 11. **STOP** and ask the user:
     - Confirm they want to publish these changes.
     - Specify version bump type: **patch**, **minor**, or **major**.
+    - Optionally provide **release notes** (1–3 sentences for the GitHub Release body). Leave blank to auto-generate from the diff summary (e.g. "4 modified, 1 new, 0 removed.").
     - Or abort.
 
 Version bump semantics:
@@ -116,25 +117,77 @@ Version bump semantics:
          - MCP server instructions (project-specific config)
          - Project-specific routing rules
          - Absolute paths (`/Users/...`)
-         - Product name references ("Flowser", "flowser-turborepo")
+         - Product name references (the project's product name and repo/directory name)
       5. Verify the result is harness-only methodology with no project leaks.
     - Update `vc-manifest.json`: bump `version` field per the chosen bump type. **No other manifest changes needed** -- glob patterns are stable, new files are automatically included.
     - Create symlinks if missing (`.agents/skills -> ../.claude/skills`).
 
 ### Step 8: Leak Detection
 
-13. Verify no project-specific content leaked into the kit repo:
+13. Verify no project-specific content leaked into the kit repo. This is a
+    **resolved-set, two-check** gate that scans the full shipped TEXT surface, not
+    just `CLAUDE.md`/`AGENTS.md`.
 
-```bash
-# Must return empty -- any matches indicate leaked content
-grep -ri "flowser\|tRPC\|Prisma\|Supabase\|CloakBrowser\|OpenClaw" CLAUDE.md AGENTS.md
+    **Resolve the shipped set** via the kit's resolver, then restrict to TEXT
+    surfaces:
 
-# Must return empty -- no absolute paths
-grep -r "/Users/" .
-```
+    ```bash
+    node <kitRepoPath>/resolve-manifest.mjs --root <kitRepoPath> --json
+    ```
+
+    Take the resolved `files` and keep only TEXT surfaces:
+    - `.claude/skills/**` matching `*.md`, `*.cjs`, `*.mjs`, `*.py`, `*.js`, `*.json`
+    - `.claude/agents/**` matching `*.md`
+    - `.codex/**`
+    - `process/development-protocols/**`
+    - plus `CLAUDE.md`, `AGENTS.md`
+
+    Exclude binaries and `**/node_modules/**`.
+
+    **Check (a) -- product-name grep over the resolved text set.** Scan for the
+    product names in the grep below ONLY. `tRPC`/`Prisma` are DROPPED from this
+    skill-prose scan to avoid false positives in legitimate generic test guidance;
+    the hosted-database product name is KEPT (see the pattern):
+
+    ```bash
+    grep -rIin "flowser\|CloakBrowser\|OpenClaw\|Supabase" <resolved-text-files>
+    ```
+
+    Allowlist the Bucket-4 lines that MUST keep the literal to function (otherwise
+    the gate flags itself): `author: flowser` frontmatter; the `isFlowserActivePlanPath`
+    identifier; this skill's OWN scrub-grep pattern lines below; the new validator's
+    own pattern strings; and the one internal plan-generation validation comment in
+    `session-init.cjs`.
+
+    **Check (b) -- non-portable context-path grep:** any concrete backticked
+    `process/context/...` file reference in the resolved text set, MINUS the
+    shipped/seeded survivors, is a dangling-link leak → FAIL with file:line.
+    Survivors (allowed): `process/context/all-context.md`,
+    `process/context/tests/all-tests.md`. Portable directory refs (e.g.
+    `process/context/tests/`) and the `process/context/...` placeholder are fine.
+
+    **Keep the existing narrow `CLAUDE.md`/`AGENTS.md` grep** (this stays as-is on
+    just those two files; `tRPC`/`Prisma` plus the hosted-database product name all
+    REMAIN here, as shown in the pattern below):
+
+    ```bash
+    # Must return empty -- any matches indicate leaked content
+    grep -ri "flowser\|tRPC\|Prisma\|Supabase\|CloakBrowser\|OpenClaw" CLAUDE.md AGENTS.md
+
+    # Must return empty -- no absolute paths
+    grep -r "/Users/" .
+    ```
+
+    NOTE: the brand grep matches product names ONLY. It does NOT match
+    `.ck.json`/`.ckignore` -- those Phase-2 legacy-fallback literals are intentional
+    and must NOT be flagged. Do not add `ck`/`ckignore` to any leak grep.
+
+    The standing `validate-kit-portability.mjs` validator (run by `vc-audit-vc`)
+    mirrors checks (a) and (b) for between-release drift; this Step-8 gate is the
+    publish-time enforcement.
 
 14. If leak detection fails:
-    - Print the offending lines.
+    - Print the offending lines (file:line).
     - Revert the changes in the kit repo (`git -C <kitRepoPath> checkout .`).
     - STOP and report the leak. Do NOT commit or push.
 
@@ -159,9 +212,25 @@ git push origin main && git push --tags
 
 17. If push fails (e.g., rejected, auth error), report the error. The commit and tag are preserved locally for retry.
 
-### Step 11: Print Summary
+### Step 11: Create GitHub Release
 
-18. Print publish summary:
+18. After a successful push, create a GitHub Release so watchers are notified and the release appears in the Releases tab:
+
+    ```bash
+    gh release create vX.Y.Z \
+      --repo <remote-owner>/<remote-repo> \
+      --title "vX.Y.Z: <first sentence of release notes>" \
+      --notes "<full release notes>"
+    ```
+
+    - If the user provided release notes at Step 6, use them verbatim.
+    - If left blank, auto-generate: `"N modified, M new, P removed. See commit log for details."`
+    - The `--title` one-liner should be the first sentence of the notes (truncate at 72 chars if longer).
+    - If `gh` is unavailable or the push to remote failed, skip this step and note it in the summary.
+
+### Step 12: Print Summary
+
+19. Print publish summary:
 
 ```
 vc-publish complete
@@ -170,6 +239,7 @@ Version:       v2.2.0 (was v2.1.0)
 Files changed: 4
 Remote:        git@github.com:withkynam/vibecode-pro-max-kit.git
 Tag:           v2.2.0
+Release:       https://github.com/<owner>/<repo>/releases/tag/v2.2.0
 ```
 
 ## Key Changes from v1.0

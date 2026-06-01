@@ -1,7 +1,7 @@
 [
   {
     "path": ".",
-    "output": "repomix-flowser-local.md"
+    "output": "repomix-local.md"
   },
   {
     "path": "yamadashy/repomix",

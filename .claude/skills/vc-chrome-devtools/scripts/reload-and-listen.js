@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Reload the active Flowser page and capture all console logs
+ * Reload the active page and capture all console logs
  * for a fixed window. Used to verify reconciliation diagnostic instrumentation.
  *
  * Usage:
