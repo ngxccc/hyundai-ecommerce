@@ -9,6 +9,8 @@ export * from "./category.service";
 export * from "./brand.service";
 export * from "./warehouse-stock.service";
 export * from "./warehouse.service";
+export * from "./quotes.service";
+
 
 // interface
 export * from "./auth.service.interface";
