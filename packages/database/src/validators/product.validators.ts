@@ -9,36 +9,56 @@ export type TProductValidationMessageKey =
   | "validation.invalidBrand"
   | "validation.invalidCategory"
   | "validation.specKeyRequired"
-  | "validation.specValueRequired";
+  | "validation.specValueRequired"
+  | "validation.invalidNumber";
 
 export type IProductTranslator = (key: TProductValidationMessageKey) => string;
 
-export const productSpecsSchema = z
-  .object({
-    model: z.string().optional(),
-    power: z.coerce.number().nullish(), // Base Unit: KW
-    voltage: z.coerce.number().nullish(), // Base Unit: V
-    frequency: z.coerce.number().nullish(), // Base Unit: Hz
-    phase: z.enum(["1phase", "3phase"]).optional(),
-    engine: z.string().optional(),
-    engineBrand: z.string().optional(),
-    alternator: z.string().optional(),
-    alternatorBrand: z.string().optional(),
-    fuelType: z.enum(["diesel", "gasoline", "gas"]).optional(),
-    fuelConsumption: z.coerce.number().nullish(), // Base Unit: L/h
-    fuelTankCapacity: z.coerce.number().nullish(), // Base Unit: Lít
-    weight: z.coerce.number().nullish(), // Base Unit: KG
-    length: z.coerce.number().nullish(), // Base Unit: mm
-    width: z.coerce.number().nullish(), // Base Unit: mm
-    height: z.coerce.number().nullish(), // Base Unit: mm
-    noiseLevel: z.coerce.number().nullish(), // Base Unit: dB
-    warranty: z.coerce.number().nullish(), // Base Unit: Tháng
-    ratedCurrent: z.coerce.number().nullish(), // Base Unit: A
-    powerFactor: z.coerce.number().nullish(), // Base Unit: Hệ số (0.8 - 1.0)
-    startingSystem: z.string().optional(),
-    coolingSystem: z.string().optional(),
-  })
-  .catchall(z.union([z.string(), z.number(), z.boolean()]));
+const createNumberField = (t: IProductTranslator) =>
+  z
+    .union([z.string(), z.number()])
+    .nullish()
+    .transform((val, ctx) => {
+      if (val === "" || val === null || val === undefined) return null;
+      const num = Number(val);
+      if (Number.isNaN(num)) {
+        ctx.addIssue({
+          code: "custom",
+          message: t("validation.invalidNumber"),
+        });
+        return z.NEVER;
+      }
+      return num;
+    })
+    .optional();
+
+export const productSpecsSchema = (t: IProductTranslator) =>
+  z
+    .object({
+      model: z.string().optional(),
+      power: createNumberField(t), // Base Unit: KW
+      voltage: createNumberField(t), // Base Unit: V
+      frequency: createNumberField(t), // Base Unit: Hz
+      phase: z.enum(["1phase", "3phase"]).optional(),
+      engine: z.string().optional(),
+      engineBrand: z.string().optional(),
+      alternator: z.string().optional(),
+      alternatorBrand: z.string().optional(),
+      fuelType: z.enum(["diesel", "gasoline", "gas"]).optional(),
+      fuelConsumption: createNumberField(t), // Base Unit: L/h
+      fuelTankCapacity: createNumberField(t), // Base Unit: Lít
+      weight: createNumberField(t), // Base Unit: KG
+      length: createNumberField(t), // Base Unit: mm
+      width: createNumberField(t), // Base Unit: mm
+      height: createNumberField(t), // Base Unit: mm
+      noiseLevel: createNumberField(t), // Base Unit: dB
+      warranty: createNumberField(t), // Base Unit: Tháng
+      ratedCurrent: createNumberField(t), // Base Unit: A
+      powerFactor: createNumberField(t), // Base Unit: Hệ số (0.8 - 1.0)
+      startingSystem: z.string().optional(),
+      coolingSystem: z.string().optional(),
+    })
+    .catchall(z.union([z.string(), z.number(), z.boolean()]));
 
 export const createProductSchema = (t: IProductTranslator) =>
   z.object({
@@ -50,14 +70,14 @@ export const createProductSchema = (t: IProductTranslator) =>
     images: z.array(z.url(t("validation.invalidUrl"))),
     brandId: z.uuid(t("validation.invalidBrand")).nullable().optional(),
     categoryId: z.uuid(t("validation.invalidCategory")).nullable().optional(),
-    specs: productSpecsSchema.nullable().optional(),
+    specs: productSpecsSchema(t).nullable().optional(),
     isQuoteOnly: z.boolean(),
   });
 
 export const updateProductSchema = (t: IProductTranslator) =>
   createProductSchema(t).partial();
 
-export type TProductSpecs = z.infer<typeof productSpecsSchema>;
+export type TProductSpecs = z.infer<ReturnType<typeof productSpecsSchema>>;
 
 export type TCreateProductInput = z.infer<
   ReturnType<typeof createProductSchema>

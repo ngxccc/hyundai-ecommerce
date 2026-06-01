@@ -47,8 +47,8 @@ export const ProductForm = ({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!initialData;
-  const [images, setImages] = useState<string[]>(
-    initialData?.images?.length ? initialData.images : [""],
+  const [images, setImages] = useState<(string | File)[]>(
+    initialData?.images?.length ? initialData.images : [],
   );
   const emptyFormValues = {
     name: "",
@@ -85,10 +85,46 @@ export const ProductForm = ({
 
   const onSubmit = (data: TCreateProductInput) => {
     startTransition(async () => {
+      const uploadedImageUrls: string[] = [];
+
+      for (const item of images) {
+        if (item instanceof File) {
+          const formData = new FormData();
+          formData.append("file", item);
+          try {
+            const res = await fetch("/api/cloudinary/upload", {
+              method: "POST",
+              body: formData,
+            });
+            const result = (await res.json()) as { secure_url?: string };
+            if (result.secure_url) uploadedImageUrls.push(result.secure_url);
+          } catch (e) {
+            console.error("Upload failed", e);
+          }
+        } else if (
+          typeof item === "string" &&
+          !item.includes("cloudinary.com")
+        ) {
+          try {
+            const res = await fetch("/api/cloudinary/upload", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url: item }),
+            });
+            const result = (await res.json()) as { secure_url?: string };
+            if (result.secure_url) uploadedImageUrls.push(result.secure_url);
+          } catch (e) {
+            console.error("Upload failed", e);
+          }
+        } else {
+          uploadedImageUrls.push(item);
+        }
+      }
+
       const payload = {
         ...data,
         price: data.price ? data.price.replace(/\./g, "") : "",
-        images: images.filter((image) => image.trim().length > 0),
+        images: uploadedImageUrls.filter((image) => image.trim().length > 0),
         isQuoteOnly: data.isQuoteOnly ?? false,
       };
       const result = isEditing
@@ -102,7 +138,7 @@ export const ProductForm = ({
 
         if (!isEditing) {
           form.reset(emptyFormValues);
-          setImages([""]);
+          setImages([]);
         }
       } else {
         if (result.fieldErrors) {

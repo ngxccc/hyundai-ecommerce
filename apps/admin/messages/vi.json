@@ -338,7 +338,8 @@
     "buttons": {
       "submit": "Lưu sản phẩm",
       "submitting": "Đang lưu...",
-      "cancel": "Hủy"
+      "cancel": "Hủy",
+      "addUrl": "Thêm URL"
     },
     "messages": {
       "successCreate": "Thêm sản phẩm thành công!",
@@ -353,7 +354,8 @@
       "invalidBrand": "Thương hiệu không hợp lệ",
       "invalidCategory": "Danh mục không hợp lệ",
       "specKeyRequired": "Tên thông số không được trống",
-      "specValueRequired": "Giá trị không được trống"
+      "specValueRequired": "Giá trị không được trống",
+      "invalidNumber": "Vui lòng nhập một số hợp lệ"
     }
   },
   "AdminMetadata": {
