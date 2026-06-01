@@ -13,7 +13,7 @@ import { z } from "zod";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
-import { uploadToCloudinary } from "@/shared/services";
+import { uploadToCloudinary, deleteFromCloudinary } from "@/shared/services";
 
 export const createProductAction = async (formData: FormData) => {
   try {
@@ -99,13 +99,25 @@ export async function updateProductAction(id: string, formData: FormData) {
 
     const validatedData = parsed.data;
 
+    const existingProduct = await productService.getById(id);
+    const existingImages = existingProduct?.images ?? [];
+    const imagesToDelete = existingImages.filter(
+      (url) => !(validatedData.images ?? []).includes(url),
+    );
+
     const updatedProduct = await productService.update(id, validatedData);
 
-    // Background Image Upload
+    // Background Tasks: Image Upload & Cleanup
     const rawImages = formData.getAll("images") as (File | string)[];
-    if (rawImages.length > 0) {
+    if (rawImages.length > 0 || imagesToDelete.length > 0) {
       after(async () => {
         try {
+          // Cleanup removed images
+          for (const url of imagesToDelete) {
+            await deleteFromCloudinary(url);
+          }
+
+          // Upload new images
           const uploadedUrls: string[] = [];
           for (const item of rawImages) {
             const url = await uploadToCloudinary(item, "products");
@@ -117,7 +129,7 @@ export async function updateProductAction(id: string, formData: FormData) {
             });
           }
         } catch (e) {
-          console.error("[Background Upload Failed]", e);
+          console.error("[Background Task Failed]", e);
         }
       });
     }

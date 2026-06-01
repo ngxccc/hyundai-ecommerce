@@ -35,14 +35,19 @@ void vi.mock("@/shared/lib/action-auth", () => ({
 
 void vi.mock("@nhatnang/database/services", () => ({
   productService: {
-    create: mock(),
-    update: mock(),
-    delete: mock(),
+    create: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+    getById: vi.fn(),
+  },
+  authService: {
+    loginEmail: vi.fn(),
   },
 }));
 
 void vi.mock("@/shared/services", () => ({
-  uploadToCloudinary: mock(),
+  uploadToCloudinary: vi.fn(),
+  deleteFromCloudinary: vi.fn(),
 }));
 
 void vi.mock("next-intl/server", () => ({
@@ -58,7 +63,8 @@ describe("product.actions", () => {
 
   beforeEach(async () => {
     const { productService } = await import("@nhatnang/database/services");
-    const { uploadToCloudinary } = await import("@/shared/services");
+    const { uploadToCloudinary, deleteFromCloudinary } =
+      await import("@/shared/services");
     const { after } = await import("next/server");
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -70,6 +76,9 @@ describe("product.actions", () => {
     updateMock.mockClear();
     (
       uploadToCloudinary as unknown as Mock<typeof uploadToCloudinary>
+    ).mockClear();
+    (
+      deleteFromCloudinary as unknown as Mock<typeof deleteFromCloudinary>
     ).mockClear();
     (after as unknown as Mock<typeof after>).mockClear();
   });
@@ -112,7 +121,6 @@ describe("product.actions", () => {
       deletedAt: null,
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     createMock.mockResolvedValueOnce(mockProduct);
     (
       uploadToCloudinary as unknown as Mock<typeof uploadToCloudinary>
@@ -130,7 +138,11 @@ describe("product.actions", () => {
 
     const formData = new FormData();
     formData.append("payload", JSON.stringify(validData));
-    formData.append("images", new Blob(["test"], { type: "image/png" }), "test.png");
+    formData.append(
+      "images",
+      new Blob(["test"], { type: "image/png" }),
+      "test.png",
+    );
 
     const result = await createProductAction(formData);
 
@@ -147,5 +159,55 @@ describe("product.actions", () => {
     expect(updateMock).toHaveBeenCalledWith("prod-1", {
       images: ["https://res.cloudinary.com/test"],
     });
+  });
+
+  test("updateProductAction deletes removed images from Cloudinary in background", async () => {
+    const { updateProductAction } = await import("./product.actions");
+
+    const oldProduct = {
+      id: "prod-1",
+      name: "Old Product",
+      slug: "old-product",
+      price: "1000",
+      images: [
+        "https://res.cloudinary.com/demo/image/upload/v1/old-1.jpg",
+        "https://res.cloudinary.com/demo/image/upload/v1/old-2.jpg",
+      ],
+      isQuoteOnly: false,
+    };
+
+    const { productService } = await import("@nhatnang/database/services");
+
+    (productService.getById as Mock<typeof productService.getById>).mockResolvedValueOnce(oldProduct as unknown as TProduct);
+    (productService.update as Mock<typeof productService.update>).mockResolvedValueOnce({
+      ...oldProduct,
+      name: "New",
+    } as unknown as TProduct);
+
+    const updatePayload = {
+      name: "New",
+      images: ["https://res.cloudinary.com/demo/image/upload/v1/old-1.jpg"], // removed old-2.jpg
+    };
+
+    const formData = new FormData();
+    formData.append("payload", JSON.stringify(updatePayload));
+    // No new images to upload
+
+    const { deleteFromCloudinary } = await import("@/shared/services");
+
+    (deleteFromCloudinary as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      true,
+    );
+
+    const result = await updateProductAction("prod-1", formData);
+
+    expect(result.success).toBe(true);
+
+    // Wait for microtasks to finish (after hook execution)
+    await Promise.resolve();
+
+    expect(deleteFromCloudinary).toHaveBeenCalledWith(
+      "https://res.cloudinary.com/demo/image/upload/v1/old-2.jpg",
+    );
   });
 });
