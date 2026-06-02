@@ -10,7 +10,7 @@ const complexOrderQueryConfig = {
       },
     },
     bids: true,
-    users: true,
+    user: true,
   },
 } as const; // khoá cứng cấy ATS, không bị xuy luận thành any
 
@@ -37,6 +37,20 @@ export class OrderService {
     .prepare("get_orders_by_status");
 
   // NORMAL QUERIES
+  async list(filters?: { status?: TOrder["status"] }): Promise<ComplexOrder[]> {
+    const whereConditions: Record<string, { eq: string }> = {};
+    if (filters?.status) {
+      whereConditions["status"] = { eq: filters.status };
+    }
+
+    return await this.db.query.orders.findMany({
+      where:
+        Object.keys(whereConditions).length > 0 ? whereConditions : undefined,
+      ...complexOrderQueryConfig,
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
   async createOrder(data: TNewOrder) {
     const [order] = await this.db.insert(orders).values(data).returning();
     return order;

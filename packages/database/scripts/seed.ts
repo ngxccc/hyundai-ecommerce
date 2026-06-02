@@ -5,6 +5,9 @@ import { products } from "../src/schemas/product.schema";
 import { warehouses } from "../src/schemas/warehouse.schema";
 import { warehouseStocks } from "../src/schemas/warehouse-stock.schema";
 import { dealerTiers } from "../src/schemas";
+import { users } from "../src/schemas/auth.schema";
+import { orders } from "../src/schemas/order.schema";
+import { orderItems } from "../src/schemas/order-item.schema";
 
 async function seed() {
   console.log("🌱 Seeding database...");
@@ -254,8 +257,147 @@ async function seed() {
 
   await db.insert(dealerTiers).values(dealerTierData).onConflictDoNothing();
 
+  // 7. Seed B2B & regular users
+  const user1Id = "019de1a0-1234-71bf-8082-ec510823ed3c";
+  const user2Id = "019de1a0-5678-71bf-8082-f37ae97f09e4";
+  const user3Id = "019de1a0-9012-735c-8639-3e1d67c3f6c5";
+
+  const userData = [
+    {
+      id: user1Id,
+      name: "Nguyễn Văn Hùng (Nhật Năng Partner)",
+      email: "hung.nguyen@nhatnangpartner.vn",
+      emailVerified: true,
+      role: "dealer" as const,
+      dealerTierId: goldTierId,
+      phone: "0912.345.678",
+      companyName: "Công ty Cổ phần Cơ điện Miền Nam",
+      taxId: "0314567890",
+      businessType: "dealer" as const,
+      province: "Thành phố Hồ Chí Minh",
+    },
+    {
+      id: user2Id,
+      name: "Trần Thanh Sơn",
+      email: "son.tran@vietnamconstruct.com",
+      emailVerified: true,
+      role: "dealer" as const,
+      dealerTierId: silverTierId,
+      phone: "0987.654.321",
+      companyName: "Tổng Công ty Xây dựng Việt Nam",
+      taxId: "0107894561",
+      businessType: "contractor" as const,
+      province: "Hà Nội",
+    },
+    {
+      id: user3Id,
+      name: "Lê Minh Tâm",
+      email: "tam.le@gmail.com",
+      emailVerified: false,
+      role: "customer" as const,
+      phone: "0909.123.456",
+      businessType: "end_user" as const,
+      province: "Đà Nẵng",
+    },
+  ];
+
+  await db.insert(users).values(userData).onConflictDoNothing();
+
+  // 8. Seed Orders
+  const order1Id = "019de1a0-aaaa-761e-bb91-7c6ecf6377d8";
+  const order2Id = "019de1a0-bbbb-761e-bb91-825a77b45568";
+  const order3Id = "019de1a0-cccc-761e-bb91-84a024241fd3";
+  const order4Id = "019de1a0-dddd-761e-bb91-9ccb56fb8a8d";
+
+  const orderData = [
+    {
+      id: order1Id,
+      userId: user1Id,
+      status: "pending" as const,
+      shippingFee: "150000.00",
+      shippingAddress: "302/105 Phan Huy Ích, Phường 12, Quận Gò Vấp, TP. Hồ Chí Minh",
+      totalAmount: "46650000.00", // (12,500,000 * 2) + (21,500,000 * 1) + 150,000 = 46,650,000
+    },
+    {
+      id: order2Id,
+      userId: user2Id,
+      status: "processing" as const,
+      shippingFee: "250000.00",
+      shippingAddress: "Số 12, Ngõ 45, Đường Nguyễn Xiển, Quận Thanh Xuân, Hà Nội",
+      totalAmount: "29150000.00", // (28,900,000 * 1) + 250,000 = 29,150,000
+    },
+    {
+      id: order3Id,
+      userId: user3Id,
+      status: "shipped" as const,
+      shippingFee: "100000.00",
+      shippingAddress: "45 Lê Lợi, Quận Hải Châu, Thành phố Đà Nẵng",
+      totalAmount: "12600000.00", // (12,500,000 * 1) + 100,000 = 12,600,000
+    },
+    {
+      id: order4Id,
+      userId: user1Id,
+      status: "delivered" as const,
+      shippingFee: "200000.00",
+      shippingAddress: "Khu công nghiệp Amata, Biên Hòa, Đồng Nai",
+      totalAmount: "64700000.00", // (21,500,000 * 3) + 200,000 = 64,700,000
+    },
+  ];
+
+  await db.insert(orders).values(orderData).onConflictDoNothing();
+
+  // 9. Seed Order Items
+  const orderItemData = [
+    // Order 1 Items
+    {
+      orderId: order1Id,
+      productId: product1Id,
+      productName: "Máy phát điện Hyundai DHY-5000LE",
+      productSku: "DHY-5000LE",
+      quantity: 2,
+      unitPrice: "12500000.00",
+    },
+    {
+      orderId: order1Id,
+      productId: product3Id,
+      productName: "Máy phát điện Kubota GL-6500",
+      productSku: "GL-6500",
+      quantity: 1,
+      unitPrice: "21500000.00",
+    },
+    // Order 2 Items
+    {
+      orderId: order2Id,
+      productId: product2Id,
+      productName: "Máy phát điện Mitsubishi MGE-10000",
+      productSku: "MGE-10000",
+      quantity: 1,
+      unitPrice: "28900000.00",
+    },
+    // Order 3 Items
+    {
+      orderId: order3Id,
+      productId: product1Id,
+      productName: "Máy phát điện Hyundai DHY-5000LE",
+      productSku: "DHY-5000LE",
+      quantity: 1,
+      unitPrice: "12500000.00",
+    },
+    // Order 4 Items
+    {
+      orderId: order4Id,
+      productId: product3Id,
+      productName: "Máy phát điện Kubota GL-6500",
+      productSku: "GL-6500",
+      quantity: 3,
+      unitPrice: "21500000.00",
+    },
+  ];
+
+  await db.insert(orderItems).values(orderItemData).onConflictDoNothing();
+
   console.log(
-    "✅ Seed completed! (Brands, Categories, Products, Warehouses, Stocks, Dealer Tiers)",
+    "✅ Seed completed! (Brands, Categories, Products, Warehouses, Stocks, Dealer Tiers, Users, Orders, Order Items)",
   );
   process.exit(0);
 }
