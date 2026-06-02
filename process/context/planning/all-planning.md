@@ -31,13 +31,13 @@ Read this entrypoint when:
 
 ## Quick Routing
 
-- use `process/context/planning/example-simple-prd.md` to calibrate a one-session plan
-- use `process/context/planning/example-complex-prd.md` to calibrate a complex or multi-phase plan
+- use `process/development-protocols/references/example-simple-prd.md` to calibrate a one-session plan
+- use `process/development-protocols/references/example-complex-prd.md` to calibrate a complex or multi-phase plan
 
 ## Source Paths
 
-- `process/context/planning/example-simple-prd.md`
-- `process/context/planning/example-complex-prd.md`
+- `process/development-protocols/references/example-simple-prd.md`
+- `process/development-protocols/references/example-complex-prd.md`
 
 ## Update Triggers
 

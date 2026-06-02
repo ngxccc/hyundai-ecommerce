@@ -33,7 +33,7 @@
     {
       "folder": "vc-audit-context",
       "name": "vc:audit-context",
-      "description": "Audit Flowser context routing, shared-skill discoverability, and Claude/Codex wiring. Use when context docs or skill surfaces move, split, or drift.",
+      "description": "Audit project context routing, shared-skill discoverability, and Claude/Codex wiring. Use when context docs or skill surfaces move, split, or drift.",
       "aliases": [
         "vc-audit-context",
         "vc:audit-context"
@@ -53,7 +53,7 @@
     {
       "folder": "vc-audit-plans",
       "name": "vc:audit-plans",
-      "description": "Audit active Flowser plan files for staleness, completion, and routing truth. Use when cleaning up plans, reconciling active work, or archiving completed artifacts.",
+      "description": "Audit active project plan files for staleness, completion, and routing truth. Use when cleaning up plans, reconciling active work, or archiving completed artifacts.",
       "aliases": [
         "vc-audit-plans",
         "vc:audit-plans"
@@ -261,7 +261,7 @@
     {
       "folder": "vc-generate-context",
       "name": "vc:generate-context",
-      "description": "Generate or update Flowser's authoritative repository context at process/context/all-context.md. Use when repo context is missing, stale, or contradicted by code.",
+      "description": "Generate or update the project's authoritative repository context at process/context/all-context.md. Use when repo context is missing, stale, or contradicted by code.",
       "aliases": [
         "vc-generate-context",
         "vc:generate-context"
@@ -281,7 +281,7 @@
     {
       "folder": "vc-generate-plan",
       "name": "vc:generate-plan",
-      "description": "Create or update Flowser implementation plans in the repo's SIMPLE or COMPLEX format. Use when turning an idea, PRD, or approved direction into a saved plan artifact.",
+      "description": "Create or update implementation plans in the repo's SIMPLE or COMPLEX format. Use when turning an idea, PRD, or approved direction into a saved plan artifact.",
       "aliases": [
         "vc-generate-plan",
         "vc:generate-plan"
@@ -324,7 +324,7 @@
     {
       "folder": "vc-merge-worktree",
       "name": "vc:merge-worktree",
-      "description": "Merge a git worktree branch back into the main Flowser checkout and clean up the worktree. Use when the user asks to merge, archive, or clean up a completed worktree.",
+      "description": "Merge a git worktree branch back into the main checkout and clean up the worktree. Use when the user asks to merge, archive, or clean up a completed worktree.",
       "aliases": [
         "vc-merge-worktree",
         "vc:merge-worktree"
@@ -422,6 +422,7 @@
         "references/vc-publish.md"
       ],
       "mentionedSkills": [
+        "vc-audit-vc",
         "vc-update"
       ]
     },
@@ -634,7 +635,7 @@
     {
       "folder": "vc-watzup",
       "name": "vc:watzup",
-      "description": "Use when you need a read-only handoff summary of current branch state, local/remote refs, worktrees, active Flowser plans, selected-plan hints, and suggested next checks.",
+      "description": "Use when you need a read-only handoff summary of current branch state, local/remote refs, worktrees, active project plans, selected-plan hints, and suggested next checks.",
       "aliases": [
         "vc-watzup",
         "vc:watzup"
