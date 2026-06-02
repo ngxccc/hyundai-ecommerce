@@ -653,6 +653,11 @@
     "updateOrderStatusFailed": "Cập nhật trạng thái đơn hàng thất bại",
     "validationError": "Dữ liệu không hợp lệ",
     "orderNotFound": "Không tìm thấy đơn đặt hàng",
+    "createQuoteFailed": "Tạo báo giá thất bại",
+    "quoteNotFound": "Không tìm thấy báo giá",
+    "quoteAlreadyApproved": "Báo giá đã được phê duyệt trước đó",
+    "quoteNotEditableOrConvertible": "Báo giá không thể chỉnh sửa hoặc chuyển đổi",
+    "createOrderFailed": "Tạo đơn hàng thất bại",
     "validation": {
       "slugExists": "Đường dẫn đã tồn tại"
     }

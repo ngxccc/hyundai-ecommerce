@@ -1,3 +1,4 @@
+import { QUOTE_CONSTANTS } from "@nhatnang/shared/constants";
 import { expect, test, describe, vi, beforeEach } from "bun:test";
 import {
   mockDb,
@@ -72,6 +73,7 @@ describe("QuotesService", () => {
       totalQuotedPrice: null,
       expirationDate: null,
       note: "Initial requested quote",
+      orderId: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -98,6 +100,7 @@ describe("QuotesService", () => {
       totalQuotedPrice: null,
       expirationDate: null,
       note: "Initial requested quote",
+      orderId: null,
       createdAt: new Date(),
       updatedAt: new Date(),
       user: mockUser,
@@ -143,6 +146,7 @@ describe("QuotesService", () => {
         totalQuotedPrice: null,
         expirationDate: null,
         note: null,
+        orderId: null,
         createdAt: new Date(),
         updatedAt: new Date(),
         user: mockUser,
@@ -177,6 +181,7 @@ describe("QuotesService", () => {
       totalQuotedPrice: null,
       expirationDate: null,
       note: null,
+      orderId: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -226,5 +231,92 @@ describe("QuotesService", () => {
 
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(result).toEqual(mockItem);
+  });
+
+  test("approveAndConvertToOrder() should process quote-to-order transition atomically inside transaction", async () => {
+    const mockQuoteDetails = {
+      id: "quote-1",
+      userId: "user-1",
+      status: "negotiating" as const,
+      totalQuotedPrice: null,
+      expirationDate: null,
+      note: "Test quote conversion",
+      orderId: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      items: [
+        {
+          id: "item-1",
+          quoteId: "quote-1",
+          productId: "prod-1",
+          quantity: 2,
+          requestedPrice: "900.00",
+          agreedPrice: "850.00",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          product: mockProduct,
+        },
+        {
+          id: "item-2",
+          quoteId: "quote-1",
+          productId: "prod-2",
+          quantity: 1,
+          requestedPrice: "100.00",
+          agreedPrice: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          product: {
+            id: "prod-2",
+            name: "Generator 50kW",
+            slug: "generator-50kw",
+            price: "100.00",
+            description: null,
+            shortDescription: null,
+            images: [],
+            brandId: null,
+            categoryId: null,
+            specs: {},
+            totalStockCache: 2,
+            isQuoteOnly: true,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+          },
+        },
+      ],
+    };
+
+    mockFindFirst.mockResolvedValueOnce(mockQuoteDetails);
+
+    // Mock insert 1: Creating Order
+    const mockOrder = {
+      id: "order-1",
+      userId: "user-1",
+      status: "pending" as const,
+      shippingFee: "0.00",
+      shippingAddress: QUOTE_CONSTANTS.DEFAULT_SHIPPING_ADDRESS,
+      totalAmount: "1800.00", // (850 * 2) + 100
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    mockReturning.mockResolvedValueOnce([mockOrder]); // Returning created order
+
+    // Execute convert
+    const result = await quotesService.approveAndConvertToOrder("quote-1", "admin-1");
+
+    // Assert findFirst was called with quote ID
+    expect(mockFindFirst).toHaveBeenCalledTimes(1);
+
+    // Assert inserts:
+    // Insert 1: Order
+    // Insert 2: Order Items
+    // Insert 3: Timeline message
+    expect(mockInsert).toHaveBeenCalledTimes(3);
+
+    // Assert update: Quote table status updated
+    expect(mockUpdate).toHaveBeenCalledTimes(1);
+
+    // Verify returning orderId matches the created order
+    expect(result).toEqual({ orderId: "order-1" });
   });
 });

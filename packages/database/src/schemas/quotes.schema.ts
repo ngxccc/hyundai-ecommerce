@@ -1,7 +1,16 @@
-import { integer, numeric, pgEnum, snakeCase, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  integer,
+  numeric,
+  pgEnum,
+  snakeCase,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { users } from "./auth.schema";
 import { products } from "./product.schema";
 import { baseEntity } from "./helpers.schema";
+import { orders } from "./order.schema";
 
 export const quoteStatusEnum = pgEnum("quote_status", [
   "pending_review",
@@ -20,6 +29,7 @@ export const quotes = snakeCase.table("quote", {
   totalQuotedPrice: numeric({ precision: 15, scale: 2 }),
   expirationDate: timestamp({ withTimezone: true, mode: "date" }),
   note: text(),
+  orderId: uuid().references(() => orders.id, { onDelete: "set null" }),
 });
 
 export const quoteItems = snakeCase.table("quote_item", {
