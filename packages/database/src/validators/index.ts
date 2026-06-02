@@ -5,3 +5,4 @@ export * from "./category.validators";
 export * from "./warehouse.validators";
 export * from "./warehouse-stock.validators";
 export * from "./dealer-tier.validators";
+export * from "./quotes.validators";
