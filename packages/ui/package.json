@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./components/ui/*": "./src/components/ui/*.tsx",
+    "./components/reui/*": "./src/components/reui/*.tsx",
     "./editor": "./src/editor/index.tsx",
     "./lib/*": "./src/lib/*.ts",
     "./globals.css": "./src/styles/globals.css"
