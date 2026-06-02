@@ -87,6 +87,10 @@ export const schemaRelations = defineRelations(
       }),
       items: r.many.orderItems(),
       bids: r.many.shippingBids(),
+      quote: r.one.quotes({
+        from: r.orders.id,
+        to: r.quotes.orderId,
+      }),
     },
 
     orderItems: {
@@ -201,6 +205,10 @@ export const schemaRelations = defineRelations(
       }),
       items: r.many.quoteItems(),
       messages: r.many.quoteMessages(),
+      order: r.one.orders({
+        from: r.quotes.orderId,
+        to: r.orders.id,
+      }),
     },
 
     quoteItems: {

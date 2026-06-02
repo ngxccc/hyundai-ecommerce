@@ -1,14 +1,17 @@
+import { QUOTE_CONSTANTS } from "@nhatnang/shared/constants";
 import { eq } from "drizzle-orm";
 import { type IDatabase } from "../client";
 import {
   quotes,
   quoteItems,
   quoteMessages,
+  orders,
+  orderItems,
   type TQuote,
   type TNewQuote,
   type TNewQuoteItem,
   type TNewQuoteMessage,
-} from "../schemas/quotes.schema";
+} from "../schemas";
 
 export class QuotesService {
   constructor(protected readonly db: IDatabase) {}
@@ -20,7 +23,7 @@ export class QuotesService {
     return await this.db.transaction(async (tx) => {
       const [newQuote] = await tx.insert(quotes).values(data).returning();
       if (!newQuote) {
-        throw new Error("Failed to create quote");
+        throw new Error("errors.createQuoteFailed");
       }
 
       if (items.length > 0) {
@@ -119,6 +122,100 @@ export class QuotesService {
       .where(eq(quoteItems.id, itemId))
       .returning();
     return updated;
+  }
+
+  /**
+   * Approve a quote and atomically convert it into a standard Order inside a transaction
+   */
+  async approveAndConvertToOrder(
+    quoteId: string,
+    adminUserId: string,
+  ): Promise<{ orderId: string }> {
+    return await this.db.transaction(async (tx) => {
+      // 1. Fetch quote details with items and products
+      const quote = await tx.query.quotes.findFirst({
+        where: { id: quoteId },
+        with: {
+          items: {
+            with: {
+              product: true,
+            },
+          },
+        },
+      });
+
+      if (!quote) {
+        throw new Error("errors.quoteNotFound");
+      }
+      if (quote.status === "approved") {
+        throw new Error("errors.quoteAlreadyApproved");
+      }
+      if (quote.status === "rejected" || quote.status === "expired") {
+        throw new Error("errors.quoteNotEditableOrConvertible");
+      }
+
+      // 2. Map items and compute total price
+      let totalAmountDecimal = 0;
+      const orderItemsToInsert = [];
+
+      for (const item of quote.items) {
+        // If agreedPrice is set, use it; otherwise fallback to requestedPrice
+        const finalPrice = item.agreedPrice ?? item.requestedPrice;
+        const subtotal = parseFloat(finalPrice) * item.quantity;
+        totalAmountDecimal += subtotal;
+
+        orderItemsToInsert.push({
+          productId: item.productId,
+          productName: item.product.name,
+          productSku: item.product.slug,
+          quantity: item.quantity,
+          unitPrice: finalPrice,
+        });
+      }
+
+      // 3. Create the Order
+      const [newOrder] = await tx
+        .insert(orders)
+        .values({
+          userId: quote.userId,
+          status: "pending",
+          shippingFee: "0.00",
+          shippingAddress: QUOTE_CONSTANTS.DEFAULT_SHIPPING_ADDRESS,
+          totalAmount: totalAmountDecimal.toFixed(2),
+        })
+        .returning();
+
+      if (!newOrder) {
+        throw new Error("errors.createOrderFailed");
+      }
+
+      // 4. Create Order Items linking to the new Order ID
+      const finalOrderItems = orderItemsToInsert.map((item) => ({
+        ...item,
+        orderId: newOrder.id,
+      }));
+      await tx.insert(orderItems).values(finalOrderItems);
+
+      // 5. Update parent Quote status to approved, locking negotiated parameters and linking orderId
+      await tx
+        .update(quotes)
+        .set({
+          status: "approved",
+          orderId: newOrder.id,
+          totalQuotedPrice: totalAmountDecimal.toFixed(2),
+          updatedAt: new Date(),
+        })
+        .where(eq(quotes.id, quoteId));
+
+      // 6. Log system notification in quote messages timeline
+      await tx.insert(quoteMessages).values({
+        quoteId: quoteId,
+        senderId: adminUserId,
+        message: `${QUOTE_CONSTANTS.SYSTEM_MESSAGE_APPROVED_PREFIX}${newOrder.id}`,
+      });
+
+      return { orderId: newOrder.id };
+    });
   }
 }
 

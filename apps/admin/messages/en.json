@@ -649,6 +649,11 @@
     "updateOrderStatusFailed": "Failed to update order status",
     "validationError": "Validation error",
     "orderNotFound": "Order not found",
+    "createQuoteFailed": "Failed to create quote",
+    "quoteNotFound": "Quote not found",
+    "quoteAlreadyApproved": "Quote already approved",
+    "quoteNotEditableOrConvertible": "Quote is not editable or convertible",
+    "createOrderFailed": "Failed to create order",
     "validation": {
       "slugExists": "Slug already exists"
     }
