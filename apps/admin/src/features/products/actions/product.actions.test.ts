@@ -43,6 +43,13 @@ void vi.mock("@nhatnang/database/services", () => ({
   authService: {
     loginEmail: vi.fn(),
   },
+  quotesService: {
+    approveAndConvertToOrder: vi.fn(),
+    getComplexQuote: vi.fn(),
+    updateQuoteItemPrice: vi.fn(),
+    addQuoteMessage: vi.fn(),
+    updateQuoteStatus: vi.fn(),
+  },
 }));
 
 void vi.mock("@/shared/services", () => ({

@@ -26,6 +26,13 @@ void vi.mock("@nhatnang/database/services", () => ({
     delete: mock(),
     getById: mock(),
   },
+  quotesService: {
+    approveAndConvertToOrder: mock(),
+    getComplexQuote: mock(),
+    updateQuoteItemPrice: mock(),
+    addQuoteMessage: mock(),
+    updateQuoteStatus: mock(),
+  },
 }));
 
 type LoginResult = Awaited<ReturnType<typeof adminLoginAction>>;

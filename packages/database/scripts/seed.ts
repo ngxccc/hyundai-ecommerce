@@ -8,6 +8,7 @@ import { dealerTiers } from "../src/schemas";
 import { users } from "../src/schemas/auth.schema";
 import { orders } from "../src/schemas/order.schema";
 import { orderItems } from "../src/schemas/order-item.schema";
+import { quotes, quoteItems, quoteMessages } from "../src/schemas/quotes.schema";
 
 async function seed() {
   console.log("🌱 Seeding database...");
@@ -396,8 +397,100 @@ async function seed() {
 
   await db.insert(orderItems).values(orderItemData).onConflictDoNothing();
 
+  // 10. Seed B2B Quotes
+  console.log("🌱 Seeding mock B2B quotes...");
+
+  const product1Price = 12500000;
+  const product2Price = 28900000;
+
+  const quote1Id = "019de1a0-9999-4000-8000-000000000001";
+  await db
+    .insert(quotes)
+    .values({
+      id: quote1Id,
+      userId: user1Id,
+      status: "pending_review",
+      note: "Cần báo giá gấp 2 chiếc máy phát điện Hyundai để đấu thầu công trình.",
+    })
+    .onConflictDoNothing();
+
+  await db
+    .insert(quoteItems)
+    .values({
+      id: "019de1a0-9999-4000-8000-000000000101",
+      quoteId: quote1Id,
+      productId: product1Id,
+      quantity: 2,
+      requestedPrice: (product1Price * 0.9).toFixed(2),
+    })
+    .onConflictDoNothing();
+
+  await db
+    .insert(quoteMessages)
+    .values({
+      id: "019de1a0-9999-4000-8000-000000000201",
+      quoteId: quote1Id,
+      senderId: user1Id,
+      message: "Chào anh chị, nhờ anh chị báo giá tốt giúp em dự án này, em cần gấp trong ngày.",
+    })
+    .onConflictDoNothing();
+
+  const quote2Id = "019de1a0-9999-4000-8000-000000000002";
+  await db
+    .insert(quotes)
+    .values({
+      id: quote2Id,
+      userId: user2Id,
+      status: "negotiating",
+      note: "Yêu cầu chiết khấu thêm cho máy phát điện Kubota.",
+    })
+    .onConflictDoNothing();
+
+  const requestedPrice2 = (product2Price * 0.85).toFixed(2);
+  const agreedPrice2 = (product2Price * 0.92).toFixed(2);
+
+  await db
+    .insert(quoteItems)
+    .values({
+      id: "019de1a0-9999-4000-8000-000000000102",
+      quoteId: quote2Id,
+      productId: product2Id,
+      quantity: 1,
+      requestedPrice: requestedPrice2,
+      agreedPrice: agreedPrice2,
+    })
+    .onConflictDoNothing();
+
+  await db
+    .insert(quoteMessages)
+    .values({
+      id: "019de1a0-9999-4000-8000-000000000202",
+      quoteId: quote2Id,
+      senderId: user2Id,
+      message: `Bên em muốn đề xuất giá ${parseFloat(requestedPrice2).toLocaleString("vi-VN")} VND cho máy Máy phát điện Mitsubishi MGE-10000.`,
+    })
+    .onConflictDoNothing();
+
+  await db
+    .insert(quoteMessages)
+    .values([
+      {
+        id: "019de1a0-9999-4000-8000-000000000203",
+        quoteId: quote2Id,
+        senderId: user2Id,
+        message: `[SYSTEM] Trạng thái báo giá chuyển sang: Đang thương lượng (negotiating)`,
+      },
+      {
+        id: "019de1a0-9999-4000-8000-000000000204",
+        quoteId: quote2Id,
+        senderId: user2Id,
+        message: `[SYSTEM] Đã cập nhật giá thương lượng cho sản phẩm "Máy phát điện Mitsubishi MGE-10000" thành ${parseFloat(agreedPrice2).toLocaleString("vi-VN")} VND`,
+      },
+    ])
+    .onConflictDoNothing();
+
   console.log(
-    "✅ Seed completed! (Brands, Categories, Products, Warehouses, Stocks, Dealer Tiers, Users, Orders, Order Items)",
+    "✅ Seed completed! (Brands, Categories, Products, Warehouses, Stocks, Dealer Tiers, Users, Orders, Order Items, Quotes)",
   );
   process.exit(0);
 }

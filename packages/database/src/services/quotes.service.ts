@@ -222,3 +222,7 @@ export class QuotesService {
 export type ComplexQuote = NonNullable<
   Awaited<ReturnType<typeof QuotesService.prototype.getComplexQuote>>
 >;
+
+export type QuoteListItem = Awaited<
+  ReturnType<typeof QuotesService.prototype.listQuotes>
+>[number];
