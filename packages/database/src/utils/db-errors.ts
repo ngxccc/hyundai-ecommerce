@@ -10,6 +10,24 @@ export interface PostgresError extends Error {
   constraint?: string;
 }
 
+export function handleServiceError(
+  error: unknown,
+  fallbackMessage: string,
+): never {
+  if (isUniqueConstraintError(error)) {
+    throw new Error("errors.validation.slugExists", { cause: error });
+  }
+
+  if (error instanceof Error) {
+    if (error.message.startsWith("errors.")) {
+      throw error;
+    }
+    throw new Error(fallbackMessage, { cause: error });
+  }
+
+  throw new Error(fallbackMessage);
+}
+
 export function isPostgresError(error: unknown): error is PostgresError {
   return (
     typeof error === "object" &&

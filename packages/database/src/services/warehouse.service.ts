@@ -6,6 +6,7 @@ import type {
   TCreateWarehouseInput,
   TUpdateWarehouseInput,
 } from "../validators";
+import { handleServiceError } from "../utils";
 
 export class WarehouseService implements IWarehouseService {
   constructor(protected readonly db: IDatabase) {}
@@ -38,13 +39,7 @@ export class WarehouseService implements IWarehouseService {
       }
       return newWarehouse;
     } catch (error: unknown) {
-      if (
-        error instanceof Error &&
-        error.message === "errors.createWarehouseFailed"
-      ) {
-        throw error;
-      }
-      throw new Error("errors.createWarehouseFailed", { cause: error });
+      handleServiceError(error, "errors.createWarehouseFailed");
     }
   }
 
@@ -63,14 +58,7 @@ export class WarehouseService implements IWarehouseService {
       }
       return updatedWarehouse;
     } catch (error: unknown) {
-      if (
-        error instanceof Error &&
-        (error.message === "errors.warehouseNotFound" ||
-          error.message === "errors.updateWarehouseFailed")
-      ) {
-        throw error;
-      }
-      throw new Error("errors.updateWarehouseFailed", { cause: error });
+      handleServiceError(error, "errors.updateWarehouseFailed");
     }
   }
 
@@ -82,7 +70,7 @@ export class WarehouseService implements IWarehouseService {
         .where(eq(warehouses.id, id));
       return true;
     } catch (error: unknown) {
-      throw new Error("errors.deleteWarehouseFailed", { cause: error });
+      handleServiceError(error, "errors.deleteWarehouseFailed");
     }
   }
 }

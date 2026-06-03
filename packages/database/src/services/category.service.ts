@@ -3,8 +3,7 @@ import { categories, type TCategory } from "../schemas";
 import { type IDatabase } from "../client";
 import { eq } from "drizzle-orm";
 import type { TCreateCategoryInput, TUpdateCategoryInput } from "../validators";
-
-import { isUniqueConstraintError } from "../utils";
+import { handleServiceError } from "../utils";
 
 export class CategoryService implements ICategoryService {
   constructor(private readonly db: IDatabase) {}
@@ -18,43 +17,43 @@ export class CategoryService implements ICategoryService {
   }
 
   async getById(id: string): Promise<TCategory | undefined> {
-    const [category] = await this.db.select().from(categories).where(eq(categories.id, id)).limit(1);
+    const [category] = await this.db
+      .select()
+      .from(categories)
+      .where(eq(categories.id, id))
+      .limit(1);
     return category;
   }
 
   async create(input: TCreateCategoryInput): Promise<TCategory> {
     try {
-      const [newCategory] = await this.db.insert(categories).values(input).returning();
-      if (newCategory) return newCategory;
-    } catch (error: unknown) {
-      if (isUniqueConstraintError(error)) {
-        throw new Error("errors.validation.slugExists", { cause: error });
+      const [newCategory] = await this.db
+        .insert(categories)
+        .values(input)
+        .returning();
+      if (!newCategory) {
+        throw new Error("errors.createCategoryFailed");
       }
-      throw new Error("errors.createCategoryFailed", { cause: error });
+      return newCategory;
+    } catch (error: unknown) {
+      handleServiceError(error, "errors.createCategoryFailed");
     }
-
-    throw new Error("errors.createCategoryFailed");
   }
 
-  async update({
-    id,
-    ...data
-  }: TUpdateCategoryInput): Promise<TCategory> {
+  async update({ id, ...data }: TUpdateCategoryInput): Promise<TCategory> {
     try {
       const [updatedCategory] = await this.db
         .update(categories)
         .set(data)
         .where(eq(categories.id, id))
         .returning();
-      if (updatedCategory) return updatedCategory;
-    } catch (error: unknown) {
-      if (isUniqueConstraintError(error)) {
-        throw new Error("errors.validation.slugExists", { cause: error });
+      if (!updatedCategory) {
+        throw new Error("errors.categoryNotFound");
       }
-      throw new Error("errors.updateCategoryFailed", { cause: error });
+      return updatedCategory;
+    } catch (error: unknown) {
+      handleServiceError(error, "errors.updateCategoryFailed");
     }
-
-    throw new Error("errors.categoryNotFound");
   }
 
   async delete(id: string): Promise<boolean> {
@@ -62,7 +61,7 @@ export class CategoryService implements ICategoryService {
       await this.db.delete(categories).where(eq(categories.id, id));
       return true;
     } catch (error: unknown) {
-      throw new Error("errors.deleteCategoryFailed", { cause: error });
+      handleServiceError(error, "errors.deleteCategoryFailed");
     }
   }
 }
