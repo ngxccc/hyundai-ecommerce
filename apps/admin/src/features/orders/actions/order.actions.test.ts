@@ -1,46 +1,22 @@
-import { expect, test, describe, mock, vi, beforeEach } from "bun:test";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { expect, test, describe, mock, beforeEach } from "bun:test";
 import type { Mock } from "bun:test";
+
+import "@/shared/tests/action-mocks";
+
+import type { TOrder, TShippingBid } from "@nhatnang/database/schemas";
 import { selectShippingBidAction, addShippingBidAction } from "./order.actions";
 import { orderService } from "@nhatnang/database/services";
 import { revalidatePath } from "next/cache";
-import type { OrderService } from "@nhatnang/database/services";
-import type { TOrder, TShippingBid } from "@nhatnang/database/schemas";
-
-void vi.mock("next/cache", () => ({
-  revalidatePath: mock(),
-}));
-
-class MockAuthError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "AuthError";
-  }
-}
-
-void vi.mock("@/shared/lib/action-auth", () => ({
-  requireAuth: mock().mockResolvedValue({}),
-  AuthError: MockAuthError,
-}));
-
-void vi.mock("@nhatnang/database/services", () => ({
-  orderService: {
-    updateOrderStatus: mock(),
-    selectWinningBid: mock(),
-  },
-}));
-
-void vi.mock("next-intl/server", () => ({
-  getTranslations: mock().mockResolvedValue((key: string) => key),
-}));
 
 describe("order.actions", () => {
-  let selectWinningBidMock: Mock<OrderService["selectWinningBid"]>;
+  let selectWinningBidMock: Mock<(...args: any[]) => any>;
 
   beforeEach(() => {
     // using as unknown as Mock due to vi.mock boundary override
     // eslint-disable-next-line @typescript-eslint/unbound-method
     selectWinningBidMock = orderService.selectWinningBid as unknown as Mock<
-      OrderService["selectWinningBid"]
+      (...args: any[]) => any
     >;
     selectWinningBidMock.mockClear();
     (revalidatePath as Mock<(...args: unknown[]) => void>).mockClear();
@@ -92,9 +68,7 @@ describe("order.actions", () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
       const validBidId = "123e4567-e89b-12d3-a456-426614174001";
 
-      selectWinningBidMock.mockResolvedValueOnce(
-        null as unknown as { updatedOrder: TOrder; selectedBid: TShippingBid },
-      );
+      selectWinningBidMock.mockResolvedValueOnce(null);
 
       const result = await selectShippingBidAction(validOrderId, validBidId);
 

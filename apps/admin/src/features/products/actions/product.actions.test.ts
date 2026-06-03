@@ -2,64 +2,14 @@ import {
   expect,
   test,
   describe,
-  mock,
-  vi,
   beforeEach,
+  type vi,
   type Mock,
 } from "bun:test";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import type { ProductService } from "@nhatnang/database/services";
 
-void vi.mock("next/server", () => ({
-  after: mock((cb: () => void) => {
-    // Execute immediately for testing but let it run asynchronously
-    void cb();
-  }),
-}));
-
-void vi.mock("next/cache", () => ({
-  revalidatePath: mock(),
-}));
-
-class MockAuthError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "AuthError";
-  }
-}
-
-void vi.mock("@/shared/lib/action-auth", () => ({
-  requireAuth: mock().mockResolvedValue({}),
-  AuthError: MockAuthError,
-}));
-
-void vi.mock("@nhatnang/database/services", () => ({
-  productService: {
-    create: vi.fn(),
-    update: vi.fn(),
-    delete: vi.fn(),
-    getById: vi.fn(),
-  },
-  authService: {
-    loginEmail: vi.fn(),
-  },
-  quotesService: {
-    approveAndConvertToOrder: vi.fn(),
-    getComplexQuote: vi.fn(),
-    updateQuoteItemPrice: vi.fn(),
-    addQuoteMessage: vi.fn(),
-    updateQuoteStatus: vi.fn(),
-  },
-}));
-
-void vi.mock("@/shared/services", () => ({
-  uploadToCloudinary: vi.fn(),
-  deleteFromCloudinary: vi.fn(),
-}));
-
-void vi.mock("next-intl/server", () => ({
-  getTranslations: mock().mockResolvedValue((key: string) => key),
-}));
+import "@/shared/tests/action-mocks";
 
 import type { TProduct } from "@nhatnang/database/schemas";
 import type { TCreateProductInput } from "@nhatnang/database/validators";
@@ -185,8 +135,12 @@ describe("product.actions", () => {
 
     const { productService } = await import("@nhatnang/database/services");
 
-    (productService.getById as Mock<typeof productService.getById>).mockResolvedValueOnce(oldProduct as unknown as TProduct);
-    (productService.update as Mock<typeof productService.update>).mockResolvedValueOnce({
+    (
+      productService.getById as Mock<typeof productService.getById>
+    ).mockResolvedValueOnce(oldProduct as unknown as TProduct);
+    (
+      productService.update as Mock<typeof productService.update>
+    ).mockResolvedValueOnce({
       ...oldProduct,
       name: "New",
     } as unknown as TProduct);

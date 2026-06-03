@@ -1,4 +1,4 @@
-import { vi, type Mock } from "bun:test";
+import { vi, beforeEach, type Mock } from "bun:test";
 
 interface IReturningChain {
   returning: Mock<(...args: unknown[]) => unknown>;
@@ -88,3 +88,9 @@ export const mockDb = {
 await vi.mock("../../client", () => ({
   db: mockDb,
 }));
+
+beforeEach(() => {
+  mockReturning.mockReset();
+  mockFindFirst.mockReset();
+  mockFindMany.mockReset();
+});
