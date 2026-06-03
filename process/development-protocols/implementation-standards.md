@@ -14,6 +14,7 @@
 - Use descriptive kebab-case filenames.
 - Keep TypeScript and JavaScript source files roughly under 200 lines when practical; split by responsibility when files become hard to reason about.
 - Prefer focused modules, helpers, and composition over large mixed-purpose files.
+- **Top-Down Clean Code (Stepdown Rule)**: Structure source files so that they read top-down. Public/high-level API entrypoints, orchestrator functions, and primary exports must appear at the top of the file. Low-level implementation details, private helper functions, and local utility routines must appear below them, ordered progressively by their level of abstraction. A reader should be able to scan the file like a narrative, descending naturally from interface to detail.
 - Markdown planning, context, agent, and skill files are exempt from the 200-line rule.
 
 ## Separation of Concerns (SoC)

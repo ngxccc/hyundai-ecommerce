@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { categoryService } from "@nhatnang/database/services";
+import { mapCategoryToDTO } from "@nhatnang/database/dtos";
 import {
   getCreateCategorySchema,
   getUpdateCategorySchema,
@@ -53,7 +54,7 @@ export const createCategoryAction = async (formData: FormData) => {
     }
 
     revalidatePath("/categories");
-    return { success: true as const, data: categoryData };
+    return { success: true as const, data: mapCategoryToDTO(categoryData) };
   } catch (error) {
     const t = await getTranslations("errors");
 
@@ -140,7 +141,7 @@ export async function updateCategoryAction(
 
     revalidatePath("/categories");
     revalidatePath(`/categories/${id}/edit`);
-    return { success: true as const, data: categoryData };
+    return { success: true as const, data: mapCategoryToDTO(categoryData) };
   } catch (error) {
     const t = await getTranslations("errors");
 
