@@ -166,7 +166,7 @@ After each phase, document:
 ### Current Status
 
 - Phase 1: ✅ VERIFIED
-- Phase 2: ⏳ PLANNED
+- Phase 2: ✅ VERIFIED
 - Phase 3: ⏳ PLANNED
 - Phase 4: ⏳ PLANNED
 - Phase 5: ⏳ PLANNED
@@ -229,10 +229,10 @@ After each phase, document:
   - [x] Create centralized error mapping utility `packages/database/src/errors/db-errors.ts`
   - [x] Refactor services (`brand`, `category`, `warehouse`) to use the centralized error helper
   - [x] Run `bun test src/services/` to verify services remain verified
-- [ ] **RFC-002: Action DTO Layer**
-  - [ ] Define DTO helper interfaces in `packages/database/src/dtos/`
-  - [ ] Map services return data in `product`, `brand`, `category`, `warehouse` actions to DTOs
-  - [ ] Verify admin application compiling and tests passing
+- [x] **RFC-002: Action DTO Layer**
+  - [x] Define DTO helper interfaces in `packages/database/src/dtos/`
+  - [x] Map services return data in `product`, `brand`, `category`, `warehouse` actions to DTOs
+  - [x] Verify admin application compiling and tests passing
 - [ ] **RFC-003: Validator Purification**
   - [ ] Remove translation key messages from database validators, replace with default validation messages
   - [ ] Import `JSONContent` from `@tiptap/core` inside `product.validators.ts` to sever UI dependency

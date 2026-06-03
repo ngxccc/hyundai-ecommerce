@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { warehouseService } from "@nhatnang/database/services";
+import { mapWarehouseToDTO } from "@nhatnang/database/dtos";
 import {
   getCreateWarehouseSchema,
   getUpdateWarehouseSchema,
@@ -31,7 +32,7 @@ export const createWarehouseAction = async (input: TCreateWarehouseInput) => {
 
     const data = await warehouseService.create(validatedData);
     revalidatePath("/warehouses");
-    return { success: true as const, data };
+    return { success: true as const, data: mapWarehouseToDTO(data) };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
@@ -76,7 +77,7 @@ export async function updateWarehouseAction(
     const data = await warehouseService.update(validatedData);
     revalidatePath("/warehouses");
     revalidatePath(`/warehouses/${id}/edit`);
-    return { success: true as const, data };
+    return { success: true as const, data: mapWarehouseToDTO(data) };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
