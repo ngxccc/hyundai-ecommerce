@@ -1,29 +1,60 @@
 import { z } from "zod";
 import { orderStatusEnum } from "../schemas/order.schema";
 
-export const updateOrderStatusSchema = z.object({
+export type TOrderValidationMessageKey =
+  | "shippingBidsVendorNameRequired"
+  | "shippingBidsQuotedPriceRequired";
+
+export type IOrderTranslator = (key: TOrderValidationMessageKey) => string;
+
+export const updateOrderStatusBaseSchema = z.object({
   orderId: z.uuid(),
   status: z.enum(orderStatusEnum.enumValues),
 });
 
-export type TUpdateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;
+export const getUpdateOrderStatusSchema = () =>
+  z.object({
+    orderId: z.uuid(),
+    status: z.enum(orderStatusEnum.enumValues),
+  });
 
-export const selectShippingBidSchema = z.object({
+export const selectShippingBidBaseSchema = z.object({
   orderId: z.uuid(),
   bidId: z.uuid(),
 });
 
-export type TSelectShippingBidInput = z.infer<typeof selectShippingBidSchema>;
+export const getSelectShippingBidSchema = () =>
+  z.object({
+    orderId: z.uuid(),
+    bidId: z.uuid(),
+  });
 
-export const addShippingBidSchema = z.object({
+export const addShippingBidBaseSchema = z.object({
   orderId: z.uuid(),
-  vendorName: z.string().min(1, "shippingBidsVendorNameRequired"),
-  quotedPrice: z
-    .string()
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-      message: "shippingBidsQuotedPriceRequired",
-    }),
+  vendorName: z.string(),
+  quotedPrice: z.string(),
   internalNote: z.string().optional(),
 });
 
-export type TAddShippingBidInput = z.infer<typeof addShippingBidSchema>;
+export const getAddShippingBidSchema = (t: IOrderTranslator) =>
+  z.object({
+    orderId: z.uuid(),
+    vendorName: z
+      .string()
+      .min(1, { message: t("shippingBidsVendorNameRequired") }),
+    quotedPrice: z
+      .string()
+      .transform((val) => val.replace(/\D/g, ""))
+      .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+        message: t("shippingBidsQuotedPriceRequired"),
+      }),
+    internalNote: z.string().optional(),
+  });
+
+export type TUpdateOrderStatusInput = z.infer<
+  typeof updateOrderStatusBaseSchema
+>;
+export type TSelectShippingBidInput = z.infer<
+  typeof selectShippingBidBaseSchema
+>;
+export type TAddShippingBidInput = z.infer<typeof addShippingBidBaseSchema>;

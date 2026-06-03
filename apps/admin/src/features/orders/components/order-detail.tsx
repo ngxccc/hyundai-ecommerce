@@ -36,6 +36,7 @@ import {
   StepperSeparator,
   StepperNav,
 } from "@nhatnang/ui/components/reui/stepper";
+import { ShippingBidPanel } from "./shipping-bid-panel";
 
 interface OrderDetailProps {
   order: ComplexOrder;
@@ -140,7 +141,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
       {/* Left side (Timeline Stepper & Items list) */}
       <div className="flex flex-col gap-6 lg:col-span-2">
         {/* Stepper Card */}
-        <Card className="border-border bg-card flex flex-col gap-6 border p-6 shadow-sm">
+        <Card className="border-border bg-card flex flex-col gap-6 border p-4 shadow-sm">
           <div className="border-border flex items-center justify-between border-b pb-4">
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
@@ -391,12 +392,13 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
             </Table>
           </div>
         </Card>
+        <ShippingBidPanel order={order} />
       </div>
 
       {/* Right side (Buyer portfolio & Invoice trigger) */}
       <div className="flex flex-col gap-6">
         {/* Buyer Portfolio Card */}
-        <Card className="border-border bg-card flex flex-col gap-6 border p-6 shadow-sm">
+        <Card className="border-border bg-card flex flex-col gap-6 border p-4 shadow-sm">
           <div className="border-border flex items-center gap-2 border-b pb-4">
             <User className="text-muted-foreground h-5 w-5" />
             <h3 className="text-lg font-bold">{t("buyerInfo")}</h3>
@@ -454,7 +456,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
         </Card>
 
         {/* Shipping Address Card */}
-        <Card className="border-border bg-card flex flex-col gap-6 border p-6 shadow-sm">
+        <Card className="border-border bg-card flex flex-col gap-6 border p-4 shadow-sm">
           <div className="border-border flex items-center gap-2 border-b pb-4">
             <MapPin className="text-muted-foreground h-5 w-5" />
             <h3 className="text-lg font-bold">{t("shippingAddress")}</h3>
@@ -467,7 +469,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
         </Card>
 
         {/* Invoice Generator Card */}
-        <Card className="border-border bg-card flex flex-col gap-4 border p-6 shadow-sm">
+        <Card className="border-border bg-card flex flex-col gap-4 border p-4 shadow-sm">
           <div className="flex flex-col gap-1">
             <h4 className="text-base font-bold">{t("invoiceCardTitle")}</h4>
             <p className="text-muted-foreground text-xs">
