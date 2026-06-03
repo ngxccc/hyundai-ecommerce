@@ -8,7 +8,7 @@
       "CLAUDE.md"
     ]
   },
-  "skillCount": 31,
+  "skillCount": 32,
   "skills": [
     {
       "folder": "vc-agent-browser",
@@ -688,6 +688,27 @@
       "relativeReferences": [
         "references/challenge-framework.md",
         "references/xia-workflow.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "vc-zod",
+      "name": "vc:zod",
+      "description": "Rules, standards, and references for validating schemas, payloads, database mappings, and formatting user-facing validation errors using Zod.",
+      "aliases": [
+        "vc-zod",
+        "vc:zod"
+      ],
+      "normalizedName": "vczod",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/drizzle-zod-integration.md",
+        "references/zod-best-practices.md"
       ],
       "mentionedSkills": []
     }

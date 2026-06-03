@@ -1,43 +1,33 @@
-# UI/UX Context
+# UI/UX Context Index
 
-This file is the canonical UI/UX context entrypoint for Hyundai E-commerce.
-
-Use it after `process/context/all-context.md` when the task needs design systems, styling approach, or UI layout standards.
+This file is the canonical UI/UX context entrypoint for the Hyundai E-commerce monorepo.
 
 ## Scope
 
 This group covers:
 
-- Design tokens, HSL color palettes, and visual aesthetic guidelines
-- Tailwind CSS and Vanilla CSS styling approach
-- Admin page form layouts and typography standards
-- Internationalization key conventions
+- Authorized design tokens, HSL/OKLCH color palettes, and visual aesthetic guidelines.
+- Typography scale, weight constraints, and Monospace usage rules.
+- Rigid border radius calculations (`--radius: 0.125rem`).
+- Component standards (Buttons, Cards, Tables, Forms) for storefront/admin parity.
+- Layout shells (backdrop blur, sidebar states, sticky headers, linear gradients).
 
 It does not cover:
 
-- Backend service endpoints or Drizzle schema guides
-- Feature-specific business rules or workflows
+- Backend databases, API routes, or business domain logics.
 
 ## Read When
 
-Read this entrypoint when:
-
-- Building or editing UI components in `apps/storefront` or `apps/admin`
-- Adjusting styling or CSS files (like `index.css`)
-- Reviewing UI layouts or design quality guidelines
+- Modifying or building UI components inside `packages/ui` or applications.
+- Reviewing design quality gates before deploying code.
 
 ## Quick Routing
 
-- use `process/context/uxui/uiux.md` for full design tokens, styling rules, admin form protocols, and Next-Intl key rules.
-
-## Source Paths
-
-- `process/context/uxui/uiux.md`
+- Canonical Guidelines: `process/context/uxui/uiux.md`
+- Design Presets (e.g. Raycast): `process/context/uxui/design-raycast.md`
 
 ## Update Triggers
 
-Update this group when:
-
-- Visual design library or primary brand colors change
-- Admin layout requirements or standard form structures are updated
-- Styling conventions or key Tailwind/CSS rules are modified
+- Modification of color presets or primary brand values.
+- Re-architecting components in the shared UI library.
+- Adapting new viewport, spacing, or typography scales.
