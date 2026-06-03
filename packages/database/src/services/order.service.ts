@@ -1,6 +1,13 @@
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db, type IDatabase } from "../client";
-import { orders, type TNewOrder, type TOrder } from "../schemas";
+import {
+  orders,
+  shippingBids,
+  type TNewOrder,
+  type TOrder,
+  type TShippingBid,
+  type TNewShippingBid,
+} from "../schemas";
 
 const complexOrderQueryConfig = {
   with: {
@@ -71,6 +78,43 @@ export class OrderService {
         id: orderId,
       },
       ...complexOrderQueryConfig,
+    });
+  }
+  async createShippingBid(data: TNewShippingBid) {
+    const [bid] = await this.db.insert(shippingBids).values(data).returning();
+    return bid;
+  }
+  async selectWinningBid(
+    orderId: string,
+    bidId: string,
+  ): Promise<{ updatedOrder: TOrder; selectedBid: TShippingBid }> {
+    return await this.db.transaction(async (tx) => {
+      // 1. Deselect all bids for this order
+      await tx
+        .update(shippingBids)
+        .set({ isSelected: false })
+        .where(eq(shippingBids.orderId, orderId));
+      // 2. Select the winning bid
+      const [selectedBid] = await tx
+        .update(shippingBids)
+        .set({ isSelected: true })
+        .where(
+          and(eq(shippingBids.id, bidId), eq(shippingBids.orderId, orderId)),
+        )
+        .returning();
+      if (!selectedBid) {
+        throw new Error("errors.shippingBidNotFound");
+      }
+      // 3. Update order shippingFee
+      const [updatedOrder] = await tx
+        .update(orders)
+        .set({ shippingFee: selectedBid.quotedPrice, updatedAt: new Date() })
+        .where(eq(orders.id, orderId))
+        .returning();
+      if (!updatedOrder) {
+        throw new Error("errors.orderNotFound");
+      }
+      return { updatedOrder, selectedBid };
     });
   }
 }
