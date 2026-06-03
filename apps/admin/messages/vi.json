@@ -876,7 +876,10 @@
     "shippingBidsSelectWinnerError": "Chọn đơn vị thắng thầu thất bại",
     "shippingBidNotFound": "Không tìm thấy hồ sơ thầu hoặc không thuộc đơn hàng này",
     "shippingBidsVendorNameRequired": "Tên đơn vị vận chuyển là bắt buộc",
-    "shippingBidsQuotedPriceRequired": "Giá chào thầu phải lớn hơn 0"
+    "shippingBidsQuotedPriceRequired": "Giá chào thầu phải lớn hơn 0",
+    "shippingBidsDescription": "Quản lý các hồ sơ thầu vận chuyển cho đơn hàng này.",
+    "shippingBidsPending": "Chờ duyệt",
+    "shippingBidsNotePlaceholder": "Ghi chú thêm (không bắt buộc)"
   },
   "AdminQuotes": {
     "title": "Chi tiết đàm phán báo giá",

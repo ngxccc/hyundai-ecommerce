@@ -6,11 +6,14 @@ import { type TOrder } from "@nhatnang/database/schemas";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import {
-  updateOrderStatusSchema,
-  selectShippingBidSchema,
-  addShippingBidSchema,
+  getUpdateOrderStatusSchema,
+  getSelectShippingBidSchema,
+  getAddShippingBidSchema,
 } from "@nhatnang/database/validators";
-import type { TAddShippingBidInput } from "@nhatnang/database/validators";
+import type {
+  TAddShippingBidInput,
+  TOrderValidationMessageKey,
+} from "@nhatnang/database/validators";
 
 export const updateOrderStatusAction = async (
   orderId: string,
@@ -21,7 +24,7 @@ export const updateOrderStatusAction = async (
     await requireAuth();
 
     // Validate inputs
-    const parsed = updateOrderStatusSchema.safeParse({ orderId, status });
+    const parsed = getUpdateOrderStatusSchema().safeParse({ orderId, status });
     if (!parsed.success) {
       return {
         success: false as const,
@@ -71,7 +74,7 @@ export const selectShippingBidAction = async (
     await requireAuth();
 
     // Validate inputs
-    const parsed = selectShippingBidSchema.safeParse({ orderId, bidId });
+    const parsed = getSelectShippingBidSchema().safeParse({ orderId, bidId });
     if (!parsed.success) {
       return {
         success: false as const,
@@ -121,25 +124,21 @@ export const selectShippingBidAction = async (
   }
 };
 
-export const addShippingBidAction = async (
-  data: TAddShippingBidInput,
-) => {
+export const addShippingBidAction = async (data: TAddShippingBidInput) => {
   const tErrors = await getTranslations("errors");
   const tAdminOrders = await getTranslations("AdminOrders");
+  const tValidator = (key: TOrderValidationMessageKey) => tAdminOrders(key);
+
   try {
     await requireAuth();
 
     // Validate inputs
-    const parsed = addShippingBidSchema.safeParse(data);
+    const parsed = getAddShippingBidSchema(tValidator).safeParse(data);
     if (!parsed.success) {
-      // Return the first validation error key
       const firstError = parsed.error.issues[0]?.message;
       return {
         success: false as const,
-        error: firstError
-          ? // @ts-expect-error - dynamic key
-            tAdminOrders(firstError)
-          : tErrors("validationError"),
+        error: firstError ?? tErrors("validationError"),
       };
     }
 
@@ -169,7 +168,7 @@ export const addShippingBidAction = async (
     }
 
     console.error("[addShippingBidAction]", error);
-    const message =
+    const message: string =
       error instanceof Error && error.message.startsWith("errors.")
         ? // @ts-expect-error - dynamic key
           tAdminOrders(error.message.replace("errors.", ""))

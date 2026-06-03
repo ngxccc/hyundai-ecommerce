@@ -872,7 +872,10 @@
     "shippingBidsSelectWinnerError": "Failed to select winning bid",
     "shippingBidNotFound": "Bid not found or does not belong to the order",
     "shippingBidsVendorNameRequired": "Vendor name is required",
-    "shippingBidsQuotedPriceRequired": "Quoted price is required and must be positive"
+    "shippingBidsQuotedPriceRequired": "Quoted price is required and must be positive",
+    "shippingBidsDescription": "Manage carrier bidding profiles for this order.",
+    "shippingBidsPending": "Pending Approval",
+    "shippingBidsNotePlaceholder": "Additional note (optional)"
   },
   "AdminQuotes": {
     "title": "B2B Quotes detail workspace",
