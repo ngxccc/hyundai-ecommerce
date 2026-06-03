@@ -23,7 +23,7 @@ import {
   SelectItem,
 } from "@nhatnang/ui/components/ui/select";
 import { NumberWithUnitField } from "../number-with-unit-field";
-import { toInputValue } from "../../../../../shared/lib/utils";
+import { toInputValue } from "@nhatnang/shared/lib/utils";
 import type { TCreateProductInput } from "@nhatnang/database/validators";
 
 interface SpecsProps {
