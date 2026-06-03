@@ -11,7 +11,7 @@
 
 This plan details the roadmap to resolve architectural debt, violations of software engineering principles (DRY, Separation of Concerns, SOLID, KISS, YAGNI), and package dependency issues discovered during the workspace-wide audit. The goal is to clean up code duplication, enforce strict boundary layers, and improve test isolation without breaking existing functionalities.
 
-**Status**: ⏳ PLANNED
+**Status**: ⏳ IN_PROGRESS
 
 ---
 
@@ -165,7 +165,7 @@ After each phase, document:
 
 ### Current Status
 
-- Phase 1: ⏳ PLANNED
+- Phase 1: ✅ VERIFIED
 - Phase 2: ⏳ PLANNED
 - Phase 3: ⏳ PLANNED
 - Phase 4: ⏳ PLANNED
@@ -224,11 +224,11 @@ After each phase, document:
 
 ## 8. Implementation Checklist
 
-- [ ] **RFC-001: Service DRY Refactor**
-  - [ ] Research and map error-handling try-catch structures inside `packages/database/src/services/`
-  - [ ] Create centralized error mapping utility `packages/database/src/errors/db-errors.ts`
-  - [ ] Refactor services (`brand`, `category`, `warehouse`) to use the centralized error helper
-  - [ ] Run `bun test src/services/` to verify services remain verified
+- [x] **RFC-001: Service DRY Refactor**
+  - [x] Research and map error-handling try-catch structures inside `packages/database/src/services/`
+  - [x] Create centralized error mapping utility `packages/database/src/errors/db-errors.ts`
+  - [x] Refactor services (`brand`, `category`, `warehouse`) to use the centralized error helper
+  - [x] Run `bun test src/services/` to verify services remain verified
 - [ ] **RFC-002: Action DTO Layer**
   - [ ] Define DTO helper interfaces in `packages/database/src/dtos/`
   - [ ] Map services return data in `product`, `brand`, `category`, `warehouse` actions to DTOs
