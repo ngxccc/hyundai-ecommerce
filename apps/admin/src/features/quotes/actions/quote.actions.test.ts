@@ -1,58 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import {
-  expect,
-  test,
-  describe,
-  mock,
-  vi,
-  beforeEach,
-  type Mock,
-} from "bun:test";
-
-class MockAuthError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "AuthError";
-  }
-}
-
-void vi.mock("next/cache", () => ({
-  revalidatePath: mock(),
-}));
-
-void vi.mock("@/shared/lib/action-auth", () => ({
-  requireAuth: mock().mockResolvedValue({
-    user: {
-      id: "admin-1",
-      role: "admin",
-    },
-  }),
-  AuthError: MockAuthError,
-}));
-
-void vi.mock("@nhatnang/database/services", () => ({
-  quotesService: {
-    approveAndConvertToOrder: vi.fn(),
-    getComplexQuote: vi.fn(),
-    updateQuoteItemPrice: vi.fn(),
-    addQuoteMessage: vi.fn(),
-    updateQuoteStatus: vi.fn(),
-  },
-  productService: {
-    create: vi.fn(),
-    update: vi.fn(),
-    delete: vi.fn(),
-    getById: vi.fn(),
-  },
-  authService: {
-    loginEmail: vi.fn(),
-  },
-}));
-
-void vi.mock("next-intl/server", () => ({
-  getTranslations: mock().mockResolvedValue((key: string) => key),
-}));
-
+import { expect, test, describe, vi, beforeEach, type Mock } from "bun:test";
+import "@/shared/tests/action-mocks";
 import {
   approveAndConvertToOrderAction,
   updateQuoteItemPriceAction,
@@ -60,7 +8,11 @@ import {
   updateQuoteStatusAction,
 } from "./quote.actions";
 import { quotesService, type ComplexQuote } from "@nhatnang/database/services";
-import { type TQuote, type TQuoteItem, type TQuoteMessage } from "@nhatnang/database/schemas";
+import {
+  type TQuote,
+  type TQuoteItem,
+  type TQuoteMessage,
+} from "@nhatnang/database/schemas";
 import { revalidatePath } from "next/cache";
 
 describe("quote.actions", () => {
@@ -73,14 +25,20 @@ describe("quote.actions", () => {
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
       const mockResult = { orderId: "order-1" };
 
-      (quotesService.approveAndConvertToOrder as Mock<typeof quotesService.approveAndConvertToOrder>)
-        .mockResolvedValueOnce(mockResult);
+      (
+        quotesService.approveAndConvertToOrder as Mock<
+          typeof quotesService.approveAndConvertToOrder
+        >
+      ).mockResolvedValueOnce(mockResult);
 
       const res = await approveAndConvertToOrderAction(mockQuoteId);
 
       expect(res.success).toBe(true);
       expect(res.data).toEqual(mockResult);
-      expect(quotesService.approveAndConvertToOrder).toHaveBeenCalledWith(mockQuoteId, "admin-1");
+      expect(quotesService.approveAndConvertToOrder).toHaveBeenCalledWith(
+        mockQuoteId,
+        "admin-1",
+      );
       expect(revalidatePath).toHaveBeenCalled();
     });
 
@@ -110,16 +68,32 @@ describe("quote.actions", () => {
         ],
       };
 
-      (quotesService.getComplexQuote as Mock<typeof quotesService.getComplexQuote>)
-        .mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
-      (quotesService.updateQuoteItemPrice as Mock<typeof quotesService.updateQuoteItemPrice>)
-        .mockResolvedValueOnce({} as unknown as TQuoteItem);
+      (
+        quotesService.getComplexQuote as Mock<
+          typeof quotesService.getComplexQuote
+        >
+      ).mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
+      (
+        quotesService.updateQuoteItemPrice as Mock<
+          typeof quotesService.updateQuoteItemPrice
+        >
+      ).mockResolvedValueOnce({} as unknown as TQuoteItem);
 
-      const res = await updateQuoteItemPriceAction(mockQuoteId, mockItemId, mockPrice);
+      const res = await updateQuoteItemPriceAction(
+        mockQuoteId,
+        mockItemId,
+        mockPrice,
+      );
 
       expect(res.success).toBe(true);
-      expect(quotesService.updateQuoteItemPrice).toHaveBeenCalledWith(mockItemId, mockPrice);
-      expect(quotesService.updateQuoteStatus).toHaveBeenCalledWith(mockQuoteId, "negotiating");
+      expect(quotesService.updateQuoteItemPrice).toHaveBeenCalledWith(
+        mockItemId,
+        mockPrice,
+      );
+      expect(quotesService.updateQuoteStatus).toHaveBeenCalledWith(
+        mockQuoteId,
+        "negotiating",
+      );
       expect(quotesService.addQuoteMessage).toHaveBeenCalled();
     });
 
@@ -133,10 +107,17 @@ describe("quote.actions", () => {
         items: [],
       };
 
-      (quotesService.getComplexQuote as Mock<typeof quotesService.getComplexQuote>)
-        .mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
+      (
+        quotesService.getComplexQuote as Mock<
+          typeof quotesService.getComplexQuote
+        >
+      ).mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
 
-      const res = await updateQuoteItemPriceAction(mockQuoteId, mockItemId, "100.00");
+      const res = await updateQuoteItemPriceAction(
+        mockQuoteId,
+        mockItemId,
+        "100.00",
+      );
 
       expect(res.success).toBe(false);
       expect(res.error).toBe("quoteNotEditableOrConvertible");
@@ -154,10 +135,16 @@ describe("quote.actions", () => {
         items: [],
       };
 
-      (quotesService.getComplexQuote as Mock<typeof quotesService.getComplexQuote>)
-        .mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
-      (quotesService.addQuoteMessage as Mock<typeof quotesService.addQuoteMessage>)
-        .mockResolvedValueOnce({} as unknown as TQuoteMessage);
+      (
+        quotesService.getComplexQuote as Mock<
+          typeof quotesService.getComplexQuote
+        >
+      ).mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
+      (
+        quotesService.addQuoteMessage as Mock<
+          typeof quotesService.addQuoteMessage
+        >
+      ).mockResolvedValueOnce({} as unknown as TQuoteMessage);
 
       const res = await sendQuoteMessageAction(mockQuoteId, mockMessage);
 
@@ -180,15 +167,24 @@ describe("quote.actions", () => {
         items: [],
       };
 
-      (quotesService.getComplexQuote as Mock<typeof quotesService.getComplexQuote>)
-        .mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
-      (quotesService.updateQuoteStatus as Mock<typeof quotesService.updateQuoteStatus>)
-        .mockResolvedValueOnce({} as unknown as TQuote);
+      (
+        quotesService.getComplexQuote as Mock<
+          typeof quotesService.getComplexQuote
+        >
+      ).mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
+      (
+        quotesService.updateQuoteStatus as Mock<
+          typeof quotesService.updateQuoteStatus
+        >
+      ).mockResolvedValueOnce({} as unknown as TQuote);
 
       const res = await updateQuoteStatusAction(mockQuoteId, "rejected");
 
       expect(res.success).toBe(true);
-      expect(quotesService.updateQuoteStatus).toHaveBeenCalledWith(mockQuoteId, "rejected");
+      expect(quotesService.updateQuoteStatus).toHaveBeenCalledWith(
+        mockQuoteId,
+        "rejected",
+      );
       expect(quotesService.addQuoteMessage).toHaveBeenCalled();
     });
   });

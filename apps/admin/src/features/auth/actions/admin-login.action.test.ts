@@ -1,39 +1,9 @@
-import {
-  expect,
-  test,
-  describe,
-  mock,
-  vi,
-  beforeEach,
-  type Mock,
-} from "bun:test";
+import { expect, test, describe, beforeEach, type Mock } from "bun:test";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import type { adminLoginAction } from "./admin-login.action";
 import type { AuthService } from "@nhatnang/database/services";
 
-// Mock at system boundaries
-void vi.mock("next/headers", () => ({
-  headers: mock(() => new Map([["x-forwarded-for", "127.0.0.1"]])),
-}));
-
-void vi.mock("@nhatnang/database/services", () => ({
-  authService: {
-    loginEmail: mock(),
-  },
-  productService: {
-    create: mock(),
-    update: mock(),
-    delete: mock(),
-    getById: mock(),
-  },
-  quotesService: {
-    approveAndConvertToOrder: mock(),
-    getComplexQuote: mock(),
-    updateQuoteItemPrice: mock(),
-    addQuoteMessage: mock(),
-    updateQuoteStatus: mock(),
-  },
-}));
+import "@/shared/tests/action-mocks";
 
 type LoginResult = Awaited<ReturnType<typeof adminLoginAction>>;
 

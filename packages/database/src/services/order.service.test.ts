@@ -113,11 +113,9 @@ describe("OrderService", () => {
         isSelected: true,
       };
       const mockUpdatedOrder = { id: "order-1", shippingFee: "150000" };
-      // First update (deselect all) + returning
-      mockReturning.mockResolvedValueOnce([]);
-      // Second update (select winner)
+      // First update (select winner)
       mockReturning.mockResolvedValueOnce([mockSelectedBid]);
-      // Third update (order)
+      // Second update (order)
       mockReturning.mockResolvedValueOnce([mockUpdatedOrder]);
       const result = await orderService.selectWinningBid("order-1", "bid-1");
       expect(mockUpdate).toHaveBeenCalledTimes(3);
@@ -125,11 +123,10 @@ describe("OrderService", () => {
       expect(result.selectedBid).toEqual(mockSelectedBid as any);
     });
     test("should throw when bid does not belong to the order", () => {
-      mockReturning.mockResolvedValueOnce([]); // deselect
       mockReturning.mockResolvedValueOnce([]); // select fails
       expect(
         orderService.selectWinningBid("order-1", "bid-not-exist"),
-      ).rejects.toThrow("Bid not found or does not belong to the order");
+      ).rejects.toThrow("errors.shippingBidNotFound");
     });
   });
 });
