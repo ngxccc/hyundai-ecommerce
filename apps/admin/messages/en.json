@@ -106,7 +106,8 @@
       "dealerTiers": "Dealer Tiers",
       "warehouses": "Warehouses",
       "categories": "Categories",
-      "brands": "Brands"
+      "brands": "Brands",
+      "quotes": "Quotes"
     },
     "header": {
       "title": "Overview",
@@ -860,6 +861,8 @@
   "AdminQuotes": {
     "title": "B2B Quotes detail workspace",
     "description": "Negotiate custom pricing, chat with B2B dealers, and atomically convert quotes to active orders.",
+    "listTitle": "B2B Quotes",
+    "listDescription": "Manage B2B dealer price quotes, negotiate custom pricing, and convert quotes to orders.",
     "quoteId": "Quote ID",
     "buyer": "B2B Dealer",
     "status": "Status",
@@ -881,6 +884,7 @@
     "backToQuotes": "Back to Quotes",
     "totalAmount": "Total Negotiated Amount",
     "retailPrice": "Retail Price",
+    "allStatuses": "All Statuses",
     "statusPendingReview": "Pending Review",
     "statusNegotiating": "Negotiating",
     "statusApproved": "Approved",
@@ -891,6 +895,12 @@
     "statusChangeSuccess": "Quote status updated successfully",
     "convertSuccess": "Quote approved and converted to order successfully",
     "placeholderAgreedPrice": "Enter agreed price",
-    "timelineSystem": "SYSTEM"
+    "timelineSystem": "SYSTEM",
+    "totalRequested": "Total Requested Amount",
+    "timelineChatDescription": "Timeline chat history with negotiation audit trail.",
+    "searchPlaceholder": "Search by Quote ID, B2B Dealer name...",
+    "noQuotesFound": "No B2B quotes found matching filters.",
+    "noCompany": "No Company",
+    "detail": "Detail"
   }
 }

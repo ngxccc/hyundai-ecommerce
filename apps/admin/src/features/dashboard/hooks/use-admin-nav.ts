@@ -7,6 +7,7 @@ import {
   Tags,
   FolderTree,
   Warehouse,
+  FileText,
 } from "lucide-react";
 
 export const useAdminNav = () => {
@@ -19,6 +20,7 @@ export const useAdminNav = () => {
     { icon: Tags, label: t("brands"), href: "/brands" },
     { icon: Warehouse, label: t("warehouses"), href: "/warehouses" },
     { icon: ShoppingCart, label: t("orders"), href: "/orders" },
+    { icon: FileText, label: t("quotes"), href: "/quotes" },
     { icon: Users, label: t("customers"), href: "/customers" },
   ];
 

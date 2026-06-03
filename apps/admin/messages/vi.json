@@ -106,7 +106,8 @@
       "dealerTiers": "Phân hạng đại lý",
       "warehouses": "Kho hàng",
       "categories": "Danh mục",
-      "brands": "Thương hiệu"
+      "brands": "Thương hiệu",
+      "quotes": "Báo giá"
     },
     "header": {
       "title": "Tổng quan",
@@ -864,6 +865,8 @@
   "AdminQuotes": {
     "title": "Chi tiết đàm phán báo giá",
     "description": "Thương lượng giá trực tiếp, trao đổi với đại lý B2B và chuyển đổi báo giá thành đơn hàng chính thức.",
+    "listTitle": "Danh sách Báo giá B2B",
+    "listDescription": "Quản lý các yêu cầu báo giá B2B, đàm phán giá với đại lý và chuyển đổi báo giá thành đơn hàng chính thức.",
     "quoteId": "Mã báo giá",
     "buyer": "Đại lý B2B",
     "status": "Trạng thái",
@@ -885,6 +888,7 @@
     "backToQuotes": "Quay lại danh sách",
     "totalAmount": "Tổng tiền thỏa thuận",
     "retailPrice": "Giá bán lẻ",
+    "allStatuses": "Tất cả",
     "statusPendingReview": "Chờ duyệt",
     "statusNegotiating": "Đang thương lượng",
     "statusApproved": "Đã phê duyệt",
@@ -895,7 +899,13 @@
     "statusChangeSuccess": "Cập nhật trạng thái báo giá thành công",
     "convertSuccess": "Phê duyệt và chuyển đổi thành đơn hàng thành công",
     "placeholderAgreedPrice": "Nhập giá chốt",
-    "timelineSystem": "HỆ THỐNG"
+    "timelineSystem": "HỆ THỐNG",
+    "totalRequested": "Tổng tiền đề xuất",
+    "timelineChatDescription": "Lịch sử thương lượng và nhật ký hệ thống.",
+    "searchPlaceholder": "Tìm kiếm theo Mã báo giá, Tên đại lý B2B...",
+    "noQuotesFound": "Không tìm thấy báo giá B2B nào khớp với bộ lọc.",
+    "noCompany": "Không có công ty",
+    "detail": "Chi tiết"
   }
 }
 
