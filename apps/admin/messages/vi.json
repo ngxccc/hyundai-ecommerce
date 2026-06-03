@@ -659,6 +659,7 @@
     "quoteAlreadyApproved": "Báo giá đã được phê duyệt trước đó",
     "quoteNotEditableOrConvertible": "Báo giá không thể chỉnh sửa hoặc chuyển đổi",
     "createOrderFailed": "Tạo đơn hàng thất bại",
+    "createShippingBidFailed": "Tạo giá vận chuyển thất bại",
     "validation": {
       "slugExists": "Đường dẫn đã tồn tại"
     }
@@ -860,7 +861,22 @@
     "companyName": "CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ KỸ THUẬT NHẬT NĂNG",
     "companyAddress": "302/105 Phan Huy Ích, Phường 12, Quận Gò Vấp, TP. Hồ Chí Minh",
     "companyTaxId": "0313506307",
-    "companyPhone": "0901.885.319"
+    "companyPhone": "0901.885.319",
+    "shippingBidsTitle": "Hồ sơ thầu vận chuyển",
+    "shippingBidsVendor": "Đơn vị vận chuyển",
+    "shippingBidsPrice": "Giá chào thầu",
+    "shippingBidsNote": "Ghi chú nội bộ",
+    "shippingBidsStatus": "Trạng thái",
+    "shippingBidsNoBids": "Chưa có đơn vị vận chuyển nào chào thầu.",
+    "shippingBidsAddBid": "Thêm giá chào thầu",
+    "shippingBidsSelectWinner": "Chọn đơn vị thắng thầu",
+    "shippingBidsWinning": "Đơn vị thắng thầu",
+    "shippingBidsAddBidSuccess": "Thêm giá chào thầu thành công",
+    "shippingBidsSelectWinnerSuccess": "Cập nhật phí vận chuyển theo đơn vị thắng thầu thành công",
+    "shippingBidsSelectWinnerError": "Chọn đơn vị thắng thầu thất bại",
+    "shippingBidNotFound": "Không tìm thấy hồ sơ thầu hoặc không thuộc đơn hàng này",
+    "shippingBidsVendorNameRequired": "Tên đơn vị vận chuyển là bắt buộc",
+    "shippingBidsQuotedPriceRequired": "Giá chào thầu phải lớn hơn 0"
   },
   "AdminQuotes": {
     "title": "Chi tiết đàm phán báo giá",

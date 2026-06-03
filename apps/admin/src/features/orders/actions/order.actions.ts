@@ -2,15 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { orderService } from "@nhatnang/database/services";
-import { orderStatusEnum, type TOrder } from "@nhatnang/database/schemas";
+import { type TOrder } from "@nhatnang/database/schemas";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
-import { z } from "zod";
-
-const updateOrderStatusSchema = z.object({
-  orderId: z.uuid(),
-  status: z.enum(orderStatusEnum.enumValues),
-});
+import {
+  updateOrderStatusSchema,
+  selectShippingBidSchema,
+  addShippingBidSchema,
+} from "@nhatnang/database/validators";
+import type { TAddShippingBidInput } from "@nhatnang/database/validators";
 
 export const updateOrderStatusAction = async (
   orderId: string,
@@ -57,6 +57,126 @@ export const updateOrderStatusAction = async (
     return {
       success: false as const,
       error: t("updateOrderStatusFailed") || "Failed to update order status",
+    };
+  }
+};
+
+export const selectShippingBidAction = async (
+  orderId: string,
+  bidId: string,
+) => {
+  const tErrors = await getTranslations("errors");
+  const tAdminOrders = await getTranslations("AdminOrders");
+  try {
+    await requireAuth();
+
+    // Validate inputs
+    const parsed = selectShippingBidSchema.safeParse({ orderId, bidId });
+    if (!parsed.success) {
+      return {
+        success: false as const,
+        error: tErrors("validationError"),
+      };
+    }
+
+    const result = await orderService.selectWinningBid(orderId, bidId);
+    if (!result) {
+      return {
+        success: false as const,
+        error: tErrors("orderNotFound"),
+      };
+    }
+
+    revalidatePath("/orders");
+    revalidatePath(`/orders/${orderId}`);
+
+    return {
+      success: true as const,
+      data: {
+        shippingFee: result.updatedOrder.shippingFee,
+        selectedBid: result.selectedBid,
+      },
+    };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return {
+        success: false as const,
+        error:
+          error.message === "Unauthorized"
+            ? tErrors("unauthorized")
+            : tErrors("forbidden"),
+      };
+    }
+
+    console.error("[selectShippingBidAction]", error);
+    const message: string =
+      error instanceof Error && error.message.startsWith("errors.")
+        ? // @ts-expect-error - dynamic key
+          tAdminOrders(error.message.replace("errors.", ""))
+        : tAdminOrders("shippingBidsSelectWinnerError");
+    return {
+      success: false as const,
+      error: message,
+    };
+  }
+};
+
+export const addShippingBidAction = async (
+  data: TAddShippingBidInput,
+) => {
+  const tErrors = await getTranslations("errors");
+  const tAdminOrders = await getTranslations("AdminOrders");
+  try {
+    await requireAuth();
+
+    // Validate inputs
+    const parsed = addShippingBidSchema.safeParse(data);
+    if (!parsed.success) {
+      // Return the first validation error key
+      const firstError = parsed.error.issues[0]?.message;
+      return {
+        success: false as const,
+        error: firstError
+          ? // @ts-expect-error - dynamic key
+            tAdminOrders(firstError)
+          : tErrors("validationError"),
+      };
+    }
+
+    const newBid = await orderService.createShippingBid({
+      orderId: parsed.data.orderId,
+      vendorName: parsed.data.vendorName,
+      quotedPrice: parsed.data.quotedPrice,
+      internalNote: parsed.data.internalNote,
+    });
+
+    revalidatePath("/orders");
+    revalidatePath(`/orders/${parsed.data.orderId}`);
+
+    return {
+      success: true as const,
+      data: newBid,
+    };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return {
+        success: false as const,
+        error:
+          error.message === "Unauthorized"
+            ? tErrors("unauthorized")
+            : tErrors("forbidden"),
+      };
+    }
+
+    console.error("[addShippingBidAction]", error);
+    const message =
+      error instanceof Error && error.message.startsWith("errors.")
+        ? // @ts-expect-error - dynamic key
+          tAdminOrders(error.message.replace("errors.", ""))
+        : tErrors("createShippingBidFailed") || "Failed to add shipping bid";
+    return {
+      success: false as const,
+      error: message,
     };
   }
 };
