@@ -10,7 +10,7 @@
     }
   },
   "dependencies": {
-    "react-hook-form": "^7.76.1"
+    "react-hook-form": "^7.77.0"
   },
   "devDependencies": {
     "@nhatnang/shared": "workspace:*",
