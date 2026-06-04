@@ -140,3 +140,34 @@ const dealerVerificationSchema = z
     limit: z.coerce.number().int().min(1).max(100).default(20),
   });
   ```
+
+---
+
+## 5. Zod v4 Migration Guide & Changelog
+
+Zod v4 introduces several breaking changes to unify error customization, streamline type safety, and optimize library integrations.
+
+### 5.1. Error Customization Updates
+- **Deprecated `message` and `errorMap`**: Always use the unified `error` parameter.
+  - *Before (Zod v3)*: `z.string().min(5, { message: "Too short." })` or `z.string({ errorMap: ... })`
+  - *After (Zod v4)*: `z.string().min(5, { error: "Too short." })` or `z.string({ error: (issue) => ... })`
+- **Dropped `invalid_type_error` and `required_error`**: Customize these dynamically using the new `error` callback:
+  ```typescript
+  z.string({
+    error: (issue) => issue.input === undefined ? "Field required" : "Must be a string"
+  });
+  ```
+
+### 5.2. Type Definition Changes (ZodTypeDef Deprecation)
+- **No `ZodTypeDef` in classic/v4**: Zod v4 core uses `$ZodTypeDef`. Generic helper functions or custom resolvers MUST NOT reference the old `ZodTypeDef` directly.
+- **Resolving `z.infer` yielding `unknown`**: In Zod v4, `z.infer<TSchema>` resolves to `unknown` if `TSchema` is constrained to `z.ZodTypeAny`.
+  - *Solution*: Constrain the schema generic to `z.core.$ZodType<any, any>` or `z.ZodType<TFieldValues, any, any>` to preserve type inference.
+  - Refer to [React Hook Form Discussion #13205](https://github.com/orgs/react-hook-form/discussions/13205) for more details.
+
+### 5.3. Schema Method Enhancements
+- **Top-Level Formats**: Always prefer tree-shakable top-level format validators instead of method chains:
+  - Use `z.uuid()` instead of `z.string().uuid()`
+  - Use `z.email()` instead of `z.string().email()`
+  - Use `z.url()` instead of `z.string().url()`
+- **Stricter UUID Validation**: `z.uuid()` complies strictly with RFC 9562/4122. For permissive hex matching, use `z.guid()`.
+- **Number Limits**: `POSITIVE_INFINITY` and `NEGATIVE_INFINITY` are no longer accepted by `z.number()`. `.int()` accepts safe integers only.

@@ -29,6 +29,7 @@
 - **Pure Validators**: Zod validation schemas in the database package (e.g., `packages/database/src/validators/*`) must remain pure domain validation schemas.
 - **No UI Coupling**: They must not contain UI-specific translation keys, translation functions (e.g., parameterized translators passed to schema factories), or UI package dependencies (e.g., no imports from `@nhatnang/ui` or client-side translation contexts).
 - **Presentation-Layer Localization**: Localized error messaging and UI translation keys must live in the application UI/presentation layer, mapping validator errors to UI-friendly output at the form or page level.
+- **Zod Skill Compliance**: Any work involving Zod schema definition, payload validation, or type inference MUST strictly comply with and utilize the rules defined in the Zod skill (`vc-zod`).
 
 ### 3. Database Schemas vs. UI Filter Options
 
