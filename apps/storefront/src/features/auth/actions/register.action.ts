@@ -1,5 +1,7 @@
 "use server";
 
+import { headers } from "next/headers";
+import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import {
   AUTH_ERROR_CODES,
   SYSTEM_ERROR_CODES,
@@ -13,6 +15,23 @@ import {
 import { formatValidationErrors } from "@/shared/utils/validation";
 
 export async function registerAction(data: TRegisterForm) {
+  const reqHeaders = await headers();
+  const ip = reqHeaders.get("x-forwarded-for") ?? "127.0.0.1";
+  // 1. Rate limiting check
+  const rateLimitResult = await checkRateLimitWithQueue(
+    `register:storefront:${ip}`,
+    3,
+    "60 s",
+  );
+
+  if (!rateLimitResult.success) {
+    const t = await getTranslations("errors");
+    return {
+      success: false as const,
+      error: t("rateLimitExceeded"),
+    };
+  }
+
   const parsed = await registerSchema.safeParseAsync(data);
 
   if (!parsed.success) {

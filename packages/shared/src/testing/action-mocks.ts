@@ -7,13 +7,17 @@ export class MockAuthError extends Error {
   }
 }
 
-void vi.mock("next/headers", () => ({
+await vi.mock("next/headers", () => ({
   headers: mock(() => new Map([["x-forwarded-for", "127.0.0.1"]])),
 }));
 
-void vi.mock("@nhatnang/database/services", () => ({
+await vi.mock("@nhatnang/database/services", () => ({
   authService: {
     loginEmail: mock(),
+    register: mock(),
+  },
+  userService: {
+    checkDuplicateUser: mock(),
   },
   productService: {
     create: mock(),
@@ -51,6 +55,7 @@ await vi.mock("@/shared/lib/action-auth", () => ({
 await vi.mock("@/shared/services", () => ({
   uploadToCloudinary: vi.fn(),
   deleteFromCloudinary: vi.fn(),
+  validateUploadedFile: vi.fn().mockReturnValue({ valid: true }),
 }));
 
 await vi.mock("next-intl/server", () => ({
@@ -62,4 +67,23 @@ await vi.mock("next/server", () => ({
     // Execute immediately for testing but let it run asynchronously
     void cb();
   }),
+}));
+
+await vi.mock("@nhatnang/shared", () => ({
+  checkRateLimit: mock(() =>
+    Promise.resolve({
+      success: true,
+      remaining: 5,
+      reset: Date.now() + 60000,
+      pending: Promise.resolve(),
+    }),
+  ),
+  checkRateLimitWithQueue: mock(() =>
+    Promise.resolve({
+      success: true,
+      remaining: 5,
+      reset: Date.now() + 60000,
+      pending: Promise.resolve(),
+    }),
+  ),
 }));

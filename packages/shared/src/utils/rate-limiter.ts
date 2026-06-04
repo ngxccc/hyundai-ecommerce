@@ -24,20 +24,6 @@ export async function checkRateLimit(
   limit = 5,
   window = "60 s",
 ): Promise<RateLimitResult> {
-  // const url = process.env.UPSTASH_REDIS_REST_URL;
-  // const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-  // // Graceful fallback if credentials are not configured (e.g. in local dev or CI pipeline)
-  // if (!url || !token) {
-  //   console.warn("Upstash Redis credentials missing. Rate limiting bypassed.");
-  //   return {
-  //     success: true,
-  //     remaining: limit,
-  //     reset: Date.now() + 60000,
-  //     pending: Promise.resolve(),
-  //   };
-  // }
-
   if (!redis) {
     redis = Redis.fromEnv();
   }
@@ -62,4 +48,44 @@ export async function checkRateLimit(
     reset,
     pending,
   };
+}
+
+export async function checkRateLimitWithQueue(
+  key: string,
+  limit = 5,
+  window = "60 s",
+  options?: {
+    waitUntil?: (promise: Promise<unknown>) => void;
+    after?: (fn: () => void) => void;
+  },
+): Promise<RateLimitResult> {
+  const result = await checkRateLimit(key, limit, window);
+
+  if (result.pending) {
+    if (options?.waitUntil) {
+      try {
+        options.waitUntil(result.pending);
+      } catch {
+        // Ignore outside request/event scope
+      }
+    }
+
+    if (options?.after) {
+      try {
+        options.after(() => result.pending);
+      } catch {
+        // Ignore outside request scope
+      }
+    } else {
+      try {
+        // @ts-expect-error - next/server is only available in runtime consumers
+        const { after: nextAfter } = await import("next/server");
+        nextAfter(() => result.pending);
+      } catch {
+        // Ignore outside request scope
+      }
+    }
+  }
+
+  return result;
 }

@@ -1,4 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from "bun:test";
+import { beforeEach, describe, expect, it, type Mock } from "bun:test";
+import type { AuthService } from "@nhatnang/database/services";
+import type { headers } from "next/headers";
+import type { getTranslations } from "next-intl/server";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import type { TActionResult } from "@nhatnang/types";
 
@@ -6,27 +9,7 @@ import type { TActionResult } from "@nhatnang/types";
 // Mocks — system boundaries only
 // ---------------------------------------------------------------------------
 
-const mockLoginEmail = vi.fn();
-const mockHeaders = vi.fn();
-const mockGetTranslations = vi.fn();
-
-void vi.mock("@nhatnang/database/services", () => ({
-  authService: {
-    loginEmail: mockLoginEmail,
-    register: vi.fn(),
-  },
-  userService: {
-    checkDuplicateUser: vi.fn(),
-  },
-}));
-
-void vi.mock("next/headers", () => ({
-  headers: mockHeaders,
-}));
-
-void vi.mock("next-intl/server", () => ({
-  getTranslations: mockGetTranslations,
-}));
+import "@nhatnang/shared/testing/action-mocks";
 
 // Dynamic import AFTER mocks are registered
 const { loginAction } = await import("./login.action");
@@ -52,13 +35,34 @@ type TLoginActionResult =
 
 describe("loginAction", () => {
   const fakeHeaders = new Headers({ "x-test": "1" });
+  let mockLoginEmail: Mock<AuthService["loginEmail"]>;
+  let mockHeaders: Mock<typeof headers>;
+  let mockGetTranslations: Mock<typeof getTranslations>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    const { authService } = await import("@nhatnang/database/services");
+    const { headers: nextHeaders } = await import("next/headers");
+    const { getTranslations: nextGetTranslations } =
+      await import("next-intl/server");
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    mockLoginEmail = authService.loginEmail as Mock<
+      typeof authService.loginEmail
+    >;
+    mockHeaders = nextHeaders as Mock<typeof nextHeaders>;
+    mockGetTranslations = nextGetTranslations as Mock<
+      typeof nextGetTranslations
+    >;
+
     mockLoginEmail.mockReset();
     mockHeaders.mockReset();
     mockHeaders.mockResolvedValue(fakeHeaders);
     mockGetTranslations.mockReset();
-    mockGetTranslations.mockResolvedValue((key: string) => `translated.${key}`);
+    mockGetTranslations.mockResolvedValue(
+      ((key: string) => `translated.${key}`) as unknown as Awaited<
+        ReturnType<typeof getTranslations>
+      >,
+    );
   });
 
   // ── Validation ──────────────────────────────────────────────────────────

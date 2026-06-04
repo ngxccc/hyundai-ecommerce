@@ -2,7 +2,7 @@
 import { expect, test, describe, mock, beforeEach } from "bun:test";
 import type { Mock } from "bun:test";
 
-import "@/shared/tests/action-mocks";
+import "@nhatnang/shared/testing/action-mocks";
 
 import type { TOrder, TShippingBid } from "@nhatnang/database/schemas";
 import { selectShippingBidAction, addShippingBidAction } from "./order.actions";

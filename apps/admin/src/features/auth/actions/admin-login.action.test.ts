@@ -3,7 +3,7 @@ import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import type { adminLoginAction } from "./admin-login.action";
 import type { AuthService } from "@nhatnang/database/services";
 
-import "@/shared/tests/action-mocks";
+import "@nhatnang/shared/testing/action-mocks";
 
 type LoginResult = Awaited<ReturnType<typeof adminLoginAction>>;
 

@@ -14,7 +14,11 @@ import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
-import { uploadToCloudinary, deleteFromCloudinary } from "@/shared/services";
+import {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+  validateUploadedFile,
+} from "@/shared/services";
 
 export const createCategoryAction = async (formData: FormData) => {
   try {
@@ -37,12 +41,22 @@ export const createCategoryAction = async (formData: FormData) => {
     }
 
     const validatedData = parsed.data;
+    const imageFile = formData.get("image") as File | null;
+    if (imageFile) {
+      const validation = validateUploadedFile(imageFile);
+      if (!validation.valid && validation.error) {
+        const t = await getTranslations("errors");
+        return {
+          success: false as const,
+          error: t(validation.error as never),
+        };
+      }
+    }
 
     const categoryData = await categoryService.create(validatedData);
 
-    // Background Tasks: Image Upload
-    const imageFile = formData.get("image") as File | null;
-    if (imageFile) {
+    // Background Image Upload
+    if (categoryData?.id && imageFile) {
       after(async () => {
         try {
           const url = await uploadToCloudinary(imageFile, "categories");
@@ -117,18 +131,28 @@ export async function updateCategoryAction(id: string, formData: FormData) {
     const oldImage = existingCategory?.image;
     const newImageUrl = validatedData.image;
 
+    const imageFile = formData.get("image") as File | null;
+    if (imageFile) {
+      const validation = validateUploadedFile(imageFile);
+      if (!validation.valid && validation.error) {
+        const t = await getTranslations("errors");
+        return {
+          success: false as const,
+          error: t(validation.error as never),
+        };
+      }
+    }
+
     const categoryData = await categoryService.update(validatedData);
 
     // Background Tasks: Image Upload & Cleanup
-    const imageFile = formData.get("image") as File | null;
     if (imageFile || (oldImage && oldImage !== newImageUrl)) {
       after(async () => {
         try {
           // Cleanup removed image
           if (oldImage && oldImage !== newImageUrl) {
-            await deleteFromCloudinary(oldImage);
+            await deleteFromCloudinary(oldImage, "categories");
           }
-
           if (imageFile) {
             const url = await uploadToCloudinary(imageFile, "categories");
             if (url) {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { expect, test, describe, vi, beforeEach, type Mock } from "bun:test";
-import "@/shared/tests/action-mocks";
+import "@nhatnang/shared/testing/action-mocks";
 import {
   approveAndConvertToOrderAction,
   updateQuoteItemPriceAction,

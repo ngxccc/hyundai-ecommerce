@@ -9,7 +9,8 @@
       "default": "./src/index.ts"
     },
     "./constants": "./src/constants/index.ts",
-    "./lib/*": "./src/lib/*.ts"
+    "./lib/*": "./src/lib/*.ts",
+    "./testing/*": "./src/testing/*.ts"
   },
   "dependencies": {
     "@upstash/ratelimit": "^2.0.8",
