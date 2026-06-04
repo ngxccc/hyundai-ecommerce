@@ -1,4 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "bun:test";
+import { beforeEach, describe, expect, it, type Mock } from "bun:test";
+import type { AuthService, UserService } from "@nhatnang/database/services";
 import {
   AUTH_ERROR_CODES,
   SYSTEM_ERROR_CODES,
@@ -9,18 +10,7 @@ import type { TActionResult } from "@nhatnang/types";
 // Mocks — system boundaries only
 // ---------------------------------------------------------------------------
 
-const mockRegister = vi.fn();
-const mockCheckDuplicateUser = vi.fn();
-
-void vi.mock("@nhatnang/database/services", () => ({
-  authService: {
-    loginEmail: vi.fn(),
-    register: mockRegister,
-  },
-  userService: {
-    checkDuplicateUser: mockCheckDuplicateUser,
-  },
-}));
+import "@nhatnang/shared/testing/action-mocks";
 
 // Dynamic import AFTER mocks are registered
 const { registerAction } = await import("./register.action");
@@ -82,11 +72,22 @@ const assertValidationError = (
 // ---------------------------------------------------------------------------
 
 describe("registerAction", () => {
-  beforeEach(() => {
+  let mockRegister: Mock<AuthService["register"]>;
+  let mockCheckDuplicateUser: Mock<UserService["checkDuplicateUser"]>;
+
+  beforeEach(async () => {
+    const { authService, userService } = await import("@nhatnang/database/services");
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    mockRegister = authService.register as Mock<typeof authService.register>;
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    mockCheckDuplicateUser = userService.checkDuplicateUser as Mock<typeof userService.checkDuplicateUser>;
+
     mockRegister.mockReset();
     mockCheckDuplicateUser.mockReset();
     mockCheckDuplicateUser.mockResolvedValue(undefined);
   });
+
 
   // ── Validation: basic fields ────────────────────────────────────────────
 

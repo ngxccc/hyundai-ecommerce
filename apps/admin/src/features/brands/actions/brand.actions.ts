@@ -14,7 +14,11 @@ import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
-import { uploadToCloudinary, deleteFromCloudinary } from "@/shared/services";
+import {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+  validateUploadedFile,
+} from "@/shared/services";
 
 export const createBrandAction = async (formData: FormData) => {
   try {
@@ -37,11 +41,21 @@ export const createBrandAction = async (formData: FormData) => {
     }
 
     const validatedData = parsed.data;
+    const logoFile = formData.get("logo") as File | null;
+    if (logoFile) {
+      const validation = validateUploadedFile(logoFile);
+      if (!validation.valid && validation.error) {
+        const t = await getTranslations("errors");
+        return {
+          success: false as const,
+          error: t(validation.error as never),
+        };
+      }
+    }
 
     const brandData = await brandService.create(validatedData);
 
     // Background Tasks: Image Upload
-    const logoFile = formData.get("logo") as File | null;
     if (logoFile) {
       after(async () => {
         try {
@@ -115,10 +129,21 @@ export async function updateBrandAction(id: string, formData: FormData) {
     const oldLogo = existingBrand?.logo;
     const newLogoUrl = validatedData.logo;
 
+    const logoFile = formData.get("logo") as File | null;
+    if (logoFile) {
+      const validation = validateUploadedFile(logoFile);
+      if (!validation.valid && validation.error) {
+        const t = await getTranslations("errors");
+        return {
+          success: false as const,
+          error: t(validation.error as never),
+        };
+      }
+    }
+
     const brandData = await brandService.update(validatedData);
 
     // Background Tasks: Image Upload & Cleanup
-    const logoFile = formData.get("logo") as File | null;
     if (logoFile || (oldLogo && oldLogo !== newLogoUrl)) {
       after(async () => {
         try {

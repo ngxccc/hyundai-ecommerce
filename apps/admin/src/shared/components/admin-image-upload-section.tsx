@@ -12,6 +12,8 @@ import { useDropzone, type Accept } from "react-dropzone";
 import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 import { Button } from "@nhatnang/ui/components/ui/button";
+import { toast } from "@nhatnang/ui/components/ui/sonner";
+import { useTranslations } from "next-intl";
 import {
   Card,
   CardContent,
@@ -94,6 +96,7 @@ export const AdminImageUploadSection = ({
   accept = defaultAccept,
   cardClassName,
 }: AdminImageUploadSectionProps) => {
+  const tCloudinary = useTranslations("Cloudinary");
   const [externalUrl, setExternalUrl] = useState("");
 
   const remainingCapacity = useMemo(() => {
@@ -175,7 +178,20 @@ export const AdminImageUploadSection = ({
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: (acceptedFiles) => {
+    onDrop: (acceptedFiles, fileRejections) => {
+      if (fileRejections.length > 0) {
+        const firstRejection = fileRejections[0];
+        const fileError = firstRejection?.errors?.[0];
+        if (fileError) {
+          if (fileError.code === "file-too-large") {
+            toast.error(tCloudinary("fileTooLarge"));
+          } else if (fileError.code === "file-invalid-type") {
+            toast.error(tCloudinary("invalidMimeType"));
+          } else {
+            toast.error(fileError.message);
+          }
+        }
+      }
       void handleDrop(acceptedFiles);
     },
     accept,

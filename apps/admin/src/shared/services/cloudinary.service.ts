@@ -8,26 +8,49 @@ cloudinary.config({
   api_secret: env.CLOUDINARY_API_SECRET,
 });
 
+export const validateUploadedFile = (
+  file: unknown,
+): { valid: boolean; error?: "fileTooLarge" | "invalidMimeType" } => {
+  if (!(file instanceof File)) {
+    return { valid: true };
+  }
+  if (file.size > 10 * 1024 * 1024) {
+    return { valid: false, error: "fileTooLarge" };
+  }
+  if (!file.type.startsWith("image/")) {
+    return { valid: false, error: "invalidMimeType" };
+  }
+  return { valid: true };
+};
+
 export const uploadToCloudinary = async (
   item: File | string,
   folder: string,
 ): Promise<string | null> => {
   try {
     if (item instanceof File) {
+      // File size limit validation (max 10MB)
+      if (item.size > 10 * 1024 * 1024) {
+        return null;
+      }
+
+      // File MIME-type validation (images only)
+      if (!item.type.startsWith("image/")) {
+        return null;
+      }
+
       const buffer = Buffer.from(await item.arrayBuffer());
 
-      const result = await new Promise<{ secure_url: string }>(
-        (resolve, reject) => {
-          cloudinary.uploader
-            .upload_stream({ folder }, (error, result) => {
-              if (error) reject(new Error(error.message));
-              else if (result) resolve(result);
-              else reject(new Error("Upload failed"));
-            })
-            .end(buffer);
-        },
-      );
+      const { promise, resolve, reject } = Promise.withResolvers<{ secure_url: string }>();
+      cloudinary.uploader
+        .upload_stream({ folder }, (error, result) => {
+          if (error) reject(new Error(error.message));
+          else if (result) resolve(result);
+          else reject(new Error("Upload failed"));
+        })
+        .end(buffer);
 
+      const result = await promise;
       return result.secure_url;
     }
 
@@ -72,10 +95,21 @@ export const getPublicIdFromUrl = (url: string): string | null => {
   }
 };
 
-export const deleteFromCloudinary = async (url: string): Promise<boolean> => {
+export const deleteFromCloudinary = async (
+  url: string,
+  expectedFolder?: string,
+): Promise<boolean> => {
   try {
     const publicId = getPublicIdFromUrl(url);
     if (!publicId) return false;
+
+    // Path traversal / folder mismatch protection
+    if (expectedFolder) {
+      if (!publicId.startsWith(`${expectedFolder}/`)) {
+        console.warn(`Folder mismatch for Cloudinary deletion. Expected: ${expectedFolder}, got publicId: ${publicId}`);
+        return false;
+      }
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await cloudinary.uploader.destroy(publicId);

@@ -9,7 +9,7 @@
     "rateLimitExceeded": "Vượt quá giới hạn lượt yêu cầu. Vui lòng đợi trước khi thử lại.",
     "unauthorized": "Truy cập không được phép. Yêu cầu quyền Admin.",
     "invalidFolder": "Thư mục không hợp lệ (nguy cơ tấn công di chuyển đường dẫn)",
-    "fileTooLarge": "Kích thước tệp quá lớn (tối đa 5MB)",
+    "fileTooLarge": "Kích thước tệp quá lớn (tối đa 10MB)",
     "invalidMimeType": "Định dạng tệp không hợp lệ. Chỉ cho phép tải lên hình ảnh.",
     "ssrfDetected": "Phát hiện URL nguồn tải lên không hợp lệ."
   },
@@ -661,6 +661,7 @@
     "updateOrderStatusFailed": "Cập nhật trạng thái đơn hàng thất bại",
     "validationError": "Dữ liệu không hợp lệ",
     "orderNotFound": "Không tìm thấy đơn đặt hàng",
+    "rateLimitExceeded": "Vượt quá giới hạn lượt yêu cầu. Vui lòng đợi trước khi thử lại.",
     "createQuoteFailed": "Tạo báo giá thất bại",
     "quoteNotFound": "Không tìm thấy báo giá",
     "quoteAlreadyApproved": "Báo giá đã được phê duyệt trước đó",

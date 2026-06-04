@@ -9,7 +9,7 @@
     "rateLimitExceeded": "Rate limit exceeded. Please wait before trying again.",
     "unauthorized": "Unauthorized access. Admin privileges required.",
     "invalidFolder": "Invalid folder prefix path traversal risk",
-    "fileTooLarge": "File is too large (maximum 5MB)",
+    "fileTooLarge": "File is too large (maximum 10MB)",
     "invalidMimeType": "Invalid file type. Only image uploads are allowed.",
     "ssrfDetected": "Invalid upload source URL detected."
   },
@@ -657,6 +657,7 @@
     "updateOrderStatusFailed": "Failed to update order status",
     "validationError": "Validation error",
     "orderNotFound": "Order not found",
+    "rateLimitExceeded": "Rate limit exceeded. Please wait before trying again.",
     "createQuoteFailed": "Failed to create quote",
     "createShippingBidFailed": "Failed to create shipping bid",
     "quoteNotFound": "Quote not found",

@@ -14,7 +14,11 @@ import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
-import { uploadToCloudinary, deleteFromCloudinary } from "@/shared/services";
+import {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+  validateUploadedFile,
+} from "@/shared/services";
 
 export const createProductAction = async (formData: FormData) => {
   try {
@@ -37,12 +41,22 @@ export const createProductAction = async (formData: FormData) => {
     }
 
     const validatedData = parsed.data;
+    const rawImages = formData.getAll("images") as (File | string)[];
+    for (const item of rawImages) {
+      const validation = validateUploadedFile(item);
+      if (!validation.valid && validation.error) {
+        const t = await getTranslations("errors");
+        return {
+          success: false as const,
+          error: t(validation.error as never),
+        };
+      }
+    }
 
     const newProduct = await productService.create(validatedData);
 
     // Background Image Upload
     if (newProduct?.id) {
-      const rawImages = formData.getAll("images") as (File | string)[];
       if (rawImages.length > 0) {
         after(async () => {
           try {
@@ -111,18 +125,28 @@ export async function updateProductAction(id: string, formData: FormData) {
       (url) => !(validatedData.images ?? []).includes(url),
     );
 
+    const rawImages = formData.getAll("images") as (File | string)[];
+    for (const item of rawImages) {
+      const validation = validateUploadedFile(item);
+      if (!validation.valid && validation.error) {
+        const t = await getTranslations("errors");
+        return {
+          success: false as const,
+          error: t(validation.error as never),
+        };
+      }
+    }
+
     const updatedProduct = await productService.update(id, validatedData);
 
     // Background Tasks: Image Upload & Cleanup
-    const rawImages = formData.getAll("images") as (File | string)[];
     if (rawImages.length > 0 || imagesToDelete.length > 0) {
       after(async () => {
         try {
           // Cleanup removed images
           for (const url of imagesToDelete) {
-            await deleteFromCloudinary(url);
+            await deleteFromCloudinary(url, "products");
           }
-
           // Upload new images
           const uploadedUrls: string[] = [];
           for (const item of rawImages) {

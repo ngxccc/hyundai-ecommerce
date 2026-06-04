@@ -9,7 +9,7 @@ import {
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import type { ProductService } from "@nhatnang/database/services";
 
-import "@/shared/tests/action-mocks";
+import "@nhatnang/shared/testing/action-mocks";
 
 import type { TProduct } from "@nhatnang/database/schemas";
 import type { TCreateProductInput } from "@nhatnang/database/validators";
@@ -169,6 +169,7 @@ describe("product.actions", () => {
 
     expect(deleteFromCloudinary).toHaveBeenCalledWith(
       "https://res.cloudinary.com/demo/image/upload/v1/old-2.jpg",
+      "products",
     );
   });
 });

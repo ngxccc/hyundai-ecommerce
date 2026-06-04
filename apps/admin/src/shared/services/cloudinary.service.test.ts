@@ -77,5 +77,27 @@ describe("Cloudinary Service", () => {
 
       expect(result).toBe(false);
     });
+
+    test("returns false if expectedFolder mismatch", async () => {
+      const result = await deleteFromCloudinary(
+        "https://res.cloudinary.com/demo/image/upload/v123/products/img.jpg",
+        "categories",
+      );
+      expect(result).toBe(false);
+      expect(cloudinary.uploader.destroy).not.toHaveBeenCalled();
+    });
+
+    test("calls destroy if expectedFolder matches", async () => {
+      (
+        cloudinary.uploader.destroy as unknown as Mock<(...args: any[]) => any>
+      ).mockResolvedValueOnce({ result: "ok" });
+
+      const result = await deleteFromCloudinary(
+        "https://res.cloudinary.com/demo/image/upload/v123/products/img.jpg",
+        "products",
+      );
+      expect(result).toBe(true);
+      expect(cloudinary.uploader.destroy).toHaveBeenCalledWith("products/img");
+    });
   });
 });

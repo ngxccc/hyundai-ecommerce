@@ -2,7 +2,7 @@
 
 Date: 04-06-26
 Complexity: Simple
-Status: ⏳ IN_PROGRESS (Phase 1 Complete)
+Status: ✅ COMPLETED
 
 ## Overview
 
@@ -68,13 +68,13 @@ Each phase is considered complete when:
 
 ## Acceptance Criteria
 
-- [ ] Rate limiting blocks clients exceeding limits on login, registration, and upload endpoints.
-- [ ] Cloudinary upload and signing APIs verify that the user is authenticated and has the `admin` role.
-- [ ] Cloudinary upload rejects files exceeding 5MB or files that are not images.
-- [ ] SSRF mitigation prevents non-http(s) protocols and local/private loopback IP addresses from being proxy-uploaded.
-- [ ] Direct call of `deleteFromCloudinary` with a mismatched folder prefix returns `false` and does not call Cloudinary API.
-- [ ] No UI error strings are hardcoded; all error messages utilize `vi.json` and `en.json` keys.
-- [ ] Linting, building, and tests pass successfully.
+- [x] Rate limiting blocks clients exceeding limits on login, registration, and upload endpoints.
+- [x] Cloudinary upload and signing APIs verify that the user is authenticated and has the `admin` role.
+- [x] Cloudinary upload rejects files exceeding 5MB or files that are not images.
+- [x] SSRF mitigation prevents non-http(s) protocols and local/private loopback IP addresses from being proxy-uploaded.
+- [x] Direct call of `deleteFromCloudinary` with a mismatched folder prefix returns `false` and does not call Cloudinary API.
+- [x] No UI error strings are hardcoded; all error messages utilize `vi.json` and `en.json` keys.
+- [x] Linting, building, and tests pass successfully.
 
 ## Phased Delivery Plan
 
@@ -87,17 +87,17 @@ Each phase is considered complete when:
 
 ### Phase 2: Cloudinary Upload, Sign & Service Remediation
 
-- **Task**: Protect `/api/cloudinary/upload` and `/api/cloudinary/sign` routes with `getCachedSession` admin check.
-- **Task**: Add MIME-type and size validation to file uploads.
-- **Task**: Implement IP-based rate limiting on upload routes and SSRF safety check on URL upload.
-- **Task**: Update `deleteFromCloudinary` in `cloudinary.service.ts` to require and validate folder prefixes.
-- **Verification**: Verify that unauthorized requests to sign or upload return 401.
+- [x] **Task**: Protect `/api/cloudinary/upload` and `/api/cloudinary/sign` routes with `getCachedSession` admin check.
+- [x] **Task**: Add MIME-type and size validation to file uploads.
+- [x] **Task**: Implement IP-based rate limiting on upload routes and SSRF safety check on URL upload.
+- [x] **Task**: Update `deleteFromCloudinary` in `cloudinary.service.ts` to require and validate folder prefixes.
+- [x] **Verification**: Verify that unauthorized requests to sign or upload return 401.
 
 ### Phase 3: Update Actions & Rate Limit Enforcement
 
-- **Task**: Add rate-limiting checks using client IP to storefront login, storefront register, and admin login server actions.
-- **Task**: Pass expected folders `products` and `categories` in product and category deletion actions.
-- **Verification**: Execute all test suites and verify that the build compiles cleanly.
+- [x] **Task**: Add rate-limiting checks using client IP to storefront login, storefront register, and admin login server actions.
+- [x] **Task**: Pass expected folders `products` and `categories` in product and category deletion actions.
+- [x] **Verification**: Execute all test suites and verify that the build compiles cleanly.
 
 ## Verification Evidence
 

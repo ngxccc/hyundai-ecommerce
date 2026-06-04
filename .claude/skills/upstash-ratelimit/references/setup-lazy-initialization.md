@@ -67,7 +67,7 @@ function getRateLimiter() {
 
 export async function POST(req: Request) {
   const limiter = getRateLimiter();
-  
+
   if (limiter) {
     const { success } = await limiter.limit("client-ip");
     if (!success) return new Response("Too Many Requests", { status: 429 });
@@ -78,6 +78,7 @@ export async function POST(req: Request) {
 ```
 
 **When NOT to use this pattern:**
-- Dedicated containerized Node.js servers (e.g., Express on Docker) where env vars are guaranteed to be present from startup.
 
-Reference: [Upstash Ratelimit - Getting Started](https://upstash.com/docs/redis/sdks/ratelimit-ts/gettingstarted)
+- Dedicated containerized Node.js servers (e.g., Express on Docker) where env vars are guaranteed to be present from startup.
+- Environments where environment variable validation is already enforced at the application level during startup/build-time (e.g., via a schema-enforced configuration library like `t3-env` or `zod` schema validator in `apps/admin/src/env.ts` and `apps/storefront/src/env.ts`), ensuring these credentials are never missing in active environments. In such cases, lazy client connection (using `Redis.fromEnv()`) is sufficient, and local mock testing is handled by mocking the rate limit functions directly.
+  Reference: [Upstash Ratelimit - Getting Started](https://upstash.com/docs/redis/sdks/ratelimit-ts/gettingstarted)
