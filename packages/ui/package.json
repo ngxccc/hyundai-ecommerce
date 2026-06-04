@@ -12,6 +12,7 @@
     "./components/reui/*": "./src/components/reui/*.tsx",
     "./editor": "./src/editor/index.tsx",
     "./lib/*": "./src/lib/*.ts",
+    "./hooks/*": "./src/hooks/*.ts",
     "./globals.css": "./src/styles/globals.css"
   },
   "dependencies": {
