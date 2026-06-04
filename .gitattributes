@@ -4,4 +4,5 @@
 .claude/** linguist-vendored linguist-detectable=false
 .agents/** linguist-vendored linguist-detectable=false
 .codex/** linguist-vendored linguist-detectable=false
+.omp/** linguist-vendored linguist-detectable=false
 process/riper5-plugin/** linguist-vendored linguist-detectable=false
