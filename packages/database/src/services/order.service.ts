@@ -1,6 +1,6 @@
 import type { IOrderService } from "./interfaces";
-import { and, eq, sql } from "drizzle-orm";
-import { db, type IDatabase } from "../client";
+import { and, eq } from "drizzle-orm";
+import { type IDatabase } from "../client";
 import {
   orders,
   shippingBids,
@@ -24,25 +24,6 @@ const complexOrderQueryConfig = {
 
 export class OrderService implements IOrderService {
   constructor(protected readonly db: IDatabase) {}
-
-  // PREPARED STATEMENTS
-  static getOrderByIdStmt = db
-    .select()
-    .from(orders)
-    .where(eq(orders.id, sql.placeholder("id")))
-    .prepare("get_order_by_id");
-
-  static getOrdersByUserIdStmt = db
-    .select()
-    .from(orders)
-    .where(eq(orders.userId, sql.placeholder("userId")))
-    .prepare("get_orders_by_user_id");
-
-  static getOrdersByStatusStmt = db
-    .select()
-    .from(orders)
-    .where(eq(orders.status, sql.placeholder("status")))
-    .prepare("get_orders_by_status");
 
   // NORMAL QUERIES
   async list(filters?: { status?: TOrder["status"] }): Promise<ComplexOrder[]> {

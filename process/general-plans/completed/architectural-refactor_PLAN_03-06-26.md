@@ -11,7 +11,7 @@
 
 This plan details the roadmap to resolve architectural debt, violations of software engineering principles (DRY, Separation of Concerns, SOLID, KISS, YAGNI), and package dependency issues discovered during the workspace-wide audit. The goal is to clean up code duplication, enforce strict boundary layers, and improve test isolation without breaking existing functionalities.
 
-**Status**: ⏳ IN_PROGRESS
+**Status**: ✅ VERIFIED
 
 ---
 
@@ -170,7 +170,7 @@ After each phase, document:
 - Phase 3: ✅ VERIFIED
 - Phase 4: ✅ VERIFIED
 - Phase 5: ✅ VERIFIED
-- Phase 6: ⏳ PLANNED
+- Phase 6: ✅ VERIFIED
 
 ---
 
@@ -249,10 +249,10 @@ After each phase, document:
 - [x] **RFC-005: Dependency Injection & Interfaces**
   - [x] Refactor `AuthService` constructor to inject database client and decouple static auth calls
   - [x] Declare and standardize service interfaces in packages/database/src/services/interfaces.ts
-- [ ] **RFC-006: YAGNI Clean Up**
-  - [ ] Remove unused prepared statements inside `packages/database/src/services/order.service.ts`
-  - [ ] Remove or align unused `ProductSpecs` inside `@nhatnang/types/src/product.types.ts`
-  - [ ] Final compilation and verification check
+- [x] **RFC-006: YAGNI Clean Up**
+  - [x] Remove unused prepared statements inside `packages/database/src/services/order.service.ts`
+  - [x] Remove or align unused `ProductSpecs` inside `packages/types/src/product.types.ts`
+  - [x] Final compilation and verification check
 
 ## Touchpoints
 
