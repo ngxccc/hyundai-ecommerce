@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useDebounce } from "@nhatnang/ui/hooks/use-debounce";
 import { useTranslations } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
@@ -58,6 +59,12 @@ export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
   const [minPower, setMinPower] = useState(searchParams.get("minPower") ?? "");
   const [maxPower, setMaxPower] = useState(searchParams.get("maxPower") ?? "");
   const [voltage, setVoltage] = useState(searchParams.get("voltage") ?? "");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedEngineBrand = useDebounce(engineBrand, 500);
+  const debouncedAlternatorBrand = useDebounce(alternatorBrand, 500);
+  const debouncedMinPower = useDebounce(minPower, 500);
+  const debouncedMaxPower = useDebounce(maxPower, 500);
+  const debouncedVoltage = useDebounce(voltage, 500);
 
   const handleResetFilters = useCallback(() => {
     setSearchTerm("");
@@ -70,39 +77,36 @@ export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
   }, [pathname, router]);
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      const currentSearch = searchParams.get("search") ?? "";
-      if (searchTerm !== currentSearch)
-        handleFilterChange("search", searchTerm);
+    const currentSearch = searchParams.get("search") ?? "";
+    if (debouncedSearchTerm !== currentSearch)
+      handleFilterChange("search", debouncedSearchTerm);
 
-      const currentEngineBrand = searchParams.get("engineBrand") ?? "";
-      if (engineBrand !== currentEngineBrand)
-        handleFilterChange("engineBrand", engineBrand);
+    const currentEngineBrand = searchParams.get("engineBrand") ?? "";
+    if (debouncedEngineBrand !== currentEngineBrand)
+      handleFilterChange("engineBrand", debouncedEngineBrand);
 
-      const currentAlternatorBrand = searchParams.get("alternatorBrand") ?? "";
-      if (alternatorBrand !== currentAlternatorBrand)
-        handleFilterChange("alternatorBrand", alternatorBrand);
+    const currentAlternatorBrand = searchParams.get("alternatorBrand") ?? "";
+    if (debouncedAlternatorBrand !== currentAlternatorBrand)
+      handleFilterChange("alternatorBrand", debouncedAlternatorBrand);
 
-      const currentMinPower = searchParams.get("minPower") ?? "";
-      if (minPower !== currentMinPower)
-        handleFilterChange("minPower", minPower);
+    const currentMinPower = searchParams.get("minPower") ?? "";
+    if (debouncedMinPower !== currentMinPower)
+      handleFilterChange("minPower", debouncedMinPower);
 
-      const currentMaxPower = searchParams.get("maxPower") ?? "";
-      if (maxPower !== currentMaxPower)
-        handleFilterChange("maxPower", maxPower);
+    const currentMaxPower = searchParams.get("maxPower") ?? "";
+    if (debouncedMaxPower !== currentMaxPower)
+      handleFilterChange("maxPower", debouncedMaxPower);
 
-      const currentVoltage = searchParams.get("voltage") ?? "";
-      if (voltage !== currentVoltage) handleFilterChange("voltage", voltage);
-    }, 500);
-
-    return () => clearTimeout(delayDebounceFn);
+    const currentVoltage = searchParams.get("voltage") ?? "";
+    if (debouncedVoltage !== currentVoltage)
+      handleFilterChange("voltage", debouncedVoltage);
   }, [
-    searchTerm,
-    engineBrand,
-    alternatorBrand,
-    minPower,
-    maxPower,
-    voltage,
+    debouncedSearchTerm,
+    debouncedEngineBrand,
+    debouncedAlternatorBrand,
+    debouncedMinPower,
+    debouncedMaxPower,
+    debouncedVoltage,
     searchParams,
     handleFilterChange,
   ]);

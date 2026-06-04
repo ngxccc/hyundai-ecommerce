@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useDebounce } from "@nhatnang/ui/hooks/use-debounce";
 import { useTranslations } from "next-intl";
 import { useRouter, usePathname, Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
@@ -51,16 +52,14 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
     [pathname, router, searchParams],
   );
 
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      const currentSearch = searchParams.get("search") ?? "";
-      if (searchTerm !== currentSearch) {
-        handleFilterChange("search", searchTerm);
-      }
-    }, 500);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, handleFilterChange, searchParams]);
+  useEffect(() => {
+    const currentSearch = searchParams.get("search") ?? "";
+    if (debouncedSearchTerm !== currentSearch) {
+      handleFilterChange("search", debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm, handleFilterChange, searchParams]);
 
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
