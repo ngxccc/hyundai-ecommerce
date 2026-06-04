@@ -1,0 +1,171 @@
+import type {
+  TBrand,
+  TCategory,
+  TNewProduct,
+  TProduct,
+  TUser,
+  TNewOrder,
+  TOrder,
+  TNewShippingBid,
+  TShippingBid,
+  TNewQuote,
+  TNewQuoteItem,
+  TQuoteItem,
+  TNewQuoteMessage,
+  TQuoteMessage,
+  TQuote,
+  TNewDealerTier,
+  TDealerTier,
+  TWarehouse,
+  TWarehouseStock,
+} from "../schemas";
+
+import type {
+  TCreateBrandInput,
+  TUpdateBrandInput,
+  TCreateCategoryInput,
+  TUpdateCategoryInput,
+  TCreateWarehouseInput,
+  TUpdateWarehouseInput,
+  TUpdateWarehouseStockInput,
+} from "../validators";
+
+import type { ComplexOrder } from "./order.service";
+import type { ComplexQuote, QuoteListItem } from "./quotes.service";
+
+// --- Auth Service Interfaces ---
+export interface LoginOptions {
+  headers?: HeadersInit;
+  callbackURL?: string;
+}
+
+export interface RegisterOptions {
+  callbackURL?: string;
+}
+
+export interface IAuthService<TLoginForm = unknown, TRegisterForm = unknown> {
+  loginEmail(
+    data: TLoginForm,
+    options?: LoginOptions,
+  ): Promise<{ userId: string }>;
+  register(
+    data: TRegisterForm,
+    options?: RegisterOptions,
+  ): Promise<{ userId: string }>;
+}
+
+// --- Brand Service Interfaces ---
+export interface IBrandService {
+  getAll(): Promise<TBrand[]>;
+  getById(id: string): Promise<TBrand | undefined>;
+  create(input: TCreateBrandInput): Promise<TBrand>;
+  update(input: TUpdateBrandInput): Promise<TBrand>;
+  delete(id: string): Promise<boolean>;
+}
+
+// --- Category Service Interfaces ---
+export interface ICategoryService {
+  getAll(): Promise<TCategory[]>;
+  getById(id: string): Promise<TCategory | undefined>;
+  create(input: TCreateCategoryInput): Promise<TCategory>;
+  update(input: TUpdateCategoryInput): Promise<TCategory>;
+  delete(id: string): Promise<boolean>;
+}
+
+// --- Product Service Interfaces ---
+export type TUpdateProductData = Partial<{
+  [K in keyof TNewProduct]: TNewProduct[K] | undefined;
+}>;
+
+export interface IProductService {
+  create(data: TNewProduct): Promise<TProduct | undefined>;
+  update(id: string, data: TUpdateProductData): Promise<TProduct | undefined>;
+  delete(id: string): Promise<boolean>;
+  getById(id: string): Promise<TProduct | undefined>;
+  getAll(limit?: number, cursor?: { after?: string; before?: string }): unknown;
+}
+
+// --- Warehouse Service Interfaces ---
+export interface IWarehouseService {
+  getAll(): Promise<TWarehouse[]>;
+  getById(id: string): Promise<TWarehouse | undefined>;
+  create(data: TCreateWarehouseInput): Promise<TWarehouse>;
+  update(data: TUpdateWarehouseInput): Promise<TWarehouse>;
+  delete(id: string): Promise<boolean>;
+}
+
+// --- Warehouse Stock Service Interfaces ---
+export interface IWarehouseStockService {
+  setStock(stockData: TUpdateWarehouseStockInput): Promise<TWarehouseStock>;
+  syncTotalStock(productId: string): Promise<void>;
+  getByProductId(productId: string): Promise<TWarehouseStock[]>;
+}
+
+// --- User Service Interfaces ---
+export interface IUserService {
+  findByPhone(phone: string): Promise<{ id: string } | undefined>;
+  findByEmail(email: string): Promise<{ id: string } | undefined>;
+  checkDuplicateUser(
+    email: string,
+    phone: string,
+  ): Promise<{ email: string; phone: string | null } | undefined>;
+  update(id: string, data: Partial<TUser>): Promise<TUser | undefined>;
+  list(filters?: {
+    role?: TUser["role"];
+    businessType?: TUser["businessType"];
+  }): Promise<TUser[]>;
+}
+
+// --- Order Service Interfaces ---
+export interface IOrderService {
+  list(filters?: { status?: TOrder["status"] }): Promise<ComplexOrder[]>;
+  createOrder(data: TNewOrder): Promise<TOrder | undefined>;
+  updateOrderStatus(
+    id: string,
+    status: TOrder["status"],
+  ): Promise<TOrder | undefined>;
+  getComplexOrder(orderId: string): Promise<ComplexOrder | undefined>;
+  createShippingBid(data: TNewShippingBid): Promise<TShippingBid | undefined>;
+  selectWinningBid(
+    orderId: string,
+    bidId: string,
+  ): Promise<{ updatedOrder: TOrder; selectedBid: TShippingBid }>;
+}
+
+// --- Quotes Service Interfaces ---
+export interface IQuotesService {
+  createQuote(
+    data: TNewQuote,
+    items: Omit<TNewQuoteItem, "quoteId">[],
+  ): Promise<TQuote>;
+  getComplexQuote(quoteId: string): Promise<ComplexQuote | undefined>;
+  listQuotes(filters?: {
+    userId?: string;
+    status?: TQuote["status"];
+  }): Promise<QuoteListItem[]>;
+  updateQuoteStatus(
+    id: string,
+    status: TQuote["status"],
+  ): Promise<TQuote | undefined>;
+  addQuoteMessage(data: TNewQuoteMessage): Promise<TQuoteMessage | undefined>;
+  updateQuoteItemPrice(
+    itemId: string,
+    agreedPrice: string,
+  ): Promise<TQuoteItem | undefined>;
+  approveAndConvertToOrder(
+    quoteId: string,
+    adminUserId: string,
+  ): Promise<{ orderId: string }>;
+}
+
+// --- Dealer Tier Service Interfaces ---
+export interface IDealerTierService {
+  create(data: TNewDealerTier): Promise<TDealerTier>;
+  update(
+    id: string,
+    data: Partial<TNewDealerTier>,
+  ): Promise<TDealerTier | undefined>;
+  getAll(): Promise<TDealerTier[]>;
+  getById(id: string): Promise<TDealerTier | undefined>;
+  delete(id: string): Promise<boolean>;
+}

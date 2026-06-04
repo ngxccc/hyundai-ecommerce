@@ -1,4 +1,4 @@
-import type { ICategoryService } from "./category.service.interface";
+import type { ICategoryService } from "./interfaces";
 import { categories, type TCategory } from "../schemas";
 import { type IDatabase } from "../client";
 import { eq } from "drizzle-orm";

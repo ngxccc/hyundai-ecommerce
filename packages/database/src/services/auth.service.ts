@@ -3,7 +3,7 @@ import type {
   IAuthService,
   LoginOptions,
   RegisterOptions,
-} from "./auth.service.interface";
+} from "./interfaces";
 
 import {
   AUTH_ERROR_CODES,
@@ -30,7 +30,10 @@ const mapLoginAuthErrorCode = (
 };
 
 export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
-  constructor(protected readonly db?: IDatabase) {}
+  constructor(
+    protected readonly db: IDatabase,
+    protected readonly betterAuth = auth,
+  ) {}
 
   async loginEmail(
     data: TLoginForm,
@@ -38,7 +41,7 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
   ): Promise<{ userId: string }> {
     const { email, password } = data;
     try {
-      const result = await auth.api.signInEmail({
+      const result = await this.betterAuth.api.signInEmail({
         body: {
           email,
           password,
@@ -77,7 +80,7 @@ export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
         province,
       } = data;
 
-      const result = await auth.api.signUpEmail({
+      const result = await this.betterAuth.api.signUpEmail({
         body: {
           email,
           password,
