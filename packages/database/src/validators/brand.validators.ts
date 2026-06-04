@@ -1,33 +1,21 @@
 import { z } from "zod";
 
-export type TBrandValidationMessageKey =
-  | "validation.nameRequired"
-  | "validation.slugRequired"
-  | "validation.invalidUrl";
-
-export type IBrandTranslator = (key: TBrandValidationMessageKey) => string;
-
-export const getCreateBrandSchema = (t: IBrandTranslator) =>
-  z.object({
-    name: z.string().min(1, { message: t("validation.nameRequired") }),
-    slug: z.string().min(1, { message: t("validation.slugRequired") }),
-    logo: z
-      .url({ message: t("validation.invalidUrl") })
-      .optional()
-      .or(z.literal(""))
-      .nullable(),
+export const createBrandSchema = z
+  .object({
+    name: z.string().min(1, "validation.nameRequired"),
+    slug: z.string().min(1, "validation.slugRequired"),
+    logo: z.url("validation.invalidUrl").optional().or(z.literal("")).nullable(),
     description: z.string().optional().or(z.literal("")).nullable(),
     isActive: z.boolean().default(true),
-  });
+  })
+  .strict();
 
-export const getUpdateBrandSchema = (t: IBrandTranslator) =>
-  getCreateBrandSchema(t).partial().extend({
-    id: z.uuid(),
-  });
+export const updateBrandSchema = createBrandSchema
+  .partial()
+  .extend({
+    id: z.uuid("validation.invalidId"),
+  })
+  .strict();
 
-export type TCreateBrandInput = z.infer<
-  ReturnType<typeof getCreateBrandSchema>
->;
-export type TUpdateBrandInput = z.infer<
-  ReturnType<typeof getUpdateBrandSchema>
->;
+export type TCreateBrandInput = z.infer<typeof createBrandSchema>;
+export type TUpdateBrandInput = z.infer<typeof updateBrandSchema>;

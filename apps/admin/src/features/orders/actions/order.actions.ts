@@ -6,14 +6,11 @@ import { type TOrder } from "@nhatnang/database/schemas";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import {
-  getUpdateOrderStatusSchema,
-  getSelectShippingBidSchema,
-  getAddShippingBidSchema,
+  updateOrderStatusSchema,
+  selectShippingBidSchema,
+  addShippingBidSchema,
 } from "@nhatnang/database/validators";
-import type {
-  TAddShippingBidInput,
-  TOrderValidationMessageKey,
-} from "@nhatnang/database/validators";
+import type { TAddShippingBidInput } from "@nhatnang/database/validators";
 
 export const updateOrderStatusAction = async (
   orderId: string,
@@ -24,7 +21,7 @@ export const updateOrderStatusAction = async (
     await requireAuth();
 
     // Validate inputs
-    const parsed = getUpdateOrderStatusSchema().safeParse({ orderId, status });
+    const parsed = updateOrderStatusSchema.safeParse({ orderId, status });
     if (!parsed.success) {
       return {
         success: false as const,
@@ -74,7 +71,7 @@ export const selectShippingBidAction = async (
     await requireAuth();
 
     // Validate inputs
-    const parsed = getSelectShippingBidSchema().safeParse({ orderId, bidId });
+    const parsed = selectShippingBidSchema.safeParse({ orderId, bidId });
     if (!parsed.success) {
       return {
         success: false as const,
@@ -127,18 +124,26 @@ export const selectShippingBidAction = async (
 export const addShippingBidAction = async (data: TAddShippingBidInput) => {
   const tErrors = await getTranslations("errors");
   const tAdminOrders = await getTranslations("AdminOrders");
-  const tValidator = (key: TOrderValidationMessageKey) => tAdminOrders(key);
 
   try {
     await requireAuth();
 
     // Validate inputs
-    const parsed = getAddShippingBidSchema(tValidator).safeParse(data);
+    const parsed = addShippingBidSchema.safeParse(data);
     if (!parsed.success) {
-      const firstError = parsed.error.issues[0]?.message;
+      const firstIssue = parsed.error.issues[0];
+      const field = firstIssue?.path[0] as string;
+      let message = tErrors("validationError");
+      if (firstIssue) {
+        if (field === "vendorName") {
+          message = tAdminOrders("shippingBidsVendorNameRequired");
+        } else if (field === "quotedPrice") {
+          message = tAdminOrders("shippingBidsQuotedPriceRequired");
+        }
+      }
       return {
         success: false as const,
-        error: firstError ?? tErrors("validationError"),
+        error: message,
       };
     }
 

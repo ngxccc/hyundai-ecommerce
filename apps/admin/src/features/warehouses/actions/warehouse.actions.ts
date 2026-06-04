@@ -4,27 +4,28 @@ import { revalidatePath } from "next/cache";
 import { warehouseService } from "@nhatnang/database/services";
 import { mapWarehouseToDTO } from "@nhatnang/database/dtos";
 import {
-  getCreateWarehouseSchema,
-  getUpdateWarehouseSchema,
+  createWarehouseSchema,
+  updateWarehouseSchema,
   type TCreateWarehouseInput,
   type TUpdateWarehouseInput,
 } from "@nhatnang/database/validators";
+import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { z } from "zod";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 
 export const createWarehouseAction = async (input: TCreateWarehouseInput) => {
   try {
     await requireAuth();
-    const schema = getCreateWarehouseSchema((key) => key);
-    const parsed = await schema.safeParseAsync(input);
-
+    const parsed = await createWarehouseSchema.safeParseAsync(input);
     if (!parsed.success) {
+      const t = await getTranslations("errors");
       return {
         success: false,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-        fieldErrors: z.flattenError(parsed.error).fieldErrors,
+        fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
+          t(key as never),
+        ),
       };
     }
 
@@ -61,14 +62,15 @@ export async function updateWarehouseAction(
 ) {
   try {
     await requireAuth();
-    const schema = getUpdateWarehouseSchema((key) => key);
-    const parsed = await schema.safeParseAsync({ ...input, id });
-
+    const parsed = await updateWarehouseSchema.safeParseAsync({ ...input, id });
     if (!parsed.success) {
+      const t = await getTranslations("errors");
       return {
         success: false,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-        fieldErrors: z.flattenError(parsed.error).fieldErrors,
+        fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
+          t(key as never),
+        ),
       };
     }
 

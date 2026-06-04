@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm, type Resolver } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { useTranslations } from "next-intl";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
 import { useRouter } from "next/navigation";
@@ -18,10 +18,7 @@ import {
   type TCategory,
   type TBrand,
 } from "@nhatnang/database/schemas";
-import {
-  createProductSchema,
-  type TCreateProductInput,
-} from "@nhatnang/database/validators";
+import { type TCreateProductInput, createProductSchema } from "@nhatnang/database/validators";
 
 import {
   ProductGeneralInfo,
@@ -64,9 +61,7 @@ export const ProductForm = ({
   } satisfies TCreateProductInput;
 
   const form = useForm<TCreateProductInput>({
-    resolver: zodResolver(
-      createProductSchema(t),
-    ) as Resolver<TCreateProductInput>,
+    resolver: translatedZodResolver(createProductSchema, t),
     defaultValues: {
       name: initialData?.name ?? "",
       slug: initialData?.slug ?? "",

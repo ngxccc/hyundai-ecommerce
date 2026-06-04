@@ -1,8 +1,8 @@
 "use client";
 
 import { useTransition, type ReactNode } from "react";
-import { useForm, type Resolver } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { useTranslations } from "next-intl";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
 import { useRouter } from "next/navigation";
@@ -28,10 +28,7 @@ import {
   CardTitle,
 } from "@nhatnang/ui/components/ui/card";
 import { type TWarehouse } from "@nhatnang/database/schemas";
-import {
-  getCreateWarehouseSchema,
-  type TCreateWarehouseInput,
-} from "@nhatnang/database/validators";
+import { type TCreateWarehouseInput, createWarehouseSchema } from "@nhatnang/database/validators";
 import { Save, Loader2, X, Info } from "lucide-react";
 
 export const WarehouseForm = ({
@@ -48,9 +45,7 @@ export const WarehouseForm = ({
   const isEditing = !!initialData;
 
   const form = useForm<TCreateWarehouseInput>({
-    resolver: zodResolver(
-      getCreateWarehouseSchema(t),
-    ) as Resolver<TCreateWarehouseInput>,
+    resolver: translatedZodResolver(createWarehouseSchema, t),
     defaultValues: {
       name: initialData?.name ?? "",
       streetAddress: initialData?.streetAddress ?? "",

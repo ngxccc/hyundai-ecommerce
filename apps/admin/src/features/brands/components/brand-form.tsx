@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useTransition, type ReactNode } from "react";
-import { useForm, type Resolver } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { useTranslations } from "next-intl";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
 import { useRouter } from "next/navigation";
@@ -26,10 +26,7 @@ import {
   CardTitle,
 } from "@nhatnang/ui/components/ui/card";
 import { type TBrand } from "@nhatnang/database/schemas";
-import {
-  getCreateBrandSchema,
-  type TCreateBrandInput,
-} from "@nhatnang/database/validators";
+import { type TCreateBrandInput, createBrandSchema } from "@nhatnang/database/validators";
 import { Save, Loader2, X, Info } from "lucide-react";
 
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
@@ -52,9 +49,7 @@ export const BrandForm = ({
   const isEditing = !!initialData;
 
   const form = useForm<TCreateBrandInput>({
-    resolver: zodResolver(
-      getCreateBrandSchema(t),
-    ) as Resolver<TCreateBrandInput>,
+    resolver: translatedZodResolver(createBrandSchema, t),
     defaultValues: {
       name: initialData?.name ?? "",
       slug: initialData?.slug ?? "",
@@ -65,7 +60,7 @@ export const BrandForm = ({
   });
 
   const [logoImages, setLogoImages] = useState<AdminImageItem[]>(
-    initialData?.logo ? [initialData.logo] : []
+    initialData?.logo ? [initialData.logo] : [],
   );
 
   const onSubmit = (data: TCreateBrandInput) => {
@@ -112,11 +107,16 @@ export const BrandForm = ({
         if (
           "code" in result &&
           result.code === SYSTEM_ERROR_CODES.VALIDATION_ERROR &&
-          "error" in result && result.error === "validation.slugExists"
+          "error" in result &&
+          result.error === "validation.slugExists"
         ) {
           form.setError("slug", { message: t("validation.slugExists") });
         } else {
-          toast.error("error" in result && result.error ? result.error : t("messages.error"));
+          toast.error(
+            "error" in result && result.error
+              ? result.error
+              : t("messages.error"),
+          );
         }
       }
     });

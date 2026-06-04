@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { Button } from "@/shared/components/ui/button";
@@ -22,16 +22,12 @@ import { Form } from "@/shared/components/ui/form";
 import { registerAction } from "../actions/register.action";
 
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
-import {
-  createRegisterSchema,
-  type TRegisterForm,
-} from "@nhatnang/database/validators";
+import { type TRegisterForm, registerSchema } from "@nhatnang/database/validators";
 
 export const RegisterForm = () => {
   const router = useRouter();
   const t = useTranslations("Register");
   const [isLoading, setIsLoading] = useState(false);
-  const registerSchema = createRegisterSchema(t);
 
   const errorMessages: Record<string, string> = {
     [AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS]: t("validation.emailAlreadyExists"),
@@ -39,7 +35,7 @@ export const RegisterForm = () => {
   };
 
   const form = useForm<TRegisterForm>({
-    resolver: zodResolver(registerSchema),
+    resolver: translatedZodResolver(registerSchema, t),
     shouldUnregister: true,
     defaultValues: {
       name: "",

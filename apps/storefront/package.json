@@ -5,7 +5,7 @@
   "scripts": {
     "analyze": "next experimental-analyze",
     "build": "doppler run -- next build",
-    "dev": "NODE_OPTIONS='--max-old-space-size=4096' doppler run -- next dev",
+    "dev": "doppler run -- next dev",
     "inspect": "bunx @eslint/config-inspector@latest",
     "lint": "eslint . --cache --cache-strategy content --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-strategy content --cache-location .eslintcache",

@@ -1,34 +1,21 @@
 import { z } from "zod";
 
-export type TWarehouseValidationMessageKey =
-  | "validation.nameRequired"
-  | "validation.streetAddressRequired"
-  | "validation.districtRequired"
-  | "validation.cityRequired";
-
-export type IWarehouseTranslator = (
-  key: TWarehouseValidationMessageKey,
-) => string;
-
-export const getCreateWarehouseSchema = (t: IWarehouseTranslator) =>
-  z.object({
-    name: z.string().min(1, { message: t("validation.nameRequired") }),
-    streetAddress: z
-      .string()
-      .min(1, { message: t("validation.streetAddressRequired") }),
-    district: z.string().min(1, { message: t("validation.districtRequired") }),
-    city: z.string().min(1, { message: t("validation.cityRequired") }),
+export const createWarehouseSchema = z
+  .object({
+    name: z.string().min(1, "validation.nameRequired"),
+    streetAddress: z.string().min(1, "validation.streetAddressRequired"),
+    district: z.string().min(1, "validation.districtRequired"),
+    city: z.string().min(1, "validation.cityRequired"),
     isActive: z.boolean().default(true),
-  });
+  })
+  .strict();
 
-export const getUpdateWarehouseSchema = (t: IWarehouseTranslator) =>
-  getCreateWarehouseSchema(t).partial().extend({
-    id: z.uuid(),
-  });
+export const updateWarehouseSchema = createWarehouseSchema
+  .partial()
+  .extend({
+    id: z.uuid("validation.invalidId"),
+  })
+  .strict();
 
-export type TCreateWarehouseInput = z.infer<
-  ReturnType<typeof getCreateWarehouseSchema>
->;
-export type TUpdateWarehouseInput = z.infer<
-  ReturnType<typeof getUpdateWarehouseSchema>
->;
+export type TCreateWarehouseInput = z.infer<typeof createWarehouseSchema>;
+export type TUpdateWarehouseInput = z.infer<typeof updateWarehouseSchema>;

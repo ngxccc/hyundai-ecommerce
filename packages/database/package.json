@@ -40,14 +40,14 @@
     "postgres": "^3.4.9",
     "resend": "^6.12.3",
     "uuid": "^14.0.0",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "@tiptap/core": "^3.23.6"
   },
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/shared": "workspace:*",
     "@nhatnang/types": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
-    "@nhatnang/ui": "workspace:*",
     "@types/bun": "^1",
     "@types/node": "^25",
     "@types/uuid": "^11.0.0",

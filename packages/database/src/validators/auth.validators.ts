@@ -1,32 +1,6 @@
 import { z } from "zod";
 import { businessTypeEnum } from "../schemas/auth.schema";
 
-type TRegisterValidationMessageKey =
-  | "validation.fullNameMin"
-  | "validation.emailInvalid"
-  | "validation.phoneInvalid"
-  | "validation.passwordMin"
-  | "validation.confirmPasswordRequired"
-  | "validation.companyNameRequired"
-  | "validation.companyNameMin"
-  | "validation.taxIdRequired"
-  | "validation.taxIdMin"
-  | "validation.businessTypeRequired"
-  | "validation.provinceRequired"
-  | "validation.provinceMin"
-  | "validation.agreeTermsRequired"
-  | "validation.confirmPasswordMismatch";
-
-type TLoginValidationMessageKey =
-  | "validation.emailRequired"
-  | "validation.passwordRequired";
-
-export type ILoginTranslator = (key: TLoginValidationMessageKey) => string;
-
-export type IRegisterTranslator = (
-  key: TRegisterValidationMessageKey,
-) => string;
-
 const addFieldIssue = (
   ctx: z.RefinementCtx,
   path: "companyName" | "taxId" | "province" | "confirmPassword",
@@ -59,75 +33,74 @@ const validateRequiredTextField = (
   }
 };
 
-export const createRegisterSchema = (t: IRegisterTranslator) =>
-  z
-    .object({
-      name: z.string().min(2, t("validation.fullNameMin")),
-      email: z.email(t("validation.emailInvalid")),
-      phone: z
-        .string()
-        .min(10, t("validation.phoneInvalid"))
-        .max(10, t("validation.phoneInvalid")),
-      password: z.string().min(6, t("validation.passwordMin")),
-      confirmPassword: z
-        .string()
-        .min(1, t("validation.confirmPasswordRequired")),
-      companyName: z.string().optional(),
-      taxId: z.string().optional(),
-      businessType: z.enum(businessTypeEnum.enumValues, {
-        error: t("validation.businessTypeRequired"),
-      }),
-      province: z.string().optional(),
-      agreeTerms: z.boolean().refine((val) => val === true, {
-        error: t("validation.agreeTermsRequired"),
-      }),
-    })
-    .superRefine((data, ctx) => {
-      const isBusinessCustomer = data.businessType !== "end_user";
+export const registerSchema = z
+  .object({
+    name: z.string().min(2, "validation.fullNameMin"),
+    email: z.email("validation.emailInvalid"),
+    phone: z
+      .string()
+      .min(10, "validation.phoneInvalid")
+      .max(10, "validation.phoneInvalid"),
+    password: z.string().min(6, "validation.passwordMin"),
+    confirmPassword: z.string().min(1, "validation.confirmPasswordRequired"),
+    companyName: z.string().optional(),
+    taxId: z.string().optional(),
+    businessType: z.enum(businessTypeEnum.enumValues, {
+      message: "validation.businessTypeRequired",
+    }),
+    province: z.string().optional(),
+    agreeTerms: z.boolean().refine((val) => val === true, {
+      message: "validation.agreeTermsRequired",
+    }),
+  })
+  .strict()
+  .superRefine((data, ctx) => {
+    const isBusinessCustomer = data.businessType !== "end_user";
 
-      if (isBusinessCustomer) {
-        validateRequiredTextField(
-          ctx,
-          data.companyName,
-          "companyName",
-          t("validation.companyNameRequired"),
-          t("validation.companyNameMin"),
-          2,
-        );
+    if (isBusinessCustomer) {
+      validateRequiredTextField(
+        ctx,
+        data.companyName,
+        "companyName",
+        "validation.companyNameRequired",
+        "validation.companyNameMin",
+        2,
+      );
 
-        validateRequiredTextField(
-          ctx,
-          data.taxId,
-          "taxId",
-          t("validation.taxIdRequired"),
-          t("validation.taxIdMin"),
-          8,
-        );
+      validateRequiredTextField(
+        ctx,
+        data.taxId,
+        "taxId",
+        "validation.taxIdRequired",
+        "validation.taxIdMin",
+        8,
+      );
 
-        validateRequiredTextField(
-          ctx,
-          data.province,
-          "province",
-          t("validation.provinceRequired"),
-          t("validation.provinceMin"),
-          2,
-        );
-      }
+      validateRequiredTextField(
+        ctx,
+        data.province,
+        "province",
+        "validation.provinceRequired",
+        "validation.provinceMin",
+        2,
+      );
+    }
 
-      if (data.confirmPassword && data.password !== data.confirmPassword) {
-        addFieldIssue(
-          ctx,
-          "confirmPassword",
-          t("validation.confirmPasswordMismatch"),
-        );
-      }
-    });
-
-export const createLoginSchema = (t: ILoginTranslator) =>
-  z.object({
-    email: z.email(t("validation.emailRequired")),
-    password: z.string().min(1, t("validation.passwordRequired")),
+    if (data.confirmPassword && data.password !== data.confirmPassword) {
+      addFieldIssue(
+        ctx,
+        "confirmPassword",
+        "validation.confirmPasswordMismatch",
+      );
+    }
   });
 
-export type TLoginForm = z.infer<ReturnType<typeof createLoginSchema>>;
-export type TRegisterForm = z.infer<ReturnType<typeof createRegisterSchema>>;
+export const loginSchema = z
+  .object({
+    email: z.email("validation.emailInvalid"),
+    password: z.string().min(1, "validation.passwordRequired"),
+  })
+  .strip();
+
+export type TLoginForm = z.infer<typeof loginSchema>;
+export type TRegisterForm = z.infer<typeof registerSchema>;

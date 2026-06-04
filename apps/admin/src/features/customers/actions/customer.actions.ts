@@ -3,11 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { dealerTierService, userService } from "@nhatnang/database/services";
 import {
-  getCreateDealerTierSchema,
+  createDealerTierSchema,
   type TCreateDealerTierInput,
 } from "@nhatnang/database/validators";
+import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { z } from "zod";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 
@@ -21,14 +21,15 @@ export const createDealerTierAction = async (formData: FormData) => {
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
     const data = JSON.parse(payloadStr as string) as TCreateDealerTierInput;
-    const schema = getCreateDealerTierSchema((key) => key);
-    const parsed = await schema.safeParseAsync(data);
-
+    const parsed = await createDealerTierSchema.safeParseAsync(data);
     if (!parsed.success) {
+      const t = await getTranslations("errors");
       return {
         success: false as const,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-        fieldErrors: z.flattenError(parsed.error).fieldErrors,
+        fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
+          t(key as never),
+        ),
       };
     }
 
@@ -47,7 +48,8 @@ export const createDealerTierAction = async (formData: FormData) => {
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error:
+          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
     }
 
@@ -64,7 +66,7 @@ export const updateCustomerTierAction = async (
   payload: {
     dealerTierId: string | null;
     businessType: "dealer" | "contractor" | "end_user" | "distributor";
-  }
+  },
 ) => {
   try {
     await requireAuth();
@@ -90,7 +92,8 @@ export const updateCustomerTierAction = async (
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error:
+          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
     }
 
