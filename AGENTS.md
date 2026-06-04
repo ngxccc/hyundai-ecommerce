@@ -1,5 +1,11 @@
 # AGENTS.md
 
+## CRITICAL DIRECTIVE: ALWAYS INITIALIZE & FOLLOW TODO
+
+- **Mandatory Todo Initialization**: For any non-trivial or multi-step task, you MUST immediately initialize a phased todo list using the `todo_write` tool, or extract the checklist/todos from the active plan file.
+- **Strict Comply & Transition**: Follow the todo list item-by-item. Mark tasks as completed (`done`) immediately after completing them, and transition to the next task in the same turn.
+- **No Bypass**: Never start editing files, researching, or running commands without first establishing the todo list. This rule takes absolute precedence over all other protocols.
+
 This file is the Codex compatibility layer for the existing `.claude/` system.
 
 Keep this file aligned with [CLAUDE.md](CLAUDE.md)
@@ -463,7 +469,7 @@ Skill Registry:
 | `vc-update`              | Pull latest harness from remote kit repo                                                                        | update harness, pull kit, sync harness, upgrade agents                                         |
 | `vc-publish`             | Push harness improvements to remote kit repo                                                                    | publish kit, push harness, release kit, update remote                                          |
 | `vc-audit-vc`            | Agent harness health audit (agents, skills, README.md, protocol wiring)                                         | harness, agent parity, skill audit, guide sync                                                 |
-| `vc-zod`                 | Rules and references for Zod schema validation, parsing and database mapping                                    | validate payload, zod schema, zod custom validation errors, zod validation                    |
+| `vc-zod`                 | Rules and references for Zod schema validation, parsing and database mapping                                    | validate payload, zod schema, zod custom validation errors, zod validation                     |
 
 Rule: When one or more skills match the request, mention them to the user or include them in
 the subagent prompt context. Never silently skip relevant skills.
