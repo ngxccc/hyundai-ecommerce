@@ -8,7 +8,7 @@
       "CLAUDE.md"
     ]
   },
-  "skillCount": 32,
+  "skillCount": 33,
   "skills": [
     {
       "folder": "vc-agent-browser",
@@ -693,11 +693,10 @@
     },
     {
       "folder": "vc-zod",
-      "name": "vc:zod",
+      "name": "vc-zod",
       "description": "Rules, standards, and references for validating schemas, payloads, database mappings, and formatting user-facing validation errors using Zod.",
       "aliases": [
-        "vc-zod",
-        "vc:zod"
+        "vc-zod"
       ],
       "normalizedName": "vczod",
       "routedFrom": [
@@ -709,6 +708,26 @@
       "relativeReferences": [
         "references/drizzle-zod-integration.md",
         "references/zod-best-practices.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "zod",
+      "name": "zod",
+      "description": "Zod v4 schema validation best practices. Use when defining schemas, utilizing safeParse, or customizing error messages.",
+      "aliases": [
+        "zod"
+      ],
+      "normalizedName": "zod",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "assets/templates/_template.md",
+        "references/_sections.md"
       ],
       "mentionedSkills": []
     }
