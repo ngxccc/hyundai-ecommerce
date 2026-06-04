@@ -46,7 +46,7 @@ jobs:
         uses: ./.github/setup-environment
 
       - name: Final Safety Check (Lint, Test)
-        run: bun turbo run lint test --filter=storefront
+        run: bun turbo run lint check-types test --filter=storefront
 
       - name: Deploy to Vercel
         uses: ./.github/vercel-deploy
