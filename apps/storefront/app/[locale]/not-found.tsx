@@ -8,7 +8,7 @@ import {
   MessageSquare,
   Activity,
 } from "lucide-react";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import { Card, CardContent } from "@nhatnang/ui/components/ui/card";
 
 export default function NotFoundPage() {
   const t = useTranslations("NotFound");

@@ -1,15 +1,15 @@
 "use client";
 
 import { Controller, useWatch } from "react-hook-form";
-import { Input } from "@/shared/components/ui/input";
+import { Input } from "@nhatnang/ui/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
-import { Field, FieldLabel, FieldError } from "@/shared/components/ui/field";
+} from "@nhatnang/ui/components/ui/select";
+import { Field, FieldLabel, FieldError } from "@nhatnang/ui/components/ui/field";
 import type { TRegisterForm } from "@nhatnang/database/validators";
 import { useTranslations } from "next-intl";
 import type { IAuthFormSectionProps } from "@nhatnang/types";

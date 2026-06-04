@@ -168,7 +168,7 @@ After each phase, document:
 - Phase 1: ✅ VERIFIED
 - Phase 2: ✅ VERIFIED
 - Phase 3: ✅ VERIFIED
-- Phase 4: ⏳ PLANNED
+- Phase 4: ✅ VERIFIED
 - Phase 5: ⏳ PLANNED
 - Phase 6: ⏳ PLANNED
 
@@ -241,11 +241,11 @@ After each phase, document:
   - [x] Delete all redundant client-side feature validator files from `apps/` to prevent DRY violations
   - [x] Update action handlers to cast translation key parameter as `never` (e.g., `t(key as never)`) to resolve Zod v4 overloaded next-intl translation signature type errors
   - [x] Update the Zod skill files (`SKILL.md`, `zod-best-practices.md`) with Zod v4 specific guidelines and github discussion note
-- [ ] **RFC-004: Storefront UI Deduplication**
-  - [ ] Add `@nhatnang/ui` and `@nhatnang/shared` to `apps/storefront/package.json` dependencies
-  - [ ] Delete local duplicate components folder `apps/storefront/src/shared/components/ui/`
-  - [ ] Update imports across storefront pages/components to target workspace packages
-  - [ ] Run `bun run lint` and `bun run build` at root
+- [x] **RFC-004: Storefront UI Deduplication**
+  - [x] Add `@nhatnang/ui` and `@nhatnang/shared` to `apps/storefront/package.json` dependencies
+  - [x] Delete local duplicate components folder `apps/storefront/src/shared/components/ui/`
+  - [x] Update imports across storefront pages/components to target workspace packages
+  - [x] Run `bun run lint` and `bun run build` at root
 - [ ] **RFC-005: Dependency Injection & Interfaces**
   - [ ] Refactor `AuthService` constructor to inject database client and decouple static auth calls
   - [ ] Declare and standardize service interfaces in `packages/database/src/services/interfaces.ts`

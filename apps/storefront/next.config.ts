@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "hyundainhatnang.vn" },
     ],
   },
-  transpilePackages: ["@nhatnang/database", "@nhatnang/shared"],
+  transpilePackages: ["@nhatnang/database", "@nhatnang/shared", "@nhatnang/ui"],
 };
 
 export default withNextIntl(nextConfig);

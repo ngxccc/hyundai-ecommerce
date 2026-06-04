@@ -12,8 +12,8 @@ import {
 import { NextIntlClientProvider, type Locale } from "next-intl";
 import { Header, Footer } from "@/features/home/components";
 import { Analytics } from "@vercel/analytics/next";
-import { ScrollToTop } from "@/shared/components/ScrollToTop";
-import { Toaster } from "@/shared/components/ui/sonner";
+import { ScrollToTop } from "@/shared/components/scroll-to-top";
+import { Toaster } from "@nhatnang/ui/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["vietnamese", "latin"],

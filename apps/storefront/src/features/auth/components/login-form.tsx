@@ -12,15 +12,15 @@ import { useRouter, Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
+import { Button } from "@nhatnang/ui/components/ui/button";
+import { Input } from "@nhatnang/ui/components/ui/input";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "@/shared/components/ui/card";
+} from "@nhatnang/ui/components/ui/card";
 import {
   Form,
   FormControl,
@@ -28,7 +28,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/shared/components/ui/form";
+} from "@nhatnang/ui/components/ui/form";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();

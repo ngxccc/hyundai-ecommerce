@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@nhatnang/ui/components/ui/button";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import {
@@ -8,8 +8,8 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/shared/components/ui/card";
-import { Badge } from "@/shared/components/ui/badge";
+} from "@nhatnang/ui/components/ui/card";
+import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { newsService } from "@/shared/services";
 
 export async function NewsSection() {

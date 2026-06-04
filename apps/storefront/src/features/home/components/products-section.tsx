@@ -1,14 +1,14 @@
 import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
-import { Badge } from "@/shared/components/ui/badge";
-import { Button } from "@/shared/components/ui/button";
+import { Badge } from "@nhatnang/ui/components/ui/badge";
+import { Button } from "@nhatnang/ui/components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/shared/components/ui/card";
+} from "@nhatnang/ui/components/ui/card";
 import { productService } from "@/shared/services";
 import { priceFormatter } from "@/shared/lib/utils";
 

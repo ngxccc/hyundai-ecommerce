@@ -2,9 +2,9 @@
 
 import { Controller } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import { Checkbox } from "@/shared/components/ui/checkbox";
+import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Link } from "@/i18n/routing";
-import { Field, FieldLabel, FieldError } from "@/shared/components/ui/field";
+import { Field, FieldLabel, FieldError } from "@nhatnang/ui/components/ui/field";
 import type { TRegisterForm } from "@nhatnang/database/validators";
 import type { IAuthFormSectionProps } from "@nhatnang/types";
 

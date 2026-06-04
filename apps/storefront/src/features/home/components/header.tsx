@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Menu } from "lucide-react";
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@nhatnang/ui/components/ui/button";
 import { Link } from "@/i18n/routing";
 
 export function Header() {

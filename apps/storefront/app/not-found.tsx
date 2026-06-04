@@ -1,5 +1,5 @@
 import { Terminal, Home, ArrowRight, Activity } from "lucide-react";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import { Card, CardContent } from "@nhatnang/ui/components/ui/card";
 import { Inter } from "next/font/google";
 import "@/shared/styles/globals.css";
 import Link from "next/link";

@@ -5,7 +5,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/shared/components/ui/card";
+} from "@nhatnang/ui/components/ui/card";
 
 const SIGNALS = [
   {

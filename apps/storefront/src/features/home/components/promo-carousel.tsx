@@ -2,13 +2,13 @@
 
 import Autoplay from "embla-carousel-autoplay";
 import { Link } from "@/i18n/routing";
-import { Button } from "@/shared/components/ui/button";
-import { Badge } from "@/shared/components/ui/badge";
+import { Button } from "@nhatnang/ui/components/ui/button";
+import { Badge } from "@nhatnang/ui/components/ui/badge";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-} from "@/shared/components/ui/carousel";
+} from "@nhatnang/ui/components/ui/carousel";
 import type { PromoCampaign } from "@/shared/types/common";
 import { useCallback, useState } from "react";
 
