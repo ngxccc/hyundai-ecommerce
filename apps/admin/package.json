@@ -7,8 +7,8 @@
     "build": "doppler run -- next build",
     "dev": "doppler run -- next dev -p 3001",
     "inspect": "bunx @eslint/config-inspector@latest",
-    "lint": "eslint . --cache --cache-strategy content --cache-location .eslintcache",
-    "lint:fix": "eslint . --fix --cache --cache-strategy content --cache-location .eslintcache",
+    "lint": "eslint . --cache --cache-location .eslintcache",
+    "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
     "start": "doppler run -- next start -p 3001",
     "test": "bun test src/"
   },
