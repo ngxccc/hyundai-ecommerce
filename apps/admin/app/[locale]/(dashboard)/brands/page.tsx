@@ -1,5 +1,5 @@
 import { BrandHeader, BrandFilters } from "@/features/brands/components";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { BrandGrid } from "@/features/brands/components/brand-grid";
 import { brandService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";

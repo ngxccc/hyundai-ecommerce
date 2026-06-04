@@ -7,7 +7,7 @@ import {
 } from "@nhatnang/database/services";
 import { notFound } from "next/navigation";
 import { ProductHeader } from "@/features/products/components";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 
 export default async function EditProductPage({
   params,

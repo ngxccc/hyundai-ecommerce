@@ -3,7 +3,7 @@ import { CategoryForm } from "@/features/categories/components/category-form";
 import { categoryService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata({

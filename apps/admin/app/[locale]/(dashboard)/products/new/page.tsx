@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { ProductForm } from "@/features/products/components/product-form";
 import { ProductHeader } from "@/features/products/components";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { categoryService, brandService } from "@nhatnang/database/services";
 
 export default async function CreateProductPage() {

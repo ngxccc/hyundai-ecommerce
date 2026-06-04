@@ -1,5 +1,5 @@
 import { BrandHeader } from "@/features/brands/components";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { QuoteList } from "@/features/quotes/components";
 import { quotesService } from "@nhatnang/database/services";
 import { quoteStatusEnum, type TQuote } from "@nhatnang/database/schemas";

@@ -12,7 +12,7 @@ import {
 import { NextIntlClientProvider, type Locale } from "next-intl";
 import { Header, Footer } from "@/features/home/components";
 import { Analytics } from "@vercel/analytics/next";
-import { ScrollToTop } from "@/shared/components/scroll-to-top";
+import { ScrollToTop } from "@nhatnang/ui/components/ui/scroll-to-top";
 import { Toaster } from "@nhatnang/ui/components/ui/sonner";
 
 const inter = Inter({

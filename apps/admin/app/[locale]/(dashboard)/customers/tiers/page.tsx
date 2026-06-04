@@ -2,7 +2,7 @@ import {
   CustomerHeader,
   TierConfigurator,
 } from "@/features/customers/components";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { dealerTierService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";

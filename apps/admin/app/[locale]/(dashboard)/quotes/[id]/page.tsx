@@ -1,5 +1,5 @@
 import { BrandHeader } from "@/features/brands/components";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import {
   QuoteHeader,
   QuotePricingCockpit,
