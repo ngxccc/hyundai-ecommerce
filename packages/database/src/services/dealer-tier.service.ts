@@ -1,3 +1,4 @@
+import type { IDealerTierService } from "./interfaces";
 import { eq } from "drizzle-orm";
 import { type IDatabase } from "../client";
 import {
@@ -6,7 +7,7 @@ import {
   type TNewDealerTier,
 } from "../schemas/dealer-tier.schema";
 
-export class DealerTierService {
+export class DealerTierService implements IDealerTierService {
   constructor(protected readonly db: IDatabase) {}
 
   /**

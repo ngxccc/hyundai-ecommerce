@@ -15,9 +15,4 @@ export * from "./dealer-tier.service";
 
 
 // interface
-export * from "./auth.service.interface";
-export * from "./product.service.interface";
-export * from "./category.service.interface";
-export * from "./brand.service.interface";
-export * from "./warehouse-stock.service.interface";
-export * from "./warehouse.service.interface";
+export * from "./interfaces";

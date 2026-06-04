@@ -1,4 +1,4 @@
-import type { IBrandService } from "./brand.service.interface";
+import type { IBrandService } from "./interfaces";
 import { brands, type TBrand } from "../schemas/brand.schema";
 import { type IDatabase } from "../client";
 import { eq } from "drizzle-orm";

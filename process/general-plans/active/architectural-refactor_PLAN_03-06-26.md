@@ -169,7 +169,7 @@ After each phase, document:
 - Phase 2: ✅ VERIFIED
 - Phase 3: ✅ VERIFIED
 - Phase 4: ✅ VERIFIED
-- Phase 5: ⏳ PLANNED
+- Phase 5: ✅ VERIFIED
 - Phase 6: ⏳ PLANNED
 
 ---
@@ -246,9 +246,9 @@ After each phase, document:
   - [x] Delete local duplicate components folder `apps/storefront/src/shared/components/ui/`
   - [x] Update imports across storefront pages/components to target workspace packages
   - [x] Run `bun run lint` and `bun run build` at root
-- [ ] **RFC-005: Dependency Injection & Interfaces**
-  - [ ] Refactor `AuthService` constructor to inject database client and decouple static auth calls
-  - [ ] Declare and standardize service interfaces in `packages/database/src/services/interfaces.ts`
+- [x] **RFC-005: Dependency Injection & Interfaces**
+  - [x] Refactor `AuthService` constructor to inject database client and decouple static auth calls
+  - [x] Declare and standardize service interfaces in packages/database/src/services/interfaces.ts
 - [ ] **RFC-006: YAGNI Clean Up**
   - [ ] Remove unused prepared statements inside `packages/database/src/services/order.service.ts`
   - [ ] Remove or align unused `ProductSpecs` inside `@nhatnang/types/src/product.types.ts`

@@ -1,7 +1,7 @@
 import type {
   IProductService,
   TUpdateProductData,
-} from "./product.service.interface";
+} from "./interfaces";
 import {
   products,
   type TProduct,

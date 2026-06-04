@@ -1,4 +1,4 @@
-import type { IWarehouseService } from "./warehouse.service.interface";
+import type { IWarehouseService } from "./interfaces";
 import { warehouses, type TWarehouse } from "../schemas/warehouse.schema";
 import type { IDatabase } from "../client";
 import { eq } from "drizzle-orm";

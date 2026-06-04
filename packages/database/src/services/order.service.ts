@@ -1,3 +1,4 @@
+import type { IOrderService } from "./interfaces";
 import { and, eq, sql } from "drizzle-orm";
 import { db, type IDatabase } from "../client";
 import {
@@ -21,7 +22,7 @@ const complexOrderQueryConfig = {
   },
 } as const; // khoá cứng cấy ATS, không bị xuy luận thành any
 
-export class OrderService {
+export class OrderService implements IOrderService {
   constructor(protected readonly db: IDatabase) {}
 
   // PREPARED STATEMENTS
