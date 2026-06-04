@@ -10,6 +10,7 @@
   ],
   "scripts": {
     "build": "doppler run -- turbo run build",
+    "check-types": "turbo run check-types",
     "deps:fix": "syncpack fix",
     "deps:lint": "syncpack list",
     "dev": "doppler run -- turbo run dev",

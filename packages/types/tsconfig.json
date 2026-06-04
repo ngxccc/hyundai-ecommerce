@@ -1,7 +1,6 @@
 {
   "extends": "@nhatnang/typescript-config/library",
   "compilerOptions": {
-    "types": []
   },
   "include": [
     "src/**/*",

@@ -9,7 +9,7 @@
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
     "postinstall": "fumadocs-mdx",
     "start": "next start -p 3002",
-    "types:check": "fumadocs-mdx && next typegen && tsc --noEmit"
+    "check-types": "fumadocs-mdx && next typegen && tsc --noEmit"
   },
   "dependencies": {
     "fumadocs-core": "^16.9.2",
