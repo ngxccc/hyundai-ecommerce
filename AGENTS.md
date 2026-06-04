@@ -2,7 +2,7 @@
 
 ## CRITICAL DIRECTIVE: ALWAYS INITIALIZE & FOLLOW TODO
 
-- **Mandatory Todo Initialization**: For any non-trivial or multi-step task, you MUST immediately initialize a phased todo list using the `todo_write` tool, or extract the checklist/todos from the active plan file.
+- **Mandatory Todo Initialization**: For any non-trivial or multi-step task, you MUST immediately initialize a phased todo list using the `todo` tool, or extract the checklist/todos from the active plan file.
 - **Strict Comply & Transition**: Follow the todo list item-by-item. Mark tasks as completed (`done`) immediately after completing them, and transition to the next task in the same turn.
 - **No Bypass**: Never start editing files, researching, or running commands without first establishing the todo list. This rule takes absolute precedence over all other protocols.
 
