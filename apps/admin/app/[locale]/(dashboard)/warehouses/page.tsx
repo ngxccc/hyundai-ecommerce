@@ -1,5 +1,5 @@
 import { WarehouseHeader, WarehouseGrid } from "@/features/warehouses/components";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { warehouseService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";

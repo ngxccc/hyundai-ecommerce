@@ -1,5 +1,5 @@
 import { BrandHeader } from "@/features/brands/components";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { OrderList } from "@/features/orders/components";
 import { orderService } from "@nhatnang/database/services";
 import { orderStatusEnum, type TOrder } from "@nhatnang/database/schemas";

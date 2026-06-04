@@ -1,5 +1,5 @@
 import { CategoryHeader, CategoryFilters } from "@/features/categories/components";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { CategoryGrid } from "@/features/categories/components/category-grid";
 import { categoryService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";

@@ -4,7 +4,7 @@ import { categoryService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));

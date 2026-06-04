@@ -2,7 +2,7 @@ import { ProductFilters } from "@/features/products/components/product-filters";
 import { ProductGrid } from "@/features/products/components/product-grid";
 import { ProductPagination } from "@/features/products/components/product-pagination";
 import { ProductHeader } from "@/features/products/components";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import {
   productService,
   categoryService,

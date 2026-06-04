@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { AdminBreadcrumbs } from "@/features/dashboard/components";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import {
   WarehouseForm,
   WarehouseHeader,
