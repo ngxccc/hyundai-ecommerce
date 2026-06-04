@@ -2,13 +2,10 @@
 
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import {
-  createLoginSchema,
-  type TLoginForm,
-} from "@nhatnang/database/validators";
+import { type TLoginForm, loginSchema } from "@nhatnang/database/validators";
 import { loginAction } from "../actions/login.action";
 
 import { useRouter, Link } from "@/i18n/routing";
@@ -44,9 +41,8 @@ export const LoginForm = () => {
   const t = useTranslations("Login");
   const [isPending, startTransition] = useTransition();
 
-
   const form = useForm<TLoginForm>({
-    resolver: zodResolver(createLoginSchema(t)),
+    resolver: translatedZodResolver(loginSchema, t),
     defaultValues: {
       email: "",
       password: "",

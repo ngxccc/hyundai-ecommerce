@@ -4,23 +4,22 @@ import {
   AUTH_ERROR_CODES,
   SYSTEM_ERROR_CODES,
 } from "@nhatnang/shared/constants";
-import { z } from "zod";
 import { authService, userService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import {
-  createRegisterSchema,
+  registerSchema,
   type TRegisterForm,
 } from "@nhatnang/database/validators";
+import { formatValidationErrors } from "@/shared/utils/validation";
 
 export async function registerAction(data: TRegisterForm) {
-  const schema = createRegisterSchema((key: string) => key);
-  const parsed = await schema.safeParseAsync(data);
+  const parsed = await registerSchema.safeParseAsync(data);
 
   if (!parsed.success) {
     return {
       success: false,
       code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-      fieldErrors: z.flattenError(parsed.error).fieldErrors,
+      fieldErrors: formatValidationErrors(parsed.error),
     };
   }
 

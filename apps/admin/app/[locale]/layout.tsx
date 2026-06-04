@@ -11,7 +11,7 @@ import {
   setRequestLocale,
 } from "next-intl/server";
 import { Toaster } from "@nhatnang/ui/components/ui/sonner";
-import { ScrollToTop } from "@/shared/components/ScrollToTop";
+import { ScrollToTop } from "@/shared/components/scroll-to-top";
 import { ThemeProvider } from "@/shared/components/theme-provider";
 
 const inter = Inter({

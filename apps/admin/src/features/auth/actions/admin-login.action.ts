@@ -2,23 +2,22 @@
 
 import { headers } from "next/headers";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { z } from "zod";
 import { authService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
-import {
-  createLoginSchema,
-  type TLoginForm,
-} from "@nhatnang/database/validators";
+import { loginSchema, type TLoginForm } from "@nhatnang/database/validators";
+import { formatValidationErrors } from "@/shared/utils/validation";
 
 export const adminLoginAction = async (data: TLoginForm) => {
-  const schema = createLoginSchema((key) => key);
-  const parsed = await schema.safeParseAsync(data);
+  const parsed = await loginSchema.safeParseAsync(data);
 
   if (!parsed.success) {
+    const t = await getTranslations("errors");
     return {
       success: false,
       code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-      fieldErrors: z.flattenError(parsed.error).fieldErrors,
+      fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
+        t(key as never),
+      ),
     };
   }
 

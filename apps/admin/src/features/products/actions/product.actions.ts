@@ -9,8 +9,8 @@ import {
   type TCreateProductInput,
   type TUpdateProductInput,
 } from "@nhatnang/database/validators";
+import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { z } from "zod";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
@@ -24,14 +24,15 @@ export const createProductAction = async (formData: FormData) => {
     if (!payloadStr) throw new Error("Missing payload");
     const data = JSON.parse(payloadStr as string) as TCreateProductInput;
 
-    const schema = createProductSchema((key) => key);
-    const parsed = await schema.safeParseAsync(data);
-
+    const parsed = await createProductSchema.safeParseAsync(data);
     if (!parsed.success) {
+      const t = await getTranslations("errors");
       return {
         success: false,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-        fieldErrors: z.flattenError(parsed.error).fieldErrors,
+        fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
+          t(key as never),
+        ),
       };
     }
 
@@ -63,7 +64,10 @@ export const createProductAction = async (formData: FormData) => {
     }
 
     revalidatePath("/products");
-    return { success: true, data: newProduct ? mapProductToDTO(newProduct) : undefined };
+    return {
+      success: true,
+      data: newProduct ? mapProductToDTO(newProduct) : undefined,
+    };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
@@ -87,14 +91,15 @@ export async function updateProductAction(id: string, formData: FormData) {
     if (!payloadStr) throw new Error("Missing payload");
     const data = JSON.parse(payloadStr as string) as TUpdateProductInput;
 
-    const schema = updateProductSchema((key) => key);
-    const parsed = await schema.safeParseAsync(data);
-
+    const parsed = await updateProductSchema.safeParseAsync(data);
     if (!parsed.success) {
+      const t = await getTranslations("errors");
       return {
         success: false,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-        fieldErrors: z.flattenError(parsed.error).fieldErrors,
+        fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
+          t(key as never),
+        ),
       };
     }
 
@@ -137,7 +142,10 @@ export async function updateProductAction(id: string, formData: FormData) {
 
     revalidatePath("/products");
     revalidatePath(`/products/${id}/edit`);
-    return { success: true, data: updatedProduct ? mapProductToDTO(updatedProduct) : undefined };
+    return {
+      success: true,
+      data: updatedProduct ? mapProductToDTO(updatedProduct) : undefined,
+    };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {

@@ -4,13 +4,13 @@ import { revalidatePath } from "next/cache";
 import { categoryService } from "@nhatnang/database/services";
 import { mapCategoryToDTO } from "@nhatnang/database/dtos";
 import {
-  getCreateCategorySchema,
-  getUpdateCategorySchema,
+  createCategorySchema,
+  updateCategorySchema,
   type TCreateCategoryInput,
   type TUpdateCategoryInput,
 } from "@nhatnang/database/validators";
+import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { z } from "zod";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
@@ -23,14 +23,16 @@ export const createCategoryAction = async (formData: FormData) => {
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
     const data = JSON.parse(payloadStr as string) as TCreateCategoryInput;
-    const schema = getCreateCategorySchema((key) => key);
-    const parsed = await schema.safeParseAsync(data);
+    const parsed = await createCategorySchema.safeParseAsync(data);
 
     if (!parsed.success) {
+      const t = await getTranslations("errors");
       return {
         success: false,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-        fieldErrors: z.flattenError(parsed.error).fieldErrors,
+        fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
+          t(key as never),
+        ),
       };
     }
 
@@ -61,7 +63,8 @@ export const createCategoryAction = async (formData: FormData) => {
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error:
+          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
     }
 
@@ -87,10 +90,7 @@ export const createCategoryAction = async (formData: FormData) => {
   }
 };
 
-export async function updateCategoryAction(
-  id: string,
-  formData: FormData,
-) {
+export async function updateCategoryAction(id: string, formData: FormData) {
   try {
     await requireAuth();
 
@@ -98,14 +98,16 @@ export async function updateCategoryAction(
     if (!payloadStr) throw new Error("Missing payload");
     const data = JSON.parse(payloadStr as string) as TUpdateCategoryInput;
 
-    const schema = getUpdateCategorySchema((key) => key);
-    const parsed = await schema.safeParseAsync({ ...data, id });
+    const parsed = await updateCategorySchema.safeParseAsync({ ...data, id });
 
     if (!parsed.success) {
+      const t = await getTranslations("errors");
       return {
         success: false,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-        fieldErrors: z.flattenError(parsed.error).fieldErrors,
+        fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
+          t(key as never),
+        ),
       };
     }
 
@@ -148,7 +150,8 @@ export async function updateCategoryAction(
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error:
+          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
     }
 
@@ -186,7 +189,8 @@ export async function deleteCategoryAction(id: string) {
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error:
+          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
     }
 

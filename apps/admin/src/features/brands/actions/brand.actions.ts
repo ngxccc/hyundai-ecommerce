@@ -4,13 +4,13 @@ import { revalidatePath } from "next/cache";
 import { brandService } from "@nhatnang/database/services";
 import { mapBrandToDTO } from "@nhatnang/database/dtos";
 import {
-  getCreateBrandSchema,
-  getUpdateBrandSchema,
+  createBrandSchema,
+  updateBrandSchema,
   type TCreateBrandInput,
   type TUpdateBrandInput,
 } from "@nhatnang/database/validators";
+import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { z } from "zod";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
@@ -23,14 +23,16 @@ export const createBrandAction = async (formData: FormData) => {
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
     const data = JSON.parse(payloadStr as string) as TCreateBrandInput;
-    const schema = getCreateBrandSchema((key) => key);
-    const parsed = await schema.safeParseAsync(data);
+    const parsed = await createBrandSchema.safeParseAsync(data);
 
     if (!parsed.success) {
+      const t = await getTranslations("errors");
       return {
         success: false,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-        fieldErrors: z.flattenError(parsed.error).fieldErrors,
+        fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
+          t(key as never),
+        ),
       };
     }
 
@@ -61,7 +63,8 @@ export const createBrandAction = async (formData: FormData) => {
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error:
+          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
     }
 
@@ -94,15 +97,15 @@ export async function updateBrandAction(id: string, formData: FormData) {
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
     const data = JSON.parse(payloadStr as string) as TUpdateBrandInput;
-
-    const schema = getUpdateBrandSchema((key) => key);
-    const parsed = await schema.safeParseAsync({ ...data, id });
-
+    const parsed = await updateBrandSchema.safeParseAsync({ ...data, id });
     if (!parsed.success) {
+      const t = await getTranslations("errors");
       return {
         success: false,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-        fieldErrors: z.flattenError(parsed.error).fieldErrors,
+        fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
+          t(key as never),
+        ),
       };
     }
 
@@ -145,7 +148,8 @@ export async function updateBrandAction(id: string, formData: FormData) {
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error:
+          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
     }
 
@@ -183,7 +187,8 @@ export async function deleteBrandAction(id: string) {
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error: error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error:
+          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
     }
 

@@ -167,7 +167,7 @@ After each phase, document:
 
 - Phase 1: ✅ VERIFIED
 - Phase 2: ✅ VERIFIED
-- Phase 3: ⏳ PLANNED
+- Phase 3: ✅ VERIFIED
 - Phase 4: ⏳ PLANNED
 - Phase 5: ⏳ PLANNED
 - Phase 6: ⏳ PLANNED
@@ -233,10 +233,14 @@ After each phase, document:
   - [x] Define DTO helper interfaces in `packages/database/src/dtos/`
   - [x] Map services return data in `product`, `brand`, `category`, `warehouse` actions to DTOs
   - [x] Verify admin application compiling and tests passing
-- [ ] **RFC-003: Validator Purification**
-  - [ ] Remove translation key messages from database validators, replace with default validation messages
-  - [ ] Import `JSONContent` from `@tiptap/core` inside `product.validators.ts` to sever UI dependency
-  - [ ] Re-run context discovery validation checks
+- [x] **RFC-003: Validator Purification**
+  - [x] Purify database validators to contain raw translation keys (e.g., `"validation.nameRequired"`) as default messages, keeping them unified and DRY
+  - [x] Add `isActive: z.boolean().default(true)` to `createBrandSchema` and `createCategorySchema` to support full schema coverage
+  - [x] Import `JSONContent` directly from `@tiptap/core` inside `product.validators.ts` to sever UI dependency cleanly
+  - [x] Create a generic, reuseable `translatedZodResolver` in both admin and storefront apps to walk and translate validation error keys at the form submission boundary
+  - [x] Delete all redundant client-side feature validator files from `apps/` to prevent DRY violations
+  - [x] Update action handlers to cast translation key parameter as `never` (e.g., `t(key as never)`) to resolve Zod v4 overloaded next-intl translation signature type errors
+  - [x] Update the Zod skill files (`SKILL.md`, `zod-best-practices.md`) with Zod v4 specific guidelines and github discussion note
 - [ ] **RFC-004: Storefront UI Deduplication**
   - [ ] Add `@nhatnang/ui` and `@nhatnang/shared` to `apps/storefront/package.json` dependencies
   - [ ] Delete local duplicate components folder `apps/storefront/src/shared/components/ui/`

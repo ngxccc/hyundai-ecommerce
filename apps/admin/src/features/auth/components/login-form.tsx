@@ -2,12 +2,9 @@
 
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { useTranslations } from "next-intl";
-import {
-  createLoginSchema,
-  type TLoginForm,
-} from "@nhatnang/database/validators";
+import { type TLoginForm, loginSchema } from "@nhatnang/database/validators";
 import { ShieldCheck } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Input } from "@nhatnang/ui/components/ui/input";
@@ -37,7 +34,7 @@ export const LoginForm = () => {
 
 
   const form = useForm<TLoginForm>({
-    resolver: zodResolver(createLoginSchema(t)),
+    resolver: translatedZodResolver(loginSchema, t),
     defaultValues: {
       email: "",
       password: "",

@@ -1,8 +1,8 @@
 "use client";
 
 import { useTransition } from "react";
-import { useForm, type Resolver } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { useTranslations } from "next-intl";
 import { Plus, Award, DollarSign, Percent, Loader2, Coins } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -36,10 +36,9 @@ import { useRouter } from "next/navigation";
 import { createDealerTierAction } from "../actions/customer.actions";
 import { type TDealerTier } from "@nhatnang/database/schemas";
 import {
-  getCreateDealerTierSchema,
   type TCreateDealerTierInput,
+  createDealerTierSchema,
 } from "@nhatnang/database/validators";
-
 interface TierConfiguratorProps {
   dealerTiers: TDealerTier[];
 }
@@ -49,13 +48,8 @@ export const TierConfigurator = ({ dealerTiers }: TierConfiguratorProps) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // Next-Intl translator for strict Zod schema errors
-  const formSchema = getCreateDealerTierSchema((key) => {
-    return t(key);
-  });
-
   const form = useForm<TCreateDealerTierInput>({
-    resolver: zodResolver(formSchema) as Resolver<TCreateDealerTierInput>,
+    resolver: translatedZodResolver(createDealerTierSchema, t),
     defaultValues: {
       name: "",
       discountPercentage: "",

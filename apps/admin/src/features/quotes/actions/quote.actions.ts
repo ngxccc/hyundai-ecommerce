@@ -56,7 +56,7 @@ export const approveAndConvertToOrderAction = async (quoteId: string) => {
       // Safe fallback translations mapping
       return {
         success: false as const,
-        error: t(key as unknown as Parameters<typeof t>[0]) || t("default"),
+        error: t(key as never) || t("default"),
       };
     }
 
