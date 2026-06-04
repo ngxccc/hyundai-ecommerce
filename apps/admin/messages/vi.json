@@ -4,7 +4,14 @@
     "noFileProvided": "Không có file nào được cung cấp",
     "noUrlProvided": "Không có đường dẫn URL nào được cung cấp",
     "unsupportedContentType": "Định dạng nội dung không được hỗ trợ",
-    "uploadFailed": "Tải lên thất bại"
+    "uploadFailed": "Tải lên thất bại",
+    "tooManyRequests": "Quá nhiều yêu cầu. Vui lòng thử lại sau.",
+    "rateLimitExceeded": "Vượt quá giới hạn lượt yêu cầu. Vui lòng đợi trước khi thử lại.",
+    "unauthorized": "Truy cập không được phép. Yêu cầu quyền Admin.",
+    "invalidFolder": "Thư mục không hợp lệ (nguy cơ tấn công di chuyển đường dẫn)",
+    "fileTooLarge": "Kích thước tệp quá lớn (tối đa 5MB)",
+    "invalidMimeType": "Định dạng tệp không hợp lệ. Chỉ cho phép tải lên hình ảnh.",
+    "ssrfDetected": "Phát hiện URL nguồn tải lên không hợp lệ."
   },
   "Editor": {
     "editor": {

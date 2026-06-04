@@ -2,7 +2,7 @@
 
 Date: 04-06-26
 Complexity: Simple
-Status: ⏳ PLANNED
+Status: ⏳ IN_PROGRESS (Phase 1 Complete)
 
 ## Overview
 
@@ -15,7 +15,7 @@ Following the project's architectural guidelines in `process/context/all-context
 The following files will be created or modified as part of this implementation:
 
 - **New Files**:
-  - `packages/shared/src/utils/rate-limiter.ts`: In-memory rate limiting utility.
+  - `packages/shared/src/utils/rate-limiter.ts`: Rate limiting utility wrapping `@upstash/ratelimit`.
 
 - **Modified Files**:
   - `apps/admin/messages/vi.json` & `en.json`: Add translation keys for rate-limit and authorization errors.
@@ -34,18 +34,16 @@ The following files will be created or modified as part of this implementation:
 - **Rate Limiter Utility**:
 
   ```typescript
-  export interface RateLimitConfig {
-    limit: number;
-    windowMs: number;
+  export interface RateLimitResult {
+    success: boolean;
+    remaining: number;
+    reset: number;
   }
   export function checkRateLimit(
     key: string,
-    config: RateLimitConfig,
-  ): {
-    success: boolean;
-    remaining: number;
-    resetTime: number;
-  };
+    limit?: number,
+    window?: string,
+  ): Promise<RateLimitResult>;
   ```
 
 - **Cloudinary Deletion Service**:
@@ -82,9 +80,10 @@ Each phase is considered complete when:
 
 ### Phase 1: Shared Rate Limiter & Translations
 
-- **Task**: Create the in-memory rate-limiter utility in `@nhatnang/shared`.
-- **Task**: Add translation keys for `"rateLimitExceeded"` and `"unauthorized"` in the language files.
-- **Verification**: Run `bun run check-types` to ensure shared utility exports correctly.
+- [x] **Task**: Document Upstash Redis credentials in `apps/admin/.env.example` and `apps/storefront/.env.example`, and sync them to Doppler configuration.
+- [x] **Task**: Install `@upstash/ratelimit` and `@upstash/redis` in `@nhatnang/shared` and create the rate-limiter wrapper utility.
+- [x] **Task**: Add translation keys for `"rateLimitExceeded"` and `"unauthorized"` in the language files.
+- [x] **Verification**: Run `bun run check-types` to ensure shared utility exports correctly.
 
 ### Phase 2: Cloudinary Upload, Sign & Service Remediation
 
