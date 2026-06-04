@@ -5,20 +5,20 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@nhatnang/ui/components/ui/button";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "@/shared/components/ui/card";
+} from "@nhatnang/ui/components/ui/card";
 import { Link, useRouter } from "@/i18n/routing";
 import { PersonalInfoSection } from "./personal-info-section";
 import { BusinessInfoSection } from "./business-info-section";
 import { PasswordSection } from "./password-section";
 import { TermsSection } from "./terms-section";
-import { Form } from "@/shared/components/ui/form";
+import { Form } from "@nhatnang/ui/components/ui/form";
 import { registerAction } from "../actions/register.action";
 
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";

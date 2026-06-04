@@ -1,8 +1,8 @@
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@nhatnang/ui/components/ui/button";
 import { Send } from "lucide-react";
-import { Input } from "@/shared/components/ui/input";
+import { Input } from "@nhatnang/ui/components/ui/input";
 
 const FOOTERPRODUCTS = [
   "industrialGenerators",

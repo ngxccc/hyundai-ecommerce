@@ -103,6 +103,7 @@
         "@nhatnang/shared": "workspace:*",
         "@nhatnang/types": "workspace:*",
         "@nhatnang/typescript-config": "workspace:*",
+        "@nhatnang/ui": "workspace:*",
         "@tailwindcss/postcss": "^4",
         "@types/react": "^19",
         "@types/react-dom": "^19",
