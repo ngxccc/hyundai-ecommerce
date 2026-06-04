@@ -43,7 +43,7 @@ jobs:
         uses: ./.github/setup-environment
 
       - name: Code Quality Validation
-        run: bun turbo run lint --filter=docs
+        run: bun turbo run lint check-types --filter=docs
 
       - name: Deploy to Vercel
         uses: ./.github/vercel-deploy
