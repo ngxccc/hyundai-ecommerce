@@ -5,4 +5,4 @@ export const ENVIRONMENT_MODES = {
 } as const;
 
 export const isProduction =
-  process.env.NODE_ENV === ENVIRONMENT_MODES.PRODUCTION;
+  process.env["NODE_ENV"] === ENVIRONMENT_MODES.PRODUCTION;

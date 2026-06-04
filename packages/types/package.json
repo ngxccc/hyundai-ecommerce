@@ -2,6 +2,9 @@
   "name": "@nhatnang/types",
   "private": true,
   "type": "module",
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
   "exports": {
     ".": {
       "types": "./src/index.ts",

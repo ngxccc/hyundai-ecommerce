@@ -19,6 +19,7 @@
     "./auth-client": "./src/auth-client.ts"
   },
   "scripts": {
+    "check-types": "tsc --noEmit",
     "db:generate": "doppler run -- drizzle-kit generate --config drizzle.config.ts",
     "db:migrate": "doppler run -- drizzle-kit migrate --config drizzle.config.ts",
     "db:push": "doppler run -- drizzle-kit push --config drizzle.config.ts",
