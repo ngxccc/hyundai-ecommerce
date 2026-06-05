@@ -17,6 +17,7 @@ This folder holds research outputs and reference material for general and cross-
 Use descriptive names: `{topic}-reference.md` or `{topic}-research_{dd-mm-yy}.md`
 
 Examples:
+
 - `auth-library-comparison-reference.md`
 - `websocket-patterns-research_15-03-26.md`
 - `security-audit-results_22-04-26.md`

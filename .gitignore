@@ -60,3 +60,5 @@ opencode.json
 # Turborepo
 .turbo
 .vercel
+.ag-installed-files
+.ag-version

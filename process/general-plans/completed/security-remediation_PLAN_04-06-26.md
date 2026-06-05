@@ -114,7 +114,7 @@ Each phase is considered complete when:
 Upon plan approval:
 
 1. Initialize the checklist tasks in the `todo` manager.
-2. Enter the execution phase by invoking `vc-execute-agent`.
+2. Enter the execution phase by invoking `ag-execute-agent`.
 
 ---
 

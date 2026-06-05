@@ -100,7 +100,7 @@ Refer to `process/context/tests/all-tests.md`. All code must pass:
 
 ## Resume and Execution Handoff
 
-The plan is specced. The next step is for the user to approve this plan so the `vc-execute-agent` can begin implementation, starting with verifying the existing Auth stack and creating the middleware.
+The plan is specced. The next step is for the user to approve this plan so the `ag-execute-agent` can begin implementation, starting with verifying the existing Auth stack and creating the middleware.
 
 ## Cursor + RIPER-5 Guidance
 

@@ -8,13 +8,19 @@
  * @module scout-checker
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("node:fs");
+const path = require("node:path");
 
 // Import scout-block modules
-const { loadPatterns, createMatcher, matchPath } = require('../scout-block/pattern-matcher.cjs');
-const { extractFromToolInput } = require('../scout-block/path-extractor.cjs');
-const { detectBroadPatternIssue } = require('../scout-block/broad-pattern-detector.cjs');
+const {
+  loadPatterns,
+  createMatcher,
+  matchPath,
+} = require("../scout-block/pattern-matcher.cjs");
+const { extractFromToolInput } = require("../scout-block/path-extractor.cjs");
+const {
+  detectBroadPatternIssue,
+} = require("../scout-block/broad-pattern-detector.cjs");
 
 // ═══════════════════════════════════════════════════════════════════════════
 // COMMAND PATTERNS
@@ -22,20 +28,23 @@ const { detectBroadPatternIssue } = require('../scout-block/broad-pattern-detect
 
 // Build command allowlist - these are allowed even if they contain blocked paths
 // Handles flags and filters: npm build, pnpm --filter web run build, yarn workspace app build
-const BUILD_COMMAND_PATTERN = /^(npm|pnpm|yarn|bun)\s+([^\s]+\s+)*(run\s+)?(build|test|lint|dev|start|install|ci|add|remove|update|publish|pack|init|create|exec)/;
+const BUILD_COMMAND_PATTERN =
+  /^(npm|pnpm|yarn|bun)\s+([^\s]+\s+)*(run\s+)?(build|test|lint|dev|start|install|ci|add|remove|update|publish|pack|init|create|exec)/;
 
 // Tool commands - JS/TS, Go, Rust, Java, .NET, containers, IaC, Python, Ruby, PHP, Deno, Elixir
-const TOOL_COMMAND_PATTERN = /^(\.\/)?(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier|go|cargo|make|mvn|mvnw|gradle|gradlew|dotnet|docker|podman|kubectl|helm|terraform|ansible|bazel|cmake|sbt|flutter|swift|ant|ninja|meson|python3?|pip|uv|deno|bundle|rake|gem|php|composer|ruby|mix|elixir)/;
+const TOOL_COMMAND_PATTERN =
+  /^(\.\/)?(npx|pnpx|bunx|tsc|esbuild|vite|webpack|rollup|turbo|nx|jest|vitest|mocha|eslint|prettier|go|cargo|make|mvn|mvnw|gradle|gradlew|dotnet|docker|podman|kubectl|helm|terraform|ansible|bazel|cmake|sbt|flutter|swift|ant|ninja|meson|python3?|pip|uv|deno|bundle|rake|gem|php|composer|ruby|mix|elixir)/;
 
 // Allow execution from .venv/bin/ or venv/bin/ (Unix) and .venv/Scripts/ or venv/Scripts/ (Windows)
-const VENV_EXECUTABLE_PATTERN = /(^|[\/\\])\.?venv[\/\\](bin|Scripts)[\/\\]/;
+const VENV_EXECUTABLE_PATTERN = /(^|[/\\])\.?venv[/\\](bin|Scripts)[/\\]/;
 
 // Allow Python venv creation commands (cross-platform):
 // - python/python3 -m venv (Unix/macOS/Windows)
 // - py -m venv (Windows py launcher, supports -3, -3.11, etc.)
 // - uv venv (fast Rust-based Python package manager)
 // - virtualenv (legacy but still widely used)
-const VENV_CREATION_PATTERN = /^(python3?|py)\s+(-[\w.]+\s+)*-m\s+venv\s+|^uv\s+venv(\s|$)|^virtualenv\s+/;
+const VENV_CREATION_PATTERN =
+  /^(python3?|py)\s+(-[\w.]+\s+)*-m\s+venv\s+|^uv\s+venv(\s|$)|^virtualenv\s+/;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPER FUNCTIONS
@@ -48,14 +57,14 @@ const VENV_CREATION_PATTERN = /^(python3?|py)\s+(-[\w.]+\s+)*-m\s+venv\s+|^uv\s+
  * @returns {string}
  */
 function stripCommandPrefix(command) {
-  if (!command || typeof command !== 'string') return command;
+  if (!command || typeof command !== "string") return command;
   let stripped = command.trim();
   // Strip env var assignments (KEY=VALUE KEY2=VALUE2 ...)
-  stripped = stripped.replace(/^(\w+=\S+\s+)+/, '');
+  stripped = stripped.replace(/^(\w+=\S+\s+)+/, "");
   // Strip common command wrappers (one level)
-  stripped = stripped.replace(/^(sudo|env|nice|nohup|time|timeout)\s+/, '');
+  stripped = stripped.replace(/^(sudo|env|nice|nohup|time|timeout)\s+/, "");
   // Strip env vars again (sudo env VAR=x cmd)
-  stripped = stripped.replace(/^(\w+=\S+\s+)+/, '');
+  stripped = stripped.replace(/^(\w+=\S+\s+)+/, "");
   return stripped.trim();
 }
 
@@ -65,9 +74,11 @@ function stripCommandPrefix(command) {
  * @returns {boolean}
  */
 function isBuildCommand(command) {
-  if (!command || typeof command !== 'string') return false;
+  if (!command || typeof command !== "string") return false;
   const trimmed = command.trim();
-  return BUILD_COMMAND_PATTERN.test(trimmed) || TOOL_COMMAND_PATTERN.test(trimmed);
+  return (
+    BUILD_COMMAND_PATTERN.test(trimmed) || TOOL_COMMAND_PATTERN.test(trimmed)
+  );
 }
 
 /**
@@ -80,8 +91,10 @@ function isBuildCommand(command) {
  * @returns {string[]} Array of sub-commands (trimmed, non-empty)
  */
 function splitCompoundCommand(command) {
-  if (!command || typeof command !== 'string') return [];
-  return command.split(/\s*(?:&&|\|\||;)\s*/).filter(cmd => cmd && cmd.trim().length > 0);
+  if (!command || typeof command !== "string") return [];
+  return command
+    .split(/\s*(?:&&|\|\||;)\s*/)
+    .filter((cmd) => cmd && cmd.trim().length > 0);
 }
 
 /**
@@ -91,10 +104,10 @@ function splitCompoundCommand(command) {
  * @returns {string} Inner command, or original if not a shell executor
  */
 function unwrapShellExecutor(command) {
-  if (!command || typeof command !== 'string') return command;
-  const match = command.trim().match(
-    /^(?:(?:bash|sh|zsh)\s+-c|eval)\s+["'](.+)["']\s*$/
-  );
+  if (!command || typeof command !== "string") return command;
+  const match = command
+    .trim()
+    .match(/^(?:(?:bash|sh|zsh)\s+-c|eval)\s+["'](.+)["']\s*$/);
   return match ? match[1] : command;
 }
 
@@ -104,7 +117,7 @@ function unwrapShellExecutor(command) {
  * @returns {boolean}
  */
 function isVenvExecutable(command) {
-  if (!command || typeof command !== 'string') return false;
+  if (!command || typeof command !== "string") return false;
   return VENV_EXECUTABLE_PATTERN.test(command);
 }
 
@@ -114,7 +127,7 @@ function isVenvExecutable(command) {
  * @returns {boolean}
  */
 function isVenvCreationCommand(command) {
-  if (!command || typeof command !== 'string') return false;
+  if (!command || typeof command !== "string") return false;
   return VENV_CREATION_PATTERN.test(command.trim());
 }
 
@@ -126,18 +139,22 @@ function isVenvCreationCommand(command) {
  */
 function isAllowedCommand(command) {
   const stripped = stripCommandPrefix(command);
-  return isBuildCommand(stripped) || isVenvExecutable(stripped) || isVenvCreationCommand(stripped);
+  return (
+    isBuildCommand(stripped) ||
+    isVenvExecutable(stripped) ||
+    isVenvCreationCommand(stripped)
+  );
 }
 
 function findGitRoot(startDir) {
-  if (!startDir || typeof startDir !== 'string') return null;
+  if (!startDir || typeof startDir !== "string") return null;
 
   let dir = path.resolve(startDir);
   const root = path.parse(dir).root;
 
   while (true) {
-    if (fs.existsSync(path.join(dir, '.git')) || dir === root) {
-      return fs.existsSync(path.join(dir, '.git')) ? dir : null;
+    if (fs.existsSync(path.join(dir, ".git")) || dir === root) {
+      return fs.existsSync(path.join(dir, ".git")) ? dir : null;
     }
 
     dir = path.dirname(dir);
@@ -154,12 +171,12 @@ function findGitRoot(startDir) {
  * @returns {string|null}
  */
 function findProjectCkignore(startDir, configDirName) {
-  if (!configDirName || typeof configDirName !== 'string') return null;
+  if (!configDirName || typeof configDirName !== "string") return null;
   const gitRoot = findGitRoot(startDir);
   if (!gitRoot) return null;
-  const candidate = path.join(gitRoot, configDirName, '.vcignore');
+  const candidate = path.join(gitRoot, configDirName, ".vcignore");
   if (fs.existsSync(candidate)) return candidate;
-  const legacyCandidate = path.join(gitRoot, configDirName, '.ckignore');
+  const legacyCandidate = path.join(gitRoot, configDirName, ".ckignore");
   return fs.existsSync(legacyCandidate) ? legacyCandidate : null;
 }
 
@@ -182,23 +199,23 @@ function findProjectCkignore(startDir, configDirName) {
  * @param {boolean} [params.options.checkBroadPatterns] - Check for overly broad glob patterns (default: true)
  * @returns {{
  *   blocked: boolean,
-  *   path?: string,
-  *   pattern?: string,
-  *   reason?: string,
+ *   path?: string,
+ *   pattern?: string,
+ *   reason?: string,
  *   configPath?: string,
-  *   isBroadPattern?: boolean,
-  *   suggestions?: string[],
-  *   isAllowedCommand?: boolean
+ *   isBroadPattern?: boolean,
+ *   suggestions?: string[],
+ *   isAllowedCommand?: boolean
  * }}
  */
 function checkScoutBlock({ toolName, toolInput, options = {} }) {
   const {
     ckignorePath,
     projectCkignorePath,
-    claudeDir = path.join(process.cwd(), '.claude'),
+    claudeDir = path.join(process.cwd(), ".claude"),
     cwd = process.cwd(),
     projectConfigDirName,
-    checkBroadPatterns = true
+    checkBroadPatterns = true,
   } = options;
 
   // Unwrap shell executor wrappers (bash -c "...", eval "...")
@@ -217,47 +234,57 @@ function checkScoutBlock({ toolName, toolInput, options = {} }) {
   // anchor and would match the prefix of "npm run build && cat dist/file.js".
   if (toolInput.command) {
     const subCommands = splitCompoundCommand(toolInput.command);
-    const nonAllowed = subCommands.filter(cmd => !isAllowedCommand(cmd.trim()));
+    const nonAllowed = subCommands.filter(
+      (cmd) => !isAllowedCommand(cmd.trim()),
+    );
     if (nonAllowed.length === 0) {
       return { blocked: false, isAllowedCommand: true };
     }
     // Only extract paths from non-allowed sub-commands
     if (nonAllowed.length < subCommands.length) {
-      toolInput = { ...toolInput, command: nonAllowed.join(' ; ') };
+      toolInput = { ...toolInput, command: nonAllowed.join(" ; ") };
     }
   }
 
   // Check for overly broad glob patterns (Glob tool)
-  if (checkBroadPatterns && (toolName === 'Glob' || toolInput.pattern)) {
+  if (checkBroadPatterns && (toolName === "Glob" || toolInput.pattern)) {
     const broadResult = detectBroadPatternIssue(toolInput);
     if (broadResult.blocked) {
       return {
         blocked: true,
         isBroadPattern: true,
         pattern: toolInput.pattern,
-        reason: broadResult.reason || 'Pattern too broad - may fill context with too many files',
-        suggestions: broadResult.suggestions || []
+        reason:
+          broadResult.reason ||
+          "Pattern too broad - may fill context with too many files",
+        suggestions: broadResult.suggestions || [],
       };
     }
   }
 
   // Resolve .vcignore path (new-first, legacy .ckignore fallback)
-  const resolvedCkignorePath = ckignorePath || (
-    fs.existsSync(path.join(claudeDir, '.vcignore'))
-      ? path.join(claudeDir, '.vcignore')
-      : (fs.existsSync(path.join(claudeDir, '.ckignore'))
-        ? path.join(claudeDir, '.ckignore')
-        : path.join(claudeDir, '.vcignore'))
-  );
-  const discoveredProjectCkignorePath = projectCkignorePath || findProjectCkignore(cwd, projectConfigDirName);
-  const resolvedProjectCkignorePath = discoveredProjectCkignorePath
-    && path.resolve(discoveredProjectCkignorePath) !== path.resolve(resolvedCkignorePath)
+  const resolvedCkignorePath =
+    ckignorePath ||
+    (fs.existsSync(path.join(claudeDir, ".vcignore"))
+      ? path.join(claudeDir, ".vcignore")
+      : fs.existsSync(path.join(claudeDir, ".ckignore"))
+        ? path.join(claudeDir, ".ckignore")
+        : path.join(claudeDir, ".vcignore"));
+  const discoveredProjectCkignorePath =
+    projectCkignorePath || findProjectCkignore(cwd, projectConfigDirName);
+  const resolvedProjectCkignorePath =
+    discoveredProjectCkignorePath &&
+    path.resolve(discoveredProjectCkignorePath) !==
+      path.resolve(resolvedCkignorePath)
       ? discoveredProjectCkignorePath
       : null;
   const configPath = resolvedProjectCkignorePath || resolvedCkignorePath;
 
   // Load patterns and create matcher
-  const patterns = loadPatterns(resolvedCkignorePath, resolvedProjectCkignorePath);
+  const patterns = loadPatterns(
+    resolvedCkignorePath,
+    resolvedProjectCkignorePath,
+  );
   const matcher = createMatcher(patterns);
 
   // Extract paths from tool input
@@ -277,7 +304,7 @@ function checkScoutBlock({ toolName, toolInput, options = {} }) {
         path: extractedPath,
         pattern: result.pattern,
         configPath,
-        reason: `Path matches blocked pattern: ${result.pattern}`
+        reason: `Path matches blocked pattern: ${result.pattern}`,
       };
     }
   }
@@ -316,5 +343,5 @@ module.exports = {
   BUILD_COMMAND_PATTERN,
   TOOL_COMMAND_PATTERN,
   VENV_EXECUTABLE_PATTERN,
-  VENV_CREATION_PATTERN
+  VENV_CREATION_PATTERN,
 };

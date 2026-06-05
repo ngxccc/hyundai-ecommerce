@@ -1,36 +1,43 @@
 #!/usr/bin/env node
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
+const { execSync } = require("node:child_process");
 
 const DEFAULT_CACHE_TTL_MS = 60_000;
 const DEFAULT_FETCH_TIMEOUT_MS = 5_000;
-const DEFAULT_USER_AGENT = 'claudekit-engineer/1.0';
+const DEFAULT_USER_AGENT = "claudekit-engineer/1.0";
 const DEFAULT_ELIGIBILITY_CACHE_TTL_MS = 60_000;
 
 function getUsageCachePath() {
-  return process.env.VC_USAGE_CACHE_PATH || path.join(os.tmpdir(), 'vc-usage-limits-cache.json');
+  return (
+    process.env.VC_USAGE_CACHE_PATH ||
+    path.join(os.tmpdir(), "ag-usage-limits-cache.json")
+  );
 }
 
 function getQuotaEligibilityCachePath() {
-  return process.env.CK_USAGE_ELIGIBILITY_CACHE_PATH || `${getUsageCachePath()}.eligibility`;
+  return (
+    process.env.CK_USAGE_ELIGIBILITY_CACHE_PATH ||
+    `${getUsageCachePath()}.eligibility`
+  );
 }
 
 function readUsageCache(cachePath = getUsageCachePath()) {
   try {
     if (!fs.existsSync(cachePath)) return null;
-    const parsed = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
-    return parsed && typeof parsed === 'object' ? parsed : null;
+    const parsed = JSON.parse(fs.readFileSync(cachePath, "utf8"));
+    return parsed && typeof parsed === "object" ? parsed : null;
   } catch {
     return null;
   }
 }
 
 function getCacheAgeMs(cache, now = Date.now()) {
-  if (!cache || typeof cache.timestamp !== 'number') return Number.POSITIVE_INFINITY;
+  if (!cache || typeof cache.timestamp !== "number")
+    return Number.POSITIVE_INFINITY;
   return Math.max(0, now - cache.timestamp);
 }
 
@@ -39,25 +46,31 @@ function isUsageCacheFresh(cache, maxAgeMs, now = Date.now()) {
 }
 
 function normalizeUtilization(utilization) {
-  if (typeof utilization !== 'number' || !Number.isFinite(utilization)) return null;
+  if (typeof utilization !== "number" || !Number.isFinite(utilization))
+    return null;
   if (utilization > 0 && utilization < 1) return Math.round(utilization * 100);
   return Math.max(0, Math.round(utilization));
 }
 
 function buildUsageSnapshot(data = null, now = Date.now()) {
-  if (!data || typeof data !== 'object') return null;
+  if (!data || typeof data !== "object") return null;
 
   return {
     sourceVersion: 1,
     fetchedAt: new Date(now).toISOString(),
     fiveHourPercent: normalizeUtilization(data.five_hour?.utilization),
-    weekPercent: normalizeUtilization(data.seven_day?.utilization)
+    weekPercent: normalizeUtilization(data.seven_day?.utilization),
   };
 }
 
-function writeUsageCache(status, data = null, { cachePath = getUsageCachePath(), now = Date.now() } = {}) {
+function writeUsageCache(
+  status,
+  data = null,
+  { cachePath = getUsageCachePath(), now = Date.now() } = {},
+) {
   const tmpFile = `${cachePath}.${process.pid}.${now}.${Math.random().toString(16).slice(2)}.tmp`;
-  const snapshot = status === 'available' ? buildUsageSnapshot(data, now) : null;
+  const snapshot =
+    status === "available" ? buildUsageSnapshot(data, now) : null;
 
   try {
     fs.writeFileSync(
@@ -66,28 +79,37 @@ function writeUsageCache(status, data = null, { cachePath = getUsageCachePath(),
         timestamp: now,
         status,
         data,
-        snapshot
-      })
+        snapshot,
+      }),
     );
     fs.renameSync(tmpFile, cachePath);
   } catch {
-    try { fs.unlinkSync(tmpFile); } catch {}
+    try {
+      fs.unlinkSync(tmpFile);
+    } catch {}
   }
 }
 
 function readQuotaEligibilityCache(cachePath = getQuotaEligibilityCachePath()) {
   try {
     if (!fs.existsSync(cachePath)) return null;
-    const parsed = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
-    if (parsed && typeof parsed === 'object' && typeof parsed.eligible === 'boolean') {
+    const parsed = JSON.parse(fs.readFileSync(cachePath, "utf8"));
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      typeof parsed.eligible === "boolean"
+    ) {
       return parsed;
     }
   } catch {}
   return null;
 }
 
-function writeQuotaEligibilityCache(result, { cachePath = getQuotaEligibilityCachePath(), now = Date.now() } = {}) {
-  if (!result || typeof result.eligible !== 'boolean') return;
+function writeQuotaEligibilityCache(
+  result,
+  { cachePath = getQuotaEligibilityCachePath(), now = Date.now() } = {},
+) {
+  if (!result || typeof result.eligible !== "boolean") return;
 
   const tmpFile = `${cachePath}.${process.pid}.${now}.${Math.random().toString(16).slice(2)}.tmp`;
   try {
@@ -96,41 +118,51 @@ function writeQuotaEligibilityCache(result, { cachePath = getQuotaEligibilityCac
       JSON.stringify({
         timestamp: now,
         eligible: result.eligible,
-        note: result.note || null
-      })
+        note: result.note || null,
+      }),
     );
     fs.renameSync(tmpFile, cachePath);
   } catch {
-    try { fs.unlinkSync(tmpFile); } catch {}
+    try {
+      fs.unlinkSync(tmpFile);
+    } catch {}
   }
 }
 
 function hasAnthropicRuntimeOverride(envObj = process.env) {
-  return ['ANTHROPIC_BASE_URL', 'ANTHROPIC_AUTH_TOKEN', 'ANTHROPIC_API_KEY']
-    .some((key) => typeof envObj?.[key] === 'string' && envObj[key].trim() !== '');
+  return [
+    "ANTHROPIC_BASE_URL",
+    "ANTHROPIC_AUTH_TOKEN",
+    "ANTHROPIC_API_KEY",
+  ].some(
+    (key) => typeof envObj?.[key] === "string" && envObj[key].trim() !== "",
+  );
 }
 
 function readClaudeCredentials({
   platform = os.platform(),
   homedir = os.homedir(),
-  execSyncImpl = execSync
+  execSyncImpl = execSync,
 } = {}) {
-  if (platform === 'darwin') {
+  if (platform === "darwin") {
     try {
-      const raw = execSyncImpl('security find-generic-password -s "Claude Code-credentials" -w', {
-        timeout: 5_000,
-        encoding: 'utf8',
-        stdio: ['pipe', 'pipe', 'ignore']
-      }).trim();
+      const raw = execSyncImpl(
+        'security find-generic-password -s "Claude Code-credentials" -w',
+        {
+          timeout: 5_000,
+          encoding: "utf8",
+          stdio: ["pipe", "pipe", "ignore"],
+        },
+      ).trim();
       const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === 'object') return parsed;
+      if (parsed && typeof parsed === "object") return parsed;
     } catch {}
   }
 
   try {
-    const credentialsPath = path.join(homedir, '.claude', '.credentials.json');
-    const parsed = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
-    return parsed && typeof parsed === 'object' ? parsed : null;
+    const credentialsPath = path.join(homedir, ".claude", ".credentials.json");
+    const parsed = JSON.parse(fs.readFileSync(credentialsPath, "utf8"));
+    return parsed && typeof parsed === "object" ? parsed : null;
   } catch {
     return null;
   }
@@ -141,50 +173,88 @@ function getClaudeAccessTokenFromCredentials(credentials) {
 }
 
 function hasSupportedClaudeSubscription(credentials) {
-  const subscriptionType = String(credentials?.claudeAiOauth?.subscriptionType || '').trim().toLowerCase();
-  if (subscriptionType && subscriptionType !== 'free' && subscriptionType !== 'none') return true;
+  const subscriptionType = String(
+    credentials?.claudeAiOauth?.subscriptionType || "",
+  )
+    .trim()
+    .toLowerCase();
+  if (
+    subscriptionType &&
+    subscriptionType !== "free" &&
+    subscriptionType !== "none"
+  )
+    return true;
 
-  const rateLimitTier = String(credentials?.claudeAiOauth?.rateLimitTier || '').trim().toLowerCase();
+  const rateLimitTier = String(credentials?.claudeAiOauth?.rateLimitTier || "")
+    .trim()
+    .toLowerCase();
   return /claude|max|pro|team|enterprise/.test(rateLimitTier);
 }
 
 function resolveQuotaDisplayEligibility(options = {}) {
   if (hasAnthropicRuntimeOverride(options.env)) {
-    return { eligible: false, note: 'runtime-override', accessToken: null };
+    return { eligible: false, note: "runtime-override", accessToken: null };
   }
 
-  const explicitAccessToken = typeof options.accessToken === 'string' && options.accessToken.trim() !== '';
-  const explicitCredentials = Object.prototype.hasOwnProperty.call(options, 'credentials');
+  const explicitAccessToken =
+    typeof options.accessToken === "string" &&
+    options.accessToken.trim() !== "";
+  const explicitCredentials = Object.hasOwn(options, "credentials");
 
   if (options.useCache && !explicitAccessToken && !explicitCredentials) {
     const cached = readQuotaEligibilityCache(options.eligibilityCachePath);
-    if (isUsageCacheFresh(cached, options.eligibilityCacheTtlMs || DEFAULT_ELIGIBILITY_CACHE_TTL_MS, options.now)) {
-      return { eligible: cached.eligible, note: cached.note || 'cached', accessToken: null };
+    if (
+      isUsageCacheFresh(
+        cached,
+        options.eligibilityCacheTtlMs || DEFAULT_ELIGIBILITY_CACHE_TTL_MS,
+        options.now,
+      )
+    ) {
+      return {
+        eligible: cached.eligible,
+        note: cached.note || "cached",
+        accessToken: null,
+      };
     }
   }
 
-  const credentials = explicitCredentials ? options.credentials : readClaudeCredentials(options);
+  const credentials = explicitCredentials
+    ? options.credentials
+    : readClaudeCredentials(options);
 
   let result;
   if (explicitAccessToken) {
-    result = credentials && !hasSupportedClaudeSubscription(credentials)
-      ? { eligible: false, note: 'non-subscription-auth', accessToken: null }
-      : { eligible: true, note: 'eligible', accessToken: options.accessToken.trim() };
+    result =
+      credentials && !hasSupportedClaudeSubscription(credentials)
+        ? { eligible: false, note: "non-subscription-auth", accessToken: null }
+        : {
+            eligible: true,
+            note: "eligible",
+            accessToken: options.accessToken.trim(),
+          };
   } else {
     const accessToken = getClaudeAccessTokenFromCredentials(credentials);
     if (!accessToken) {
-      result = { eligible: false, note: 'missing-credentials', accessToken: null };
+      result = {
+        eligible: false,
+        note: "missing-credentials",
+        accessToken: null,
+      };
     } else if (!hasSupportedClaudeSubscription(credentials)) {
-      result = { eligible: false, note: 'non-subscription-auth', accessToken: null };
+      result = {
+        eligible: false,
+        note: "non-subscription-auth",
+        accessToken: null,
+      };
     } else {
-      result = { eligible: true, note: 'eligible', accessToken };
+      result = { eligible: true, note: "eligible", accessToken };
     }
   }
 
   if (options.useCache && !explicitAccessToken && !explicitCredentials) {
     writeQuotaEligibilityCache(result, {
       cachePath: options.eligibilityCachePath,
-      now: options.now
+      now: options.now,
     });
   }
 
@@ -197,53 +267,70 @@ function getClaudeAccessToken(options = {}) {
 
 async function fetchUsageLimits(options = {}) {
   const {
-  fetchImpl = fetch,
-  fetchTimeoutMs = DEFAULT_FETCH_TIMEOUT_MS,
-  userAgent = DEFAULT_USER_AGENT,
-  accessToken
+    fetchImpl = fetch,
+    fetchTimeoutMs = DEFAULT_FETCH_TIMEOUT_MS,
+    userAgent = DEFAULT_USER_AGENT,
+    accessToken,
   } = options;
-  const eligibility = resolveQuotaDisplayEligibility({ ...options, accessToken });
+  const eligibility = resolveQuotaDisplayEligibility({
+    ...options,
+    accessToken,
+  });
   const token = eligibility.accessToken;
   if (!eligibility.eligible || !token) {
     return {
       ok: false,
-      cacheStatus: 'unavailable',
-      note: eligibility.note || 'missing-credentials',
-      data: null
+      cacheStatus: "unavailable",
+      note: eligibility.note || "missing-credentials",
+      data: null,
     };
   }
 
-  const controller = typeof AbortController === 'function' ? new AbortController() : null;
+  const controller =
+    typeof AbortController === "function" ? new AbortController() : null;
   const timeoutId = controller
     ? setTimeout(() => controller.abort(), fetchTimeoutMs)
     : null;
 
   try {
-    const response = await fetchImpl('https://api.anthropic.com/api/oauth/usage', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-        'anthropic-beta': 'oauth-2025-04-20',
-        'User-Agent': userAgent
+    const response = await fetchImpl(
+      "https://api.anthropic.com/api/oauth/usage",
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "anthropic-beta": "oauth-2025-04-20",
+          "User-Agent": userAgent,
+        },
+        signal: controller?.signal,
       },
-      signal: controller?.signal
-    });
+    );
 
     if (!response.ok) {
-      return { ok: false, cacheStatus: 'unavailable', note: `http-${response.status}`, data: null };
+      return {
+        ok: false,
+        cacheStatus: "unavailable",
+        note: `http-${response.status}`,
+        data: null,
+      };
     }
 
     const data = await response.json();
-    if (!data || typeof data !== 'object') {
-      return { ok: false, cacheStatus: 'unavailable', note: 'invalid-body', data: null };
+    if (!data || typeof data !== "object") {
+      return {
+        ok: false,
+        cacheStatus: "unavailable",
+        note: "invalid-body",
+        data: null,
+      };
     }
 
-    return { ok: true, cacheStatus: 'available', note: 'fetched', data };
+    return { ok: true, cacheStatus: "available", note: "fetched", data };
   } catch (error) {
-    const note = error?.name === 'AbortError' ? 'timeout' : 'fetch-failed';
-    return { ok: false, cacheStatus: 'unavailable', note, data: null };
+    const note = error?.name === "AbortError" ? "timeout" : "fetch-failed";
+    return { ok: false, cacheStatus: "unavailable", note, data: null };
   } finally {
     if (timeoutId) clearTimeout(timeoutId);
   }
@@ -255,7 +342,7 @@ async function refreshUsageCache(options = {}) {
 
   return {
     ...result,
-    cache: readUsageCache(options.cachePath)
+    cache: readUsageCache(options.cachePath),
   };
 }
 
@@ -279,5 +366,5 @@ module.exports = {
   getClaudeAccessToken,
   fetchUsageLimits,
   refreshUsageCache,
-  normalizeUtilization
+  normalizeUtilization,
 };

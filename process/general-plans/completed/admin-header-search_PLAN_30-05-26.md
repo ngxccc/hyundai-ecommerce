@@ -108,7 +108,7 @@ Refer to `process/context/tests/all-tests.md`. All code must pass:
 
 ## Resume and Execution Handoff
 
-The plan is fully specced and ready for implementation. The next step is to hand off to the `vc-execute-agent` to implement the checklists sequentially.
+The plan is fully specced and ready for implementation. The next step is to hand off to the `ag-execute-agent` to implement the checklists sequentially.
 
 ## Cursor + RIPER-5 Guidance
 

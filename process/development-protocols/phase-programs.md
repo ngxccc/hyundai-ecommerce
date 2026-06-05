@@ -68,7 +68,7 @@ Execution rule:
   research -> approval -> execute -> validate -> regression check -> durable capture -> commit -> inter-phase UPDATE PROCESS -> move-on
 - Re-research at the start of every phase before implementation
 - After validation, run regression checks against previously verified surfaces that overlap with this phase's blast radius
-- Commit execution changes via vc-git-manager before moving to the next phase
+- Commit execution changes via ag-git-manager before moving to the next phase
 - Run inter-phase UPDATE PROCESS to archive the completed phase and capture learnings
 - Do not mark a phase `✅ VERIFIED` without both phase evidence and regression evidence
 - If blocked, document the blocker, safest next action, and update later phase plans/reports so the work survives compaction
@@ -347,7 +347,7 @@ For every phase, run this loop:
    - keep the parent or umbrella plan in sync when follow-up routing or phase sequencing changes
 
 8. **Commit checkpoint**
-   - if the phase produced implementation changes, recommend `vc-git-manager` for a logical execution commit before continuing
+   - if the phase produced implementation changes, recommend `ag-git-manager` for a logical execution commit before continuing
    - keep process/plan/context artifact commits separate from execution commits
    - do not defer the commit to a later phase -- stale worktrees make regression checking unreliable
 
@@ -480,12 +480,12 @@ When a regression is detected in step 5:
 
 **Classify the regression:**
 
-| Type | Definition | Example |
-|---|---|---|
-| product breakage | previously working product behavior is broken | API endpoint returns 500, container fails to start |
-| test breakage | previously passing test now fails | Vitest suite red, Playwright spec timeout |
-| harness drift | process/agent/skill artifacts are inconsistent | context doc references a deleted file |
-| stale command drift | a previously recorded command no longer works | pnpm script renamed, env var removed |
+| Type                | Definition                                     | Example                                            |
+| ------------------- | ---------------------------------------------- | -------------------------------------------------- |
+| product breakage    | previously working product behavior is broken  | API endpoint returns 500, container fails to start |
+| test breakage       | previously passing test now fails              | Vitest suite red, Playwright spec timeout          |
+| harness drift       | process/agent/skill artifacts are inconsistent | context doc references a deleted file              |
+| stale command drift | a previously recorded command no longer works  | pnpm script renamed, env var removed               |
 
 **Decision tree:**
 

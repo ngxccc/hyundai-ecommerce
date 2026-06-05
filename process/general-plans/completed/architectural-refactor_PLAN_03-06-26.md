@@ -197,7 +197,7 @@ After each phase, document:
 - **Objective**: Purify validators from UI keys and remove `@nhatnang/ui` import in `product.validators.ts`.
 - **Pre-Phase Research**: Read `packages/database/src/validators/*`.
 - **Test Stage**:
-  - Run command: `node .claude/skills/vc-audit-context/scripts/validate-context-discovery.mjs`
+  - Run command: `node .claude/skills/ag-audit-context/scripts/validate-context-discovery.mjs`
 
 ### RFC-004: Storefront UI Deduplication
 

@@ -6,17 +6,17 @@
  * Supports ANSI colors with NO_COLOR env var respect.
  */
 
-const path = require('path');
+const path = require("node:path");
 
 // ANSI color codes
 const COLORS = {
-  red: '\x1b[31m',
-  yellow: '\x1b[33m',
-  blue: '\x1b[34m',
-  cyan: '\x1b[36m',
-  bold: '\x1b[1m',
-  dim: '\x1b[2m',
-  reset: '\x1b[0m'
+  red: "\x1b[31m",
+  yellow: "\x1b[33m",
+  blue: "\x1b[34m",
+  cyan: "\x1b[36m",
+  bold: "\x1b[1m",
+  dim: "\x1b[2m",
+  reset: "\x1b[0m",
 };
 
 /**
@@ -45,7 +45,7 @@ function supportsColor() {
  */
 function colorize(text, color) {
   if (!supportsColor()) return text;
-  const colorCode = COLORS[color] || '';
+  const colorCode = COLORS[color] || "";
   return `${colorCode}${text}${COLORS.reset}`;
 }
 
@@ -61,9 +61,9 @@ function formatConfigPath(claudeDir, configPath) {
     return configPath;
   }
   if (claudeDir) {
-    return path.join(claudeDir, '.vcignore');
+    return path.join(claudeDir, ".vcignore");
   }
-  return '.claude/.vcignore';
+  return ".claude/.vcignore";
 }
 
 /**
@@ -84,27 +84,27 @@ function formatBlockedError(details) {
   const resolvedConfigPath = formatConfigPath(claudeDir, configPath);
 
   // Truncate path if too long
-  const displayPath = blockedPath.length > 60
-    ? '...' + blockedPath.slice(-57)
-    : blockedPath;
+  const displayPath =
+    blockedPath.length > 60 ? `...${blockedPath.slice(-57)}` : blockedPath;
 
   const lines = [
-    '',
-    colorize('NOTE:', 'cyan') + ' This is not an error - this block is intentional to optimize context.',
-    '',
-    colorize('BLOCKED', 'red') + `: Access to '${displayPath}' denied`,
-    '',
-    `  ${colorize('Pattern:', 'yellow')}  ${pattern}`,
-    `  ${colorize('Tool:', 'yellow')}     ${tool || 'unknown'}`,
-    '',
-    `  ${colorize('To allow, add to', 'blue')} ${resolvedConfigPath}:`,
+    "",
+    colorize("NOTE:", "cyan") +
+      " This is not an error - this block is intentional to optimize context.",
+    "",
+    `${colorize("BLOCKED", "red")}: Access to '${displayPath}' denied`,
+    "",
+    `  ${colorize("Pattern:", "yellow")}  ${pattern}`,
+    `  ${colorize("Tool:", "yellow")}     ${tool || "unknown"}`,
+    "",
+    `  ${colorize("To allow, add to", "blue")} ${resolvedConfigPath}:`,
     `    !${pattern}`,
-    '',
-    `  ${colorize('Config:', 'dim')} ${resolvedConfigPath}`,
-    ''
+    "",
+    `  ${colorize("Config:", "dim")} ${resolvedConfigPath}`,
+    "",
   ];
 
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
 /**
@@ -130,12 +130,12 @@ function formatMachineError(details) {
   const resolvedConfigPath = formatConfigPath(claudeDir, configPath);
 
   return JSON.stringify({
-    error: 'BLOCKED',
+    error: "BLOCKED",
     path: blockedPath,
     pattern: pattern,
     tool: tool,
     config: resolvedConfigPath,
-    fix: `Add '!${pattern}' to ${resolvedConfigPath} to allow this path`
+    fix: `Add '!${pattern}' to ${resolvedConfigPath} to allow this path`,
   });
 }
 
@@ -146,7 +146,7 @@ function formatMachineError(details) {
  * @returns {string}
  */
 function formatWarning(message) {
-  return colorize('WARN:', 'yellow') + ' ' + message;
+  return `${colorize("WARN:", "yellow")} ${message}`;
 }
 
 module.exports = {
@@ -157,5 +157,5 @@ module.exports = {
   formatConfigPath,
   supportsColor,
   colorize,
-  COLORS
+  COLORS,
 };

@@ -1,6 +1,9 @@
+// @ts-check
+// @ts-expect-error
+
+import { execSync } from "node:child_process";
+import * as path from "node:path";
 import type { HookAPI } from "@oh-my-pi/pi-coding-agent/extensibility/hooks";
-import { execSync } from "child_process";
-import * as path from "path";
 
 const mapToolName = (ompName: string): string => {
   switch (ompName) {
@@ -23,7 +26,7 @@ const runClaudePostHook = (hookScript: string, payload: any): void => {
       encoding: "utf-8",
       stdio: ["pipe", "ignore", "ignore"],
     });
-  } catch (error) {
+  } catch (_error) {
     // Post hooks are observational, ignore errors
   }
 };

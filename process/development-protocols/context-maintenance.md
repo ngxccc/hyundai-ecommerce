@@ -44,7 +44,7 @@ Create or promote a context group when any of these are true:
 - Update the owning context docs whenever code or workflow behavior changes what those docs describe.
 - Update `process/context/all-context.md` whenever a new durable entrypoint is added, renamed, grouped, or removed.
 - Move or split one group at a time so discovery changes stay reviewable.
-- After context-organization changes, run the `vc-audit-context` skill or its validators.
+- After context-organization changes, run the `ag-audit-context` skill or its validators.
 
 ## Relationship to Tool Memory
 

@@ -14,6 +14,7 @@ This folder holds research outputs and reference documents for this feature.
 Use descriptive names: `{topic}-reference.md` or `{topic}-research_{dd-mm-yy}.md`
 
 Examples:
+
 - `auth-library-comparison-reference.md`
 - `websocket-patterns-research_15-03-26.md`
 

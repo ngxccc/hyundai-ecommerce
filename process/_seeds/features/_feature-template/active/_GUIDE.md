@@ -7,6 +7,7 @@ This folder holds implementation plans that are currently in progress for this f
 Use date-stamped names: `{topic}_PLAN_{dd-mm-yy}.md`
 
 Examples:
+
 - `oauth-integration_PLAN_15-03-26.md`
 - `api-redesign_PLAN_22-04-26.md`
 

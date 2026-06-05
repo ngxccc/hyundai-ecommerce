@@ -121,7 +121,7 @@ Controller rules for phase programs:
    - regression checkpoint (against previously verified overlapping surfaces)
    - regression-found workflow (conditional, if regression detected)
    - durable report/context update
-   - commit checkpoint (vc-git-manager for execution changes)
+   - commit checkpoint (ag-git-manager for execution changes)
    - inter-phase UPDATE PROCESS (archive phase, capture learnings)
    - move-on recommendation
 4. after each phase, update reports and downstream phase plans before advancing
@@ -157,7 +157,7 @@ At these phase transitions, consult `process/development-protocols/parallel-fan-
 5. After non-trivial EXECUTE completion, before closeout
 
 The fan-out protocol uses the same signal-count scoring as drift scoring. It recommends
-parallel subagents when coverage benefit justifies the token cost, and escalates to vc-team
+parallel subagents when coverage benefit justifies the token cost, and escalates to ag-team
 only when agents need inter-communication.
 
 ## Approval Gates Still Apply in Parallel
@@ -189,7 +189,7 @@ Required closeout packet:
    - return to PLAN
    - move to the next explicit phase/follow-up after cleanup
 7. commit-checkpoint recommendation
-   - if the selected phase is validated and execution changes are present, explicitly recommend whether to invoke `vc-git-manager` before UPDATE PROCESS
+   - if the selected phase is validated and execution changes are present, explicitly recommend whether to invoke `ag-git-manager` before UPDATE PROCESS
    - if only process/plan/context artifacts remain, say that the commit checkpoint belongs after UPDATE PROCESS instead of before it
 8. regression status (phase programs only)
    - list which previously verified surfaces were checked for regression
@@ -210,7 +210,7 @@ Rules:
 - Do automatically recommend the next valid state when it is clear from the selected plan and latest verification.
 - Do explicitly recommend a commit checkpoint when a selected phase is well-tested and validated.
 - If cleanup/context capture is the only remaining safe action, say that directly instead of ending with a generic summary.
-- If cleanup was skipped and active-plan debt accumulates, recommend `vc-audit-plans` as a maintenance follow-up.
+- If cleanup was skipped and active-plan debt accumulates, recommend `ag-audit-plans` as a maintenance follow-up.
 
 ### Drift Signal Scoring
 
@@ -238,7 +238,7 @@ Examples:
 - If the selected plan is verified and the next phase is explicit, recommend:
   `ENTER UPDATE PROCESS MODE, then continue with process/features/.../next-phase_PLAN_...md`
 - If the selected plan is verified and implementation changes are still uncommitted, recommend:
-  `Invoke vc-git-manager for a logical execution commit, then ENTER UPDATE PROCESS MODE for plan/context reconciliation`
+  `Invoke ag-git-manager for a logical execution commit, then ENTER UPDATE PROCESS MODE for plan/context reconciliation`
 - If the selected plan is code-complete but still testing, recommend:
   `Keep the plan active and continue validation on the same selected plan`
 - If the selected plan exposed follow-up work outside its boundary, recommend:

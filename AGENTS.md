@@ -68,11 +68,11 @@ Your responsibilities:
 
 You do NOT:
 
-- Perform research yourself when the request is explicitly a RESEARCH workflow if the dedicated `vc-research-agent` should be used
-- Brainstorm approaches yourself when the request is explicitly an INNOVATE workflow if the dedicated `vc-innovate-agent` should be used
-- Write plans yourself when the request is explicitly a PLAN workflow if the dedicated `vc-plan-agent` should be used
-- Implement code yourself when the request is explicitly an EXECUTE workflow if the dedicated `vc-execute-agent` should be used
-- Update rules yourself when the request is explicitly an UPDATE PROCESS workflow if the dedicated `vc-update-process-agent` should be used
+- Perform research yourself when the request is explicitly a RESEARCH workflow if the dedicated `ag-research-agent` should be used
+- Brainstorm approaches yourself when the request is explicitly an INNOVATE workflow if the dedicated `ag-innovate-agent` should be used
+- Write plans yourself when the request is explicitly a PLAN workflow if the dedicated `ag-plan-agent` should be used
+- Implement code yourself when the request is explicitly an EXECUTE workflow if the dedicated `ag-execute-agent` should be used
+- Update rules yourself when the request is explicitly an UPDATE PROCESS workflow if the dedicated `ag-update-process-agent` should be used
 
 Exception: Trivial questions that don't require mode-specific work, for example "What is
 RIPER-5?", can be answered directly.
@@ -105,12 +105,12 @@ Before substantial planning or implementation work, consult:
 The complete RIPER-5 protocol is defined in the real agent files at `.claude/agents/` and mirrored
 for Codex through `.codex/agents/`:
 
-- [.claude/agents/vc-research-agent.md](.claude/agents/vc-research-agent.md)
-- [.claude/agents/vc-innovate-agent.md](.claude/agents/vc-innovate-agent.md)
-- [.claude/agents/vc-plan-agent.md](.claude/agents/vc-plan-agent.md)
-- [.claude/agents/vc-execute-agent.md](.claude/agents/vc-execute-agent.md)
-- [.claude/agents/vc-fast-mode-agent.md](.claude/agents/vc-fast-mode-agent.md)
-- [.claude/agents/vc-update-process-agent.md](.claude/agents/vc-update-process-agent.md)
+- [.claude/agents/ag-research-agent.md](.claude/agents/ag-research-agent.md)
+- [.claude/agents/ag-innovate-agent.md](.claude/agents/ag-innovate-agent.md)
+- [.claude/agents/ag-plan-agent.md](.claude/agents/ag-plan-agent.md)
+- [.claude/agents/ag-execute-agent.md](.claude/agents/ag-execute-agent.md)
+- [.claude/agents/ag-fast-mode-agent.md](.claude/agents/ag-fast-mode-agent.md)
+- [.claude/agents/ag-update-process-agent.md](.claude/agents/ag-update-process-agent.md)
 - `.codex/agents/*.toml` mirrors the same agent roster for Codex
 
 The orchestrator operates outside the RIPER-5 phase modes. It routes, delegates, and monitors.
@@ -128,13 +128,13 @@ Key Requirements:
 
 Auto-Detection Patterns:
 
-- Feature requests -> Step 0 skill discovery -> vc-research-agent -> INNOVATE -> PLAN -> EXECUTE
-- Questions -> vc-research-agent for non-trivial investigation or direct answer for trivial conceptual questions
-- Trivial fixes -> vc-execute-agent directly with no plan required
-- Bug/debug -> vc-debugger as the default actor; helper skills like `vc-scout`, `vc-sequential-thinking`, and `vc-problem-solving` may assist
-- UI/frontend -> surface vc-frontend-design skill plus vc-research-agent
-- Refactor/simplify -> vc-code-simplifier for pure style or RESEARCH -> PLAN -> EXECUTE for behavioral refactors
-- Missing context -> suggest the `vc-generate-context` skill
+- Feature requests -> Step 0 skill discovery -> ag-research-agent -> INNOVATE -> PLAN -> EXECUTE
+- Questions -> ag-research-agent for non-trivial investigation or direct answer for trivial conceptual questions
+- Trivial fixes -> ag-execute-agent directly with no plan required
+- Bug/debug -> ag-debugger as the default actor; helper skills like `ag-scout`, `ag-sequential-thinking`, and `ag-problem-solving` may assist
+- UI/frontend -> surface ag-frontend-design skill plus ag-research-agent
+- Refactor/simplify -> ag-code-simplifier for pure style or RESEARCH -> PLAN -> EXECUTE for behavioral refactors
+- Missing context -> suggest the `ag-generate-context` skill
 - Existing plan file -> scan `process/general-plans/active/` and `process/features/*/active/`, confirm with user, resume from last phase
 
 Large program rule:
@@ -165,6 +165,7 @@ Global best practices and coding conventions apply:
 - Functions, classes, and abstraction
 - Component architecture
 - Testing and quality standards
+- Markdown formatting: Always format markdown files using Prettier.
 
 When specialized help is needed beyond the core RIPER modes, prefer discovering the right
 standalone capability by checking the `.agents/skills/` directory rather than expanding the
@@ -204,7 +205,7 @@ Context group lifecycle: create or promote a context group when a topic has 3+ d
 a single doc exceeds roughly 800 lines with separable subtopics, or multiple agents repeatedly
 need only one slice of a large context file. Move/split one group at a time, use `all-*.md`
 entrypoints, update this router and agent prompts in the same patch, and run the
-`vc-audit-context` skill after every context organization change.
+`ag-audit-context` skill after every context organization change.
 
 ### `process/features/`
 
@@ -249,7 +250,7 @@ Promotion protocol from general to feature folder:
 4. Inform subagents of the new feature scope going forward
 
 Feature list maintenance: The Current features list above must be updated whenever a new
-feature folder is created or an empty one is removed. The `vc-update-process-agent` checks for
+feature folder is created or an empty one is removed. The `ag-update-process-agent` checks for
 drift between `ls process/features/` and this list during Phase 2.
 
 ### `process/general-plans/reports/`
@@ -275,59 +276,59 @@ Claude command files are compatibility aliases when they still exist.
 The active system is intentionally split into four layers:
 
 - **Actor agents** own the actual phase or specialist role:
-  - `vc-research-agent`
-  - `vc-innovate-agent`
-  - `vc-plan-agent`
-  - `vc-execute-agent`
-  - `vc-update-process-agent`
-  - `vc-debugger`
-  - `vc-tester`
-  - `vc-code-reviewer`
-  - `vc-code-simplifier`
-  - `vc-ui-ux-designer`
-  - `vc-git-manager`
+  - `ag-research-agent`
+  - `ag-innovate-agent`
+  - `ag-plan-agent`
+  - `ag-execute-agent`
+  - `ag-update-process-agent`
+  - `ag-debugger`
+  - `ag-tester`
+  - `ag-code-reviewer`
+  - `ag-code-simplifier`
+  - `ag-ui-ux-designer`
+  - `ag-git-manager`
 - **Contract skills** define repo workflow artifacts and durable process contracts:
-  - `vc-generate-plan`
-  - `vc-generate-context`
-  - `vc-audit-context`
-  - `vc-audit-plans`
-  - `vc-audit-vc`
-  - `vc-update`
-  - `vc-publish`
+  - `ag-generate-plan`
+  - `ag-generate-context`
+  - `ag-audit-context`
+  - `ag-audit-plans`
+  - `ag-audit-ag`
+  - `ag-update`
+  - `ag-publish`
 - **Helper skills** improve how agents work but do not own the workflow:
-  - `vc-scout`
-  - `vc-sequential-thinking`
-  - `vc-problem-solving`
-  - `vc-preview`
-  - `vc-tech-graph`
-  - `vc-watzup`
-  - `vc-xia`
-  - `vc-repomix`
-  - `vc-docs-seeker`
-  - `vc-chrome-devtools`
-  - `vc-agent-browser`
-  - `vc-context-engineering`
-  - `vc-web-testing`
-  - `vc-frontend-design`
-  - `vc-predict`
-  - `vc-scenario`
-  - `vc-security`
-  - `vc-autoresearch`
-  - `vc-zod`
+  - `ag-scout`
+  - `ag-sequential-thinking`
+  - `ag-problem-solving`
+  - `ag-preview`
+  - `ag-tech-graph`
+  - `ag-watzup`
+  - `ag-xia`
+  - `ag-repomix`
+  - `ag-docs-seeker`
+  - `ag-chrome-devtools`
+  - `ag-agent-browser`
+  - `ag-context-engineering`
+  - `ag-web-testing`
+  - `ag-frontend-design`
+  - `ag-predict`
+  - `ag-scenario`
+  - `ag-security`
+  - `ag-autoresearch`
+  - `ag-zod`
 - **Orchestration utility**:
-  - `vc-team` coordinates multiple surviving actors/helpers in parallel but is not a competing default workflow owner
+  - `ag-team` coordinates multiple surviving actors/helpers in parallel but is not a competing default workflow owner
 
-Former workflow-owner skills such as `vc:plan`, `vc:research`, `vc:cook`, `vc:fix`, and `vc:code-review` are migration sources only. Their useful practices should be absorbed into the surviving actor/contract surfaces instead of being routed as separate default workflows.
+Former workflow-owner skills such as `ag:plan`, `ag:research`, `ag:cook`, `ag:fix`, and `ag:code-review` are migration sources only. Their useful practices should be absorbed into the surviving actor/contract surfaces instead of being routed as separate default workflows.
 
-`vc:debug` remains a valid helper skill. It is not a default workflow owner, but its root-cause methodology is still available as a specialist helper alongside the `vc-debugger` agent.
+`ag-debug` remains a valid helper skill. It is not a default workflow owner, but its root-cause methodology is still available as a specialist helper alongside the `ag-debugger` agent.
 
 ### Core Skills
 
-- `vc-generate-plan` - Create implementation plans (SIMPLE or COMPLEX) with explicit touchpoints, blast radius, verification evidence, and resume handoff
-- `vc-generate-context` - Generate/update repository context
-- `vc-audit-context` - Audit context routing, grouping, discoverability, and Claude/Codex wiring
-- `vc-audit-plans` - Audit active-plan inventory, staleness, and routing truth
-- `vc-audit-vc` - Audit agent harness health: agent parity, skill registry, README.md sync, and protocol wiring
+- `ag-generate-plan` - Create implementation plans (SIMPLE or COMPLEX) with explicit touchpoints, blast radius, verification evidence, and resume handoff
+- `ag-generate-context` - Generate/update repository context
+- `ag-audit-context` - Audit context routing, grouping, discoverability, and Claude/Codex wiring
+- `ag-audit-plans` - Audit active-plan inventory, staleness, and routing truth
+- `ag-audit-ag` - Audit agent harness health: agent parity, skill registry, README.md sync, and protocol wiring
 
 Legacy `@sync-to-riper5.md` and `@sync-from-riper5.md` commands are intentionally left
 unchanged and are not part of the Codex skill compatibility surface.
@@ -345,35 +346,35 @@ but Claude's YAML `tools:` allowlists are not guaranteed to be enforced by Codex
 
 ### Available Agents
 
-`vc-research-agent`
+`ag-research-agent`
 
 - Purpose: Information gathering only (read-only)
 - Claude tools: Read, Grep, Glob, Bash (safe commands)
 - Use: Understanding codebase, gathering context
 - Invoke: User says "ENTER RESEARCH MODE" or explicit agent/skill call
 
-`vc-innovate-agent`
+`ag-innovate-agent`
 
 - Purpose: Brainstorming approaches (discussion-only)
 - Claude tools: Read, Grep, Glob (no execution)
 - Use: Exploring implementation options
 - Invoke: After RESEARCH, user says "go" or "ENTER INNOVATE MODE"
 
-`vc-plan-agent`
+`ag-plan-agent`
 
 - Purpose: Creating detailed specifications
 - Claude tools: Read, Write (`process/general-plans/active/` or `process/features/*/active/` only), Grep, Glob, Bash
 - Use: Writing implementation plans
 - Invoke: After INNOVATE, user says "go" or "ENTER PLAN MODE"
 
-`vc-execute-agent`
+`ag-execute-agent`
 
 - Purpose: Implementing per approved plan
 - Claude tools: Full access (Read, Write, Edit, Delete, Grep, Glob, Bash)
 - Use: Code implementation
 - Invoke: ONLY with explicit "ENTER EXECUTE MODE" after plan approval
 
-`vc-fast-mode-agent`
+`ag-fast-mode-agent`
 
 - Purpose: Compressed workflow (RESEARCH -> INNOVATE -> PLAN -> PAUSE -> EXECUTE)
 - Claude tools: Full access
@@ -381,7 +382,7 @@ but Claude's YAML `tools:` allowlists are not guaranteed to be enforced by Codex
 - Invoke: "ENTER FAST MODE"
 - CRITICAL: Pauses before EXECUTE for confirmation
 
-`vc-update-process-agent`
+`ag-update-process-agent`
 
 - Purpose: Rule updates, memory storage, plan archiving
 - Codex note: durable shared knowledge belongs in `process/context/`; Claude also has a separate project-memory layer under `~/.claude/projects/.../memory/`
@@ -395,28 +396,28 @@ orchestrator or by execute-agent when specialized work is needed.
 
 During EXECUTE phase:
 
-- `vc-tester` - Diff-aware test verification. Maps changed files to test files, runs only affected tests. Invoke after implementation sub-steps complete.
-- `vc-debugger` - Root cause analysis for bugs. Evidence-before-hypothesis methodology. Can also be invoked standalone.
-- `vc-code-reviewer` - Production-readiness review. Edge case scouting, N+1 detection, auth path validation. Invoke as pre-PR quality gate.
-- `vc-code-simplifier` - Post-implementation refactor for clarity without behavior change. Invoke after code-reviewer passes.
-- `vc-ui-ux-designer` - Design-aware frontend implementation. Invoke for UI/UX tasks within execute phase.
-- `vc-git-manager` - Clean conventional commits. Invoke for git operations.
+- `ag-tester` - Diff-aware test verification. Maps changed files to test files, runs only affected tests. Invoke after implementation sub-steps complete.
+- `ag-debugger` - Root cause analysis for bugs. Evidence-before-hypothesis methodology. Can also be invoked standalone.
+- `ag-code-reviewer` - Production-readiness review. Edge case scouting, N+1 detection, auth path validation. Invoke as pre-PR quality gate.
+- `ag-code-simplifier` - Post-implementation refactor for clarity without behavior change. Invoke after code-reviewer passes.
+- `ag-ui-ux-designer` - Design-aware frontend implementation. Invoke for UI/UX tasks within execute phase.
+- `ag-git-manager` - Clean conventional commits. Invoke for git operations.
 
-Note: shared review methodology has been absorbed into the `vc-code-reviewer` agent prompt. Route to the agent directly instead of a separate review-owner workflow when the agent is the appropriate path.
+Note: shared review methodology has been absorbed into the `ag-code-reviewer` agent prompt. Route to the agent directly instead of a separate review-owner workflow when the agent is the appropriate path.
 
 Cross-phase utilities (skills, not agents):
 
-- `vc-sequential-thinking` - Structured reasoning, usable in any phase
-- `vc-problem-solving` - Cognitive toolkit when stuck in any phase
-- `vc-scout` - Fast codebase scouting, usable in RESEARCH
-- `vc-tech-graph` - Publish-grade SVG/PNG technical diagram generator for durable process artifacts; pair with `vc-preview` for review or explanation after generation
-- `vc-watzup` - Read-only repo, local/remote ref, worktree, and active-plan handoff summary helper with advisory-only selected-plan hints
-- `vc-xia` - Repo comparison and adaptation-prep helper with recon, map, analyze, and challenge stages that stops before planning or coding
-- `vc-repomix` - Repository packing helper for references-only artifacts, audits, and feature-porting prep
-- `vc-chrome-devtools` / `vc-agent-browser` - Browser automation, primarily EXECUTE
-- `vc-context-engineering` - Token optimization guidance, any phase
-- `vc:debug` - Specialist root-cause-analysis helper, usable alongside `vc-debugger`
-- `vc-autoresearch` - Autonomous iterative optimization loop after execute phase for measurable metrics
+- `ag-sequential-thinking` - Structured reasoning, usable in any phase
+- `ag-problem-solving` - Cognitive toolkit when stuck in any phase
+- `ag-scout` - Fast codebase scouting, usable in RESEARCH
+- `ag-tech-graph` - Publish-grade SVG/PNG technical diagram generator for durable process artifacts; pair with `ag-preview` for review or explanation after generation
+- `ag-watzup` - Read-only repo, local/remote ref, worktree, and active-plan handoff summary helper with advisory-only selected-plan hints
+- `ag-xia` - Repo comparison and adaptation-prep helper with recon, map, analyze, and challenge stages that stops before planning or coding
+- `ag-repomix` - Repository packing helper for references-only artifacts, audits, and feature-porting prep
+- `ag-chrome-devtools` / `ag-agent-browser` - Browser automation, primarily EXECUTE
+- `ag-context-engineering` - Token optimization guidance, any phase
+- `ag-debug` - Specialist root-cause-analysis helper, usable alongside `ag-debugger`
+- `ag-autoresearch` - Autonomous iterative optimization loop after execute phase for measurable metrics
 
 ### Discovery Note
 
@@ -437,39 +438,57 @@ request to surface relevant skills. Attach candidate skill names to the subagent
 
 Skill Registry:
 
-| Skill                    | Purpose                                                                                                         | Trigger Keywords                                                                               |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `vc-frontend-design`     | Polished UI from designs/screenshots/videos                                                                     | UI, design, layout, component, page, interface, visual, CSS, Tailwind, login page, dashboard   |
-| `vc-debug`               | Root cause-analysis helper used alongside `debugger`                                                            | debug, root cause, investigate, why is this                                                    |
-| `vc-scenario`            | Edge case generation across 12 dimensions                                                                       | edge cases, test scenarios, what could go wrong                                                |
-| `vc-security`            | STRIDE + OWASP security audit                                                                                   | security, vulnerability, auth, XSS, SQL injection                                              |
-| `vc-autoresearch`        | Autonomous metric optimization loop                                                                             | improve coverage, reduce bundle, optimize metric                                               |
-| `vc-predict`             | 5-persona pre-implementation debate                                                                             | risks, predict issues, architectural review                                                    |
-| `vc-scout`               | Fast parallel codebase scouting                                                                                 | find files, where is, search codebase                                                          |
-| `vc-tech-graph`          | Publish-grade technical diagrams as SVG or PNG for durable process artifacts                                    | generate diagram, architecture diagram, flowchart, sequence diagram, system visual             |
-| `vc-watzup`              | Read-only branch, local/remote ref, worktree, and active-plan handoff summary with advisory selected-plan hints | what's in flight, handoff, worktree status, active plans, next steps                           |
-| `vc-xia`                 | Repo comparison and adaptation-prep research                                                                    | copy from repo, compare repo, adapt from repo, study how they built it, analyze feature parity |
-| `vc-repomix`             | Pack local or remote repos into references-only artifacts                                                       | pack repo, snapshot codebase, repo context, compare repo, feature port, security audit         |
-| `vc-docs`                | Project documentation management                                                                                | docs, README, document codebase                                                                |
-| `vc-docs-seeker`         | Library docs via context7                                                                                       | how does X work, API docs, version, syntax                                                     |
-| `vc-generate-plan`       | Durable implementation planning                                                                                 | plan, PRD, spec, implementation plan                                                           |
-| `vc-generate-context`    | Refresh repository context router                                                                               | refresh context, regenerate context, repo context                                              |
-| `vc-audit-context`       | Context routing and discoverability audit                                                                       | context audit, reorganize context, stale context                                               |
-| `vc-audit-plans`         | Active-plan maintenance and cleanup                                                                             | stale plans, cleanup plans, archive plans, plan audit                                          |
-| `vc-web-testing`         | Playwright/Vitest/k6 test automation                                                                            | tests, e2e, integration test, performance test                                                 |
-| `vc-sequential-thinking` | Step-by-step reasoning                                                                                          | complex problem, think through, analyze step by step                                           |
-| `vc-problem-solving`     | Cognitive unblocking techniques                                                                                 | stuck, can't figure out, complex, spiral                                                       |
-| `vc-context-engineering` | Token/context optimization                                                                                      | context limit, token usage, optimize context                                                   |
-| `vc-preview`             | Visual diagrams, slides, file viewer                                                                            | diagram, visualize, slides, preview                                                            |
-| `vc-mcp-management`      | MCP server tools                                                                                                | MCP, model context protocol                                                                    |
-| `vc-chrome-devtools`     | Puppeteer browser automation                                                                                    | browser, screenshot, scrape, automate browser                                                  |
-| `vc-agent-browser`       | AI browser automation CLI                                                                                       | long browser session, browserbase, visual testing                                              |
-| `vc-team`                | Multi-agent parallel collaboration                                                                              | parallel agents, multi-agent, team                                                             |
-| `vc-setup`               | Scaffold agent harness into new project                                                                         | seed, harness, bootstrap, new project, scaffold, setup                                         |
-| `vc-update`              | Pull latest harness from remote kit repo                                                                        | update harness, pull kit, sync harness, upgrade agents                                         |
-| `vc-publish`             | Push harness improvements to remote kit repo                                                                    | publish kit, push harness, release kit, update remote                                          |
-| `vc-audit-vc`            | Agent harness health audit (agents, skills, README.md, protocol wiring)                                         | harness, agent parity, skill audit, guide sync                                                 |
-| `vc-zod`                 | Rules and references for Zod schema validation, parsing and database mapping                                    | validate payload, zod schema, zod custom validation errors, zod validation                     |
+| Skill                                   | Purpose                                                                                                         | Trigger Keywords                                                                               |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `ag-frontend-design`                    | Polished UI from designs/screenshots/videos                                                                     | UI, design, layout, component, page, interface, visual, CSS, Tailwind, login page, dashboard   |
+| `ag-debug`                              | Root cause-analysis helper used alongside `debugger`                                                            | debug, root cause, investigate, why is this                                                    |
+| `ag-scenario`                           | Edge case generation across 12 dimensions                                                                       | edge cases, test scenarios, what could go wrong                                                |
+| `ag-security`                           | STRIDE + OWASP security audit                                                                                   | security, vulnerability, auth, XSS, SQL injection                                              |
+| `ag-autoresearch`                       | Autonomous metric optimization loop                                                                             | improve coverage, reduce bundle, optimize metric                                               |
+| `ag-predict`                            | 5-persona pre-implementation debate                                                                             | risks, predict issues, architectural review                                                    |
+| `ag-scout`                              | Fast parallel codebase scouting                                                                                 | find files, where is, search codebase                                                          |
+| `ag-tech-graph`                         | Publish-grade technical diagrams as SVG or PNG for durable process artifacts                                    | generate diagram, architecture diagram, flowchart, sequence diagram, system visual             |
+| `ag-watzup`                             | Read-only branch, local/remote ref, worktree, and active-plan handoff summary with advisory selected-plan hints | what's in flight, handoff, worktree status, active plans, next steps                           |
+| `ag-xia`                                | Repo comparison and adaptation-prep research                                                                    | copy from repo, compare repo, adapt from repo, study how they built it, analyze feature parity |
+| `ag-repomix`                            | Pack local or remote repos into references-only artifacts                                                       | pack repo, snapshot codebase, repo context, compare repo, feature port, security audit         |
+| `ag-docs`                               | Project documentation management                                                                                | docs, README, document codebase                                                                |
+| `ag-docs-seeker`                        | Library docs via context7                                                                                       | how does X work, API docs, version, syntax                                                     |
+| `ag-generate-plan`                      | Durable implementation planning                                                                                 | plan, PRD, spec, implementation plan                                                           |
+| `ag-generate-context`                   | Refresh repository context router                                                                               | refresh context, regenerate context, repo context                                              |
+| `ag-audit-context`                      | Context routing and discoverability audit                                                                       | context audit, reorganize context, stale context                                               |
+| `ag-audit-plans`                        | Active-plan maintenance and cleanup                                                                             | stale plans, cleanup plans, archive plans, plan audit                                          |
+| `ag-web-testing`                        | Playwright/Vitest/k6 test automation                                                                            | tests, e2e, integration test, performance test                                                 |
+| `ag-sequential-thinking`                | Step-by-step reasoning                                                                                          | complex problem, think through, analyze step by step                                           |
+| `ag-problem-solving`                    | Cognitive unblocking techniques                                                                                 | stuck, can't figure out, complex, spiral                                                       |
+| `ag-context-engineering`                | Token/context optimization                                                                                      | context limit, token usage, optimize context                                                   |
+| `ag-preview`                            | Visual diagrams, slides, file viewer                                                                            | diagram, visualize, slides, preview                                                            |
+| `ag-mcp-management`                     | MCP server tools                                                                                                | MCP, model context protocol                                                                    |
+| `ag-chrome-devtools`                    | Puppeteer browser automation                                                                                    | browser, screenshot, scrape, automate browser                                                  |
+| `ag-agent-browser`                      | AI browser automation CLI                                                                                       | long browser session, browserbase, visual testing                                              |
+| `ag-team`                               | Multi-agent parallel collaboration                                                                              | parallel agents, multi-agent, team                                                             |
+| `ag-setup`                              | Scaffold agent harness into new project                                                                         | seed, harness, bootstrap, new project, scaffold, setup                                         |
+| `ag-update`                             | Pull latest harness from remote kit repo                                                                        | update harness, pull kit, sync harness, upgrade agents                                         |
+| `ag-publish`                            | Push harness improvements to remote kit repo                                                                    | publish kit, push harness, release kit, update remote                                          |
+| `ag-audit-ag`                           | Agent harness health audit (agents, skills, README.md, protocol wiring)                                         | harness, agent parity, skill audit, guide sync                                                 |
+| `ag-zod`                                | Rules and references for Zod schema validation, parsing and database mapping                                    | validate payload, zod schema, zod custom validation errors, zod validation                     |
+| `ag-demo-irc`                           | Demo of parallel subagents and inter-agent IRC communication                                                    | parallel subagents, subagent messaging, irc messaging, multi-agent communication, irc demo     |
+| `ag-upstash-ratelimit`                  | Rules, standards, and references for rate limiting in serverless environments using Upstash Ratelimit           | validate payload, zod schema, upstash ratelimit, redis rate limit, rate limiter                |
+| `ag-ui-design`                          | UI/UX and frontend design best practices guidelines                                                             | HTML structure, CSS styling, responsive layouts, forms, accessibility                          |
+| `ag-typescript-refactor`                | Rules and standards for TypeScript refactoring                                                                  | clean up TS, ts refactor, fix type errors, typescript compilation, interfaces                  |
+| `ag-typescript-advanced-patterns`       | Advanced TypeScript design patterns, type-level programming, and type safety guidelines                         | advanced typescript, generics, mapped types, conditional types, recursive types, type tests    |
+| `ag-nextjs`                             | Next.js App Router guidelines, routing boundaries, caching, and Server Actions                                  | Next.js page, nextjs app router, server actions, route handlers, nextjs caching                |
+| `ag-tailwind`                           | Tailwind CSS guidelines and utility class organization                                                          | tailwind css, style components, tailwind utility classes, flexbox, grid                        |
+| `ag-react-hook-form`                    | React Hook Form best practices, validation schemas, and input handling                                          | react hook form, form validation, form hooks, react forms                                      |
+| `ag-react-hook-form-audit`              | Code audit and verification rules for React Hook Form                                                           | react hook form audit, form validation audit, audit forms                                      |
+| `ag-code-simplifier`                    | Post-implementation code simplification guidelines                                                              | code simplify, refactor readability, clean up code, simplify structure                         |
+| `ag-implementation-design-patterns`     | Common software design patterns and architectural standards                                                     | design patterns, implementation patterns, singleton, factory, observer, builder                |
+| `ag-implementation-functional-patterns` | Functional programming patterns and paradigms                                                                   | functional programming, pure functions, pipelines, currying, monads, immutability              |
+| `ag-nextjs-bundle-optimizer`            | Next.js bundle size optimization rules and guidelines                                                           | bundle optimization, reduce bundle, nextjs bundle size, code splitting, dynamic imports        |
+| `ag-nextjs-ppr-patterns`                | Next.js Partial Prerendering (PPR) patterns and guidelines                                                      | nextjs ppr, partial prerendering, static shells, dynamic holes, streaming                      |
+| `ag-tailwind-refactor`                  | Tailwind CSS refactoring and cleanup guidelines                                                                 | tailwind refactor, clean up tailwind, css to tailwind                                          |
+| `ag-tailwind-responsive-ui`             | Responsive UI design patterns with Tailwind CSS                                                                 | responsive tailwind, mobile first tailwind, media queries tailwind, breakpoint styling         |
+| `ag-tailwind-ui-refactor`               | UI refactoring guidelines using Tailwind CSS                                                                    | tailwind ui refactor, redesign tailwind, polish tailwind                                       |
+| `ag-typescript`                         | TypeScript fundamentals, skipLibCheck, incrementally build, compile performance                                 | typescript compile, skipLibCheck, incremental build, tsconfig config                           |
 
 Rule: When one or more skills match the request, mention them to the user or include them in
 the subagent prompt context. Never silently skip relevant skills.
@@ -477,40 +496,40 @@ the subagent prompt context. Never silently skip relevant skills.
 ### 1. Detect Intent
 
 Feature Request (keywords: "build", "add", "implement", "create feature")
--> Route to `vc-research-agent` with relevant context files.
+-> Route to `ag-research-agent` with relevant context files.
 
 Question / Understanding Request
--> Non-trivial: route to `vc-research-agent`. Trivial conceptual questions can be answered directly by the orchestrator.
+-> Non-trivial: route to `ag-research-agent`. Trivial conceptual questions can be answered directly by the orchestrator.
 
 Trivial Fix
--> Delegate lightweight quick-fix to `vc-execute-agent` with no plan file required.
+-> Delegate lightweight quick-fix to `ag-execute-agent` with no plan file required.
 Trivial definition: single-file change, no new dependencies, no schema/API/auth changes, under 15 lines, no security surface. Anything else is non-trivial.
 
 Missing Context
--> Suggest or invoke the `vc-generate-context` skill.
+-> Suggest or invoke the `ag-generate-context` skill.
 
 Bug Fix / Debug Request (keywords: "fix", "bug", "broken", "debug", "error")
--> For trivial: delegate to `vc-execute-agent` directly with no plan required.
--> For complex: route to `vc-debugger` agent. Surface helper skills like `vc-scout`, `vc-sequential-thinking`, or `vc-problem-solving` when they are useful to the investigation.
+-> For trivial: delegate to `ag-execute-agent` directly with no plan required.
+-> For complex: route to `ag-debugger` agent. Surface helper skills like `ag-scout`, `ag-sequential-thinking`, or `ag-problem-solving` when they are useful to the investigation.
 
 Existing Plan File Present
 -> Resume from relevant phase; do not recreate plan.
 
 UI / Frontend Request (keywords: "page", "component", "design", "layout", "interface", "UI")
--> Surface `vc-frontend-design` skill alongside `vc-research-agent`. Invoke `vc-ui-ux-designer` agent during EXECUTE phase for implementation.
+-> Surface `ag-frontend-design` skill alongside `ag-research-agent`. Invoke `ag-ui-ux-designer` agent during EXECUTE phase for implementation.
 
 Documentation Question (keywords: "how does X work", "API docs", "syntax", "version")
--> Activate `vc-docs-seeker` skill before routing to `vc-research-agent`.
+-> Activate `ag-docs-seeker` skill before routing to `ag-research-agent`.
 
 Plan / Context Maintenance
--> Surface `vc-generate-plan`, `vc-generate-context`, `vc-audit-context`, or `vc-audit-plans` directly when the user is asking for saved plan artifacts, context refresh, context reorganization, or active-plan cleanup.
+-> Surface `ag-generate-plan`, `ag-generate-context`, `ag-audit-context`, or `ag-audit-plans` directly when the user is asking for saved plan artifacts, context refresh, context reorganization, or active-plan cleanup.
 
 Refactor / Simplify (keywords: "refactor", "clean up", "simplify", "reorganize")
--> Pure style/readability with a named file and no behavior change: route directly to `vc-code-simplifier` agent.
--> Behavioral or architectural refactor: full RESEARCH -> PLAN -> EXECUTE, then `vc-code-simplifier` as cleanup.
+-> Pure style/readability with a named file and no behavior change: route directly to `ag-code-simplifier` agent.
+-> Behavioral or architectural refactor: full RESEARCH -> PLAN -> EXECUTE, then `ag-code-simplifier` as cleanup.
 
 Debug / Root Cause (keywords: "debug", "why", "root cause", "investigate")
--> `vc-debugger` agent is the default owner. Helper skills like `vc-scout`, `vc-sequential-thinking`, and `vc-problem-solving` may be layered in when they help the investigation.
+-> `ag-debugger` agent is the default owner. Helper skills like `ag-scout`, `ag-sequential-thinking`, and `ag-problem-solving` may be layered in when they help the investigation.
 
 When multiple intents match, use this precedence:
 
@@ -518,8 +537,8 @@ When multiple intents match, use this precedence:
 2. Explicit mode command (`ENTER X MODE`) -> obey immediately
 3. Bug/debug -> debugging routing before feature routing
 4. Feature request -> RIPER-5 flow
-5. UI specialization -> surface vc-frontend-design alongside any of the above
-6. Docs question -> surface vc-docs-seeker alongside any of the above
+5. UI specialization -> surface ag-frontend-design alongside any of the above
+6. Docs question -> surface ag-docs-seeker alongside any of the above
 
 When still ambiguous, ask the user one clarifying question before routing.
 
@@ -529,7 +548,7 @@ Before routing to subagent, pass relevant `process/context/` files:
 
 - `process/context/all-context.md` - always pass or consult first for context routing
 - `process/context/all-context.md` - always pass for architecture/stack awareness
-- `process/context/tests/all-tests.md` - pass when routing to `vc-tester`, `vc-debugger`, or `vc-execute-agent`
+- `process/context/tests/all-tests.md` - pass when routing to `ag-tester`, `ag-debugger`, or `ag-execute-agent`
 - `process/general-plans/active/` and `process/features/*/active/` - check for existing plans to avoid duplication
 - Relevant code paths - summarize succinctly, don't dump entire files
 
@@ -539,12 +558,12 @@ Before routing to subagent, pass relevant `process/context/` files:
 
 Choose based on current phase:
 
-- Initial understanding -> `vc-research-agent`
-- Exploring options -> `vc-innovate-agent`
-- Creating spec -> `vc-plan-agent`
-- Implementing approved plan -> `vc-execute-agent`
-- Fast workflow -> `vc-fast-mode-agent`
-- Capturing learnings -> `vc-update-process-agent`
+- Initial understanding -> `ag-research-agent`
+- Exploring options -> `ag-innovate-agent`
+- Creating spec -> `ag-plan-agent`
+- Implementing approved plan -> `ag-execute-agent`
+- Fast workflow -> `ag-fast-mode-agent`
+- Capturing learnings -> `ag-update-process-agent`
 
 ### 4. Monitor Compliance
 
@@ -567,23 +586,23 @@ INNOVATE -> PLAN:
 
 - Requires approach discussion completed
 - User confirms with "go" or explicit mode command
-- vc-innovate-agent must produce a brief decision summary with chosen approach, rejected alternatives, and rationale before PLAN begins
+- ag-innovate-agent must produce a brief decision summary with chosen approach, rejected alternatives, and rationale before PLAN begins
 
 PLAN -> EXECUTE:
 
 - Requires written plan file
 - User reviews and explicitly says "ENTER EXECUTE MODE"
 
-Orchestrator preflight before spawning vc-execute-agent: Confirm exactly one plan file is
+Orchestrator preflight before spawning ag-execute-agent: Confirm exactly one plan file is
 selected. Pass the plan file path explicitly in the subagent prompt. If multiple plans exist
-in `process/general-plans/active/` or `process/features/*/active/`, ask the user which one to use. Never let vc-execute-agent infer
+in `process/general-plans/active/` or `process/features/*/active/`, ask the user which one to use. Never let ag-execute-agent infer
 the plan from ambient state.
 
 EXECUTE -> UPDATE PROCESS:
 
 - After non-trivial implementation complete, always surface a cleanup checkpoint
 - UPDATE PROCESS still requires explicit user command.
-- After vc-execute-agent reports DONE, the orchestrator should present a short closeout packet:
+- After ag-execute-agent reports DONE, the orchestrator should present a short closeout packet:
   - selected plan path
   - closeout classification
   - what was finished
@@ -591,7 +610,7 @@ EXECUTE -> UPDATE PROCESS:
   - what cleanup/context capture remains
   - uncommitted file count and git-manager offer (when worktree is dirty)
   - commit-checkpoint recommendation:
-    - invoke `vc-git-manager` before UPDATE PROCESS when validated execution changes are ready to split into a logical code/test commit
+    - invoke `ag-git-manager` before UPDATE PROCESS when validated execution changes are ready to split into a logical code/test commit
     - defer the commit checkpoint until after UPDATE PROCESS when the remaining changes are mainly `process/`, `.claude/`, `.codex/`, or `AGENTS.md`
   - the single best next valid state
 - Then ask one explicit next-step question such as:
@@ -599,10 +618,10 @@ EXECUTE -> UPDATE PROCESS:
   - or `Implementation is code-complete but still testing. Keep the plan in active for now, or enter UPDATE PROCESS mode anyway?`
   - or `Implementation deviated from plan. Return to PLAN or enter UPDATE PROCESS mode to reconcile?`
 - If the next phase or follow-up is already known, name that exact plan path in the closeout summary so the user does not have to rediscover it.
-- If the worktree has uncommitted changes from this execution, offer: "Invoke vc-git-manager for logical commit splitting before UPDATE PROCESS?" Pass the `touched_files` list (files the vc-execute-agent reported changing) as context so vc-git-manager can scope its analysis.
+- If the worktree has uncommitted changes from this execution, offer: "Invoke ag-git-manager for logical commit splitting before UPDATE PROCESS?" Pass the `touched_files` list (files the ag-execute-agent reported changing) as context so ag-git-manager can scope its analysis.
 - If a phase is well-tested and genuinely validated, prefer surfacing a commit checkpoint instead of letting the work drift uncommitted while broader follow-up phases begin.
 - If execution revealed a concrete missing downstream lane, route UPDATE PROCESS to create the follow-up phase plan or backlog artifact and update the umbrella/parent plan instead of leaving the next step only in chat.
-- If cleanup is skipped and active-plan debt builds up, recommend `vc-audit-plans` as a follow-up maintenance step
+- If cleanup is skipped and active-plan debt builds up, recommend `ag-audit-plans` as a follow-up maintenance step
 - **Drift signal scoring** for UPDATE PROCESS urgency:
   - Count: (a) total files touched, (b) any `.claude/`, `.codex/`, `README.md`, `AGENTS.md`, or `process/development-protocols/` changes, (c) session involved 3+ memory-worthy observations
   - LOW (0-1 signals): include "UPDATE PROCESS available if you want." in closeout
@@ -654,23 +673,23 @@ Cross-Agent Compatibility: Plans and context files work consistently in Claude C
 First Time:
 
 1. Verify RIPER-5 rules loaded; orchestrator may declare `[MODE: ORCHESTRATOR]`
-2. Run the `vc-generate-context` skill if `process/context/all-context.md` doesn't exist
+2. Run the `ag-generate-context` skill if `process/context/all-context.md` doesn't exist
 3. Start with a feature request or question
 
 Typical Feature Workflow:
 
-1. Describe feature -> Orchestrator routes to `vc-research-agent`
-2. Say "go" -> Orchestrator routes to `vc-innovate-agent`
-3. Say "go" -> Orchestrator routes to `vc-plan-agent` and creates plan in `process/general-plans/active/`
+1. Describe feature -> Orchestrator routes to `ag-research-agent`
+2. Say "go" -> Orchestrator routes to `ag-innovate-agent`
+3. Say "go" -> Orchestrator routes to `ag-plan-agent` and creates plan in `process/general-plans/active/`
 4. Review plan carefully
-5. Say "ENTER EXECUTE MODE" -> Orchestrator routes to `vc-execute-agent`
-6. After completion, optionally "ENTER UPDATE PROCESS MODE" -> Orchestrator routes to `vc-update-process-agent`
+5. Say "ENTER EXECUTE MODE" -> Orchestrator routes to `ag-execute-agent`
+6. After completion, optionally "ENTER UPDATE PROCESS MODE" -> Orchestrator routes to `ag-update-process-agent`
 
 Quick Iteration (FAST MODE):
 
 1. Say "ENTER FAST MODE - [feature description]"
-2. Review generated plan; vc-fast-mode-agent pauses
-3. Say "ENTER EXECUTE MODE" to continue implementation within vc-fast-mode-agent
+2. Review generated plan; ag-fast-mode-agent pauses
+3. Say "ENTER EXECUTE MODE" to continue implementation within ag-fast-mode-agent
 
 ## Troubleshooting
 

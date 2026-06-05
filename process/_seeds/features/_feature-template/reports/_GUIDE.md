@@ -14,6 +14,7 @@ This folder holds operational reports for this feature.
 Use descriptive names with date stamps: `{topic}-report_{dd-mm-yy}.md`
 
 Examples:
+
 - `migration-report_15-03-26.md`
 - `performance-audit-report_22-04-26.md`
 

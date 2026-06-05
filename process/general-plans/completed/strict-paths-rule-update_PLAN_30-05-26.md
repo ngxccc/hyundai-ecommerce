@@ -32,7 +32,7 @@ Mục tiêu của kế hoạch này là cập nhật lại `process/riper5-plugi
 ## Verification Evidence
 
 - File `strict-paths.md` được viết lại súc tích, nhấn mạnh "Single Source of Truth".
-- Lệnh `node .claude/skills/vc-generate-plan/scripts/validate-plan-artifact.mjs` chạy qua mượt mà cho plan này.
+- Lệnh `node .claude/skills/ag-generate-plan/scripts/validate-plan-artifact.mjs` chạy qua mượt mà cho plan này.
 
 ## Phase Completion Rules
 

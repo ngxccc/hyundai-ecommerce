@@ -10,20 +10,20 @@ at the right time without adding friction to clear requests.
 
 Each signal is worth +1. Sum them to get the ambiguity score.
 
-| Signal | Description |
-|--------|-------------|
-| Ambiguous scope | Request touches multiple features or packages without naming one |
-| No explicit path | No file, package, or feature name mentioned |
-| Multiple intents | Request could be a bug fix, feature, refactor, or question |
-| First interaction | No established workflow context in current session |
+| Signal            | Description                                                      |
+| ----------------- | ---------------------------------------------------------------- |
+| Ambiguous scope   | Request touches multiple features or packages without naming one |
+| No explicit path  | No file, package, or feature name mentioned                      |
+| Multiple intents  | Request could be a bug fix, feature, refactor, or question       |
+| First interaction | No established workflow context in current session               |
 
 Score thresholds:
 
-| Score | Tier | Action |
-|-------|------|--------|
-| 0-1 | Tier 0 | Auto-route silently (current behavior) |
-| 2 | Tier 1 | Show routing summary, wait for confirmation before routing |
-| 3+ | Tier 2 | Full clarification checkpoint with multiple-choice questions |
+| Score | Tier   | Action                                                       |
+| ----- | ------ | ------------------------------------------------------------ |
+| 0-1   | Tier 0 | Auto-route silently (current behavior)                       |
+| 2     | Tier 1 | Show routing summary, wait for confirmation before routing   |
+| 3+    | Tier 2 | Full clarification checkpoint with multiple-choice questions |
 
 ### Worked Examples
 
@@ -98,14 +98,14 @@ The orchestrator waits for answers before routing.
 The orchestrator selects the most relevant 2-4 categories. If only one category
 is ambiguous, ask one question -- do not pad to 2-4.
 
-| Category | Template |
-|----------|----------|
-| Scope | "Which areas? [A] just {X} [B] {X} and {Y} [C] the whole {feature}" |
-| Direction | "Approach? [A] quick fix [B] proper refactor [C] you decide" |
+| Category    | Template                                                                    |
+| ----------- | --------------------------------------------------------------------------- |
+| Scope       | "Which areas? [A] just {X} [B] {X} and {Y} [C] the whole {feature}"         |
+| Direction   | "Approach? [A] quick fix [B] proper refactor [C] you decide"                |
 | Constraints | "Constraints? [A] must not touch {Z} [B] backward compat required [C] none" |
-| Acceptance | "Done looks like? [A] tests pass [B] deployed [C] code-reviewed" |
-| Context | "Related to existing work? [A] yes, {plan X} [B] no, fresh [C] not sure" |
-| Priority | "Priority? [A] do it now [B] plan it for later [C] just research" |
+| Acceptance  | "Done looks like? [A] tests pass [B] deployed [C] code-reviewed"            |
+| Context     | "Related to existing work? [A] yes, {plan X} [B] no, fresh [C] not sure"    |
+| Priority    | "Priority? [A] do it now [B] plan it for later [C] just research"           |
 
 The orchestrator fills in `{X}`, `{Y}`, `{Z}`, and `{plan X}` from the light
 research pass. Placeholder values come from active plans, context routing keywords,

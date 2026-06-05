@@ -16,6 +16,7 @@ This folder holds operational reports for general and cross-cutting work. Featur
 Use descriptive date-stamped names: `[topic]-[agent]-[ddmmyy]-[hhmm]-[slug].md`
 
 Examples:
+
 - `execute-agent-260527-1430-auth-migration.md`
 - `phase-01-validation-report_26-05-27.md`
 
