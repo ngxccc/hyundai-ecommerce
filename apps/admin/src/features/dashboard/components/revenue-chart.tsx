@@ -10,9 +10,49 @@ import {
   SelectValue,
 } from "@nhatnang/ui/components/ui/select";
 
-export const RevenueChart = () => {
+import type { IMonthlyRevenue } from "@nhatnang/database/services";
+
+interface RevenueChartProps {
+  data: IMonthlyRevenue[];
+}
+
+export const RevenueChart = ({ data }: RevenueChartProps) => {
   const t = useTranslations("AdminDashboard.chart");
 
+  const maxRevenue = Math.max(...data.map((d) => parseFloat(d.revenue)), 0);
+  const currentMonthStr = (new Date().getMonth() + 1)
+    .toString()
+    .padStart(2, "0");
+
+  const formatBarValue = (val: number) => {
+    if (val >= 1000000000) {
+      return `${(val / 1000000000).toFixed(1)}B`;
+    }
+    if (val >= 1000000) {
+      return `${(val / 1000000).toFixed(0)}M`;
+    }
+    return new Intl.NumberFormat().format(val);
+  };
+
+  const bars = data.map((d) => {
+    const revenueVal = parseFloat(d.revenue);
+    const heightPercentage =
+      maxRevenue > 0 ? (revenueVal / maxRevenue) * 90 : 0;
+    return {
+      month: `T${parseInt(d.month, 10)}`,
+      height: `${Math.round(heightPercentage)}%`,
+      val: formatBarValue(revenueVal),
+      active: d.month === currentMonthStr,
+    };
+  });
+
+  const yAxisLabels = [
+    formatBarValue(maxRevenue),
+    formatBarValue(maxRevenue * 0.75),
+    formatBarValue(maxRevenue * 0.5),
+    formatBarValue(maxRevenue * 0.25),
+    "0",
+  ];
   return (
     <Card className="flex h-full flex-col p-3 shadow-sm">
       <div className="border-border/50 mb-6 flex flex-wrap items-center justify-between gap-4 border-b pb-4">
@@ -34,12 +74,10 @@ export const RevenueChart = () => {
       {/* Faux Chart Representation */}
       <div className="relative mt-4 flex h-62.5 flex-1 items-end gap-2">
         {/* Y-axis labels */}
-        <div className="text-muted-foreground absolute top-0 bottom-0 left-0 flex w-12 flex-col justify-between pb-6 text-xs">
-          <span>400M</span>
-          <span>300M</span>
-          <span>200M</span>
-          <span>100M</span>
-          <span>0</span>
+        <div className="text-muted-foreground absolute top-0 bottom-0 left-0 flex w-12 flex-col justify-between pr-2 pb-6 text-right text-xs">
+          {yAxisLabels.map((lbl, idx) => (
+            <span key={idx}>{lbl}</span>
+          ))}
         </div>
 
         {/* Grid lines */}
@@ -53,15 +91,7 @@ export const RevenueChart = () => {
 
         {/* Bars Container */}
         <div className="z-10 ml-12 flex h-full flex-1 items-end justify-around pb-6">
-          {[
-            { month: "T1", height: "40%", val: "120M" },
-            { month: "T2", height: "65%", val: "190M" },
-            { month: "T3", height: "50%", val: "150M" },
-            { month: "T4", height: "80%", val: "240M" },
-            { month: "T5", height: "45%", val: "135M" },
-            { month: "T6", height: "90%", val: "270M", active: true },
-            { month: "T7", height: "70%", val: "210M" },
-          ].map((bar, i) => (
+          {bars.map((bar, i) => (
             <div key={i} className="flex w-full max-w-10 flex-col items-center">
               <div
                 className={`group relative w-full cursor-pointer rounded-t-sm transition-all hover:brightness-110 ${bar.active ? "bg-primary" : "bg-primary/50"}`}

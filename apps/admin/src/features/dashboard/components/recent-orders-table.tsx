@@ -14,63 +14,44 @@ import {
   TableRow,
 } from "@nhatnang/ui/components/ui/table";
 
-type OrderStatus = "completed" | "processing" | "shipping" | "cancelled";
+import type { ComplexOrder } from "@nhatnang/database/services";
 
-const MOCK_ORDERS = [
-  {
-    id: "#ORD-001",
-    customer: "Nguyễn Văn A",
-    initial: "N",
-    product: "Hyundai HY-30CLE",
-    date: "12 Th06, 2026",
-    total: "12,500,000 đ",
-    status: "completed",
-    statusClass:
-      "bg-green-100 text-green-700 hover:bg-green-100/80 dark:bg-green-900/30 dark:text-green-400",
-    initialClass: "bg-primary/10 text-primary",
-  },
-  {
-    id: "#ORD-002",
-    customer: "Trần Thị B",
-    initial: "T",
-    product: "Trạm sạc HPgreen",
-    date: "11 Th06, 2026",
-    total: "8,500,000 đ",
-    status: "processing",
-    statusClass:
-      "bg-yellow-100 text-yellow-700 hover:bg-yellow-100/80 dark:bg-yellow-900/30 dark:text-yellow-400",
-    initialClass:
-      "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  },
-  {
-    id: "#ORD-003",
-    customer: "Lê Văn C",
-    initial: "L",
-    product: "Hyundai HY-7000LE",
-    date: "10 Th06, 2026",
-    total: "18,200,000 đ",
-    status: "shipping",
-    statusClass:
-      "bg-blue-100 text-blue-700 hover:bg-blue-100/80 dark:bg-blue-900/30 dark:text-blue-400",
-    initialClass:
-      "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-  },
-  {
-    id: "#ORD-004",
-    customer: "Phạm Thị D",
-    initial: "P",
-    product: "Máy phát điện Mitsubishi",
-    date: "09 Th06, 2026",
-    total: "45,000,000 đ",
-    status: "cancelled",
-    statusClass:
-      "bg-red-100 text-red-700 hover:bg-red-100/80 dark:bg-red-900/30 dark:text-red-400",
-    initialClass:
-      "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  },
-];
+interface RecentOrdersTableProps {
+  orders: ComplexOrder[];
+}
 
-export const RecentOrdersTable = () => {
+const statusMap: Record<string, string> = {
+  pending: "processing",
+  processing: "processing",
+  shipped: "shipping",
+  delivered: "completed",
+  cancelled: "cancelled",
+  refunded: "cancelled",
+};
+
+const statusClassMap: Record<string, string> = {
+  pending:
+    "bg-yellow-100 text-yellow-700 hover:bg-yellow-100/80 dark:bg-yellow-900/30 dark:text-yellow-400",
+  processing:
+    "bg-yellow-100 text-yellow-700 hover:bg-yellow-100/80 dark:bg-yellow-900/30 dark:text-yellow-400",
+  shipped:
+    "bg-blue-100 text-blue-700 hover:bg-blue-100/80 dark:bg-blue-900/30 dark:text-blue-400",
+  delivered:
+    "bg-green-100 text-green-700 hover:bg-green-100/80 dark:bg-green-900/30 dark:text-green-400",
+  cancelled:
+    "bg-red-100 text-red-700 hover:bg-red-100/80 dark:bg-red-900/30 dark:text-red-400",
+  refunded:
+    "bg-red-100 text-red-700 hover:bg-red-100/80 dark:bg-red-900/30 dark:text-red-400",
+};
+
+const formatVND = (value: string | number) => {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(Number(value));
+};
+
+export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
   const t = useTranslations("AdminDashboard.recentOrders");
 
   return (
@@ -108,40 +89,60 @@ export const RecentOrdersTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {MOCK_ORDERS.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell className="text-primary font-medium">
-                {order.id}
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${order.initialClass}`}
-                  >
-                    {order.initial}
+          {orders.map((order) => {
+            const customerName = order.user?.name || "Customer";
+            const initial = customerName.charAt(0).toUpperCase();
+            const firstItem = order.items[0];
+            const productText = firstItem
+              ? `${firstItem.productName}${order.items.length > 1 ? ` + ${order.items.length - 1}` : ""}`
+              : "No Product";
+            const formattedDate = new Intl.DateTimeFormat("vi-VN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }).format(new Date(order.createdAt));
+
+            const uiStatus = (statusMap[order.status] ?? "processing") as
+              | "completed"
+              | "processing"
+              | "shipping"
+              | "cancelled";
+            const badgeClass =
+              statusClassMap[order.status] ?? statusClassMap["pending"];
+
+            return (
+              <TableRow key={order.id}>
+                <TableCell className="text-primary font-medium">
+                  #{order.id.slice(-6).toUpperCase()}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-primary/10 text-primary flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold">
+                      {initial}
+                    </div>
+                    <span>{customerName}</span>
                   </div>
-                  <span>{order.customer}</span>
-                </div>
-              </TableCell>
-              <TableCell className="text-muted-foreground">
-                {order.product}
-              </TableCell>
-              <TableCell className="text-muted-foreground">
-                {order.date}
-              </TableCell>
-              <TableCell className="text-right font-medium">
-                {order.total}
-              </TableCell>
-              <TableCell className="text-center">
-                <Badge
-                  variant="secondary"
-                  className={`border-transparent font-medium ${order.statusClass}`}
-                >
-                  {t(`status.${order.status as OrderStatus}`)}
-                </Badge>
-              </TableCell>
-            </TableRow>
-          ))}
+                </TableCell>
+                <TableCell className="text-muted-foreground max-w-60 truncate">
+                  {productText}
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {formattedDate}
+                </TableCell>
+                <TableCell className="text-right font-medium">
+                  {formatVND(order.totalAmount)}
+                </TableCell>
+                <TableCell className="text-center">
+                  <Badge
+                    variant="secondary"
+                    className={`border-transparent font-medium ${badgeClass}`}
+                  >
+                    {t(`status.${uiStatus}`)}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
       <div className="border-border/50 border-t py-2 text-center">

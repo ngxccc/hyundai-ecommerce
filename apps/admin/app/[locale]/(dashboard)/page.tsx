@@ -6,6 +6,7 @@ import { RecentOrdersTable } from "@/features/dashboard/components/recent-orders
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
+import { orderService, productService } from "@nhatnang/database/services";
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -25,27 +26,39 @@ export async function generateMetadata({
   };
 }
 
-export const AdminDashboard = () => {
+export const AdminDashboard = async () => {
+  const currentYear = new Date().getFullYear();
+
+  // Fetch data in parallel
+  const [metrics, monthlyRevenue, topProducts, allOrders] = await Promise.all([
+    orderService.getDashboardMetrics(),
+    orderService.getMonthlyRevenue(currentYear),
+    productService.getTopSellingProducts(5),
+    orderService.list(),
+  ]);
+
+  const recentOrders = allOrders.slice(0, 5);
+
   return (
     <>
       <AdminHeader />
 
       <div className="mx-auto flex w-full flex-col gap-2 p-2">
         {/* KPI Cards */}
-        <MetricsCards />
+        <MetricsCards metrics={metrics} />
 
         {/* Main Chart & Top Products */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <RevenueChart />
+            <RevenueChart data={monthlyRevenue} />
           </div>
           <div className="lg:col-span-1">
-            <TopProducts />
+            <TopProducts products={topProducts} />
           </div>
         </div>
 
         {/* Recent Orders Table */}
-        <RecentOrdersTable />
+        <RecentOrdersTable orders={recentOrders} />
       </div>
     </>
   );

@@ -5,38 +5,26 @@ import { Card } from "@nhatnang/ui/components/ui/card";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import Image from "next/image";
 
-const MOCK_PRODUCTS = [
-  {
-    id: 1,
-    name: "Máy phát điện Hyundai HY-30CLE",
-    sold: 124,
-    price: "12.5M",
-    image: "https://placehold.co/400x300/png?text=No+Image",
-  },
-  {
-    id: 2,
-    name: "Máy phát điện Hyundai HY-7000LE",
-    sold: 98,
-    price: "18.2M",
-    image: "https://placehold.co/400x300/png?text=No+Image",
-  },
-  {
-    id: 3,
-    name: "Trạm sạc dự phòng HPgreen",
-    sold: 75,
-    price: "8.5M",
-    image: "https://placehold.co/400x300/png?text=No+Image",
-  },
-  {
-    id: 4,
-    name: "Máy phát điện Mitsubishi",
-    sold: 42,
-    price: "45.0M",
-    image: "https://placehold.co/400x300/png?text=No+Image",
-  },
-];
+import type { ITopSellingProduct } from "@nhatnang/database/services";
 
-export const TopProducts = () => {
+interface TopProductsProps {
+  products: ITopSellingProduct[];
+}
+
+const formatPrice = (priceStr: string) => {
+  const price = parseFloat(priceStr);
+  if (isNaN(price)) return priceStr;
+
+  if (price >= 1000000) {
+    return `${(price / 1000000).toLocaleString("vi-VN", { maximumFractionDigits: 1 })} Tr`;
+  }
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(price);
+};
+
+export const TopProducts = ({ products }: TopProductsProps) => {
   const t = useTranslations("AdminDashboard.topProducts");
 
   return (
@@ -51,14 +39,17 @@ export const TopProducts = () => {
         </Button>
       </div>
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto">
-        {MOCK_PRODUCTS.map((product) => (
+        {products.map((product) => (
           <div
             key={product.id}
             className="hover:bg-muted flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors"
           >
             <div className="border-border/50 bg-muted relative h-12 w-12 shrink-0 overflow-hidden rounded border">
               <Image
-                src={product.image}
+                src={
+                  product.image ??
+                  "https://placehold.co/400x300/png?text=No+Image"
+                }
                 alt={product.name}
                 className="h-full w-full object-cover"
                 sizes="48px"
@@ -74,7 +65,9 @@ export const TopProducts = () => {
               </p>
             </div>
             <div className="text-right">
-              <p className="text-primary text-sm font-bold">{product.price}</p>
+              <p className="text-primary text-sm font-bold">
+                {formatPrice(product.price)}
+              </p>
             </div>
           </div>
         ))}
