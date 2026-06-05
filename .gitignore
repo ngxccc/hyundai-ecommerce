@@ -57,3 +57,7 @@ opencode.json
 # Turborepo
 .turbo
 .vercel
+
+# Agent skills
+/.omp/skills/*
+!/.omp/skills/ag-*/
