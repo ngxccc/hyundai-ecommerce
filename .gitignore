@@ -51,10 +51,7 @@ Thumbs.db
 # AI config files
 .cursor/
 .opencode/
-.vibecode-backup/
 .antigravitycli/
-.ag-installed-files
-.ag-version
 opencode.json
 
 # Turborepo
