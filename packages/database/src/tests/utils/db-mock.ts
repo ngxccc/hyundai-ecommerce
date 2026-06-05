@@ -23,17 +23,35 @@ interface ISetChain {
 
 export const mockReturning = vi.fn();
 export const mockPrepare = vi.fn();
+export interface IMockQueryChain {
+  returning: Mock<(...args: unknown[]) => unknown>;
+  prepare: Mock<(...args: unknown[]) => unknown>;
+  limit: Mock<(...args: unknown[]) => unknown>;
+  where: Mock<(...args: unknown[]) => IMockQueryChain>;
+  innerJoin: () => IMockQueryChain;
+  leftJoin: () => IMockQueryChain;
+  groupBy: () => IMockQueryChain;
+  orderBy: () => IMockQueryChain;
+  then: (
+    onfulfilled?: ((value: unknown) => unknown) | null,
+    onrejected?: ((reason: unknown) => unknown) | null
+  ) => Promise<unknown>;
+  catch: (
+    onrejected?: ((reason: unknown) => unknown) | null
+  ) => Promise<unknown>;
+}
+
 export const mockSelectResolvedValue = {
-  value: [] as any,
-  queue: [] as any[],
-  mockResolvedValueOnce(val: any) {
+  value: [] as unknown,
+  queue: [] as unknown[],
+  mockResolvedValueOnce(val: unknown) {
     this.queue.push(val);
   },
   reset() {
     this.value = [];
     this.queue = [];
   },
-  get() {
+  get(): unknown {
     if (this.queue.length > 0) {
       return this.queue.shift();
     }
@@ -42,27 +60,35 @@ export const mockSelectResolvedValue = {
 };
 export const mockLimit = vi.fn().mockImplementation(() => Promise.resolve(mockSelectResolvedValue.get()));
 
-const defaultWhere = () => {
-  const obj: any = { returning: mockReturning, prepare: mockPrepare, limit: mockLimit };
+const defaultWhere = (): IMockQueryChain => {
+  const obj = {
+    returning: mockReturning,
+    prepare: mockPrepare,
+    limit: mockLimit,
+    where: mockWhere,
+  } as unknown as IMockQueryChain;
   obj.innerJoin = () => obj;
   obj.leftJoin = () => obj;
   obj.groupBy = () => obj;
   obj.orderBy = () => obj;
-  obj.then = (resolve: any) => Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
-  obj.catch = (reject: any) => Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
+  obj.then = (resolve) => Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
+  obj.catch = (reject) => Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
   return obj;
 };
 
-const defaultFrom = () => {
-  const obj: any = { where: mockWhere };
+const defaultFrom = (): IMockQueryChain => {
+  const obj = {
+    where: mockWhere,
+    limit: mockLimit,
+    returning: mockReturning,
+    prepare: mockPrepare,
+  } as unknown as IMockQueryChain;
   obj.innerJoin = () => obj;
   obj.leftJoin = () => obj;
-  obj.where = mockWhere;
   obj.groupBy = () => obj;
   obj.orderBy = () => obj;
-  obj.limit = mockLimit;
-  obj.then = (resolve: any) => Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
-  obj.catch = (reject: any) => Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
+  obj.then = (resolve) => Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
+  obj.catch = (reject) => Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
   return obj;
 };
 
