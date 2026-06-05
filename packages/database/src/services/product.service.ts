@@ -1,6 +1,7 @@
 import type {
   IProductService,
   TUpdateProductData,
+  ITopSellingProduct,
 } from "./interfaces";
 import {
   products,
@@ -8,7 +9,8 @@ import {
   type TNewProduct,
 } from "../schemas/product.schema";
 import { type IDatabase } from "../client";
-import { eq, sql } from "drizzle-orm";
+import { eq, ne, sql, desc } from "drizzle-orm";
+import { orderItems, orders } from "../schemas";
 
 export interface TGetAllOptions {
   after?: string | undefined;
@@ -179,5 +181,35 @@ export class ProductService implements IProductService {
         : undefined;
 
     return { data, nextCursor, prevCursor };
+  }
+  async getTopSellingProducts(limit: number): Promise<ITopSellingProduct[]> {
+    const result = await this.db
+      .select({
+        id: orderItems.productId,
+        name: products.name,
+        sold: sql<number>`sum(${orderItems.quantity})::integer`,
+        price: products.price,
+        images: products.images,
+      })
+      .from(orderItems)
+      .innerJoin(products, eq(orderItems.productId, products.id))
+      .innerJoin(orders, eq(orderItems.orderId, orders.id))
+      .where(ne(orders.status, "cancelled"))
+      .groupBy(
+        orderItems.productId,
+        products.name,
+        products.price,
+        products.images,
+      )
+      .orderBy(desc(sql`sum(${orderItems.quantity})`))
+      .limit(limit);
+
+    return result.map((r) => ({
+      id: r.id,
+      name: r.name,
+      sold: r.sold,
+      price: r.price,
+      image: r.images[0] ?? null,
+    }));
   }
 }

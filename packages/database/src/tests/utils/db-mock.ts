@@ -20,16 +20,53 @@ interface ISetChain {
   set: Mock<(...args: unknown[]) => IWhereChain>;
 }
 
-interface IFromChain {
-  from: Mock<(...args: unknown[]) => IWhereChain>;
-}
 
 export const mockReturning = vi.fn();
 export const mockPrepare = vi.fn();
-export const mockLimit = vi.fn();
-export const mockWhere = vi
-  .fn()
-  .mockImplementation(() => ({ returning: mockReturning, prepare: mockPrepare, limit: mockLimit }));
+export const mockSelectResolvedValue = {
+  value: [] as any,
+  queue: [] as any[],
+  mockResolvedValueOnce(val: any) {
+    this.queue.push(val);
+  },
+  reset() {
+    this.value = [];
+    this.queue = [];
+  },
+  get() {
+    if (this.queue.length > 0) {
+      return this.queue.shift();
+    }
+    return this.value;
+  }
+};
+export const mockLimit = vi.fn().mockImplementation(() => Promise.resolve(mockSelectResolvedValue.get()));
+
+const defaultWhere = () => {
+  const obj: any = { returning: mockReturning, prepare: mockPrepare, limit: mockLimit };
+  obj.innerJoin = () => obj;
+  obj.leftJoin = () => obj;
+  obj.groupBy = () => obj;
+  obj.orderBy = () => obj;
+  obj.then = (resolve: any) => Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
+  obj.catch = (reject: any) => Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
+  return obj;
+};
+
+const defaultFrom = () => {
+  const obj: any = { where: mockWhere };
+  obj.innerJoin = () => obj;
+  obj.leftJoin = () => obj;
+  obj.where = mockWhere;
+  obj.groupBy = () => obj;
+  obj.orderBy = () => obj;
+  obj.limit = mockLimit;
+  obj.then = (resolve: any) => Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
+  obj.catch = (reject: any) => Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
+  return obj;
+};
+
+export const mockWhere = vi.fn().mockImplementation(defaultWhere);
 export const mockOnConflictDoUpdate = vi
   .fn()
   .mockImplementation(() => ({ returning: mockReturning }));
@@ -40,7 +77,7 @@ export const mockValues = vi
     onConflictDoUpdate: mockOnConflictDoUpdate,
   }));
 export const mockSet = vi.fn().mockImplementation(() => ({ where: mockWhere }));
-export const mockFrom = vi.fn().mockImplementation(() => ({ where: mockWhere }));
+export const mockFrom = vi.fn().mockImplementation(defaultFrom);
 
 export const mockInsert = vi
   .fn<(...args: unknown[]) => IValuesChain>()
@@ -55,9 +92,8 @@ export const mockDelete = vi
   .mockImplementation(() => ({ where: mockWhere }));
 
 export const mockSelect = vi
-  .fn<(...args: unknown[]) => IFromChain>()
+  .fn()
   .mockImplementation(() => ({ from: mockFrom }));
-
 export const mockFindFirst = vi.fn();
 export const mockFindMany = vi.fn();
 
@@ -93,4 +129,9 @@ beforeEach(() => {
   mockReturning.mockReset();
   mockFindFirst.mockReset();
   mockFindMany.mockReset();
+  mockSelectResolvedValue.reset();
+  mockLimit.mockReset();
+  mockLimit.mockImplementation(() => Promise.resolve(mockSelectResolvedValue.get()));
+  mockFrom.mockImplementation(defaultFrom);
+  mockWhere.mockImplementation(defaultWhere);
 });

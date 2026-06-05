@@ -8,6 +8,7 @@ import {
   mockReturning,
   mockFindFirst,
   mockFindMany,
+  mockSelectResolvedValue,
 } from "../tests/utils/db-mock";
 import { OrderService } from "./order.service";
 import type { IDatabase } from "../client";
@@ -127,6 +128,47 @@ describe("OrderService", () => {
       expect(
         orderService.selectWinningBid("order-1", "bid-not-exist"),
       ).rejects.toThrow("errors.shippingBidNotFound");
+    });
+
+  });
+  describe("getDashboardMetrics()", () => {
+    test("should return aggregated metrics with correct growth calculations", async () => {
+      mockSelectResolvedValue.mockResolvedValueOnce([{ count: 10 }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ count: 5 }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ sum: "500000" }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ sum: "300000", count: 3 }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ sum: "200000", count: 2 }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ count: 4 }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ count: 2 }]);
+
+      const result = await orderService.getDashboardMetrics();
+
+      expect(result).toEqual({
+        totalRevenue: "500000",
+        totalOrders: 5,
+        totalProducts: 10,
+        newCustomers: 4,
+        revenueGrowth: 50,
+        ordersGrowth: 50,
+        customersGrowth: 100,
+      });
+    });
+  });
+
+  describe("getMonthlyRevenue()", () => {
+    test("should return mapped 12 months data", async () => {
+      const queryResult = [
+        { month: "01", revenue: "150000", orderCount: 2 },
+        { month: "02", revenue: "200000", orderCount: 3 },
+      ];
+      mockSelectResolvedValue.mockResolvedValueOnce(queryResult);
+
+      const result = await orderService.getMonthlyRevenue(2026);
+
+      expect(result).toHaveLength(12);
+      expect(result[0]).toEqual({ month: "01", revenue: "150000", orderCount: 2 });
+      expect(result[1]).toEqual({ month: "02", revenue: "200000", orderCount: 3 });
+      expect(result[2]).toEqual({ month: "03", revenue: "0", orderCount: 0 });
     });
   });
 });

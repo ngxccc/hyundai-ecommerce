@@ -33,6 +33,30 @@ import type {
 import type { ComplexOrder } from "./order.service";
 import type { ComplexQuote, QuoteListItem } from "./quotes.service";
 
+export interface IDashboardMetrics {
+  totalRevenue: string;
+  totalOrders: number;
+  totalProducts: number;
+  newCustomers: number;
+  revenueGrowth: number;
+  ordersGrowth: number;
+  customersGrowth: number;
+}
+
+export interface IMonthlyRevenue {
+  month: string;
+  revenue: string;
+  orderCount: number;
+}
+
+export interface ITopSellingProduct {
+  id: string;
+  name: string;
+  sold: number;
+  price: string;
+  image: string | null;
+}
+
 // --- Auth Service Interfaces ---
 export interface LoginOptions {
   headers?: HeadersInit;
@@ -83,6 +107,7 @@ export interface IProductService {
   delete(id: string): Promise<boolean>;
   getById(id: string): Promise<TProduct | undefined>;
   getAll(limit?: number, cursor?: { after?: string; before?: string }): unknown;
+  getTopSellingProducts(limit: number): Promise<ITopSellingProduct[]>;
 }
 
 // --- Warehouse Service Interfaces ---
@@ -114,6 +139,7 @@ export interface IUserService {
     role?: TUser["role"];
     businessType?: TUser["businessType"];
   }): Promise<TUser[]>;
+  getNewUsersCount(days: number): Promise<number>;
 }
 
 // --- Order Service Interfaces ---
@@ -130,6 +156,8 @@ export interface IOrderService {
     orderId: string,
     bidId: string,
   ): Promise<{ updatedOrder: TOrder; selectedBid: TShippingBid }>;
+  getDashboardMetrics(): Promise<IDashboardMetrics>;
+  getMonthlyRevenue(year: number): Promise<IMonthlyRevenue[]>;
 }
 
 // --- Quotes Service Interfaces ---

@@ -1,9 +1,15 @@
-import type { IOrderService } from "./interfaces";
-import { and, eq } from "drizzle-orm";
+import type {
+  IOrderService,
+  IDashboardMetrics,
+  IMonthlyRevenue,
+} from "./interfaces";
+import { and, eq, ne, gte, lt, sql } from "drizzle-orm";
 import { type IDatabase } from "../client";
 import {
   orders,
   shippingBids,
+  products,
+  users,
   type TNewOrder,
   type TOrder,
   type TShippingBid,
@@ -98,6 +104,161 @@ export class OrderService implements IOrderService {
       }
       return { updatedOrder, selectedBid };
     });
+  }
+  async getDashboardMetrics(): Promise<IDashboardMetrics> {
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+    // 1. Total products
+    const productsRes = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(products);
+    const totalProducts = productsRes[0]?.count ?? 0;
+
+    // 2. Total orders
+    const ordersRes = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(orders);
+    const totalOrders = ordersRes[0]?.count ?? 0;
+
+    // 3. Total revenue
+    const totalRevenueRes = await this.db
+      .select({ sum: sql<string | null>`sum(${orders.totalAmount})` })
+      .from(orders)
+      .where(ne(orders.status, "cancelled"));
+    const totalRevenue = totalRevenueRes[0]?.sum ?? "0";
+
+    // 4. Current 30 days revenue & count
+    const currentRes = await this.db
+      .select({
+        sum: sql<string | null>`sum(${orders.totalAmount})`,
+        count: sql<number>`count(*)`,
+      })
+      .from(orders)
+      .where(
+        and(
+          ne(orders.status, "cancelled"),
+          gte(orders.createdAt, thirtyDaysAgo),
+        ),
+      );
+    const currentRevenueRaw = currentRes[0]?.sum ?? "0";
+    const currentOrders = currentRes[0]?.count ?? 0;
+
+    // 5. Previous 30 days (30-60 days ago) revenue & count
+    const previousRes = await this.db
+      .select({
+        sum: sql<string | null>`sum(${orders.totalAmount})`,
+        count: sql<number>`count(*)`,
+      })
+      .from(orders)
+      .where(
+        and(
+          ne(orders.status, "cancelled"),
+          gte(orders.createdAt, sixtyDaysAgo),
+          lt(orders.createdAt, thirtyDaysAgo),
+        ),
+      );
+    const previousRevenueRaw = previousRes[0]?.sum ?? "0";
+    const previousOrders = previousRes[0]?.count ?? 0;
+
+    const currentRevenue = parseFloat(currentRevenueRaw);
+    const previousRevenue = parseFloat(previousRevenueRaw);
+
+    const revenueGrowth =
+      previousRevenue === 0
+        ? currentRevenue > 0
+          ? 100
+          : 0
+        : Math.round(
+            ((currentRevenue - previousRevenue) / previousRevenue) * 10000,
+          ) / 100;
+
+    const ordersGrowth =
+      previousOrders === 0
+        ? currentOrders > 0
+          ? 100
+          : 0
+        : Math.round(
+            ((currentOrders - previousOrders) / previousOrders) * 10000,
+          ) / 100;
+
+    // 6. New customers count & growth
+    const newCustomersRes = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(users)
+      .where(and(ne(users.role, "admin"), gte(users.createdAt, thirtyDaysAgo)));
+    const newCustomers = newCustomersRes[0]?.count ?? 0;
+
+    const previousCustomersRes = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(users)
+      .where(
+        and(
+          ne(users.role, "admin"),
+          gte(users.createdAt, sixtyDaysAgo),
+          lt(users.createdAt, thirtyDaysAgo),
+        ),
+      );
+    const previousCustomers = previousCustomersRes[0]?.count ?? 0;
+
+    const customersGrowth =
+      previousCustomers === 0
+        ? newCustomers > 0
+          ? 100
+          : 0
+        : Math.round(
+            ((newCustomers - previousCustomers) / previousCustomers) * 10000,
+          ) / 100;
+
+    return {
+      totalRevenue,
+      totalOrders: Number(totalOrders),
+      totalProducts: Number(totalProducts),
+      newCustomers: Number(newCustomers),
+      revenueGrowth,
+      ordersGrowth,
+      customersGrowth,
+    };
+  }
+
+  async getMonthlyRevenue(year: number): Promise<IMonthlyRevenue[]> {
+    const startOfYear = new Date(year, 0, 1);
+    const endOfYear = new Date(year, 11, 31, 23, 59, 59, 999);
+
+    const result = await this.db
+      .select({
+        month: sql<string>`to_char(${orders.createdAt}, 'MM')`,
+        revenue: sql<string>`sum(${orders.totalAmount})`,
+        orderCount: sql<number>`count(*)::integer`,
+      })
+      .from(orders)
+      .where(
+        and(
+          ne(orders.status, "cancelled"),
+          gte(orders.createdAt, startOfYear),
+          lt(orders.createdAt, endOfYear),
+        ),
+      )
+      .groupBy(sql`to_char(${orders.createdAt}, 'MM')`)
+      .orderBy(sql`to_char(${orders.createdAt}, 'MM')`);
+
+    const monthlyMap = new Map(result.map((r) => [r.month, r]));
+    const fullYearData: IMonthlyRevenue[] = [];
+
+    for (let i = 1; i <= 12; i++) {
+      const monthStr = i.toString().padStart(2, "0");
+      const existing = monthlyMap.get(monthStr);
+      fullYearData.push(
+        existing ?? {
+          month: monthStr,
+          revenue: "0",
+          orderCount: 0,
+        },
+      );
+    }
+
+    return fullYearData;
   }
 }
 

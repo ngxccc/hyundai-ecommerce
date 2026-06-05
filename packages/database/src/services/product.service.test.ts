@@ -5,6 +5,7 @@ import {
   mockInsert,
   mockReturning,
   mockValues,
+  mockSelectResolvedValue,
 } from "../tests/utils/db-mock";
 import { ProductService } from "./product.service";
 import type { IDatabase } from "../client";
@@ -78,5 +79,55 @@ describe("ProductService", () => {
       })
     );
     expect(result).toEqual(mockProduct);
+  });
+
+  describe("getTopSellingProducts()", () => {
+    test("should query database and return top selling products with formatted image", async () => {
+      const mockDbResult = [
+        {
+          id: "prod-1",
+          name: "Hyundai HY-30CLE",
+          sold: 120,
+          price: "12500000",
+          images: ["img1.png", "img2.png"],
+        },
+      ];
+      mockSelectResolvedValue.mockResolvedValueOnce(mockDbResult);
+
+      const result = await productService.getTopSellingProducts(5);
+
+      expect(result).toEqual([
+        {
+          id: "prod-1",
+          name: "Hyundai HY-30CLE",
+          sold: 120,
+          price: "12500000",
+          image: "img1.png",
+        },
+      ]);
+    });
+
+    test("should handle empty images array by returning null image", async () => {
+      const mockDbResult = [
+        {
+          id: "prod-2",
+          name: "Test Generator",
+          sold: 50,
+          price: "8500000",
+          images: [],
+        },
+      ];
+      mockSelectResolvedValue.mockResolvedValueOnce(mockDbResult);
+
+      const result = await productService.getTopSellingProducts(5);
+
+      expect(result[0]).toEqual({
+        id: "prod-2",
+        name: "Test Generator",
+        sold: 50,
+        price: "8500000",
+        image: null,
+      });
+    });
   });
 });

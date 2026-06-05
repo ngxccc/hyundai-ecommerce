@@ -1,5 +1,5 @@
 import type { IUserService } from "./interfaces";
-import { eq } from "drizzle-orm";
+import { and, eq, ne, gte, sql } from "drizzle-orm";
 import { type IDatabase } from "../client";
 import { users, type TUser } from "../schemas/auth.schema";
 
@@ -73,5 +73,21 @@ export class UserService implements IUserService {
       },
       orderBy: { createdAt: "desc" },
     });
+  }
+  /**
+   * Get count of new users registered in the last N days (excluding admins)
+   */
+  async getNewUsersCount(days: number): Promise<number> {
+    const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const result = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(users)
+      .where(
+        and(
+          ne(users.role, "admin"),
+          gte(users.createdAt, cutoffDate)
+        )
+      );
+    return Number(result[0]?.count ?? 0);
   }
 }

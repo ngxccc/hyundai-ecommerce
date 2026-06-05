@@ -5,6 +5,7 @@ import {
   mockFindMany,
   mockUpdate,
   mockReturning,
+  mockSelectResolvedValue,
 } from "../tests/utils/db-mock";
 import { UserService } from "./user.service";
 import { type TUser } from "../schemas";
@@ -83,5 +84,13 @@ describe("UserService", () => {
 
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(result).toEqual(mockUsers);
+  });
+
+  test("getNewUsersCount() should return correct count", async () => {
+    mockSelectResolvedValue.mockResolvedValueOnce([{ count: 42 }]);
+
+    const result = await userService.getNewUsersCount(30);
+
+    expect(result).toBe(42);
   });
 });
