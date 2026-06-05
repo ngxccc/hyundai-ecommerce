@@ -1,6 +1,0 @@
-{
-  "canonicalRoutingSurfaces": ["AGENTS.md", "CLAUDE.md"],
-  "allowlistedSkills": {
-    "ag-merge-worktree": "Operational utility intentionally surfaced only on explicit worktree merge/cleanup requests instead of default step-0 routing."
-  }
-}
