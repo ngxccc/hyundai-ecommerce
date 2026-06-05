@@ -53,12 +53,10 @@ Thumbs.db
 .opencode/
 .vibecode-backup/
 .antigravitycli/
-.vc-installed-files
-.vc-version
+.ag-installed-files
+.ag-version
 opencode.json
 
 # Turborepo
 .turbo
 .vercel
-.ag-installed-files
-.ag-version
