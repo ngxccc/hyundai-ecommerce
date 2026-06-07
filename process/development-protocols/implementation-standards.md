@@ -21,6 +21,40 @@
 - Handle edge cases and error paths deliberately.
 - Prioritize readable, maintainable code over clever abstractions.
 
+## Function & React Component Standards
+
+### 1. Traditional Functions (`function` / `export function`)
+
+Use traditional function declarations for:
+
+- **React UI Components:** Prefer `export function` or `export default function` over arrow functions.
+  - **Component Identity & DevTools:** Traditional functions preserve the `name` property automatically, preventing `Anonymous` displays in React DevTools.
+  - **Fast Refresh (HMR):** Named functions ensure Fast Refresh works reliably by using lexically bound names to keep state during updates.
+  - **Generic TSX Syntax:** Avoid syntax workarounds for TSX generics (e.g. `<T,>`) by using the natural generic syntax of traditional functions: `function Select<T>(props: Props<T>)`.
+  - **Next.js Server Components:** Write async Server Components cleanly using `export default async function Component()`.
+  - **Hoisting / Top-Down Structure:** Place the main exported component at the top of the file, and supplementary sub-components below it. Traditional functions support hoisting, allowing sub-components to be declared at the bottom of the file.
+- **Top-Level Helper/Utility Functions:** Declaring standard helpers with `export function formatCurrency()` provides cleaner stack traces in error tracking tools and supports hoisting.
+- **Service/Class Methods:** Use standard method declarations inside service classes (e.g., in `packages/database/src/services/`) for standard constructor/context binding.
+
+### 2. Arrow Functions (`const foo = () => {}`)
+
+Use arrow functions for:
+
+- **Callbacks & Array Methods:** Inline callbacks inside array operations (e.g., `.map()`, `.filter()`, `.find()`, `.reduce()`).
+- **Inline Event Handlers:** Inline handlers in JSX (e.g., `onClick={() => handleSelect(id)}`).
+- **Closures & High-Order Functions:** Inner functions inside component rendering cycles or functional pipelines where lexical context (`this` binding) or concise one-liner syntax is beneficial.
+
+## Database Indexing Standards
+
+- Do not blindly index every column in a `WHERE`, `JOIN`, or `ORDER BY` clause. Consider selectivity, cardinality, and write overhead.
+  - **Foreign Keys:** Always index foreign keys (e.g., `userId` in `orders`, `orderId` in `orderItems`, `productId` in `warehouseStocks`) as PostgreSQL does not index them automatically and they are heavily used in joins.
+  - **High Cardinality (UUID, Email, Phone, Slug, CreatedAt):** Index these columns if they are frequently queried, sorted, or range-scanned.
+  - **Low Cardinality (Boolean, Status, Role, Gender):** Avoid standard indexes as they lead to Full Table Scans since selectivity is low.
+  - **Partial & Composite Indexes:**
+    - Use partial indexes (e.g., `where status = 'pending'`) for rare, hot states instead of indexing the entire column.
+    - Use composite indexes (e.g., `(userId, status)` or `(userId, createdAt DESC)`) when queries filter by multiple fields or sort the results.
+  - **Expression Indexes:** For filtering JSONB fields (e.g., specs), use expression indexes casting to numeric or relevant types to avoid parsing JSON at query runtime.
+
 ## Tooling
 
 - Use `pnpm`, not `npm`.
