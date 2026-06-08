@@ -5,6 +5,7 @@ CREATE TYPE "event_type" AS ENUM('SEND_QUOTE_EMAIL', 'SEND_MAIL');--> statement-
 CREATE TYPE "outbox_event_status" AS ENUM('PENDING', 'PROCESSED', 'FAILED');--> statement-breakpoint
 CREATE TYPE "payment_method" AS ENUM('COD', 'MOMO', 'ZALOPAY', 'VNPAY', 'BANK_TRANSFER');--> statement-breakpoint
 CREATE TYPE "payment_status" AS ENUM('PENDING', 'COMPLETED', 'FAILED', 'REFUNDED');--> statement-breakpoint
+CREATE TYPE "quote_status" AS ENUM('pending_review', 'negotiating', 'approved', 'rejected', 'expired');--> statement-breakpoint
 CREATE TABLE "product" (
 	"id" uuid PRIMARY KEY,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -13,13 +14,14 @@ CREATE TABLE "product" (
 	"name" text NOT NULL,
 	"slug" text NOT NULL,
 	"price" numeric(15,2) NOT NULL,
-	"description" text,
+	"description" jsonb,
 	"short_description" text,
 	"images" text[] DEFAULT '{}'::text[] NOT NULL,
 	"brand_id" uuid,
 	"category_id" uuid,
 	"specs" jsonb DEFAULT '{}',
 	"total_stock_cache" integer DEFAULT 0 NOT NULL,
+	"total_sales_cache" integer DEFAULT 0 NOT NULL,
 	"is_quote_only" boolean DEFAULT false NOT NULL
 );
 --> statement-breakpoint
@@ -219,14 +221,51 @@ CREATE TABLE "cart_item" (
 	"quantity" integer DEFAULT 1 NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "quote_item" (
+	"id" uuid PRIMARY KEY,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"quote_id" uuid NOT NULL,
+	"product_id" uuid NOT NULL,
+	"quantity" integer DEFAULT 1 NOT NULL,
+	"requested_price" numeric(15,2) NOT NULL,
+	"agreed_price" numeric(15,2)
+);
+--> statement-breakpoint
+CREATE TABLE "quote_message" (
+	"id" uuid PRIMARY KEY,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"quote_id" uuid NOT NULL,
+	"sender_id" uuid NOT NULL,
+	"message" text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "quote" (
+	"id" uuid PRIMARY KEY,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"status" "quote_status" DEFAULT 'pending_review'::"quote_status" NOT NULL,
+	"total_quoted_price" numeric(15,2),
+	"expiration_date" timestamp with time zone,
+	"note" text,
+	"order_id" uuid
+);
+--> statement-breakpoint
 CREATE UNIQUE INDEX "product_slug_active_idx" ON "product" ("slug") WHERE "deleted_at" IS NULL;--> statement-breakpoint
 CREATE INDEX "product_name_active_idx" ON "product" ("name") WHERE "deleted_at" IS NULL;--> statement-breakpoint
 CREATE INDEX "product_brand_idx" ON "product" ("brand_id");--> statement-breakpoint
 CREATE INDEX "product_category_idx" ON "product" ("category_id");--> statement-breakpoint
+CREATE INDEX "product_sales_cache_idx" ON "product" ("total_sales_cache");--> statement-breakpoint
+CREATE INDEX "product_power_idx" ON "product" ((CASE WHEN "specs"->>'power' ~ '^\s*\d+(\.\d+)?\s*$' THEN ("specs"->>'power')::numeric ELSE NULL END));--> statement-breakpoint
+CREATE INDEX "product_voltage_idx" ON "product" ((CASE WHEN "specs"->>'voltage' ~ '^\s*\d+(\.\d+)?\s*$' THEN ("specs"->>'voltage')::numeric ELSE NULL END));--> statement-breakpoint
 CREATE INDEX "account_user_id_idx" ON "account" ("user_id");--> statement-breakpoint
 CREATE INDEX "session_user_id_idx" ON "session" ("user_id");--> statement-breakpoint
 CREATE INDEX "verification_identifier_idx" ON "verification" ("identifier");--> statement-breakpoint
 CREATE INDEX "warehouse_name_idx" ON "warehouse" ("name");--> statement-breakpoint
+CREATE INDEX "order_user_status_created_idx" ON "order" ("user_id","status","created_at");--> statement-breakpoint
+CREATE INDEX "order_active_metrics_idx" ON "order" ("created_at") WHERE "status" != 'cancelled';--> statement-breakpoint
 CREATE UNIQUE INDEX "one_selected_bid_order_idx" ON "shipping_bid" ("order_id") WHERE "is_selected" = true;--> statement-breakpoint
 CREATE UNIQUE INDEX "cart_product_unique_idx" ON "cart_item" ("cart_id","product_id");--> statement-breakpoint
 ALTER TABLE "product" ADD CONSTRAINT "product_brand_id_brand_id_fkey" FOREIGN KEY ("brand_id") REFERENCES "brand"("id") ON DELETE SET NULL;--> statement-breakpoint
@@ -245,4 +284,10 @@ ALTER TABLE "user_address" ADD CONSTRAINT "user_address_user_id_user_id_fkey" FO
 ALTER TABLE "payment" ADD CONSTRAINT "payment_order_id_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "order"("id") ON DELETE RESTRICT;--> statement-breakpoint
 ALTER TABLE "cart" ADD CONSTRAINT "cart_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "cart_item" ADD CONSTRAINT "cart_item_cart_id_cart_id_fkey" FOREIGN KEY ("cart_id") REFERENCES "cart"("id") ON DELETE CASCADE;--> statement-breakpoint
-ALTER TABLE "cart_item" ADD CONSTRAINT "cart_item_product_id_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE CASCADE;
+ALTER TABLE "cart_item" ADD CONSTRAINT "cart_item_product_id_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "quote_item" ADD CONSTRAINT "quote_item_quote_id_quote_id_fkey" FOREIGN KEY ("quote_id") REFERENCES "quote"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "quote_item" ADD CONSTRAINT "quote_item_product_id_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE RESTRICT;--> statement-breakpoint
+ALTER TABLE "quote_message" ADD CONSTRAINT "quote_message_quote_id_quote_id_fkey" FOREIGN KEY ("quote_id") REFERENCES "quote"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "quote_message" ADD CONSTRAINT "quote_message_sender_id_user_id_fkey" FOREIGN KEY ("sender_id") REFERENCES "user"("id") ON DELETE RESTRICT;--> statement-breakpoint
+ALTER TABLE "quote" ADD CONSTRAINT "quote_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT;--> statement-breakpoint
+ALTER TABLE "quote" ADD CONSTRAINT "quote_order_id_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "order"("id") ON DELETE SET NULL;

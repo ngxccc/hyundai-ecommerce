@@ -32,6 +32,7 @@ export const products = snakeCase.table(
     }),
     specs: jsonb().$type<TProductSpecs>().default({}),
     totalStockCache: integer().notNull().default(0),
+    totalSalesCache: integer().notNull().default(0),
     isQuoteOnly: boolean().notNull().default(false),
   },
   (table) => [
@@ -45,12 +46,13 @@ export const products = snakeCase.table(
 
     index("product_brand_idx").on(table.brandId),
     index("product_category_idx").on(table.categoryId),
+    index("product_sales_cache_idx").on(table.totalSalesCache),
 
     index("product_power_idx").on(
-      sql`(CASE WHEN ${table.specs}->>'power' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'power')::numeric ELSE NULL END)`
+      sql`(CASE WHEN ${table.specs}->>'power' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'power')::numeric ELSE NULL END)`,
     ),
     index("product_voltage_idx").on(
-      sql`(CASE WHEN ${table.specs}->>'voltage' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'voltage')::numeric ELSE NULL END)`
+      sql`(CASE WHEN ${table.specs}->>'voltage' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'voltage')::numeric ELSE NULL END)`,
     ),
   ],
 );
