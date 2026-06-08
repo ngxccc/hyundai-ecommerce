@@ -54,6 +54,7 @@ const mockProduct: TProduct = {
     voltage: 400,
   },
   totalStockCache: 5,
+  totalSalesCache: 0,
   isQuoteOnly: true,
   createdAt: new Date(),
   updatedAt: new Date(),

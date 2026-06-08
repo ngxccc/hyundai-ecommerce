@@ -23,22 +23,29 @@ export const businessTypeEnum = pgEnum("business_type", [
   "distributor",
 ]);
 
-export const users = snakeCase.table("user", {
-  ...fullEntity,
-  name: text().notNull(),
-  email: text().notNull().unique(),
-  emailVerified: boolean().default(false).notNull(),
-  image: text(),
-  role: userRoleEnum().default("customer").notNull(),
-  dealerTierId: uuid().references(() => dealerTiers.id, {
-    onDelete: "set null",
-  }),
-  phone: text().notNull().unique(),
-  companyName: text(),
-  taxId: text(),
-  businessType: businessTypeEnum().default("end_user").notNull(),
-  province: text(),
-});
+export const users = snakeCase.table(
+  "user",
+  {
+    ...fullEntity,
+    name: text().notNull(),
+    email: text().notNull().unique(),
+    emailVerified: boolean().default(false).notNull(),
+    image: text(),
+    role: userRoleEnum().default("customer").notNull(),
+    dealerTierId: uuid().references(() => dealerTiers.id, {
+      onDelete: "set null",
+    }),
+    phone: text().notNull().unique(),
+    companyName: text(),
+    taxId: text(),
+    businessType: businessTypeEnum().default("end_user").notNull(),
+    province: text(),
+  },
+  (table) => [
+    index("user_dealer_tier_idx").on(table.dealerTierId),
+    index("user_created_at_idx").on(table.createdAt),
+  ],
+);
 
 export const sessions = snakeCase.table(
   "session",

@@ -47,6 +47,7 @@ export const products = snakeCase.table(
     index("product_brand_idx").on(table.brandId),
     index("product_category_idx").on(table.categoryId),
     index("product_sales_cache_idx").on(table.totalSalesCache),
+    index("product_created_at_idx").on(table.createdAt),
 
     index("product_power_idx").on(
       sql`(CASE WHEN ${table.specs}->>'power' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'power')::numeric ELSE NULL END)`,

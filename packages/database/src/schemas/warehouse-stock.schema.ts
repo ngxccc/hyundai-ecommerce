@@ -1,4 +1,4 @@
-import { integer, snakeCase, primaryKey, uuid } from "drizzle-orm/pg-core";
+import { integer, snakeCase, primaryKey, uuid, index } from "drizzle-orm/pg-core";
 import { warehouses } from "./warehouse.schema";
 import { products } from "./product.schema";
 import { baseTimestamps } from "./helpers.schema";
@@ -16,7 +16,10 @@ export const warehouseStocks = snakeCase.table(
     minStockWarning: integer().notNull().default(2),
     ...baseTimestamps,
   },
-  (table) => [primaryKey({ columns: [table.warehouseId, table.productId] })],
+  (table) => [
+    primaryKey({ columns: [table.warehouseId, table.productId] }),
+    index("warehouse_stock_product_idx").on(table.productId),
+  ],
 );
 
 export type TWarehouseStock = typeof warehouseStocks.$inferSelect;

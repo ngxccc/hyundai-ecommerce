@@ -30,6 +30,7 @@ describe("ProductService", () => {
       brandId: null,
       categoryId: null,
       specs: null,
+      totalSalesCache: 0,
     };
 
     const mockReturnedDbProduct = {
@@ -62,6 +63,7 @@ describe("ProductService", () => {
       brandId: null,
       categoryId: null,
       specs: null,
+      totalSalesCache: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
       deletedAt: null,
