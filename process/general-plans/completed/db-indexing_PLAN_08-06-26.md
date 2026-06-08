@@ -2,7 +2,7 @@
 
 **Date**: 08-06-26  
 **Complexity**: Simple  
-**Status**: ⏳ PLANNED
+**Status**: ✅ COMPLETED
 
 ## Overview
 
@@ -129,41 +129,41 @@ Confirm all 60 tests pass.
 
 ### 1. Update Schema Definitions (Add Indexes)
 
-- [ ] Modify `packages/database/src/schemas/order.schema.ts` to add `orderId` and `productId` indexes (after consolidation).
-- [ ] Modify `packages/database/src/schemas/warehouse-stock.schema.ts` to add `productId` index.
-- [ ] Modify `packages/database/src/schemas/user.schema.ts` to add `dealerTierId` and `createdAt` indexes.
-- [ ] Modify `packages/database/src/schemas/quotes.schema.ts` to add `userId`, `orderId`, and `createdAt` indexes for quotes; `quoteId` and `productId` indexes for quoteItems; and `quoteId` and `senderId` indexes for quoteMessages.
-- [ ] Modify `packages/database/src/schemas/product.schema.ts` to add `createdAt` index (avoid totalStockCache).
+- [x] Modify `packages/database/src/schemas/order.schema.ts` to add `orderId` and `productId` indexes (after consolidation).
+- [x] Modify `packages/database/src/schemas/warehouse-stock.schema.ts` to add `productId` index.
+- [x] Modify `packages/database/src/schemas/user.schema.ts` to add `dealerTierId` and `createdAt` indexes.
+- [x] Modify `packages/database/src/schemas/quotes.schema.ts` to add `userId`, `orderId`, and `createdAt` indexes for quotes; `quoteId` and `productId` indexes for quoteItems; and `quoteId` and `senderId` indexes for quoteMessages.
+- [x] Modify `packages/database/src/schemas/product.schema.ts` to add `createdAt` index (avoid totalStockCache).
 
 ### 2. Consolidate Schema Files
 
-- [ ] Move `orderItems` table definition and TypeScript types (`TOrderItem`, `TNewOrderItem`) from `order-item.schema.ts` to `order.schema.ts`.
-- [ ] Move `cartItems` table definition and TypeScript types (`TCartItem`, `TNewCartItem`) from `cart-item.schema.ts` to `cart.schema.ts`.
-- [ ] Update `packages/database/src/schemas/relations.ts` imports to point to `order.schema` and `cart.schema` respectively.
-- [ ] Remove references to `order-item.schema` and `cart-item.schema` in `packages/database/src/schemas/index.ts`.
-- [ ] Delete `packages/database/src/schemas/order-item.schema.ts` and `packages/database/src/schemas/cart-item.schema.ts`.
+- [x] Move `orderItems` table definition and TypeScript types (`TOrderItem`, `TNewOrderItem`) from `order-item.schema.ts` to `order.schema.ts`.
+- [x] Move `cartItems` table definition and TypeScript types (`TCartItem`, `TNewCartItem`) from `cart-item.schema.ts` to `cart.schema.ts`.
+- [x] Update `packages/database/src/schemas/relations.ts` imports to point to `order.schema` and `cart.schema` respectively.
+- [x] Remove references to `order-item.schema` and `cart-item.schema` in `packages/database/src/schemas/index.ts`.
+- [x] Delete `packages/database/src/schemas/order-item.schema.ts` and `packages/database/src/schemas/cart-item.schema.ts`.
 
 ### 3. Generate and Apply Migrations
 
-- [ ] Run `bun run db:generate` in `packages/database` directory to output SQL migration.
-- [ ] Run `bun run db:migrate` to push the indexes to Neon PostgreSQL dev branch.
-- [ ] Validate table state using Neon console or drizzle-kit studio if needed.
+- [x] Run `bun run db:generate` in `packages/database` directory to output SQL migration.
+- [x] Run `bun run db:migrate` to push the indexes to Neon PostgreSQL dev branch.
+- [x] Validate table state using Neon console or drizzle-kit studio if needed.
 
 ### 4. Run Test Verification
 
-- [ ] Run `bun run test` in `packages/database` and verify 60 tests pass.
-- [ ] Check for any database-side errors or timeouts.
+- [x] Run `bun run test` in `packages/database` and verify 60 tests pass.
+- [x] Check for any database-side errors or timeouts.
 
 ### 5. Git Commits via `ag-git-commit`
 
-- [ ] Stage and commit Schema updates & consolidations:
+- [x] Stage and commit Schema updates & consolidations:
   - Stage schema files under `packages/database/src/schemas/` (including deletions)
   - Commit with message: `feat(database): add indexes and consolidate order-item and cart-item schemas`
-- [ ] Stage and commit Migration files:
+- [x] Stage and commit Migration files:
   - Stage generated migration folder under `packages/database/drizzle/`
   - Commit with message: `feat(database): generate migration for new schema indexes`
-- [ ] Verify `git status` shows clean worktree.
-- [ ] **DO NOT PUSH.**
+- [x] Verify `git status` shows clean worktree.
+- [x] **DO NOT PUSH.**
 
 ---
 
