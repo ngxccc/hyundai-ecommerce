@@ -5,9 +5,11 @@ import {
   snakeCase,
   text,
   uuid,
+  integer,
 } from "drizzle-orm/pg-core";
 import { users } from "./auth.schema";
 import { baseEntity } from "./helpers.schema";
+import { products } from "./product.schema";
 import { sql } from "drizzle-orm";
 
 export const orderStatusEnum = pgEnum("order_status", [
@@ -43,5 +45,28 @@ export const orders = snakeCase.table(
   ],
 );
 
+export const orderItems = snakeCase.table(
+  "order_item",
+  {
+    ...baseEntity,
+    orderId: uuid()
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+    productId: uuid()
+      .notNull()
+      .references(() => products.id, { onDelete: "restrict" }),
+    productName: text().notNull(),
+    productSku: text().notNull(),
+    quantity: integer().default(0).notNull(),
+    unitPrice: numeric({ precision: 15, scale: 2 }).notNull(),
+  },
+  (table) => [
+    index("order_item_order_idx").on(table.orderId),
+    index("order_item_product_idx").on(table.productId),
+  ],
+);
+
 export type TOrder = typeof orders.$inferSelect;
 export type TNewOrder = typeof orders.$inferInsert;
+export type TOrderItem = typeof orderItems.$inferSelect;
+export type TNewOrderItem = typeof orderItems.$inferInsert;

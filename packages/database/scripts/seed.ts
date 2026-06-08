@@ -6,8 +6,7 @@ import { warehouses } from "../src/schemas/warehouse.schema";
 import { warehouseStocks } from "../src/schemas/warehouse-stock.schema";
 import { dealerTiers } from "../src/schemas";
 import { users } from "../src/schemas/auth.schema";
-import { orders } from "../src/schemas/order.schema";
-import { orderItems } from "../src/schemas/order-item.schema";
+import { orders, orderItems } from "../src/schemas/order.schema";
 import { quotes, quoteItems, quoteMessages } from "../src/schemas/quotes.schema";
 
 async function seed() {

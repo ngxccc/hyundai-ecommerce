@@ -5,7 +5,6 @@ export * from "./dealer-tier.schema";
 export * from "./warehouse.schema";
 export * from "./warehouse-stock.schema";
 export * from "./order.schema";
-export * from "./order-item.schema";
 export * from "./shipping-bid.schema";
 export * from "./outbox-event.schema";
 export * from "./brand.schema";
@@ -13,6 +12,5 @@ export * from "./category.schema";
 export * from "./user-address.schema";
 export * from "./payment.schema";
 export * from "./cart.schema";
-export * from "./cart-item.schema";
 export * from "./quotes.schema";
 

@@ -1,6 +1,5 @@
 import { defineRelations } from "drizzle-orm";
-import { orders } from "./order.schema";
-import { orderItems } from "./order-item.schema";
+import { orders, orderItems } from "./order.schema";
 import { accounts, sessions, users } from "./auth.schema";
 import { dealerTiers } from "./dealer-tier.schema";
 import { shippingBids } from "./shipping-bid.schema";
@@ -11,8 +10,7 @@ import { brands } from "./brand.schema";
 import { categories } from "./category.schema";
 import { userAddresses } from "./user-address.schema";
 import { payments } from "./payment.schema";
-import { carts } from "./cart.schema";
-import { cartItems } from "./cart-item.schema";
+import { carts, cartItems } from "./cart.schema";
 import { quotes, quoteItems, quoteMessages } from "./quotes.schema";
 
 export const schemaRelations = defineRelations(
