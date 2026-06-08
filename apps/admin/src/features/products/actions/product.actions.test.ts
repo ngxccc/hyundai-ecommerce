@@ -71,6 +71,7 @@ describe("product.actions", () => {
       brandId: null,
       categoryId: null,
       specs: {},
+      totalSalesCache: 0,
       totalStockCache: 0,
       isQuoteOnly: false,
       createdAt: new Date(),
