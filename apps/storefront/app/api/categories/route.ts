@@ -1,3 +1,4 @@
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { categoryService } from "@nhatnang/database/services";
 import { NextResponse } from "next/server";
 
@@ -8,21 +9,12 @@ export async function GET() {
     // Fetch categories using CategoryService
     const dbCategories = await categoryService.getAll();
 
-    // Map DB categories to storefront Category schema
-    const mappedCategories = dbCategories.map((c) => ({
-      id: c.id,
-      slug: c.slug,
-      name: c.name,
-      imageUrl: c.image || "",
-      description: c.description || "",
-    }));
-
     return NextResponse.json(
       {
         status: true,
-        data: mappedCategories,
+        data: dbCategories,
       },
-      { status: 200 },
+      { status: HTTP_STATUS.OK },
     );
   } catch (error) {
     console.error("Error fetching categories in API route:", error);
@@ -31,7 +23,7 @@ export async function GET() {
         status: false,
         data: null,
       },
-      { status: 500 },
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
     );
   }
 }

@@ -1,5 +1,5 @@
 import { delay } from "@/shared/lib/utils";
-import type { PromoCampaign } from "@/shared/types/common";
+import type { PromoCampaign } from "@nhatnang/types";
 import { NextResponse } from "next/server";
 
 export const revalidate = 3600;

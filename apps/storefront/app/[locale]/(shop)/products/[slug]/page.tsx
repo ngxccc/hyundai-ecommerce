@@ -1,8 +1,25 @@
+import { getTranslations } from "next-intl/server";
+import type { TProduct } from "@nhatnang/database/schemas";
+
+const formatSpecs = (specs: TProduct["specs"]): string[] => {
+  if (!specs || typeof specs !== "object") return [];
+  const specsObj = specs as Record<
+    string,
+    string | number | boolean | null | undefined
+  >;
+  const specsArray: string[] = [];
+  if (specsObj["power"]) specsArray.push(`${String(specsObj["power"])}kW`);
+  if (typeof specsObj["fuelType"] === "string") {
+    specsArray.push(specsObj["fuelType"]);
+  }
+  return specsArray;
+};
 import { routing } from "@/i18n/routing";
 import { priceFormatter } from "@/shared/lib/utils";
 import { productService } from "@/shared/services";
 import type { Metadata } from "next";
 import Image from "next/image";
+import { CldImage } from "@/shared/components/CldImageWrapper";
 import { notFound } from "next/navigation";
 
 interface ProductPageParams {
@@ -49,7 +66,7 @@ export async function generateMetadata({
 
   return {
     title: product.name,
-    description: product.specs.join(" • "),
+    description: formatSpecs(product.specs).join(" • "),
   };
 }
 
@@ -60,6 +77,10 @@ const ProductDetailsPage = async ({
 }) => {
   const { slug } = await params;
   const product = await productService.getProductBySlug(slug);
+  const t = await getTranslations("ProductDetails");
+  const tLoose = t as unknown as ((key: string) => string) & {
+    has: (key: string) => boolean;
+  };
 
   if (!product) {
     notFound();
@@ -68,34 +89,97 @@ const ProductDetailsPage = async ({
   return (
     <section className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:flex-row lg:px-8">
       <div className="relative aspect-square w-full overflow-hidden rounded-xl lg:w-1/2">
-        <Image
-          src={product.imageUrl}
-          alt={product.name}
-          fill
-          className="object-cover"
-          sizes="(max-width: 1024px) 100vw, 50vw"
-          priority
-        />
+        {product.images[0]?.includes("cloudinary.com") ? (
+          <CldImage
+            src={product.images[0]}
+            alt={product.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            preload
+          />
+        ) : (
+          <Image
+            src={
+              product.images[0] && product.images[0] !== ""
+                ? product.images[0]
+                : "https://placehold.co/600x600/png?text=No+Image"
+            }
+            alt={product.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            priority
+          />
+        )}
       </div>
 
       <div className="flex w-full flex-col gap-4 lg:w-1/2">
         <h1 className="text-foreground text-2xl font-bold sm:text-3xl">
           {product.name}
         </h1>
-        <p className="text-muted-foreground text-lg">{product.model}</p>
+        <p className="text-muted-foreground text-lg">
+          {product.specs?.model ?? "Unknown"}
+        </p>
         <div className="flex flex-wrap gap-2">
-          {product.specs.map((spec) => (
+          {formatSpecs(product.specs).map((spec) => (
             <span
               key={`${product.id}-${spec}`}
-              className="bg-muted rounded-md px-3 py-1 text-sm"
+              className="bg-muted rounded-md px-3 py-1 text-sm font-semibold"
             >
               {spec}
             </span>
           ))}
         </div>
-        <p className="text-primary text-2xl font-semibold">
-          {priceFormatter.format(product.price)}
+        <p className="text-primary text-2xl font-bold">
+          {product.isQuoteOnly
+            ? t("contact_for_quote")
+            : priceFormatter.format(Number(product.price))}
         </p>
+
+        {/* Bảng thông số chi tiết */}
+        <div className="mt-6 border-t pt-6">
+          <h2 className="text-foreground mb-4 text-lg font-bold">
+            {t("detailed_specs")}
+          </h2>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
+            {Object.entries(
+              (product.specs as Record<
+                string,
+                string | number | boolean | null | undefined
+              >) || {},
+            ).map(([key, value]) => {
+              if (value === null || value === undefined || value === "")
+                return null;
+
+              if (!tLoose.has(`specs.${key}`)) return null;
+              const label = tLoose(`specs.${key}`);
+
+              let displayValue = String(value);
+              if (key === "fuelType" && typeof value === "string") {
+                displayValue = tLoose.has(`fuelTypes.${value}`)
+                  ? tLoose(`fuelTypes.${value}`)
+                  : String(value);
+              } else if (key === "phase" && typeof value === "string") {
+                displayValue = tLoose.has(`phases.${value}`)
+                  ? tLoose(`phases.${value}`)
+                  : String(value);
+              }
+
+              return (
+                <div
+                  key={key}
+                  className="flex justify-between border-b pb-2 text-sm"
+                >
+                  <span className="text-muted-foreground">{label}</span>
+                  <span className="text-foreground font-semibold">
+                    {displayValue}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );

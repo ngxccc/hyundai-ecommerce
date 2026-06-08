@@ -1,5 +1,5 @@
 import { siteConfig } from "@/shared/config/site";
-import type { ApiResponse } from "@/shared/types/common";
+import type { ApiResponse } from "@nhatnang/types";
 
 export async function fetchApi<T>(
   endpoint: string,

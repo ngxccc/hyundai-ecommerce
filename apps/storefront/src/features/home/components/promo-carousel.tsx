@@ -9,7 +9,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@nhatnang/ui/components/ui/carousel";
-import type { PromoCampaign } from "@/shared/types/common";
+import type { PromoCampaign } from "@nhatnang/types";
 import { useCallback, useState } from "react";
 
 const THEME_STYLES: Record<
@@ -68,7 +68,7 @@ export function PromoCarousel({ promos }: { promos: PromoCampaign[] }) {
                   aria-hidden="true"
                 />
 
-                {/* Cột Trái */}
+                {/* Left column */}
                 <div className="relative z-10 text-center md:text-left">
                   <Badge
                     variant="outline"
@@ -88,7 +88,7 @@ export function PromoCarousel({ promos }: { promos: PromoCampaign[] }) {
                   </p>
                 </div>
 
-                {/* Cột Phải */}
+                {/* Right Column */}
                 <div className="relative z-10 mt-8 flex flex-col items-center md:mt-0 md:items-end">
                   <div className="font-display text-destructive mb-4 text-7xl leading-none font-black tracking-tighter md:text-8xl">
                     {promo.discount}

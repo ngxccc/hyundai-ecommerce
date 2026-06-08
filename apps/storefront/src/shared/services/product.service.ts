@@ -4,18 +4,18 @@ import {
   getProductSlug,
   PRODUCTS_REVALIDATE_SECONDS,
 } from "../constants/products";
-import type { Product } from "../types/common";
+import type { TProduct } from "@nhatnang/database/schemas";
 
 const isProductionBuild =
   process.env["NEXT_PHASE"] === "phase-production-build";
 
-const getBuildSafeProducts = async (): Promise<Product[]> => {
+const getBuildSafeProducts = async (): Promise<TProduct[]> => {
   if (isProductionBuild) {
     return BUILD_TIME_PRODUCTS;
   }
 
   try {
-    return await fetchApi<Product[]>("/api/products", {
+    return await fetchApi<TProduct[]>("/api/products", {
       next: { revalidate: PRODUCTS_REVALIDATE_SECONDS },
     });
   } catch (error) {
@@ -25,7 +25,7 @@ const getBuildSafeProducts = async (): Promise<Product[]> => {
 };
 
 export const productService = {
-  getProducts: async (): Promise<Product[]> => {
+  getProducts: async (): Promise<TProduct[]> => {
     return await getBuildSafeProducts();
   },
 
@@ -34,7 +34,7 @@ export const productService = {
     return products.map(getProductSlug);
   },
 
-  getProductBySlug: async (slug: string): Promise<Product | null> => {
+  getProductBySlug: async (slug: string): Promise<TProduct | null> => {
     const products = await getBuildSafeProducts();
     return products.find((product) => getProductSlug(product) === slug) ?? null;
   },
