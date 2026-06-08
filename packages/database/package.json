@@ -26,10 +26,11 @@
     "db:seed": "doppler run -- scripts/seed.ts",
     "db:migrate:prod": "doppler run -c prd -- drizzle-kit migrate --config drizzle.config.ts",
     "db:studio": "doppler run -- drizzle-kit studio --config drizzle.config.ts",
+    "db:baseline": "doppler run -- bun scripts/baseline.ts",
     "docs:gen": "bun run scripts/generate-docs.ts",
     "lint": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
-    "test": "bun test src/"
+    "test": "doppler run -- bun test src/"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.11",

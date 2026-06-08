@@ -18,7 +18,7 @@
     "format:pkg": "syncpack format",
     "format:pkg:check": "syncpack format --check",
     "lint": "turbo run lint",
-    "test": "turbo run test",
+    "test": "doppler run -- turbo run test",
     "clean": "bunx rimraf '**/node_modules' '**/.next' '**/.turbo'",
     "clean:hard": "bunx rimraf '**/node_modules' '**/.next' '**/.turbo' 'bun.lock' && bun install"
   },
