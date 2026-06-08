@@ -201,7 +201,7 @@ export class ProductService implements IProductService {
         products.price,
         products.images,
       )
-      .orderBy(desc(sql`sum(${orderItems.quantity})`))
+      .orderBy(desc(products.totalSalesCache))
       .limit(limit);
 
     return result.map((r) => ({

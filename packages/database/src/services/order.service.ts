@@ -52,12 +52,63 @@ export class OrderService implements IOrderService {
   }
 
   async updateOrderStatus(id: string, status: TOrder["status"]) {
-    const [updated] = await this.db
-      .update(orders)
-      .set({ status, updatedAt: new Date() })
-      .where(eq(orders.id, id))
-      .returning();
-    return updated;
+    return await this.db.transaction(async (tx) => {
+      // get current order
+      const currentOrder = await tx.query.orders.findFirst({
+        where: {
+          id,
+        },
+        with: {
+          items: true,
+        },
+      });
+
+      // throw error if cant find order
+      if (!currentOrder) throw new Error("errors.orderNotFound");
+
+      const oldStatus = currentOrder.status;
+
+      // update order status
+      const [updated] = await tx
+        .update(orders)
+        .set({ status, updatedAt: new Date() })
+        .where(eq(orders.id, id))
+        .returning();
+
+      const isSoldStatus = (s: TOrder["status"]) =>
+        s === "processing" || s === "shipped" || s === "delivered";
+
+      // trước đó đã bán hay chưa?
+      const wasSold = isSoldStatus(oldStatus);
+      // trước đó chuwa bán, giờ mới bán
+      const isNowSold = isSoldStatus(status);
+
+      // trước đó chưa bán giờ update thành đã bán
+      if (!wasSold && isNowSold) {
+        // from pending -> processing,...
+        for (const item of currentOrder.items) {
+          await tx
+            .update(products)
+            .set({
+              totalSalesCache: sql`${products.totalSalesCache} + ${item.quantity}`,
+            })
+            .where(eq(products.id, item.productId));
+        }
+      } else if (wasSold && !isNowSold) {
+        // đã bán giờ huỷ hoặc refund
+        // from processing -> cancelled or refunded
+        for (const item of currentOrder.items) {
+          await tx
+            .update(products)
+            .set({
+              totalSalesCache: sql`GREATEST(${products.totalSalesCache} - ${item.quantity}, 0)`,
+            })
+            .where(eq(products.id, item.productId));
+        }
+      }
+
+      return updated;
+    });
   }
 
   async getComplexOrder(orderId: string) {
