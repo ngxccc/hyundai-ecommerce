@@ -135,37 +135,4 @@ We welcome contributions! Please read our [Contributing Guide](CONTRIBUTING.md) 
 
 ---
 
-## 🗺 Roadmap
-
-### Core Platform
-
-- [x] Internationalization (multi-language support with Next-Intl)
-- [x] Secure Route Groups Architecture for protected layouts
-- [ ] Migrate Prettier → Biome (xem issue [#15](https://github.com/ngxccc/hyundai-ecommerce/issues/15)) cho performance gain
-
-### Admin Panel (CMS)
-
-- **Implemented:**
-  - [x] Admin Authentication (Login/Session via Better Auth)
-  - [x] Dashboard Overview (Metrics Cards, Revenue Chart, Recent Orders, Top Products)
-  - [x] Products Listing (Grid view, Advanced Filtering, Pagination)
-  - [x] Internationalized UI (Sidebar, Header, Datagrid)
-- **Upcoming:**
-  - [ ] Categories & Brands Management (Prerequisite for products)
-  - [ ] Product Creation & Editing (Dynamic forms with validation)
-  - [ ] Warehouse & Inventory Management (Multi-warehouse stock tracking)
-  - [ ] Order Management & Fulfillment workflow
-  - [ ] Shipping & Logistics Bidding Management
-  - [ ] User, Role & Dealer Tier Management (RBAC & B2B Tiers)
-  - [ ] Payment & Financial Tracking
-
-### Storefront & B2B Features
-
-- [ ] Advanced AI Product Recommendation Chatbot
-- [ ] Multi-stage payment (deposit + final payment)
-- [ ] PDF Quote Generation with official stamps
-- [ ] Dynamic form builder for product attributes
-
----
-
 **Built with ❤️ for industrial equipment distribution.**
