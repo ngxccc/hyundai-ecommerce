@@ -110,6 +110,7 @@ We organize our repository's documentation and durable knowledge base into Conte
 | `planning/all-planning.md`       | Creating a new plan or checking complexity            | Plan shapes, PRD calibration, planning conventions     |
 | `tests/all-tests.md`             | Testing, verification, debugging test failures        | Test runners, commands, protocol, and database mocking |
 | `uxui/all-uxui.md`               | Frontend design, CSS styling, components              | Aesthetic theme, Tailwind CSS, admin form guidelines   |
+| `database/all-database.md`       | Database queries, schemas, or migrations              | Drizzle ORM syntax, indexing matrix, transactions      |
 
 ## 11. Context Group Lifecycle
 
