@@ -12,6 +12,7 @@ import {
 } from "../tests/utils/db-mock";
 import { OrderService } from "./order.service";
 import type { IDatabase } from "../client";
+import type { TOrder, TNewOrder } from "../schemas";
 
 const orderService = new OrderService(mockDb as unknown as IDatabase);
 
@@ -28,21 +29,41 @@ describe("OrderService", () => {
     const result = await orderService.createOrder({
       userId: "user-1",
       status: "pending",
-    } as any);
-
+    } as unknown as TNewOrder);
     expect(mockInsert).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockOrder as any);
+    expect(result).toEqual(mockOrder as unknown as TOrder);
   });
 
-  test("updateOrderStatus() should update and return order", async () => {
-    const mockOrder = { id: "order-1", status: "completed" };
+  test("updateOrderStatus() should update and return order without changing sales cache when status transition is neutral", async () => {
+    const mockOrder = { id: "order-1", status: "pending", items: [] };
 
+    mockFindFirst.mockResolvedValueOnce(mockOrder);
     mockReturning.mockResolvedValueOnce([mockOrder]);
 
-    const result = await orderService.updateOrderStatus("order-1", "delivered");
+    const result = await orderService.updateOrderStatus("order-1", "pending");
 
     expect(mockUpdate).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockOrder as any);
+    expect(result).toEqual(mockOrder as unknown as TOrder);
+  });
+
+  test("updateOrderStatus() should update order and increment sales cache when transition goes from pending to processing", async () => {
+    const mockOrder = {
+      id: "order-1",
+      status: "pending",
+      items: [{ productId: "prod-1", quantity: 3 }],
+    };
+    const mockUpdatedOrder = { id: "order-1", status: "processing" };
+
+    mockFindFirst.mockResolvedValueOnce(mockOrder);
+    mockReturning.mockResolvedValueOnce([mockUpdatedOrder]);
+
+    const result = await orderService.updateOrderStatus(
+      "order-1",
+      "processing",
+    );
+
+    expect(mockUpdate).toHaveBeenCalledTimes(2);
+    expect(result).toEqual(mockUpdatedOrder as unknown as TOrder);
   });
 
   test("getComplexOrder() should return nested order", async () => {
@@ -129,15 +150,18 @@ describe("OrderService", () => {
         orderService.selectWinningBid("order-1", "bid-not-exist"),
       ).rejects.toThrow("errors.shippingBidNotFound");
     });
-
   });
   describe("getDashboardMetrics()", () => {
     test("should return aggregated metrics with correct growth calculations", async () => {
       mockSelectResolvedValue.mockResolvedValueOnce([{ count: 10 }]);
       mockSelectResolvedValue.mockResolvedValueOnce([{ count: 5 }]);
       mockSelectResolvedValue.mockResolvedValueOnce([{ sum: "500000" }]);
-      mockSelectResolvedValue.mockResolvedValueOnce([{ sum: "300000", count: 3 }]);
-      mockSelectResolvedValue.mockResolvedValueOnce([{ sum: "200000", count: 2 }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([
+        { sum: "300000", count: 3 },
+      ]);
+      mockSelectResolvedValue.mockResolvedValueOnce([
+        { sum: "200000", count: 2 },
+      ]);
       mockSelectResolvedValue.mockResolvedValueOnce([{ count: 4 }]);
       mockSelectResolvedValue.mockResolvedValueOnce([{ count: 2 }]);
 
@@ -166,8 +190,16 @@ describe("OrderService", () => {
       const result = await orderService.getMonthlyRevenue(2026);
 
       expect(result).toHaveLength(12);
-      expect(result[0]).toEqual({ month: "01", revenue: "150000", orderCount: 2 });
-      expect(result[1]).toEqual({ month: "02", revenue: "200000", orderCount: 3 });
+      expect(result[0]).toEqual({
+        month: "01",
+        revenue: "150000",
+        orderCount: 2,
+      });
+      expect(result[1]).toEqual({
+        month: "02",
+        revenue: "200000",
+        orderCount: 3,
+      });
       expect(result[2]).toEqual({ month: "03", revenue: "0", orderCount: 0 });
     });
   });
