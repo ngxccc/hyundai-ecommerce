@@ -5,7 +5,6 @@
       "dependsOn": ["^build"],
       "env": [
         "DOPPLER_TOKEN",
-        "DOPPLER_TOKEN_STAGING",
         "NODE_ENV",
         "NEXT_PUBLIC_API_URL",
         "DATABASE_URL",
@@ -40,6 +39,7 @@
     },
     "test": {
       "dependsOn": ["^build"],
+      "env": ["DOPPLER_TOKEN"],
       "outputs": [],
       "cache": true
     },
