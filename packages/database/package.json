@@ -28,7 +28,7 @@
     "db:migrate:prod": "doppler run -c prd -- drizzle-kit migrate --config drizzle.config.ts",
     "db:migrate:test": "doppler run -c stg -- drizzle-kit migrate --config drizzle.config.ts",
     "db:studio": "doppler run -- drizzle-kit studio --config drizzle.config.ts",
-    "db:baseline": "doppler run -c dev -- bun scripts/baseline.ts && doppler run -c prd -- bun scripts/baseline.ts && doppler run -c stg -- bun scripts/baseline.ts",
+    "db:baseline": "doppler run -c dev -- bun scripts/baseline.ts && doppler run -c prd -- bun scripts/baseline.ts --inject-only && doppler run -c stg -- bun scripts/baseline.ts --inject-only",
     "docs:gen": "bun run scripts/generate-docs.ts",
     "lint": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
