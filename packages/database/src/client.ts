@@ -1,11 +1,7 @@
 import { Pool as NeonPool } from "@neondatabase/serverless";
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
-import { drizzle as drizzlePg } from "drizzle-orm/postgres-js";
 import { env } from "./env";
 import * as schema from "./schemas";
-import postgres from "postgres";
-
-const isCI = process.env["CI"] !== undefined;
 
 type DatabaseType = ReturnType<
   typeof drizzleNeon<typeof schema.schemaRelations>
@@ -18,22 +14,12 @@ const globalForDb = globalThis as unknown as {
 let dbInstance: unknown = globalForDb.dbInstance;
 
 if (!dbInstance) {
-  if (!isCI) {
-    const pool = new NeonPool({ connectionString: env.DATABASE_URL });
-    dbInstance = drizzleNeon({
-      client: pool,
-      relations: schema.schemaRelations,
-      jit: true,
-    });
-  } else {
-    const queryClient = postgres(env.DATABASE_URL);
-
-    dbInstance = drizzlePg({
-      client: queryClient,
-      relations: schema.schemaRelations,
-      jit: true,
-    });
-  }
+  const pool = new NeonPool({ connectionString: env.DATABASE_URL });
+  dbInstance = drizzleNeon({
+    client: pool,
+    relations: schema.schemaRelations,
+    jit: true,
+  });
   if (process.env.NODE_ENV !== "production") {
     globalForDb.dbInstance = dbInstance as DatabaseType;
   }
