@@ -6,7 +6,7 @@ import {
   mockReturning,
   mockValues,
   mockSelectResolvedValue,
-  mockFindMany,
+  mockSelect,
 } from "../tests/utils/db-mock";
 import { ProductService } from "./product.service";
 import type { IDatabase } from "../client";
@@ -145,11 +145,11 @@ describe("ProductService", () => {
           categories: null,
         },
       ] as unknown as Awaited<ReturnType<ProductService["getAll"]>>["data"];
-      mockFindMany.mockResolvedValueOnce(mockProducts);
+      mockSelectResolvedValue.mockResolvedValueOnce(mockProducts);
 
       const result = await productService.getAll(10, { sort: "price_asc" });
 
-      expect(mockFindMany).toHaveBeenCalledTimes(1);
+      expect(mockSelect).toHaveBeenCalledTimes(1);
       expect(result.data).toEqual(mockProducts);
     });
 
@@ -163,13 +163,13 @@ describe("ProductService", () => {
           categories: null,
         },
       ] as unknown as Awaited<ReturnType<ProductService["getAll"]>>["data"];
-      mockFindMany.mockResolvedValueOnce(mockProducts);
+      mockSelectResolvedValue.mockResolvedValueOnce(mockProducts);
 
       const result = await productService.getAll(10, {
         categoryIds: ["cat-1", "cat-2"],
       });
 
-      expect(mockFindMany).toHaveBeenCalledTimes(1);
+      expect(mockSelect).toHaveBeenCalledTimes(1);
       expect(result.data).toEqual(mockProducts);
     });
   });

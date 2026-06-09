@@ -114,7 +114,7 @@ export interface TGetAllOptions {
   categoryIds?: string[] | undefined;
   brandId?: string | undefined;
   brandIds?: string[] | undefined;
-  status?: string | undefined;
+  status?: "active" | "outOfStock" | undefined;
   search?: string | undefined;
   fuelType?: string | undefined;
   phase?: string | undefined;

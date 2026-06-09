@@ -10,7 +10,21 @@ import {
   type TNewProduct,
 } from "../schemas/product.schema";
 import { type IDatabase } from "../client";
-import { eq, ne, sql, desc, inArray } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  ne,
+  sql,
+  or,
+  gt,
+  lt,
+  isNull,
+  lte,
+  type SQL,
+  inArray,
+} from "drizzle-orm";
 import { orderItems, orders } from "../schemas";
 
 export class ProductService implements IProductService {
@@ -56,177 +70,41 @@ export class ProductService implements IProductService {
   }
 
   /**
-   * Dynamically constructs SQL filters for the product catalog query.
-   * Handles cursor-based pagination, category filtering, search, and specification filters.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private buildGetAllFilters(options?: TGetAllOptions): any[] {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const andFilters: any[] = [];
-    const sort = options?.sort ?? "newest";
-
-    // Cursor pagination (after): Fetch elements following the specified key.
-    // For sorting options (like price), we use a composite cursor "${value}_${id}" to guarantee
-    // a unique, stable order even when multiple products share the exact same price.
-    if (options?.after) {
-      if (sort === "price_asc") {
-        const [p, id] = options.after.split("_");
-        if (p && id) {
-          andFilters.push(
-            sql`(${products.price})::numeric > ${p}::numeric OR ((${products.price})::numeric = ${p}::numeric AND ${products.id} > ${id})`,
-          );
-        }
-      } else if (sort === "price_desc") {
-        const [p, id] = options.after.split("_");
-        if (p && id) {
-          andFilters.push(
-            sql`(${products.price})::numeric < ${p}::numeric OR ((${products.price})::numeric = ${p}::numeric AND ${products.id} > ${id})`,
-          );
-        }
-      } else {
-        andFilters.push({ createdAt: { lt: new Date(options.after) } });
-      }
-    }
-
-    // Cursor pagination (before): Fetch preceding elements when scrolling backwards.
-    // Reverses inequality direction compared to "after" cursor to traverse the database index in reverse.
-    if (options?.before) {
-      if (sort === "price_asc") {
-        const [p, id] = options.before.split("_");
-        if (p && id) {
-          andFilters.push(
-            sql`(${products.price})::numeric < ${p}::numeric OR ((${products.price})::numeric = ${p}::numeric AND ${products.id} < ${id})`,
-          );
-        }
-      } else if (sort === "price_desc") {
-        const [p, id] = options.before.split("_");
-        if (p && id) {
-          andFilters.push(
-            sql`(${products.price})::numeric > ${p}::numeric OR ((${products.price})::numeric = ${p}::numeric AND ${products.id} < ${id})`,
-          );
-        }
-      } else {
-        andFilters.push({ createdAt: { gt: new Date(options.before) } });
-      }
-    }
-
-    // Multi-category filtering: Matches products belonging to any of the specified category IDs (e.g., subcategories).
-    if (options?.categoryIds && options.categoryIds.length > 0) {
-      andFilters.push(inArray(products.categoryId, options.categoryIds));
-    } else if (options?.categoryId) {
-      andFilters.push({ categoryId: { eq: options.categoryId } });
-    }
-
-    if (options?.brandIds && options.brandIds.length > 0) {
-      andFilters.push(inArray(products.brandId, options.brandIds));
-    } else if (options?.brandId) {
-      andFilters.push({ brandId: { eq: options.brandId } });
-    }
-    if (options?.isQuoteOnly) andFilters.push({ isQuoteOnly: { eq: true } });
-
-    // Full-text search: Checks matching names or model names inside the specs JSONB field.
-    if (options?.search) {
-      andFilters.push({
-        OR: [
-          { name: { ilike: `%${options.search}%` } },
-          {
-            RAW: (table: TProduct) =>
-              sql`${table.specs}->>'model' ILIKE ${`%${options.search}%`}`,
-          },
-        ],
-      });
-    }
-
-    andFilters.push({ deletedAt: { isNull: true } });
-
-    if (options?.status === "active")
-      andFilters.push({ totalStockCache: { gt: 0 } });
-    if (options?.status === "outOfStock")
-      andFilters.push({ totalStockCache: { lte: 0 } });
-
-    // Specifications filtering (stored in JSONB field):
-    // For numeric values (voltage, minPower, maxPower), we cast string values inside JSONB to numeric.
-    // A regex validation guard (`~ '^\s*\d+(\.\d+)?\s*$'`) is required before casting to prevent
-    // query compilation errors when a product has non-numeric characters in its specification values.
-    if (options?.fuelType) {
-      andFilters.push({
-        RAW: (table: TProduct) =>
-          sql`${table.specs}->>'fuelType' = ${options.fuelType}`,
-      });
-    }
-    if (options?.phase) {
-      andFilters.push({
-        RAW: (table: TProduct) =>
-          sql`${table.specs}->>'phase' = ${options.phase}`,
-      });
-    }
-    if (options?.voltage !== undefined) {
-      andFilters.push({
-        RAW: (table: TProduct) =>
-          sql`CASE WHEN ${table.specs}->>'voltage' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'voltage')::numeric ELSE NULL END = ${options.voltage}`,
-      });
-    }
-    if (options?.minPower !== undefined) {
-      andFilters.push({
-        RAW: (table: TProduct) =>
-          sql`CASE WHEN ${table.specs}->>'power' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'power')::numeric ELSE NULL END >= ${options.minPower}`,
-      });
-    }
-    if (options?.maxPower !== undefined) {
-      andFilters.push({
-        RAW: (table: TProduct) =>
-          sql`CASE WHEN ${table.specs}->>'power' ~ '^\\s*\\d+(\\.\\d+)?\\s*$' THEN (${table.specs}->>'power')::numeric ELSE NULL END <= ${options.maxPower}`,
-      });
-    }
-    if (options?.engineBrand) {
-      andFilters.push({
-        RAW: (table: TProduct) =>
-          sql`${table.specs}->>'engineBrand' ILIKE ${`%${options.engineBrand}%`}`,
-      });
-    }
-    if (options?.alternatorBrand) {
-      andFilters.push({
-        RAW: (table: TProduct) =>
-          sql`${table.specs}->>'alternatorBrand' ILIKE ${`%${options.alternatorBrand}%`}`,
-      });
-    }
-
-    return andFilters;
-  }
-
-  /**
    * Fetches products page based on filters, sorting, and cursor pagination.
    * Uses limit+1 to check if there is an additional page available.
    */
   async getAll(limit = 20, options?: TGetAllOptions) {
     const sort = options?.sort ?? "newest";
     const isGoingBack = !!options?.before;
-    const andFilters = this.buildGetAllFilters(options);
-    // If scrolling backwards (before cursor), we reverse the ORDER BY direction in DB
-    // to fetch the immediately preceding elements, then reverse the array back to correct order in JS memory.
+    const filters = this.buildGetAllFilters(options);
 
-    const allProducts = await this.db.query.products.findMany({
-      orderBy: (t, { asc, desc }) => {
-        if (sort === "price_asc") {
-          return isGoingBack
-            ? [desc(t.price), desc(t.id)]
-            : [asc(t.price), asc(t.id)];
-        }
-        if (sort === "price_desc") {
-          return isGoingBack
-            ? [asc(t.price), asc(t.id)]
-            : [desc(t.price), desc(t.id)];
-        }
-        return isGoingBack
-          ? [asc(t.createdAt), asc(t.id)]
-          : [desc(t.createdAt), desc(t.id)];
-      },
-      limit: limit + 1, // Fetch one extra to determine if there is a next page
-      where: andFilters.length > 0 ? { AND: andFilters } : undefined,
-      with: {
-        categories: true,
-      },
-    });
+    // Build dynamic orderBy columns (using direct column references)
+    let orderByColumns;
+    if (sort === "price_asc") {
+      orderByColumns = isGoingBack
+        ? [desc(products.price), desc(products.id)]
+        : [asc(products.price), asc(products.id)];
+    } else if (sort === "price_desc") {
+      orderByColumns = isGoingBack
+        ? [asc(products.price), asc(products.id)]
+        : [desc(products.price), desc(products.id)];
+    } else {
+      orderByColumns = isGoingBack
+        ? [asc(products.createdAt), asc(products.id)]
+        : [desc(products.createdAt), desc(products.id)];
+    }
+
+    // Use the standard query builder (not the relational one) to support complex
+    // where conditions (inArray, raw SQL for JSONB specs, etc.) without triggering
+    // "Unknown relational filter field" errors from relationsFilterToSQL in Drizzle v1.
+    const whereExpr = filters.length > 0 ? and(...filters) : undefined;
+
+    const allProducts = await this.db
+      .select()
+      .from(products)
+      .where(whereExpr)
+      .orderBy(...orderByColumns)
+      .limit(limit + 1);
 
     const hasMore = allProducts.length > limit;
     let data = hasMore ? allProducts.slice(0, -1) : allProducts;
@@ -267,6 +145,7 @@ export class ProductService implements IProductService {
 
     return { data, hasMore, nextCursor, prevCursor };
   }
+
   async getTopSellingProducts(limit: number): Promise<ITopSellingProduct[]> {
     const result = await this.db
       .select({
@@ -296,5 +175,132 @@ export class ProductService implements IProductService {
       price: r.price,
       image: r.images[0] ?? null,
     }));
+  }
+
+  /**
+   * Dynamically constructs SQL filters for the product catalog query.
+   * Handles cursor-based pagination, category filtering, search, and specification filters.
+   */
+  private buildGetAllFilters(options?: TGetAllOptions): SQL[] {
+    const sort = options?.sort ?? "newest";
+
+    const rawFilters = [
+      this.buildCursorCondition(sort, options?.after),
+      this.buildCursorCondition(sort, undefined, options?.before),
+      this.buildStatusFilter(options?.status),
+      this.buildCategoryFilter(options?.categoryId, options?.categoryIds),
+      this.buildBrandFilter(options?.brandId, options?.brandIds),
+      this.buildQuoteOnlyFilter(options?.isQuoteOnly),
+      options?.search
+        ? or(
+            this.buildSpecLikeFilter("model", options.search),
+            sql`${products.name} ILIKE ${`%${options.search}%`}`,
+          )
+        : undefined,
+      isNull(products.deletedAt),
+      this.buildSpecCondition("fuelType", options?.fuelType),
+      this.buildSpecCondition("phase", options?.phase),
+      this.buildSpecCondition("voltage", options?.voltage),
+      this.buildMinMaxPower(options?.minPower),
+      this.buildMinMaxPower(undefined, options?.maxPower),
+      this.buildSpecLikeFilter("engineBrand", options?.engineBrand),
+      this.buildSpecLikeFilter("alternatorBrand", options?.alternatorBrand),
+    ];
+
+    return rawFilters.filter((f): f is SQL => f !== undefined);
+  }
+
+  private buildCursorCondition(
+    sort: TGetAllOptions["sort"],
+    after?: string,
+    before?: string,
+  ) {
+    const cursor = after ?? before;
+    if (!cursor) return undefined;
+
+    if (sort !== "price_asc" && sort !== "price_desc")
+      return after
+        ? lt(products.createdAt, new Date(after))
+        : gt(products.createdAt, new Date(before!));
+
+    const [p, id] = cursor.split("_");
+    if (!p || !id) return undefined;
+
+    const priceNum = sql`${products.price}::numeric`;
+    const pNum = sql`${p}::numeric`;
+
+    if (sort === "price_asc") {
+      return after
+        ? sql`${priceNum} > ${pNum} OR ${priceNum} = ${pNum} AND ${products.id} > ${id}`
+        : sql`${priceNum} < ${pNum} OR ${priceNum} = ${pNum} AND ${products.id} < ${id}`;
+    } else {
+      return after
+        ? sql`${priceNum} < ${pNum} OR ${priceNum} = ${pNum} AND ${products.id} > ${id}`
+        : sql`${priceNum} > ${pNum} OR ${priceNum} = ${pNum} AND ${products.id} < ${id}`;
+    }
+  }
+
+  private buildBrandFilter(brandId?: string, brandIds?: string[]) {
+    if (brandIds && brandIds.length > 0)
+      return inArray(products.brandId, brandIds);
+    if (brandId) return eq(products.brandId, brandId);
+    return undefined;
+  }
+
+  private buildCategoryFilter(categoryId?: string, categoryIds?: string[]) {
+    if (categoryIds && categoryIds.length > 0)
+      return inArray(products.categoryId, categoryIds);
+    if (categoryId) return eq(products.categoryId, categoryId);
+    return undefined;
+  }
+
+  private buildSpecCondition(key: string, value?: string | number) {
+    if (value === undefined || value === null) return undefined;
+
+    const column = products.specs;
+
+    if (["voltage"].includes(key))
+      return sql`${this.getNumericSpec(key)} = ${value}`;
+
+    // Các field string thông thường (fuelType, phase, engineBrand, alternatorBrand)
+    return sql`${column}->>${key} = ${value}`;
+  }
+
+  private buildMinMaxPower(minPower?: number, maxPower?: number) {
+    if (!minPower && !maxPower) return undefined;
+
+    const key = "power";
+    if (minPower)
+      return sql`${this.getNumericSpec(key)} >= ${minPower}
+      `;
+    if (maxPower)
+      return sql`${this.getNumericSpec(key)} <= ${maxPower}
+      `;
+  }
+
+  private buildStatusFilter(status?: "active" | "outOfStock") {
+    if (status === "active") return gt(products.totalStockCache, 0);
+    if (status === "outOfStock") return lte(products.totalStockCache, 0);
+    return undefined;
+  }
+
+  private buildQuoteOnlyFilter(isQuoteOnly?: boolean) {
+    if (!isQuoteOnly) return undefined;
+    return eq(products.isQuoteOnly, isQuoteOnly);
+  }
+
+  private buildSpecLikeFilter(key: string, value?: string) {
+    if (!value) return undefined;
+    return sql`${products.specs}->>${key} ILIKE ${`%${value}%`}`;
+  }
+
+  private getNumericSpec(key: string) {
+    return sql`
+      CASE
+        WHEN ${products.specs}->>${key} ~ '^\\s*\\d+(\\.\\d+)?\\s*$'
+          THEN (${products.specs}->>${key})::numeric
+          ELSE NULL
+      END
+    `;
   }
 }
