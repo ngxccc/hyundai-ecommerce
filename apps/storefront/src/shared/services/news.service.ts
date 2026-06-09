@@ -1,5 +1,5 @@
 import { fetchApi } from "@/shared/lib/api-client";
-import type { NewsArticle } from "@/shared/types/common";
+import type { NewsArticle } from "@nhatnang/types";
 
 const isProductionBuild =
   process.env["NEXT_PHASE"] === "phase-production-build";

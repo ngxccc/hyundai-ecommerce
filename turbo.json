@@ -39,6 +39,7 @@
     },
     "test": {
       "dependsOn": ["^build"],
+      "env": ["DOPPLER_TOKEN"],
       "outputs": [],
       "cache": true
     },

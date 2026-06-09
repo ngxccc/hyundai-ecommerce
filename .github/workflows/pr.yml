@@ -13,20 +13,6 @@ jobs:
   integration:
     name: Code Quality & Dry-run Build
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:18-alpine
-        env:
-          POSTGRES_USER: fake
-          POSTGRES_PASSWORD: fake
-          POSTGRES_DB: hyundai_ci
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     environment: Staging
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -40,11 +26,9 @@ jobs:
       - name: Setup Environment
         uses: ./.github/setup-environment
 
-      - name: Push Schema to Ephemeral DB
-        run: bun run --cwd packages/database db:push
-
-      - name: Seed CI Database
-        run: doppler run -- bun run --cwd packages/database scripts/seed.ts
+      - name: Migrate Test Database
+        working-directory: packages/database
+        run: bun run db:migrate
 
       - name: Run PR Pipeline (Lint, Test, Build)
         run: bun turbo run lint check-types test build

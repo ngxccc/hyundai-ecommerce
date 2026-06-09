@@ -1,28 +1,44 @@
-import { delay } from "@/shared/lib/utils";
-import { BUILD_TIME_PRODUCTS } from "@/shared/constants/products";
-import { NextResponse } from "next/server";
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
+import { productService } from "@nhatnang/database/services";
+import { NextResponse, type NextRequest } from "next/server";
 
 export const revalidate = 3600;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    // Mock data - Mốt thay cái này bằng logic: await db.products.findMany()
-    await delay(500);
+    const { searchParams } = new URL(request.url);
+    const limitParam = searchParams.get("limit");
+    const parsedLimit = limitParam ? Number(limitParam) : 100;
+    const limit =
+      Number.isFinite(parsedLimit) && parsedLimit > 0
+        ? Math.min(parsedLimit, 100)
+        : 100;
+    const categoryId = searchParams.get("categoryId") ?? undefined;
+    const brandId = searchParams.get("brandId") ?? undefined;
+    const search = searchParams.get("search") ?? undefined;
+
+    // Fetch products dynamically using ProductService
+    const { data: dbProducts } = await productService.getAll(limit, {
+      categoryId,
+      brandId,
+      search,
+    });
 
     return NextResponse.json(
       {
         status: true,
-        data: BUILD_TIME_PRODUCTS,
+        data: dbProducts,
       },
-      { status: 200 },
+      { status: HTTP_STATUS.OK },
     );
-  } catch {
+  } catch (error) {
+    console.error("Error fetching products in API route:", error);
     return NextResponse.json(
       {
         status: false,
         data: null,
       },
-      { status: 500 },
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
     );
   }
 }

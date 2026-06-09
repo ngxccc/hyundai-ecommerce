@@ -1,5 +1,5 @@
 import { fetchApi } from "../lib/api-client";
-import type { PromoCampaign } from "../types/common";
+import type { PromoCampaign } from "@nhatnang/types";
 
 const isProductionBuild =
   process.env["NEXT_PHASE"] === "phase-production-build";

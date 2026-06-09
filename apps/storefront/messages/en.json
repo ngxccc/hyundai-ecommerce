@@ -37,7 +37,10 @@
     "products": {
       "title": "Hyundai Series",
       "subtitle": "Best Selling Units",
-      "buy_now_cta": "Buy Now"
+      "buy_now_cta": "Buy Now",
+      "model": "Model",
+      "contact_price": "Contact",
+      "request_quote_cta": "Request Quote"
     },
     "news": {
       "title": "TECHNICAL INSIGHTS",
@@ -219,6 +222,35 @@
     "rateLimitExceeded": "Rate limit exceeded. Please wait before trying again.",
     "validation": {
       "slugExists": "Slug already exists"
+    }
+  },
+  "ProductDetails": {
+    "contact_for_quote": "Contact for Quote",
+    "detailed_specs": "Detailed Specifications",
+    "specs": {
+      "model": "Model",
+      "power": "Power (kW)",
+      "voltage": "Voltage (V)",
+      "frequency": "Frequency (Hz)",
+      "phase": "Phase",
+      "fuelType": "Fuel Type",
+      "warranty": "Warranty (months)",
+      "weight": "Weight (kg)",
+      "engineBrand": "Engine",
+      "startingSystem": "Starting",
+      "coolingSystem": "Cooling",
+      "fuelConsumption": "Consumption (L/h)",
+      "fuelTankCapacity": "Fuel Tank (L)",
+      "alternatorBrand": "Alternator"
+    },
+    "fuelTypes": {
+      "gasoline": "Gasoline",
+      "diesel": "Diesel",
+      "gas": "Gas"
+    },
+    "phases": {
+      "1phase": "1 Phase",
+      "3phase": "3 Phase"
     }
   }
 }

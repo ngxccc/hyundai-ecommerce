@@ -2,7 +2,7 @@
 
 **Date**: 08-06-26  
 **Complexity**: Simple  
-**Status**: ⏳ PLANNED
+**Status**: ✅ CODE DONE
 
 ## Overview
 
@@ -14,8 +14,8 @@ This phase conforms to the coding and indexing guidelines in `process/context/al
 
 ## Phase Completion Rules
 
-* Complete when all product and category API routes fetch directly from the database services.
-* Type checks and tests pass with 100% success rate.
+- Complete when all product and category API routes fetch directly from the database services.
+- Type checks and tests pass with 100% success rate.
 
 ---
 
@@ -29,9 +29,9 @@ This phase conforms to the coding and indexing guidelines in `process/context/al
 
 ## Implementation Checklist
 
-- [ ] Import `ProductService` and replace static mock array in `/api/products`.
-- [ ] Import `CategoryService` and replace static mock array in `/api/categories`.
-- [ ] Verify query filtering support for category classification.
+- [x] Import `ProductService` and replace static mock array in `/api/products`.
+- [x] Import `CategoryService` and replace static mock array in `/api/categories`.
+- [x] Verify query filtering support for category classification.
 
 ---
 
@@ -66,8 +66,8 @@ This phase conforms to the coding and indexing guidelines in `process/context/al
 
 ## Resume and Execution Handoff
 
-* Identify current mock endpoints under `apps/storefront/app/api/`.
-* Swap the mock imports for database service functions.
-* Verify tests pass.
+- Identify current mock endpoints under `apps/storefront/app/api/`.
+- Swap the mock imports for database service functions.
+- Verify tests pass.
 
 Next Step: ENTER EXECUTE MODE on storefront-phase-1-api-migration_PLAN_08-06-26.md.

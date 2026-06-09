@@ -1,5 +1,5 @@
 import { delay } from "@/shared/lib/utils";
-import type { NewsArticle } from "@/shared/types/common";
+import type { NewsArticle } from "@nhatnang/types";
 import { NextResponse } from "next/server";
 
 export const revalidate = 3600;

@@ -37,7 +37,10 @@
     "products": {
       "title": "Dòng Hyundai",
       "subtitle": "Đơn vị bán chạy nhất",
-      "buy_now_cta": "Mua ngay"
+      "buy_now_cta": "Mua ngay",
+      "model": "Model",
+      "contact_price": "Liên hệ",
+      "request_quote_cta": "Yêu cầu báo giá"
     },
     "news": {
       "title": "HIỂU BIẾT KỸ THUẬT",
@@ -218,6 +221,35 @@
     "rateLimitExceeded": "Vượt quá giới hạn lượt yêu cầu. Vui lòng đợi trước khi thử lại.",
     "validation": {
       "slugExists": "Đường dẫn đã tồn tại"
+    }
+  },
+  "ProductDetails": {
+    "contact_for_quote": "Liên hệ báo giá",
+    "detailed_specs": "Thông số kỹ thuật chi tiết",
+    "specs": {
+      "model": "Model",
+      "power": "Công suất (kW)",
+      "voltage": "Điện áp (V)",
+      "frequency": "Tần số (Hz)",
+      "phase": "Số pha",
+      "fuelType": "Nhiên liệu",
+      "warranty": "Bảo hành (tháng)",
+      "weight": "Trọng lượng (kg)",
+      "engineBrand": "Động cơ",
+      "startingSystem": "Khởi động",
+      "coolingSystem": "Làm mát",
+      "fuelConsumption": "Tiêu hao (L/h)",
+      "fuelTankCapacity": "Bình nhiên liệu (L)",
+      "alternatorBrand": "Đầu phát"
+    },
+    "fuelTypes": {
+      "gasoline": "Xăng",
+      "diesel": "Diesel",
+      "gas": "Gas"
+    },
+    "phases": {
+      "1phase": "1 Pha",
+      "3phase": "3 Pha"
     }
   }
 }
