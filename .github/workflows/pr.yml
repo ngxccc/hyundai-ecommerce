@@ -29,8 +29,5 @@ jobs:
       - name: Migrate Test Database
         run: bun run --cwd packages/database db:migrate
 
-      - name: Seed CI Database
-        run: doppler run -- bun run --cwd packages/database scripts/seed.ts
-
       - name: Run PR Pipeline (Lint, Test, Build)
-        run: doppler run -- bun turbo run lint check-types test build
+        run: bun turbo run lint check-types test build
