@@ -1,0 +1,43 @@
+name: Security Scan (Trivy)
+
+on:
+  schedule:
+    # Chạy vào 02:00 UTC mỗi thứ 2 (weekly)
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+
+permissions:
+  security-events: write
+  contents: read
+
+jobs:
+  trivy-scan:
+    name: Trivy Filesystem Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.29.0
+        with:
+          scan-type: 'fs'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          scanners: 'vuln,config,secret'
+          ignore-unfixed: true
+          exit-code: '1'
+          cache: 'true'
+
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Fail on critical vulnerabilities
+        if: failure()
+        run: |
+          echo "::error::Trivy found CRITICAL or HIGH vulnerabilities. Please check the Security tab."
+          exit 1
