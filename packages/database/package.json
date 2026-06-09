@@ -21,7 +21,7 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "db:generate": "doppler run -- drizzle-kit generate --config drizzle.config.ts",
-    "db:migrate": "doppler run -- drizzle-kit migrate --config drizzle.config.ts",
+    "db:migrate": "[ -n \"$DATABASE_URL\" ] && drizzle-kit migrate --config drizzle.config.ts || doppler run -- drizzle-kit migrate --config drizzle.config.ts",
     "db:push": "doppler run -- drizzle-kit push --config drizzle.config.ts",
     "db:seed": "doppler run -c dev -- scripts/seed.ts",
     "db:seed:test": "doppler run -c stg -- scripts/seed.ts",
@@ -34,7 +34,7 @@
     "docs:gen": "bun run scripts/generate-docs.ts",
     "lint": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
-    "test": "bun test src/"
+    "test": "[ -n \"$DATABASE_URL\" ] && bun test src/ || doppler run -- bun test src/"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.11",

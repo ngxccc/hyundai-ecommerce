@@ -1,8 +1,6 @@
 import { expect, test, describe, beforeAll, afterAll } from "bun:test";
 import { Pool as NeonPool } from "@neondatabase/serverless";
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
-import { drizzle as drizzlePg } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
 import { env } from "../env";
 import * as schema from "../schemas";
 import { OrderService } from "./order.service";
@@ -25,22 +23,12 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
 
   beforeAll(async () => {
     // 1. Initialize a fresh, unmocked connection matching client.ts environment
-    const isCI = process.env["CI"] !== undefined;
-    if (!isCI) {
-      const pool = new NeonPool({ connectionString: env.DATABASE_URL });
-      integrationDb = drizzleNeon({
-        client: pool,
-        relations: schema.schemaRelations,
-        jit: true,
-      });
-    } else {
-      const queryClient = postgres(env.DATABASE_URL);
-      integrationDb = drizzlePg({
-        client: queryClient,
-        relations: schema.schemaRelations,
-        jit: true,
-      }) as unknown as IDatabase;
-    }
+    const pool = new NeonPool({ connectionString: env.DATABASE_URL });
+    integrationDb = drizzleNeon({
+      client: pool,
+      relations: schema.schemaRelations,
+      jit: true,
+    });
 
     orderService = new OrderService(integrationDb);
 
