@@ -1,13 +1,18 @@
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { categoryService } from "@nhatnang/database/services";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 export const revalidate = 3600;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const getTree = searchParams.get("tree") === "true";
+
     // Fetch categories using CategoryService
-    const dbCategories = await categoryService.getAll();
+    const dbCategories = getTree
+      ? await categoryService.getCategoryTree()
+      : await categoryService.getAll();
 
     return NextResponse.json(
       {

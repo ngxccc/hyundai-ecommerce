@@ -88,12 +88,18 @@ export interface IBrandService {
 }
 
 // --- Category Service Interfaces ---
+export type TCategoryWithChildren = TCategory & {
+  children?: TCategoryWithChildren[];
+};
+
 export interface ICategoryService {
   getAll(): Promise<TCategory[]>;
   getById(id: string): Promise<TCategory | undefined>;
   create(input: TCreateCategoryInput): Promise<TCategory>;
   update(input: TUpdateCategoryInput): Promise<TCategory>;
   delete(id: string): Promise<boolean>;
+  getCategoryTree(): Promise<TCategoryWithChildren[]>;
+  getCategoryDescendants(parentId: string): Promise<string[]>;
 }
 
 // --- Product Service Interfaces ---
@@ -101,15 +107,42 @@ export type TUpdateProductData = Partial<{
   [K in keyof TNewProduct]: TNewProduct[K] | undefined;
 }>;
 
+export interface TGetAllOptions {
+  after?: string | undefined;
+  before?: string | undefined;
+  categoryId?: string | undefined;
+  categoryIds?: string[] | undefined;
+  brandId?: string | undefined;
+  brandIds?: string[] | undefined;
+  status?: string | undefined;
+  search?: string | undefined;
+  fuelType?: string | undefined;
+  phase?: string | undefined;
+  voltage?: number | undefined;
+  minPower?: number | undefined;
+  maxPower?: number | undefined;
+  engineBrand?: string | undefined;
+  alternatorBrand?: string | undefined;
+  isQuoteOnly?: boolean | undefined;
+  sort?: "price_asc" | "price_desc" | "newest" | undefined;
+}
+
 export interface IProductService {
   create(data: TNewProduct): Promise<TProduct | undefined>;
   update(id: string, data: TUpdateProductData): Promise<TProduct | undefined>;
   delete(id: string): Promise<boolean>;
   getById(id: string): Promise<TProduct | undefined>;
-  getAll(limit?: number, cursor?: { after?: string; before?: string }): unknown;
+  getAll(
+    limit?: number,
+    options?: TGetAllOptions,
+  ): Promise<{
+    data: TProduct[];
+    hasMore: boolean;
+    nextCursor?: string | undefined;
+    prevCursor?: string | undefined;
+  }>;
   getTopSellingProducts(limit: number): Promise<ITopSellingProduct[]>;
 }
-
 // --- Warehouse Service Interfaces ---
 export interface IWarehouseService {
   getAll(): Promise<TWarehouse[]>;

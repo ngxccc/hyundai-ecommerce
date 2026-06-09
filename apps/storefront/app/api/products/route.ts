@@ -1,5 +1,6 @@
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
-import { productService } from "@nhatnang/database/services";
+import { productService, categoryService } from "@nhatnang/database/services";
+import type { TGetAllOptions } from "@nhatnang/database/services";
 import { NextResponse, type NextRequest } from "next/server";
 
 export const revalidate = 3600;
@@ -13,21 +14,66 @@ export async function GET(request: NextRequest) {
       Number.isFinite(parsedLimit) && parsedLimit > 0
         ? Math.min(parsedLimit, 100)
         : 100;
-    const categoryId = searchParams.get("categoryId") ?? undefined;
-    const brandId = searchParams.get("brandId") ?? undefined;
-    const search = searchParams.get("search") ?? undefined;
+    const categorySlug = searchParams.get("category") ?? undefined;
+    const brandParam = searchParams.get("brand") ?? undefined;
+    const search = searchParams.get("q") ?? undefined;
+    const sort =
+      (searchParams.get("sort") as TGetAllOptions["sort"]) ?? undefined;
+    const after = searchParams.get("after") ?? undefined;
+    const before = searchParams.get("before") ?? undefined;
+
+    const fuelType = searchParams.get("fuelType") ?? undefined;
+    const phase = searchParams.get("phase") ?? undefined;
+    const voltageParam = searchParams.get("voltage");
+    const voltage = voltageParam ? Number(voltageParam) : undefined;
+    const minPowerParam = searchParams.get("minPower");
+    const minPower = minPowerParam ? Number(minPowerParam) : undefined;
+    const maxPowerParam = searchParams.get("maxPower");
+    const maxPower = maxPowerParam ? Number(maxPowerParam) : undefined;
+    const engineBrand = searchParams.get("engineBrand") ?? undefined;
+    const alternatorBrand = searchParams.get("alternatorBrand") ?? undefined;
+    const isQuoteOnlyParam = searchParams.get("isQuoteOnly");
+    const isQuoteOnly = isQuoteOnlyParam === "true" ? true : undefined;
+
+    // Resolve categoryIds if category slug is provided
+    let categoryIds: string[] | undefined;
+    if (categorySlug) {
+      const categoriesList = await categoryService.getAll();
+      const targetCategory = categoriesList.find(
+        (cat) => cat.slug === categorySlug,
+      );
+      if (targetCategory) {
+        categoryIds = await categoryService.getCategoryDescendants(
+          targetCategory.id,
+        );
+      }
+    }
+
+    // Brand filters
+    const brandIds = brandParam ? brandParam.split(",") : undefined;
 
     // Fetch products dynamically using ProductService
-    const { data: dbProducts } = await productService.getAll(limit, {
-      categoryId,
-      brandId,
+    const resData = await productService.getAll(limit, {
+      categoryIds,
+      brandIds,
       search,
+      sort,
+      after,
+      before,
+      fuelType,
+      phase,
+      voltage,
+      minPower,
+      maxPower,
+      engineBrand,
+      alternatorBrand,
+      isQuoteOnly,
     });
 
     return NextResponse.json(
       {
         status: true,
-        data: dbProducts,
+        data: resData,
       },
       { status: HTTP_STATUS.OK },
     );

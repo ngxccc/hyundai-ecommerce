@@ -20,6 +20,7 @@
 - In utility or helper layers, prefer result objects over throwing when the local repo pattern expects recoverable errors.
 - Handle edge cases and error paths deliberately.
 - Prioritize readable, maintainable code over clever abstractions.
+- Always write comments in English to explain complex, confusing, or non-obvious logic (e.g., database query performance tricks, composite cursors, dynamic tree building, recursion, regex filters, transaction blocks).
 
 ## Function & React Component Standards
 

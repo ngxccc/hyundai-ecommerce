@@ -2,6 +2,7 @@ import type {
   IProductService,
   TUpdateProductData,
   ITopSellingProduct,
+  TGetAllOptions,
 } from "./interfaces";
 import {
   products,
@@ -9,25 +10,8 @@ import {
   type TNewProduct,
 } from "../schemas/product.schema";
 import { type IDatabase } from "../client";
-import { eq, ne, sql, desc } from "drizzle-orm";
+import { eq, ne, sql, desc, inArray } from "drizzle-orm";
 import { orderItems, orders } from "../schemas";
-
-export interface TGetAllOptions {
-  after?: string | undefined;
-  before?: string | undefined;
-  categoryId?: string | undefined;
-  brandId?: string | undefined;
-  status?: string | undefined;
-  search?: string | undefined;
-  fuelType?: string | undefined;
-  phase?: string | undefined;
-  voltage?: number | undefined;
-  minPower?: number | undefined;
-  maxPower?: number | undefined;
-  engineBrand?: string | undefined;
-  alternatorBrand?: string | undefined;
-  isQuoteOnly?: boolean | undefined;
-}
 
 export class ProductService implements IProductService {
   constructor(protected readonly db: IDatabase) {}
@@ -71,19 +55,76 @@ export class ProductService implements IProductService {
     return product;
   }
 
+  /**
+   * Dynamically constructs SQL filters for the product catalog query.
+   * Handles cursor-based pagination, category filtering, search, and specification filters.
+   */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private buildGetAllFilters(options?: TGetAllOptions): any[] {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const andFilters: any[] = [];
+    const sort = options?.sort ?? "newest";
 
-    if (options?.after)
-      andFilters.push({ createdAt: { lt: new Date(options.after) } });
-    if (options?.before)
-      andFilters.push({ createdAt: { gt: new Date(options.before) } });
-    if (options?.categoryId)
+    // Cursor pagination (after): Fetch elements following the specified key.
+    // For sorting options (like price), we use a composite cursor "${value}_${id}" to guarantee
+    // a unique, stable order even when multiple products share the exact same price.
+    if (options?.after) {
+      if (sort === "price_asc") {
+        const [p, id] = options.after.split("_");
+        if (p && id) {
+          andFilters.push(
+            sql`(${products.price})::numeric > ${p}::numeric OR ((${products.price})::numeric = ${p}::numeric AND ${products.id} > ${id})`,
+          );
+        }
+      } else if (sort === "price_desc") {
+        const [p, id] = options.after.split("_");
+        if (p && id) {
+          andFilters.push(
+            sql`(${products.price})::numeric < ${p}::numeric OR ((${products.price})::numeric = ${p}::numeric AND ${products.id} > ${id})`,
+          );
+        }
+      } else {
+        andFilters.push({ createdAt: { lt: new Date(options.after) } });
+      }
+    }
+
+    // Cursor pagination (before): Fetch preceding elements when scrolling backwards.
+    // Reverses inequality direction compared to "after" cursor to traverse the database index in reverse.
+    if (options?.before) {
+      if (sort === "price_asc") {
+        const [p, id] = options.before.split("_");
+        if (p && id) {
+          andFilters.push(
+            sql`(${products.price})::numeric < ${p}::numeric OR ((${products.price})::numeric = ${p}::numeric AND ${products.id} < ${id})`,
+          );
+        }
+      } else if (sort === "price_desc") {
+        const [p, id] = options.before.split("_");
+        if (p && id) {
+          andFilters.push(
+            sql`(${products.price})::numeric > ${p}::numeric OR ((${products.price})::numeric = ${p}::numeric AND ${products.id} < ${id})`,
+          );
+        }
+      } else {
+        andFilters.push({ createdAt: { gt: new Date(options.before) } });
+      }
+    }
+
+    // Multi-category filtering: Matches products belonging to any of the specified category IDs (e.g., subcategories).
+    if (options?.categoryIds && options.categoryIds.length > 0) {
+      andFilters.push(inArray(products.categoryId, options.categoryIds));
+    } else if (options?.categoryId) {
       andFilters.push({ categoryId: { eq: options.categoryId } });
-    if (options?.brandId) andFilters.push({ brandId: { eq: options.brandId } });
+    }
+
+    if (options?.brandIds && options.brandIds.length > 0) {
+      andFilters.push(inArray(products.brandId, options.brandIds));
+    } else if (options?.brandId) {
+      andFilters.push({ brandId: { eq: options.brandId } });
+    }
     if (options?.isQuoteOnly) andFilters.push({ isQuoteOnly: { eq: true } });
+
+    // Full-text search: Checks matching names or model names inside the specs JSONB field.
     if (options?.search) {
       andFilters.push({
         OR: [
@@ -103,6 +144,10 @@ export class ProductService implements IProductService {
     if (options?.status === "outOfStock")
       andFilters.push({ totalStockCache: { lte: 0 } });
 
+    // Specifications filtering (stored in JSONB field):
+    // For numeric values (voltage, minPower, maxPower), we cast string values inside JSONB to numeric.
+    // A regex validation guard (`~ '^\s*\d+(\.\d+)?\s*$'`) is required before casting to prevent
+    // query compilation errors when a product has non-numeric characters in its specification values.
     if (options?.fuelType) {
       andFilters.push({
         RAW: (table: TProduct) =>
@@ -149,13 +194,33 @@ export class ProductService implements IProductService {
     return andFilters;
   }
 
+  /**
+   * Fetches products page based on filters, sorting, and cursor pagination.
+   * Uses limit+1 to check if there is an additional page available.
+   */
   async getAll(limit = 20, options?: TGetAllOptions) {
+    const sort = options?.sort ?? "newest";
     const isGoingBack = !!options?.before;
     const andFilters = this.buildGetAllFilters(options);
+    // If scrolling backwards (before cursor), we reverse the ORDER BY direction in DB
+    // to fetch the immediately preceding elements, then reverse the array back to correct order in JS memory.
 
     const allProducts = await this.db.query.products.findMany({
-      orderBy: (products, { asc, desc }) =>
-        isGoingBack ? [asc(products.createdAt)] : [desc(products.createdAt)],
+      orderBy: (t, { asc, desc }) => {
+        if (sort === "price_asc") {
+          return isGoingBack
+            ? [desc(t.price), desc(t.id)]
+            : [asc(t.price), asc(t.id)];
+        }
+        if (sort === "price_desc") {
+          return isGoingBack
+            ? [asc(t.price), asc(t.id)]
+            : [desc(t.price), desc(t.id)];
+        }
+        return isGoingBack
+          ? [asc(t.createdAt), asc(t.id)]
+          : [desc(t.createdAt), desc(t.id)];
+      },
       limit: limit + 1, // Fetch one extra to determine if there is a next page
       where: andFilters.length > 0 ? { AND: andFilters } : undefined,
       with: {
@@ -170,17 +235,37 @@ export class ProductService implements IProductService {
       data = data.reverse();
     }
 
-    const nextCursor =
-      (!isGoingBack && hasMore) || (isGoingBack && options?.before)
-        ? data[data.length - 1]?.createdAt?.toISOString()
-        : undefined;
+    let nextCursor: string | undefined;
+    let prevCursor: string | undefined;
 
-    const prevCursor =
-      (isGoingBack && hasMore) || (!isGoingBack && options?.after)
-        ? data[0]?.createdAt?.toISOString()
-        : undefined;
+    if (data.length > 0) {
+      const lastItem = data[data.length - 1];
+      const firstItem = data[0];
 
-    return { data, nextCursor, prevCursor };
+      if (lastItem && firstItem) {
+        if (sort === "price_asc" || sort === "price_desc") {
+          nextCursor =
+            (!isGoingBack && hasMore) || (isGoingBack && options?.before)
+              ? `${lastItem.price}_${lastItem.id}`
+              : undefined;
+          prevCursor =
+            (isGoingBack && hasMore) || (!isGoingBack && options?.after)
+              ? `${firstItem.price}_${firstItem.id}`
+              : undefined;
+        } else {
+          nextCursor =
+            (!isGoingBack && hasMore) || (isGoingBack && options?.before)
+              ? lastItem.createdAt?.toISOString()
+              : undefined;
+          prevCursor =
+            (isGoingBack && hasMore) || (!isGoingBack && options?.after)
+              ? firstItem.createdAt?.toISOString()
+              : undefined;
+        }
+      }
+    }
+
+    return { data, hasMore, nextCursor, prevCursor };
   }
   async getTopSellingProducts(limit: number): Promise<ITopSellingProduct[]> {
     const result = await this.db

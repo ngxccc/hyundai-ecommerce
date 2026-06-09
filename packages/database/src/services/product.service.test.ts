@@ -6,6 +6,7 @@ import {
   mockReturning,
   mockValues,
   mockSelectResolvedValue,
+  mockFindMany,
 } from "../tests/utils/db-mock";
 import { ProductService } from "./product.service";
 import type { IDatabase } from "../client";
@@ -78,7 +79,7 @@ describe("ProductService", () => {
       expect.objectContaining({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         where: expect.anything(),
-      })
+      }),
     );
     expect(result).toEqual(mockProduct);
   });
@@ -130,6 +131,46 @@ describe("ProductService", () => {
         price: "8500000",
         image: null,
       });
+    });
+  });
+
+  describe("getAll()", () => {
+    test("should support price_asc sorting", async () => {
+      const mockProducts = [
+        {
+          id: "prod-1",
+          name: "Generator Low Price",
+          price: "1000",
+          createdAt: new Date(),
+          categories: null,
+        },
+      ] as unknown as Awaited<ReturnType<ProductService["getAll"]>>["data"];
+      mockFindMany.mockResolvedValueOnce(mockProducts);
+
+      const result = await productService.getAll(10, { sort: "price_asc" });
+
+      expect(mockFindMany).toHaveBeenCalledTimes(1);
+      expect(result.data).toEqual(mockProducts);
+    });
+
+    test("should support categoryIds array filter", async () => {
+      const mockProducts = [
+        {
+          id: "prod-2",
+          name: "Generator In Category",
+          price: "2000",
+          createdAt: new Date(),
+          categories: null,
+        },
+      ] as unknown as Awaited<ReturnType<ProductService["getAll"]>>["data"];
+      mockFindMany.mockResolvedValueOnce(mockProducts);
+
+      const result = await productService.getAll(10, {
+        categoryIds: ["cat-1", "cat-2"],
+      });
+
+      expect(mockFindMany).toHaveBeenCalledTimes(1);
+      expect(result.data).toEqual(mockProducts);
     });
   });
 });

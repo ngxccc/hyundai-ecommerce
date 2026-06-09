@@ -5,15 +5,23 @@ const isProductionBuild =
   process.env["NEXT_PHASE"] === "phase-production-build";
 
 export const categoryService = {
-  getCategories: async (): Promise<TCategory[]> => {
+  getCategories: async (options?: { tree?: boolean }): Promise<TCategory[]> => {
     if (isProductionBuild) {
       return [];
     }
 
     try {
-      return await fetchApi<TCategory[]>("/api/categories", {
-        next: { revalidate: 3600 },
-      });
+      const params = new URLSearchParams();
+      if (options?.tree) {
+        params.set("tree", "true");
+      }
+
+      return await fetchApi<TCategory[]>(
+        `/api/categories?${params.toString()}`,
+        {
+          next: { revalidate: 3600 },
+        },
+      );
     } catch (error) {
       console.error("Failed to fetch categories:", error);
       return [];

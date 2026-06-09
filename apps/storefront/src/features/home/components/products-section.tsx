@@ -39,9 +39,11 @@ const formatSpecs = (specs: TProduct["specs"]): string[] => {
 export async function ProductsSection() {
   const t = await getTranslations("HomePage.products");
 
-  const products = await productService.getProducts();
+  const { data: products } = await productService.getProducts();
 
-  if (!products.length) return null;
+  console.log(products);
+
+  if (!products?.length) return null;
 
   return (
     <section className="bg-background pt-14">

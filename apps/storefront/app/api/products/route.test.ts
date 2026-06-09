@@ -39,12 +39,15 @@ describe("GET /api/products", () => {
 
     const request = new NextRequest("http://localhost/api/products");
     const response = await GET(request);
-    const json = (await response.json()) as { success: boolean; data: unknown };
+    const json = (await response.json()) as {
+      status: boolean;
+      data: { data: typeof dbProducts };
+    };
 
     expect(response.status).toBe(HTTP_STATUS.OK);
-    expect(json.success).toBe(true);
-    expect(json.data as unknown[]).toHaveLength(1);
-    expect((json.data as unknown[])[0]).toEqual(dbProducts[0]);
+    expect(json.status).toBe(true);
+    expect(json.data.data).toHaveLength(1);
+    expect(json.data.data[0]).toEqual(dbProducts[0]);
   });
 
   it("handles errors gracefully", async () => {
@@ -52,10 +55,10 @@ describe("GET /api/products", () => {
 
     const request = new NextRequest("http://localhost/api/products");
     const response = await GET(request);
-    const json = (await response.json()) as { success: boolean; data: unknown };
+    const json = (await response.json()) as { status: boolean; data: unknown };
 
     expect(response.status).toBe(HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    expect(json.success).toBe(false);
+    expect(json.status).toBe(false);
     expect(json.data).toBeNull();
   });
 });

@@ -252,5 +252,32 @@
       "1phase": "1 Phase",
       "3phase": "3 Phase"
     }
+  },
+  "Catalog": {
+    "title": "Product Catalog",
+    "search_placeholder": "Search products...",
+    "no_products": "No products found matching your criteria.",
+    "sidebar": {
+      "filters": "Filters",
+      "categories": "Categories",
+      "brands": "Brands",
+      "power_range": "Power Range (kW)",
+      "fuel_type": "Fuel Type",
+      "phase": "Phase",
+      "voltage": "Voltage (V)",
+      "engine_brand": "Engine Brand",
+      "alternator_brand": "Alternator Brand",
+      "clear_all": "Clear All"
+    },
+    "sort": {
+      "label": "Sort by",
+      "newest": "Newest",
+      "price_asc": "Price: Low to High",
+      "price_desc": "Price: High to Low"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next"
+    }
   }
 }

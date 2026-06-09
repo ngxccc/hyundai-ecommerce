@@ -144,4 +144,84 @@ describe("CategoryService", () => {
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(result).toEqual(true);
   });
+
+  test("getCategoryTree() should return categories in a hierarchical structure", async () => {
+    const mockCategories = [
+      {
+        id: "1",
+        name: "Parent",
+        slug: "parent",
+        parentId: null,
+        description: null,
+        image: null,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: "2",
+        name: "Child",
+        slug: "child",
+        parentId: "1",
+        description: null,
+        image: null,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+
+    mockFindMany.mockResolvedValueOnce(mockCategories);
+
+    const result = await categoryService.getCategoryTree();
+
+    expect(result.length).toBe(1);
+    expect(result[0]!.id).toBe("1");
+    expect(result[0]!.children?.length).toBe(1);
+    expect(result[0]!.children?.[0]!.id).toBe("2");
+  });
+
+  test("getCategoryDescendants() should return all descendant IDs recursively", async () => {
+    const mockCategories = [
+      {
+        id: "1",
+        name: "Parent",
+        slug: "parent",
+        parentId: null,
+        description: null,
+        image: null,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: "2",
+        name: "Child 1",
+        slug: "child-1",
+        parentId: "1",
+        description: null,
+        image: null,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: "3",
+        name: "Child 2",
+        slug: "child-2",
+        parentId: "2",
+        description: null,
+        image: null,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ];
+
+    mockFindMany.mockResolvedValueOnce(mockCategories);
+
+    const result = await categoryService.getCategoryDescendants("1");
+
+    expect(result).toEqual(["1", "2", "3"]);
+  });
 });

@@ -251,5 +251,32 @@
       "1phase": "1 Pha",
       "3phase": "3 Pha"
     }
+  },
+  "Catalog": {
+    "title": "Danh mục sản phẩm",
+    "search_placeholder": "Tìm kiếm sản phẩm...",
+    "no_products": "Không tìm thấy sản phẩm nào phù hợp.",
+    "sidebar": {
+      "filters": "Bộ lọc",
+      "categories": "Danh mục",
+      "brands": "Thương hiệu",
+      "power_range": "Dải công suất (kW)",
+      "fuel_type": "Loại nhiên liệu",
+      "phase": "Số pha",
+      "voltage": "Điện áp (V)",
+      "engine_brand": "Thương hiệu động cơ",
+      "alternator_brand": "Thương hiệu đầu phát",
+      "clear_all": "Xoá bộ lọc"
+    },
+    "sort": {
+      "label": "Sắp xếp theo",
+      "newest": "Mới nhất",
+      "price_asc": "Giá: Thấp đến Cao",
+      "price_desc": "Giá: Cao đến Thấp"
+    },
+    "pagination": {
+      "previous": "Trang trước",
+      "next": "Trang sau"
+    }
   }
 }
