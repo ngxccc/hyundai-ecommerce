@@ -21,20 +21,18 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "db:generate": "doppler run -- drizzle-kit generate --config drizzle.config.ts",
-    "db:migrate": "[ -n \"$DATABASE_URL\" ] && drizzle-kit migrate --config drizzle.config.ts || doppler run -- drizzle-kit migrate --config drizzle.config.ts",
+    "db:migrate": "doppler run -- drizzle-kit migrate --config drizzle.config.ts",
     "db:push": "doppler run -- drizzle-kit push --config drizzle.config.ts",
     "db:seed": "doppler run -c dev -- scripts/seed.ts",
     "db:seed:test": "doppler run -c stg -- scripts/seed.ts",
     "db:migrate:prod": "doppler run -c prd -- drizzle-kit migrate --config drizzle.config.ts",
     "db:migrate:test": "doppler run -c stg -- drizzle-kit migrate --config drizzle.config.ts",
     "db:studio": "doppler run -- drizzle-kit studio --config drizzle.config.ts",
-    "db:baseline": "doppler run -- bun scripts/baseline.ts",
-    "db:baseline:prod": "doppler run -c prd -- bun scripts/baseline.ts",
-    "db:baseline:test": "doppler run -c stg -- bun scripts/baseline.ts",
+    "db:baseline": "doppler run -c dev -- bun scripts/baseline.ts && doppler run -c prd -- bun scripts/baseline.ts && doppler run -c stg -- bun scripts/baseline.ts",
     "docs:gen": "bun run scripts/generate-docs.ts",
     "lint": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
-    "test": "[ -n \"$DATABASE_URL\" ] && bun test src/ || doppler run -- bun test src/"
+    "test": "bun test src/"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.11",

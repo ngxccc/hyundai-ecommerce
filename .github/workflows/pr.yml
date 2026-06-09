@@ -27,7 +27,8 @@ jobs:
         uses: ./.github/setup-environment
 
       - name: Migrate Test Database
-        run: bun run --cwd packages/database db:migrate
+        working-directory: packages/database
+        run: bun run db:migrate
 
       - name: Run PR Pipeline (Lint, Test, Build)
-        run: doppler run -- bun turbo run lint check-types test build
+        run: bun turbo run lint check-types test build
