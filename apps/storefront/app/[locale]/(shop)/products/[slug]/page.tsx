@@ -1,19 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import type { TProduct } from "@nhatnang/database/schemas";
-
-const formatSpecs = (specs: TProduct["specs"]): string[] => {
-  if (!specs || typeof specs !== "object") return [];
-  const specsObj = specs as Record<
-    string,
-    string | number | boolean | null | undefined
-  >;
-  const specsArray: string[] = [];
-  if (specsObj["power"]) specsArray.push(`${String(specsObj["power"])}kW`);
-  if (typeof specsObj["fuelType"] === "string") {
-    specsArray.push(specsObj["fuelType"]);
-  }
-  return specsArray;
-};
 import { routing } from "@/i18n/routing";
 import { priceFormatter } from "@/shared/lib/utils";
 import { productService } from "@/shared/services";
@@ -28,6 +14,20 @@ interface ProductPageParams {
 }
 
 export const revalidate = 3600;
+
+const formatSpecs = (specs: TProduct["specs"]): string[] => {
+  if (!specs || typeof specs !== "object") return [];
+  const specsObj = specs as Record<
+    string,
+    string | number | boolean | null | undefined
+  >;
+  const specsArray: string[] = [];
+  if (specsObj["power"]) specsArray.push(`${String(specsObj["power"])}kW`);
+  if (typeof specsObj["fuelType"] === "string") {
+    specsArray.push(specsObj["fuelType"]);
+  }
+  return specsArray;
+};
 
 export async function generateStaticParams(): Promise<ProductPageParams[]> {
   const slugs = await productService.getStaticProductSlugs();

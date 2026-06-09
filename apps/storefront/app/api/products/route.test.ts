@@ -39,10 +39,10 @@ describe("GET /api/products", () => {
 
     const request = new NextRequest("http://localhost/api/products");
     const response = await GET(request);
-    const json = (await response.json()) as { status: boolean; data: unknown };
+    const json = (await response.json()) as { success: boolean; data: unknown };
 
     expect(response.status).toBe(HTTP_STATUS.OK);
-    expect(json.status).toBe(true);
+    expect(json.success).toBe(true);
     expect(json.data as unknown[]).toHaveLength(1);
     expect((json.data as unknown[])[0]).toEqual(dbProducts[0]);
   });
@@ -52,10 +52,10 @@ describe("GET /api/products", () => {
 
     const request = new NextRequest("http://localhost/api/products");
     const response = await GET(request);
-    const json = (await response.json()) as { status: boolean; data: unknown };
+    const json = (await response.json()) as { success: boolean; data: unknown };
 
     expect(response.status).toBe(HTTP_STATUS.INTERNAL_SERVER_ERROR);
-    expect(json.status).toBe(false);
+    expect(json.success).toBe(false);
     expect(json.data).toBeNull();
   });
 });

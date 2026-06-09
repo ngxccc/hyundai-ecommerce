@@ -7,7 +7,12 @@ export const revalidate = 3600;
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = Number(searchParams.get("limit")) || 100;
+    const limitParam = searchParams.get("limit");
+    const parsedLimit = limitParam ? Number(limitParam) : 100;
+    const limit =
+      Number.isFinite(parsedLimit) && parsedLimit > 0
+        ? Math.min(parsedLimit, 100)
+        : 100;
     const categoryId = searchParams.get("categoryId") ?? undefined;
     const brandId = searchParams.get("brandId") ?? undefined;
     const search = searchParams.get("search") ?? undefined;
