@@ -32,5 +32,3 @@ jobs:
 
       - name: Run PR Pipeline (Lint, Test, Build)
         run: bun turbo run lint check-types test build
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_STAGING }}
