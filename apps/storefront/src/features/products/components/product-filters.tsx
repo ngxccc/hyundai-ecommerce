@@ -6,44 +6,56 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Input } from "@nhatnang/ui/components/ui/input";
-import { Label } from "@nhatnang/ui/components/ui/label";
 import { Separator } from "@nhatnang/ui/components/ui/separator";
 import type { TCategoryWithChildren } from "@nhatnang/database/services";
 import type { TBrand } from "@nhatnang/database/schemas";
 import { useTranslations } from "next-intl";
-import { ChevronDown, ChevronRight, X } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useDebounce } from "@nhatnang/ui/hooks/use-debounce";
 
 interface ProductFiltersProps {
   categories: TCategoryWithChildren[];
   brands: TBrand[];
   selectedCategorySlug?: string;
+  mode?: "live" | "sheet";
+  onPendingFiltersChange?: (params: URLSearchParams) => void;
+  pendingSearchParams?: URLSearchParams | undefined;
 }
 
 export function ProductFilters({
   categories,
   brands,
   selectedCategorySlug,
+  mode = "live",
+  onPendingFiltersChange,
+  pendingSearchParams,
 }: ProductFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  // Use pending state for display when in sheet mode, otherwise use real URL
+  const effectiveSearchParams =
+    mode === "sheet" && pendingSearchParams
+      ? pendingSearchParams
+      : searchParams;
+
   const t = useTranslations("Catalog");
   const [, startTransition] = useTransition();
 
-  // Selected values from URL
+  // Selected values from effective params (URL or pending)
   const selectedCategory =
-    selectedCategorySlug ?? searchParams.get("category") ?? "";
+    selectedCategorySlug ?? effectiveSearchParams.get("category") ?? "";
   const selectedBrands =
-    searchParams.get("brand")?.split(",").filter(Boolean) ?? [];
-  const searchQuery = searchParams.get("q") ?? "";
-  const minPower = searchParams.get("minPower") ?? "";
-  const maxPower = searchParams.get("maxPower") ?? "";
-  const fuelType = searchParams.get("fuelType") ?? "";
-  const phase = searchParams.get("phase") ?? "";
-  const voltage = searchParams.get("voltage") ?? "";
-  const engineBrand = searchParams.get("engineBrand") ?? "";
-  const alternatorBrand = searchParams.get("alternatorBrand") ?? "";
+    effectiveSearchParams.get("brand")?.split(",").filter(Boolean) ?? [];
+  const searchQuery = effectiveSearchParams.get("q") ?? "";
+  const minPower = effectiveSearchParams.get("minPower") ?? "";
+  const maxPower = effectiveSearchParams.get("maxPower") ?? "";
+  const fuelType = effectiveSearchParams.get("fuelType") ?? "";
+  const phase = effectiveSearchParams.get("phase") ?? "";
+  const voltage = effectiveSearchParams.get("voltage") ?? "";
+  const engineBrand = effectiveSearchParams.get("engineBrand") ?? "";
+  const alternatorBrand = effectiveSearchParams.get("alternatorBrand") ?? "";
 
   // Local state for text search & specification filters to prevent typing lag
   const [localSearch, setLocalSearch] = useState(searchQuery);
@@ -53,7 +65,6 @@ export function ProductFilters({
   const [localEngineBrand, setLocalEngineBrand] = useState(engineBrand);
   const [localAlternatorBrand, setLocalAlternatorBrand] =
     useState(alternatorBrand);
-
   // Render-based state synchronization to avoid cascading renders (React 19 pattern)
   const [prevQueryString, setPrevQueryString] = useState(
     searchParams.toString(),
@@ -97,11 +108,19 @@ export function ProductFilters({
         }
       });
 
-      startTransition(() => {
-        router.push(`${pathname}?${params.toString()}`, { scroll: false });
-      });
+      if (mode === "sheet") {
+        // Sheet mode: NEVER navigate. Only report to parent if callback exists.
+        if (onPendingFiltersChange) {
+          onPendingFiltersChange(params);
+        }
+      } else {
+        // Live mode (Desktop): navigate immediately.
+        startTransition(() => {
+          router.push(`${pathname}?${params.toString()}`, { scroll: false });
+        });
+      }
     },
-    [pathname, router, searchParams],
+    [pathname, router, searchParams, mode, onPendingFiltersChange],
   );
 
   const handleBrandChange = (brandSlug: string, checked: boolean) => {
@@ -116,20 +135,6 @@ export function ProductFilters({
     });
   };
 
-  const handleClearAll = () => {
-    // Reset local states immediately
-    setLocalSearch("");
-    setLocalMinPower("");
-    setLocalMaxPower("");
-    setLocalVoltage("");
-    setLocalEngineBrand("");
-    setLocalAlternatorBrand("");
-    startTransition(() => {
-      router.push(pathname, { scroll: false });
-    });
-  };
-
-  // Utilizing the shared useDebounce hook from @nhatnang/ui
   const debouncedSearch = useDebounce(localSearch, 400);
   const debouncedMinPower = useDebounce(localMinPower, 400);
   const debouncedMaxPower = useDebounce(localMaxPower, 400);
@@ -196,17 +201,31 @@ export function ProductFilters({
             params.delete("before");
 
             startTransition(() => {
-              if (isSelected) {
-                // Deselect category: navigate to default products page
-                router.push(`/products?${params.toString()}`, {
-                  scroll: false,
-                });
+              if (mode === "sheet" && onPendingFiltersChange) {
+                // In sheet mode, report the category change to the parent
+                // without navigating. The parent will apply it on "Apply".
+                const newParams = new URLSearchParams(params.toString());
+                if (isSelected) {
+                  newParams.delete("category");
+                } else {
+                  // Note: Category slug navigation in sheet mode is complex
+                  // as it changes the route segment. For simplicity in Phase 2,
+                  // we treat category as a filter param inside the sheet.
+                  newParams.set("category", node.slug);
+                }
+                onPendingFiltersChange(newParams);
               } else {
-                // Select category: navigate to path-based category page
-                router.push(
-                  `/products/category/${node.slug}?${params.toString()}`,
-                  { scroll: false },
-                );
+                // Live mode (Desktop Sidebar)
+                if (isSelected) {
+                  router.push(`/products?${params.toString()}`, {
+                    scroll: false,
+                  });
+                } else {
+                  router.push(
+                    `/products/category/${node.slug}?${params.toString()}`,
+                    { scroll: false },
+                  );
+                }
               }
             });
           }}
@@ -242,24 +261,6 @@ export function ProductFilters({
 
   return (
     <div className="space-y-6">
-      {/* Title & Clear Filters */}
-      <div className="flex items-center justify-between">
-        <h3 className="text-foreground text-lg font-bold tracking-tight">
-          {t("sidebar.filters")}
-        </h3>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleClearAll}
-          className="text-muted-foreground hover:text-foreground h-8 px-2.5 text-xs font-semibold"
-        >
-          {t("sidebar.clear_all")}
-          <X className="ml-1.5 h-3.5 w-3.5" />
-        </Button>
-      </div>
-
-      <Separator />
-
       {/* Search Input Box */}
       <div>
         <Input
@@ -270,8 +271,6 @@ export function ProductFilters({
           className="h-9 w-full"
         />
       </div>
-
-      <Separator />
 
       <Separator />
 
@@ -294,21 +293,20 @@ export function ProductFilters({
         </h4>
         <div className="space-y-2.5">
           {brands.map((brand) => (
-            <div key={brand.id} className="flex items-center space-x-2.5">
+            <label
+              key={brand.id}
+              className="flex cursor-pointer items-center space-x-2.5"
+            >
               <Checkbox
-                id={`brand-${brand.id}`}
                 checked={selectedBrands.includes(brand.slug)}
                 onCheckedChange={(checked) =>
                   handleBrandChange(brand.slug, !!checked)
                 }
               />
-              <Label
-                htmlFor={`brand-${brand.id}`}
-                className="text-foreground cursor-pointer text-sm leading-none font-medium select-none"
-              >
+              <span className="text-foreground text-sm leading-none font-medium select-none">
                 {brand.name}
-              </Label>
-            </div>
+              </span>
+            </label>
           ))}
         </div>
       </div>
