@@ -5,19 +5,14 @@ const isProductionBuild =
   process.env["NEXT_PHASE"] === "phase-production-build";
 
 export const categoryService = {
-  getCategories: async (options?: { tree?: boolean }): Promise<TCategory[]> => {
+  getCategories: async (): Promise<TCategory[]> => {
     if (isProductionBuild) {
       return [];
     }
 
     try {
-      const params = new URLSearchParams();
-      if (options?.tree) {
-        params.set("tree", "true");
-      }
-
       return await fetchApi<TCategory[]>(
-        `/api/categories?${params.toString()}`,
+        "/api/categories",
         {
           next: { revalidate: 3600 },
         },
