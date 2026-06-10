@@ -255,6 +255,9 @@
   "Catalog": {
     "title": "Danh mục sản phẩm",
     "search_placeholder": "Tìm kiếm sản phẩm...",
+    "search_results": "Tìm kiếm cho: \"{query}\" ({count} kết quả)",
+    "showing_products": "Hiển thị {count} sản phẩm",
+    "unknown": "Không xác định",
     "no_products": "Không tìm thấy sản phẩm nào phù hợp.",
     "sidebar": {
       "filters": "Bộ lọc",
@@ -266,7 +269,12 @@
       "voltage": "Điện áp (V)",
       "engine_brand": "Thương hiệu động cơ",
       "alternator_brand": "Thương hiệu đầu phát",
-      "clear_all": "Xoá bộ lọc"
+      "clear_all": "Xoá bộ lọc",
+      "placeholder_min": "Tối thiểu",
+      "placeholder_max": "Tối đa",
+      "placeholder_voltage": "Ví dụ: 220, 380",
+      "placeholder_engine_brand": "Ví dụ: Hyundai, Cummins",
+      "placeholder_alternator_brand": "Ví dụ: Stamford, Mecc Alte"
     },
     "sort": {
       "label": "Sắp xếp theo",

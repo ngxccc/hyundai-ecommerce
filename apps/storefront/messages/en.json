@@ -256,6 +256,9 @@
   "Catalog": {
     "title": "Product Catalog",
     "search_placeholder": "Search products...",
+    "search_results": "Search results for: \"{query}\" ({count} results)",
+    "showing_products": "Showing {count} products",
+    "unknown": "Unknown",
     "no_products": "No products found matching your criteria.",
     "sidebar": {
       "filters": "Filters",
@@ -267,7 +270,12 @@
       "voltage": "Voltage (V)",
       "engine_brand": "Engine Brand",
       "alternator_brand": "Alternator Brand",
-      "clear_all": "Clear All"
+      "clear_all": "Clear All",
+      "placeholder_min": "Min",
+      "placeholder_max": "Max",
+      "placeholder_voltage": "e.g. 220, 380",
+      "placeholder_engine_brand": "e.g. Hyundai, Cummins",
+      "placeholder_alternator_brand": "e.g. Stamford, Mecc Alte"
     },
     "sort": {
       "label": "Sort by",
