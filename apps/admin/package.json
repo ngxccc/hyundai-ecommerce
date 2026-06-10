@@ -18,13 +18,13 @@
     "@t3-oss/env-nextjs": "^0.13.11",
     "cloudinary": "^2.10.0",
     "lucide-react": "^1.17.0",
-    "next": "^16.2.6",
+    "next": "^16.2.9",
     "next-cloudinary": "^6.17.5",
     "next-intl": "^4.13.0",
     "react": "^19",
     "react-dom": "^19",
     "react-dropzone": "^15.0.0",
-    "react-hook-form": "^7.76.1",
+    "react-hook-form": "^7.78.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
