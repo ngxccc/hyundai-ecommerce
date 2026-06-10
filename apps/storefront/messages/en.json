@@ -261,6 +261,9 @@
     "unknown": "Unknown",
     "no_products": "No products found matching your criteria.",
     "sidebar": {
+      "search": "Search",
+      "min_power": "Min Power",
+      "max_power": "Max Power",
       "filters": "Filters",
       "categories": "Categories",
       "brands": "Brands",

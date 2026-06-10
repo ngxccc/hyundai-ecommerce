@@ -260,6 +260,9 @@
     "unknown": "Không xác định",
     "no_products": "Không tìm thấy sản phẩm nào phù hợp.",
     "sidebar": {
+      "search": "Tìm kiếm",
+      "min_power": "Công suất tối thiểu",
+      "max_power": "Công suất tối đa",
       "filters": "Bộ lọc",
       "categories": "Danh mục",
       "brands": "Thương hiệu",

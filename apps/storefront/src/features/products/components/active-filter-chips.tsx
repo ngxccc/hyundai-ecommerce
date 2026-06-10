@@ -6,16 +6,16 @@ import { X } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { useTranslations } from "next-intl";
 
-const FILTER_LABELS: Record<string, string> = {
-  q: "Tìm kiếm",
-  brand: "Thương hiệu",
-  minPower: "Công suất tối thiểu",
-  maxPower: "Công suất tối đa",
-  voltage: "Điện áp",
-  engineBrand: "Hãng động cơ",
-  alternatorBrand: "Hãng đầu phát",
-  fuelType: "Nhiên liệu",
-  phase: "Pha",
+const FILTER_KEY_MAP: Record<string, string> = {
+  q: "search",
+  brand: "brands",
+  minPower: "min_power",
+  maxPower: "max_power",
+  voltage: "voltage",
+  engineBrand: "engine_brand",
+  alternatorBrand: "alternator_brand",
+  fuelType: "fuel_type",
+  phase: "phase",
 };
 
 export function ActiveFilterChips() {
@@ -23,20 +23,32 @@ export function ActiveFilterChips() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const t = useTranslations("Catalog.sidebar");
+  const tProduct = useTranslations("ProductDetails");
 
   const activeFilters: { key: string; value: string; label: string }[] = [];
+
+  const getLabel = (key: string, value: string): string => {
+    const translationKey = FILTER_KEY_MAP[key] ?? key;
+    const labelPrefix = t(translationKey as any);
+
+    if (key === "fuelType") {
+      return `${labelPrefix}: ${tProduct(`fuelTypes.${value}` as any)}`;
+    }
+    if (key === "phase") {
+      return `${labelPrefix}: ${tProduct(`phases.${value}` as any)}`;
+    }
+    return `${labelPrefix}: ${value}`;
+  };
 
   searchParams.forEach((value, key) => {
     if (["after", "before", "category"].includes(key)) return;
 
-    const labelKey = FILTER_LABELS[key] ?? key;
-
     if (key === "brand") {
       value.split(",").forEach((v) => {
-        activeFilters.push({ key, value: v, label: `${labelKey}: ${v}` });
+        activeFilters.push({ key, value: v, label: getLabel(key, v) });
       });
     } else {
-      activeFilters.push({ key, value, label: `${labelKey}: ${value}` });
+      activeFilters.push({ key, value, label: getLabel(key, value) });
     }
   });
 
