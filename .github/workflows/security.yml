@@ -1,22 +1,32 @@
-name: Security Scan (Trivy)
+name: Security Scan
 
 on:
   schedule:
-    # Chạy vào 02:00 UTC mỗi thứ 2 (weekly)
+    # Run every Monday at 02:00 UTC
     - cron: '0 2 * * 1'
   workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
   security-events: write
   contents: read
 
 jobs:
-  trivy-scan:
-    name: Trivy Filesystem Scan
+  trivy:
+    name: Trivy (Vuln, Config, Secret)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Manual Trivy Setup
+        uses: aquasecurity/setup-trivy@v0.2.0
+        with:
+          cache: true
+          version: v0.71.0
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@v0.36.0
@@ -30,14 +40,32 @@ jobs:
           exit-code: '1'
           cache: 'true'
 
-      - name: Upload Trivy scan results to GitHub Security
+      - name: Upload Trivy results
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
+          category: 'trivy'
 
-      - name: Fail on critical vulnerabilities
-        if: failure()
-        run: |
-          echo "::error::Trivy found CRITICAL or HIGH vulnerabilities. Please check the Security tab."
-          exit 1
+  codeql:
+    name: CodeQL Analysis
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['javascript-typescript']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended,security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{matrix.language}}"
