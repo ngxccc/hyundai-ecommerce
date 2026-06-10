@@ -28,13 +28,16 @@ export function ActiveFilterChips() {
   const activeFilters: { key: string; value: string; label: string }[] = [];
 
   const getLabel = (key: string, value: string): string => {
-    const translationKey = FILTER_KEY_MAP[key] ?? key;
-    const labelPrefix = t(translationKey as any);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
+    const translationKey = FILTER_KEY_MAP[key] ?? (key as any);
+    const labelPrefix = t(translationKey);
 
     if (key === "fuelType") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return `${labelPrefix}: ${tProduct(`fuelTypes.${value}` as any)}`;
     }
     if (key === "phase") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return `${labelPrefix}: ${tProduct(`phases.${value}` as any)}`;
     }
     return `${labelPrefix}: ${value}`;
