@@ -60,10 +60,10 @@ A phase is **NOT** complete until:
 
 ## Implementation Checklist
 
-- [ ] Modify `IProductService` interface in `packages/database/src/services/interfaces.ts`.
-- [ ] Implement `getFiltersMetadata` in `ProductService` (`packages/database/src/services/product.service.ts`).
-- [ ] Create API route `/api/products/metadata` in `apps/storefront/app/api/products/metadata/route.ts`.
-- [ ] Write API route tests in `apps/storefront/app/api/products/metadata/route.test.ts`.
+- [x] Modify `IProductService` interface in `packages/database/src/services/interfaces.ts`.
+- [x] Implement `getFiltersMetadata` in `ProductService` (`packages/database/src/services/product.service.ts`).
+- [x] Create API route `/api/products/metadata` in `apps/storefront/app/api/products/metadata/route.ts`.
+- [x] Write API route tests in `apps/storefront/app/api/products/metadata/route.test.ts`.
 - [ ] Create `facet-engine.ts` client-side calculator utility in `apps/storefront/src/features/products/utils/facet-engine.ts`.
 - [ ] Write engine unit tests in `apps/storefront/src/features/products/utils/facet-engine.test.ts`.
 - [ ] Fetch metadata JSON dynamically and cache it in component state on initial catalog load.
