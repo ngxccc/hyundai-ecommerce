@@ -146,16 +146,23 @@ export function ProductFilters({
   useEffect(() => {
     const updates: Record<string, string | null> = {};
 
-    if (debouncedSearch !== searchQuery) updates["q"] = debouncedSearch || null;
-    if (debouncedMinPower !== minPower)
+    if (debouncedSearch !== searchQuery && debouncedSearch === localSearch)
+      updates["q"] = debouncedSearch || null;
+    if (debouncedMinPower !== minPower && debouncedMinPower === localMinPower)
       updates["minPower"] = debouncedMinPower || null;
-    if (debouncedMaxPower !== maxPower)
+    if (debouncedMaxPower !== maxPower && debouncedMaxPower === localMaxPower)
       updates["maxPower"] = debouncedMaxPower || null;
-    if (debouncedVoltage !== voltage)
+    if (debouncedVoltage !== voltage && debouncedVoltage === localVoltage)
       updates["voltage"] = debouncedVoltage || null;
-    if (debouncedEngineBrand !== engineBrand)
+    if (
+      debouncedEngineBrand !== engineBrand &&
+      debouncedEngineBrand === localEngineBrand
+    )
       updates["engineBrand"] = debouncedEngineBrand || null;
-    if (debouncedAlternatorBrand !== alternatorBrand)
+    if (
+      debouncedAlternatorBrand !== alternatorBrand &&
+      debouncedAlternatorBrand === localAlternatorBrand
+    )
       updates["alternatorBrand"] = debouncedAlternatorBrand || null;
 
     if (Object.keys(updates).length > 0) {
@@ -174,6 +181,12 @@ export function ProductFilters({
     voltage,
     engineBrand,
     alternatorBrand,
+    localSearch,
+    localMinPower,
+    localMaxPower,
+    localVoltage,
+    localEngineBrand,
+    localAlternatorBrand,
     updateFilters,
   ]);
 
