@@ -6,7 +6,7 @@ import {
   categoryService,
   brandService,
 } from "@nhatnang/database/services";
-import { ProductFilters } from "@/features/products/components/product-filters";
+import { ProductFilterSheet } from "@/features/products/components/product-filter-sheet";
 import { ProductSort } from "@/features/products/components/product-sort";
 import { ProductPagination } from "@/features/products/components/product-pagination";
 import { CldImage } from "@/shared/components/CldImageWrapper";
@@ -23,7 +23,7 @@ import { priceFormatter } from "@/shared/lib/utils";
 import type { TProduct } from "@nhatnang/database/schemas";
 import type { CatalogPageProps } from "@/features/products/types/catalog";
 import { notFound } from "next/navigation";
-
+import { DesktopProductFilters } from "@/features/products/components/desktop-product-filters";
 
 // 1-hour ISR revalidation window for static pages
 export const revalidate = 3600;
@@ -161,15 +161,24 @@ export default async function CategoryCatalogPage({
 
         {/* Main Section */}
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-          {/* Filters Sidebar */}
-          <div className="lg:block">
+          {/* Filters Sidebar (Desktop) */}
+          <div className="hidden lg:block">
             <div className="bg-muted/10 sticky top-24 rounded-lg border p-6">
-              <ProductFilters
+              <DesktopProductFilters
                 categories={categoriesTree}
                 brands={allBrands}
                 selectedCategorySlug={slug}
               />
             </div>
+          </div>
+
+          {/* Filters Sheet (Mobile) */}
+          <div className="lg:hidden">
+            <ProductFilterSheet
+              categories={categoriesTree}
+              brands={allBrands}
+              selectedCategorySlug={slug}
+            />
           </div>
 
           {/* Product Listing */}

@@ -6,7 +6,6 @@ import {
   categoryService,
   brandService,
 } from "@nhatnang/database/services";
-import { ProductFilters } from "@/features/products/components/product-filters";
 import { ProductSort } from "@/features/products/components/product-sort";
 import { ProductPagination } from "@/features/products/components/product-pagination";
 import { CldImage } from "@/shared/components/CldImageWrapper";
@@ -22,7 +21,8 @@ import {
 import { priceFormatter } from "@/shared/lib/utils";
 import type { TProduct } from "@nhatnang/database/schemas";
 import type { CatalogPageProps } from "@/features/products/types/catalog";
-
+import { DesktopProductFilters } from "@/features/products/components/desktop-product-filters";
+import { ProductFilterSheet } from "@/features/products/components/product-filter-sheet";
 
 const formatSpecs = (
   specs: TProduct["specs"],
@@ -37,7 +37,11 @@ const formatSpecs = (
   if (specsObj["power"]) specsArray.push(`${String(specsObj["power"])}kW`);
   if (typeof specsObj["fuelType"] === "string") {
     const fuelType = specsObj["fuelType"];
-    if (fuelType === "gasoline" || fuelType === "diesel" || fuelType === "gas") {
+    if (
+      fuelType === "gasoline" ||
+      fuelType === "diesel" ||
+      fuelType === "gas"
+    ) {
       specsArray.push(tProduct(`fuelTypes.${fuelType}`));
     }
   }
@@ -148,11 +152,22 @@ export default async function CatalogPage({
 
         {/* Main Section */}
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-          {/* Filters Sidebar */}
-          <div className="lg:block">
+          {/* Filters Sidebar (Desktop) */}
+          <div className="hidden lg:block">
             <div className="bg-muted/10 sticky top-24 rounded-lg border p-6">
-              <ProductFilters categories={categoriesTree} brands={allBrands} />
+              <DesktopProductFilters
+                categories={categoriesTree}
+                brands={allBrands}
+              />
             </div>
+          </div>
+
+          {/* Filters Sheet (Mobile) */}
+          <div className="lg:hidden">
+            <ProductFilterSheet
+              categories={categoriesTree}
+              brands={allBrands}
+            />
           </div>
 
           {/* Product Listing */}
