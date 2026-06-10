@@ -22,7 +22,19 @@ import {
 import { priceFormatter } from "@/shared/lib/utils";
 import type { TProduct } from "@nhatnang/database/schemas";
 import type { CatalogPageProps } from "@/features/products/types/catalog";
+import { notFound } from "next/navigation";
 
+
+// 1-hour ISR revalidation window for static pages
+export const revalidate = 3600;
+
+// Statically pre-render all category landing pages
+export async function generateStaticParams() {
+  const categories = await categoryService.getAll();
+  return categories.map((cat) => ({
+    slug: cat.slug,
+  }));
+}
 
 const formatSpecs = (
   specs: TProduct["specs"],
@@ -37,7 +49,11 @@ const formatSpecs = (
   if (specsObj["power"]) specsArray.push(`${String(specsObj["power"])}kW`);
   if (typeof specsObj["fuelType"] === "string") {
     const fuelType = specsObj["fuelType"];
-    if (fuelType === "gasoline" || fuelType === "diesel" || fuelType === "gas") {
+    if (
+      fuelType === "gasoline" ||
+      fuelType === "diesel" ||
+      fuelType === "gas"
+    ) {
       specsArray.push(tProduct(`fuelTypes.${fuelType}`));
     }
   }
@@ -50,18 +66,17 @@ const formatSpecs = (
   return specsArray;
 };
 
-export default async function CatalogPage({
+export default async function CategoryCatalogPage({
   params,
   searchParams,
-}: CatalogPageProps<{ locale: string }>) {
-  await params;
+}: CatalogPageProps<{ locale: string; slug: string }>) {
+  const { slug } = await params;
   const resolvedSearchParams = await searchParams;
   const t = await getTranslations("Catalog");
   const tHome = await getTranslations("HomePage.products");
   const tProduct = await getTranslations("ProductDetails");
 
   // Get raw search parameters
-  const categorySlug = resolvedSearchParams.category;
   const brandParam = resolvedSearchParams.brand;
   const search = resolvedSearchParams.q;
   const sort = resolvedSearchParams.sort;
@@ -79,27 +94,25 @@ export default async function CatalogPage({
   const engineBrand = resolvedSearchParams.engineBrand;
   const alternatorBrand = resolvedSearchParams.alternatorBrand;
 
-  // Resolve categoryIds if category slug is provided
-  let categoryIds: string[] | undefined;
-  if (categorySlug) {
-    const categoriesList = await categoryService.getAll();
-    const targetCategory = categoriesList.find(
-      (cat) => cat.slug === categorySlug,
-    );
-    if (targetCategory) {
-      categoryIds = await categoryService.getCategoryDescendants(
-        targetCategory.id,
-      );
-    }
+  // Verify that target category exists, otherwise throw 404
+  const categoriesList = await categoryService.getAll();
+  const targetCategory = categoriesList.find((cat) => cat.slug === slug);
+  if (!targetCategory) {
+    notFound();
   }
 
-  // Fetch categories and brands from database first
+  // Resolve categoryIds (descendant categories tree)
+  const categoryIds = await categoryService.getCategoryDescendants(
+    targetCategory.id,
+  );
+
+  // Fetch categories tree and brands from database
   const [categoriesTree, allBrands] = await Promise.all([
     categoryService.getCategoryTree(),
     brandService.getAll(),
   ]);
 
-  // Resolve brandIds from brand slugs in URL param
+  // Resolve brandIds from brand slugs in URL query parameter
   let brandIds: string[] | undefined;
   if (brandParam) {
     const brandSlugs = brandParam.split(",").filter(Boolean);
@@ -108,7 +121,7 @@ export default async function CatalogPage({
       .map((b) => b.id);
   }
 
-  // Fetch filtered products using resolved category and brand IDs
+  // Fetch filtered products under resolved categories
   const productsData = await productService.getAll(12, {
     categoryIds,
     brandIds,
@@ -134,7 +147,7 @@ export default async function CatalogPage({
         {/* Page Header */}
         <div className="mb-8 border-b pb-4">
           <h1 className="font-display text-foreground text-4xl font-extrabold tracking-tighter md:text-5xl">
-            {t("title")}
+            {targetCategory.name}
           </h1>
           {search && (
             <p className="text-muted-foreground mt-2 text-sm">
@@ -151,7 +164,11 @@ export default async function CatalogPage({
           {/* Filters Sidebar */}
           <div className="lg:block">
             <div className="bg-muted/10 sticky top-24 rounded-lg border p-6">
-              <ProductFilters categories={categoriesTree} brands={allBrands} />
+              <ProductFilters
+                categories={categoriesTree}
+                brands={allBrands}
+                selectedCategorySlug={slug}
+              />
             </div>
           </div>
 
