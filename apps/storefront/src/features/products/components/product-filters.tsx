@@ -94,7 +94,7 @@ export function ProductFilters({
 
   const updateFilters = useCallback(
     (updates: Record<string, string | null>) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(effectiveSearchParams.toString());
 
       // Reset page cursor when filters change
       params.delete("after");
@@ -120,7 +120,7 @@ export function ProductFilters({
         });
       }
     },
-    [pathname, router, searchParams, mode, onPendingFiltersChange],
+    [effectiveSearchParams, mode, onPendingFiltersChange, router, pathname],
   );
 
   const handleBrandChange = (brandSlug: string, checked: boolean) => {
@@ -193,7 +193,9 @@ export function ProductFilters({
           }`}
           style={{ paddingLeft: `${depth * 12 + 8}px` }}
           onClick={() => {
-            const params = new URLSearchParams(effectiveSearchParams.toString());
+            const params = new URLSearchParams(
+              effectiveSearchParams.toString(),
+            );
             // Clear category from searchParams as it is now a path parameter
             params.delete("category");
             // Reset pagination parameters when category changes
