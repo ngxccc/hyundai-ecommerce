@@ -11,6 +11,13 @@ const FOOTERPRODUCTS = [
   "atsPanels",
 ] as const;
 
+const CATEGORY_SLUG_MAP: Record<string, string> = {
+  industrialGenerators: "may-phat-dien-cong-nghiep",
+  residentialGen: "may-phat-dien-gia-dinh",
+  portablePower: "may-phat-dien",
+  atsPanels: "may-phat-dien",
+};
+
 export function Footer() {
   const t = useTranslations("HomePage");
 
@@ -18,7 +25,7 @@ export function Footer() {
   const subscribeToNewsletter = async (formData: FormData) => {
     "use server";
     const email = formData.get("email");
-    console.log("Đã nhận được email từ server:", email);
+    console.log("Received email from server:", email);
     // TODO: Gọi DB hoặc API mailchimp ở đây
   };
 
@@ -75,7 +82,7 @@ export function Footer() {
                   <li key={item}>
                     <Link
                       className="text-muted-foreground hover:text-primary font-sans text-sm transition-colors"
-                      href={`/products?category=${item}`}
+                      href={`/products/category/${CATEGORY_SLUG_MAP[item]}`}
                     >
                       {t(`footer.products.${item}`)}
                     </Link>
@@ -105,7 +112,7 @@ export function Footer() {
                     href="/warranty"
                     className="text-muted-foreground hover:text-primary text-sm transition-colors"
                   >
-                    {t("footer.supportTitle")}
+                    {t("footer.warrantyPolicy")}
                   </Link>
                 </li>
                 <li>

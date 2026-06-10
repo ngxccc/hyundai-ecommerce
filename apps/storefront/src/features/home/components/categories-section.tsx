@@ -70,7 +70,7 @@ export async function CategoriesSection() {
 
             return (
               <Link
-                href={`/categories/${cat.slug}`}
+                href={`/products/category/${cat.slug}`}
                 key={cat.id}
                 className={`${ui.span} group focus-visible:ring-primary relative overflow-hidden rounded-2xl shadow-sm transition-all duration-500 outline-none hover:shadow-xl focus-visible:ring-2`}
               >

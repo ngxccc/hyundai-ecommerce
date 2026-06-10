@@ -1,5 +1,5 @@
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
-import { productService, categoryService } from "@nhatnang/database/services";
+import { productService, categoryService, brandService } from "@nhatnang/database/services";
 import type { TGetAllOptions } from "@nhatnang/database/services";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -49,8 +49,15 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Brand filters
-    const brandIds = brandParam ? brandParam.split(",") : undefined;
+    // Resolve brandIds from brand slugs in URL query parameter
+    let brandIds: string[] | undefined;
+    if (brandParam) {
+      const brandSlugs = brandParam.split(",").filter(Boolean);
+      const allBrands = await brandService.getAll();
+      brandIds = allBrands
+        .filter((b) => brandSlugs.includes(b.slug))
+        .map((b) => b.id);
+    }
 
     // Fetch products dynamically using ProductService
     const resData = await productService.getAll(limit, {
