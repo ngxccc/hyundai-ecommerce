@@ -32,3 +32,8 @@ We decided to use **Next.js Route Groups** to separate static public pages from 
 - **Positive (Stability)**: Vercel deployments will no longer crash due to unexpected `DYNAMIC_SERVER_USAGE` errors on static routes, because dynamic routes are explicitly marked with `force-dynamic`.
 - **Positive (Separation of Concerns)**: UI scaffolding (HTML/Body/Providers) is strictly decoupled from Business UI (Admin Sidebar / Auth state).
 - **Negative (File Structure Complexity)**: The file tree is slightly deeper, and URL paths do not perfectly map 1:1 to directory structures due to the invisible `(dashboard)` segment.
+
+### Explicit Tradeoffs
+
+- **Static vs. Dynamic Isolation vs. File Tree Simplicity**: We trade a clean, shallow directory structure for nested route groups (`(dashboard)`) to enforce layout-level auth guards, which separates public static pages from protected dynamic pages.
+- **Forced Dynamic Rendering vs. Automatic Optimization**: We trade allowing Next.js to automatically determine optimization strategies for forcing `dynamic = 'force-dynamic'` on all dashboard layouts, avoiding build-time crashes but disabling static optimization for all inner routes.

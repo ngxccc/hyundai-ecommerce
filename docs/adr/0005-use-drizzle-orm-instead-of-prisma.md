@@ -29,3 +29,8 @@ Drizzle will manage our schemas (defined in `packages/database/src/schemas/`), m
 - **Positive (Migration Control)**: Drizzle Kit generates plain SQL migrations, giving database administrators complete control over database evolution, rather than abstracting it into custom DSLs.
 - **Negative (Ecosystem Familiarity)**: Prisma has a slightly larger community and visual tools (like Prisma Studio), though Drizzle Kit provides Drizzle Studio as a suitable replacement.
 - **Negative (Active Schema Management)**: Changes in TypeScript schemas must be manually generated into migrations using `drizzle-kit generate`, though this is easily managed via `bun run db:generate`.
+
+### Explicit Tradeoffs
+
+- **SQL-like Controls vs. ORM Abstraction**: We trade Prisma's high-level database abstraction and automated relation mappings for Drizzle's SQL-like query structure, which results in faster execution and serverless cold starts but requires manually writing complex joins.
+- **TypeScript Schema Definition vs. Dedicated DSL**: We trade a separate dedicated schema language (`.prisma` file) for defining schemas in pure TypeScript, eliminating a code-generation compilation step but requiring manual migration file generation.

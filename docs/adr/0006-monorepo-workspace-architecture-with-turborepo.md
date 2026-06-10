@@ -33,3 +33,8 @@ Our directory structure is organized into:
 - **Positive (Strict Boundary Enforcements)**: Packages define strict entrypoints (via `exports` in `package.json`), which prevents apps from reaching into private files or violating architectural layering.
 - **Negative (Monorepo Complexity)**: Workspaces require a root-level lockfile and build configuration, which can lead to package dependency version drift if not monitored (managed via `syncpack`).
 - **Negative (Tooling Configurations)**: IDEs (like VSCode) require proper workspace-aware settings to resolve path aliases across packages correctly.
+
+### Explicit Tradeoffs
+
+- **Code Reuse & Speed vs. Setup Complexity**: We trade independent, simple single-project repositories for shared monorepo packages (`@nhatnang/ui`, `@nhatnang/database`) and parallel Turborepo execution, which speeds up CI/CD but increases initial workspace configuration overhead.
+- **Strict Module Boundaries vs. Dependency Coordination**: We trade flexible direct file references across applications for strict package entrypoints, preventing architectural layer violations but requiring manual dependency tracking and syncpack management.

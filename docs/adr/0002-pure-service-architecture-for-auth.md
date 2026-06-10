@@ -37,3 +37,8 @@ React components (like `AdminLoginForm`) will import this pure service to execut
 - **Positive (Symmetry)**: The Client and Server share the identical `IAuthService` contract, creating a highly symmetrical and predictable monorepo architecture.
 - **Positive (Thin Views)**: UI Components remain thin and focused exclusively on rendering and data binding.
 - **Negative (Boilerplate)**: Requires writing a slight amount of boilerplate (the service class and mapping functions) compared to just calling the SDK inline.
+
+### Explicit Tradeoffs
+
+- **Framework Decoupling vs. Inline SDK Simplicity**: We trade writing a boilerplate service wrapper class for decoupling authentication logic from React, allowing reuse in non-React environments but adding minor codebase overhead.
+- **Normalized Canonical Errors vs. Native SDK Errors**: We trade direct native SDK error handling in UI components for normalizing them in a service layer, keeping UI code thin but requiring mapping logic.

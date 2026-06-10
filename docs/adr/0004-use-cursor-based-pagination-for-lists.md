@@ -29,3 +29,8 @@ To accommodate this in the UI, we will use the `Icons Only` composition of the S
 - **Positive**: This structure is natively compatible with Infinite Scroll or "Load More" UI patterns which are standard for modern e-commerce storefronts.
 - **Positive**: Backward pagination works flawlessly without needing to maintain a complex state history on the client side, as the server can dynamically calculate the previous dataset using `ASC` sorting and `gt` filters.
 - **Negative**: Users cannot jump to an arbitrary page (e.g., "Jump to page 15").
+
+### Explicit Tradeoffs
+
+- **O(1) Database Performance vs. Arbitrary Page Jumping**: We trade the ability for users to jump to any page number (e.g. Page 12) for O(1) query speeds and data consistency (avoiding duplicates or skipped items when database records are concurrently added/removed).
+- **Simple Next/Prev UI vs. Complex Page Limit Math**: We trade displaying specific page ranges for a simple "Previous/Next" pagination button layout, simplifying UI state management and client-side rendering.

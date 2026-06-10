@@ -34,3 +34,8 @@ Zustand will be strictly reserved for pure client-side ephemeral state (e.g., UI
 - **Positive**: No manual cross-tab syncing code required.
 - **Positive**: Eliminates FOUC during protected route rendering.
 - **Negative**: Client components deep in the tree that need session data must call `useSession()`, but since the hook caches aggressively, the performance impact is negligible.
+
+### Explicit Tradeoffs
+
+- **No Global Client-State Store vs. Simple Hook-based Access**: We trade a centralized global Zustand store for hook-based access (`useSession`), which avoids synchronization complexity and hydration bugs but requires components to use the hook or prop-drill.
+- **Middleware Edge Guards vs. Page-level Client Guards**: We trade handling redirection logic inside React pages for middleware-level enforcement, eliminating FOUC but adding routing complexity.

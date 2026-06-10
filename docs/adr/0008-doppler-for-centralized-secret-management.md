@@ -29,3 +29,8 @@ All secrets and environment configurations will be stored in Doppler projects. L
 - **Positive (Audit Log & Versioning)**: Doppler tracks configuration changes, allowing rollbacks of accidental secret overwrites.
 - **Negative (Network Dependency)**: Local runs require internet access and CLI authentication to fetch variables on startup.
 - **Negative (Setup Friction)**: New developers must install the Doppler CLI, log in, and bind the project using `doppler setup` before running the applications locally.
+
+### Explicit Tradeoffs
+
+- **Centralized Syncing vs. Setup Friction & Network Dependency**: We trade local, offline `.env` file management for centralized cloud-based secrets, eliminating configuration drift but requiring developer CLI authentication and an active internet connection to run the application.
+- **Audit Log Versioning vs. Platform Dependency**: We trade simple self-contained env vars for third-party service integration, gaining configuration rollbacks and secure access controls but depending on the vendor's service availability.
