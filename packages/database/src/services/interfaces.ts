@@ -127,6 +127,22 @@ export interface TGetAllOptions {
   sort?: "price_asc" | "price_desc" | "newest" | undefined;
 }
 
+export interface IProductFilterSpecs {
+  power?: number | null;
+  voltage?: number | null;
+  phase?: "1phase" | "3phase" | null;
+  fuelType?: "diesel" | "gasoline" | "gas" | null;
+  engineBrand?: string | null;
+  alternatorBrand?: string | null;
+}
+
+export interface IProductFilterMetadata {
+  id: string;
+  categoryId: string | null;
+  brandId: string | null;
+  specs: IProductFilterSpecs | null;
+}
+
 export interface IProductService {
   create(data: TNewProduct): Promise<TProduct | undefined>;
   update(id: string, data: TUpdateProductData): Promise<TProduct | undefined>;
@@ -142,6 +158,7 @@ export interface IProductService {
     prevCursor?: string | undefined;
   }>;
   getTopSellingProducts(limit: number): Promise<ITopSellingProduct[]>;
+  getFiltersMetadata(): Promise<IProductFilterMetadata[]>;
 }
 // --- Warehouse Service Interfaces ---
 export interface IWarehouseService {

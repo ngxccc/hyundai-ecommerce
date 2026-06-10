@@ -9,16 +9,23 @@
 
 ## Quick Links
 
-- [Overview](#overview)
-- [Phase Completion Rules](#phase-completion-rules)
-- [Execution Brief](#execution-brief)
-- [Scope](#scope)
-- [Touchpoints](#touchpoints)
-- [Public Contracts](#public-contracts)
-- [Blast Radius](#blast-radius)
-- [Verification Evidence](#verification-evidence)
-- [Resume and Execution Handoff](#resume-and-execution-handoff)
-- [Cursor + RIPER-5 Guidance](#cursor--riper-5-guidance)
+- [Storefront Hybrid Faceted Search Implementation Plan](#storefront-hybrid-faceted-search-implementation-plan)
+  - [Quick Links](#quick-links)
+  - [Overview](#overview)
+  - [Phase Completion Rules](#phase-completion-rules)
+  - [Acceptance Criteria](#acceptance-criteria)
+  - [Implementation Checklist](#implementation-checklist)
+  - [Execution Brief](#execution-brief)
+    - [Phase 1: Database Service \& API Route Setup](#phase-1-database-service--api-route-setup)
+    - [Phase 2: Client-side Facet Engine](#phase-2-client-side-facet-engine)
+    - [Phase 3: Client Component Integration](#phase-3-client-component-integration)
+  - [Scope](#scope)
+  - [Touchpoints](#touchpoints)
+  - [Public Contracts](#public-contracts)
+  - [Blast Radius](#blast-radius)
+  - [Verification Evidence](#verification-evidence)
+  - [Resume and Execution Handoff](#resume-and-execution-handoff)
+  - [Cursor + RIPER-5 Guidance](#cursor--riper-5-guidance)
 
 ---
 
@@ -157,6 +164,7 @@ A phase is **NOT** complete until:
 ## Public Contracts
 
 - API Endpoint: `GET /api/products/metadata` returning:
+
   ```json
   {
     "status": true,
@@ -192,14 +200,18 @@ A phase is **NOT** complete until:
 
 - Follow the testing procedures defined in `process/context/tests/all-tests.md` (specifically `tests.md` routing) to execute verification.
 - Run typechecks:
+
   ```bash
   bun run check-types
   ```
+
 - Run unit/integration tests:
+
   ```bash
   bun test apps/storefront/app/api/products/metadata/route.test.ts
   bun test apps/storefront/src/features/products/utils/facet-engine.test.ts
   ```
+
 - Visual QA on mobile (375px) and desktop (1440px) to verify immediate disabling of invalid filters (Post-Phase Testing / Test Procedure).
 
 ---

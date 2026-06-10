@@ -3,6 +3,7 @@ import type {
   TUpdateProductData,
   ITopSellingProduct,
   TGetAllOptions,
+  IProductFilterMetadata,
 } from "./interfaces";
 import {
   products,
@@ -177,6 +178,40 @@ export class ProductService implements IProductService {
     }));
   }
 
+  async getFiltersMetadata(): Promise<IProductFilterMetadata[]> {
+    const result = await this.db
+      .select({
+        id: products.id,
+        categoryId: products.categoryId,
+        brandId: products.brandId,
+        power: this.getNumericSpec("power"),
+        voltage: this.getNumericSpec("voltage"),
+        phase: this.getStringSpec("phase"),
+        fuelType: this.getStringSpec("fuelType"),
+        engineBrand: this.getStringSpec("engineBrand"),
+        alternatorBrand: this.getStringSpec("alternatorBrand"),
+      })
+      .from(products)
+      .where(isNull(products.deletedAt));
+
+    return result.map(
+      (r) =>
+        ({
+          id: r.id,
+          categoryId: r.categoryId,
+          brandId: r.brandId,
+          specs: {
+            power: r.power ? Number(r.power) : null,
+            voltage: r.voltage ? Number(r.voltage) : null,
+            phase: r.phase,
+            fuelType: r.fuelType,
+            engineBrand: r.engineBrand,
+            alternatorBrand: r.alternatorBrand,
+          },
+        }) as IProductFilterMetadata,
+    );
+  }
+
   /**
    * Dynamically constructs SQL filters for the product catalog query.
    * Handles cursor-based pagination, category filtering, search, and specification filters.
@@ -302,5 +337,9 @@ export class ProductService implements IProductService {
           ELSE NULL
       END
     `;
+  }
+
+  private getStringSpec(key: string) {
+    return sql`${products.specs}->>${key}`;
   }
 }
