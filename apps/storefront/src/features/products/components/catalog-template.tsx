@@ -137,7 +137,7 @@ export async function CatalogTemplate({
 
   const { data: productsList, hasMore, nextCursor, prevCursor } = productsData;
 
-  const displayTitle = title || t("title");
+  const displayTitle = title ?? t("title");
 
   return (
     <div className="bg-background min-h-screen pt-6">
