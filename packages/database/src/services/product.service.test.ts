@@ -173,4 +173,75 @@ describe("ProductService", () => {
       expect(result.data).toEqual(mockProducts);
     });
   });
+
+  describe("getFiltersMetadata()", () => {
+    test("should query database and return mapped filters metadata", async () => {
+      const mockDbResult = [
+        {
+          id: "prod-1",
+          categoryId: "cat-1",
+          brandId: "brand-1",
+          power: "10.5",
+          voltage: "220",
+          phase: "1phase",
+          fuelType: "diesel",
+          engineBrand: "Hyundai",
+          alternatorBrand: "Hyundai",
+        },
+      ];
+      mockSelectResolvedValue.mockResolvedValueOnce(mockDbResult);
+
+      const result = await productService.getFiltersMetadata();
+
+      expect(mockSelect).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([
+        {
+          id: "prod-1",
+          categoryId: "cat-1",
+          brandId: "brand-1",
+          specs: {
+            power: 10.5,
+            voltage: 220,
+            phase: "1phase",
+            fuelType: "diesel",
+            engineBrand: "Hyundai",
+            alternatorBrand: "Hyundai",
+          },
+        },
+      ]);
+    });
+
+    test("should handle null or invalid values in database mapping", async () => {
+      const mockDbResult = [
+        {
+          id: "prod-2",
+          categoryId: null,
+          brandId: null,
+          power: null,
+          voltage: null,
+          phase: null,
+          fuelType: null,
+          engineBrand: null,
+          alternatorBrand: null,
+        },
+      ];
+      mockSelectResolvedValue.mockResolvedValueOnce(mockDbResult);
+
+      const result = await productService.getFiltersMetadata();
+
+      expect(result[0]).toEqual({
+        id: "prod-2",
+        categoryId: null,
+        brandId: null,
+        specs: {
+          power: null,
+          voltage: null,
+          phase: null,
+          fuelType: null,
+          engineBrand: null,
+          alternatorBrand: null,
+        },
+      });
+    });
+  });
 });
