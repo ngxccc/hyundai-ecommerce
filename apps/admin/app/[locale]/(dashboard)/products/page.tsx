@@ -84,7 +84,7 @@ export default async function AdminProductsPage({
     maxPower: maxPower !== undefined && !isNaN(maxPower) ? maxPower : undefined,
     engineBrand,
     alternatorBrand,
-    status,
+    status: status as "active" | "outOfStock" | undefined,
     search,
     isQuoteOnly: isQuoteOnly ? true : undefined,
   };

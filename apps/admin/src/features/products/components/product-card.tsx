@@ -65,7 +65,7 @@ export const ProductCard = ({ product }: { product: TProductGridItem }) => {
           {product.name}
         </h3>
         <p className="text-muted-foreground mb-4 text-sm">
-          {product.categories?.name ?? "Khác"}
+          {product.categoryId ?? "Khác"}
         </p>
 
         <div className="mt-auto flex items-end justify-between">

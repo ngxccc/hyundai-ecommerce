@@ -271,6 +271,7 @@
       "engine_brand": "Engine Brand",
       "alternator_brand": "Alternator Brand",
       "clear_all": "Clear All",
+      "apply": "Show {count} products",
       "placeholder_min": "Min",
       "placeholder_max": "Max",
       "placeholder_voltage": "e.g. 220, 380",

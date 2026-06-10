@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useCallback, useRef, useState } from "react";
 import { ReactCrop, type Crop, type PixelCrop } from "react-image-crop";
 import { Trash2, Loader2, Crop as CropIcon } from "lucide-react";

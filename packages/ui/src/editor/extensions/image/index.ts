@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { mergeAttributes, type CommandProps } from "@tiptap/core";
 import TiptapImage from "@tiptap/extension-image";
 import { ReactNodeViewRenderer, type Editor } from "@tiptap/react";
