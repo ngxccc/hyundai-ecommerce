@@ -3,7 +3,7 @@ import { productService, categoryService, brandService } from "@nhatnang/databas
 import type { TGetAllOptions } from "@nhatnang/database/services";
 import { NextResponse, type NextRequest } from "next/server";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
