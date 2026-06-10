@@ -45,7 +45,7 @@ export function ProductFilters({
 
   // Selected values from effective params (URL or pending)
   const selectedCategory =
-    selectedCategorySlug ?? effectiveSearchParams.get("category") ?? "";
+    effectiveSearchParams.get("category") ?? selectedCategorySlug ?? "";
   const selectedBrands =
     effectiveSearchParams.get("brand")?.split(",").filter(Boolean) ?? [];
   const searchQuery = effectiveSearchParams.get("q") ?? "";
@@ -193,7 +193,7 @@ export function ProductFilters({
           }`}
           style={{ paddingLeft: `${depth * 12 + 8}px` }}
           onClick={() => {
-            const params = new URLSearchParams(searchParams.toString());
+            const params = new URLSearchParams(effectiveSearchParams.toString());
             // Clear category from searchParams as it is now a path parameter
             params.delete("category");
             // Reset pagination parameters when category changes
