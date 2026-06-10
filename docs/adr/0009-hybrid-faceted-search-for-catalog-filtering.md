@@ -70,3 +70,9 @@ We will implement a **Hybrid Faceted Search** approach to catalog filtering:
 - **Positive (Shareability and Native Routing)**: Filter combinations are saved in the URL query string, maintaining shareable links and standard back/forward navigation.
 - **Negative (Initial Payload Overhead)**: The lightweight metadata JSON must be downloaded on page load. While negligible for our current catalog size (~50KB for 1,000 products), it could scale to 1-2MB if the catalog exceeds 30,000+ products, which would require migrating to category-level static facet caching in the future.
 - **Negative (Implementation Complexity)**: Requires maintaining synchronization between the URL state, the local input values, and the memory-based facet matching algorithm.
+
+### Explicit Tradeoffs
+
+- **Initial Page Load Weight vs. Client Interactive Speed**: We trade a slightly larger initial page payload (an extra 50KB static JSON metadata file downloaded once) to achieve instant 0ms visual feedback on the filter checkboxes.
+- **Database CPU Load vs. Client RAM/CPU Consumption**: We shift the heavy computation of dynamic facets (calculating which checkbox combos are available) from the central PostgreSQL database server to the user's web browser RAM/CPU.
+- **State Sync Complexity vs. Standard Server-side Navigation**: We trade writing more complex state-sync code (managing debounced inputs and local vs URL states to avoid feedback loops) for avoiding full page reloads and database queries on every filter click.
