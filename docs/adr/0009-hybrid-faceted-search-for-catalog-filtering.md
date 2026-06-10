@@ -38,7 +38,7 @@ We will implement a **Hybrid Faceted Search** approach to catalog filtering:
 
 ## Data Flow Diagram
 
-```
+```text
 [User Page Load]
        │
        ├─► Server-Side: Fetch first page of products (12 items) with full details
