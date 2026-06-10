@@ -22,8 +22,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Manual Trivy Setup vulnerability scanner
-        uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'fs'
           format: 'sarif'
@@ -34,18 +34,6 @@ jobs:
           exit-code: '1'
           cache: true
           version: v0.71.0
-
-      # - name: Run Trivy vulnerability scanner
-      #   uses: aquasecurity/trivy-action@v0.36.0
-      #   with:
-      #     scan-type: 'fs'
-      #     format: 'sarif'
-      #     output: 'trivy-results.sarif'
-      #     severity: 'CRITICAL,HIGH,MEDIUM'
-      #     scanners: 'vuln,config,secret'
-      #     ignore-unfixed: true
-      #     exit-code: '1'
-      #     cache: 'true'
 
       - name: Upload Trivy results
         uses: github/codeql-action/upload-sarif@v4
