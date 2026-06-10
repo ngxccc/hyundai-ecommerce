@@ -20,15 +20,15 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
+    "db:baseline": "doppler run -c dev -- bun scripts/baseline.ts && doppler run -c prd -- bun scripts/baseline.ts --inject-only && doppler run -c stg -- bun scripts/baseline.ts --inject-only",
     "db:generate": "doppler run -- drizzle-kit generate --config drizzle.config.ts",
     "db:migrate": "doppler run -- drizzle-kit migrate --config drizzle.config.ts",
+    "db:migrate:prod": "doppler run -c prd -- drizzle-kit migrate --config drizzle.config.ts",
+    "db:migrate:test": "doppler run -c stg -- drizzle-kit migrate --config drizzle.config.ts",
     "db:push": "doppler run -- drizzle-kit push --config drizzle.config.ts",
     "db:seed": "doppler run -c dev -- scripts/seed.ts",
     "db:seed:test": "doppler run -c stg -- scripts/seed.ts",
-    "db:migrate:prod": "doppler run -c prd -- drizzle-kit migrate --config drizzle.config.ts",
-    "db:migrate:test": "doppler run -c stg -- drizzle-kit migrate --config drizzle.config.ts",
     "db:studio": "doppler run -- drizzle-kit studio --config drizzle.config.ts",
-    "db:baseline": "doppler run -c dev -- bun scripts/baseline.ts && doppler run -c prd -- bun scripts/baseline.ts --inject-only && doppler run -c stg -- bun scripts/baseline.ts --inject-only",
     "docs:gen": "bun run scripts/generate-docs.ts",
     "lint": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
@@ -39,13 +39,13 @@
     "@neondatabase/serverless": "^1.1.0",
     "@paralleldrive/cuid2": "^3.3.0",
     "@t3-oss/env-core": "^0.13.11",
+    "@tiptap/core": "^3.26.0",
     "better-auth": "^1.6.15",
     "drizzle-orm": "v1.0.0-rc.3",
     "postgres": "^3.4.9",
     "resend": "^6.12.3",
     "uuid": "^14.0.0",
-    "zod": "^4.4.3",
-    "@tiptap/core": "^3.26.0"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
@@ -53,7 +53,7 @@
     "@nhatnang/types": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
     "@types/bun": "^1",
-    "@types/node": "^25.9.2",
+    "@types/node": "^25",
     "@types/uuid": "^11.0.0",
     "drizzle-kit": "v1.0.0-rc.3"
   }

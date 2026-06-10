@@ -2,15 +2,15 @@
   "name": "@nhatnang/types",
   "private": true,
   "type": "module",
-  "scripts": {
-    "check-types": "tsc --noEmit"
-  },
   "exports": {
     ".": {
       "types": "./src/index.ts",
       "import": "./src/index.ts",
       "default": "./src/index.ts"
     }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "react-hook-form": "^7.76.1"

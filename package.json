@@ -11,6 +11,8 @@
   "scripts": {
     "build": "doppler run -- turbo run build",
     "check-types": "turbo run check-types",
+    "clean": "bunx rimraf '**/node_modules' '**/.next' '**/.turbo'",
+    "clean:hard": "bunx rimraf '**/node_modules' '**/.next' '**/.turbo' 'bun.lock' && bun install",
     "deps:fix": "syncpack fix",
     "deps:lint": "syncpack list",
     "dev": "doppler run -- turbo run dev",
@@ -18,18 +20,16 @@
     "format:pkg": "syncpack format",
     "format:pkg:check": "syncpack format --check",
     "lint": "turbo run lint",
-    "test": "turbo run test",
-    "clean": "bunx rimraf '**/node_modules' '**/.next' '**/.turbo'",
-    "clean:hard": "bunx rimraf '**/node_modules' '**/.next' '**/.turbo' 'bun.lock' && bun install"
+    "test": "turbo run test"
   },
   "devDependencies": {
     "@types/bun": "^1",
     "@types/node": "^25",
     "eslint": "^9",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "syncpack": "^15.3.1",
-    "turbo": "^2.9.16",
+    "turbo": "^2.9.17",
     "typescript": "^6"
   }
 }
