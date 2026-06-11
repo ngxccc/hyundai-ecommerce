@@ -5,6 +5,7 @@ import {
   SYSTEM_ERROR_CODES,
 } from "@nhatnang/shared/constants";
 import type { TActionResult } from "@nhatnang/types";
+import type { getTranslations } from "next-intl/server";
 
 // ---------------------------------------------------------------------------
 // Mocks — system boundaries only
@@ -74,20 +75,34 @@ const assertValidationError = (
 describe("registerAction", () => {
   let mockRegister: Mock<AuthService["register"]>;
   let mockCheckDuplicateUser: Mock<UserService["checkDuplicateUser"]>;
+  let mockGetTranslations: Mock<typeof getTranslations>;
 
   beforeEach(async () => {
-    const { authService, userService } = await import("@nhatnang/database/services");
+    const { authService, userService } =
+      await import("@nhatnang/database/services");
+    const { getTranslations: nextGetTranslations } =
+      await import("next-intl/server");
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
     mockRegister = authService.register as Mock<typeof authService.register>;
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    mockCheckDuplicateUser = userService.checkDuplicateUser as Mock<typeof userService.checkDuplicateUser>;
+    mockCheckDuplicateUser = userService.checkDuplicateUser as Mock<
+      typeof userService.checkDuplicateUser
+    >;
+    mockGetTranslations = nextGetTranslations as Mock<
+      typeof nextGetTranslations
+    >;
 
     mockRegister.mockReset();
     mockCheckDuplicateUser.mockReset();
     mockCheckDuplicateUser.mockResolvedValue(undefined);
+    mockGetTranslations.mockReset();
+    mockGetTranslations.mockResolvedValue(
+      ((key: string) => `translated.${key}`) as unknown as Awaited<
+        ReturnType<typeof getTranslations>
+      >,
+    );
   });
-
 
   // ── Validation: basic fields ────────────────────────────────────────────
 
