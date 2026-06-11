@@ -41,8 +41,6 @@ export async function ProductsSection() {
 
   const { data: products } = await productService.getProducts();
 
-  console.log(products);
-
   if (!products?.length) return null;
 
   return (
