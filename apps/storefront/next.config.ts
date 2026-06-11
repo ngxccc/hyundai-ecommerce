@@ -20,6 +20,14 @@ const nextConfig: NextConfig = {
     ],
   },
   transpilePackages: ["@nhatnang/database", "@nhatnang/shared", "@nhatnang/ui"],
+  experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-slot",
+      "react-hook-form",
+    ],
+  },
 };
 
 export default withNextIntl(nextConfig);
