@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
-import { CldImage } from "@/shared/components/CldImageWrapper";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { Link } from "@/i18n/routing";
@@ -49,27 +48,17 @@ export async function NewsSection() {
             >
               <article className="flex h-full flex-col sm:flex-row">
                 <CardHeader className="relative aspect-4/3 shrink-0 p-0 sm:aspect-auto sm:w-2/5">
-                  {article.imageUrl?.includes("cloudinary.com") ? (
-                    <CldImage
-                      src={article.imageUrl}
-                      alt={article.title}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 300px"
-                      className="object-cover transition-transform duration-700"
-                    />
-                  ) : (
-                    <Image
-                      src={
-                        article.imageUrl
-                          ? article.imageUrl
-                          : "https://placehold.co/400x300/png?text=No+Image"
-                      }
-                      alt={article.title}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 300px"
-                      className="object-cover transition-transform duration-700"
-                    />
-                  )}
+                  <Image
+                    src={
+                      article.imageUrl
+                        ? article.imageUrl
+                        : "https://placehold.co/400x300/png?text=No+Image"
+                    }
+                    alt={article.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 300px"
+                    className="object-cover transition-transform duration-700"
+                  />
                   <Badge className="bg-background/80 text-foreground hover:bg-background/90 absolute top-4 left-4 text-xs backdrop-blur-sm">
                     {article.category}
                   </Badge>

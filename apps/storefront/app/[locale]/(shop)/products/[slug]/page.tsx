@@ -5,7 +5,6 @@ import { priceFormatter } from "@/shared/lib/utils";
 import { productService } from "@/shared/services";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { CldImage } from "@/shared/components/CldImageWrapper";
 import { notFound } from "next/navigation";
 
 interface ProductPageParams {
@@ -106,29 +105,18 @@ const ProductDetailsPage = async ({
   return (
     <section className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:flex-row lg:px-8">
       <div className="relative aspect-square w-full overflow-hidden rounded-xl lg:w-1/2">
-        {product.images[0]?.includes("cloudinary.com") ? (
-          <CldImage
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            preload
-          />
-        ) : (
-          <Image
-            src={
-              product.images[0] && product.images[0] !== ""
-                ? product.images[0]
-                : "https://placehold.co/600x600/png?text=No+Image"
-            }
-            alt={product.name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            priority
-          />
-        )}
+        <Image
+          src={
+            product.images[0] && product.images[0] !== ""
+              ? product.images[0]
+              : "https://placehold.co/600x600/png?text=No+Image"
+          }
+          alt={product.name}
+          fill
+          className="object-cover"
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          priority
+        />
       </div>
 
       <div className="flex w-full flex-col gap-4 lg:w-1/2">

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { CldImage } from "@/shared/components/CldImageWrapper";
 import { ArrowUpRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
@@ -74,37 +73,22 @@ export async function CategoriesSection() {
                 key={cat.id}
                 className={`${ui.span} group focus-visible:ring-primary relative overflow-hidden rounded-2xl shadow-sm transition-all duration-500 outline-none hover:shadow-xl focus-visible:ring-2`}
               >
-                {cat.image?.includes("cloudinary.com") ? (
-                  <CldImage
-                    alt={cat.description ?? ""}
-                    src={cat.image}
-                    fill
-                    sizes={
-                      ui.span.includes("col-span-8")
-                        ? "(max-width: 768px) 100vw, 66vw"
-                        : "(max-width: 768px) 100vw, 33vw"
-                    }
-                    className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
-                    loading="eager"
-                  />
-                ) : (
-                  <Image
-                    alt={cat.description ?? ""}
-                    src={
-                      cat.image && cat.image !== ""
-                        ? cat.image
-                        : "https://placehold.co/400x300/png?text=No+Image"
-                    }
-                    fill
-                    sizes={
-                      ui.span.includes("col-span-8")
-                        ? "(max-width: 768px) 100vw, 66vw"
-                        : "(max-width: 768px) 100vw, 33vw"
-                    }
-                    className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
-                    loading="eager"
-                  />
-                )}
+                <Image
+                  alt={cat.description ?? ""}
+                  src={
+                    cat.image && cat.image !== ""
+                      ? cat.image
+                      : "https://placehold.co/400x300/png?text=No+Image"
+                  }
+                  fill
+                  sizes={
+                    ui.span.includes("col-span-8")
+                      ? "(max-width: 768px) 100vw, 66vw"
+                      : "(max-width: 768px) 100vw, 33vw"
+                  }
+                  className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
+                  loading="eager"
+                />
 
                 <div
                   className={`absolute inset-0 bg-linear-to-t ${ui.gradient} flex flex-col justify-end p-6 transition-opacity duration-500 md:p-10`}

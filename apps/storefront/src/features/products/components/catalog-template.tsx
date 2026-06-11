@@ -11,7 +11,6 @@ import { ProductPagination } from "./product-pagination";
 import { ActiveFilterChips } from "./active-filter-chips";
 import { DesktopProductFilters } from "./desktop-product-filters";
 import { ProductFilterSheet } from "./product-filter-sheet";
-import { CldImage } from "@/shared/components/CldImageWrapper";
 import Image from "next/image";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -209,31 +208,19 @@ export async function CatalogTemplate({
                     >
                       <Link href={`/products/${product.slug}`}>
                         <CardHeader className="relative aspect-4/3 w-full p-0">
-                          {product.images[0]?.includes("cloudinary.com") ? (
-                            <CldImage
-                              src={product.images[0]}
-                              alt={product.name}
-                              fill
-                              className="object-cover transition-transform duration-500"
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                              priority={isLcp}
-                              loading={isLcp ? undefined : "lazy"}
-                            />
-                          ) : (
-                            <Image
-                              src={
-                                product.images[0] && product.images[0] !== ""
-                                  ? product.images[0]
-                                  : "https://placehold.co/400x300/png?text=No+Image"
-                              }
-                              alt={product.name}
-                              fill
-                              className="object-cover transition-transform duration-500"
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                              priority={isLcp}
-                              loading={isLcp ? undefined : "lazy"}
-                            />
-                          )}
+                          <Image
+                            src={
+                              product.images[0] && product.images[0] !== ""
+                                ? product.images[0]
+                                : "https://placehold.co/400x300/png?text=No+Image"
+                            }
+                            alt={product.name}
+                            fill
+                            className="object-cover transition-transform duration-500"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            priority={isLcp}
+                            loading={isLcp ? undefined : "lazy"}
+                          />
                           <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
                             {tHome("model")}:{" "}
                             {product.specs?.model ?? t("unknown")}

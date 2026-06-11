@@ -2,7 +2,6 @@ import type { TProduct } from "@nhatnang/database/schemas";
 import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
-import { CldImage } from "@/shared/components/CldImageWrapper";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import {
@@ -64,27 +63,17 @@ export async function ProductsSection() {
               className="group hover:border-primary/50 flex h-full flex-col gap-4 overflow-hidden py-0 transition-all hover:shadow-xl"
             >
               <CardHeader className="relative aspect-4/3 w-full p-0">
-                {product.images[0]?.includes("cloudinary.com") ? (
-                  <CldImage
-                    src={product.images[0]}
-                    alt={product.name}
-                    fill
-                    className="object-cover transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                ) : (
-                  <Image
-                    src={
-                      product.images[0] && product.images[0] !== ""
-                        ? product.images[0]
-                        : "https://placehold.co/400x300/png?text=No+Image"
-                    }
-                    alt={product.name}
-                    fill
-                    className="object-cover transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                )}
+                <Image
+                  src={
+                    product.images[0] && product.images[0] !== ""
+                      ? product.images[0]
+                      : "https://placehold.co/400x300/png?text=No+Image"
+                  }
+                  alt={product.name}
+                  fill
+                  className="object-cover transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
                 <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
                   {t("model")}: {product.specs?.model ?? "Unknown"}
                 </Badge>
