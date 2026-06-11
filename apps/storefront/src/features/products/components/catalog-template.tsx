@@ -239,9 +239,9 @@ export async function CatalogTemplate({
 
                     <CardContent className="flex grow flex-col gap-2">
                       <Link href={`/products/${product.slug}`}>
-                        <h3 className="font-display text-foreground group-hover:text-primary line-clamp-2 text-xl leading-tight font-bold transition-colors">
+                        <h2 className="font-display text-foreground group-hover:text-primary line-clamp-2 text-xl leading-tight font-bold transition-colors">
                           {product.name}
-                        </h3>
+                        </h2>
                       </Link>
 
                       {/* Specs List */}
