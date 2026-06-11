@@ -1,8 +1,7 @@
 "use client";
 
-import { useTransition, useState, useEffect, useCallback } from "react";
+import { useTransition, useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter, usePathname } from "@/i18n/routing";
-import { useSearchParams } from "next/navigation";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Input } from "@nhatnang/ui/components/ui/input";
@@ -29,6 +28,7 @@ interface ProductFiltersProps {
   mode?: "live" | "sheet";
   onPendingFiltersChange?: (params: URLSearchParams) => void;
   pendingSearchParams?: URLSearchParams | undefined;
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 function flattenCategoriesTree(
@@ -56,10 +56,24 @@ export function ProductFilters({
   mode = "live",
   onPendingFiltersChange,
   pendingSearchParams,
+  searchParams: searchParamsProp,
 }: ProductFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+
+  const searchParams = useMemo(() => {
+    const params = new URLSearchParams();
+    Object.entries(searchParamsProp).forEach(([key, value]) => {
+      if (value !== undefined) {
+        if (Array.isArray(value)) {
+          value.forEach((val) => params.append(key, val));
+        } else {
+          params.append(key, value);
+        }
+      }
+    });
+    return params;
+  }, [searchParamsProp]);
   // Fetch metadata once on mount
   const [metadata, setMetadata] = useState<IProductFilterMetadata[]>([]);
   useEffect(() => {

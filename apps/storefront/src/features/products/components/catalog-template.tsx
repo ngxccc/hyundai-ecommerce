@@ -165,6 +165,7 @@ export async function CatalogTemplate({
                 categories={categoriesTree}
                 brands={allBrands}
                 selectedCategorySlug={categorySlug}
+                searchParams={searchParams}
               />
             </div>
           </div>
@@ -175,6 +176,7 @@ export async function CatalogTemplate({
               categories={categoriesTree}
               brands={allBrands}
               selectedCategorySlug={categorySlug}
+              searchParams={searchParams}
             />
           </div>
 

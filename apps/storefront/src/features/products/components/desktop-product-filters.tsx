@@ -8,12 +8,14 @@ interface DesktopProductFiltersProps {
   categories: TCategoryWithChildren[];
   brands: TBrand[];
   selectedCategorySlug?: string | undefined;
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 export function DesktopProductFilters({
   categories,
   brands,
   selectedCategorySlug,
+  searchParams,
 }: DesktopProductFiltersProps) {
   return (
     <div className="space-y-4">
@@ -22,6 +24,7 @@ export function DesktopProductFilters({
         brands={brands}
         selectedCategorySlug={selectedCategorySlug ?? ""}
         mode="live"
+        searchParams={searchParams}
       />
     </div>
   );

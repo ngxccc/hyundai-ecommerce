@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, usePathname } from "@/i18n/routing";
+import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import {
   Sheet,
@@ -21,6 +21,7 @@ interface ProductFilterSheetProps {
   categories: TCategoryWithChildren[];
   brands: TBrand[];
   selectedCategorySlug?: string | undefined;
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 /**
@@ -32,9 +33,9 @@ export function ProductFilterSheet({
   categories,
   brands,
   selectedCategorySlug,
+  searchParams,
 }: ProductFilterSheetProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const t = useTranslations("Catalog.sidebar");
   const [open, setOpen] = useState(false);
 
@@ -44,14 +45,44 @@ export function ProductFilterSheet({
     null,
   );
 
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (isOpen) {
+      const params = new URLSearchParams();
+      Object.entries(searchParams).forEach(([key, value]) => {
+        if (value !== undefined) {
+          if (Array.isArray(value)) {
+            value.forEach((val) => params.append(key, val));
+          } else {
+            params.append(key, value);
+          }
+        }
+      });
+      if (selectedCategorySlug && !params.has("category")) {
+        params.set("category", selectedCategorySlug);
+      }
+      setPendingParams(params);
+    } else {
+      setPendingParams(null);
+    }
+  };
+
   const handlePendingChange = (params: URLSearchParams) => {
     setPendingParams(params);
   };
 
   const handleApply = () => {
     if (pendingParams) {
-      const query = pendingParams.toString();
-      router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
+      const category = pendingParams.get("category");
+      const params = new URLSearchParams(pendingParams.toString());
+      params.delete("category");
+      const query = params.toString();
+
+      if (category) {
+        router.push(`/products/category/${category}${query ? `?${query}` : ""}`, { scroll: false });
+      } else {
+        router.push(query ? `/products?${query}` : "/products", { scroll: false });
+      }
     }
     setOpen(false);
     setPendingParams(null);
@@ -66,7 +97,7 @@ export function ProductFilterSheet({
   };
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <Button
           variant="outline"
@@ -105,6 +136,7 @@ export function ProductFilterSheet({
             mode="sheet"
             onPendingFiltersChange={handlePendingChange}
             pendingSearchParams={pendingParams ?? undefined}
+            searchParams={searchParams}
           />
         </div>
         {/* Sticky Footer */}
