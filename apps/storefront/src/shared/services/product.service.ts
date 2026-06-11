@@ -16,9 +16,10 @@ const getBuildSafeProducts = async (): Promise<TProduct[]> => {
   }
 
   try {
-    return await fetchApi<TProduct[]>("/api/products", {
+    const response = await fetchApi<TGetProductsResponse>("/api/products", {
       next: { revalidate: PRODUCTS_REVALIDATE_SECONDS },
     });
+    return response.data;
   } catch (error) {
     console.error("Failed to fetch products:", error);
     return BUILD_TIME_PRODUCTS;
