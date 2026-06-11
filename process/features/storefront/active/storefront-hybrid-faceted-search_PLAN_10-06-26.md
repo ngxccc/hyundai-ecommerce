@@ -66,9 +66,9 @@ A phase is **NOT** complete until:
 - [x] Write API route tests in `apps/storefront/app/api/products/metadata/route.test.ts`.
 - [x] Create `facet-engine.ts` client-side calculator utility in `apps/storefront/src/features/products/utils/facet-engine.ts`.
 - [x] Write engine unit tests in `apps/storefront/src/features/products/utils/facet-engine.test.ts`.
-- [ ] Fetch metadata JSON dynamically and cache it in component state on initial catalog load.
-- [ ] Integrate facet engine calculations into `ProductFilters` to disable invalid options.
-- [ ] Verify functionality and execute performance check of client memory matching.
+- [x] Fetch metadata JSON dynamically and cache it in component state on initial catalog load.
+- [x] Integrate facet engine calculations into `ProductFilters` to disable invalid options.
+- [x] Verify functionality and execute performance check of client memory matching.
 
 ---
 
