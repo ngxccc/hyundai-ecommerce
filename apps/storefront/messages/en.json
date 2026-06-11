@@ -279,7 +279,9 @@
       "placeholder_max": "Max",
       "placeholder_voltage": "e.g. 220, 380",
       "placeholder_engine_brand": "e.g. Hyundai, Cummins",
-      "placeholder_alternator_brand": "e.g. Stamford, Mecc Alte"
+      "placeholder_alternator_brand": "e.g. Stamford, Mecc Alte",
+      "expand_category": "Expand category",
+      "collapse_category": "Collapse category"
     },
     "sort": {
       "label": "Sort by",

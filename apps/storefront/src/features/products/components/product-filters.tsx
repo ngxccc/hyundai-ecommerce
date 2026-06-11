@@ -325,6 +325,7 @@ export function ProductFilters({
                 e.stopPropagation();
                 toggleCategory(node.id);
               }}
+              aria-label={isExpanded ? t("sidebar.collapse_category") : t("sidebar.expand_category")}
               className="hover:bg-muted-foreground/10 rounded-sm p-1"
             >
               {isExpanded ? (

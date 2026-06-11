@@ -66,6 +66,7 @@ export function ProductSort({ currentSort, searchParams }: ProductSortProps) {
         </span>
         <button
           disabled
+          aria-label={t("sort.label")}
           className="border-input bg-background text-muted-foreground flex h-9 w-45 cursor-not-allowed items-center justify-between rounded-md border px-3 py-2 text-sm opacity-60 shadow-xs outline-hidden"
         >
           <span className="line-clamp-1">{currentLabel}</span>
@@ -81,7 +82,7 @@ export function ProductSort({ currentSort, searchParams }: ProductSortProps) {
         {t("sort.label")}:
       </span>
       <Select value={currentSort} onValueChange={handleSortChange}>
-        <SelectTrigger className="h-9 w-45">
+        <SelectTrigger className="h-9 w-45" aria-label={t("sort.label")}>
           <SelectValue placeholder={t("sort.newest")} />
         </SelectTrigger>
         <SelectContent>

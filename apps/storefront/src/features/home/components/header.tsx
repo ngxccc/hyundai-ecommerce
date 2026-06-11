@@ -17,10 +17,9 @@ export function Header() {
           <Link
             className="font-display text-primary focus-visible:ring-ring flex items-center gap-2 text-2xl font-black tracking-tighter transition-colors outline-none focus-visible:ring-2"
             href="/"
-            aria-label="Go to homepage"
           >
             {t("brand")}
-            <span className="text-muted-foreground hidden text-sm font-light tracking-widest opacity-80 sm:inline-block">
+            <span className="text-muted-foreground hidden text-sm font-light tracking-widest sm:inline-block">
               {t("branchName")}
             </span>
           </Link>
