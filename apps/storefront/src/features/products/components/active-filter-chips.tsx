@@ -40,11 +40,12 @@ export function ActiveFilterChips() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return `${labelPrefix}: ${tProduct(`phases.${value}` as any)}`;
     }
+
     return `${labelPrefix}: ${value}`;
   };
 
   searchParams.forEach((value, key) => {
-    if (["after", "before", "category"].includes(key)) return;
+    if (["after", "before", "category", "sort"].includes(key)) return;
 
     if (key === "brand") {
       value.split(",").forEach((v) => {
