@@ -7,11 +7,20 @@ import { Button } from "@nhatnang/ui/components/ui/button";
 import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Input } from "@nhatnang/ui/components/ui/input";
 import { Separator } from "@nhatnang/ui/components/ui/separator";
-import type { TCategoryWithChildren } from "@nhatnang/database/services";
+import type {
+  TCategoryWithChildren,
+  IProductFilterMetadata,
+} from "@nhatnang/database/services";
 import type { TBrand } from "@nhatnang/database/schemas";
 import { useTranslations } from "next-intl";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useDebounce } from "@nhatnang/ui/hooks/use-debounce";
+import { computeFacets } from "../utils/facet-engine";
+import type {
+  ComputeFacetsParams,
+  IProductActiveFilters,
+} from "../types/facet-engine";
+import { FUEL_TYPES, PHASES } from "@nhatnang/database/validators";
 
 interface ProductFiltersProps {
   categories: TCategoryWithChildren[];
@@ -20,6 +29,24 @@ interface ProductFiltersProps {
   mode?: "live" | "sheet";
   onPendingFiltersChange?: (params: URLSearchParams) => void;
   pendingSearchParams?: URLSearchParams | undefined;
+}
+
+function flattenCategoriesTree(
+  tree: TCategoryWithChildren[],
+  parentId: string | null = null,
+) {
+  const result: ComputeFacetsParams["categories"] = [];
+  for (const node of tree) {
+    result.push({
+      id: node.id,
+      slug: node.slug,
+      parentId,
+    });
+    if (node.children && node.children.length > 0) {
+      result.push(...flattenCategoriesTree(node.children, node.id));
+    }
+  }
+  return result;
 }
 
 export function ProductFilters({
@@ -33,6 +60,24 @@ export function ProductFilters({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  // Fetch metadata once on mount
+  const [metadata, setMetadata] = useState<IProductFilterMetadata[]>([]);
+  useEffect(() => {
+    fetch("/api/products/metadata")
+      .then(
+        (res) =>
+          res.json() as Promise<{
+            status: boolean;
+            data: IProductFilterMetadata[];
+          }>,
+      )
+      .then((resData) => {
+        if (resData.status && Array.isArray(resData.data)) {
+          setMetadata(resData.data);
+        }
+      })
+      .catch((err) => console.error("Failed to fetch filters metadata:", err));
+  }, []);
 
   // Use pending state for display when in sheet mode, otherwise use real URL
   const effectiveSearchParams =
@@ -56,6 +101,30 @@ export function ProductFilters({
   const voltage = effectiveSearchParams.get("voltage") ?? "";
   const engineBrand = effectiveSearchParams.get("engineBrand") ?? "";
   const alternatorBrand = effectiveSearchParams.get("alternatorBrand") ?? "";
+
+  // Compute active filters and facetStatus
+  const activeFilters: IProductActiveFilters = {
+    categorySlug: selectedCategory || null,
+    brandSlugs: selectedBrands,
+    fuelType: fuelType || null,
+    phase: phase || null,
+    minPower: minPower ? Number(minPower) : null,
+    maxPower: maxPower ? Number(maxPower) : null,
+    voltage: voltage ? Number(voltage) : null,
+    engineBrand: engineBrand || null,
+    alternatorBrand: alternatorBrand || null,
+    q: searchQuery || null,
+  };
+
+  const facetStatus =
+    metadata.length > 0
+      ? computeFacets({
+          products: metadata,
+          brands,
+          categories: flattenCategoriesTree(categories),
+          activeFilters,
+        })
+      : null;
 
   // Local state for text search & specification filters to prevent typing lag
   const [localSearch, setLocalSearch] = useState(searchQuery);
@@ -195,17 +264,21 @@ export function ProductFilters({
     const hasChildren = node.children && node.children.length > 0;
     const isExpanded = expandedCategories[node.id];
     const isSelected = selectedCategory === node.slug;
+    const isDisabled = facetStatus ? !facetStatus.categories[node.slug] : false;
 
     return (
       <div key={node.id} className="select-none">
         <div
-          className={`flex cursor-pointer items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors ${
+          className={`flex items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors ${
             isSelected
               ? "bg-primary/10 text-primary font-bold"
-              : "hover:bg-muted text-foreground"
+              : isDisabled
+                ? "text-muted-foreground pointer-events-none cursor-not-allowed opacity-50"
+                : "hover:bg-muted text-foreground cursor-pointer"
           }`}
           style={{ paddingLeft: `${depth * 12 + 8}px` }}
           onClick={() => {
+            if (isDisabled) return;
             const params = new URLSearchParams(
               effectiveSearchParams.toString(),
             );
@@ -275,7 +348,7 @@ export function ProductFilters({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Search Input Box */}
       <div>
         <Input
@@ -291,7 +364,7 @@ export function ProductFilters({
 
       {/* Categories Tree Accordion */}
       <div>
-        <h4 className="text-foreground mb-3 text-sm font-bold">
+        <h4 className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.categories")}
         </h4>
         <div className="space-y-1">
@@ -303,26 +376,36 @@ export function ProductFilters({
 
       {/* Brand Checklist */}
       <div>
-        <h4 className="text-foreground mb-3 text-sm font-bold">
+        <h4 className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.brands")}
         </h4>
         <div className="space-y-2.5">
-          {brands.map((brand) => (
-            <label
-              key={brand.id}
-              className="flex cursor-pointer items-center space-x-2.5"
-            >
-              <Checkbox
-                checked={selectedBrands.includes(brand.slug)}
-                onCheckedChange={(checked) =>
-                  handleBrandChange(brand.slug, !!checked)
-                }
-              />
-              <span className="text-foreground text-sm leading-none font-medium select-none">
-                {brand.name}
-              </span>
-            </label>
-          ))}
+          {brands.map((brand) => {
+            const isBrandDisabled = facetStatus
+              ? !facetStatus.brands[brand.slug]
+              : false;
+            return (
+              <label
+                key={brand.id}
+                className={`flex items-center space-x-2.5 ${
+                  isBrandDisabled
+                    ? "cursor-not-allowed opacity-50"
+                    : "cursor-pointer"
+                }`}
+              >
+                <Checkbox
+                  checked={selectedBrands.includes(brand.slug)}
+                  onCheckedChange={(checked) =>
+                    handleBrandChange(brand.slug, !!checked)
+                  }
+                  disabled={isBrandDisabled}
+                />
+                <span className="text-foreground text-sm leading-none font-medium select-none">
+                  {brand.name}
+                </span>
+              </label>
+            );
+          })}
         </div>
       </div>
 
@@ -330,7 +413,7 @@ export function ProductFilters({
 
       {/* Power Range Filter (kW) */}
       <div>
-        <h4 className="text-foreground mb-3 text-sm font-bold">
+        <h4 className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.power_range")}
         </h4>
         <div className="flex items-center space-x-2">
@@ -340,6 +423,7 @@ export function ProductFilters({
             value={localMinPower}
             onChange={(e) => setLocalMinPower(e.target.value)}
             className="h-9 w-full"
+            min={0}
           />
           <span className="text-muted-foreground text-xs">—</span>
           <Input
@@ -348,6 +432,7 @@ export function ProductFilters({
             value={localMaxPower}
             onChange={(e) => setLocalMaxPower(e.target.value)}
             className="h-9 w-full"
+            min={0}
           />
         </div>
       </div>
@@ -356,27 +441,33 @@ export function ProductFilters({
 
       {/* Fuel Type */}
       <div>
-        <h4 className="text-foreground mb-3 text-sm font-bold">
+        <h4 className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.fuel_type")}
         </h4>
         <div className="flex flex-wrap gap-2">
-          {["gasoline", "diesel", "gas"].map((type) => (
-            <Button
-              key={type}
-              variant={fuelType === type ? "default" : "outline"}
-              size="sm"
-              onClick={() =>
-                updateFilters({ fuelType: fuelType === type ? null : type })
-              }
-              className="h-8.5 rounded-full px-3.5 text-xs font-semibold"
-            >
-              {type === "gasoline"
-                ? "Xăng"
-                : type === "diesel"
-                  ? "Diesel"
-                  : "Gas"}
-            </Button>
-          ))}
+          {FUEL_TYPES.map((type) => {
+            const isFuelDisabled = facetStatus
+              ? !facetStatus.fuelTypes[type]
+              : false;
+            return (
+              <Button
+                key={type}
+                variant={fuelType === type ? "default" : "outline"}
+                size="sm"
+                disabled={isFuelDisabled}
+                onClick={() =>
+                  updateFilters({ fuelType: fuelType === type ? null : type })
+                }
+                className="h-8.5 rounded-full px-3.5 text-xs font-semibold"
+              >
+                {type === "gasoline"
+                  ? "Xăng"
+                  : type === "diesel"
+                    ? "Diesel"
+                    : "Gas"}
+              </Button>
+            );
+          })}
         </div>
       </div>
 
@@ -384,21 +475,29 @@ export function ProductFilters({
 
       {/* Phase */}
       <div>
-        <h4 className="text-foreground mb-3 text-sm font-bold">
+        <h4 className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.phase")}
         </h4>
         <div className="flex gap-2">
-          {["1phase", "3phase"].map((ph) => (
-            <Button
-              key={ph}
-              variant={phase === ph ? "default" : "outline"}
-              size="sm"
-              onClick={() => updateFilters({ phase: phase === ph ? null : ph })}
-              className="h-8.5 rounded-full px-4 text-xs font-semibold"
-            >
-              {ph === "1phase" ? "1 Pha" : "3 Pha"}
-            </Button>
-          ))}
+          {PHASES.map((ph) => {
+            const isPhaseDisabled = facetStatus
+              ? !facetStatus.phases[ph]
+              : false;
+            return (
+              <Button
+                key={ph}
+                variant={phase === ph ? "default" : "outline"}
+                size="sm"
+                disabled={isPhaseDisabled}
+                onClick={() =>
+                  updateFilters({ phase: phase === ph ? null : ph })
+                }
+                className="h-8.5 rounded-full px-4 text-xs font-semibold"
+              >
+                {ph === "1phase" ? "1 Pha" : "3 Pha"}
+              </Button>
+            );
+          })}
         </div>
       </div>
 
@@ -406,7 +505,7 @@ export function ProductFilters({
 
       {/* Voltage */}
       <div>
-        <h4 className="text-foreground mb-3 text-sm font-bold">
+        <h4 className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.voltage")}
         </h4>
         <Input
@@ -415,6 +514,7 @@ export function ProductFilters({
           value={localVoltage}
           onChange={(e) => setLocalVoltage(e.target.value)}
           className="h-9 w-full"
+          min={0}
         />
       </div>
 
@@ -422,7 +522,7 @@ export function ProductFilters({
 
       {/* Engine Brand */}
       <div>
-        <h4 className="text-foreground mb-3 text-sm font-bold">
+        <h4 className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.engine_brand")}
         </h4>
         <Input
@@ -438,7 +538,7 @@ export function ProductFilters({
 
       {/* Alternator Brand */}
       <div>
-        <h4 className="text-foreground mb-3 text-sm font-bold">
+        <h4 className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.alternator_brand")}
         </h4>
         <Input

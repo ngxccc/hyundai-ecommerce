@@ -161,7 +161,7 @@ export async function CatalogTemplate({
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
           {/* Filters Sidebar (Desktop) */}
           <div className="hidden lg:block">
-            <div className="bg-muted/10 sticky top-24 rounded-lg border p-6">
+            <div className="bg-muted/10 sticky top-24 rounded-lg border p-4">
               <DesktopProductFilters
                 categories={categoriesTree}
                 brands={allBrands}
@@ -188,7 +188,10 @@ export async function CatalogTemplate({
                   count: productsList.length.toString(),
                 })}
               </p>
-              <ProductSort />
+              <ProductSort
+                currentSort={searchParams.sort ?? "newest"}
+                searchParams={searchParams}
+              />
             </div>
 
             {/* Active Filter Chips */}
@@ -202,34 +205,37 @@ export async function CatalogTemplate({
                     key={product.id}
                     className="group hover:border-primary/50 flex h-full flex-col gap-4 overflow-hidden py-0 transition-all hover:shadow-xl"
                   >
-                    <CardHeader className="relative aspect-4/3 w-full p-0">
-                      {product.images[0]?.includes("cloudinary.com") ? (
-                        <CldImage
-                          src={product.images[0]}
-                          alt={product.name}
-                          fill
-                          className="object-cover transition-transform duration-500"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          loading="eager"
-                        />
-                      ) : (
-                        <Image
-                          src={
-                            product.images[0] && product.images[0] !== ""
-                              ? product.images[0]
-                              : "https://placehold.co/400x300/png?text=No+Image"
-                          }
-                          alt={product.name}
-                          fill
-                          className="object-cover transition-transform duration-500"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          loading="eager"
-                        />
-                      )}
-                      <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
-                        {tHome("model")}: {product.specs?.model ?? t("unknown")}
-                      </Badge>
-                    </CardHeader>
+                    <Link href={`/products/${product.slug}`}>
+                      <CardHeader className="relative aspect-4/3 w-full p-0">
+                        {product.images[0]?.includes("cloudinary.com") ? (
+                          <CldImage
+                            src={product.images[0]}
+                            alt={product.name}
+                            fill
+                            className="object-cover transition-transform duration-500"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            loading="eager"
+                          />
+                        ) : (
+                          <Image
+                            src={
+                              product.images[0] && product.images[0] !== ""
+                                ? product.images[0]
+                                : "https://placehold.co/400x300/png?text=No+Image"
+                            }
+                            alt={product.name}
+                            fill
+                            className="object-cover transition-transform duration-500"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            loading="eager"
+                          />
+                        )}
+                        <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
+                          {tHome("model")}:{" "}
+                          {product.specs?.model ?? t("unknown")}
+                        </Badge>
+                      </CardHeader>
+                    </Link>
 
                     <CardContent className="flex grow flex-col gap-2">
                       <Link href={`/products/${product.slug}`}>
@@ -239,7 +245,7 @@ export async function CatalogTemplate({
                       </Link>
 
                       {/* Specs List */}
-                      <div className="mt-2 flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2">
                         {formatSpecs(product.specs, tProduct).map((spec) => (
                           <Badge
                             variant="secondary"
@@ -252,7 +258,7 @@ export async function CatalogTemplate({
                       </div>
                     </CardContent>
 
-                    <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between border-t p-6">
+                    <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between gap-1 border-t p-4 pt-4! lg:flex-col">
                       <span className="text-primary text-xl font-bold">
                         {product.isQuoteOnly
                           ? tHome("contact_price")
@@ -262,7 +268,7 @@ export async function CatalogTemplate({
                       <Button
                         asChild
                         size="lg"
-                        className="font-bold tracking-wider uppercase"
+                        className="font-bold tracking-wider uppercase lg:w-full"
                       >
                         <Link href={`/products/${product.slug}`}>
                           {product.isQuoteOnly

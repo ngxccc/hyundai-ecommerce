@@ -65,17 +65,6 @@ export function ProductFilterSheet({
     setOpen(false);
   };
 
-  const activeFilterCount = pendingParams
-    ? Array.from(pendingParams.keys()).filter(
-        (k) => !["after", "before"].includes(k),
-      ).length
-    : 0;
-
-  const applyLabel =
-    activeFilterCount > 0
-      ? t("apply", { count: String(activeFilterCount) })
-      : t("apply", { count: "0" });
-
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
@@ -121,7 +110,7 @@ export function ProductFilterSheet({
         {/* Sticky Footer */}
         <SheetFooter className="bg-background shrink-0 border-t p-6">
           <Button className="w-full" onClick={handleApply}>
-            {applyLabel}
+            {t("apply")}
           </Button>
         </SheetFooter>
       </SheetContent>
