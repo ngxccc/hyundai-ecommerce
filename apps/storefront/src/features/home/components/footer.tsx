@@ -73,9 +73,9 @@ export function Footer() {
 
           {/* Products */}
           <div>
-            <h5 className="font-display text-foreground mb-4 text-sm font-bold tracking-widest uppercase">
+            <div className="font-display text-foreground mb-4 text-sm font-bold tracking-widest uppercase">
               {t("footer.productsTitle")}
-            </h5>
+            </div>
             <nav aria-label="Footer Products Navigation">
               <ul className="space-y-2">
                 {FOOTERPRODUCTS.map((item) => (
@@ -94,9 +94,9 @@ export function Footer() {
 
           {/* Support */}
           <div>
-            <h5 className="font-display text-foreground mb-4 text-sm font-bold tracking-widest uppercase">
+            <div className="font-display text-foreground mb-4 text-sm font-bold tracking-widest uppercase">
               {t("footer.supportTitle")}
-            </h5>
+            </div>
             <nav aria-label="Footer Support Navigation">
               <ul className="space-y-2">
                 <li>

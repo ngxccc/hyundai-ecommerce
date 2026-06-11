@@ -70,6 +70,26 @@ export async function generateMetadata({
   };
 }
 
+const ALLOWED_SPEC_KEYS = new Set([
+  "model",
+  "power",
+  "voltage",
+  "frequency",
+  "phase",
+  "fuelType",
+  "warranty",
+  "weight",
+  "engineBrand",
+  "startingSystem",
+  "coolingSystem",
+  "fuelConsumption",
+  "fuelTankCapacity",
+  "alternatorBrand",
+]);
+
+const ALLOWED_FUEL_TYPES = new Set(["gasoline", "diesel", "gas"]);
+const ALLOWED_PHASES = new Set(["1phase", "3phase"]);
+
 const ProductDetailsPage = async ({
   params,
 }: {
@@ -78,9 +98,6 @@ const ProductDetailsPage = async ({
   const { slug } = await params;
   const product = await productService.getProductBySlug(slug);
   const t = await getTranslations("ProductDetails");
-  const tLoose = t as unknown as ((key: string) => string) & {
-    has: (key: string) => boolean;
-  };
 
   if (!product) {
     notFound();
@@ -152,17 +169,17 @@ const ProductDetailsPage = async ({
               if (value === null || value === undefined || value === "")
                 return null;
 
-              if (!tLoose.has(`specs.${key}`)) return null;
-              const label = tLoose(`specs.${key}`);
+              if (!ALLOWED_SPEC_KEYS.has(key)) return null;
+              const label = t(`specs.${key}` as never);
 
               let displayValue = String(value);
               if (key === "fuelType" && typeof value === "string") {
-                displayValue = tLoose.has(`fuelTypes.${value}`)
-                  ? tLoose(`fuelTypes.${value}`)
+                displayValue = ALLOWED_FUEL_TYPES.has(value)
+                  ? t(`fuelTypes.${value}` as never)
                   : String(value);
               } else if (key === "phase" && typeof value === "string") {
-                displayValue = tLoose.has(`phases.${value}`)
-                  ? tLoose(`phases.${value}`)
+                displayValue = ALLOWED_PHASES.has(value)
+                  ? t(`phases.${value}` as never)
                   : String(value);
               }
 

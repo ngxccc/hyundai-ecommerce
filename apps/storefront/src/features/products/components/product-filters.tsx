@@ -325,7 +325,11 @@ export function ProductFilters({
                 e.stopPropagation();
                 toggleCategory(node.id);
               }}
-              aria-label={isExpanded ? t("sidebar.collapse_category") : t("sidebar.expand_category")}
+              aria-label={
+                isExpanded
+                  ? t("sidebar.collapse_category")
+                  : t("sidebar.expand_category")
+              }
               className="hover:bg-muted-foreground/10 rounded-sm p-1"
             >
               {isExpanded ? (
@@ -365,9 +369,9 @@ export function ProductFilters({
 
       {/* Categories Tree Accordion */}
       <div>
-        <h4 className="text-foreground mb-1 text-sm font-bold">
+        <div className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.categories")}
-        </h4>
+        </div>
         <div className="space-y-1">
           {categories.map((cat) => renderCategoryNode(cat))}
         </div>
@@ -377,9 +381,9 @@ export function ProductFilters({
 
       {/* Brand Checklist */}
       <div>
-        <h4 className="text-foreground mb-1 text-sm font-bold">
+        <div className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.brands")}
-        </h4>
+        </div>
         <div className="space-y-2.5">
           {brands.map((brand) => {
             const isBrandDisabled = facetStatus
@@ -388,6 +392,7 @@ export function ProductFilters({
             return (
               <label
                 key={brand.id}
+                aria-disabled={isBrandDisabled}
                 className={`flex items-center space-x-2.5 ${
                   isBrandDisabled
                     ? "cursor-not-allowed opacity-50"
@@ -414,9 +419,9 @@ export function ProductFilters({
 
       {/* Power Range Filter (kW) */}
       <div>
-        <h4 className="text-foreground mb-1 text-sm font-bold">
+        <div className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.power_range")}
-        </h4>
+        </div>
         <div className="flex items-center space-x-2">
           <Input
             type="number"
@@ -442,9 +447,9 @@ export function ProductFilters({
 
       {/* Fuel Type */}
       <div>
-        <h4 className="text-foreground mb-1 text-sm font-bold">
+        <div className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.fuel_type")}
-        </h4>
+        </div>
         <div className="flex flex-wrap gap-2">
           {FUEL_TYPES.map((type) => {
             const isFuelDisabled = facetStatus
@@ -476,9 +481,9 @@ export function ProductFilters({
 
       {/* Phase */}
       <div>
-        <h4 className="text-foreground mb-1 text-sm font-bold">
+        <div className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.phase")}
-        </h4>
+        </div>
         <div className="flex gap-2">
           {PHASES.map((ph) => {
             const isPhaseDisabled = facetStatus
@@ -506,9 +511,9 @@ export function ProductFilters({
 
       {/* Voltage */}
       <div>
-        <h4 className="text-foreground mb-1 text-sm font-bold">
+        <div className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.voltage")}
-        </h4>
+        </div>
         <Input
           type="number"
           placeholder={t("sidebar.placeholder_voltage")}
@@ -523,9 +528,9 @@ export function ProductFilters({
 
       {/* Engine Brand */}
       <div>
-        <h4 className="text-foreground mb-1 text-sm font-bold">
+        <div className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.engine_brand")}
-        </h4>
+        </div>
         <Input
           type="text"
           placeholder={t("sidebar.placeholder_engine_brand")}
@@ -539,9 +544,9 @@ export function ProductFilters({
 
       {/* Alternator Brand */}
       <div>
-        <h4 className="text-foreground mb-1 text-sm font-bold">
+        <div className="text-foreground mb-1 text-sm font-bold">
           {t("sidebar.alternator_brand")}
-        </h4>
+        </div>
         <Input
           type="text"
           placeholder={t("sidebar.placeholder_alternator_brand")}
