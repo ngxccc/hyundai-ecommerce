@@ -18,18 +18,21 @@ const numberFieldSchema = z
   })
   .optional();
 
+export const FUEL_TYPES = ["diesel", "gasoline", "gas"] as const;
+export const PHASES = ["1phase", "3phase"] as const;
+
 export const productSpecsSchema = z
   .object({
     model: z.string().optional(),
     power: numberFieldSchema,
     voltage: numberFieldSchema,
     frequency: numberFieldSchema,
-    phase: z.enum(["1phase", "3phase"]).optional(),
+    phase: z.enum(PHASES).optional(),
     engine: z.string().optional(),
     engineBrand: z.string().optional(),
     alternator: z.string().optional(),
     alternatorBrand: z.string().optional(),
-    fuelType: z.enum(["diesel", "gasoline", "gas"]).optional(),
+    fuelType: z.enum(FUEL_TYPES).optional(),
     fuelConsumption: numberFieldSchema,
     fuelTankCapacity: numberFieldSchema,
     weight: numberFieldSchema,

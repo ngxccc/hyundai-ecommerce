@@ -179,6 +179,7 @@ describe("ProductService", () => {
       const mockDbResult = [
         {
           id: "prod-1",
+          name: "Hyundai Generator",
           categoryId: "cat-1",
           brandId: "brand-1",
           power: "10.5",
@@ -197,6 +198,7 @@ describe("ProductService", () => {
       expect(result).toEqual([
         {
           id: "prod-1",
+          name: "Hyundai Generator",
           categoryId: "cat-1",
           brandId: "brand-1",
           specs: {
@@ -215,6 +217,7 @@ describe("ProductService", () => {
       const mockDbResult = [
         {
           id: "prod-2",
+          name: "Null Product",
           categoryId: null,
           brandId: null,
           power: null,
@@ -231,6 +234,7 @@ describe("ProductService", () => {
 
       expect(result[0]).toEqual({
         id: "prod-2",
+        name: "Null Product",
         categoryId: null,
         brandId: null,
         specs: {

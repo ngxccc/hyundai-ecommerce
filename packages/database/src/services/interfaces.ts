@@ -133,11 +133,13 @@ export interface IProductFilterSpecs {
   phase?: "1phase" | "3phase" | null;
   fuelType?: "diesel" | "gasoline" | "gas" | null;
   engineBrand?: string | null;
+  model?: string | null;
   alternatorBrand?: string | null;
 }
 
 export interface IProductFilterMetadata {
   id: string;
+  name: string;
   categoryId: string | null;
   brandId: string | null;
   specs: IProductFilterSpecs | null;
