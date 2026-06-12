@@ -100,3 +100,4 @@ _A storage area for new ideas. Do not implement immediately to prevent scope cre
 - [ ] Add product side-by-side technical specification comparison
 - [ ] Enable direct PDF catalog download from product detail pages
 - [ ] Compute real-time delivery and installation costs based on geographical coordinates
+- [ ] Bảo mật message hệ thống
