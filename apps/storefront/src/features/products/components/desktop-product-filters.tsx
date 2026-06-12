@@ -1,12 +1,14 @@
 "use client";
 
 import { ProductFilters } from "./product-filters";
-import type { TCategoryWithChildren } from "@nhatnang/database/services";
-import type { TBrand } from "@nhatnang/database/schemas";
+import type {
+  StorefrontCategoryWithChildren,
+  StorefrontBrand,
+} from "@/shared/services";
 
 interface DesktopProductFiltersProps {
-  categories: TCategoryWithChildren[];
-  brands: TBrand[];
+  categories: StorefrontCategoryWithChildren[];
+  brands: StorefrontBrand[];
   selectedCategorySlug?: string | undefined;
   searchParams: Record<string, string | string[] | undefined>;
 }

@@ -1,9 +1,9 @@
-import type { IProductFilterMetadata } from "@nhatnang/database/services";
+import type { StorefrontFilterMetadata } from "@/shared/services";
 import { FUEL_TYPES, PHASES } from "@nhatnang/database/validators";
 import type {
   ComputeFacetsParams,
   FacetStatus,
-  IProductActiveFilters,
+  ProductActiveFilters,
 } from "../types/facet-engine";
 
 /**
@@ -45,9 +45,9 @@ export function computeFacets(params: ComputeFacetsParams): FacetStatus {
     const matchBrand = matchesBrands(p, selectedBrandIds);
     const matchFuel =
       activeFilters.fuelType === null ||
-      p.specs?.fuelType === activeFilters.fuelType;
+      p.specs?.["fuelType"] === activeFilters.fuelType;
     const matchPhase =
-      activeFilters.phase === null || p.specs?.phase === activeFilters.phase;
+      activeFilters.phase === null || p.specs?.["phase"] === activeFilters.phase;
     const matchBaseSpecs = matchesSpecsBase(p, activeFilters);
     const matchSearchQuery = matchesSearch(p, activeFilters.q);
 
@@ -92,7 +92,7 @@ export function computeFacets(params: ComputeFacetsParams): FacetStatus {
       return;
     }
     result.fuelTypes[f] = matchStates.some(
-      (m) => m.product.specs?.fuelType === f && isMatchExcept(m, "fuelType"),
+      (m) => m.product.specs?.["fuelType"] === f && isMatchExcept(m, "fuelType"),
     );
   });
 
@@ -102,7 +102,7 @@ export function computeFacets(params: ComputeFacetsParams): FacetStatus {
       return;
     }
     result.phases[ph] = matchStates.some(
-      (m) => m.product.specs?.phase === ph && isMatchExcept(m, "phase"),
+      (m) => m.product.specs?.["phase"] === ph && isMatchExcept(m, "phase"),
     );
   });
 
@@ -144,7 +144,7 @@ function getDescendantCategoryIds(
 }
 
 function matchesCategory(
-  product: IProductFilterMetadata,
+  product: StorefrontFilterMetadata,
   activeCatogoryIds: string[] | null,
 ) {
   if (!activeCatogoryIds) return true;
@@ -154,7 +154,7 @@ function matchesCategory(
 }
 
 function matchesBrands(
-  product: IProductFilterMetadata,
+  product: StorefrontFilterMetadata,
   selectedBrandIds: string[],
 ) {
   if (selectedBrandIds.length === 0) return true;
@@ -162,38 +162,38 @@ function matchesBrands(
 }
 
 function matchesSpecsBase(
-  product: IProductFilterMetadata,
-  activeFilters: IProductActiveFilters,
+  product: StorefrontFilterMetadata,
+  activeFilters: ProductActiveFilters,
 ) {
   const specs = product.specs;
   if (!specs) return false;
 
-  if (
-    activeFilters.minPower &&
-    (specs.power === undefined ||
-      specs.power === null ||
-      specs.power < activeFilters.minPower)
-  )
-    return false;
-  if (
-    activeFilters.maxPower &&
-    (specs.power === undefined ||
-      specs.power === null ||
-      specs.power > activeFilters.maxPower)
-  )
-    return false;
+  const minPower = activeFilters.minPower;
+  const maxPower = activeFilters.maxPower;
+  const powerVal = typeof specs["power"] === "number" ? specs["power"] : null;
 
-  if (activeFilters.voltage && specs.voltage !== activeFilters.voltage)
+  if (minPower !== null && (powerVal === null || powerVal < minPower)) {
     return false;
+  }
+  if (maxPower !== null && (powerVal === null || powerVal > maxPower)) {
+    return false;
+  }
+
+  const voltageVal = typeof specs["voltage"] === "number" ? specs["voltage"] : null;
+  if (activeFilters.voltage !== null && voltageVal !== activeFilters.voltage) {
+    return false;
+  }
 
   if (activeFilters.engineBrand) {
-    const pEngine = specs.engineBrand?.toLowerCase() ?? "";
+    const engineBrandVal = typeof specs["engineBrand"] === "string" ? specs["engineBrand"] : "";
+    const pEngine = engineBrandVal.toLowerCase();
     const filterEngine = activeFilters.engineBrand.toLowerCase();
     if (!pEngine.includes(filterEngine)) return false;
   }
 
   if (activeFilters.alternatorBrand) {
-    const pAlt = specs.alternatorBrand?.toLowerCase() ?? "";
+    const alternatorBrandVal = typeof specs["alternatorBrand"] === "string" ? specs["alternatorBrand"] : "";
+    const pAlt = alternatorBrandVal.toLowerCase();
     const filterAlt = activeFilters.alternatorBrand.toLowerCase();
     if (!pAlt.includes(filterAlt)) return false;
   }
@@ -208,8 +208,8 @@ function matchesSearch(
   if (!q) return true;
   const searchLower = q.toLowerCase();
   const nameMatch = product.name.toLowerCase().includes(searchLower);
-  const modelMatch =
-    product.specs?.model?.toLowerCase().includes(searchLower) ?? false;
+  const modelVal = typeof product.specs?.["model"] === "string" ? product.specs["model"] : "";
+  const modelMatch = modelVal.toLowerCase().includes(searchLower);
   return nameMatch || modelMatch;
 }
 

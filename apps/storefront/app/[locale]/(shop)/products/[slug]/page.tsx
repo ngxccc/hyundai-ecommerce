@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { ProductDetailsSkeleton } from "@/features/products/components/skeletons/product-details-skeleton";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import type { TProduct } from "@nhatnang/database/schemas";
+import type { StorefrontProduct } from "@/shared/services/types";
 import { routing } from "@/i18n/routing";
 import { priceFormatter } from "@/shared/lib/utils";
 import { productService } from "@/shared/services";
@@ -15,7 +15,7 @@ interface ProductPageParams {
   slug: string;
 }
 
-const formatSpecs = (specs: TProduct["specs"]): string[] => {
+const formatSpecs = (specs: StorefrontProduct["specs"]): string[] => {
   if (!specs || typeof specs !== "object") return [];
   const specsObj = specs as Record<
     string,
@@ -59,7 +59,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   setRequestLocale(locale as Locale);
-  const product = await productService.getProductBySlug(slug);
+  const product = await productService.getProductBySlug(locale as "vi" | "en", slug);
 
   if (!product) {
     return {};
@@ -110,7 +110,7 @@ async function ProductDetailsPageContent({
 }) {
   const { locale, slug } = await params;
   setRequestLocale(locale as Locale);
-  const product = await productService.getProductBySlug(slug);
+  const product = await productService.getProductBySlug(locale as "vi" | "en", slug);
   const t = await getTranslations("ProductDetails");
 
   if (!product) {

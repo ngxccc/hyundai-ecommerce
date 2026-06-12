@@ -13,13 +13,15 @@ import {
 } from "@nhatnang/ui/components/ui/sheet";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Filter, X } from "lucide-react";
-import type { TCategoryWithChildren } from "@nhatnang/database/services";
-import type { TBrand } from "@nhatnang/database/schemas";
+import type {
+  StorefrontCategoryWithChildren,
+  StorefrontBrand,
+} from "@/shared/services";
 import { ProductFilters } from "./product-filters";
 
 interface ProductFilterSheetProps {
-  categories: TCategoryWithChildren[];
-  brands: TBrand[];
+  categories: StorefrontCategoryWithChildren[];
+  brands: StorefrontBrand[];
   selectedCategorySlug?: string | undefined;
   searchParams: Record<string, string | string[] | undefined>;
 }
@@ -79,9 +81,14 @@ export function ProductFilterSheet({
       const query = params.toString();
 
       if (category) {
-        router.push(`/products/category/${category}${query ? `?${query}` : ""}`, { scroll: false });
+        router.push(
+          `/products/category/${category}${query ? `?${query}` : ""}`,
+          { scroll: false },
+        );
       } else {
-        router.push(query ? `/products?${query}` : "/products", { scroll: false });
+        router.push(query ? `/products?${query}` : "/products", {
+          scroll: false,
+        });
       }
     }
     setOpen(false);
