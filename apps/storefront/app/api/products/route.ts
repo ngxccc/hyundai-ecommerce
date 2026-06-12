@@ -86,9 +86,10 @@ export async function GET(request: NextRequest) {
       { status: HTTP_STATUS.OK },
     );
   } catch (error) {
+    const errObj = error as Record<string, unknown>;
     if (
       error instanceof Error &&
-      ((error as any).digest === "NEXT_PRERENDER_INTERRUPTED" ||
+      (errObj["digest"] === "NEXT_PRERENDER_INTERRUPTED" ||
         error.message.includes("bail out of prerendering"))
     ) {
       throw error;
