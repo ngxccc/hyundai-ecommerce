@@ -11,7 +11,7 @@ _Focus on completing this section before looking further down._
 ### Milestone 2: Product Catalog & Localization (Phase 2 Catalog)
 
 - [x] Storefront Error Boundaries Implementation Plan ([plan](general-plans/completed/storefront-error-boundaries_PLAN_12-06-26.md))
-- [ ] Storefront LCP Image Optimization Plan ([plan](general-plans/active/storefront-lcp-image-optimization_PLAN_12-06-26.md))
+- [x] Storefront LCP Image Optimization Plan ([plan](general-plans/completed/storefront-lcp-image-optimization_PLAN_12-06-26.md))
 - [x] Standardize Catalog Sort Query Parameters Plan ([plan](general-plans/completed/standardize-sort-params_PLAN_12-06-26.md))
 - [x] Storefront Catalog Caching Migration Plan ([plan](general-plans/active/storefront-catalog-caching-migration_PLAN_12-06-26.md))
 - [ ] Storefront getStaticProductSlugs Refactor Plan ([plan](general-plans/active/storefront-get-static-product-slugs-refactor_PLAN_12-06-26.md))
