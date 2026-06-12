@@ -286,8 +286,8 @@
     "sort": {
       "label": "Sắp xếp theo",
       "newest": "Mới nhất",
-      "price_asc": "Giá: Thấp đến Cao",
-      "price_desc": "Giá: Cao đến Thấp"
+      "priceAsc": "Giá: Thấp đến Cao",
+      "priceDesc": "Giá: Cao đến Thấp"
     },
     "pagination": {
       "previous": "Trang trước",

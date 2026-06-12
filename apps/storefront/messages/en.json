@@ -286,8 +286,8 @@
     "sort": {
       "label": "Sort by",
       "newest": "Newest",
-      "price_asc": "Price: Low to High",
-      "price_desc": "Price: High to Low"
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low"
     },
     "pagination": {
       "previous": "Previous",

@@ -29,8 +29,8 @@ export function ProductSort({ currentSort, searchParams }: ProductSortProps) {
 
   const sortLabels: Record<string, string> = {
     newest: t("sort.newest"),
-    price_asc: t("sort.price_asc"),
-    price_desc: t("sort.price_desc"),
+    priceAsc: t("sort.priceAsc"),
+    priceDesc: t("sort.priceDesc"),
   };
   const currentLabel = sortLabels[currentSort] ?? t("sort.newest");
 
@@ -87,8 +87,8 @@ export function ProductSort({ currentSort, searchParams }: ProductSortProps) {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="newest">{t("sort.newest")}</SelectItem>
-          <SelectItem value="price_asc">{t("sort.price_asc")}</SelectItem>
-          <SelectItem value="price_desc">{t("sort.price_desc")}</SelectItem>
+          <SelectItem value="priceAsc">{t("sort.priceAsc")}</SelectItem>
+          <SelectItem value="priceDesc">{t("sort.priceDesc")}</SelectItem>
         </SelectContent>
       </Select>
     </div>
