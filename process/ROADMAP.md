@@ -14,7 +14,7 @@ _Focus on completing this section before looking further down._
 - [x] Storefront LCP Image Optimization Plan ([plan](general-plans/completed/storefront-lcp-image-optimization_PLAN_12-06-26.md))
 - [x] Standardize Catalog Sort Query Parameters Plan ([plan](general-plans/completed/standardize-sort-params_PLAN_12-06-26.md))
 - [x] Storefront Catalog Caching Migration Plan ([plan](general-plans/completed/storefront-catalog-caching-migration_PLAN_12-06-26.md))
-- [ ] Storefront getStaticProductSlugs Refactor Plan ([plan](general-plans/active/storefront-get-static-product-slugs-refactor_PLAN_12-06-26.md))
+- [x] Storefront getStaticProductSlugs Refactor Plan ([plan](general-plans/completed/storefront-get-static-product-slugs-refactor_PLAN_12-06-26.md))
 - [ ] Multilingual Database Content and DTO Mapping Architecture Plan ([plan](general-plans/active/multilingual-db-and-dto-architecture_PLAN_12-06-26.md))
 - [ ] B2B Storefront Program — Program Goal Charter ([plan](features/storefront/active/b2b-storefront_UMBRELLA_PLAN_08-06-26.md))
 - [ ] Phase 3: Cart Service & Storefront Integration — Plan ([plan](features/storefront/active/storefront-phase-3-cart-service_PLAN_08-06-26.md))
@@ -62,7 +62,6 @@ _Focus on completing this section before looking further down._
 - [x] Phase 2: Storefront Product Catalog, Search & Filters — Plan ([plan](features/storefront/completed/storefront-phase-2-product-catalog_PLAN_08-06-26.md))
 - [x] Plan: B2B Storefront Phase 2 - Static Category Routes ([plan](features/storefront/completed/storefront-phase-2-static-category-routes_PLAN_09-06-26.md))
 - [x] Storefront Catalog Caching Migration Plan ([plan](general-plans/completed/storefront-catalog-caching-migration_PLAN_12-06-26.md))
-- [ ] Storefront getStaticProductSlugs Refactor Plan ([plan](general-plans/active/storefront-get-static-product-slugs-refactor_PLAN_12-06-26.md))
 
 ---
 
