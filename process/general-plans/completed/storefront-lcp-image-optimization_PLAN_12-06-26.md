@@ -36,20 +36,24 @@ No new public contracts. Changes are performance optimizations only.
 ## Implementation Checklist
 
 ### Phase 1: Icon Compression
-- [ ] Compress `apple-icon.png` to ~180x180px and under 30KB using sharp-cli
-- [ ] Compress `icon.png` to 512x512px and under 200KB
+
+- [x] Compress `apple-icon.png` to ~180x180px and under 30KB using sharp-cli
+- [x] Compress `icon.png` to 512x512px and under 200KB
 
 ### Phase 2: Above-the-fold Image Priority
-- [ ] In `catalog-template.tsx`, add `priority={index < 3}` and `loading="eager"` to the first row of product cards (grid 3 columns)
-- [ ] Ensure `ImageWithSkeleton` correctly forwards these props to `next/image`
+
+- [x] In `catalog-template.tsx`, add `priority={index < 3}` and `loading="eager"` to the first row of product cards (grid 3 columns)
+- [x] Ensure `ImageWithSkeleton` correctly forwards these props to `next/image`
 
 ### Phase 3: Verification
-- [ ] Run production build and confirm no LCP warnings
-- [ ] Manual browser test on `/products` page
+
+- [x] Run production build and confirm no LCP warnings
+- [x] Manual browser test on `/products` page
 
 ## Phase Completion Rules
 
 Every phase defined in this plan must be verified before advancing:
+
 1. Type Safety: `bun turbo run check-types --filter=storefront` must pass.
 2. Lint: `bun run lint --filter=storefront` must pass with zero warnings.
 3. Build: Production build must succeed without LCP warnings.
@@ -60,6 +64,7 @@ Every phase defined in this plan must be verified before advancing:
 - AC 2: `icon.png` is under 200KB and 512x512px.
 - AC 3: First 3 product cards in catalog use `priority` and `loading="eager"`.
 - AC 4: No LCP warnings appear in browser console on `/products`.
+
 ---
 
 ## Verification Evidence
