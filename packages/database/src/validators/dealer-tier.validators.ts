@@ -2,7 +2,8 @@ import { z } from "zod";
 
 export const createDealerTierSchema = z
   .object({
-    name: z.string().min(1, "validation.tierNameRequired"),
+    nameVi: z.string().min(1, "validation.tierNameRequired"),
+    nameEn: z.string().optional().or(z.literal("")).nullable(),
     discountPercentage: z.string().refine(
       (val) => {
         const num = parseFloat(val);

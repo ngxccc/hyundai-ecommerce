@@ -51,11 +51,14 @@ export const productSpecsSchema = z
 
 export const createProductSchema = z
   .object({
-    name: z.string().min(1, "validation.nameRequired"),
+    nameVi: z.string().min(1, "validation.nameRequired"),
+    nameEn: z.string().optional().or(z.literal("")).nullable(),
     slug: z.string().min(1, "validation.slugRequired"),
     price: z.string().min(1, "validation.priceRequired"),
-    description: z.custom<JSONContent>().nullable().optional(),
-    shortDescription: z.string().nullable().optional(),
+    descriptionVi: z.custom<JSONContent>().nullable().optional(),
+    descriptionEn: z.custom<JSONContent>().nullable().optional(),
+    shortDescriptionVi: z.string().nullable().optional(),
+    shortDescriptionEn: z.string().nullable().optional(),
     images: z.array(z.url("validation.invalidUrl")),
     brandId: z.uuid("validation.invalidBrand").nullable().optional(),
     categoryId: z.uuid("validation.invalidCategory").nullable().optional(),

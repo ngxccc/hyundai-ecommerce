@@ -20,11 +20,14 @@ export const products = snakeCase.table(
   "product",
   {
     ...fullEntity,
-    name: text().notNull(),
+    nameVi: text().notNull(),
+    nameEn: text(),
     slug: text().notNull(),
     price: numeric({ precision: 15, scale: 2 }).notNull(),
-    description: jsonb().$type<JSONContent>(),
-    shortDescription: text(),
+    descriptionVi: jsonb().$type<JSONContent>(),
+    descriptionEn: jsonb().$type<JSONContent>(),
+    shortDescriptionVi: text(),
+    shortDescriptionEn: text(),
     images: text().array().default([]).notNull(),
     brandId: uuid().references(() => brands.id, { onDelete: "set null" }),
     categoryId: uuid().references(() => categories.id, {
@@ -41,7 +44,7 @@ export const products = snakeCase.table(
       .where(sql`${table.deletedAt} IS NULL`),
 
     index("product_name_active_idx")
-      .on(table.name)
+      .on(table.nameVi)
       .where(sql`${table.deletedAt} IS NULL`),
 
     index("product_brand_idx").on(table.brandId),

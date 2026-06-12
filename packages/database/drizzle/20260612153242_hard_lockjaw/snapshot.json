@@ -1,7 +1,7 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "68f8e25d-b0fc-45b6-a8a6-ca4e3d643aab",
+  "id": "bfcbead9-9a23-4043-a6ac-379e3a304c45",
   "prevIds": [
     "00000000-0000-0000-0000-000000000000"
   ],
@@ -280,7 +280,20 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "name",
+      "name": "name_vi",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "product"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name_en",
       "entityType": "columns",
       "schema": "public",
       "table": "product"
@@ -319,7 +332,20 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "description",
+      "name": "description_vi",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "product"
+    },
+    {
+      "type": "jsonb",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "description_en",
       "entityType": "columns",
       "schema": "public",
       "table": "product"
@@ -332,7 +358,20 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "short_description",
+      "name": "short_description_vi",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "product"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "short_description_en",
       "entityType": "columns",
       "schema": "public",
       "table": "product"
@@ -1021,7 +1060,20 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "name",
+      "name": "name_vi",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "dealer_tier"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name_en",
       "entityType": "columns",
       "schema": "public",
       "table": "dealer_tier"
@@ -1099,7 +1151,20 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "name",
+      "name": "name_vi",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "warehouse"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name_en",
       "entityType": "columns",
       "schema": "public",
       "table": "warehouse"
@@ -1762,7 +1827,20 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "description",
+      "name": "description_vi",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "brand"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "description_en",
       "entityType": "columns",
       "schema": "public",
       "table": "brand"
@@ -1827,7 +1905,20 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "name",
+      "name": "name_vi",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "category"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name_en",
       "entityType": "columns",
       "schema": "public",
       "table": "category"
@@ -1866,7 +1957,20 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "description",
+      "name": "description_vi",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "category"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "description_en",
       "entityType": "columns",
       "schema": "public",
       "table": "category"
@@ -2624,7 +2728,7 @@
       "nameExplicit": true,
       "columns": [
         {
-          "value": "name",
+          "value": "name_vi",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
@@ -2876,7 +2980,7 @@
       "nameExplicit": true,
       "columns": [
         {
-          "value": "name",
+          "value": "name_vi",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
@@ -3846,10 +3950,10 @@
     {
       "nameExplicit": false,
       "columns": [
-        "name"
+        "name_vi"
       ],
       "nullsNotDistinct": false,
-      "name": "dealer_tier_name_key",
+      "name": "dealer_tier_name_vi_key",
       "schema": "public",
       "table": "dealer_tier",
       "entityType": "uniques"

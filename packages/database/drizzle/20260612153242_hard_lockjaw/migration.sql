@@ -11,11 +11,14 @@ CREATE TABLE "product" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"deleted_at" timestamp with time zone,
-	"name" text NOT NULL,
+	"name_vi" text NOT NULL,
+	"name_en" text,
 	"slug" text NOT NULL,
 	"price" numeric(15,2) NOT NULL,
-	"description" jsonb,
-	"short_description" text,
+	"description_vi" jsonb,
+	"description_en" jsonb,
+	"short_description_vi" text,
+	"short_description_en" text,
 	"images" text[] DEFAULT '{}'::text[] NOT NULL,
 	"brand_id" uuid,
 	"category_id" uuid,
@@ -83,7 +86,8 @@ CREATE TABLE "dealer_tier" (
 	"id" uuid PRIMARY KEY,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"name" text NOT NULL UNIQUE,
+	"name_vi" text NOT NULL UNIQUE,
+	"name_en" text,
 	"discount_percentage" numeric(5,2) NOT NULL,
 	"minimum_spend" numeric(15,2) DEFAULT '0' NOT NULL
 );
@@ -92,7 +96,8 @@ CREATE TABLE "warehouse" (
 	"id" uuid PRIMARY KEY,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"name" text NOT NULL,
+	"name_vi" text NOT NULL,
+	"name_en" text,
 	"street_address" text NOT NULL,
 	"district" text NOT NULL,
 	"city" text NOT NULL,
@@ -162,7 +167,8 @@ CREATE TABLE "brand" (
 	"name" text NOT NULL UNIQUE,
 	"slug" text NOT NULL UNIQUE,
 	"logo" text,
-	"description" text,
+	"description_vi" text,
+	"description_en" text,
 	"is_active" boolean DEFAULT true NOT NULL
 );
 --> statement-breakpoint
@@ -170,10 +176,12 @@ CREATE TABLE "category" (
 	"id" uuid PRIMARY KEY,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"name" text NOT NULL,
+	"name_vi" text NOT NULL,
+	"name_en" text,
 	"slug" text NOT NULL UNIQUE,
 	"parent_id" uuid,
-	"description" text,
+	"description_vi" text,
+	"description_en" text,
 	"image" text,
 	"is_active" boolean DEFAULT true NOT NULL
 );
@@ -254,7 +262,7 @@ CREATE TABLE "quote" (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX "product_slug_active_idx" ON "product" ("slug") WHERE "deleted_at" IS NULL;--> statement-breakpoint
-CREATE INDEX "product_name_active_idx" ON "product" ("name") WHERE "deleted_at" IS NULL;--> statement-breakpoint
+CREATE INDEX "product_name_active_idx" ON "product" ("name_vi") WHERE "deleted_at" IS NULL;--> statement-breakpoint
 CREATE INDEX "product_brand_idx" ON "product" ("brand_id");--> statement-breakpoint
 CREATE INDEX "product_category_idx" ON "product" ("category_id");--> statement-breakpoint
 CREATE INDEX "product_sales_cache_idx" ON "product" ("total_sales_cache");--> statement-breakpoint
@@ -266,7 +274,7 @@ CREATE INDEX "session_user_id_idx" ON "session" ("user_id");--> statement-breakp
 CREATE INDEX "user_dealer_tier_idx" ON "user" ("dealer_tier_id");--> statement-breakpoint
 CREATE INDEX "user_created_at_idx" ON "user" ("created_at");--> statement-breakpoint
 CREATE INDEX "verification_identifier_idx" ON "verification" ("identifier");--> statement-breakpoint
-CREATE INDEX "warehouse_name_idx" ON "warehouse" ("name");--> statement-breakpoint
+CREATE INDEX "warehouse_name_idx" ON "warehouse" ("name_vi");--> statement-breakpoint
 CREATE INDEX "warehouse_stock_product_idx" ON "warehouse_stock" ("product_id");--> statement-breakpoint
 CREATE INDEX "order_item_order_idx" ON "order_item" ("order_id");--> statement-breakpoint
 CREATE INDEX "order_item_product_idx" ON "order_item" ("product_id");--> statement-breakpoint

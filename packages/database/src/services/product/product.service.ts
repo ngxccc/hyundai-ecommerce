@@ -151,7 +151,8 @@ export class ProductService implements IProductService {
     const result = await this.db
       .select({
         id: orderItems.productId,
-        name: products.name,
+        nameVi: products.nameVi,
+        nameEn: products.nameEn,
         sold: sql<number>`sum(${orderItems.quantity})::integer`,
         price: products.price,
         images: products.images,
@@ -162,7 +163,8 @@ export class ProductService implements IProductService {
       .where(ne(orders.status, "cancelled"))
       .groupBy(
         orderItems.productId,
-        products.name,
+        products.nameVi,
+        products.nameEn,
         products.price,
         products.images,
       )
@@ -171,7 +173,8 @@ export class ProductService implements IProductService {
 
     return result.map((r) => ({
       id: r.id,
-      name: r.name,
+      nameVi: r.nameVi,
+      nameEn: r.nameEn,
       sold: r.sold,
       price: r.price,
       image: r.images[0] ?? null,
@@ -184,7 +187,8 @@ export class ProductService implements IProductService {
         id: products.id,
         categoryId: products.categoryId,
         brandId: products.brandId,
-        name: products.name,
+        nameVi: products.nameVi,
+        nameEn: products.nameEn,
         power: this.getNumericSpec("power"),
         voltage: this.getNumericSpec("voltage"),
         phase: this.getStringSpec("phase"),
@@ -202,7 +206,8 @@ export class ProductService implements IProductService {
           id: r.id,
           categoryId: r.categoryId,
           brandId: r.brandId,
-          name: r.name,
+          nameVi: r.nameVi,
+          nameEn: r.nameEn,
           specs: {
             power: r.power ? Number(r.power) : null,
             voltage: r.voltage ? Number(r.voltage) : null,
@@ -250,7 +255,8 @@ export class ProductService implements IProductService {
       options?.search
         ? or(
             this.buildSpecLikeFilter("model", options.search),
-            sql`${products.name} ILIKE ${`%${options.search}%`}`,
+            sql`${products.nameVi} ILIKE ${`%${options.search}%`}`,
+            sql`${products.nameEn} ILIKE ${`%${options.search}%`}`,
           )
         : undefined,
       isNull(products.deletedAt),

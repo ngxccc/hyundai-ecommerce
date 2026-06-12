@@ -5,7 +5,8 @@ export const createBrandSchema = z
     name: z.string().min(1, "validation.nameRequired"),
     slug: z.string().min(1, "validation.slugRequired"),
     logo: z.url("validation.invalidUrl").optional().or(z.literal("")).nullable(),
-    description: z.string().optional().or(z.literal("")).nullable(),
+    descriptionVi: z.string().optional().or(z.literal("")).nullable(),
+    descriptionEn: z.string().optional().or(z.literal("")).nullable(),
     isActive: z.boolean().default(true),
   })
   .strict();

@@ -9,12 +9,14 @@ import { baseEntity } from "./helpers.schema";
 
 export const categories = snakeCase.table("category", {
   ...baseEntity,
-  name: text().notNull(),
+  nameVi: text().notNull(),
+  nameEn: text(),
   slug: text().notNull().unique(),
   parentId: uuid().references((): AnyPgColumn => categories.id, {
     onDelete: "set null",
   }),
-  description: text(),
+  descriptionVi: text(),
+  descriptionEn: text(),
   image: text(),
   isActive: boolean().default(true).notNull(),
 });
