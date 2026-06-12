@@ -6,7 +6,7 @@ import {
   AUTH_ERROR_CODES,
   SYSTEM_ERROR_CODES,
 } from "@nhatnang/shared/constants";
-import { authService, userService } from "@/shared/services";
+import { authService, userService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import {
   registerSchema,

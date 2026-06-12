@@ -12,7 +12,6 @@ import type { getTranslations } from "next-intl/server";
 // ---------------------------------------------------------------------------
 
 import "@nhatnang/shared/testing/action-mocks";
-
 // Dynamic import AFTER mocks are registered
 const { registerAction } = await import("./register.action");
 
