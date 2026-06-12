@@ -258,7 +258,8 @@ export async function CatalogTemplate({
                             fill
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 250px"
                             className="object-cover transition-all duration-300 group-hover:scale-105"
-                            loading={index < 4 ? undefined : "lazy"}
+                            loading={index < 3 ? "eager" : "lazy"}
+                            priority={index < 3}
                           />
                           <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
                             {tHome("model")}:{" "}
