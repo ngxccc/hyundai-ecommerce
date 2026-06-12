@@ -54,7 +54,8 @@ export const BrandForm = ({
       name: initialData?.name ?? "",
       slug: initialData?.slug ?? "",
       logo: initialData?.logo ?? "",
-      description: initialData?.description ?? "",
+      descriptionVi: initialData?.descriptionVi ?? "",
+      descriptionEn: initialData?.descriptionEn ?? "",
       isActive: initialData?.isActive ?? true,
     },
   });
@@ -195,10 +196,30 @@ export const BrandForm = ({
 
               <FormField
                 control={form.control}
-                name="description"
+                name="descriptionVi"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.description")}</FormLabel>
+                    <FormLabel>{t("fields.description")} (VI)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder={t("placeholders.description")}
+                        disabled={isPending}
+                        {...field}
+                        value={field.value ?? ""}
+                        className="min-h-0 resize-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="descriptionEn"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("fields.description")} (EN)</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder={t("placeholders.description")}

@@ -39,7 +39,7 @@ export default async function ProductInventoryPage({
     <>
       <ProductHeader
         title={t("title")}
-        description={t("description", { name: product.name })}
+        description={t("description", { name: product.nameVi })}
         showAddButton={false}
       />
       <div className="flex-1 space-y-4 p-2">
@@ -50,7 +50,7 @@ export default async function ProductInventoryPage({
                 items={[
                   { label: tNav("overview"), href: "/" },
                   { label: tNav("products"), href: "/products" },
-                  { label: product.name, href: `/products/${product.id}/edit` },
+                  { label: product.nameVi, href: `/products/${product.id}/edit` },
                   { label: t("title") },
                 ]}
               />

@@ -153,7 +153,7 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
               {quote.items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="max-w-50 truncate font-medium">
-                    {item.product.name}
+                    {item.product.nameVi}
                   </TableCell>
                   <TableCell className="text-right font-medium">
                     {item.quantity}

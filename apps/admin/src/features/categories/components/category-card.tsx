@@ -45,7 +45,7 @@ export const CategoryCard = ({
         {image.includes("cloudinary.com") ? (
           <CldImage
             src={image}
-            alt={category.name}
+            alt={category.nameVi}
             width={400}
             height={300}
             className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
@@ -53,7 +53,7 @@ export const CategoryCard = ({
         ) : (
           <Image
             src={image}
-            alt={category.name}
+            alt={category.nameVi}
             width={400}
             height={300}
             className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
@@ -66,7 +66,7 @@ export const CategoryCard = ({
           {category.slug}
         </p>
         <h3 className="text-primary mb-1 line-clamp-2 text-base font-semibold">
-          {category.name}
+          {category.nameVi}
         </h3>
         {parentName && (
           <p className="mb-2 text-xs text-blue-600 dark:text-blue-400">
@@ -74,7 +74,7 @@ export const CategoryCard = ({
           </p>
         )}
         <p className="text-muted-foreground mb-4 line-clamp-2 text-sm">
-          {category.description ?? "No description"}
+          {category.descriptionVi ?? category.descriptionEn ?? "No description"}
         </p>
 
         <div className="mt-auto flex items-end justify-end">
@@ -91,7 +91,7 @@ export const CategoryCard = ({
             </Link>
             <DeleteCategoryButton
               categoryId={category.id}
-              categoryName={category.name}
+              categoryName={category.nameVi}
             />
           </div>
         </div>

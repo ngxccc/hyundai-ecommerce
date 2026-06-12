@@ -70,7 +70,7 @@ export const ProductCategorySection = ({
                 <SelectContent>
                   {categories.map((category) => (
                     <SelectItem key={category.id} value={category.id}>
-                      {category.name}
+                      {category.nameVi}
                     </SelectItem>
                   ))}
                   {categories.length === 0 && (

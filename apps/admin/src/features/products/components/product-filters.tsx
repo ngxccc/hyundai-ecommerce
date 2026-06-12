@@ -157,7 +157,7 @@ export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
             <SelectItem value="all">{t("allCategories")}</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category.id} value={category.id}>
-                {category.name}
+                {category.nameVi}
               </SelectItem>
             ))}
           </SelectContent>

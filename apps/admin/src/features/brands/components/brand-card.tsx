@@ -63,7 +63,7 @@ export const BrandCard = ({ brand }: { brand: TBrand }) => {
           {brand.name}
         </h3>
         <p className="text-muted-foreground mb-4 text-sm line-clamp-2">
-          {brand.description ?? "No description"}
+          {brand.descriptionVi ?? brand.descriptionEn ?? "No description"}
         </p>
 
         <div className="mt-auto flex items-end justify-end">

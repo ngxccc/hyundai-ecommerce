@@ -32,7 +32,7 @@ export const WarehouseCard = ({ warehouse }: { warehouse: TWarehouse }) => {
 
       <div className="flex flex-1 flex-col gap-1 pt-2">
         <h3 className="text-primary line-clamp-2 pr-20 text-lg font-semibold">
-          {warehouse.name}
+          {warehouse.nameVi}
         </h3>
 
         <div className="text-muted-foreground mt-2 flex flex-col gap-2 text-sm">
@@ -58,7 +58,7 @@ export const WarehouseCard = ({ warehouse }: { warehouse: TWarehouse }) => {
             </Link>
             <DeleteWarehouseButton
               warehouseId={warehouse.id}
-              warehouseName={warehouse.name}
+              warehouseName={warehouse.nameVi}
             />
           </div>
         </div>

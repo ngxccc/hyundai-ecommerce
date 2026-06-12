@@ -50,7 +50,7 @@ export const TopProducts = ({ products }: TopProductsProps) => {
                   product.image ??
                   "https://placehold.co/400x300/png?text=No+Image"
                 }
-                alt={product.name}
+                alt={product.nameVi}
                 className="h-full w-full object-cover"
                 sizes="48px"
                 fill
@@ -58,7 +58,7 @@ export const TopProducts = ({ products }: TopProductsProps) => {
             </div>
             <div className="min-w-0 flex-1">
               <h4 className="text-foreground truncate text-sm font-medium">
-                {product.name}
+                {product.nameVi}
               </h4>
               <p className="text-muted-foreground text-xs">
                 {t("sold", { count: String(product.sold) })}

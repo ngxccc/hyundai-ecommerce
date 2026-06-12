@@ -38,7 +38,8 @@ export default async function AdminWarehousesPage({
   const filteredWarehouses = search
     ? warehouses.filter(
         (w) =>
-          w.name.toLowerCase().includes(search.toLowerCase()) ||
+          (w.nameVi.toLowerCase().includes(search.toLowerCase()) ||
+           w.nameEn?.toLowerCase().includes(search.toLowerCase())) ||
           w.city.toLowerCase().includes(search.toLowerCase()),
       )
     : warehouses;
