@@ -9,7 +9,7 @@
 
 Di chuyển hệ thống cache của ứng dụng `storefront` từ mô hình Next.js cấu hình Route-level cũ (`revalidate = 3600`, `dynamic = "force-dynamic"`) sang mô hình **Cache Components của Next.js 16** mới sử dụng chỉ thị `'use cache'`, hàm `cacheLife`, và `cacheTag` để tối ưu hóa hiệu năng render tĩnh, tăng tốc TTFB và bảo mật luồng dữ liệu DB.
 
-**Status**: ⏳ PLANNED
+**Status**: ✅ VERIFIED
 
 ---
 
@@ -167,30 +167,30 @@ Chúng ta sẽ thực hiện kiểm thử tự động theo các tiêu chuẩn t
 
 ### Phase 1: Configuration & Route Cleanup
 
-- [ ] Kích hoạt `cacheComponents: true` trong `apps/storefront/next.config.ts`
-- [ ] Xóa `revalidate`/`dynamic` khỏi `app/[locale]/page.tsx`
-- [ ] Xóa `revalidate` khỏi `app/[locale]/(shop)/products/[slug]/page.tsx`
-- [ ] Xóa `revalidate` khỏi `app/[locale]/(shop)/products/category/[slug]/page.tsx`
-- [ ] Xóa `revalidate` khỏi `app/[locale]/[...rest]/page.tsx`
-- [ ] Xóa `revalidate` khỏi `app/api/categories/route.ts`
-- [ ] Xóa `revalidate` khỏi `app/api/news/route.ts`
-- [ ] Xóa `dynamic` khỏi `app/api/products/route.ts`
-- [ ] Xóa `revalidate` khỏi `app/api/products/metadata/route.ts`
-- [ ] Xóa `revalidate` khỏi `app/api/promotions/route.ts`
+- [x] Kích hoạt `cacheComponents: true` trong `apps/storefront/next.config.ts`
+- [x] Xóa `revalidate`/`dynamic` khỏi `app/[locale]/page.tsx`
+- [x] Xóa `revalidate` khỏi `app/[locale]/(shop)/products/[slug]/page.tsx`
+- [x] Xóa `revalidate` khỏi `app/[locale]/(shop)/products/category/[slug]/page.tsx`
+- [x] Xóa `revalidate` khỏi `app/[locale]/[...rest]/page.tsx`
+- [x] Xóa `revalidate` khỏi `app/api/categories/route.ts`
+- [x] Xóa `revalidate` khỏi `app/api/news/route.ts`
+- [x] Xóa `dynamic` khỏi `app/api/products/route.ts`
+- [x] Xóa `revalidate` khỏi `app/api/products/metadata/route.ts`
+- [x] Xóa `revalidate` khỏi `app/api/promotions/route.ts`
 
 ### Phase 2: Local Service Layer & DB Query Caching
 
-- [ ] Refactor `apps/storefront/src/shared/services/category.service.ts` sử dụng `'use cache'` và DB trực tiếp.
-- [ ] Refactor `apps/storefront/src/shared/services/product.service.ts` sử dụng `'use cache'` và DB trực tiếp.
-- [ ] Refactor `apps/storefront/src/shared/services/news.service.ts` sử dụng `'use cache'` và DB trực tiếp.
-- [ ] Refactor `apps/storefront/src/shared/services/promo.service.ts` sử dụng `'use cache'` và DB trực tiếp.
+- [x] Refactor `apps/storefront/src/shared/services/category.service.ts` sử dụng `'use cache'` và DB trực tiếp.
+- [x] Refactor `apps/storefront/src/shared/services/product.service.ts` sử dụng `'use cache'` và DB trực tiếp.
+- [x] Refactor `apps/storefront/src/shared/services/news.service.ts` sử dụng `'use cache'` và DB trực tiếp.
+- [x] Refactor `apps/storefront/src/shared/services/promo.service.ts` sử dụng `'use cache'` và DB trực tiếp.
 
 ### Phase 3: API Route Refactoring
 
-- [ ] Đồng bộ hóa các API routes để gọi các cached local services.
+- [x] Đồng bộ hóa các API routes để gọi các cached local services.
 
 ### Phase 4: Final QA & Build
 
-- [ ] Chạy check-types
-- [ ] Chạy lint
-- [ ] Chạy build production thành công
+- [x] Chạy check-types
+- [x] Chạy lint
+- [x] Chạy build production thành công
