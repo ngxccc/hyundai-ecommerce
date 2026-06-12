@@ -62,7 +62,7 @@ _Focus on completing this section before looking further down._
 - [x] Phase 2: Storefront Product Catalog, Search & Filters — Plan ([plan](features/storefront/completed/storefront-phase-2-product-catalog_PLAN_08-06-26.md))
 - [x] Plan: B2B Storefront Phase 2 - Static Category Routes ([plan](features/storefront/completed/storefront-phase-2-static-category-routes_PLAN_09-06-26.md))
 - [ ] Storefront LCP Optimization Plan ([plan](general-plans/active/storefront-lcp-optimization_PLAN_12-06-26.md))
-- [ ] Storefront Catalog Caching Migration Plan ([plan](general-plans/active/storefront-catalog-caching-migration_PLAN_12-06-26.md))
+- [x] Storefront Catalog Caching Migration Plan ([plan](general-plans/active/storefront-catalog-caching-migration_PLAN_12-06-26.md))
 
 ---
 
