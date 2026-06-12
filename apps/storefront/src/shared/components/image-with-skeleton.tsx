@@ -18,6 +18,7 @@ export function ImageWithSkeleton({
   width,
   height,
   fill,
+  sizes,
   ...props
 }: ImageWithSkeletonProps) {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +28,7 @@ export function ImageWithSkeleton({
 
   return (
     <div
-      className={cn("relative", fill ? "h-full w-full" : "inline-block")}
+      className={cn(fill ? "absolute inset-0" : "relative inline-block")}
       style={!fill ? { width: styleWidth, height: styleHeight } : undefined}
     >
       {isLoading && (
@@ -40,13 +41,13 @@ export function ImageWithSkeleton({
           style={!fill ? { width: styleWidth, height: styleHeight } : undefined}
         />
       )}
-      {/* eslint-disable-next-line no-restricted-syntax */}
       <Image
         src={src}
         alt={alt}
         width={width!}
         height={height!}
         fill={fill!}
+        sizes={sizes}
         className={cn(
           "transition-opacity duration-300",
           isLoading ? "opacity-0" : "opacity-100",
