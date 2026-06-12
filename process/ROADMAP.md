@@ -10,58 +10,60 @@ _Focus on completing this section before looking further down._
 
 ### Milestone 2: Product Catalog & Localization (Phase 2 Catalog)
 
-- [x] Integrate storefront error boundaries (localized error.tsx and global-error.tsx)
+- [x] Storefront Error Boundaries Implementation Plan ([plan](process/general-plans/completed/storefront-error-boundaries_PLAN_12-06-26.md))
 - [x] Optimize Largest Contentful Paint (LCP) by compressing system icons and applying image loading priority
-- [x] Standardize catalog sort query parameters from snake_case to camelCase
+- [x] Standardize Catalog Sort Query Parameters Plan ([plan](process/general-plans/completed/standardize-sort-params_PLAN_12-06-26.md))
 - [ ] Migrate raw database queries into storefront cached service layers (sitemap.xml and api/products/metadata)
 - [ ] Refactor getStaticProductSlugs to fetch via Database productService.getAllActiveSlugs()
-- [ ] Implement bilingual database schema (columns name_vi, name_en) and DTO mapping layer
-- [ ] B2B Storefront Program — Program Goal Charter
-- [ ] Phase 3: Cart Service & Storefront Integration — Plan
-- [ ] Phase 4: Customer Quoting & Negotiation Portal — Plan
-- [ ] Multilingual Database Content and DTO Mapping Architecture Plan
-- [x] Admin Global Image Upload Configuration
-- [x] Admin Grid View Transformation
-- [x] Admin Header Search Refactor and Category Card Enhancement
-- [x] Architectural Refactor & Principles Alignment Plan
-- [x] Background Image Upload Architecture
-- [x] PLAN: Categories & Brands Management
-- [x] Admin Dashboard Dynamic Data - Plan
-- [x] Database Services Directory Refactoring Plan
-- [x] Database Indexing - Plan
-- [x] Database Missing Services Tests Plan
-- [x] Delete Button UI Refactor for Brands and Categories
-- [x] Cloudinary Image Deletion Plan
-- [x] Github Actions Paths Filter Migration Plan
-- [x] Error Handling Refactor (Services & Actions)
-- [x] Localize Cloudinary API Errors
-- [x] PLAN: Neon DB Migration Workflow & Seed Schema Update
-- [x] Product Image Upload Integration
-- [x] PLAN: Product Query Optimization (Performance & Clean Code)
-- [x] Product Feature Pre-Merge Audit
-- [x] Product Filters Reset Plan
-- [x] PLAN: Product Specs Filters
-- [x] PLAN: RIPER-5 Antigravity Plugin
-- [x] Security & Access Control Fix Plan
-- [x] Security Remediation and Rate Limiting Implementation - Plan
-- [x] Standardize Catalog Sort Query Parameters Plan
-- [x] Storefront Error Boundaries Implementation Plan
-- [x] Storefront Skeleton Components Implementation Plan
-- [x] Strict Paths Rule Update Plan
-- [x] PLAN: Warehouse & Inventory Management
-- [x] Zustand Architecture Analysis
-- [x] B2B CRM & Operations Dashboard Roadmap
-- [x] Phase 2: Customer Directory & Dealer Tiers Management
-- [x] Phase 3: Orders Management Dashboard & Invoice PDF Export
-- [x] Phase 5: Logistics Carrier Bidding Panel
-- [x] Phase 1: B2B Quotes Database Schema Extensions
-- [x] Phase 4: Quote Negotiation Chat & Pricing Cockpit
-- [x] Caching Migration Plan: Next.js 16 Cache Components
-- [x] Storefront Hybrid Faceted Search Implementation Plan
-- [x] Storefront Mobile Filter Bottom Sheet Implementation Plan
-- [x] Phase 1: Storefront API Mock Migration — Plan
-- [x] Phase 2: Storefront Product Catalog, Search & Filters — Plan
-- [x] Plan: B2B Storefront Phase 2 - Static Category Routes
+- [ ] Multilingual Database Content and DTO Mapping Architecture Plan ([plan](process/general-plans/active/multilingual-db-and-dto-architecture_PLAN_12-06-26.md))
+- [ ] B2B Storefront Program — Program Goal Charter ([plan](process/features/storefront/active/b2b-storefront_UMBRELLA_PLAN_08-06-26.md))
+- [ ] Phase 3: Cart Service & Storefront Integration — Plan ([plan](process/features/storefront/active/storefront-phase-3-cart-service_PLAN_08-06-26.md))
+- [ ] Phase 4: Customer Quoting & Negotiation Portal — Plan ([plan](process/features/storefront/active/storefront-phase-4-customer-portal_PLAN_08-06-26.md))
+- [ ] Multilingual Database Content and DTO Mapping Architecture Plan ([plan](process/general-plans/active/multilingual-db-and-dto-architecture_PLAN_12-06-26.md))
+- [x] Admin Global Image Upload Configuration ([plan](process/general-plans/completed/admin-global-image-upload-config_PLAN_01-06-26.md))
+- [x] Admin Grid View Transformation ([plan](process/general-plans/completed/admin-grid-view_PLAN_30-05-26.md))
+- [x] Admin Header Search Refactor and Category Card Enhancement ([plan](process/general-plans/completed/admin-header-search_PLAN_30-05-26.md))
+- [x] Architectural Refactor & Principles Alignment Plan ([plan](process/general-plans/completed/architectural-refactor_PLAN_03-06-26.md))
+- [x] Background Image Upload Architecture ([plan](process/general-plans/completed/background-image-upload_PLAN_01-06-26.md))
+- [x] PLAN: Categories & Brands Management ([plan](process/general-plans/completed/categories-brands_PLAN_30-05-26.md))
+- [x] Admin Dashboard Dynamic Data - Plan ([plan](process/general-plans/completed/dashboard-dynamic-data_PLAN_05-06-26.md))
+- [x] Database Services Directory Refactoring Plan ([plan](process/general-plans/completed/database-services-refactor_PLAN_12-06-26.md))
+- [x] Database Indexing - Plan ([plan](process/general-plans/completed/db-indexing_PLAN_08-06-26.md))
+- [x] Database Missing Services Tests Plan ([plan](process/general-plans/completed/db-missing-tests_PLAN_29-05-26.md))
+- [x] Delete Button UI Refactor for Brands and Categories ([plan](process/general-plans/completed/delete-button-ui_PLAN_30-05-26.md))
+- [x] Cloudinary Image Deletion Plan ([plan](process/general-plans/completed/delete-cloudinary-image_PLAN_01-06-26.md))
+- [x] Github Actions Paths Filter Migration Plan ([plan](process/general-plans/completed/dorny-paths-filter_PLAN_30-05-26.md))
+- [x] Error Handling Refactor (Services & Actions) ([plan](process/general-plans/completed/error-handling-refactor_PLAN_31-05-26.md))
+- [x] Localize Cloudinary API Errors ([plan](process/general-plans/completed/localize-cloudinary-api_PLAN_01-06-26.md))
+- [x] PLAN: Neon DB Migration Workflow & Seed Schema Update ([plan](process/general-plans/completed/neon-db-workflow_PLAN_30-05-26.md))
+- [x] Product Image Upload Integration ([plan](process/general-plans/completed/product-image-upload_PLAN_01-06-26.md))
+- [x] PLAN: Product Query Optimization (Performance & Clean Code) ([plan](process/general-plans/completed/products-getAll-optimize_PLAN_29-05-26.md))
+- [x] Product Feature Pre-Merge Audit ([plan](process/general-plans/completed/products-pre-merge-audit_PLAN_29-05-26.md))
+- [x] Product Filters Reset Plan ([plan](process/general-plans/completed/products-reset-filter_PLAN_30-05-26.md))
+- [x] PLAN: Product Specs Filters ([plan](process/general-plans/completed/products-specs-filter_PLAN_29-05-26.md))
+- [x] PLAN: RIPER-5 Antigravity Plugin ([plan](process/general-plans/completed/riper5-plugin_PLAN_29-05-26.md))
+- [x] Security & Access Control Fix Plan ([plan](process/general-plans/completed/security-auth-fix_PLAN_31-05-26.md))
+- [x] Security Remediation and Rate Limiting Implementation - Plan ([plan](process/general-plans/completed/security-remediation_PLAN_04-06-26.md))
+- [x] Standardize Catalog Sort Query Parameters Plan ([plan](process/general-plans/completed/standardize-sort-params_PLAN_12-06-26.md))
+- [x] Storefront Error Boundaries Implementation Plan ([plan](process/general-plans/completed/storefront-error-boundaries_PLAN_12-06-26.md))
+- [x] Storefront Skeleton Components Implementation Plan ([plan](process/general-plans/completed/storefront-skeletons-implementation_PLAN_12-06-26.md))
+- [x] Strict Paths Rule Update Plan ([plan](process/general-plans/completed/strict-paths-rule-update_PLAN_30-05-26.md))
+- [x] PLAN: Warehouse & Inventory Management ([plan](process/general-plans/completed/warehouse-inventory-management_PLAN_31-05-26.md))
+- [x] Zustand Architecture Analysis ([plan](process/general-plans/completed/zustand-analysis_PLAN_29-05-26.md))
+- [x] B2B CRM & Operations Dashboard Roadmap ([plan](process/features/crm/completed/crm-crm-roadmap_PLAN_01-06-26.md))
+- [x] Phase 2: Customer Directory & Dealer Tiers Management ([plan](process/features/crm/completed/crm-phase-2-customers-tiers_PLAN_01-06-26.md))
+- [x] Phase 3: Orders Management Dashboard & Invoice PDF Export ([plan](process/features/crm/completed/crm-phase-3-orders-invoice_PLAN_01-06-26.md))
+- [x] Phase 5: Logistics Carrier Bidding Panel ([plan](process/features/crm/completed/phase-5-logistics-bidding_PLAN_03-06-26.md))
+- [x] Phase 1: B2B Quotes Database Schema Extensions ([plan](process/features/crm/completed/quotes-phase-1-schema_PLAN_01-06-26.md))
+- [x] Phase 4: Quote Negotiation Chat & Pricing Cockpit ([plan](process/features/crm/completed/quotes-phase-4-negotiation_PLAN_02-06-26.md))
+- [x] Caching Migration Plan: Next.js 16 Cache Components ([plan](process/features/storefront/completed/caching_migration_PLAN_11-06-26.md))
+- [x] Storefront Hybrid Faceted Search Implementation Plan ([plan](process/features/storefront/completed/storefront-hybrid-faceted-search_PLAN_10-06-26.md))
+- [x] Storefront Mobile Filter Bottom Sheet Implementation Plan ([plan](process/features/storefront/completed/storefront-mobile-filter-bottom-sheet_PLAN_10-06-26.md))
+- [x] Phase 1: Storefront API Mock Migration — Plan ([plan](process/features/storefront/completed/storefront-phase-1-api-migration_PLAN_08-06-26.md))
+- [x] Phase 2: Storefront Product Catalog, Search & Filters — Plan ([plan](process/features/storefront/completed/storefront-phase-2-product-catalog_PLAN_08-06-26.md))
+- [x] Plan: B2B Storefront Phase 2 - Static Category Routes ([plan](process/features/storefront/completed/storefront-phase-2-static-category-routes_PLAN_09-06-26.md))
+- [ ] Storefront LCP Optimization Plan ([plan](process/general-plans/active/storefront-lcp-optimization_PLAN_12-06-26.md))
+- [ ] Storefront Catalog Caching Migration Plan ([plan](process/general-plans/active/storefront-catalog-caching-migration_PLAN_12-06-26.md))
 
 ---
 
