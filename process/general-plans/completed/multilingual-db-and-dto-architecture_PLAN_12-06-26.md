@@ -4,7 +4,7 @@
 **Complexity**: COMPLEX (Cross-cutting / Multi-package)
 **Implementation Approach**: Localization Columns + Centralized Storefront Mapping Services
 **Execution Model**: Phase-by-Phase with Pre-Migration Verification and Typecheck Validation
-**Status**: ⏳ PLANNED
+**Status**: ✅ COMPLETED
 
 ---
 
@@ -155,44 +155,44 @@ Every phase defined in this plan must be verified and checked in full before adv
 
 ### Phase 1: Database Migration & Schema Upgrades
 
-- [ ] Update Drizzle schema files in `packages/database/src/schemas/`:
+- [x] Update Drizzle schema files in `packages/database/src/schemas/`:
   - `product.schema.ts` (rename `name`/`description`/`shortDescription` to `*Vi`, add `*En` columns).
   - `category.schema.ts` (rename `name`/`description` to `*Vi`, add `*En` columns).
   - `brand.schema.ts` (rename `description` to `descriptionVi`, add `descriptionEn` columns).
-- [ ] Generate migrations using Drizzle Kit:
+- [x] Generate migrations using Drizzle Kit:
   - Run `bun --cwd packages/database drizzle-kit generate`.
   - Modify the generated SQL migration file to copy values from old columns to the new `_vi` columns to prevent data loss.
-- [ ] Update developer seed scripts to populate both English and Vietnamese sample data.
-- [ ] Run post-phase testing by applying migrations and seeding the local database.
+- [x] Update developer seed scripts to populate both English and Vietnamese sample data.
+- [x] Run post-phase testing by applying migrations and seeding the local database.
 
 ### Phase 2: Refactoring Shared DTOs and Validators
 
-- [ ] Update Zod schemas in `packages/database/src/validators/` to include validations for localized inputs.
-- [ ] Update shared DTO definitions in `packages/database/src/dtos/` to expose bilingual properties.
-- [ ] Verify database package typechecks correctly.
+- [x] Update Zod schemas in `packages/database/src/validators/` to include validations for localized inputs.
+- [x] Update shared DTO definitions in `packages/database/src/dtos/` to expose bilingual properties.
+- [x] Verify database package typechecks correctly.
 
 ### Phase 3: Storefront Service Mapping Layer
 
-- [ ] Define the mapped i18n interfaces and DTO-to-Storefront helper mapping functions in `apps/storefront/src/shared/services/types.ts` or in the services themselves:
+- [x] Define the mapped i18n interfaces and DTO-to-Storefront helper mapping functions in `apps/storefront/src/shared/services/types.ts` or in the services themselves:
   - `StorefrontProduct` (with localized `name`, `description`, `shortDescription`).
   - `StorefrontCategory` (with localized `name`, `description`).
   - `StorefrontBrand` (with localized `description`, keeping global `name`).
-- [ ] Refactor `apps/storefront/src/shared/services/product.service.ts`:
+- [x] Refactor `apps/storefront/src/shared/services/product.service.ts`:
   - `getProducts(locale, limit, options)`: fetch raw DTOs from database service, map to `StorefrontProduct[]`.
   - `getProductBySlug(locale, slug)`: fetch raw DTO, map to `StorefrontProduct | null`.
   - `getFiltersMetadata(locale)`: fetch raw DB metadata, resolve brand/category names to active locale, and return mapped filter metadata.
-- [ ] Refactor `apps/storefront/src/shared/services/category.service.ts`:
+- [x] Refactor `apps/storefront/src/shared/services/category.service.ts`:
   - `getCategories(locale)`: fetch categories, map to `StorefrontCategory[]`.
   - `getCategoryTree(locale)`: fetch tree, resolve names/descriptions, and return `StorefrontCategoryWithChildren[]`.
-- [ ] Refactor `apps/storefront/src/shared/services/brand.service.ts`:
+- [x] Refactor `apps/storefront/src/shared/services/brand.service.ts`:
   - `getBrands(locale)`: fetch brands, resolve descriptions, and return `StorefrontBrand[]`.
-- [ ] Pass the active `locale` (obtained from Next.js i18n routing parameters) to the storefront service calls in templates, pages, and components.
+- [x] Pass the active `locale` (obtained from Next.js i18n routing parameters) to the storefront service calls in templates, pages, and components.
 
 ### Phase 4: Admin Forms and Controllers Updates
 
-- [ ] Refactor forms and Zod validation schemas in `apps/admin` to support localized inputs.
-- [ ] Add dual-input controls (Vietnamese and English) for product/category/brand forms.
-- [ ] Save updated bilingual parameters to the database.
+- [x] Refactor forms and Zod validation schemas in `apps/admin` to support localized inputs.
+- [x] Add dual-input controls (Vietnamese and English) for product/category/brand forms.
+- [x] Save updated bilingual parameters to the database.
 
 ---
 
