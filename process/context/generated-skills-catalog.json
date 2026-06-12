@@ -1,0 +1,735 @@
+{
+  "owner": "audit-context",
+  "generatedFrom": {
+    "skillsRoot": ".claude/skills",
+    "routingPolicy": ".claude/skills/ag-audit-context/references/skill-routing-policy.json",
+    "canonicalRoutingSurfaces": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  },
+  "skillCount": 35,
+  "skills": [
+    {
+      "folder": "ag-adr",
+      "name": "ag-adr",
+      "description": "Use when creating, updating, or validating Architectural Decision Records (ADRs) to ensure structural and formatting consistency.",
+      "aliases": [
+        "ag-adr"
+      ],
+      "normalizedName": "agadr",
+      "routedFrom": [
+        "AGENTS.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/adr-layout.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-agent-browser",
+      "name": "ag-agent-browser",
+      "description": "AI-optimized browser automation CLI with context-efficient snapshots. Use for long autonomous sessions, self-verifying workflows, video recording, and cloud browser testing (Browserbase).",
+      "aliases": [
+        "ag-agent-browser"
+      ],
+      "normalizedName": "agagentbrowser",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/browserbase-cloud-setup.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-audit-ag",
+      "name": "ag-audit-ag",
+      "description": "Audit agent harness health: Claude/Codex agent parity, skill registry consistency, README.md sync, and protocol file wiring. Use when agents, skills, README.md, or development-protocol files move, split, or drift.",
+      "aliases": [
+        "ag-audit-ag"
+      ],
+      "normalizedName": "agauditag",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-audit-context",
+      "name": "ag-audit-context",
+      "description": "Audit project context routing, shared-skill discoverability, and Claude/Codex wiring. Use when context docs or skill surfaces move, split, or drift.",
+      "aliases": [
+        "ag-audit-context"
+      ],
+      "normalizedName": "agauditcontext",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/audit-context.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-audit-plans",
+      "name": "ag-audit-plans",
+      "description": "Audit active project plan files for staleness, completion, and routing truth. Use when cleaning up plans, reconciling active work, or archiving completed artifacts.",
+      "aliases": [
+        "ag-audit-plans"
+      ],
+      "normalizedName": "agauditplans",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/audit-plans.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-autoresearch",
+      "name": "ag-autoresearch",
+      "description": "Autonomous iterative optimization loop for measurable metrics like coverage, performance, or bundle size. Use when repeated experiments can be judged by a mechanical score.",
+      "aliases": [
+        "ag-autoresearch"
+      ],
+      "normalizedName": "agautoresearch",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/autonomous-loop-protocol.md",
+        "references/git-memory-pattern.md",
+        "references/guard-and-noise.md",
+        "references/metric-library.md",
+        "references/results-logging.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-chrome-devtools",
+      "name": "ag-chrome-devtools",
+      "description": "Automate browsers with Puppeteer CLI scripts and persistent sessions. Use for screenshots, performance analysis, network monitoring, web scraping, form automation, JavaScript debugging.",
+      "aliases": [
+        "ag-chrome-devtools"
+      ],
+      "normalizedName": "agchromedevtools",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-context-engineering",
+      "name": "ag-context-engineering",
+      "description": "Check context limits, optimize token usage, and debug context failures. Use when asking about rate limits, usage warnings, memory systems, or context-aware agent design.",
+      "aliases": [
+        "ag-context-engineering"
+      ],
+      "normalizedName": "agcontextengineering",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/context-compression.md",
+        "references/context-degradation.md",
+        "references/context-fundamentals.md",
+        "references/context-optimization.md",
+        "references/evaluation.md",
+        "references/memory-systems.md",
+        "references/multi-agent-patterns.md",
+        "references/project-development.md",
+        "references/runtime-awareness.md",
+        "references/tool-design.md",
+        "scripts/compression_evaluator.py",
+        "scripts/context_analyzer.py"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-debug",
+      "name": "ag-debug",
+      "description": "Debug systematically with root-cause analysis before fixes. Use for bugs, test failures, unexpected behavior, performance issues, CI failures, or system investigation.",
+      "aliases": [
+        "ag-debug"
+      ],
+      "normalizedName": "agdebug",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/defense-in-depth.md",
+        "references/frontend-verification.md",
+        "references/investigation-methodology.md",
+        "references/log-and-ci-analysis.md",
+        "references/performance-diagnostics.md",
+        "references/reporting-standards.md",
+        "references/root-cause-tracing.md",
+        "references/systematic-debugging.md",
+        "references/task-management-debugging.md",
+        "references/verification.md",
+        "scripts/find-polluter.sh"
+      ],
+      "mentionedSkills": [
+        "ag-chrome-devtools",
+        "ag-docs-seeker",
+        "ag-problem-solving",
+        "ag-scout"
+      ]
+    },
+    {
+      "folder": "ag-docs",
+      "name": "ag-docs",
+      "description": "Use when you need to analyze a codebase and initialize, update, or summarize project documentation.",
+      "aliases": [
+        "ag-docs"
+      ],
+      "normalizedName": "agdocs",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/init-workflow.md",
+        "references/summarize-workflow.md",
+        "references/update-workflow.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-docs-seeker",
+      "name": "ag-docs-seeker",
+      "description": "Search library/framework documentation via llms.txt (context7.com). Use for API docs, GitHub repository analysis, technical documentation lookup, latest library features.",
+      "aliases": [
+        "ag-docs-seeker"
+      ],
+      "normalizedName": "agdocsseeker",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/advanced.md",
+        "references/context7-patterns.md",
+        "references/errors.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-frontend-design",
+      "name": "ag-frontend-design",
+      "description": "Create polished frontend interfaces from designs/screenshots/videos. Use for web components, 3D experiences, replicating UI designs, quick prototypes, immersive interfaces, avoiding AI slop.",
+      "aliases": [
+        "ag-frontend-design"
+      ],
+      "normalizedName": "agfrontenddesign",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-generate-context",
+      "name": "ag-generate-context",
+      "description": "Generate or update the project's authoritative repository context at process/context/all-context.md. Use when repo context is missing, stale, or contradicted by code.",
+      "aliases": [
+        "ag-generate-context"
+      ],
+      "normalizedName": "aggeneratecontext",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/generate-context.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-generate-plan",
+      "name": "ag-generate-plan",
+      "description": "Create or update implementation plans in the repo's SIMPLE or COMPLEX format. Use when turning an idea, PRD, or approved direction into a saved plan artifact.",
+      "aliases": [
+        "ag-generate-plan"
+      ],
+      "normalizedName": "aggenerateplan",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/generate-plan.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-git-manager",
+      "name": "ag-git-manager",
+      "description": "Use this skill to commit changes incrementally, push branches to remote, create pull requests with clear titles/descriptions, and merge using only squash or rebase strategies.",
+      "aliases": [
+        "ag-git-manager"
+      ],
+      "normalizedName": "aggitmanager",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-mcp-management",
+      "name": "ag-mcp-management",
+      "description": "Manage MCP servers - discover, analyze, execute tools/prompts/resources. Use for MCP integrations, intelligent tool selection, multi-server management, context-efficient capability discovery.",
+      "aliases": [
+        "ag-mcp-management"
+      ],
+      "normalizedName": "agmcpmanagement",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "assets/tools.json",
+        "references/configuration.md",
+        "references/gemini-cli-integration.md",
+        "references/mcp-protocol.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-merge-worktree",
+      "name": "ag-merge-worktree",
+      "description": "Merge a git worktree branch back into the main checkout and clean up the worktree. Use when the user asks to merge, archive, or clean up a completed worktree.",
+      "aliases": [
+        "ag-merge-worktree"
+      ],
+      "normalizedName": "agmergeworktree",
+      "routedFrom": [
+        "AGENTS.md"
+      ],
+      "allowlisted": true,
+      "allowlistReason": "Operational utility intentionally surfaced only on explicit worktree merge/cleanup requests instead of default step-0 routing.",
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-predict",
+      "name": "ag-predict",
+      "description": "5 expert personas debate proposed changes before implementation. Catches architectural, security, performance, and UX issues early. Use before major features or risky changes.",
+      "aliases": [
+        "ag-predict"
+      ],
+      "normalizedName": "agpredict",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": [
+        "ag-scenario"
+      ]
+    },
+    {
+      "folder": "ag-preview",
+      "name": "ag-preview",
+      "description": "Use when you need to inspect files or generate visual explanations, slides, diagrams, or HTML recaps.",
+      "aliases": [
+        "ag-preview"
+      ],
+      "normalizedName": "agpreview",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/generation-modes.md",
+        "references/view-mode.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-problem-solving",
+      "name": "ag-problem-solving",
+      "description": "Apply systematic problem-solving techniques when stuck. Use for complexity spirals, innovation blocks, recurring patterns, assumption constraints, simplification cascades, scale uncertainty.",
+      "aliases": [
+        "ag-problem-solving"
+      ],
+      "normalizedName": "agproblemsolving",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/attribution.md",
+        "references/collision-zone-thinking.md",
+        "references/inversion-exercise.md",
+        "references/meta-pattern-recognition.md",
+        "references/scale-game.md",
+        "references/simplification-cascades.md",
+        "references/when-stuck.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-publish",
+      "name": "ag-publish",
+      "description": "Push agent harness improvements from the current development repo to the remote kit repository. Use when you want to publish local harness changes back to the shared kit. Diffs managed files, shows what changed, bumps version, and pushes.",
+      "aliases": [
+        "ag-publish"
+      ],
+      "normalizedName": "agpublish",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/ag-publish.md"
+      ],
+      "mentionedSkills": [
+        "ag-audit-ag",
+        "ag-update"
+      ]
+    },
+    {
+      "folder": "ag-repomix",
+      "name": "ag-repomix",
+      "description": "Use when you need to pack a local or remote repository into an AI-friendly reference artifact for research, audits, feature-porting prep, context review, or security-oriented repo analysis.",
+      "aliases": [
+        "ag-repomix"
+      ],
+      "normalizedName": "agrepomix",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/configuration.md",
+        "references/repomix-workflow.md",
+        "references/usage-patterns.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-scenario",
+      "name": "ag-scenario",
+      "description": "Generate comprehensive edge cases and test scenarios by decomposing features across 12 dimensions. Use before implementation or testing to catch issues early.",
+      "aliases": [
+        "ag-scenario"
+      ],
+      "normalizedName": "agscenario",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": [
+        "ag-predict"
+      ]
+    },
+    {
+      "folder": "ag-scout",
+      "name": "ag-scout",
+      "description": "Fast codebase scouting using shell search and optional parallel research agents. Use for file discovery, task context gathering, and quick scoped searches across directories.",
+      "aliases": [
+        "ag-scout"
+      ],
+      "normalizedName": "agscout",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/external-scouting.md",
+        "references/internal-scouting.md",
+        "references/task-management-scouting.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-second-brain",
+      "name": "ag-second-brain",
+      "description": "Use this skill when the user asks a question about topics, concepts, code guidelines, or workflows in their second brain, or when the agent needs to search, fetch, explain, update, create inbox notes, or migrate inbox notes to atomic notes without fabricating details.",
+      "aliases": [
+        "ag-second-brain"
+      ],
+      "normalizedName": "agsecondbrain",
+      "routedFrom": [
+        "AGENTS.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-security",
+      "name": "ag-security",
+      "description": "STRIDE + OWASP-based security audit with optional auto-fix. Scans code for vulnerabilities, categorizes by severity, and can iteratively fix findings using ag-autoresearch pattern.",
+      "aliases": [
+        "ag-security"
+      ],
+      "normalizedName": "agsecurity",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/stride-owasp-checklist.md"
+      ],
+      "mentionedSkills": [
+        "ag-autoresearch",
+        "ag-predict",
+        "ag-scenario"
+      ]
+    },
+    {
+      "folder": "ag-sequential-thinking",
+      "name": "ag-sequential-thinking",
+      "description": "Apply step-by-step analysis for complex problems with revision capability. Use for multi-step reasoning, hypothesis verification, adaptive planning, problem decomposition, course correction.",
+      "aliases": [
+        "ag-sequential-thinking"
+      ],
+      "normalizedName": "agsequentialthinking",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/advanced-strategies.md",
+        "references/advanced-techniques.md",
+        "references/core-patterns.md",
+        "references/examples-api.md",
+        "references/examples-architecture.md",
+        "references/examples-debug.md",
+        "scripts/format-thought.js",
+        "scripts/process-thought.js"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-setup",
+      "name": "ag-setup",
+      "description": "Interactive agent harness setup for any project. Detects your stack, asks about your project, scaffolds process directories, deep-scans the codebase, and populates context with real content. Works on fresh projects and existing projects with pre-existing configs — always asks before reorganizing.",
+      "aliases": [
+        "ag-setup"
+      ],
+      "normalizedName": "agsetup",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/ag-setup.md"
+      ],
+      "mentionedSkills": [
+        "ag-update"
+      ]
+    },
+    {
+      "folder": "ag-skill-standard",
+      "name": "ag-skill-standard",
+      "description": "Rules, standards, and validation guides for writing and structure of skills. Use when creating or updating any skill files to ensure pattern compliance.",
+      "aliases": [
+        "ag-skill-standard"
+      ],
+      "normalizedName": "agskillstandard",
+      "routedFrom": [
+        "AGENTS.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/skill-layout.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-team",
+      "name": "ag-team",
+      "description": "Orchestrate Agent Teams for parallel multi-session collaboration. Use for research, implementation, review, and debug workflows requiring independent teammates.",
+      "aliases": [
+        "ag-team"
+      ],
+      "normalizedName": "agteam",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-tech-graph",
+      "name": "ag-tech-graph",
+      "description": "Use when you need publish-grade SVG or PNG technical diagrams for architecture, flow, sequence, UML, state, or comparison visuals, with preview used afterward for review rather than generation.",
+      "aliases": [
+        "ag-tech-graph"
+      ],
+      "normalizedName": "agtechgraph",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/icons.md",
+        "references/style-1-flat-icon.md",
+        "references/style-7-openai.md",
+        "references/style-diagram-matrix.md",
+        "references/svg-layout-best-practices.md",
+        "references/tech-graph-workflow.md",
+        "scripts/generate-diagram.sh",
+        "scripts/generate-from-template.py",
+        "scripts/test-all-styles.sh",
+        "scripts/validate-svg.sh"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-update",
+      "name": "ag-update",
+      "description": "Pull latest agent harness improvements from the remote kit repository. Shows a dry-run diff summary, waits for confirmation, then applies updates.",
+      "aliases": [
+        "ag-update"
+      ],
+      "normalizedName": "agupdate",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/ag-update.md"
+      ],
+      "mentionedSkills": [
+        "ag-setup"
+      ]
+    },
+    {
+      "folder": "ag-watzup",
+      "name": "ag-watzup",
+      "description": "Use when you need a read-only handoff summary of current branch state, local/remote refs, worktrees, active project plans, selected-plan hints, and suggested next checks.",
+      "aliases": [
+        "ag-watzup"
+      ],
+      "normalizedName": "agwatzup",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/watzup-workflow.md"
+      ],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-web-testing",
+      "name": "ag-web-testing",
+      "description": "Web testing with Playwright, Vitest, k6. E2E/unit/integration/load/security/visual/a11y testing. Use for test automation, flakiness, Core Web Vitals, mobile gestures, cross-browser.",
+      "aliases": [
+        "ag-web-testing"
+      ],
+      "normalizedName": "agwebtesting",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [],
+      "mentionedSkills": []
+    },
+    {
+      "folder": "ag-xia",
+      "name": "ag-xia",
+      "description": "Use when you need to compare a local or remote repository, extract a feature idea, or prepare an adaptation study without planning or implementing it yet.",
+      "aliases": [
+        "ag-xia"
+      ],
+      "normalizedName": "agxia",
+      "routedFrom": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "allowlisted": false,
+      "allowlistReason": null,
+      "relativeReferences": [
+        "references/challenge-framework.md",
+        "references/xia-workflow.md"
+      ],
+      "mentionedSkills": []
+    }
+  ]
+}
