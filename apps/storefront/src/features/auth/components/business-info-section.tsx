@@ -21,8 +21,9 @@ export const BusinessInfoSection = ({
   const businessType = useWatch({
     control: form.control,
     name: "businessType",
+    defaultValue: "end_user",
   });
-  const isBusinessCustomer = businessType !== "end_user";
+  const isBusinessCustomer = businessType && businessType !== "end_user";
 
   return (
     <div className="border-t pt-6">
