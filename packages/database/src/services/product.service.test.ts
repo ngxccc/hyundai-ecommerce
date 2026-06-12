@@ -135,7 +135,7 @@ describe("ProductService", () => {
   });
 
   describe("getAll()", () => {
-    test("should support price_asc sorting", async () => {
+    test("should support priceAsc sorting", async () => {
       const mockProducts = [
         {
           id: "prod-1",
@@ -147,7 +147,7 @@ describe("ProductService", () => {
       ] as unknown as Awaited<ReturnType<ProductService["getAll"]>>["data"];
       mockSelectResolvedValue.mockResolvedValueOnce(mockProducts);
 
-      const result = await productService.getAll(10, { sort: "price_asc" });
+      const result = await productService.getAll(10, { sort: "priceAsc" });
 
       expect(mockSelect).toHaveBeenCalledTimes(1);
       expect(result.data).toEqual(mockProducts);

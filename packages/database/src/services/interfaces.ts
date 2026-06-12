@@ -124,7 +124,7 @@ export interface TGetAllOptions {
   engineBrand?: string | undefined;
   alternatorBrand?: string | undefined;
   isQuoteOnly?: boolean | undefined;
-  sort?: "price_asc" | "price_desc" | "newest" | undefined;
+  sort?: "priceAsc" | "priceDesc" | "newest" | undefined;
 }
 
 export interface IProductFilterSpecs {

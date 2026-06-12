@@ -81,11 +81,11 @@ export class ProductService implements IProductService {
 
     // Build dynamic orderBy columns (using direct column references)
     let orderByColumns;
-    if (sort === "price_asc") {
+    if (sort === "priceAsc") {
       orderByColumns = isGoingBack
         ? [desc(products.price), desc(products.id)]
         : [asc(products.price), asc(products.id)];
-    } else if (sort === "price_desc") {
+    } else if (sort === "priceDesc") {
       orderByColumns = isGoingBack
         ? [asc(products.price), asc(products.id)]
         : [desc(products.price), desc(products.id)];
@@ -122,7 +122,7 @@ export class ProductService implements IProductService {
       const firstItem = data[0];
 
       if (lastItem && firstItem) {
-        if (sort === "price_asc" || sort === "price_desc") {
+        if (sort === "priceAsc" || sort === "priceDesc") {
           nextCursor =
             (!isGoingBack && hasMore) || (isGoingBack && options?.before)
               ? `${lastItem.price}_${lastItem.id}`
@@ -274,7 +274,7 @@ export class ProductService implements IProductService {
     const cursor = after ?? before;
     if (!cursor) return undefined;
 
-    if (sort !== "price_asc" && sort !== "price_desc")
+    if (sort !== "priceAsc" && sort !== "priceDesc")
       return after
         ? lt(products.createdAt, new Date(after))
         : gt(products.createdAt, new Date(before!));
@@ -285,7 +285,7 @@ export class ProductService implements IProductService {
     const priceNum = sql`${products.price}::numeric`;
     const pNum = sql`${p}::numeric`;
 
-    if (sort === "price_asc") {
+    if (sort === "priceAsc") {
       return after
         ? sql`${priceNum} > ${pNum} OR ${priceNum} = ${pNum} AND ${products.id} > ${id}`
         : sql`${priceNum} < ${pNum} OR ${priceNum} = ${pNum} AND ${products.id} < ${id}`;
