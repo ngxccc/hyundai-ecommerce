@@ -6,7 +6,7 @@ import { routing } from "@/i18n/routing";
 import { priceFormatter } from "@/shared/lib/utils";
 import { productService } from "@/shared/services";
 import type { Metadata } from "next";
-import Image from "next/image";
+import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { notFound } from "next/navigation";
 import type { Locale } from "next-intl";
 
@@ -120,7 +120,7 @@ async function ProductDetailsPageContent({
   return (
     <section className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:flex-row lg:px-8">
       <div className="relative aspect-square w-full overflow-hidden rounded-xl lg:w-1/2">
-        <Image
+        <ImageWithSkeleton
           src={
             product.images[0] && product.images[0] !== ""
               ? product.images[0]

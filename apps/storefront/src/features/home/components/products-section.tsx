@@ -1,7 +1,7 @@
 import type { TProduct } from "@nhatnang/database/schemas";
 import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
-import Image from "next/image";
+import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import {
@@ -63,7 +63,7 @@ export async function ProductsSection() {
               className="group hover:border-primary/50 flex h-full flex-col gap-4 overflow-hidden py-0 transition-all hover:shadow-xl"
             >
               <CardHeader className="relative aspect-4/3 w-full p-0">
-                <Image
+                <ImageWithSkeleton
                   src={
                     product.images[0] && product.images[0] !== ""
                       ? product.images[0]

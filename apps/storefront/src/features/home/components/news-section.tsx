@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import Image from "next/image";
+import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { Link } from "@/i18n/routing";
@@ -48,7 +48,7 @@ export async function NewsSection() {
             >
               <article className="flex h-full flex-col sm:flex-row">
                 <CardHeader className="relative aspect-4/3 shrink-0 p-0 sm:aspect-auto sm:w-2/5">
-                  <Image
+                  <ImageWithSkeleton
                     src={
                       article.imageUrl
                         ? article.imageUrl

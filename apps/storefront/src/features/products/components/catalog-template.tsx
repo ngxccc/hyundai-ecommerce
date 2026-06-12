@@ -12,7 +12,7 @@ import { ProductPagination } from "./product-pagination";
 import { ActiveFilterChips } from "./active-filter-chips";
 import { DesktopProductFilters } from "./desktop-product-filters";
 import { ProductFilterSheet } from "./product-filter-sheet";
-import Image from "next/image";
+import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import {
@@ -241,7 +241,6 @@ export async function CatalogTemplate({
             {productsList.length > 0 ? (
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {productsList.map((product, index) => {
-                  const isLcp = index < 2;
                   return (
                     <Card
                       key={product.id}
@@ -249,7 +248,7 @@ export async function CatalogTemplate({
                     >
                       <Link href={`/products/${product.slug}`}>
                         <CardHeader className="relative aspect-4/3 w-full p-0">
-                          <Image
+                          <ImageWithSkeleton
                             src={
                               product.images[0] && product.images[0] !== ""
                                 ? product.images[0]
@@ -257,10 +256,9 @@ export async function CatalogTemplate({
                             }
                             alt={product.name}
                             fill
-                            className="object-cover transition-transform duration-500"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            priority={isLcp}
-                            loading={isLcp ? undefined : "lazy"}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 250px"
+                            className="object-cover transition-all duration-300 group-hover:scale-105"
+                            loading={index < 4 ? undefined : "lazy"}
                           />
                           <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
                             {tHome("model")}:{" "}
