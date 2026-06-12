@@ -22,7 +22,8 @@ describe("WarehouseService", () => {
     const mockWarehouses = [
       {
         id: "1",
-        name: "Main Warehouse",
+        nameVi: "Main Warehouse",
+        nameEn: null,
         streetAddress: "123 Main St",
         district: "District 1",
         city: "HCM City",
@@ -48,7 +49,8 @@ describe("WarehouseService", () => {
   test("create() should insert and return new warehouse", async () => {
     const mockWarehouse = {
       id: "1",
-      name: "Main Warehouse",
+      nameVi: "Main Warehouse",
+      nameEn: null,
       streetAddress: "123 Main St",
       district: "District 1",
       city: "HCM City",
@@ -59,7 +61,8 @@ describe("WarehouseService", () => {
     mockReturning.mockResolvedValueOnce([mockWarehouse]);
 
     const result = await warehouseService.create({
-      name: "Main Warehouse",
+      nameVi: "Main Warehouse",
+      nameEn: null,
       streetAddress: "123 Main St",
       district: "District 1",
       city: "HCM City",
@@ -74,7 +77,8 @@ describe("WarehouseService", () => {
   test("update() should update and return warehouse", async () => {
     const mockWarehouse = {
       id: "1",
-      name: "Updated Warehouse",
+      nameVi: "Updated Warehouse",
+      nameEn: null,
       streetAddress: "123 Main St",
       district: "District 1",
       city: "HCM City",
@@ -86,7 +90,7 @@ describe("WarehouseService", () => {
 
     const result = await warehouseService.update({
       id: "1",
-      name: "Updated Warehouse",
+      nameVi: "Updated Warehouse",
     });
 
     expect(mockUpdate).toHaveBeenCalledTimes(1);
@@ -98,7 +102,8 @@ describe("WarehouseService", () => {
   test("getById() should return warehouse when found", async () => {
     const mockWarehouse = {
       id: "1",
-      name: "Main Warehouse",
+      nameVi: "Main Warehouse",
+      nameEn: null,
       streetAddress: "123 Main St",
       district: "District 1",
       city: "HCM City",

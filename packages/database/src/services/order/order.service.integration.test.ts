@@ -52,7 +52,7 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
     const [product] = await integrationDb
       .insert(products)
       .values({
-        name: "Test Product Race Condition",
+        nameVi: "Test Product Race Condition",
         slug: testProductSlug,
         price: "100000",
         totalStockCache: 100,
