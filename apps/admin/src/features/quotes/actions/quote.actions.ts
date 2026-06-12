@@ -132,7 +132,7 @@ export const updateQuoteItemPriceAction = async (
     await quotesService.addQuoteMessage({
       quoteId,
       senderId: adminUserId,
-      message: `[SYSTEM] Đã cập nhật giá thương lượng cho sản phẩm "${item.product.name}" thành ${formattedPrice}`,
+      message: `[SYSTEM] Đã cập nhật giá thương lượng cho sản phẩm "${item.product.nameVi}" thành ${formattedPrice}`,
     });
 
     if (quote.status === "pending_review") {

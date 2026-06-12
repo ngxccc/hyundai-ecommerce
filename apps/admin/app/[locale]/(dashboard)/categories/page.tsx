@@ -39,8 +39,10 @@ export default async function AdminCategoriesPage({
   const filteredCategories = search
     ? categories.filter(
         (c) =>
-          c.name.toLowerCase().includes(search.toLowerCase()) ||
-          c.description?.toLowerCase().includes(search.toLowerCase()),
+          c.nameVi.toLowerCase().includes(search.toLowerCase()) ||
+          c.nameEn?.toLowerCase().includes(search.toLowerCase()) ||
+          c.descriptionVi?.toLowerCase().includes(search.toLowerCase()) ||
+          c.descriptionEn?.toLowerCase().includes(search.toLowerCase()),
       )
     : categories;
 

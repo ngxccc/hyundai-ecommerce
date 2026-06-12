@@ -28,8 +28,12 @@ export const ProductDescriptionSection = ({
   const t = useTranslations("AdminProductForm");
   const tEditor = useTranslations("Editor");
 
-  const initialDescription = form.getValues(
-    "description",
+  const initialDescriptionVi = form.getValues(
+    "descriptionVi",
+  ) as JSONContent | null;
+
+  const initialDescriptionEn = form.getValues(
+    "descriptionEn",
   ) as JSONContent | null;
 
   return (
@@ -43,19 +47,45 @@ export const ProductDescriptionSection = ({
       <CardContent className="border-none p-0">
         <FormField
           control={form.control}
-          name="description"
+          name="descriptionVi"
           render={() => (
-            <FormItem>
-              <FormLabel className="sr-only">
-                {t("fields.description")}
+            <FormItem className="border p-4">
+              <FormLabel className="font-semibold">
+                {t("fields.description")} (VI)
               </FormLabel>
               <FormControl>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 mt-2">
                   <RichTextEditor
                     dictionary={(k) => tEditor(k as never)}
-                    value={initialDescription}
+                    value={initialDescriptionVi}
                     onChange={(val) =>
-                      form.setValue("description", val, {
+                      form.setValue("descriptionVi", val, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      })
+                    }
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="descriptionEn"
+          render={() => (
+            <FormItem className="border border-t-0 p-4">
+              <FormLabel className="font-semibold">
+                {t("fields.description")} (EN)
+              </FormLabel>
+              <FormControl>
+                <div className="flex flex-col gap-2 mt-2">
+                  <RichTextEditor
+                    dictionary={(k) => tEditor(k as never)}
+                    value={initialDescriptionEn}
+                    onChange={(val) =>
+                      form.setValue("descriptionEn", val, {
                         shouldValidate: true,
                         shouldDirty: true,
                       })

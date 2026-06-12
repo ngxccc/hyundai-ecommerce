@@ -62,11 +62,14 @@ describe("product.actions", () => {
 
     const mockProduct: TProduct = {
       id: "prod-1",
-      name: "Test Product",
+      nameVi: "Test Product",
+      nameEn: null,
       slug: "test",
       price: "1000",
-      description: null,
-      shortDescription: null,
+      descriptionVi: null,
+      descriptionEn: null,
+      shortDescriptionVi: null,
+      shortDescriptionEn: null,
       images: [],
       brandId: null,
       categoryId: null,
@@ -85,11 +88,14 @@ describe("product.actions", () => {
     ).mockResolvedValue("https://res.cloudinary.com/test");
 
     const validData: TCreateProductInput = {
-      name: "Test Product",
+      nameVi: "Test Product",
+      nameEn: null,
       slug: "test-product",
       price: "1000",
-      description: null,
-      shortDescription: null,
+      descriptionVi: null,
+      descriptionEn: null,
+      shortDescriptionVi: null,
+      shortDescriptionEn: null,
       images: [],
       isQuoteOnly: false,
     };

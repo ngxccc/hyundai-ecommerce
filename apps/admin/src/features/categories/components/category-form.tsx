@@ -62,10 +62,12 @@ export const CategoryForm = ({
   const form = useForm<TCreateCategoryInput>({
     resolver: translatedZodResolver(createCategorySchema, t),
     defaultValues: {
-      name: initialData?.name ?? "",
+      nameVi: initialData?.nameVi ?? "",
+      nameEn: initialData?.nameEn ?? "",
       slug: initialData?.slug ?? "",
       parentId: initialData?.parentId ?? null,
-      description: initialData?.description ?? "",
+      descriptionVi: initialData?.descriptionVi ?? "",
+      descriptionEn: initialData?.descriptionEn ?? "",
       image: initialData?.image ?? "",
       isActive: initialData?.isActive ?? true,
     },
@@ -172,15 +174,34 @@ export const CategoryForm = ({
             <CardContent className="space-y-4 px-4">
               <FormField
                 control={form.control}
-                name="name"
+                name="nameVi"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.name")}</FormLabel>
+                    <FormLabel>{t("fields.name")} (VI)</FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t("placeholders.name")}
                         disabled={isPending}
                         {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="nameEn"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("fields.name")} (EN)</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("placeholders.name")}
+                        disabled={isPending}
+                        {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage />
@@ -230,7 +251,7 @@ export const CategoryForm = ({
                           .filter((c) => c.id !== initialData?.id)
                           .map((category) => (
                             <SelectItem key={category.id} value={category.id}>
-                              {category.name}
+                              {category.nameVi}
                             </SelectItem>
                           ))}
                       </SelectContent>
@@ -242,10 +263,30 @@ export const CategoryForm = ({
 
               <FormField
                 control={form.control}
-                name="description"
+                name="descriptionVi"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.description")}</FormLabel>
+                    <FormLabel>{t("fields.description")} (VI)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder={t("placeholders.description")}
+                        disabled={isPending}
+                        {...field}
+                        value={field.value ?? ""}
+                        className="min-h-0 resize-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="descriptionEn"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("fields.description")} (EN)</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder={t("placeholders.description")}

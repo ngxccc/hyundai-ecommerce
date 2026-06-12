@@ -33,7 +33,7 @@ export const ProductInventoryTable = ({
 
   // Sort warehouses so active ones are first
   const sortedWarehouses = [...warehouses].sort((a, b) => {
-    if (a.isActive === b.isActive) return a.name.localeCompare(b.name);
+    if (a.isActive === b.isActive) return a.nameVi.localeCompare(b.nameVi);
     return a.isActive ? -1 : 1;
   });
 
@@ -135,7 +135,7 @@ const InventoryRow = ({
   return (
     <TableRow className={!warehouse.isActive ? "bg-muted/50 opacity-60" : ""}>
       <TableCell className="font-medium">
-        {warehouse.name}
+        {warehouse.nameVi}
         {!warehouse.isActive && (
           <span className="text-muted-foreground ml-2 text-xs">
             ({t("status.inactive")})

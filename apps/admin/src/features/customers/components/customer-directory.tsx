@@ -305,7 +305,7 @@ export const CustomerDirectory = ({
                       {user.businessType === "dealer" && user.tier ? (
                         <div className="flex flex-col">
                           <span className="text-sm font-semibold text-emerald-600">
-                            {user.tier.name}
+                            {user.tier.nameVi}
                           </span>
                           <span className="text-muted-foreground text-xs">
                             {t("table.discountLabel", {
@@ -399,7 +399,7 @@ export const CustomerDirectory = ({
                       </span>
                       <div className="text-right">
                         <span className="block text-xs font-bold text-emerald-600">
-                          {user.tier.name}
+                          {user.tier.nameVi}
                         </span>
                         <span className="text-[10px] font-semibold text-emerald-500">
                           {t("table.discountLabel", {
@@ -515,7 +515,7 @@ export const CustomerDirectory = ({
                       <SelectItem value="none">{t("dialog.none")}</SelectItem>
                       {dealerTiers.map((tier) => (
                         <SelectItem key={tier.id} value={tier.id}>
-                          {tier.name} (-
+                          {tier.nameVi} (-
                           {parseFloat(tier.discountPercentage).toFixed(0)}%)
                         </SelectItem>
                       ))}

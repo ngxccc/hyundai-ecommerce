@@ -48,11 +48,14 @@ export const ProductForm = ({
     initialData?.images?.length ? initialData.images : [],
   );
   const emptyFormValues = {
-    name: "",
+    nameVi: "",
+    nameEn: "",
     slug: "",
     price: "",
-    description: undefined,
-    shortDescription: "",
+    descriptionVi: undefined,
+    descriptionEn: undefined,
+    shortDescriptionVi: "",
+    shortDescriptionEn: "",
     images: [],
     brandId: null,
     categoryId: null,
@@ -63,13 +66,16 @@ export const ProductForm = ({
   const form = useForm<TCreateProductInput>({
     resolver: translatedZodResolver(createProductSchema, t),
     defaultValues: {
-      name: initialData?.name ?? "",
+      nameVi: initialData?.nameVi ?? "",
+      nameEn: initialData?.nameEn ?? "",
       slug: initialData?.slug ?? "",
       price: initialData?.price
         ? formatNumberInput(String(Number(initialData.price)))
         : "",
-      description: initialData?.description ?? undefined,
-      shortDescription: initialData?.shortDescription ?? "",
+      descriptionVi: initialData?.descriptionVi ?? undefined,
+      descriptionEn: initialData?.descriptionEn ?? undefined,
+      shortDescriptionVi: initialData?.shortDescriptionVi ?? "",
+      shortDescriptionEn: initialData?.shortDescriptionEn ?? "",
       images: initialData?.images ?? [],
       brandId: initialData?.brandId ?? null,
       categoryId: initialData?.categoryId ?? null,

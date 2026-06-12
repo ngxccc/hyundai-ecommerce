@@ -41,7 +41,7 @@ export const ProductCard = ({ product }: { product: TProductGridItem }) => {
         {image.includes("cloudinary.com") ? (
           <CldImage
             src={image}
-            alt={product.name}
+            alt={product.nameVi}
             width={400}
             height={300}
             className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
@@ -49,7 +49,7 @@ export const ProductCard = ({ product }: { product: TProductGridItem }) => {
         ) : (
           <Image
             src={image}
-            alt={product.name}
+            alt={product.nameVi}
             width={400}
             height={300}
             className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
@@ -62,7 +62,7 @@ export const ProductCard = ({ product }: { product: TProductGridItem }) => {
           {product.slug}
         </p>
         <h3 className="text-primary mb-1 line-clamp-2 text-base font-semibold">
-          {product.name}
+          {product.nameVi}
         </h3>
         <p className="text-muted-foreground mb-4 text-sm">
           {product.categoryId ?? "Khác"}
@@ -102,7 +102,7 @@ export const ProductCard = ({ product }: { product: TProductGridItem }) => {
             </Link>
             <DeleteProductButton
               productId={product.id}
-              productName={product.name}
+              productName={product.nameVi}
             />
           </div>
         </div>

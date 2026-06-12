@@ -47,7 +47,8 @@ export const WarehouseForm = ({
   const form = useForm<TCreateWarehouseInput>({
     resolver: translatedZodResolver(createWarehouseSchema, t),
     defaultValues: {
-      name: initialData?.name ?? "",
+      nameVi: initialData?.nameVi ?? "",
+      nameEn: initialData?.nameEn ?? "",
       streetAddress: initialData?.streetAddress ?? "",
       district: initialData?.district ?? "",
       city: initialData?.city ?? "",
@@ -113,15 +114,34 @@ export const WarehouseForm = ({
             <CardContent className="space-y-4 px-4">
               <FormField
                 control={form.control}
-                name="name"
+                name="nameVi"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.name")}</FormLabel>
+                    <FormLabel>{t("fields.name")} (VI)</FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t("placeholders.name")}
                         disabled={isPending}
                         {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="nameEn"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("fields.name")} (EN)</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("placeholders.name")}
+                        disabled={isPending}
+                        {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage />

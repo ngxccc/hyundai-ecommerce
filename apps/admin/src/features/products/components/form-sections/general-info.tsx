@@ -39,16 +39,33 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <FormField
             control={form.control}
-            name="name"
+            name="nameVi"
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput, "name">;
+              field: ControllerRenderProps<TCreateProductInput, "nameVi">;
             }) => (
               <FormItem>
-                <FormLabel>{t("fields.name")} *</FormLabel>
+                <FormLabel>{t("fields.name")} (VI) *</FormLabel>
                 <FormControl>
                   <Input placeholder={t("fields.namePlaceholder")} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="nameEn"
+            render={({
+              field,
+            }: {
+              field: ControllerRenderProps<TCreateProductInput, "nameEn">;
+            }) => (
+              <FormItem>
+                <FormLabel>{t("fields.name")} (EN)</FormLabel>
+                <FormControl>
+                  <Input placeholder={t("fields.namePlaceholder")} {...field} value={field.value ?? ""} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -103,17 +120,42 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
         />
         <FormField
           control={form.control}
-          name="shortDescription"
+          name="shortDescriptionVi"
           render={({
             field,
           }: {
             field: ControllerRenderProps<
               TCreateProductInput,
-              "shortDescription"
+              "shortDescriptionVi"
             >;
           }) => (
             <FormItem>
-              <FormLabel>{t("fields.shortDescription")}</FormLabel>
+              <FormLabel>{t("fields.shortDescription")} (VI)</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder={t("fields.shortDescriptionPlaceholder")}
+                  className="min-h-0 resize-none"
+                  {...field}
+                  value={field.value ?? ""}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="shortDescriptionEn"
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<
+              TCreateProductInput,
+              "shortDescriptionEn"
+            >;
+          }) => (
+            <FormItem>
+              <FormLabel>{t("fields.shortDescription")} (EN)</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder={t("fields.shortDescriptionPlaceholder")}

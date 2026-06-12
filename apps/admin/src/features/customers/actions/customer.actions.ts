@@ -35,7 +35,8 @@ export const createDealerTierAction = async (formData: FormData) => {
 
     const validatedData = parsed.data;
     const tierData = await dealerTierService.create({
-      name: validatedData.name,
+      nameVi: validatedData.nameVi,
+      nameEn: validatedData.nameEn,
       discountPercentage: validatedData.discountPercentage,
       minimumSpend: validatedData.minimumSpend,
     });

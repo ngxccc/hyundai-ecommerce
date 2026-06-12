@@ -51,7 +51,8 @@ export const TierConfigurator = ({ dealerTiers }: TierConfiguratorProps) => {
   const form = useForm<TCreateDealerTierInput>({
     resolver: translatedZodResolver(createDealerTierSchema, t),
     defaultValues: {
-      name: "",
+      nameVi: "",
+      nameEn: "",
       discountPercentage: "",
       minimumSpend: "0",
     },
@@ -60,7 +61,8 @@ export const TierConfigurator = ({ dealerTiers }: TierConfiguratorProps) => {
   const onSubmit = (data: TCreateDealerTierInput) => {
     startTransition(async () => {
       const payload = {
-        name: data.name,
+        nameVi: data.nameVi,
+        nameEn: data.nameEn,
         discountPercentage: data.discountPercentage,
         minimumSpend: data.minimumSpend,
       };
@@ -73,7 +75,8 @@ export const TierConfigurator = ({ dealerTiers }: TierConfiguratorProps) => {
       if (result.success) {
         toast.success(t("messages.successCreate"));
         form.reset({
-          name: "",
+          nameVi: "",
+          nameEn: "",
           discountPercentage: "",
           minimumSpend: "0",
         });
@@ -132,7 +135,7 @@ export const TierConfigurator = ({ dealerTiers }: TierConfiguratorProps) => {
                       className="transition-colors hover:bg-slate-50/50"
                     >
                       <TableCell className="py-4 pl-6 font-bold text-slate-900">
-                        {tier.name}
+                        {tier.nameVi}
                       </TableCell>
                       <TableCell className="py-4 font-semibold text-emerald-600">
                         {parseFloat(tier.discountPercentage).toFixed(1)}%
@@ -166,7 +169,7 @@ export const TierConfigurator = ({ dealerTiers }: TierConfiguratorProps) => {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <span className="text-base leading-tight font-bold text-slate-900">
-                      {tier.name}
+                      {tier.nameVi}
                     </span>
                     <Badge
                       variant="outline"
@@ -206,17 +209,39 @@ export const TierConfigurator = ({ dealerTiers }: TierConfiguratorProps) => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="name"
+                name="nameVi"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-bold text-slate-700">
-                      {t("form.name")}
+                      {t("form.name")} (VI)
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t("form.namePlaceholder")}
                         disabled={isPending}
                         {...field}
+                        className="border-slate-200 bg-white"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="nameEn"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-bold text-slate-700">
+                      {t("form.name")} (EN)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("form.namePlaceholder")}
+                        disabled={isPending}
+                        {...field}
+                        value={field.value ?? ""}
                         className="border-slate-200 bg-white"
                       />
                     </FormControl>
