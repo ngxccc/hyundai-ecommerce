@@ -6,7 +6,7 @@ import {
   productService,
   categoryService,
   brandService,
-} from "@nhatnang/database/services";
+} from "@/shared/services";
 import { ProductSort } from "./product-sort";
 import { ProductPagination } from "./product-pagination";
 import { ActiveFilterChips } from "./active-filter-chips";
@@ -120,7 +120,7 @@ export async function CatalogTemplate({
   // Resolve categoryIds if category slug is provided
   let categoryIds: string[] | undefined;
   if (categorySlug) {
-    const categoriesList = await categoryService.getAll();
+    const categoriesList = await categoryService.getCategories();
     const targetCategory = categoriesList.find(
       (cat) => cat.slug === categorySlug,
     );
@@ -134,7 +134,7 @@ export async function CatalogTemplate({
   // Fetch categories and brands from database first
   const [categoriesTree, allBrands] = await Promise.all([
     categoryService.getCategoryTree(),
-    brandService.getAll(),
+    brandService.getBrands(),
   ]);
 
   // Resolve brandIds from brand slugs in URL param
@@ -147,7 +147,7 @@ export async function CatalogTemplate({
   }
 
   // Fetch filtered products using resolved category and brand IDs
-  const productsData = await productService.getAll(12, {
+  const productsData = await productService.getProducts(12, {
     categoryIds,
     brandIds,
     search,

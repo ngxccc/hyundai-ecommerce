@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
-import { authService } from "@nhatnang/database/services";
+import { authService } from "@/shared/services";
 import { getTranslations } from "next-intl/server";
 import { loginSchema, type TLoginForm } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";

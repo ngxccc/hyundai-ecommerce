@@ -5,9 +5,11 @@
 ---
 
 ## Active Milestone
-*Focus on completing this section before looking further down.*
+
+_Focus on completing this section before looking further down._
 
 ### Milestone 2: Product Catalog & Localization (Phase 2 Catalog)
+
 - [x] Integrate storefront error boundaries (localized error.tsx and global-error.tsx)
 - [x] Optimize Largest Contentful Paint (LCP) by compressing system icons and applying image loading priority
 - [x] Standardize catalog sort query parameters from snake_case to camelCase
@@ -64,31 +66,35 @@
 ---
 
 ## Next 3 Actions
-*Select up to 3 tasks from the Active Milestone to focus on immediately.*
-1. **[In Progress]** Migrate raw database queries in sitemap.ts and metadata API to cached services
-2. **[Next]** Refactor getStaticProductSlugs to resolve raw SQL operations in database package
+
+_Select up to 3 tasks from the Active Milestone to focus on immediately._
+
+1. **[Done]** Migrate raw database queries in sitemap.ts, metadata API, product listing, and auth actions to cached/shared services layer
+2. **[In Progress]** Refactor getStaticProductSlugs to resolve raw SQL operations in database package
 3. **[Next]** Start bilingual schema migration per multilingual-db-and-dto-architecture plan
 
 ---
 
 ## Future Milestones
-*Upcoming vertical slices of work.*
 
-*   **Milestone 3: B2B Customer Directory & CRM Operations**
-    *   Optimize B2B customer registration forms and validation schemas
-    *   Integrate customer data into internal CRM dashboard
-    *   Support dealer tier-based automatic pricing and roles
-*   **Milestone 4: Doppler Secret Management & Security Audit**
-    *   Migrate environment variables to Doppler for centralized management
-    *   Perform comprehensive security audit (OWASP & CSP validation)
-*   **Milestone 5: Checkout & Order Tracking Flow**
-    *   Implement persistent database-backed cart sync
-    *   Build checkout and integrate domestic payment gateways
+_Upcoming vertical slices of work._
+
+- **Milestone 3: B2B Customer Directory & CRM Operations**
+  - Optimize B2B customer registration forms and validation schemas
+  - Integrate customer data into internal CRM dashboard
+  - Support dealer tier-based automatic pricing and roles
+- **Milestone 4: Doppler Secret Management & Security Audit**
+  - Migrate environment variables to Doppler for centralized management
+  - Perform comprehensive security audit (OWASP & CSP validation)
+- **Milestone 5: Checkout & Order Tracking Flow**
+  - Implement persistent database-backed cart sync
+  - Build checkout and integrate domestic payment gateways
 
 ---
 
 ## Idea Icebox / Backlog
-*A storage area for new ideas. Do not implement immediately to prevent scope creep.*
+
+_A storage area for new ideas. Do not implement immediately to prevent scope creep._
 
 - [ ] Implement AI generator sizing recommendation chatbot
 - [ ] Add product side-by-side technical specification comparison

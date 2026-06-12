@@ -1,9 +1,5 @@
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
-import {
-  brandService,
-  categoryService as dbCategoryService,
-} from "@nhatnang/database/services";
-import { productService, categoryService } from "@/shared/services";
+import { productService, categoryService, brandService } from "@/shared/services";
 import type { TGetAllOptions } from "@nhatnang/database/services";
 import { connection, NextResponse, type NextRequest } from "next/server";
 
@@ -47,7 +43,7 @@ export async function GET(request: NextRequest) {
         (cat) => cat.slug === categorySlug,
       );
       if (targetCategory) {
-        categoryIds = await dbCategoryService.getCategoryDescendants(
+        categoryIds = await categoryService.getCategoryDescendants(
           targetCategory.id,
         );
       }
@@ -57,7 +53,7 @@ export async function GET(request: NextRequest) {
     let brandIds: string[] | undefined;
     if (brandParam) {
       const brandSlugs = brandParam.split(",").filter(Boolean);
-      const allBrands = await brandService.getAll();
+      const allBrands = await brandService.getBrands();
       brandIds = allBrands
         .filter((b) => brandSlugs.includes(b.slug))
         .map((b) => b.id);
