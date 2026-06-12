@@ -39,7 +39,7 @@ export default async function AdminWarehousesPage({
     ? warehouses.filter(
         (w) =>
           (w.nameVi.toLowerCase().includes(search.toLowerCase()) ||
-           w.nameEn?.toLowerCase().includes(search.toLowerCase())) ||
+           (w.nameEn?.toLowerCase().includes(search.toLowerCase()) ?? false)) ||
           w.city.toLowerCase().includes(search.toLowerCase()),
       )
     : warehouses;

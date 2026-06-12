@@ -40,8 +40,8 @@ export default async function AdminBrandsPage({
     ? brands.filter(
         (b) =>
           b.name.toLowerCase().includes(search.toLowerCase()) ||
-          (b.descriptionVi?.toLowerCase().includes(search.toLowerCase()) ||
-           b.descriptionEn?.toLowerCase().includes(search.toLowerCase())),
+          ((b.descriptionVi?.toLowerCase().includes(search.toLowerCase()) ?? false) ||
+           (b.descriptionEn?.toLowerCase().includes(search.toLowerCase()) ?? false)),
       )
     : brands;
 

@@ -40,9 +40,9 @@ export default async function AdminCategoriesPage({
     ? categories.filter(
         (c) =>
           c.nameVi.toLowerCase().includes(search.toLowerCase()) ||
-          c.nameEn?.toLowerCase().includes(search.toLowerCase()) ||
-          c.descriptionVi?.toLowerCase().includes(search.toLowerCase()) ||
-          c.descriptionEn?.toLowerCase().includes(search.toLowerCase()),
+          (c.nameEn?.toLowerCase().includes(search.toLowerCase()) ?? false) ||
+          (c.descriptionVi?.toLowerCase().includes(search.toLowerCase()) ?? false) ||
+          (c.descriptionEn?.toLowerCase().includes(search.toLowerCase()) ?? false),
       )
     : categories;
 
