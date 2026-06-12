@@ -13,7 +13,7 @@ _Focus on completing this section before looking further down._
 - [x] Storefront Error Boundaries Implementation Plan ([plan](general-plans/completed/storefront-error-boundaries_PLAN_12-06-26.md))
 - [x] Optimize Largest Contentful Paint (LCP) by compressing system icons and applying image loading priority
 - [x] Standardize Catalog Sort Query Parameters Plan ([plan](general-plans/completed/standardize-sort-params_PLAN_12-06-26.md))
-- [ ] Migrate raw database queries into storefront cached service layers (sitemap.xml and api/products/metadata)
+- [x] Storefront Catalog Caching Migration Plan ([plan](general-plans/active/storefront-catalog-caching-migration_PLAN_12-06-26.md))
 - [ ] Refactor getStaticProductSlugs to fetch via Database productService.getAllActiveSlugs()
 - [ ] Multilingual Database Content and DTO Mapping Architecture Plan ([plan](general-plans/active/multilingual-db-and-dto-architecture_PLAN_12-06-26.md))
 - [ ] B2B Storefront Program — Program Goal Charter ([plan](features/storefront/active/b2b-storefront_UMBRELLA_PLAN_08-06-26.md))
