@@ -15,7 +15,7 @@ _Focus on completing this section before looking further down._
 - [x] Standardize Catalog Sort Query Parameters Plan ([plan](general-plans/completed/standardize-sort-params_PLAN_12-06-26.md))
 - [x] Storefront Catalog Caching Migration Plan ([plan](general-plans/completed/storefront-catalog-caching-migration_PLAN_12-06-26.md))
 - [x] Storefront getStaticProductSlugs Refactor Plan ([plan](general-plans/completed/storefront-get-static-product-slugs-refactor_PLAN_12-06-26.md))
-- [ ] Multilingual Database Content and DTO Mapping Architecture Plan ([plan](general-plans/active/multilingual-db-and-dto-architecture_PLAN_12-06-26.md))
+- [x] Multilingual Database Content and DTO Mapping Architecture Plan ([plan](general-plans/completed/multilingual-db-and-dto-architecture_PLAN_12-06-26.md))
 - [ ] B2B Storefront Program — Program Goal Charter ([plan](features/storefront/active/b2b-storefront_UMBRELLA_PLAN_08-06-26.md))
 - [ ] Phase 3: Cart Service & Storefront Integration — Plan ([plan](features/storefront/active/storefront-phase-3-cart-service_PLAN_08-06-26.md))
 - [ ] Phase 4: Customer Quoting & Negotiation Portal — Plan ([plan](features/storefront/active/storefront-phase-4-customer-portal_PLAN_08-06-26.md))
@@ -70,8 +70,8 @@ _Focus on completing this section before looking further down._
 _Select up to 3 tasks from the Active Milestone to focus on immediately._
 
 1. **[Done]** Migrate raw database queries in sitemap.ts, metadata API, product listing, and auth actions to cached/shared services layer
-2. **[In Progress]** Refactor getStaticProductSlugs to resolve raw SQL operations in database package
-3. **[Next]** Start bilingual schema migration per multilingual-db-and-dto-architecture plan
+2. **[Done]** Refactor getStaticProductSlugs to resolve raw SQL operations in database package
+3. **[Done]** Start bilingual schema migration per multilingual-db-and-dto-architecture plan
 
 ---
 
