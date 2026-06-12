@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { translatedZodResolver } from "@/shared/lib/validation-resolver";
@@ -15,16 +16,25 @@ import {
 } from "@nhatnang/ui/components/ui/card";
 import { Link, useRouter } from "@/i18n/routing";
 import { PersonalInfoSection } from "./personal-info-section";
-import { BusinessInfoSection } from "./business-info-section";
 import { PasswordSection } from "./password-section";
 import { TermsSection } from "./terms-section";
 import { Form } from "@nhatnang/ui/components/ui/form";
 import { registerAction } from "../actions/register.action";
-
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
-import { type TRegisterForm, registerSchema } from "@nhatnang/database/validators";
+import {
+  type TRegisterForm,
+  registerSchema,
+} from "@nhatnang/database/validators";
 
-export const RegisterForm = () => {
+const BusinessInfoSection = dynamic(
+  async () => {
+    const mod = await import("./business-info-section");
+    return mod.BusinessInfoSection;
+  },
+  { ssr: false },
+);
+
+export function RegisterForm() {
   const router = useRouter();
   const t = useTranslations("Register");
   const [isLoading, setIsLoading] = useState(false);
@@ -136,4 +146,4 @@ export const RegisterForm = () => {
       </CardContent>
     </Card>
   );
-};
+}

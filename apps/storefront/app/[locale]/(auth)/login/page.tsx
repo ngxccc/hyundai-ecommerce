@@ -1,20 +1,16 @@
-import { LoginForm } from "@/features/auth/components";
+import { LoginForm } from "@/features/auth/components/login-form";
 import { AuthPageShell } from "@/features/auth/components/auth-page-shell";
-import { routing } from "@/i18n/routing";
 import type { Locale } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
-
-const LoginPage = async ({
+export default async function LoginPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) => {
+}) {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "AuthPage" });
 
   return (
@@ -22,6 +18,4 @@ const LoginPage = async ({
       <LoginForm />
     </AuthPageShell>
   );
-};
-
-export default LoginPage;
+}

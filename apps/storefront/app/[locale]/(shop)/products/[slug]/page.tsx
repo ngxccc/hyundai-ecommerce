@@ -1,4 +1,5 @@
-import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { TProduct } from "@nhatnang/database/schemas";
 import { routing } from "@/i18n/routing";
 import { priceFormatter } from "@/shared/lib/utils";
@@ -6,13 +7,12 @@ import { productService } from "@/shared/services";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import type { Locale } from "next-intl";
 
 interface ProductPageParams {
   locale: string;
   slug: string;
 }
-
-export const revalidate = 3600;
 
 const formatSpecs = (specs: TProduct["specs"]): string[] => {
   if (!specs || typeof specs !== "object") return [];
@@ -56,7 +56,8 @@ export async function generateMetadata({
 }: {
   params: Promise<ProductPageParams>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  setRequestLocale(locale as Locale);
   const product = await productService.getProductBySlug(slug);
 
   if (!product) {
@@ -89,12 +90,25 @@ const ALLOWED_SPEC_KEYS = new Set([
 const ALLOWED_FUEL_TYPES = new Set(["gasoline", "diesel", "gas"]);
 const ALLOWED_PHASES = new Set(["1phase", "3phase"]);
 
-const ProductDetailsPage = async ({
+export default function ProductDetailsPage({
   params,
 }: {
   params: Promise<ProductPageParams>;
-}) => {
-  const { slug } = await params;
+}) {
+  return (
+    <Suspense fallback={null}>
+      <ProductDetailsPageContent params={params} />
+    </Suspense>
+  );
+}
+
+async function ProductDetailsPageContent({
+  params,
+}: {
+  params: Promise<ProductPageParams>;
+}) {
+  const { locale, slug } = await params;
+  setRequestLocale(locale as Locale);
   const product = await productService.getProductBySlug(slug);
   const t = await getTranslations("ProductDetails");
 
@@ -189,5 +203,3 @@ const ProductDetailsPage = async ({
     </section>
   );
 };
-
-export default ProductDetailsPage;

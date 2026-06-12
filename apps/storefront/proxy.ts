@@ -6,7 +6,23 @@ const handleI18nRouting = createMiddleware(routing);
 
 export function proxy(request: NextRequest) {
   const response = handleI18nRouting(request);
+  const isDev = process.env.NODE_ENV === "development";
 
+  const cspHeader = `
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com ${isDev ? "'unsafe-eval'" : ""};
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' blob: data: https://res.cloudinary.com https://placehold.co https://images.unsplash.com https://hyundainhatnang.vn;
+    font-src 'self' data:;
+    connect-src 'self' https://vitals.vercel-insights.com;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    upgrade-insecure-requests;
+  `.replace(/\s{2,}/g, " ").trim();
+
+  response.headers.set("Content-Security-Policy", cspHeader);
   response.headers.set("X-XSS-Protection", "1; mode=block");
   response.headers.set("X-Frame-Options", "SAMEORIGIN");
   response.headers.set("X-Content-Type-Options", "nosniff");

@@ -1,9 +1,10 @@
+import { Suspense } from "react";
 import { siteConfig } from "@/shared/config/site";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { CatalogTemplate } from "@/features/products/components/catalog-template";
 import type { CatalogPageProps } from "@/features/products/types/catalog";
-import { redirect } from "@/i18n/routing";
+import type { Locale } from "next-intl";
 
 export async function generateMetadata({
   params,
@@ -11,6 +12,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  setRequestLocale(locale as Locale);
   const t = await getTranslations("Catalog");
   const localePrefix = locale === "vi" ? "" : `/${locale}`;
 
@@ -27,34 +29,11 @@ export default async function CatalogPage({
   searchParams,
 }: CatalogPageProps<{ locale: string }>) {
   const { locale } = await params;
-  const resolvedSearchParams = await searchParams;
-  const categorySlug = resolvedSearchParams.category as
-    | string
-    | string[]
-    | undefined;
+  setRequestLocale(locale as Locale);
 
-  if (categorySlug) {
-    const nextParams = new URLSearchParams();
-    Object.entries(
-      resolvedSearchParams as Record<string, string | string[] | undefined>,
-    ).forEach(([key, value]) => {
-      if (key !== "category" && value !== undefined) {
-        if (Array.isArray(value)) {
-          value.forEach((val) => nextParams.append(key, String(val)));
-        } else {
-          nextParams.append(key, String(value));
-        }
-      }
-    });
-    const queryString = nextParams.toString();
-    const targetSlug = Array.isArray(categorySlug)
-      ? categorySlug[0]!
-      : categorySlug;
-    redirect({
-      href: `/products/category/${targetSlug}${queryString ? `?${queryString}` : ""}`,
-      locale: locale as "vi" | "en",
-    });
-  }
-
-  return <CatalogTemplate searchParams={resolvedSearchParams} />;
+  return (
+    <Suspense fallback={null}>
+      <CatalogTemplate searchParams={searchParams} locale={locale as Locale} />
+    </Suspense>
+  );
 }

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Viewport } from "next";
 import { Inter } from "next/font/google";
 import "@/shared/styles/globals.css";
@@ -41,6 +42,13 @@ export async function generateMetadata({
 }) {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
+
+  if (!routing.locales.includes(locale)) {
+    return {
+      title: siteConfig.name,
+      description: siteConfig.description,
+    };
+  }
 
   const t = await getTranslations({ locale, namespace: "Metadata" });
 
@@ -98,12 +106,18 @@ export default async function RootLayout({
   const locale = rawLocale as Locale;
 
   if (!routing.locales.includes(locale)) {
+    const localeStr = String(locale);
+    if (localeStr === "[locale]" || !locale) {
+      return (
+        <html lang="vi">
+          <body className="flex min-h-full flex-col">{children}</body>
+        </html>
+      );
+    }
     notFound();
   }
 
   setRequestLocale(locale);
-
-  const messages = await getMessages();
 
   return (
     <html
@@ -112,16 +126,36 @@ export default async function RootLayout({
       suppressHydrationWarning // suppressHydrationWarning để chặn lỗi từ Extensions của trình duyệt
     >
       <body className="flex min-h-full flex-col">
-        <NextIntlClientProvider messages={messages}>
-          <Header />
-          <main className="flex-1 pt-16">{children}</main>
-          <Toaster position="top-center" />
-          <Footer />
-          <ScrollToTop />
-        </NextIntlClientProvider>
+        <Suspense fallback={null}>
+          <LocalizedLayoutContent locale={locale}>
+            {children}
+          </LocalizedLayoutContent>
+        </Suspense>
       </body>
-
-      <Analytics />
     </html>
+  );
+}
+
+async function LocalizedLayoutContent({
+  locale,
+  children,
+}: {
+  locale: Locale;
+  children: React.ReactNode;
+}) {
+  setRequestLocale(locale);
+  const messages = await getMessages();
+
+  return (
+    <NextIntlClientProvider messages={messages}>
+      <Header />
+      <main className="flex-1 pt-16">{children}</main>
+      <Toaster position="top-center" />
+      <Footer />
+      <ScrollToTop />
+      <Suspense fallback={null}>
+        <Analytics />
+      </Suspense>
+    </NextIntlClientProvider>
   );
 }

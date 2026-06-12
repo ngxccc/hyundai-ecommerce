@@ -1,6 +1,7 @@
-import type { _Translator, AppConfig } from "next-intl";
+import { Suspense } from "react";
+import type { _Translator, AppConfig, Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/routing";
+import { Link, redirect } from "@/i18n/routing";
 import {
   productService,
   categoryService,
@@ -57,14 +58,42 @@ const formatSpecs = (
 interface CatalogTemplateProps {
   title?: string;
   categorySlug?: string | undefined;
-  searchParams: CatalogSearchParams;
+  searchParams: Promise<CatalogSearchParams> | CatalogSearchParams;
+  locale?: Locale;
 }
 
 export async function CatalogTemplate({
   title,
   categorySlug,
-  searchParams,
+  searchParams: searchParamsPromise,
+  locale,
 }: CatalogTemplateProps) {
+  const searchParams = await searchParamsPromise;
+
+  // Redirect handling if `category` query param is present
+  const categoryQuery = searchParams.category as string | string[] | undefined;
+  if (categoryQuery && locale) {
+    const nextParams = new URLSearchParams();
+    Object.entries(
+      searchParams as Record<string, string | string[] | undefined>,
+    ).forEach(([key, value]) => {
+      if (key !== "category" && value !== undefined) {
+        if (Array.isArray(value)) {
+          value.forEach((val) => nextParams.append(key, String(val)));
+        } else {
+          nextParams.append(key, String(value));
+        }
+      }
+    });
+    const queryString = nextParams.toString();
+    const targetSlug = Array.isArray(categoryQuery)
+      ? categoryQuery[0]!
+      : categoryQuery;
+    redirect({
+      href: `/products/category/${targetSlug}${queryString ? `?${queryString}` : ""}`,
+      locale: locale,
+    });
+  }
   const t = await getTranslations("Catalog");
   const tHome = await getTranslations("HomePage.products");
   const tProduct = await getTranslations("ProductDetails");
@@ -196,8 +225,9 @@ export async function CatalogTemplate({
             </div>
 
             {/* Active Filter Chips */}
-            <ActiveFilterChips />
-
+            <Suspense fallback={null}>
+              <ActiveFilterChips />
+            </Suspense>
             {/* Product Grid */}
             {productsList.length > 0 ? (
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -283,11 +313,13 @@ export async function CatalogTemplate({
             )}
 
             {/* Pagination */}
-            <ProductPagination
-              nextCursor={nextCursor}
-              prevCursor={prevCursor}
-              hasMore={hasMore}
-            />
+            <Suspense fallback={null}>
+              <ProductPagination
+                nextCursor={nextCursor}
+                prevCursor={prevCursor}
+                hasMore={hasMore}
+              />
+            </Suspense>
           </div>
         </div>
       </div>

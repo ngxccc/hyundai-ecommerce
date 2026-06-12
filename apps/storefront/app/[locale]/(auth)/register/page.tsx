@@ -1,9 +1,8 @@
 import { AuthPageShell } from "@/features/auth/components/auth-page-shell";
 import type { Metadata } from "next";
 import type { Locale } from "next-intl";
-import { getTranslations } from "next-intl/server";
-import { routing } from "@/i18n/routing";
-import { RegisterForm } from "@/features/auth/components";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { RegisterForm } from "@/features/auth/components/register-form";
 
 export async function generateMetadata({
   params,
@@ -12,6 +11,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Register" });
 
   return {
@@ -20,17 +20,14 @@ export async function generateMetadata({
   };
 }
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
-
-const RegisterPage = async ({
+export default async function RegisterPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) => {
+}) {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
+  setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "AuthPage" });
 
   return (
@@ -38,5 +35,4 @@ const RegisterPage = async ({
       <RegisterForm />
     </AuthPageShell>
   );
-};
-export default RegisterPage;
+}

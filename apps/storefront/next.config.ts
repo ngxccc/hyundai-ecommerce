@@ -19,14 +19,25 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "hyundainhatnang.vn" },
     ],
   },
+
   transpilePackages: ["@nhatnang/database", "@nhatnang/shared", "@nhatnang/ui"],
+
+  cacheComponents: true,
+
   experimental: {
     optimizePackageImports: [
       "lucide-react",
       "@radix-ui/react-dialog",
       "@radix-ui/react-slot",
+      "@radix-ui/react-select",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-popover",
       "react-hook-form",
     ],
+  },
+
+  logging: {
+    browserToTerminal: true,
   },
 };
 

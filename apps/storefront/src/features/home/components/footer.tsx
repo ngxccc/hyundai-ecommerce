@@ -1,3 +1,4 @@
+import { CopyrightYear } from "./copyright-year";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -131,8 +132,8 @@ export function Footer() {
         {/* Bottom Bar: Copyright & Legal */}
         <div className="flex flex-col items-center justify-between gap-2 border-t pt-8 md:flex-row">
           <p className="text-muted-foreground text-xs md:text-sm">
-            © {new Date().getFullYear()} {t("brand")}{" "}
-            {t("branchName").toUpperCase()}. {t("footer.allRightsReserved")}
+            © <CopyrightYear /> {t("brand")} {t("branchName").toUpperCase()}.{" "}
+            {t("footer.allRightsReserved")}
           </p>
           <div className="text-muted-foreground flex gap-2 text-xs md:text-sm">
             <Link

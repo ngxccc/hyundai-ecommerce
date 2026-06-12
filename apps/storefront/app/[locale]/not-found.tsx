@@ -1,5 +1,5 @@
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
   Terminal,
   Home,
@@ -9,10 +9,17 @@ import {
   Activity,
 } from "lucide-react";
 import { Card, CardContent } from "@nhatnang/ui/components/ui/card";
+import type { Locale } from "next-intl";
 
-export default function NotFoundPage() {
-  const t = useTranslations("NotFound");
-
+export default async function NotFoundPage({
+  params,
+}: {
+  params?: Promise<{ locale: string }>;
+}) {
+  const resolvedParams = await params;
+  const locale = resolvedParams?.locale ?? "vi";
+  setRequestLocale(locale as Locale);
+  const t = await getTranslations("NotFound");
   return (
     <main className="bg-background relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden px-6 py-24">
       <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center opacity-[0.03] dark:opacity-[0.05]">

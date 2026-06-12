@@ -7,11 +7,9 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { type TLoginForm, loginSchema } from "@nhatnang/database/validators";
 import { loginAction } from "../actions/login.action";
-
 import { useRouter, Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
-
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Input } from "@nhatnang/ui/components/ui/input";
 import {
@@ -30,7 +28,7 @@ import {
   FormMessage,
 } from "@nhatnang/ui/components/ui/form";
 
-export const LoginForm = () => {
+export function LoginForm() {
   const searchParams = useSearchParams();
   const rawCallbackUrl = searchParams.get("callbackUrl");
   const callbackUrl = rawCallbackUrl?.startsWith("/")
@@ -163,4 +161,4 @@ export const LoginForm = () => {
       </CardContent>
     </Card>
   );
-};
+}
