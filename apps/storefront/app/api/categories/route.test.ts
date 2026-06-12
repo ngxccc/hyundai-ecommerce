@@ -1,18 +1,18 @@
-import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { beforeEach, describe, expect, it, mock } from "bun:test";
-import { GET } from "./route";
 
-// Mock the database service
-const mockGetAll = mock();
-await mock.module("@nhatnang/database/services", () => ({
+const mockGetCategories = mock();
+await mock.module("@/shared/services", () => ({
   categoryService: {
-    getAll: mockGetAll,
+    getCategories: mockGetCategories,
   },
 }));
 
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
+import { GET } from "./route";
+
 describe("GET /api/categories", () => {
   beforeEach(() => {
-    mockGetAll.mockReset();
+    mockGetCategories.mockReset();
   });
 
   it("returns mapped categories on success", async () => {
@@ -23,12 +23,13 @@ describe("GET /api/categories", () => {
         name: "Industrial Power",
         image: "/images/industrial.jpg",
         description: "Industrial diesel generators",
+        isActive: true,
       },
     ];
 
-    mockGetAll.mockResolvedValue(dbCategories);
+    mockGetCategories.mockResolvedValue(dbCategories);
 
-    const response = await GET();
+    const response = await GET(new Request("http://localhost/api/categories?locale=en"));
     const json = (await response.json()) as { status: boolean; data: unknown };
 
     expect(response.status).toBe(HTTP_STATUS.OK);
@@ -38,13 +39,13 @@ describe("GET /api/categories", () => {
   });
 
   it("handles errors gracefully", async () => {
-    mockGetAll.mockRejectedValue(new Error("Database error"));
+    mockGetCategories.mockRejectedValue(new Error("Service error"));
 
-    const response = await GET();
+    const response = await GET(new Request("http://localhost/api/categories"));
     const json = (await response.json()) as { status: boolean; data: unknown };
 
     expect(response.status).toBe(HTTP_STATUS.INTERNAL_SERVER_ERROR);
     expect(json.status).toBe(false);
-    expect(json.data).toBeNull();
+    expect(json.data).toEqual([]);
   });
 });

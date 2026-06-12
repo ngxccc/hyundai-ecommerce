@@ -1,14 +1,14 @@
-import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { beforeEach, describe, expect, it, mock } from "bun:test";
-import { GET } from "./route";
 
-// Mock the database service
 const mockGetFiltersMetadata = mock();
-await mock.module("@nhatnang/database/services", () => ({
+await mock.module("@/shared/services", () => ({
   productService: {
     getFiltersMetadata: mockGetFiltersMetadata,
   },
 }));
+
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
+import { GET } from "./route";
 
 describe("GET /api/products/metadata", () => {
   beforeEach(() => {
@@ -19,6 +19,7 @@ describe("GET /api/products/metadata", () => {
     const mockMetadata = [
       {
         id: "prod-1",
+        name: "Hyundai Generator",
         categoryId: "cat-1",
         brandId: "brand-1",
         specs: {
@@ -34,7 +35,7 @@ describe("GET /api/products/metadata", () => {
 
     mockGetFiltersMetadata.mockResolvedValue(mockMetadata);
 
-    const response = await GET();
+    const response = await GET(new Request("http://localhost/api/products/metadata?locale=en"));
     const json = (await response.json()) as {
       status: boolean;
       data: typeof mockMetadata;
@@ -48,10 +49,10 @@ describe("GET /api/products/metadata", () => {
 
   it("handles errors gracefully", async () => {
     mockGetFiltersMetadata.mockRejectedValue(
-      new Error("Database query failed"),
+      new Error("Service query failed"),
     );
 
-    const response = await GET();
+    const response = await GET(new Request("http://localhost/api/products/metadata"));
     const json = (await response.json()) as { status: boolean; data: unknown };
 
     expect(response.status).toBe(HTTP_STATUS.INTERNAL_SERVER_ERROR);

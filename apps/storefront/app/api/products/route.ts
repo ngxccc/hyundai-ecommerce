@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const { searchParams } = new URL(request.url);
+    const locale = (searchParams.get("locale") as "vi" | "en") || "vi";
     const limitParam = searchParams.get("limit");
     const parsedLimit = limitParam ? Number(limitParam) : 100;
     const limit =
@@ -38,7 +39,7 @@ export async function GET(request: NextRequest) {
     // Resolve categoryIds if category slug is provided
     let categoryIds: string[] | undefined;
     if (categorySlug) {
-      const categoriesList = await categoryService.getCategories();
+      const categoriesList = await categoryService.getCategories(locale);
       const targetCategory = categoriesList.find(
         (cat) => cat.slug === categorySlug,
       );
@@ -53,14 +54,14 @@ export async function GET(request: NextRequest) {
     let brandIds: string[] | undefined;
     if (brandParam) {
       const brandSlugs = brandParam.split(",").filter(Boolean);
-      const allBrands = await brandService.getBrands();
+      const allBrands = await brandService.getBrands(locale);
       brandIds = allBrands
         .filter((b) => brandSlugs.includes(b.slug))
         .map((b) => b.id);
     }
 
     // Fetch products dynamically using cached local ProductService
-    const resData = await productService.getProducts(limit, {
+    const resData = await productService.getProducts(locale, limit, {
       categoryIds,
       brandIds,
       search,
