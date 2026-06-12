@@ -103,7 +103,6 @@
         "@nhatnang/typescript-config": "workspace:*",
         "@nhatnang/ui": "workspace:*",
         "@tailwindcss/postcss": "^4",
-        "@tiptap/core": "^3.26.1",
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "tailwindcss": "^4",
@@ -115,9 +114,9 @@
       "dependencies": {
         "@better-auth/drizzle-adapter": "^1.6.15",
         "@neondatabase/serverless": "^1.1.0",
+        "@nhatnang/ui": "workspace:*",
         "@paralleldrive/cuid2": "^3.3.0",
         "@t3-oss/env-core": "^0.13.11",
-        "@tiptap/core": "^3.26.1",
         "better-auth": "^1.6.15",
         "drizzle-orm": "v1.0.0-rc.3",
         "postgres": "^3.4.9",

@@ -149,11 +149,11 @@ describe("product.actions", () => {
       productService.update as Mock<typeof productService.update>
     ).mockResolvedValueOnce({
       ...oldProduct,
-      name: "New",
+      nameVi: "New",
     } as unknown as TProduct);
 
     const updatePayload = {
-      name: "New",
+      nameVi: "New",
       images: ["https://res.cloudinary.com/demo/image/upload/v1/old-1.jpg"], // removed old-2.jpg
     };
 
