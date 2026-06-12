@@ -2,9 +2,11 @@ import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { productService } from "@/shared/services";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const metadata = await productService.getFiltersMetadata();
+    const { searchParams } = new URL(request.url);
+    const locale = (searchParams.get("locale") as "vi" | "en") || "vi";
+    const metadata = await productService.getFiltersMetadata(locale);
     return NextResponse.json(
       {
         status: true,

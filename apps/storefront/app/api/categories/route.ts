@@ -2,9 +2,11 @@ import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { categoryService } from "@/shared/services";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const dbCategories = await categoryService.getCategories();
+    const { searchParams } = new URL(request.url);
+    const locale = (searchParams.get("locale") as "vi" | "en") || "vi";
+    const dbCategories = await categoryService.getCategories(locale);
 
     return NextResponse.json(
       {
