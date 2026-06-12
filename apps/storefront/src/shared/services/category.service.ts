@@ -1,25 +1,37 @@
 import { cacheLife } from "next/cache";
 import { categoryService as dbCategoryService } from "@nhatnang/database/services";
-import type { TCategory } from "@nhatnang/database/schemas";
-import type { TCategoryWithChildren } from "@nhatnang/database/services";
+import { mapCategoryToDTO } from "@nhatnang/database/dtos";
+import {
+  type StorefrontCategory,
+  type StorefrontCategoryWithChildren,
+  mapCategoryToStorefront,
+  mapCategoryTreeToStorefront,
+} from "./types";
+import type { Locale } from "next-intl";
 
 export const categoryService = {
-  getCategories: async (): Promise<TCategory[]> => {
+  getCategories: async (locale: Locale): Promise<StorefrontCategory[]> => {
     "use cache";
     cacheLife("hours");
     try {
-      return await dbCategoryService.getAll();
+      const dbCategories = await dbCategoryService.getAll();
+      return dbCategories.map((c) =>
+        mapCategoryToStorefront(mapCategoryToDTO(c), locale),
+      );
     } catch (error) {
       console.error("Failed to fetch categories:", error);
       return [];
     }
   },
 
-  getCategoryTree: async (): Promise<TCategoryWithChildren[]> => {
+  getCategoryTree: async (
+    locale: Locale,
+  ): Promise<StorefrontCategoryWithChildren[]> => {
     "use cache";
     cacheLife("hours");
     try {
-      return await dbCategoryService.getCategoryTree();
+      const dbTree = await dbCategoryService.getCategoryTree();
+      return dbTree.map((node) => mapCategoryTreeToStorefront(node, locale));
     } catch (error) {
       console.error("Failed to fetch category tree:", error);
       return [];

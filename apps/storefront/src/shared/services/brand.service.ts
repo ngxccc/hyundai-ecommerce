@@ -1,13 +1,18 @@
 import { cacheLife } from "next/cache";
 import { brandService as dbBrandService } from "@nhatnang/database/services";
-import type { TBrand } from "@nhatnang/database/schemas";
+import { mapBrandToDTO } from "@nhatnang/database/dtos";
+import { type StorefrontBrand, mapBrandToStorefront } from "./types";
+import type { Locale } from "next-intl";
 
 export const brandService = {
-  getBrands: async (): Promise<TBrand[]> => {
+  getBrands: async (locale: Locale): Promise<StorefrontBrand[]> => {
     "use cache";
     cacheLife("hours");
     try {
-      return await dbBrandService.getAll();
+      const dbBrands = await dbBrandService.getAll();
+      return dbBrands.map((b) =>
+        mapBrandToStorefront(mapBrandToDTO(b), locale),
+      );
     } catch (error) {
       console.error("Failed to fetch brands:", error);
       return [];
