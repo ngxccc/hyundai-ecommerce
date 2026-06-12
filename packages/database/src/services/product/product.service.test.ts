@@ -7,9 +7,9 @@ import {
   mockValues,
   mockSelectResolvedValue,
   mockSelect,
-} from "../tests/utils/db-mock";
+} from "../../tests/utils/db-mock";
 import { ProductService } from "./product.service";
-import type { IDatabase } from "../client";
+import type { IDatabase } from "../../client";
 
 const productService = new ProductService(mockDb as unknown as IDatabase);
 

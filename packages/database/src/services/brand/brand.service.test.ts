@@ -8,9 +8,9 @@ import {
   mockReturning,
   mockWhere,
   mockLimit,
-} from "../tests/utils/db-mock";
+} from "../../tests/utils/db-mock";
 import { BrandService } from "./brand.service";
-import type { IDatabase } from "../client";
+import type { IDatabase } from "../../client";
 
 const brandService = new BrandService(mockDb as unknown as IDatabase);
 

@@ -1,9 +1,9 @@
-import type { IBrandService } from "./interfaces";
-import { brands, type TBrand } from "../schemas/brand.schema";
-import { type IDatabase } from "../client";
+import type { IBrandService } from "../interfaces";
+import { brands, type TBrand } from "../../schemas/brand.schema";
+import { type IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
-import type { TCreateBrandInput, TUpdateBrandInput } from "../validators";
-import { handleServiceError } from "../utils";
+import type { TCreateBrandInput, TUpdateBrandInput } from "../../validators";
+import { handleServiceError } from "../../utils";
 
 export class BrandService implements IBrandService {
   constructor(protected readonly db: IDatabase) {}

@@ -1,7 +1,7 @@
-import type { IQuotesService } from "./interfaces";
+import type { IQuotesService } from "../interfaces";
 import { QUOTE_CONSTANTS } from "@nhatnang/shared/constants";
 import { eq } from "drizzle-orm";
-import { type IDatabase } from "../client";
+import { type IDatabase } from "../../client";
 import {
   quotes,
   quoteItems,
@@ -12,7 +12,7 @@ import {
   type TNewQuote,
   type TNewQuoteItem,
   type TNewQuoteMessage,
-} from "../schemas";
+} from "../../schemas";
 
 export class QuotesService implements IQuotesService {
   constructor(protected readonly db: IDatabase) {}

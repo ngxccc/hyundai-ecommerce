@@ -1,16 +1,16 @@
 export * from "./registry";
 
 // service
-export * from "./auth.service";
-export * from "./product.service";
-export * from "./user.service";
-export * from "./order.service";
-export * from "./category.service";
-export * from "./brand.service";
-export * from "./warehouse-stock.service";
-export * from "./warehouse.service";
-export * from "./quotes.service";
-export * from "./dealer-tier.service";
+export * from "./auth/auth.service";
+export * from "./product/product.service";
+export * from "./user/user.service";
+export * from "./order/order.service";
+export * from "./category/category.service";
+export * from "./brand/brand.service";
+export * from "./warehouse-stock/warehouse-stock.service";
+export * from "./warehouse/warehouse.service";
+export * from "./quotes/quotes.service";
+export * from "./dealer-tier/dealer-tier.service";
 
 
 

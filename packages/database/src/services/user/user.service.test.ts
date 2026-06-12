@@ -6,10 +6,10 @@ import {
   mockUpdate,
   mockReturning,
   mockSelectResolvedValue,
-} from "../tests/utils/db-mock";
+} from "../../tests/utils/db-mock";
 import { UserService } from "./user.service";
-import { type TUser } from "../schemas";
-import type { IDatabase } from "../client";
+import { type TUser } from "../../schemas";
+import type { IDatabase } from "../../client";
 
 const userService = new UserService(mockDb as unknown as IDatabase);
 

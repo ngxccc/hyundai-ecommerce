@@ -6,9 +6,9 @@ import {
   mockReturning,
   mockWhere,
   mockSelect,
-} from "../tests/utils/db-mock";
+} from "../../tests/utils/db-mock";
 import { WarehouseStockService } from "./warehouse-stock.service";
-import type { IDatabase } from "../client";
+import type { IDatabase } from "../../client";
 
 const warehouseStockService = new WarehouseStockService(mockDb as unknown as IDatabase);
 

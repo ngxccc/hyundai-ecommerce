@@ -9,10 +9,10 @@ import {
   mockFindFirst,
   mockFindMany,
   mockSelectResolvedValue,
-} from "../tests/utils/db-mock";
+} from "../../tests/utils/db-mock";
 import { OrderService } from "./order.service";
-import type { IDatabase } from "../client";
-import type { TOrder, TNewOrder } from "../schemas";
+import type { IDatabase } from "../../client";
+import type { TOrder, TNewOrder } from "../../schemas";
 
 const orderService = new OrderService(mockDb as unknown as IDatabase);
 

@@ -30,8 +30,8 @@ import type {
   TUpdateWarehouseStockInput,
 } from "../validators";
 
-import type { ComplexOrder } from "./order.service";
-import type { ComplexQuote, QuoteListItem } from "./quotes.service";
+import type { ComplexOrder } from "./order/order.service";
+import type { ComplexQuote, QuoteListItem } from "./quotes/quotes.service";
 
 export interface IDashboardMetrics {
   totalRevenue: string;

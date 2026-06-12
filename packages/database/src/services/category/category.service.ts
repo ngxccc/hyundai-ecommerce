@@ -1,9 +1,9 @@
-import type { ICategoryService, TCategoryWithChildren } from "./interfaces";
-import { categories, type TCategory } from "../schemas";
-import { type IDatabase } from "../client";
+import type { ICategoryService, TCategoryWithChildren } from "../interfaces";
+import { categories, type TCategory } from "../../schemas";
+import { type IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
-import type { TCreateCategoryInput, TUpdateCategoryInput } from "../validators";
-import { handleServiceError } from "../utils";
+import type { TCreateCategoryInput, TUpdateCategoryInput } from "../../validators";
+import { handleServiceError } from "../../utils";
 
 export class CategoryService implements ICategoryService {
   constructor(private readonly db: IDatabase) {}

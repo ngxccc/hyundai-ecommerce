@@ -2,9 +2,9 @@ import type {
   IOrderService,
   IDashboardMetrics,
   IMonthlyRevenue,
-} from "./interfaces";
+} from "../interfaces";
 import { and, eq, ne, gte, lt, sql } from "drizzle-orm";
-import { type IDatabase } from "../client";
+import { type IDatabase } from "../../client";
 import {
   orders,
   shippingBids,
@@ -14,7 +14,7 @@ import {
   type TOrder,
   type TShippingBid,
   type TNewShippingBid,
-} from "../schemas";
+} from "../../schemas";
 
 const complexOrderQueryConfig = {
   with: {

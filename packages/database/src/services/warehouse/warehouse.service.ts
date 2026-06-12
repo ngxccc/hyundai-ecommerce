@@ -1,12 +1,12 @@
-import type { IWarehouseService } from "./interfaces";
-import { warehouses, type TWarehouse } from "../schemas/warehouse.schema";
-import type { IDatabase } from "../client";
+import type { IWarehouseService } from "../interfaces";
+import { warehouses, type TWarehouse } from "../../schemas/warehouse.schema";
+import type { IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
 import type {
   TCreateWarehouseInput,
   TUpdateWarehouseInput,
-} from "../validators";
-import { handleServiceError } from "../utils";
+} from "../../validators";
+import { handleServiceError } from "../../utils";
 
 export class WarehouseService implements IWarehouseService {
   constructor(protected readonly db: IDatabase) {}

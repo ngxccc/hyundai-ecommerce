@@ -1,14 +1,14 @@
 import { db } from "../client";
-import { AuthService } from "./auth.service";
-import { ProductService } from "./product.service";
-import { UserService } from "./user.service";
-import { OrderService } from "./order.service";
-import { CategoryService } from "./category.service";
-import { BrandService } from "./brand.service";
-import { WarehouseStockService } from "./warehouse-stock.service";
-import { WarehouseService } from "./warehouse.service";
-import { QuotesService } from "./quotes.service";
-import { DealerTierService } from "./dealer-tier.service";
+import { AuthService } from "./auth/auth.service";
+import { ProductService } from "./product/product.service";
+import { UserService } from "./user/user.service";
+import { OrderService } from "./order/order.service";
+import { CategoryService } from "./category/category.service";
+import { BrandService } from "./brand/brand.service";
+import { WarehouseStockService } from "./warehouse-stock/warehouse-stock.service";
+import { WarehouseService } from "./warehouse/warehouse.service";
+import { QuotesService } from "./quotes/quotes.service";
+import { DealerTierService } from "./dealer-tier/dealer-tier.service";
 
 export const authService = new AuthService(db);
 export const productService = new ProductService(db);

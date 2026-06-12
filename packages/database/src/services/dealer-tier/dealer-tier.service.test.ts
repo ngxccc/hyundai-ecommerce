@@ -7,10 +7,10 @@ import {
   mockReturning,
   mockFindFirst,
   mockFindMany,
-} from "../tests/utils/db-mock";
+} from "../../tests/utils/db-mock";
 import { DealerTierService } from "./dealer-tier.service";
-import { type TDealerTier } from "../schemas";
-import type { IDatabase } from "../client";
+import { type TDealerTier } from "../../schemas";
+import type { IDatabase } from "../../client";
 
 const dealerTierService = new DealerTierService(mockDb as unknown as IDatabase);
 

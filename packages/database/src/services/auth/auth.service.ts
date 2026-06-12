@@ -1,17 +1,17 @@
-import type { IDatabase } from "../client";
+import type { IDatabase } from "../../client";
 import type {
   IAuthService,
   LoginOptions,
   RegisterOptions,
-} from "./interfaces";
+} from "../interfaces";
 
 import {
   AUTH_ERROR_CODES,
   type TAuthErrorCode,
   type TSystemErrorCode,
 } from "@nhatnang/shared/constants";
-import { type APIError, auth, isAPIError } from "../auth";
-import type { TLoginForm, TRegisterForm } from "../validators/auth.validators";
+import { type APIError, auth, isAPIError } from "../../auth";
+import type { TLoginForm, TRegisterForm } from "../../validators/auth.validators";
 
 const mapLoginAuthErrorCode = (
   error: APIError,

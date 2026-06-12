@@ -1,12 +1,12 @@
 import { expect, test, describe, beforeAll, afterAll } from "bun:test";
 import { Pool as NeonPool } from "@neondatabase/serverless";
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
-import { env } from "../env";
-import * as schema from "../schemas";
+import { env } from "../../env";
+import * as schema from "../../schemas";
 import { OrderService } from "./order.service";
-import { orders, products, orderItems, users } from "../schemas";
+import { orders, products, orderItems, users } from "../../schemas";
 import { eq } from "drizzle-orm";
-import type { IDatabase } from "../client";
+import type { IDatabase } from "../../client";
 
 describe("OrderService Concurrency (Race Condition) Integration Test", () => {
   let orderService: OrderService;

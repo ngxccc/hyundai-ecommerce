@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from "bun:test";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
 import { AuthService } from "./auth.service";
-import { mockDb } from "../tests/utils/db-mock";
-import type { IDatabase } from "../client";
-import { mockSignInEmail, mockSignUpEmail } from "../tests/utils/auth-mock";
+import { mockDb } from "../../tests/utils/db-mock";
+import type { IDatabase } from "../../client";
+import { mockSignInEmail, mockSignUpEmail } from "../../tests/utils/auth-mock";
 
 interface IAuthErrorLike {
   isAPIError?: boolean;

@@ -4,13 +4,13 @@ import type {
   ITopSellingProduct,
   TGetAllOptions,
   IProductFilterMetadata,
-} from "./interfaces";
+} from "../interfaces";
 import {
   products,
   type TProduct,
   type TNewProduct,
-} from "../schemas/product.schema";
-import { type IDatabase } from "../client";
+} from "../../schemas/product.schema";
+import { type IDatabase } from "../../client";
 import {
   and,
   asc,
@@ -26,7 +26,7 @@ import {
   type SQL,
   inArray,
 } from "drizzle-orm";
-import { orderItems, orders } from "../schemas";
+import { orderItems, orders } from "../../schemas";
 
 export class ProductService implements IProductService {
   constructor(protected readonly db: IDatabase) {}
