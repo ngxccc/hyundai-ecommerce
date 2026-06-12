@@ -293,5 +293,10 @@
       "previous": "Trang trước",
       "next": "Trang sau"
     }
+  },
+  "ErrorPage": {
+    "title": "Đã xảy ra lỗi ngoài ý muốn!",
+    "description": "Một lỗi hệ thống đã phát sinh trong lúc xử lý phần nội dung này. Xin vui lòng thử lại hoặc liên hệ hỗ trợ kỹ thuật nếu sự cố tiếp tục diễn ra.",
+    "retryButton": "Thử lại"
   }
 }

@@ -293,5 +293,10 @@
       "previous": "Previous",
       "next": "Next"
     }
+  },
+  "ErrorPage": {
+    "title": "Something went wrong!",
+    "description": "An unexpected error occurred while rendering this section. Please try again or contact support if the issue persists.",
+    "retryButton": "Try again"
   }
 }
