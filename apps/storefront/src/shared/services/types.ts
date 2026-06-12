@@ -1,4 +1,4 @@
-import type { JSONContent } from "@tiptap/core";
+import type { JSONContent } from "@nhatnang/ui";
 import type {
   TBrandDTO,
   TCategoryDTO,
