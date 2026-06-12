@@ -6,7 +6,8 @@ export const brands = snakeCase.table("brand", {
   name: text().notNull().unique(),
   slug: text().notNull().unique(),
   logo: text(),
-  description: text(),
+  descriptionVi: text(),
+  descriptionEn: text(),
   isActive: boolean().default(true).notNull(),
 });
 

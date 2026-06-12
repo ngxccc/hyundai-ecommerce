@@ -51,7 +51,8 @@ export interface IMonthlyRevenue {
 
 export interface ITopSellingProduct {
   id: string;
-  name: string;
+  nameVi: string;
+  nameEn: string | null;
   sold: number;
   price: string;
   image: string | null;
@@ -139,7 +140,8 @@ export interface IProductFilterSpecs {
 
 export interface IProductFilterMetadata {
   id: string;
-  name: string;
+  nameVi: string;
+  nameEn: string | null;
   categoryId: string | null;
   brandId: string | null;
   specs: IProductFilterSpecs | null;

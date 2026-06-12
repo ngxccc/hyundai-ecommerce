@@ -3,7 +3,8 @@ import { baseEntity } from "./helpers.schema";
 
 export const dealerTiers = snakeCase.table("dealer_tier", {
   ...baseEntity,
-  name: text().notNull().unique(),
+  nameVi: text().notNull().unique(),
+  nameEn: text(),
   discountPercentage: numeric({
     precision: 5,
     scale: 2,

@@ -2,7 +2,8 @@ import { type TWarehouse } from "../schemas/warehouse.schema";
 
 export interface TWarehouseDTO {
   id: string;
-  name: string;
+  nameVi: string;
+  nameEn: string | null;
   streetAddress: string;
   district: string;
   city: string;
@@ -14,7 +15,8 @@ export interface TWarehouseDTO {
 export function mapWarehouseToDTO(warehouse: TWarehouse): TWarehouseDTO {
   return {
     id: warehouse.id,
-    name: warehouse.name,
+    nameVi: warehouse.nameVi,
+    nameEn: warehouse.nameEn,
     streetAddress: warehouse.streetAddress,
     district: warehouse.district,
     city: warehouse.city,

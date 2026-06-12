@@ -5,7 +5,8 @@ export interface TBrandDTO {
   name: string;
   slug: string;
   logo: string | null;
-  description: string | null;
+  descriptionVi: string | null;
+  descriptionEn: string | null;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -17,7 +18,8 @@ export function mapBrandToDTO(brand: TBrand): TBrandDTO {
     name: brand.name,
     slug: brand.slug,
     logo: brand.logo,
-    description: brand.description,
+    descriptionVi: brand.descriptionVi,
+    descriptionEn: brand.descriptionEn,
     isActive: brand.isActive,
     createdAt: brand.createdAt,
     updatedAt: brand.updatedAt,

@@ -23,7 +23,8 @@ async function seed() {
       name: "Hyundai",
       slug: "hyundai",
       logo: "https://cdn.example.com/hyundai.png",
-      description: "Thương hiệu máy phát điện uy tín từ Hàn Quốc",
+      descriptionVi: "Thương hiệu máy phát điện uy tín từ Hàn Quốc",
+      descriptionEn: "Reputable generator brand from South Korea",
       isActive: true,
     },
     {
@@ -31,7 +32,8 @@ async function seed() {
       name: "Mitsubishi",
       slug: "mitsubishi",
       logo: "https://cdn.example.com/mitsubishi.png",
-      description: "Máy phát điện công nghiệp cao cấp Nhật Bản",
+      descriptionVi: "Máy phát điện công nghiệp cao cấp Nhật Bản",
+      descriptionEn: "Premium industrial generators from Japan",
       isActive: true,
     },
     {
@@ -39,7 +41,8 @@ async function seed() {
       name: "Kubota",
       slug: "kubota",
       logo: "https://cdn.example.com/kubota.png",
-      description: "Máy phát điện diesel Nhật Bản chất lượng cao",
+      descriptionVi: "Máy phát điện diesel Nhật Bản chất lượng cao",
+      descriptionEn: "High-quality Japanese diesel generators",
       isActive: true,
     },
   ];
@@ -54,28 +57,34 @@ async function seed() {
   const categoryData = [
     {
       id: parentCatId,
-      name: "Máy phát điện",
+      nameVi: "Máy phát điện",
+      nameEn: "Generators",
       slug: "may-phat-dien",
       parentId: null,
-      description: "Tất cả các loại máy phát điện",
+      descriptionVi: "Tất cả các loại máy phát điện",
+      descriptionEn: "All types of generators",
       image: null,
       isActive: true,
     },
     {
       id: childCat1Id,
-      name: "Máy phát điện gia đình",
+      nameVi: "Máy phát điện gia đình",
+      nameEn: "Household Generators",
       slug: "may-phat-dien-gia-dinh",
       parentId: parentCatId,
-      description: "Máy phát điện dùng cho gia đình, văn phòng",
+      descriptionVi: "Máy phát điện dùng cho gia đình, văn phòng",
+      descriptionEn: "Generators for home and office use",
       image: null,
       isActive: true,
     },
     {
       id: childCat2Id,
-      name: "Máy phát điện công nghiệp",
+      nameVi: "Máy phát điện công nghiệp",
+      nameEn: "Industrial Generators",
       slug: "may-phat-dien-cong-nghiep",
       parentId: parentCatId,
-      description: "Máy phát điện công suất lớn cho nhà máy, công trường",
+      descriptionVi: "Máy phát điện công suất lớn cho nhà máy, công trường",
+      descriptionEn: "High-power generators for factories and construction sites",
       image: null,
       isActive: true,
     },
@@ -91,10 +100,11 @@ async function seed() {
   const productData = [
     {
       id: product1Id,
-      name: "Máy phát điện Hyundai DHY-5000LE",
+      nameVi: "Máy phát điện Hyundai DHY-5000LE",
+      nameEn: "Hyundai DHY-5000LE Generator",
       slug: "may-phat-dien-hyundai-dhy-5000le",
       price: "12500000",
-      description: {
+      descriptionVi: {
         type: "doc",
         content: [
           {
@@ -108,7 +118,22 @@ async function seed() {
           },
         ],
       },
-      shortDescription: "Máy phát điện diesel 5kVA, đề điện",
+      descriptionEn: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Hyundai DHY-5000LE diesel generator, 5kVA capacity, electric starter, equipped with convenient wheels.",
+              },
+            ],
+          },
+        ],
+      },
+      shortDescriptionVi: "Máy phát điện diesel 5kVA, đề điện",
+      shortDescriptionEn: "5kVA diesel generator, electric starter",
       images: ["https://cdn.example.com/hyundai-dhy-5000le-1.jpg"],
       brandId: hyundaiId,
       categoryId: childCat1Id,
@@ -118,10 +143,11 @@ async function seed() {
     },
     {
       id: product2Id,
-      name: "Máy phát điện Mitsubishi MGE-10000",
+      nameVi: "Máy phát điện Mitsubishi MGE-10000",
+      nameEn: "Mitsubishi MGE-10000 Generator",
       slug: "may-phat-dien-mitsubishi-mge-10000",
       price: "28900000",
-      description: {
+      descriptionVi: {
         type: "doc",
         content: [
           {
@@ -135,7 +161,22 @@ async function seed() {
           },
         ],
       },
-      shortDescription: "Máy phát điện công nghiệp 10kVA",
+      descriptionEn: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Mitsubishi MGE-10000 industrial generator, 10kVA capacity, high-quality Mitsubishi engine.",
+              },
+            ],
+          },
+        ],
+      },
+      shortDescriptionVi: "Máy phát điện công nghiệp 10kVA",
+      shortDescriptionEn: "10kVA industrial generator",
       images: ["https://cdn.example.com/mitsubishi-mge-10000-1.jpg"],
       brandId: mitsubishiId,
       categoryId: childCat2Id,
@@ -145,10 +186,11 @@ async function seed() {
     },
     {
       id: product3Id,
-      name: "Máy phát điện Kubota GL-6500",
+      nameVi: "Máy phát điện Kubota GL-6500",
+      nameEn: "Kubota GL-6500 Generator",
       slug: "may-phat-dien-kubota-gl-6500",
       price: "21500000",
-      description: {
+      descriptionVi: {
         type: "doc",
         content: [
           {
@@ -162,7 +204,22 @@ async function seed() {
           },
         ],
       },
-      shortDescription: "Máy phát điện Kubota 6.5kVA",
+      descriptionEn: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Kubota GL-6500 diesel generator, 6.5kVA capacity, durable and fuel-efficient Kubota engine.",
+              },
+            ],
+          },
+        ],
+      },
+      shortDescriptionVi: "Máy phát điện Kubota 6.5kVA",
+      shortDescriptionEn: "Kubota 6.5kVA generator",
       images: ["https://cdn.example.com/kubota-gl-6500-1.jpg"],
       brandId: kubotaId,
       categoryId: childCat1Id,
@@ -181,7 +238,8 @@ async function seed() {
   const warehouseData = [
     {
       id: warehouse1Id,
-      name: "Kho Hà Nội",
+      nameVi: "Kho Hà Nội",
+      nameEn: "Hanoi Warehouse",
       streetAddress: "Số 12, Ngõ 45, Đường Nguyễn Xiển",
       district: "Thanh Xuân",
       city: "Hà Nội",
@@ -189,7 +247,8 @@ async function seed() {
     },
     {
       id: warehouse2Id,
-      name: "Kho TP.HCM",
+      nameVi: "Kho TP.HCM",
+      nameEn: "HCM Warehouse",
       streetAddress: "Số 89, Đường Nguyễn Thị Minh Khai",
       district: "Quận 1",
       city: "TP. Hồ Chí Minh",
@@ -237,19 +296,22 @@ async function seed() {
   const dealerTierData = [
     {
       id: silverTierId,
-      name: "Đại lý Bạc (Silver)",
+      nameVi: "Đại lý Bạc",
+      nameEn: "Silver Dealer",
       discountPercentage: "5.00",
       minimumSpend: "50000000.00", // 50m
     },
     {
       id: goldTierId,
-      name: "Đại lý Vàng (Gold)",
+      nameVi: "Đại lý Vàng",
+      nameEn: "Gold Dealer",
       discountPercentage: "10.00",
       minimumSpend: "200000000.00", // 200m
     },
     {
       id: platinumTierId,
-      name: "Đại lý Bạch Kim (Platinum)",
+      nameVi: "Đại lý Bạch Kim",
+      nameEn: "Platinum Dealer",
       discountPercentage: "15.00",
       minimumSpend: "1000000000.00", // 1b
     },

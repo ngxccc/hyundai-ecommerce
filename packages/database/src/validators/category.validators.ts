@@ -2,10 +2,12 @@ import { z } from "zod";
 
 export const createCategorySchema = z
   .object({
-    name: z.string().min(1, "validation.nameRequired"),
+    nameVi: z.string().min(1, "validation.nameRequired"),
+    nameEn: z.string().optional().or(z.literal("")).nullable(),
     slug: z.string().min(1, "validation.slugRequired"),
     parentId: z.uuid("validation.invalidParent").nullish(),
-    description: z.string().optional().or(z.literal("")).nullable(),
+    descriptionVi: z.string().optional().or(z.literal("")).nullable(),
+    descriptionEn: z.string().optional().or(z.literal("")).nullable(),
     image: z.url("validation.invalidUrl").optional().or(z.literal("")).nullable(),
     isActive: z.boolean().default(true),
   })

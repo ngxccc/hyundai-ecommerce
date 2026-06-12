@@ -167,7 +167,7 @@ export class QuotesService implements IQuotesService {
 
         orderItemsToInsert.push({
           productId: item.productId,
-          productName: item.product.name,
+          productName: item.product.nameVi,
           productSku: item.product.slug,
           quantity: item.quantity,
           unitPrice: finalPrice,

@@ -5,13 +5,14 @@ export const warehouses = snakeCase.table(
   "warehouse",
   {
     ...baseEntity,
-    name: text().notNull(),
+    nameVi: text().notNull(),
+    nameEn: text(),
     streetAddress: text().notNull(),
     district: text().notNull(),
     city: text().notNull(),
     isActive: boolean().notNull().default(true),
   },
-  (table) => [index("warehouse_name_idx").on(table.name)],
+  (table) => [index("warehouse_name_idx").on(table.nameVi)],
 );
 
 export type TWarehouse = typeof warehouses.$inferSelect;

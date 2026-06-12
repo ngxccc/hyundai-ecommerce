@@ -2,10 +2,12 @@ import { type TCategory } from "../schemas/category.schema";
 
 export interface TCategoryDTO {
   id: string;
-  name: string;
+  nameVi: string;
+  nameEn: string | null;
   slug: string;
   parentId: string | null;
-  description: string | null;
+  descriptionVi: string | null;
+  descriptionEn: string | null;
   image: string | null;
   isActive: boolean;
   createdAt: Date;
@@ -15,10 +17,12 @@ export interface TCategoryDTO {
 export function mapCategoryToDTO(category: TCategory): TCategoryDTO {
   return {
     id: category.id,
-    name: category.name,
+    nameVi: category.nameVi,
+    nameEn: category.nameEn,
     slug: category.slug,
     parentId: category.parentId,
-    description: category.description,
+    descriptionVi: category.descriptionVi,
+    descriptionEn: category.descriptionEn,
     image: category.image,
     isActive: category.isActive,
     createdAt: category.createdAt,

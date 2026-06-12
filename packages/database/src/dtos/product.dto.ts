@@ -1,13 +1,17 @@
+import type { JSONContent } from "@tiptap/core";
 import { type TProduct } from "../schemas/product.schema";
 import type { TProductSpecs } from "../validators";
 
 export interface TProductDTO {
   id: string;
-  name: string;
+  nameVi: string;
+  nameEn: string | null;
   slug: string;
   price: string;
-  description: Record<string, unknown> | null;
-  shortDescription: string | null;
+  descriptionVi: JSONContent | null;
+  descriptionEn: JSONContent | null;
+  shortDescriptionVi: string | null;
+  shortDescriptionEn: string | null;
   images: string[];
   brandId: string | null;
   categoryId: string | null;
@@ -21,11 +25,14 @@ export interface TProductDTO {
 export function mapProductToDTO(product: TProduct): TProductDTO {
   return {
     id: product.id,
-    name: product.name,
+    nameVi: product.nameVi,
+    nameEn: product.nameEn,
     slug: product.slug,
     price: product.price,
-    description: product.description,
-    shortDescription: product.shortDescription,
+    descriptionVi: product.descriptionVi,
+    descriptionEn: product.descriptionEn,
+    shortDescriptionVi: product.shortDescriptionVi,
+    shortDescriptionEn: product.shortDescriptionEn,
     images: product.images,
     brandId: product.brandId,
     categoryId: product.categoryId,
