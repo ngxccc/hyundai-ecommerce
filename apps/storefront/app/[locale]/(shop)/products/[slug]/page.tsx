@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { ProductDetailsSkeleton } from "@/features/products/components/skeletons/product-details-skeleton";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { TProduct } from "@nhatnang/database/schemas";
 import { routing } from "@/i18n/routing";
@@ -96,7 +97,7 @@ export default function ProductDetailsPage({
   params: Promise<ProductPageParams>;
 }) {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<ProductDetailsSkeleton />}>
       <ProductDetailsPageContent params={params} />
     </Suspense>
   );

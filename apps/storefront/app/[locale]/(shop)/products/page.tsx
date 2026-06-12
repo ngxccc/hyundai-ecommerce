@@ -3,6 +3,7 @@ import { siteConfig } from "@/shared/config/site";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { CatalogTemplate } from "@/features/products/components/catalog-template";
+import { CatalogTemplateSkeleton } from "@/features/products/components/skeletons/catalog-template-skeleton";
 import type { CatalogPageProps } from "@/features/products/types/catalog";
 import type { Locale } from "next-intl";
 
@@ -32,7 +33,7 @@ export default async function CatalogPage({
   setRequestLocale(locale as Locale);
 
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<CatalogTemplateSkeleton />}>
       <CatalogTemplate searchParams={searchParams} locale={locale as Locale} />
     </Suspense>
   );

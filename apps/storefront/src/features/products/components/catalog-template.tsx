@@ -21,6 +21,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@nhatnang/ui/components/ui/card";
+import { Skeleton } from "@nhatnang/ui/components/ui/skeleton";
 import { priceFormatter } from "@/shared/lib/utils";
 import type { TProduct } from "@nhatnang/database/schemas";
 import type { CatalogSearchParams } from "../types/catalog";
@@ -225,7 +226,15 @@ export async function CatalogTemplate({
             </div>
 
             {/* Active Filter Chips */}
-            <Suspense fallback={null}>
+            <Suspense
+              fallback={
+                <div className="flex flex-wrap gap-2">
+                  <Skeleton className="h-8 w-20 rounded-full" />
+                  <Skeleton className="h-8 w-24 rounded-full" />
+                  <Skeleton className="h-8 w-28 rounded-full" />
+                </div>
+              }
+            >
               <ActiveFilterChips />
             </Suspense>
             {/* Product Grid */}
@@ -313,7 +322,15 @@ export async function CatalogTemplate({
             )}
 
             {/* Pagination */}
-            <Suspense fallback={null}>
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center gap-2 pt-6">
+                  <Skeleton className="h-10 w-10 rounded-md" />
+                  <Skeleton className="h-10 w-24 rounded-md" />
+                  <Skeleton className="h-10 w-10 rounded-md" />
+                </div>
+              }
+            >
               <ProductPagination
                 nextCursor={nextCursor}
                 prevCursor={prevCursor}

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { siteConfig } from "@/shared/config/site";
 import type { Metadata } from "next";
 import { CatalogTemplate } from "@/features/products/components/catalog-template";
+import { CatalogTemplateSkeleton } from "@/features/products/components/skeletons/catalog-template-skeleton";
 import type { CatalogPageProps } from "@/features/products/types/catalog";
 import { categoryService } from "@/shared/services";
 import { notFound } from "next/navigation";
@@ -55,7 +56,7 @@ export default async function CategoryCatalogPage({
   }
 
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<CatalogTemplateSkeleton />}>
       <CatalogTemplate
         title={targetCategory.name}
         categorySlug={slug}
