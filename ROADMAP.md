@@ -16,6 +16,10 @@ _Tập trung hoàn thành giai đoạn tối ưu hóa Catalog và cấu trúc c�
 - [ ] Di chuyển các truy vấn SQL trực tiếp từ Storefront sang các lớp dịch vụ cache của Database (`@nhatnang/database`).
 - [ ] Thiết kế cơ sở dữ liệu đa ngôn ngữ: Chuyển đổi định dạng schema từ lưu trữ JSONB sang dạng cột song hành (`name_vi`, `name_en`).
 - [ ] Tích hợp DTO Mapping Layer để xử lý dữ liệu đầu ra giữa Database và Storefront.
+- [ ] B2B Storefront Program — Program Goal Charter
+- [ ] Phase 3: Cart Service & Storefront Integration — Plan
+- [ ] Phase 4: Customer Quoting & Negotiation Portal — Plan
+- [ ] Multilingual Database Content and DTO Mapping Architecture Plan
 
 ---
 
