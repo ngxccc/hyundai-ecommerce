@@ -20,6 +20,48 @@ _Tập trung hoàn thành giai đoạn tối ưu hóa Catalog và cấu trúc c�
 - [ ] Phase 3: Cart Service & Storefront Integration — Plan
 - [ ] Phase 4: Customer Quoting & Negotiation Portal — Plan
 - [ ] Multilingual Database Content and DTO Mapping Architecture Plan
+- [x] Admin Global Image Upload Configuration
+- [x] Admin Grid View Transformation
+- [x] Admin Header Search Refactor and Category Card Enhancement
+- [x] Architectural Refactor & Principles Alignment Plan
+- [x] Background Image Upload Architecture
+- [x] PLAN: Categories & Brands Management
+- [x] Admin Dashboard Dynamic Data - Plan
+- [x] Database Services Directory Refactoring Plan
+- [x] Database Indexing - Plan
+- [x] Database Missing Services Tests Plan
+- [x] Delete Button UI Refactor for Brands and Categories
+- [x] Cloudinary Image Deletion Plan
+- [x] Github Actions Paths Filter Migration Plan
+- [x] Error Handling Refactor (Services & Actions)
+- [x] Localize Cloudinary API Errors
+- [x] PLAN: Neon DB Migration Workflow & Seed Schema Update
+- [x] Product Image Upload Integration
+- [x] PLAN: Product Query Optimization (Performance & Clean Code)
+- [x] Product Feature Pre-Merge Audit
+- [x] Product Filters Reset Plan
+- [x] PLAN: Product Specs Filters
+- [x] PLAN: RIPER-5 Antigravity Plugin
+- [x] Security & Access Control Fix Plan
+- [x] Security Remediation and Rate Limiting Implementation - Plan
+- [x] Standardize Catalog Sort Query Parameters Plan
+- [x] Storefront Error Boundaries Implementation Plan
+- [x] Storefront Skeleton Components Implementation Plan
+- [x] Strict Paths Rule Update Plan
+- [x] PLAN: Warehouse & Inventory Management
+- [x] Zustand Architecture Analysis
+- [x] B2B CRM & Operations Dashboard Roadmap
+- [x] Phase 2: Customer Directory & Dealer Tiers Management
+- [x] Phase 3: Orders Management Dashboard & Invoice PDF Export
+- [x] Phase 5: Logistics Carrier Bidding Panel
+- [x] Phase 1: B2B Quotes Database Schema Extensions
+- [x] Phase 4: Quote Negotiation Chat & Pricing Cockpit
+- [x] Caching Migration Plan: Next.js 16 Cache Components
+- [x] Storefront Hybrid Faceted Search Implementation Plan
+- [x] Storefront Mobile Filter Bottom Sheet Implementation Plan
+- [x] Phase 1: Storefront API Mock Migration — Plan
+- [x] Phase 2: Storefront Product Catalog, Search & Filters — Plan
+- [x] Plan: B2B Storefront Phase 2 - Static Category Routes
 
 ---
 
