@@ -1,6 +1,6 @@
-import type { TProduct } from "@nhatnang/database/schemas";
+import type { StorefrontProduct } from "@/shared/services";
 import { Link } from "@/i18n/routing";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -13,7 +13,7 @@ import {
 import { productService } from "@/shared/services";
 import { priceFormatter } from "@/shared/lib/utils";
 
-const formatSpecs = (specs: TProduct["specs"]): string[] => {
+const formatSpecs = (specs: StorefrontProduct["specs"]): string[] => {
   if (!specs || typeof specs !== "object") return [];
   const specsObj = specs as Record<
     string,
@@ -36,9 +36,12 @@ const formatSpecs = (specs: TProduct["specs"]): string[] => {
 };
 
 export async function ProductsSection() {
-  const t = await getTranslations("HomePage.products");
+  const [t, locale] = await Promise.all([
+    getTranslations("HomePage.products"),
+    getLocale(),
+  ]);
 
-  const { data: products } = await productService.getProducts();
+  const { data: products } = await productService.getProducts(locale);
 
   if (!products?.length) return null;
 

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { categoryService } from "@/shared/services";
 
@@ -43,9 +43,12 @@ function isCategoryKey(value: string): value is CategoryKey {
 }
 
 export async function CategoriesSection() {
-  const t = await getTranslations("HomePage");
+  const [t, locale] = await Promise.all([
+    getTranslations("HomePage"),
+    getLocale(),
+  ]);
 
-  const categories = await categoryService.getCategories();
+  const categories = await categoryService.getCategories(locale);
 
   if (!categories.length) return null;
 

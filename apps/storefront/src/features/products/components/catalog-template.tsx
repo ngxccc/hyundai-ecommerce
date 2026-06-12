@@ -23,11 +23,11 @@ import {
 } from "@nhatnang/ui/components/ui/card";
 import { Skeleton } from "@nhatnang/ui/components/ui/skeleton";
 import { priceFormatter } from "@/shared/lib/utils";
-import type { TProduct } from "@nhatnang/database/schemas";
+import type { StorefrontProduct } from "@/shared/services";
 import type { CatalogSearchParams } from "../types/catalog";
 
 const formatSpecs = (
-  specs: TProduct["specs"],
+  specs: StorefrontProduct["specs"],
   tProduct: _Translator<AppConfig["Messages"], "ProductDetails">,
 ): string[] => {
   if (!specs || typeof specs !== "object") return [];
@@ -120,7 +120,7 @@ export async function CatalogTemplate({
   // Resolve categoryIds if category slug is provided
   let categoryIds: string[] | undefined;
   if (categorySlug) {
-    const categoriesList = await categoryService.getCategories();
+    const categoriesList = await categoryService.getCategories(locale!);
     const targetCategory = categoriesList.find(
       (cat) => cat.slug === categorySlug,
     );
@@ -133,8 +133,8 @@ export async function CatalogTemplate({
 
   // Fetch categories and brands from database first
   const [categoriesTree, allBrands] = await Promise.all([
-    categoryService.getCategoryTree(),
-    brandService.getBrands(),
+    categoryService.getCategoryTree(locale!),
+    brandService.getBrands(locale!),
   ]);
 
   // Resolve brandIds from brand slugs in URL param
@@ -147,7 +147,7 @@ export async function CatalogTemplate({
   }
 
   // Fetch filtered products using resolved category and brand IDs
-  const productsData = await productService.getProducts(12, {
+  const productsData = await productService.getProducts(locale!, 12, {
     categoryIds,
     brandIds,
     search,

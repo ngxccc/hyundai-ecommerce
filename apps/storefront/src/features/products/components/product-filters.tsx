@@ -7,23 +7,23 @@ import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Input } from "@nhatnang/ui/components/ui/input";
 import { Separator } from "@nhatnang/ui/components/ui/separator";
 import type {
-  TCategoryWithChildren,
-  IProductFilterMetadata,
-} from "@nhatnang/database/services";
-import type { TBrand } from "@nhatnang/database/schemas";
+  StorefrontCategoryWithChildren,
+  StorefrontBrand,
+  StorefrontFilterMetadata,
+} from "@/shared/services";
 import { useTranslations } from "next-intl";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useDebounce } from "@nhatnang/ui/hooks/use-debounce";
 import { computeFacets } from "../utils/facet-engine";
 import type {
   ComputeFacetsParams,
-  IProductActiveFilters,
+  ProductActiveFilters,
 } from "../types/facet-engine";
 import { FUEL_TYPES, PHASES } from "@nhatnang/database/validators";
 
 interface ProductFiltersProps {
-  categories: TCategoryWithChildren[];
-  brands: TBrand[];
+  categories: StorefrontCategoryWithChildren[];
+  brands: StorefrontBrand[];
   selectedCategorySlug?: string;
   mode?: "live" | "sheet";
   onPendingFiltersChange?: (params: URLSearchParams) => void;
@@ -32,7 +32,7 @@ interface ProductFiltersProps {
 }
 
 function flattenCategoriesTree(
-  tree: TCategoryWithChildren[],
+  tree: StorefrontCategoryWithChildren[],
   parentId: string | null = null,
 ) {
   const result: ComputeFacetsParams["categories"] = [];
@@ -75,14 +75,14 @@ export function ProductFilters({
     return params;
   }, [searchParamsProp]);
   // Fetch metadata once on mount
-  const [metadata, setMetadata] = useState<IProductFilterMetadata[]>([]);
+  const [metadata, setMetadata] = useState<StorefrontFilterMetadata[]>([]);
   useEffect(() => {
     fetch("/api/products/metadata")
       .then(
         (res) =>
           res.json() as Promise<{
             status: boolean;
-            data: IProductFilterMetadata[];
+            data: StorefrontFilterMetadata[];
           }>,
       )
       .then((resData) => {
@@ -117,7 +117,7 @@ export function ProductFilters({
   const alternatorBrand = effectiveSearchParams.get("alternatorBrand") ?? "";
 
   // Compute active filters and facetStatus
-  const activeFilters: IProductActiveFilters = {
+  const activeFilters: ProductActiveFilters = {
     categorySlug: selectedCategory || null,
     brandSlugs: selectedBrands,
     fuelType: fuelType || null,
@@ -274,7 +274,7 @@ export function ProductFilters({
   ]);
 
   // Recursive category tree renderer
-  const renderCategoryNode = (node: TCategoryWithChildren, depth = 0) => {
+  const renderCategoryNode = (node: StorefrontCategoryWithChildren, depth = 0) => {
     const hasChildren = node.children && node.children.length > 0;
     const isExpanded = expandedCategories[node.id];
     const isSelected = selectedCategory === node.slug;
@@ -357,7 +357,7 @@ export function ProductFilters({
 
         {hasChildren && isExpanded && (
           <div className="mt-1 space-y-1">
-            {node.children!.map((child: TCategoryWithChildren) =>
+            {node.children.map((child: StorefrontCategoryWithChildren) =>
               renderCategoryNode(child, depth + 1),
             )}
           </div>

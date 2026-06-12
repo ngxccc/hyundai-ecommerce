@@ -1,6 +1,6 @@
-import type { IProductFilterMetadata } from "@nhatnang/database/services";
+import type { StorefrontFilterMetadata } from "@/shared/services";
 
-export interface IProductActiveFilters {
+export interface ProductActiveFilters {
   categorySlug: string | null;
   brandSlugs: string[];
   fuelType: string | null;
@@ -14,10 +14,10 @@ export interface IProductActiveFilters {
 }
 
 export interface ComputeFacetsParams {
-  products: IProductFilterMetadata[];
+  products: StorefrontFilterMetadata[];
   brands: { id: string; slug: string }[];
   categories: { id: string; slug: string; parentId: string | null }[];
-  activeFilters: IProductActiveFilters;
+  activeFilters: ProductActiveFilters;
 }
 
 export interface FacetStatus {

@@ -16,7 +16,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   setRequestLocale(locale as Locale);
-  const categoriesList = await categoryService.getCategories();
+  const categoriesList = await categoryService.getCategories(locale as "vi" | "en");
   const targetCategory = categoriesList.find((cat) => cat.slug === slug);
 
   if (!targetCategory) {
@@ -35,7 +35,7 @@ export async function generateMetadata({
 
 // Statically pre-render all category landing pages
 export async function generateStaticParams() {
-  const categories = await categoryService.getCategories();
+  const categories = await categoryService.getCategories("vi");
   return categories.map((cat) => ({
     slug: cat.slug,
   }));
@@ -49,7 +49,7 @@ export default async function CategoryCatalogPage({
   setRequestLocale(locale as Locale);
 
   // Verify that target category exists, otherwise throw 404
-  const categoriesList = await categoryService.getCategories();
+  const categoriesList = await categoryService.getCategories(locale as "vi" | "en");
   const targetCategory = categoriesList.find((cat) => cat.slug === slug);
   if (!targetCategory) {
     notFound();

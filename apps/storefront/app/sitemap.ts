@@ -7,7 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   "use cache";
   cacheLife("days");
   const [categories, productSlugs] = await Promise.all([
-    categoryService.getCategories(),
+    categoryService.getCategories("vi"),
     productService.getStaticProductSlugs(),
   ]);
   const lastModified = new Date();
