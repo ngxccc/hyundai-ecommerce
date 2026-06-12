@@ -22,7 +22,8 @@ describe("DealerTierService", () => {
   test("create() should insert and return the created dealer tier", async () => {
     const mockTier: TDealerTier = {
       id: "tier-1",
-      name: "Gold Partner",
+      nameVi: "Gold Partner",
+      nameEn: null,
       discountPercentage: "15.00",
       minimumSpend: "50000.00",
       createdAt: new Date(),
@@ -31,7 +32,8 @@ describe("DealerTierService", () => {
     mockReturning.mockResolvedValueOnce([mockTier]);
 
     const result = await dealerTierService.create({
-      name: "Gold Partner",
+      nameVi: "Gold Partner",
+      nameEn: null,
       discountPercentage: "15.00",
       minimumSpend: "50000.00",
     });
@@ -43,7 +45,8 @@ describe("DealerTierService", () => {
   test("update() should update and return the dealer tier", async () => {
     const mockTier: TDealerTier = {
       id: "tier-1",
-      name: "Gold Partner V2",
+      nameVi: "Gold Partner V2",
+      nameEn: null,
       discountPercentage: "18.00",
       minimumSpend: "50000.00",
       createdAt: new Date(),
@@ -52,7 +55,8 @@ describe("DealerTierService", () => {
     mockReturning.mockResolvedValueOnce([mockTier]);
 
     const result = await dealerTierService.update("tier-1", {
-      name: "Gold Partner V2",
+      nameVi: "Gold Partner V2",
+      nameEn: null,
       discountPercentage: "18.00",
     });
 
@@ -64,7 +68,8 @@ describe("DealerTierService", () => {
     const mockTiers: TDealerTier[] = [
       {
         id: "tier-1",
-        name: "Bronze Partner",
+        nameVi: "Bronze Partner",
+        nameEn: null,
         discountPercentage: "5.00",
         minimumSpend: "10000.00",
         createdAt: new Date(),
@@ -72,7 +77,8 @@ describe("DealerTierService", () => {
       },
       {
         id: "tier-2",
-        name: "Silver Partner",
+        nameVi: "Silver Partner",
+        nameEn: null,
         discountPercentage: "10.00",
         minimumSpend: "25000.00",
         createdAt: new Date(),
@@ -90,7 +96,8 @@ describe("DealerTierService", () => {
   test("getById() should return a single dealer tier by id", async () => {
     const mockTier: TDealerTier = {
       id: "tier-1",
-      name: "Gold Partner",
+      nameVi: "Gold Partner",
+      nameEn: null,
       discountPercentage: "15.00",
       minimumSpend: "50000.00",
       createdAt: new Date(),

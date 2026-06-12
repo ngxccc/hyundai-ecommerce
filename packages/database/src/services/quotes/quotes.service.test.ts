@@ -41,11 +41,14 @@ const mockUser: TUser = {
 
 const mockProduct: TProduct = {
   id: "prod-1",
-  name: "Generator 100kW",
+  nameVi: "Generator 100kW",
+  nameEn: null,
   slug: "generator-100kw",
   price: "1000.00",
-  description: null,
-  shortDescription: null,
+  descriptionVi: null,
+  descriptionEn: null,
+  shortDescriptionVi: null,
+  shortDescriptionEn: null,
   images: [],
   brandId: null,
   categoryId: null,

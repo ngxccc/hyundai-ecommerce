@@ -23,10 +23,12 @@ describe("CategoryService", () => {
     const mockCategories = [
       {
         id: "1",
-        name: "Generators",
+        nameVi: "Generators",
+        nameEn: null,
         slug: "generators",
         parentId: null,
-        description: null,
+        descriptionVi: null,
+        descriptionEn: null,
         image: null,
         isActive: true,
         createdAt: new Date(),
@@ -51,10 +53,12 @@ describe("CategoryService", () => {
   test("create() should insert and return new category", async () => {
     const mockCategory = {
       id: "1",
-      name: "Gensets",
+      nameVi: "Gensets",
+      nameEn: null,
       slug: "gensets",
       parentId: null,
-      description: null,
+      descriptionVi: null,
+      descriptionEn: null,
       image: null,
       isActive: true,
       createdAt: new Date(),
@@ -63,7 +67,8 @@ describe("CategoryService", () => {
     mockReturning.mockResolvedValueOnce([mockCategory]);
 
     const result = await categoryService.create({
-      name: "Gensets",
+      nameVi: "Gensets",
+      nameEn: null,
       slug: "gensets",
       isActive: true,
     });
@@ -77,7 +82,8 @@ describe("CategoryService", () => {
     mockReturning.mockRejectedValueOnce({ code: "23505" });
     expect(
       categoryService.create({
-        name: "Gensets",
+        nameVi: "Gensets",
+        nameEn: null,
         slug: "gensets",
         isActive: true,
       }),
@@ -87,10 +93,12 @@ describe("CategoryService", () => {
   test("update() should update and return category", async () => {
     const mockCategory = {
       id: "1",
-      name: "Updated",
+      nameVi: "Updated",
+      nameEn: null,
       slug: "updated",
       parentId: null,
-      description: null,
+      descriptionVi: null,
+      descriptionEn: null,
       image: null,
       isActive: true,
       createdAt: new Date(),
@@ -98,7 +106,7 @@ describe("CategoryService", () => {
     };
     mockReturning.mockResolvedValueOnce([mockCategory]);
 
-    const result = await categoryService.update({ id: "1", name: "Updated" });
+    const result = await categoryService.update({ id: "1", nameVi: "Updated" });
 
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
@@ -109,10 +117,12 @@ describe("CategoryService", () => {
   test("getById() should return category when found", async () => {
     const mockCategory = {
       id: "1",
-      name: "Generators",
+      nameVi: "Generators",
+      nameEn: null,
       slug: "generators",
       parentId: null,
-      description: null,
+      descriptionVi: null,
+      descriptionEn: null,
       image: null,
       isActive: true,
       createdAt: new Date(),
@@ -149,10 +159,12 @@ describe("CategoryService", () => {
     const mockCategories = [
       {
         id: "1",
-        name: "Parent",
+        nameVi: "Parent",
+        nameEn: null,
         slug: "parent",
         parentId: null,
-        description: null,
+        descriptionVi: null,
+        descriptionEn: null,
         image: null,
         isActive: true,
         createdAt: new Date(),
@@ -160,10 +172,12 @@ describe("CategoryService", () => {
       },
       {
         id: "2",
-        name: "Child",
+        nameVi: "Child",
+        nameEn: null,
         slug: "child",
         parentId: "1",
-        description: null,
+        descriptionVi: null,
+        descriptionEn: null,
         image: null,
         isActive: true,
         createdAt: new Date(),
@@ -185,10 +199,12 @@ describe("CategoryService", () => {
     const mockCategories = [
       {
         id: "1",
-        name: "Parent",
+        nameVi: "Parent",
+        nameEn: null,
         slug: "parent",
         parentId: null,
-        description: null,
+        descriptionVi: null,
+        descriptionEn: null,
         image: null,
         isActive: true,
         createdAt: new Date(),
@@ -196,10 +212,12 @@ describe("CategoryService", () => {
       },
       {
         id: "2",
-        name: "Child 1",
+        nameVi: "Child 1",
+        nameEn: null,
         slug: "child-1",
         parentId: "1",
-        description: null,
+        descriptionVi: null,
+        descriptionEn: null,
         image: null,
         isActive: true,
         createdAt: new Date(),
@@ -207,10 +225,12 @@ describe("CategoryService", () => {
       },
       {
         id: "3",
-        name: "Child 2",
+        nameVi: "Child 2",
+        nameEn: null,
         slug: "child-2",
         parentId: "2",
-        description: null,
+        descriptionVi: null,
+        descriptionEn: null,
         image: null,
         isActive: true,
         createdAt: new Date(),

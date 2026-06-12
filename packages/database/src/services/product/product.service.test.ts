@@ -20,14 +20,17 @@ describe("ProductService", () => {
 
   test("create() should insert and return the created product", async () => {
     const newProduct = {
-      name: "Test Generator",
+      nameVi: "Test Generator",
+      nameEn: null,
       slug: "test-generator",
       price: "1000",
       images: [],
       isQuoteOnly: false,
       totalStockCache: 0,
-      description: null,
-      shortDescription: null,
+      descriptionVi: null,
+      descriptionEn: null,
+      shortDescriptionVi: null,
+      shortDescriptionEn: null,
       brandId: null,
       categoryId: null,
       specs: null,
@@ -53,14 +56,17 @@ describe("ProductService", () => {
   test("getById() should return a product if found", async () => {
     const mockProduct = {
       id: "uuid-123",
-      name: "Test",
+      nameVi: "Test",
+      nameEn: null,
       slug: "test",
       price: "100",
       images: [],
       isQuoteOnly: false,
       totalStockCache: 0,
-      description: null,
-      shortDescription: null,
+      descriptionVi: null,
+      descriptionEn: null,
+      shortDescriptionVi: null,
+      shortDescriptionEn: null,
       brandId: null,
       categoryId: null,
       specs: null,
@@ -89,7 +95,8 @@ describe("ProductService", () => {
       const mockDbResult = [
         {
           id: "prod-1",
-          name: "Hyundai HY-30CLE",
+          nameVi: "Hyundai HY-30CLE",
+          nameEn: null,
           sold: 120,
           price: "12500000",
           images: ["img1.png", "img2.png"],
@@ -102,7 +109,8 @@ describe("ProductService", () => {
       expect(result).toEqual([
         {
           id: "prod-1",
-          name: "Hyundai HY-30CLE",
+          nameVi: "Hyundai HY-30CLE",
+          nameEn: null,
           sold: 120,
           price: "12500000",
           image: "img1.png",
@@ -114,7 +122,8 @@ describe("ProductService", () => {
       const mockDbResult = [
         {
           id: "prod-2",
-          name: "Test Generator",
+          nameVi: "Test Generator",
+          nameEn: null,
           sold: 50,
           price: "8500000",
           images: [],
@@ -126,7 +135,8 @@ describe("ProductService", () => {
 
       expect(result[0]).toEqual({
         id: "prod-2",
-        name: "Test Generator",
+        nameVi: "Test Generator",
+        nameEn: null,
         sold: 50,
         price: "8500000",
         image: null,
@@ -139,7 +149,8 @@ describe("ProductService", () => {
       const mockProducts = [
         {
           id: "prod-1",
-          name: "Generator Low Price",
+          nameVi: "Generator Low Price",
+          nameEn: null,
           price: "1000",
           createdAt: new Date(),
           categories: null,
@@ -157,7 +168,8 @@ describe("ProductService", () => {
       const mockProducts = [
         {
           id: "prod-2",
-          name: "Generator In Category",
+          nameVi: "Generator In Category",
+          nameEn: null,
           price: "2000",
           createdAt: new Date(),
           categories: null,
@@ -179,7 +191,8 @@ describe("ProductService", () => {
       const mockDbResult = [
         {
           id: "prod-1",
-          name: "Hyundai Generator",
+          nameVi: "Hyundai Generator",
+          nameEn: null,
           categoryId: "cat-1",
           brandId: "brand-1",
           power: "10.5",
@@ -198,7 +211,8 @@ describe("ProductService", () => {
       expect(result).toEqual([
         {
           id: "prod-1",
-          name: "Hyundai Generator",
+          nameVi: "Hyundai Generator",
+          nameEn: null,
           categoryId: "cat-1",
           brandId: "brand-1",
           specs: {
@@ -217,7 +231,8 @@ describe("ProductService", () => {
       const mockDbResult = [
         {
           id: "prod-2",
-          name: "Null Product",
+          nameVi: "Null Product",
+          nameEn: null,
           categoryId: null,
           brandId: null,
           power: null,
@@ -234,7 +249,8 @@ describe("ProductService", () => {
 
       expect(result[0]).toEqual({
         id: "prod-2",
-        name: "Null Product",
+        nameVi: "Null Product",
+        nameEn: null,
         categoryId: null,
         brandId: null,
         specs: {
