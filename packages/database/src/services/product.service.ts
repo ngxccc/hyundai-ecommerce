@@ -216,6 +216,23 @@ export class ProductService implements IProductService {
     );
   }
 
+  async getAllActiveSlugs(): Promise<string[]> {
+    const allProducts = await this.db
+      .select({ slug: products.slug })
+      .from(products)
+      .where(isNull(products.deletedAt));
+    return allProducts.map((p) => p.slug);
+  }
+
+  async getActiveProductBySlug(slug: string): Promise<TProduct | null> {
+    const [product] = await this.db
+      .select()
+      .from(products)
+      .where(and(eq(products.slug, slug), isNull(products.deletedAt)))
+      .limit(1);
+    return product ?? null;
+  }
+
   /**
    * Dynamically constructs SQL filters for the product catalog query.
    * Handles cursor-based pagination, category filtering, search, and specification filters.

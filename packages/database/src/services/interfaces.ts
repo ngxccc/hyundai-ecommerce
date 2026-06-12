@@ -161,6 +161,8 @@ export interface IProductService {
   }>;
   getTopSellingProducts(limit: number): Promise<ITopSellingProduct[]>;
   getFiltersMetadata(): Promise<IProductFilterMetadata[]>;
+  getAllActiveSlugs(): Promise<string[]>;
+  getActiveProductBySlug(slug: string): Promise<TProduct | null>;
 }
 // --- Warehouse Service Interfaces ---
 export interface IWarehouseService {
