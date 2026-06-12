@@ -35,12 +35,12 @@
     "test": "doppler run -- bun test src/"
   },
   "dependencies": {
-    "@better-auth/drizzle-adapter": "^1.6.15",
+    "@better-auth/drizzle-adapter": "^1.6.17",
     "@neondatabase/serverless": "^1.1.0",
     "@paralleldrive/cuid2": "^3.3.0",
     "@t3-oss/env-core": "^0.13.11",
-    "@tiptap/core": "^3.26.0",
-    "better-auth": "^1.6.15",
+    "@tiptap/core": "^3.26.1",
+    "better-auth": "^1.6.17",
     "drizzle-orm": "v1.0.0-rc.3",
     "postgres": "^3.4.9",
     "resend": "^6.12.3",
