@@ -1,11 +1,13 @@
 import { siteConfig } from "@/shared/config/site";
 import type { MetadataRoute } from "next";
-import { categoryService } from "@nhatnang/database/services";
-import { productService } from "@/shared/services";
+import { categoryService, productService } from "@/shared/services";
+import { cacheLife } from "next/cache";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  "use cache";
+  cacheLife("days");
   const [categories, productSlugs] = await Promise.all([
-    categoryService.getAll(),
+    categoryService.getCategories(),
     productService.getStaticProductSlugs(),
   ]);
   const lastModified = new Date();

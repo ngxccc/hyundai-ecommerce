@@ -1,11 +1,15 @@
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
-import { productService, categoryService, brandService } from "@nhatnang/database/services";
+import {
+  brandService,
+  categoryService as dbCategoryService,
+} from "@nhatnang/database/services";
+import { productService, categoryService } from "@/shared/services";
 import type { TGetAllOptions } from "@nhatnang/database/services";
-import { NextResponse, type NextRequest } from "next/server";
-
-export const dynamic = "force-dynamic";
+import { connection, NextResponse, type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
+  await connection();
+
   try {
     const { searchParams } = new URL(request.url);
     const limitParam = searchParams.get("limit");
@@ -38,12 +42,12 @@ export async function GET(request: NextRequest) {
     // Resolve categoryIds if category slug is provided
     let categoryIds: string[] | undefined;
     if (categorySlug) {
-      const categoriesList = await categoryService.getAll();
+      const categoriesList = await categoryService.getCategories();
       const targetCategory = categoriesList.find(
         (cat) => cat.slug === categorySlug,
       );
       if (targetCategory) {
-        categoryIds = await categoryService.getCategoryDescendants(
+        categoryIds = await dbCategoryService.getCategoryDescendants(
           targetCategory.id,
         );
       }
@@ -59,8 +63,8 @@ export async function GET(request: NextRequest) {
         .map((b) => b.id);
     }
 
-    // Fetch products dynamically using ProductService
-    const resData = await productService.getAll(limit, {
+    // Fetch products dynamically using cached local ProductService
+    const resData = await productService.getProducts(limit, {
       categoryIds,
       brandIds,
       search,

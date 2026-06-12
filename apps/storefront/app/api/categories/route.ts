@@ -1,13 +1,10 @@
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
-import { categoryService } from "@nhatnang/database/services";
+import { categoryService } from "@/shared/services";
 import { NextResponse } from "next/server";
-
-export const revalidate = 3600;
 
 export async function GET() {
   try {
-    // Fetch categories using CategoryService
-    const dbCategories = await categoryService.getAll();
+    const dbCategories = await categoryService.getCategories();
 
     return NextResponse.json(
       {
@@ -21,7 +18,7 @@ export async function GET() {
     return NextResponse.json(
       {
         status: false,
-        data: null,
+        data: [],
       },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
     );

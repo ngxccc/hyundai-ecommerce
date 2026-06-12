@@ -1,22 +1,13 @@
-import { fetchApi } from "../lib/api-client";
+import { cacheLife } from "next/cache";
+import { categoryService as dbCategoryService } from "@nhatnang/database/services";
 import type { TCategory } from "@nhatnang/database/schemas";
-
-const isProductionBuild =
-  process.env["NEXT_PHASE"] === "phase-production-build";
 
 export const categoryService = {
   getCategories: async (): Promise<TCategory[]> => {
-    if (isProductionBuild) {
-      return [];
-    }
-
+    "use cache";
+    cacheLife("hours");
     try {
-      return await fetchApi<TCategory[]>(
-        "/api/categories",
-        {
-          next: { revalidate: 3600 },
-        },
-      );
+      return await dbCategoryService.getAll();
     } catch (error) {
       console.error("Failed to fetch categories:", error);
       return [];

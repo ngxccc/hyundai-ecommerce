@@ -1,80 +1,64 @@
-import { fetchApi } from "../lib/api-client";
-import {
-  BUILD_TIME_PRODUCTS,
-  getProductSlug,
-  PRODUCTS_REVALIDATE_SECONDS,
-} from "../constants/products";
+import { cacheLife } from "next/cache";
+import { productService as dbProductService } from "@nhatnang/database/services";
 import type { TProduct } from "@nhatnang/database/schemas";
-import type { TGetAllOptions } from "@nhatnang/database/services";
-
-const isProductionBuild =
-  process.env["NEXT_PHASE"] === "phase-production-build";
-
-const getBuildSafeProducts = async (): Promise<TProduct[]> => {
-  if (isProductionBuild) {
-    return BUILD_TIME_PRODUCTS;
-  }
-
-  try {
-    const response = await fetchApi<TGetProductsResponse>("/api/products", {
-      next: { revalidate: PRODUCTS_REVALIDATE_SECONDS },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch products:", error);
-    return BUILD_TIME_PRODUCTS;
-  }
-};
+import type { TGetAllOptions, IProductFilterMetadata } from "@nhatnang/database/services";
 
 export interface TGetProductsResponse {
   data: TProduct[];
-  nextCursor?: string;
-  prevCursor?: string;
+  nextCursor: string | undefined;
+  prevCursor: string | undefined;
   hasMore: boolean;
 }
 
 export const productService = {
   getProducts: async (
+    limit?: number,
     options?: TGetAllOptions,
   ): Promise<TGetProductsResponse> => {
-    if (isProductionBuild) {
-      return { data: BUILD_TIME_PRODUCTS, hasMore: false };
-    }
-
+    "use cache";
+    cacheLife("hours");
     try {
-      const params = new URLSearchParams();
-      if (options) {
-        Object.entries(options).forEach(([key, val]) => {
-          if (val !== undefined && val !== null) {
-            if (Array.isArray(val)) {
-              val.forEach((v) => params.append(key, String(v)));
-            } else {
-              params.set(key, String(val));
-            }
-          }
-        });
-      }
-
-      const res = await fetchApi<TGetProductsResponse>(
-        `/api/products?${params.toString()}`,
-        {
-          next: { revalidate: PRODUCTS_REVALIDATE_SECONDS },
-        },
-      );
-      return res;
+      return await dbProductService.getAll(limit, options);
     } catch (error) {
       console.error("Failed to fetch products:", error);
-      return { data: BUILD_TIME_PRODUCTS, hasMore: false };
+      return {
+        data: [],
+        hasMore: false,
+        nextCursor: undefined,
+        prevCursor: undefined,
+      };
     }
   },
 
   getStaticProductSlugs: async (): Promise<string[]> => {
-    const products = await getBuildSafeProducts();
-    return products.map(getProductSlug);
+    "use cache";
+    cacheLife("days");
+    try {
+      return await dbProductService.getAllActiveSlugs();
+    } catch (error) {
+      console.error("Failed to fetch product slugs:", error);
+      return [];
+    }
   },
 
   getProductBySlug: async (slug: string): Promise<TProduct | null> => {
-    const products = await getBuildSafeProducts();
-    return products.find((product) => getProductSlug(product) === slug) ?? null;
+    "use cache";
+    cacheLife("hours");
+    try {
+      return await dbProductService.getActiveProductBySlug(slug);
+    } catch (error) {
+      console.error("Failed to fetch product by slug:", error);
+      return null;
+    }
+  },
+  getFiltersMetadata: async (): Promise<IProductFilterMetadata[]> => {
+    "use cache";
+    cacheLife("hours");
+    try {
+      return await dbProductService.getFiltersMetadata();
+    } catch (error) {
+      console.error("Failed to fetch product filters metadata:", error);
+      return [];
+    }
   },
 };
