@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
+import { Link } from "@/i18n/routing";
 
 export function HeroSection() {
   const t = useTranslations("HomePage");
@@ -37,21 +38,25 @@ export function HeroSection() {
             </p>
 
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Button
-                size="lg"
-                className="font-display hover:bg-primary/80 font-semi-bold rounded-full text-sm tracking-widest uppercase"
-              >
-                {t("hero.primaryCta")}
-                <ArrowRight className="ml-2 size-4" />
-              </Button>
+              <Link href={"/products"}>
+                <Button
+                  size="lg"
+                  className="font-display hover:bg-primary/80 font-semi-bold rounded-full text-sm tracking-widest uppercase"
+                >
+                  {t("hero.primaryCta")}
+                  <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </Link>
 
-              <Button
-                variant="outline"
-                size="lg"
-                className="font-display font-semi-bold rounded-full border-white/20 px-8 text-sm tracking-widest uppercase hover:bg-white/80"
-              >
-                {t("hero.secondaryCta")}
-              </Button>
+              <Link href={"/contacts"}>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="font-display font-semi-bold rounded-full border-white/20 px-8 text-sm tracking-widest uppercase hover:bg-white/80"
+                >
+                  {t("hero.secondaryCta")}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

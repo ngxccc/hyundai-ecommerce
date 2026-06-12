@@ -36,7 +36,7 @@ export function ImageWithSkeleton({
           className={cn(
             "absolute inset-0 z-10 rounded-none",
             fill ? "h-full w-full" : "",
-            skeletonClassName
+            skeletonClassName,
           )}
           style={!fill ? { width: styleWidth, height: styleHeight } : undefined}
         />
@@ -51,7 +51,7 @@ export function ImageWithSkeleton({
         className={cn(
           "transition-opacity duration-300",
           isLoading ? "opacity-0" : "opacity-100",
-          className
+          className,
         )}
         onLoad={(e) => {
           setIsLoading(false);
