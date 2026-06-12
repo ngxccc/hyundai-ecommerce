@@ -9,7 +9,7 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
-import type { JSONContent } from "@tiptap/core";
+import type { JSONContent } from "@nhatnang/ui";
 import { sql } from "drizzle-orm";
 import { fullEntity } from "./helpers.schema";
 import { brands } from "./brand.schema";

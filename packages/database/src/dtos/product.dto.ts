@@ -1,4 +1,4 @@
-import type { JSONContent } from "@tiptap/core";
+import type { JSONContent } from "@nhatnang/ui";
 import { type TProduct } from "../schemas/product.schema";
 import type { TProductSpecs } from "../validators";
 
