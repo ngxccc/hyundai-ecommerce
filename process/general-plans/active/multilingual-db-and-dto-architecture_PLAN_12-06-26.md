@@ -173,10 +173,20 @@ Every phase defined in this plan must be verified and checked in full before adv
 
 ### Phase 3: Storefront Service Mapping Layer
 
-- [ ] Refactor storefront `src/shared/services/` to accept a `locale` argument in all query functions.
-- [ ] Update cached tags in `"use cache"` block to incorporate `locale`.
-- [ ] Apply `mapDTOToStorefront(dto, locale)` mapping before returning data.
-- [ ] Pass the active `locale` to services inside storefront templates and pages.
+- [ ] Define the mapped i18n interfaces and DTO-to-Storefront helper mapping functions in `apps/storefront/src/shared/services/types.ts` or in the services themselves:
+  - `StorefrontProduct` (with localized `name`, `description`, `shortDescription`).
+  - `StorefrontCategory` (with localized `name`, `description`).
+  - `StorefrontBrand` (with localized `description`, keeping global `name`).
+- [ ] Refactor `apps/storefront/src/shared/services/product.service.ts`:
+  - `getProducts(locale, limit, options)`: fetch raw DTOs from database service, map to `StorefrontProduct[]`.
+  - `getProductBySlug(locale, slug)`: fetch raw DTO, map to `StorefrontProduct | null`.
+  - `getFiltersMetadata(locale)`: fetch raw DB metadata, resolve brand/category names to active locale, and return mapped filter metadata.
+- [ ] Refactor `apps/storefront/src/shared/services/category.service.ts`:
+  - `getCategories(locale)`: fetch categories, map to `StorefrontCategory[]`.
+  - `getCategoryTree(locale)`: fetch tree, resolve names/descriptions, and return `StorefrontCategoryWithChildren[]`.
+- [ ] Refactor `apps/storefront/src/shared/services/brand.service.ts`:
+  - `getBrands(locale)`: fetch brands, resolve descriptions, and return `StorefrontBrand[]`.
+- [ ] Pass the active `locale` (obtained from Next.js i18n routing parameters) to the storefront service calls in templates, pages, and components.
 
 ### Phase 4: Admin Forms and Controllers Updates
 
