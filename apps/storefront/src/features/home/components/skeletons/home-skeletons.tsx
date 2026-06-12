@@ -1,5 +1,5 @@
 import { Skeleton } from "@nhatnang/ui/components/ui/skeleton";
-import { ProductCardSkeleton } from "@/features/products/components/skeletons/product-card-skeleton";
+import { ProductCardSkeleton } from "@/features/products";
 import { NewsCardSkeleton } from "./news-card-skeleton";
 
 export function CategoriesSectionSkeleton() {
