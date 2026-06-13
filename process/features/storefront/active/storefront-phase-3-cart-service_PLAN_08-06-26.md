@@ -2,7 +2,7 @@
 
 **Date**: 08-06-26
 **Complexity**: Simple
-**Status**: ⏳ PLANNED
+**Status**: 🔨 IN PROGRESS
 
 ## Overview
 
@@ -168,7 +168,7 @@ After each phase, document:
 
 ## Acceptance Criteria
 
-- [ ] `CartService` methods only require `userId` and do not generate anonymous cart rows in PostgreSQL.
+- [x] `CartService` methods only require `userId` and do not generate anonymous cart rows in PostgreSQL.
 - [ ] Zustand store `useCartStore` uses `persist` middleware to manage guest items in `localStorage`.
 - [ ] Logging in with local items triggers `mergeLocalCart` Server Action and runs updates inside a transaction.
 - [ ] Logging out clears the client-side store.
@@ -181,10 +181,10 @@ After each phase, document:
 
 ## Implementation Checklist
 
-- [ ] Update interface `ICartService` in `packages/database/src/services/interfaces.ts` to replace guest cart flows with `mergeLocalItems`.
-- [ ] Modify `packages/database/src/services/cart/cart.service.ts` to implement `mergeLocalItems(userId, localItems)`.
-- [ ] Update service tests in `packages/database/src/services/cart/cart.service.test.ts` to cover `mergeLocalItems`.
-- [ ] Run `bun test` in `@nhatnang/database` package to verify service tests are green.
+- [x] Update interface `ICartService` in `packages/database/src/services/interfaces.ts` to replace guest cart flows with `mergeLocalItems`.
+- [x] Modify `packages/database/src/services/cart/cart.service.ts` to implement `mergeLocalItems(userId, localItems)`.
+- [x] Update service tests in `packages/database/src/services/cart/cart.service.test.ts` to cover `mergeLocalItems`.
+- [x] Run `bun test` in `@nhatnang/database` package to verify service tests are green.
 - [ ] Create Zustand store in `apps/storefront/src/features/cart/hooks/use-cart.ts` with local storage persistence.
 - [ ] Create Server Actions in `apps/storefront/src/features/cart/actions.ts` (`getDbCart`, `addToDbCart`, `updateDbQuantity`, `removeFromDbCart`, `mergeLocalCart`).
 - [ ] Update `LoginForm` component in `apps/storefront/src/features/auth/components/login-form.tsx` to invoke `mergeLocalCart` on successful login and clear local cart state.
