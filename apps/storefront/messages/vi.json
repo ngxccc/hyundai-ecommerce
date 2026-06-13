@@ -219,6 +219,12 @@
     "INTERNAL_SERVER_ERROR": "Lỗi hệ thống",
     "RATE_LIMIT_EXCEEDED": "Quá nhiều yêu cầu. Vui lòng đợi và thử lại sau.",
     "rateLimitExceeded": "Vượt quá giới hạn lượt yêu cầu. Vui lòng đợi trước khi thử lại.",
+    "createCartFailed": "Tạo giỏ hàng thất bại",
+    "invalidQuantity": "Số lượng không hợp lệ",
+    "productNotFound": "Không tìm thấy sản phẩm",
+    "productIsQuoteOnly": "Sản phẩm này chỉ nhận báo giá",
+    "insufficientStock": "Số lượng vượt quá tồn kho khả dụng",
+    "addToCartFailed": "Thêm vào giỏ hàng thất bại",
     "validation": {
       "slugExists": "Đường dẫn đã tồn tại"
     }
