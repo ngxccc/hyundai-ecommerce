@@ -18,6 +18,8 @@ import type {
   TDealerTier,
   TWarehouse,
   TWarehouseStock,
+  TCart,
+  TCartItem,
 } from "../schemas";
 
 import type {
@@ -147,6 +149,13 @@ export interface IProductFilterMetadata {
   specs: IProductFilterSpecs | null;
 }
 
+export type TCartItemWithProduct = TCartItem & { product: TProduct | null };
+
+export interface ILocalItem {
+  productId: string;
+  quantity: number;
+}
+
 export interface IProductService {
   create(data: TNewProduct): Promise<TProduct | undefined>;
   update(id: string, data: TUpdateProductData): Promise<TProduct | undefined>;
@@ -166,6 +175,7 @@ export interface IProductService {
   getAllActiveSlugs(): Promise<string[]>;
   getActiveProductBySlug(slug: string): Promise<TProduct | null>;
 }
+
 // --- Warehouse Service Interfaces ---
 export interface IWarehouseService {
   getAll(): Promise<TWarehouse[]>;
@@ -252,4 +262,23 @@ export interface IDealerTierService {
   getAll(): Promise<TDealerTier[]>;
   getById(id: string): Promise<TDealerTier | undefined>;
   delete(id: string): Promise<boolean>;
+}
+
+// --- Cart Service Interfaces ---
+export interface ICartService {
+  getOrCreateCart(userId: string): Promise<TCart>;
+  getCartById(cartId: string): Promise<TCart | null>;
+  getCartItems(cartId: string): Promise<TCartItemWithProduct[]>;
+  addToCart(
+    cartId: string,
+    productId: string,
+    quantity: number,
+  ): Promise<TCartItem>;
+  updateCartItemQuantity(
+    cartId: string,
+    productId: string,
+    quantity: number,
+  ): Promise<TCartItem | null>;
+  removeFromCart(cartId: string, productId: string): Promise<void>;
+  mergeLocalItems(userId: string, localItems: ILocalItem[]): Promise<TCart>;
 }
