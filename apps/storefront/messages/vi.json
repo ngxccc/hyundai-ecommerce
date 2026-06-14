@@ -308,5 +308,19 @@
     "title": "Đã xảy ra lỗi ngoài ý muốn!",
     "description": "Một lỗi hệ thống đã phát sinh trong lúc xử lý phần nội dung này. Xin vui lòng thử lại hoặc liên hệ hỗ trợ kỹ thuật nếu sự cố tiếp tục diễn ra.",
     "retryButton": "Thử lại"
+  },
+  "Cart": {
+    "title": "Giỏ hàng của bạn",
+    "empty": "Giỏ hàng trống",
+    "viewCart": "Xem giỏ hàng",
+    "addToCart": "Thêm vào giỏ",
+    "addedToCart": "Đã thêm {name} vào giỏ hàng",
+    "stockLimitExceeded": "Không thể thêm. Đã đạt giới hạn tồn kho ({max})",
+    "checkout": "Tiến hành thanh toán",
+    "quote": "Yêu cầu báo giá",
+    "comingSoon": "Tính năng thanh toán và báo giá đang được phát triển ở Phase 4.",
+    "summary": "Tóm tắt đơn hàng",
+    "itemsCount": "{count, plural, =0 {0 sản phẩm} =1 {1 sản phẩm} other {# sản phẩm}}",
+    "remove": "Xóa"
   }
 }

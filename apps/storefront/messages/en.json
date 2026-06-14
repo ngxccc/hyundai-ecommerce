@@ -308,5 +308,19 @@
     "title": "Something went wrong!",
     "description": "An unexpected error occurred while rendering this section. Please try again or contact support if the issue persists.",
     "retryButton": "Try again"
+  },
+  "Cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "viewCart": "View Full Cart",
+    "addToCart": "Add to Cart",
+    "addedToCart": "Added {name} to cart",
+    "stockLimitExceeded": "Cannot add more items. Maximum stock reached ({max})",
+    "checkout": "Proceed to Checkout",
+    "quote": "Request Quote",
+    "comingSoon": "Checkout and quoting features are coming soon in Phase 4.",
+    "summary": "Order Summary",
+    "itemsCount": "{count, plural, =0 {0 items} =1 {1 item} other {# items}}",
+    "remove": "Remove"
   }
 }
