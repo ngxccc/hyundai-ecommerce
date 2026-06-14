@@ -1,29 +1,42 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
 
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
+import Image from "next/image";
+import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
 import { useCart } from "@/features/cart";
+import { useIsMounted } from "@/shared/hooks/useIsMounted";
 import { Link } from "@/i18n/routing";
 import { ShoppingCart } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@nhatnang/ui/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverAnchor,
+} from "@nhatnang/ui/components/ui/popover";
 import { priceFormatter } from "@/shared/lib/utils";
 
 export function HeaderCart() {
   const t = useTranslations("Cart");
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, []);
+  const isMounted = useIsMounted();
 
   const cartItems = useCart((state) => state.items) ?? [];
   const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleOpen = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    timeoutRef.current = setTimeout(() => {
+      setIsOpen(false);
+    }, 150);
+  };
 
   if (!isMounted) {
     return (
@@ -40,7 +53,7 @@ export function HeaderCart() {
       <Link href="/cart" className="relative p-2 md:hidden">
         <ShoppingCart className="size-6 text-zinc-600" />
         {totalCount > 0 && (
-          <Badge className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground font-mono text-[9px] font-bold p-0">
+          <Badge className="bg-primary text-primary-foreground absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full p-0 font-mono text-[9px] font-bold">
             {totalCount}
           </Badge>
         )}
@@ -48,40 +61,69 @@ export function HeaderCart() {
 
       {/* Desktop View: Popover */}
       <div className="hidden md:block">
-        <Popover>
-          <PopoverTrigger asChild>
-            <button className="relative p-2 outline-none cursor-pointer">
-              <ShoppingCart className="size-6 text-zinc-600 hover:text-zinc-900 transition-colors" />
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
+          <PopoverAnchor asChild>
+            <Link
+              href="/cart"
+              className="relative block cursor-pointer p-2 outline-none"
+              onMouseEnter={handleOpen}
+              onMouseLeave={handleClose}
+              onClick={() => setIsOpen(false)}
+            >
+              <ShoppingCart className="size-6 text-zinc-600 transition-colors hover:text-zinc-900" />
               {totalCount > 0 && (
-                <Badge className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground font-mono text-[9px] font-bold p-0">
+                <Badge className="bg-primary text-primary-foreground absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full p-0 font-mono text-[9px] font-bold">
                   {totalCount}
                 </Badge>
               )}
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80 rounded-lg bg-background/95 border border-border shadow-lg p-4 backdrop-blur-md">
+            </Link>
+          </PopoverAnchor>
+          <PopoverContent
+            className="bg-background/95 border-border w-80 rounded-lg border p-4 shadow-lg backdrop-blur-md"
+            onMouseEnter={handleOpen}
+            onMouseLeave={handleClose}
+          >
             {cartItems.length === 0 ? (
-              <div className="py-6 text-center text-sm text-muted-foreground">
+              <div className="text-muted-foreground py-6 text-center text-sm">
                 {t("empty")}
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="max-h-60 overflow-y-auto space-y-3">
+                <div className="max-h-60 space-y-3 overflow-y-auto">
                   {cartItems.slice(0, 5).map((item) => (
-                    <div key={item.productId} className="flex items-center gap-3 border-b border-zinc-100 pb-2 last:border-0 last:pb-0">
-                      <div className="relative size-10 bg-muted rounded overflow-hidden">
-                        <img src={item.image !== "" ? item.image : "https://placehold.co/50x50"} alt={item.name} className="object-cover size-full" />
+                    <div
+                      key={item.productId}
+                      className="flex items-center gap-3 border-b border-zinc-100 pb-2 last:border-0 last:pb-0"
+                    >
+                      <div className="bg-muted relative size-10 overflow-hidden rounded">
+                        {item.image !== "" ? (
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                            sizes="40px"
+                          />
+                        ) : (
+                          <ProductImagePlaceholder showText={false} iconClassName="size-4" />
+                        )}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-xs font-semibold text-foreground truncate">{item.name}</h4>
-                        <p className="text-[10px] text-muted-foreground">
-                          {item.quantity} x {priceFormatter.format(Number(item.price))}
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-foreground truncate text-xs font-semibold">
+                          {item.name}
+                        </h4>
+                        <p className="text-muted-foreground text-[10px]">
+                          {item.quantity} x{" "}
+                          {priceFormatter.format(Number(item.price))}
                         </p>
                       </div>
                     </div>
                   ))}
                 </div>
-                <Button asChild className="w-full text-xs font-bold uppercase tracking-wider h-9 rounded-md">
+                <Button
+                  asChild
+                  className="h-9 w-full rounded-md text-xs font-bold tracking-wider uppercase"
+                >
                   <Link href="/cart">{t("viewCart")}</Link>
                 </Button>
               </div>

@@ -7,8 +7,10 @@ import { priceFormatter } from "@/shared/lib/utils";
 import { productService } from "@/shared/services";
 import type { Metadata } from "next";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
+import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
 import { notFound } from "next/navigation";
 import type { Locale } from "next-intl";
+import { FUEL_TYPES, PHASES } from "@nhatnang/database/validators";
 
 interface ProductPageParams {
   locale: string;
@@ -59,7 +61,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   setRequestLocale(locale as Locale);
-  const product = await productService.getProductBySlug(locale as "vi" | "en", slug);
+  const product = await productService.getProductBySlug(locale as Locale, slug);
 
   if (!product) {
     return {};
@@ -88,8 +90,8 @@ const ALLOWED_SPEC_KEYS = new Set([
   "alternatorBrand",
 ]);
 
-const ALLOWED_FUEL_TYPES = new Set(["gasoline", "diesel", "gas"]);
-const ALLOWED_PHASES = new Set(["1phase", "3phase"]);
+const ALLOWED_FUEL_TYPES = new Set<string>(FUEL_TYPES);
+const ALLOWED_PHASES = new Set<string>(PHASES);
 
 export default function ProductDetailsPage({
   params,
@@ -110,7 +112,7 @@ async function ProductDetailsPageContent({
 }) {
   const { locale, slug } = await params;
   setRequestLocale(locale as Locale);
-  const product = await productService.getProductBySlug(locale as "vi" | "en", slug);
+  const product = await productService.getProductBySlug(locale as Locale, slug);
   const t = await getTranslations("ProductDetails");
 
   if (!product) {
@@ -120,18 +122,18 @@ async function ProductDetailsPageContent({
   return (
     <section className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:flex-row lg:px-8">
       <div className="relative aspect-square w-full overflow-hidden rounded-xl lg:w-1/2">
-        <ImageWithSkeleton
-          src={
-            product.images[0] && product.images[0] !== ""
-              ? product.images[0]
-              : "https://placehold.co/600x600/png?text=No+Image"
-          }
-          alt={product.name}
-          fill
-          className="object-cover"
-          sizes="(max-width: 1024px) 100vw, 50vw"
-          priority
-        />
+        {product.images[0] && product.images[0] !== "" ? (
+          <ImageWithSkeleton
+            src={product.images[0]}
+            alt={product.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            preload
+          />
+        ) : (
+          <ProductImagePlaceholder iconClassName="size-12" />
+        )}
       </div>
 
       <div className="flex w-full flex-col gap-4 lg:w-1/2">
@@ -153,14 +155,14 @@ async function ProductDetailsPageContent({
         </div>
         <p className="text-primary text-2xl font-bold">
           {product.isQuoteOnly
-            ? t("contact_for_quote")
+            ? t("contactForQuote")
             : priceFormatter.format(Number(product.price))}
         </p>
 
         {/* Bảng thông số chi tiết */}
         <div className="mt-6 border-t pt-6">
           <h2 className="text-foreground mb-4 text-lg font-bold">
-            {t("detailed_specs")}
+            {t("detailedSpecs")}
           </h2>
           <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
             {Object.entries(
@@ -203,4 +205,4 @@ async function ProductDetailsPageContent({
       </div>
     </section>
   );
-};
+}

@@ -2,6 +2,7 @@ import type { StorefrontProduct } from "@/shared/services";
 import { Link } from "@/i18n/routing";
 import { getLocale, getTranslations } from "next-intl/server";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
+import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import {
@@ -66,17 +67,17 @@ export async function ProductsSection() {
               className="group hover:border-primary/50 flex h-full flex-col gap-4 overflow-hidden py-0 transition-all hover:shadow-xl"
             >
               <CardHeader className="relative aspect-4/3 w-full p-0">
-                <ImageWithSkeleton
-                  src={
-                    product.images[0] && product.images[0] !== ""
-                      ? product.images[0]
-                      : "https://placehold.co/400x300/png?text=No+Image"
-                  }
-                  alt={product.name}
-                  fill
-                  className="object-cover transition-transform duration-500"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
+                {product.images[0] && product.images[0] !== "" ? (
+                  <ImageWithSkeleton
+                    src={product.images[0]}
+                    alt={product.name}
+                    fill
+                    className="object-cover transition-transform duration-500"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                ) : (
+                  <ProductImagePlaceholder />
+                )}
                 <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
                   {t("model")}: {product.specs?.model ?? "Unknown"}
                 </Badge>
@@ -106,7 +107,7 @@ export async function ProductsSection() {
               <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between border-t p-6">
                 <span className="text-primary text-xl font-bold">
                   {product.isQuoteOnly
-                    ? t("contact_price")
+                    ? t("contactPrice")
                     : priceFormatter.format(Number(product.price))}
                 </span>
 
@@ -117,8 +118,8 @@ export async function ProductsSection() {
                 >
                   <Link href={`/products/${product.slug}`}>
                     {product.isQuoteOnly
-                      ? t("request_quote_cta")
-                      : t("buy_now_cta")}
+                      ? t("requestQuoteCta")
+                      : t("buyNowCta")}
                   </Link>
                 </Button>
               </CardFooter>
