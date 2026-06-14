@@ -1,4 +1,7 @@
 {
+  "Common": {
+    "noImage": "Không có ảnh"
+  },
   "HomePage": {
     "brand": "HYUNDAI",
     "branchName": "Nhật Năng",
@@ -37,10 +40,10 @@
     "products": {
       "title": "Dòng Hyundai",
       "subtitle": "Đơn vị bán chạy nhất",
-      "buy_now_cta": "Mua ngay",
+      "buyNowCta": "Mua ngay",
       "model": "Model",
-      "contact_price": "Liên hệ",
-      "request_quote_cta": "Yêu cầu báo giá"
+      "contactPrice": "Liên hệ",
+      "requestQuoteCta": "Yêu cầu báo giá"
     },
     "news": {
       "title": "HIỂU BIẾT KỸ THUẬT",
@@ -208,7 +211,9 @@
     }
   },
   "Metadata": {
-    "title": "Hyundai Nhật Năng | Máy Phát Điện Chính Hãng"
+    "title": "Hyundai Nhật Năng | Máy Phát Điện Chính Hãng",
+    "cartTitle": "Giỏ hàng",
+    "cartDescription": "Quản lý giỏ hàng của bạn và yêu cầu báo giá."
   },
   "errors": {
     "loginFailed": "Đăng nhập thất bại",
@@ -234,8 +239,8 @@
     }
   },
   "ProductDetails": {
-    "contact_for_quote": "Liên hệ báo giá",
-    "detailed_specs": "Thông số kỹ thuật chi tiết",
+    "contactForQuote": "Liên hệ báo giá",
+    "detailedSpecs": "Thông số kỹ thuật chi tiết",
     "specs": {
       "model": "Model",
       "power": "Công suất (kW)",
@@ -321,6 +326,9 @@
     "comingSoon": "Tính năng thanh toán và báo giá đang được phát triển ở Phase 4.",
     "summary": "Tóm tắt đơn hàng",
     "itemsCount": "{count, plural, =0 {0 sản phẩm} =1 {1 sản phẩm} other {# sản phẩm}}",
-    "remove": "Xóa"
+    "remove": "Xóa",
+    "totalItems": "Tổng số lượng",
+    "subtotal": "Tạm tính",
+    "total": "Tổng cộng"
   }
 }
