@@ -12,7 +12,9 @@ import { ProductPagination } from "./product-pagination";
 import { ActiveFilterChips } from "./active-filter-chips";
 import { DesktopProductFilters } from "./desktop-product-filters";
 import { ProductFilterSheet } from "./product-filter-sheet";
+import { AddToCartButton } from "./add-to-cart-button";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
+import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import {
@@ -248,19 +250,19 @@ export async function CatalogTemplate({
                     >
                       <Link href={`/products/${product.slug}`}>
                         <CardHeader className="relative aspect-4/3 w-full p-0">
-                          <ImageWithSkeleton
-                            src={
-                              product.images[0] && product.images[0] !== ""
-                                ? product.images[0]
-                                : "https://placehold.co/400x300/png?text=No+Image"
-                            }
-                            alt={product.name}
-                            fill
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 250px"
-                            className="object-cover transition-all duration-300 group-hover:scale-105"
-                            loading={index < 3 ? "eager" : "lazy"}
-                            priority={index < 3}
-                          />
+                          {product.images[0] && product.images[0] !== "" ? (
+                            <ImageWithSkeleton
+                              src={product.images[0]}
+                              alt={product.name}
+                              fill
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 250px"
+                              className="object-cover transition-all duration-300 group-hover:scale-105"
+                              loading={index < 3 ? "eager" : "lazy"}
+                              preload={index < 3}
+                            />
+                          ) : (
+                            <ProductImagePlaceholder />
+                          )}
                           <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
                             {tHome("model")}:{" "}
                             {product.specs?.model ?? t("unknown")}
@@ -289,24 +291,36 @@ export async function CatalogTemplate({
                         </div>
                       </CardContent>
 
-                      <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between gap-1 border-t p-4 pt-4! lg:flex-col">
-                        <span className="text-primary text-xl font-bold">
+                      <CardFooter className="bg-muted/20 mt-auto flex flex-col items-stretch gap-3 border-t p-4 pt-4! sm:flex-row sm:items-center sm:justify-between sm:gap-2 lg:flex-col lg:items-stretch">
+                        <span className="text-primary text-center text-xl font-bold sm:text-left lg:text-center">
                           {product.isQuoteOnly
-                            ? tHome("contact_price")
+                            ? tHome("contactPrice")
                             : priceFormatter.format(Number(product.price))}
                         </span>
 
-                        <Button
-                          asChild
-                          size="lg"
-                          className="font-bold tracking-wider uppercase lg:w-full"
-                        >
-                          <Link href={`/products/${product.slug}`}>
-                            {product.isQuoteOnly
-                              ? tHome("request_quote_cta")
-                              : tHome("buy_now_cta")}
-                          </Link>
-                        </Button>
+                        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row lg:w-full lg:flex-col">
+                          <Button
+                            asChild
+                            size="lg"
+                            className="w-full font-bold tracking-wider uppercase sm:w-auto lg:w-full"
+                          >
+                            <Link href={`/products/${product.slug}`}>
+                              {product.isQuoteOnly
+                                ? tHome("requestQuoteCta")
+                                : tHome("buyNowCta")}
+                            </Link>
+                          </Button>
+
+                          {!product.isQuoteOnly && (
+                            <AddToCartButton
+                              productId={product.id}
+                              name={product.name}
+                              price={product.price}
+                              image={product.images?.[0] ?? ""}
+                              totalStock={product.totalStockCache}
+                            />
+                          )}
+                        </div>
                       </CardFooter>
                     </Card>
                   );

@@ -1,7 +1,8 @@
 import { useTranslations } from "next-intl";
-import { Menu } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Link } from "@/i18n/routing";
+import { HeaderCart } from "./header-cart";
+import { MobileMenu } from "./mobile-menu";
 
 export function Header() {
   const t = useTranslations("HomePage");
@@ -11,7 +12,7 @@ export function Header() {
 
   return (
     <header className="bg-background/90 supports-backdrop-blur:bg-background/60 border-border fixed top-0 z-50 w-full border-b backdrop-blur-xl transition-all">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Logo & Brand */}
         <div className="flex items-center gap-10">
           <Link
@@ -40,6 +41,8 @@ export function Header() {
 
         {/* Actions Area */}
         <div className="flex items-center gap-4">
+          <HeaderCart />
+
           {/* Desktop Actions */}
           <div className="hidden items-center gap-3 md:flex">
             <Button
@@ -55,14 +58,9 @@ export function Header() {
             </Button>
           </div>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            aria-label="Toggle mobile menu"
-          >
-            <Menu className="text-foreground size-6" />
-          </Button>
+          <div className="md:hidden">
+            <MobileMenu />
+          </div>
         </div>
       </div>
     </header>

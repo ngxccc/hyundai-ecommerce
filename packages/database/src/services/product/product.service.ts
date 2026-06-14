@@ -1,9 +1,9 @@
 import type {
-  IProductService,
+  ProductService,
   TUpdateProductData,
-  ITopSellingProduct,
-  TGetAllOptions,
-  IProductFilterMetadata,
+  TopSellingProduct,
+  GetAllOptions,
+  ProductFilterMetadata,
 } from "../interfaces";
 import {
   products,
@@ -28,7 +28,7 @@ import {
 } from "drizzle-orm";
 import { orderItems, orders } from "../../schemas";
 
-export class ProductService implements IProductService {
+export class DbProductService implements ProductService {
   constructor(protected readonly db: IDatabase) {}
 
   async create(data: TNewProduct): Promise<TProduct | undefined> {
@@ -74,7 +74,7 @@ export class ProductService implements IProductService {
    * Fetches products page based on filters, sorting, and cursor pagination.
    * Uses limit+1 to check if there is an additional page available.
    */
-  async getAll(limit = 20, options?: TGetAllOptions) {
+  async getAll(limit = 20, options?: GetAllOptions) {
     const sort = options?.sort ?? "newest";
     const isGoingBack = !!options?.before;
     const filters = this.buildGetAllFilters(options);
@@ -147,7 +147,7 @@ export class ProductService implements IProductService {
     return { data, hasMore, nextCursor, prevCursor };
   }
 
-  async getTopSellingProducts(limit: number): Promise<ITopSellingProduct[]> {
+  async getTopSellingProducts(limit: number): Promise<TopSellingProduct[]> {
     const result = await this.db
       .select({
         id: orderItems.productId,
@@ -181,7 +181,7 @@ export class ProductService implements IProductService {
     }));
   }
 
-  async getFiltersMetadata(): Promise<IProductFilterMetadata[]> {
+  async getFiltersMetadata(): Promise<ProductFilterMetadata[]> {
     const result = await this.db
       .select({
         id: products.id,
@@ -217,7 +217,7 @@ export class ProductService implements IProductService {
             engineBrand: r.engineBrand,
             alternatorBrand: r.alternatorBrand,
           },
-        }) as IProductFilterMetadata,
+        }) as ProductFilterMetadata,
     );
   }
 
@@ -242,7 +242,7 @@ export class ProductService implements IProductService {
    * Dynamically constructs SQL filters for the product catalog query.
    * Handles cursor-based pagination, category filtering, search, and specification filters.
    */
-  private buildGetAllFilters(options?: TGetAllOptions): SQL[] {
+  private buildGetAllFilters(options?: GetAllOptions): SQL[] {
     const sort = options?.sort ?? "newest";
 
     const rawFilters = [
@@ -273,7 +273,7 @@ export class ProductService implements IProductService {
   }
 
   private buildCursorCondition(
-    sort: TGetAllOptions["sort"],
+    sort: GetAllOptions["sort"],
     after?: string,
     before?: string,
   ) {

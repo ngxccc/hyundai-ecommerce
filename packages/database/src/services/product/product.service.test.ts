@@ -8,10 +8,11 @@ import {
   mockSelectResolvedValue,
   mockSelect,
 } from "../../tests/utils/db-mock";
-import { ProductService } from "./product.service";
+import { DbProductService } from "./product.service";
+import type { ProductService } from "../interfaces";
 import type { IDatabase } from "../../client";
 
-const productService = new ProductService(mockDb as unknown as IDatabase);
+const productService = new DbProductService(mockDb as unknown as IDatabase);
 
 describe("ProductService", () => {
   beforeEach(() => {

@@ -1,6 +1,6 @@
 import { type TBrand } from "../schemas/brand.schema";
 
-export interface TBrandDTO {
+export interface BrandDTO {
   id: string;
   name: string;
   slug: string;
@@ -8,11 +8,13 @@ export interface TBrandDTO {
   descriptionVi: string | null;
   descriptionEn: string | null;
   isActive: boolean;
+}
+
+export interface BrandAdminDTO extends BrandDTO {
   createdAt: Date;
   updatedAt: Date;
 }
-
-export function mapBrandToDTO(brand: TBrand): TBrandDTO {
+export function mapBrandToDTO(brand: TBrand): BrandDTO {
   return {
     id: brand.id,
     name: brand.name,
@@ -21,6 +23,12 @@ export function mapBrandToDTO(brand: TBrand): TBrandDTO {
     descriptionVi: brand.descriptionVi,
     descriptionEn: brand.descriptionEn,
     isActive: brand.isActive,
+  };
+}
+
+export function mapBrandToAdminDTO(brand: TBrand): BrandAdminDTO {
+  return {
+    ...mapBrandToDTO(brand),
     createdAt: brand.createdAt,
     updatedAt: brand.updatedAt,
   };

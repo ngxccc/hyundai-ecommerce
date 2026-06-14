@@ -8,10 +8,10 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
-import { WarehouseService } from "./warehouse.service";
+import { DbWarehouseService } from "./warehouse.service";
 import type { IDatabase } from "../../client";
 
-const warehouseService = new WarehouseService(mockDb as unknown as IDatabase);
+const warehouseService = new DbWarehouseService(mockDb as unknown as IDatabase);
 
 describe("WarehouseService", () => {
   beforeEach(() => {

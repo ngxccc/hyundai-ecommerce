@@ -6,11 +6,11 @@ import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Link } from "@/i18n/routing";
 import { Field, FieldLabel, FieldError } from "@nhatnang/ui/components/ui/field";
 import type { TRegisterForm } from "@nhatnang/database/validators";
-import type { IAuthFormSectionProps } from "@nhatnang/types";
+import type { AuthFormSectionProps } from "@nhatnang/shared";
 
 export const TermsSection = ({
   form,
-}: IAuthFormSectionProps<TRegisterForm>) => {
+}: AuthFormSectionProps<TRegisterForm>) => {
   const t = useTranslations("Register");
 
   return (

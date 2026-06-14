@@ -11,8 +11,7 @@ export * from "./warehouse-stock/warehouse-stock.service";
 export * from "./warehouse/warehouse.service";
 export * from "./quotes/quotes.service";
 export * from "./dealer-tier/dealer-tier.service";
-
-
+export * from "./cart/cart.service";
 
 // interface
 export * from "./interfaces";

@@ -1,4 +1,7 @@
 {
+  "Common": {
+    "noImage": "No Image"
+  },
   "HomePage": {
     "brand": "HYUNDAI",
     "branchName": "Nhat Nang",
@@ -37,10 +40,10 @@
     "products": {
       "title": "Hyundai Series",
       "subtitle": "Best Selling Units",
-      "buy_now_cta": "Buy Now",
+      "buyNowCta": "Buy Now",
       "model": "Model",
-      "contact_price": "Contact",
-      "request_quote_cta": "Request Quote"
+      "contactPrice": "Contact",
+      "requestQuoteCta": "Request Quote"
     },
     "news": {
       "title": "TECHNICAL INSIGHTS",
@@ -209,7 +212,9 @@
     }
   },
   "Metadata": {
-    "title": "Hyundai Nhat Nang | Genuine Generators"
+    "title": "Hyundai Nhat Nang | Genuine Generators",
+    "cartTitle": "Shopping Cart",
+    "cartDescription": "Manage your shopping cart and request quotes."
   },
   "errors": {
     "loginFailed": "Login failed",
@@ -220,13 +225,23 @@
     "INTERNAL_SERVER_ERROR": "Internal server error",
     "RATE_LIMIT_EXCEEDED": "Too many requests. Please wait and try again.",
     "rateLimitExceeded": "Rate limit exceeded. Please wait before trying again.",
+    "createCartFailed": "Failed to create cart",
+    "invalidQuantity": "Invalid quantity",
+    "productNotFound": "Product not found",
+    "productIsQuoteOnly": "This product is quote-only",
+    "insufficientStock": "Quantity exceeds available stock",
+    "addToCartFailed": "Failed to add to cart",
+    "unauthorized": "Unauthorized",
+    "updateCartFailed": "Failed to update cart",
+    "removeFromCartFailed": "Failed to remove item from cart",
+    "mergeCartFailed": "Failed to merge cart",
     "validation": {
       "slugExists": "Slug already exists"
     }
   },
   "ProductDetails": {
-    "contact_for_quote": "Contact for Quote",
-    "detailed_specs": "Detailed Specifications",
+    "contactForQuote": "Contact for Quote",
+    "detailedSpecs": "Detailed Specifications",
     "specs": {
       "model": "Model",
       "power": "Power (kW)",
@@ -298,5 +313,22 @@
     "title": "Something went wrong!",
     "description": "An unexpected error occurred while rendering this section. Please try again or contact support if the issue persists.",
     "retryButton": "Try again"
+  },
+  "Cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "viewCart": "View Full Cart",
+    "addToCart": "Add to Cart",
+    "addedToCart": "Added {name} to cart",
+    "stockLimitExceeded": "Cannot add more items. Maximum stock reached ({max})",
+    "checkout": "Proceed to Checkout",
+    "quote": "Request Quote",
+    "comingSoon": "Checkout and quoting features are coming soon in Phase 4.",
+    "summary": "Order Summary",
+    "itemsCount": "{count, plural, =0 {0 items} =1 {1 item} other {# items}}",
+    "remove": "Remove",
+    "totalItems": "Total Items",
+    "subtotal": "Subtotal",
+    "total": "Total"
   }
 }

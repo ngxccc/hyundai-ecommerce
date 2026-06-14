@@ -2,7 +2,7 @@ import type { JSONContent } from "@nhatnang/ui";
 import { type TProduct } from "../schemas/product.schema";
 import type { TProductSpecs } from "../validators";
 
-export interface TProductDTO {
+export interface ProductDTO {
   id: string;
   nameVi: string;
   nameEn: string | null;
@@ -18,11 +18,14 @@ export interface TProductDTO {
   specs: TProductSpecs | null;
   totalStockCache: number;
   isQuoteOnly: boolean;
+}
+
+export interface ProductAdminDTO extends ProductDTO {
   createdAt: Date;
   updatedAt: Date;
 }
 
-export function mapProductToDTO(product: TProduct): TProductDTO {
+export function mapProductToDTO(product: TProduct): ProductDTO {
   return {
     id: product.id,
     nameVi: product.nameVi,
@@ -39,6 +42,12 @@ export function mapProductToDTO(product: TProduct): TProductDTO {
     specs: product.specs,
     totalStockCache: product.totalStockCache,
     isQuoteOnly: product.isQuoteOnly,
+  };
+}
+
+export function mapProductToAdminDTO(product: TProduct): ProductAdminDTO {
+  return {
+    ...mapProductToDTO(product),
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
   };

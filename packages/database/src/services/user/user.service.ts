@@ -1,9 +1,9 @@
-import type { IUserService } from "../interfaces";
+import type { UserService } from "../interfaces";
 import { and, eq, ne, gte, sql } from "drizzle-orm";
 import { type IDatabase } from "../../client";
 import { users, type TUser } from "../../schemas/auth.schema";
 
-export class UserService implements IUserService {
+export class DbUserService implements UserService {
   constructor(protected readonly db: IDatabase) {}
 
   /**

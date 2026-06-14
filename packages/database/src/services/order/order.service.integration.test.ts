@@ -3,13 +3,13 @@ import { Pool as NeonPool } from "@neondatabase/serverless";
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
 import { env } from "../../env";
 import * as schema from "../../schemas";
-import { OrderService } from "./order.service";
+import { DbOrderService } from "./order.service";
 import { orders, products, orderItems, users } from "../../schemas";
 import { eq } from "drizzle-orm";
 import type { IDatabase } from "../../client";
 
 describe("OrderService Concurrency (Race Condition) Integration Test", () => {
-  let orderService: OrderService;
+  let orderService: DbOrderService;
   let testProductId: string;
   let testUserId: string;
   const orderIds: string[] = [];
@@ -30,7 +30,7 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
       jit: true,
     });
 
-    orderService = new OrderService(integrationDb);
+    orderService = new DbOrderService(integrationDb);
 
     // 2. Insert a test user with unique email and phone
     const [user] = await integrationDb

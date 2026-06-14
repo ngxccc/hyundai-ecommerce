@@ -9,10 +9,10 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
-import { CategoryService } from "./category.service";
+import { DbCategoryService } from "./category.service";
 import type { IDatabase } from "../../client";
 
-const categoryService = new CategoryService(mockDb as unknown as IDatabase);
+const categoryService = new DbCategoryService(mockDb as unknown as IDatabase);
 
 describe("CategoryService", () => {
   beforeEach(() => {

@@ -8,11 +8,11 @@ import {
   mockFindFirst,
   mockFindMany,
 } from "../../tests/utils/db-mock";
-import { DealerTierService } from "./dealer-tier.service";
+import { DbDealerTierService } from "./dealer-tier.service";
 import { type TDealerTier } from "../../schemas";
 import type { IDatabase } from "../../client";
 
-const dealerTierService = new DealerTierService(mockDb as unknown as IDatabase);
+const dealerTierService = new DbDealerTierService(mockDb as unknown as IDatabase);
 
 describe("DealerTierService", () => {
   beforeEach(() => {

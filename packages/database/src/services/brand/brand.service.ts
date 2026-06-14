@@ -1,11 +1,11 @@
-import type { IBrandService } from "../interfaces";
+import type { BrandService } from "../interfaces";
 import { brands, type TBrand } from "../../schemas/brand.schema";
 import { type IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
 import type { TCreateBrandInput, TUpdateBrandInput } from "../../validators";
 import { handleServiceError } from "../../utils";
 
-export class BrandService implements IBrandService {
+export class DbBrandService implements BrandService {
   constructor(protected readonly db: IDatabase) {}
 
   async getAll(): Promise<TBrand[]> {

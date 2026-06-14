@@ -16,7 +16,7 @@ import type { DocsPageProps } from "@/types/next";
 import type { MDXContent } from "mdx/types.js";
 import type { TOCItemType } from "fumadocs-core/toc";
 
-interface IPageData {
+interface PageData {
   body: MDXContent;
   toc: TOCItemType[];
   full?: boolean;
@@ -29,7 +29,7 @@ export default async function Page(props: DocsPageProps) {
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
-  const data = page.data as IPageData;
+  const data = page.data as PageData;
   const MDX = data.body;
   const markdownUrl = getPageMarkdownUrl(page).url;
 
@@ -67,7 +67,7 @@ export async function generateMetadata(
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
-  const data = page.data as IPageData;
+  const data = page.data as PageData;
 
   return {
     title: data.title,

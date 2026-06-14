@@ -1,6 +1,6 @@
 import type { IDatabase } from "../../client";
 import type {
-  IAuthService,
+  AuthService,
   LoginOptions,
   RegisterOptions,
 } from "../interfaces";
@@ -29,7 +29,7 @@ const mapLoginAuthErrorCode = (
   return "INVALID_CREDENTIALS";
 };
 
-export class AuthService implements IAuthService<TLoginForm, TRegisterForm> {
+export class DbAuthService implements AuthService<TLoginForm, TRegisterForm> {
   constructor(
     protected readonly db: IDatabase,
     protected readonly betterAuth = auth,

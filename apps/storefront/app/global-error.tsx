@@ -31,7 +31,7 @@ export default function GlobalError({
     <html lang={locale} className="h-full antialiased">
       <body className="flex min-h-full flex-col bg-zinc-50 font-sans text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
         <main className="flex grow items-center justify-center p-6">
-          <div className="w-full max-w-md rounded-2xl border border-red-200/50 bg-white p-6 shadow-xl dark:border-red-900/30 dark:bg-zinc-900">
+          <div className="w-full rounded-2xl border border-red-200/50 bg-white p-6 shadow-xl dark:border-red-900/30 dark:bg-zinc-900">
             <div className="flex flex-col items-center gap-4 text-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-950/50">
                 <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />

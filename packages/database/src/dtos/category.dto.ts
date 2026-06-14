@@ -1,6 +1,6 @@
 import { type TCategory } from "../schemas/category.schema";
 
-export interface TCategoryDTO {
+export interface CategoryDTO {
   id: string;
   nameVi: string;
   nameEn: string | null;
@@ -10,11 +10,14 @@ export interface TCategoryDTO {
   descriptionEn: string | null;
   image: string | null;
   isActive: boolean;
+}
+
+export interface CategoryAdminDTO extends CategoryDTO {
   createdAt: Date;
   updatedAt: Date;
 }
 
-export function mapCategoryToDTO(category: TCategory): TCategoryDTO {
+export function mapCategoryToDTO(category: TCategory): CategoryDTO {
   return {
     id: category.id,
     nameVi: category.nameVi,
@@ -25,6 +28,12 @@ export function mapCategoryToDTO(category: TCategory): TCategoryDTO {
     descriptionEn: category.descriptionEn,
     image: category.image,
     isActive: category.isActive,
+  };
+}
+
+export function mapCategoryToAdminDTO(category: TCategory): CategoryAdminDTO {
+  return {
+    ...mapCategoryToDTO(category),
     createdAt: category.createdAt,
     updatedAt: category.updatedAt,
   };

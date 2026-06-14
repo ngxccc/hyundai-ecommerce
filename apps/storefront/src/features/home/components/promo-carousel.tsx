@@ -9,7 +9,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@nhatnang/ui/components/ui/carousel";
-import type { PromoCampaign } from "@nhatnang/types";
+import type { PromoCampaign } from "@nhatnang/shared";
 import { useCallback, useState } from "react";
 
 const THEME_STYLES: Record<

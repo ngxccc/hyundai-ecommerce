@@ -7,11 +7,11 @@ import {
   mockReturning,
   mockSelectResolvedValue,
 } from "../../tests/utils/db-mock";
-import { UserService } from "./user.service";
+import { DbUserService } from "./user.service";
 import { type TUser } from "../../schemas";
 import type { IDatabase } from "../../client";
 
-const userService = new UserService(mockDb as unknown as IDatabase);
+const userService = new DbUserService(mockDb as unknown as IDatabase);
 
 const mockUser: TUser = {
   id: "user-123",

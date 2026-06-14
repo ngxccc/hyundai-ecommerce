@@ -10,11 +10,11 @@ import {
   mockFindMany,
   mockSelectResolvedValue,
 } from "../../tests/utils/db-mock";
-import { OrderService } from "./order.service";
+import { DbOrderService } from "./order.service";
 import type { IDatabase } from "../../client";
 import type { TOrder, TNewOrder } from "../../schemas";
 
-const orderService = new OrderService(mockDb as unknown as IDatabase);
+const orderService = new DbOrderService(mockDb as unknown as IDatabase);
 
 describe("OrderService", () => {
   beforeEach(() => {

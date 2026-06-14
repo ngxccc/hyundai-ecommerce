@@ -27,6 +27,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@nhatnang/ui/components/ui/form";
+import { useCartStore, mergeLocalCartAction } from "@/features/cart";
 
 export function LoginForm() {
   const searchParams = useSearchParams();
@@ -53,12 +54,44 @@ export function LoginForm() {
         const result = await loginAction(data);
 
         if (!result.success) {
+          if ("fieldErrors" in result && result.fieldErrors) {
+            Object.entries(result.fieldErrors).forEach(([key, messages]) => {
+              const safeKey = key as keyof TLoginForm;
+              const errorCode = messages[0];
+              const errorMessage = errorCode ? t(errorCode as never) : t("errorMessage");
+
+              form.setError(safeKey, {
+                type: "server",
+                message: errorMessage,
+              });
+            });
+            return;
+          }
+
           if ("error" in result && result.error) {
             toast.error(result.error);
           } else {
             toast.error(t("errorMessage"));
           }
           return;
+        }
+
+        // Merge guest cart if items exist
+        const localItems = useCartStore.getState().items;
+        if (localItems.length > 0) {
+          try {
+            const mergeResult = await mergeLocalCartAction(
+              localItems.map((item) => ({
+                productId: item.productId,
+                quantity: item.quantity,
+              })),
+            );
+            if (mergeResult.success) {
+              useCartStore.getState().clearCart();
+            }
+          } catch (mergeError) {
+            console.error("Cart merge failed:", mergeError);
+          }
         }
 
         toast.success(t("successMessage"));

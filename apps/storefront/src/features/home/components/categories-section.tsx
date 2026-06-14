@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
 import { ArrowUpRight } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
@@ -54,7 +55,7 @@ export async function CategoriesSection() {
 
   return (
     <section className="bg-background pt-14">
-      <div className="mx-auto max-w-7xl px-6 md:px-8">
+      <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:px-8">
         <div className="mb-8 border-b pb-4">
           <h2 className="font-display text-foreground text-4xl font-extrabold tracking-tighter md:text-5xl">
             {t("categories.title")}
@@ -76,22 +77,22 @@ export async function CategoriesSection() {
                 key={cat.id}
                 className={`${ui.span} group focus-visible:ring-primary relative overflow-hidden rounded-2xl shadow-sm transition-all duration-500 outline-none hover:shadow-xl focus-visible:ring-2`}
               >
-                <Image
-                  alt={cat.description ?? ""}
-                  src={
-                    cat.image && cat.image !== ""
-                      ? cat.image
-                      : "https://placehold.co/400x300/png?text=No+Image"
-                  }
-                  fill
-                  sizes={
-                    ui.span.includes("col-span-8")
-                      ? "(max-width: 768px) 100vw, 66vw"
-                      : "(max-width: 768px) 100vw, 33vw"
-                  }
-                  className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
-                  loading="eager"
-                />
+                {cat.image && cat.image !== "" ? (
+                  <Image
+                    alt={cat.description ?? ""}
+                    src={cat.image}
+                    fill
+                    sizes={
+                      ui.span.includes("col-span-8")
+                        ? "(max-width: 768px) 100vw, 66vw"
+                        : "(max-width: 768px) 100vw, 33vw"
+                    }
+                    className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
+                    loading="eager"
+                  />
+                ) : (
+                  <ProductImagePlaceholder />
+                )}
 
                 <div
                   className={`absolute inset-0 bg-linear-to-t ${ui.gradient} flex flex-col justify-end p-6 transition-opacity duration-500 md:p-10`}

@@ -8,7 +8,7 @@ import {
   mockFindFirst,
   mockFindMany,
 } from "../../tests/utils/db-mock";
-import { QuotesService, type ComplexQuote } from "./quotes.service";
+import { DbQuotesService, type ComplexQuote } from "./quotes.service";
 import {
   type TQuote,
   type TQuoteItem,
@@ -18,7 +18,7 @@ import {
 } from "../../schemas";
 import type { IDatabase } from "../../client";
 
-const quotesService = new QuotesService(mockDb as unknown as IDatabase);
+const quotesService = new DbQuotesService(mockDb as unknown as IDatabase);
 
 // Mock entities representing stable database instances
 const mockUser: TUser = {

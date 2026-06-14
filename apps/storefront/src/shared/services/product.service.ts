@@ -1,7 +1,7 @@
 import { cacheLife } from "next/cache";
 import { productService as dbProductService } from "@nhatnang/database/services";
 import { mapProductToDTO } from "@nhatnang/database/dtos";
-import type { TGetAllOptions } from "@nhatnang/database/services";
+import type { GetAllOptions } from "@nhatnang/database/services";
 import {
   type StorefrontProduct,
   type StorefrontFilterMetadata,
@@ -9,7 +9,7 @@ import {
 } from "./types";
 import type { Locale } from "next-intl";
 
-export interface TGetProductsResponse {
+export interface GetProductsResponse {
   data: StorefrontProduct[];
   nextCursor: string | undefined;
   prevCursor: string | undefined;
@@ -20,8 +20,8 @@ export const productService = {
   getProducts: async (
     locale: Locale,
     limit?: number,
-    options?: TGetAllOptions,
-  ): Promise<TGetProductsResponse> => {
+    options?: GetAllOptions,
+  ): Promise<GetProductsResponse> => {
     "use cache";
     cacheLife("hours");
     try {

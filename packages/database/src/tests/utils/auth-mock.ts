@@ -1,6 +1,6 @@
 import { vi } from "bun:test";
 
-interface IAuthErrorLike {
+interface AuthErrorLike {
   isAPIError?: boolean;
   body: {
     code?: string;
@@ -8,12 +8,12 @@ interface IAuthErrorLike {
   message?: string;
 }
 
-export const isAuthErrorLike = (error: unknown): error is IAuthErrorLike => {
+export const isAuthErrorLike = (error: unknown): error is AuthErrorLike => {
   return (
     typeof error === "object" &&
     error !== null &&
     "isAPIError" in error &&
-    Boolean((error as IAuthErrorLike).isAPIError)
+    Boolean((error as AuthErrorLike).isAPIError)
   );
 };
 

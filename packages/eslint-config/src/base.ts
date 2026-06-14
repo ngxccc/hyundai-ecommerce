@@ -59,6 +59,17 @@ export default defineConfig([
           },
         },
       ],
+      "@typescript-eslint/naming-convention": [
+        "error",
+        {
+          selector: "interface",
+          format: ["PascalCase"],
+          custom: {
+            regex: "^I[A-Z]",
+            match: false,
+          },
+        },
+      ],
       "import-x/no-cycle": ["error", { maxDepth: 10, ignoreExternal: true }],
       "import-x/no-unresolved": "error",
     },

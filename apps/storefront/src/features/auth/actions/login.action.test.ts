@@ -3,7 +3,7 @@ import type { AuthService } from "@nhatnang/database/services";
 import type { headers } from "next/headers";
 import type { getTranslations } from "next-intl/server";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import type { TActionResult } from "@nhatnang/types";
+import type { ActionResult } from "@nhatnang/shared";
 
 // ---------------------------------------------------------------------------
 // Mocks — system boundaries only
@@ -18,16 +18,20 @@ const { loginAction } = await import("./login.action");
 // Result type for the action (validation error branch + authService branch)
 // ---------------------------------------------------------------------------
 
-interface IValidationErrorResult {
+interface ValidationErrorResult {
   success: false;
   code: string;
-  fieldErrors: Record<string, string[] | undefined>;
+  fieldErrors: {
+    email?: string[];
+    password?: string[];
+    [key: string]: string[] | undefined;
+  };
 }
 
-type TLoginActionResult =
-  | IValidationErrorResult
-  | TActionResult<{ userId: string }>
-  | TActionResult;
+type LoginActionResult =
+  | ValidationErrorResult
+  | ActionResult<{ userId: string }>
+  | ActionResult;
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -71,7 +75,7 @@ describe("loginAction", () => {
     const result = (await loginAction({
       email: "",
       password: "123456",
-    })) as TLoginActionResult;
+    })) as LoginActionResult;
 
     expect(result.success).toBe(false);
 
@@ -79,10 +83,10 @@ describe("loginAction", () => {
       throw new Error("Expected loginAction to fail");
     }
 
-    const validationResult = result as IValidationErrorResult;
+    const validationResult = result as ValidationErrorResult;
     expect(validationResult.code).toBe(SYSTEM_ERROR_CODES.VALIDATION_ERROR);
-    expect(validationResult.fieldErrors["email"]).toBeDefined();
-    expect(validationResult.fieldErrors["email"]!.length).toBeGreaterThan(0);
+    expect(validationResult.fieldErrors.email).toBeDefined();
+    expect(validationResult.fieldErrors.email!.length).toBeGreaterThan(0);
     expect(mockLoginEmail).not.toHaveBeenCalled();
   });
 
@@ -90,7 +94,7 @@ describe("loginAction", () => {
     const result = (await loginAction({
       email: "test@example.com",
       password: "",
-    })) as TLoginActionResult;
+    })) as LoginActionResult;
 
     expect(result.success).toBe(false);
 
@@ -98,10 +102,10 @@ describe("loginAction", () => {
       throw new Error("Expected loginAction to fail");
     }
 
-    const validationResult = result as IValidationErrorResult;
+    const validationResult = result as ValidationErrorResult;
     expect(validationResult.code).toBe(SYSTEM_ERROR_CODES.VALIDATION_ERROR);
-    expect(validationResult.fieldErrors["password"]).toBeDefined();
-    expect(validationResult.fieldErrors["password"]!.length).toBeGreaterThan(0);
+    expect(validationResult.fieldErrors.password).toBeDefined();
+    expect(validationResult.fieldErrors.password!.length).toBeGreaterThan(0);
     expect(mockLoginEmail).not.toHaveBeenCalled();
   });
 
@@ -109,7 +113,7 @@ describe("loginAction", () => {
     const result = (await loginAction({
       email: "not-an-email",
       password: "123456",
-    })) as TLoginActionResult;
+    })) as LoginActionResult;
 
     expect(result.success).toBe(false);
 
@@ -117,9 +121,9 @@ describe("loginAction", () => {
       throw new Error("Expected loginAction to fail");
     }
 
-    const validationResult = result as IValidationErrorResult;
+    const validationResult = result as ValidationErrorResult;
     expect(validationResult.code).toBe(SYSTEM_ERROR_CODES.VALIDATION_ERROR);
-    expect(validationResult.fieldErrors["email"]).toBeDefined();
+    expect(validationResult.fieldErrors.email).toBeDefined();
     expect(mockLoginEmail).not.toHaveBeenCalled();
   });
 
@@ -143,7 +147,7 @@ describe("loginAction", () => {
     const result = (await loginAction({
       email: "valid@example.com",
       password: "secure123",
-    })) as TActionResult<{ userId: string }>;
+    })) as ActionResult<{ userId: string }>;
 
     expect(result.success).toBe(true);
 

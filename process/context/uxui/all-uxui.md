@@ -25,6 +25,7 @@ It does not cover:
 
 - Canonical Guidelines: `process/context/uxui/uiux.md`
 - Design Presets (e.g. Raycast): `process/context/uxui/design-raycast.md`
+- Brand Preset (Hyundai Classic): `process/context/uxui/design-hyundai.md`
 
 ## Update Triggers
 

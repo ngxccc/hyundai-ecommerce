@@ -1,6 +1,6 @@
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { productService, categoryService, brandService } from "@/shared/services";
-import type { TGetAllOptions } from "@nhatnang/database/services";
+import type { GetAllOptions } from "@nhatnang/database/services";
 import { connection, NextResponse, type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const brandParam = searchParams.get("brand") ?? undefined;
     const search = searchParams.get("q") ?? undefined;
     const sort =
-      (searchParams.get("sort") as TGetAllOptions["sort"]) ?? undefined;
+      (searchParams.get("sort") as GetAllOptions["sort"]) ?? undefined;
     const after = searchParams.get("after") ?? undefined;
     const before = searchParams.get("before") ?? undefined;
 

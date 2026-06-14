@@ -10,10 +10,10 @@ import {
   SelectValue,
 } from "@nhatnang/ui/components/ui/select";
 
-import type { IMonthlyRevenue } from "@nhatnang/database/services";
+import type { MonthlyRevenue } from "@nhatnang/database/services";
 
 interface RevenueChartProps {
-  data: IMonthlyRevenue[];
+  data: MonthlyRevenue[];
 }
 
 export const RevenueChart = ({ data }: RevenueChartProps) => {

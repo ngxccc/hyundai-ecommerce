@@ -4,11 +4,11 @@ import { useTranslations } from "next-intl";
 import { Input } from "@nhatnang/ui/components/ui/input";
 import { Field, FieldLabel, FieldError } from "@nhatnang/ui/components/ui/field";
 import type { TRegisterForm } from "@nhatnang/database/validators";
-import type { IAuthFormSectionProps } from "@nhatnang/types";
+import type { AuthFormSectionProps } from "@nhatnang/shared";
 
 export const PasswordSection = ({
   form,
-}: IAuthFormSectionProps<TRegisterForm>) => {
+}: AuthFormSectionProps<TRegisterForm>) => {
   const t = useTranslations("Register");
 
   return (

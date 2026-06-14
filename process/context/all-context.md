@@ -72,6 +72,12 @@ The most critical flow in the system is not self-service checkout, but rather a 
 - Use "Storefront" for the app, not "frontend".
 - Use "Product" for catalog items, not "item".
 - Use "Quote / Deal" for negotiated pricing flows.
+- **Unification of Type & Interface Names (PascalCase only)**:
+  - Avoid prefixing interfaces with `I` (e.g., use `BrandDTO`, `ProductService` instead of `IBrandDTO`, `IProductService`).
+  - Avoid prefixing type aliases with `T` (e.g., use `Brand`, `Category` instead of `TBrand`, `TCategory`).
+  - _Exception_: Generic type parameters should still use `T`, `U`, or descriptive names prefixed with `T` (e.g., `TParams`).
+  - _Exception (Database Schemas)_: Database-specific schemas and inferred types under `packages/database/src/schemas/` can use `T` (e.g., `TProduct`, `TNewProduct`) to distinguish them from DTOs and UI view models.
+  - _DTO Naming_: DTOs must use clean PascalCase with `DTO` or `AdminDTO` suffixes (e.g., `BrandDTO`, `BrandAdminDTO`) without any `I` or `T` prefixes.
 
 ## 7. Architecture Decision Records (ADR)
 

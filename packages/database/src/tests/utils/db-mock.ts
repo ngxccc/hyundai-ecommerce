@@ -1,43 +1,49 @@
 import { vi, beforeEach, type Mock } from "bun:test";
 
-interface IReturningChain {
+export interface ReturningChain {
   returning: Mock<(...args: unknown[]) => unknown>;
 }
 
-interface IWhereChain {
-  where: Mock<(...args: unknown[]) => IReturningChain & { prepare: Mock<(...args: unknown[]) => unknown>; limit: Mock<(...args: unknown[]) => unknown> }>;
+export interface WhereChain {
+  where: Mock<
+    (...args: unknown[]) => ReturningChain & {
+      prepare: Mock<(...args: unknown[]) => unknown>;
+      limit: Mock<(...args: unknown[]) => unknown>;
+    }
+  >;
 }
 
-interface IOnConflictDoUpdateChain {
-  onConflictDoUpdate: Mock<(...args: unknown[]) => IReturningChain>;
+export interface OnConflictDoUpdateChain {
+  onConflictDoUpdate: Mock<(...args: unknown[]) => ReturningChain>;
 }
 
-interface IValuesChain {
-  values: Mock<(...args: unknown[]) => IOnConflictDoUpdateChain & IReturningChain>;
+export interface ValuesChain {
+  values: Mock<
+    (...args: unknown[]) => OnConflictDoUpdateChain & ReturningChain
+  >;
 }
 
-interface ISetChain {
-  set: Mock<(...args: unknown[]) => IWhereChain>;
+export interface SetChain {
+  set: Mock<(...args: unknown[]) => WhereChain>;
 }
-
 
 export const mockReturning = vi.fn();
 export const mockPrepare = vi.fn();
-export interface IMockQueryChain {
+export interface MockQueryChain {
   returning: Mock<(...args: unknown[]) => unknown>;
   prepare: Mock<(...args: unknown[]) => unknown>;
   limit: Mock<(...args: unknown[]) => unknown>;
-  where: Mock<(...args: unknown[]) => IMockQueryChain>;
-  innerJoin: () => IMockQueryChain;
-  leftJoin: () => IMockQueryChain;
-  groupBy: () => IMockQueryChain;
-  orderBy: () => IMockQueryChain;
+  where: Mock<(...args: unknown[]) => MockQueryChain>;
+  innerJoin: () => MockQueryChain;
+  leftJoin: () => MockQueryChain;
+  groupBy: () => MockQueryChain;
+  orderBy: () => MockQueryChain;
   then: (
     onfulfilled?: ((value: unknown) => unknown) | null,
-    onrejected?: ((reason: unknown) => unknown) | null
+    onrejected?: ((reason: unknown) => unknown) | null,
   ) => Promise<unknown>;
   catch: (
-    onrejected?: ((reason: unknown) => unknown) | null
+    onrejected?: ((reason: unknown) => unknown) | null,
   ) => Promise<unknown>;
 }
 
@@ -56,39 +62,45 @@ export const mockSelectResolvedValue = {
       return this.queue.shift();
     }
     return this.value;
-  }
+  },
 };
-export const mockLimit = vi.fn().mockImplementation(() => Promise.resolve(mockSelectResolvedValue.get()));
+export const mockLimit = vi
+  .fn()
+  .mockImplementation(() => Promise.resolve(mockSelectResolvedValue.get()));
 
-const defaultWhere = (): IMockQueryChain => {
+const defaultWhere = (): MockQueryChain => {
   const obj = {
     returning: mockReturning,
     prepare: mockPrepare,
     limit: mockLimit,
     where: mockWhere,
-  } as unknown as IMockQueryChain;
+  } as unknown as MockQueryChain;
   obj.innerJoin = () => obj;
   obj.leftJoin = () => obj;
   obj.groupBy = () => obj;
   obj.orderBy = () => obj;
-  obj.then = (resolve) => Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
-  obj.catch = (reject) => Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
+  obj.then = (resolve) =>
+    Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
+  obj.catch = (reject) =>
+    Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
   return obj;
 };
 
-const defaultFrom = (): IMockQueryChain => {
+const defaultFrom = (): MockQueryChain => {
   const obj = {
     where: mockWhere,
     limit: mockLimit,
     returning: mockReturning,
     prepare: mockPrepare,
-  } as unknown as IMockQueryChain;
+  } as unknown as MockQueryChain;
   obj.innerJoin = () => obj;
   obj.leftJoin = () => obj;
   obj.groupBy = () => obj;
   obj.orderBy = () => obj;
-  obj.then = (resolve) => Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
-  obj.catch = (reject) => Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
+  obj.then = (resolve) =>
+    Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
+  obj.catch = (reject) =>
+    Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
   return obj;
 };
 
@@ -96,25 +108,23 @@ export const mockWhere = vi.fn().mockImplementation(defaultWhere);
 export const mockOnConflictDoUpdate = vi
   .fn()
   .mockImplementation(() => ({ returning: mockReturning }));
-export const mockValues = vi
-  .fn()
-  .mockImplementation(() => ({
-    returning: mockReturning,
-    onConflictDoUpdate: mockOnConflictDoUpdate,
-  }));
+export const mockValues = vi.fn().mockImplementation(() => ({
+  returning: mockReturning,
+  onConflictDoUpdate: mockOnConflictDoUpdate,
+}));
 export const mockSet = vi.fn().mockImplementation(() => ({ where: mockWhere }));
 export const mockFrom = vi.fn().mockImplementation(defaultFrom);
 
 export const mockInsert = vi
-  .fn<(...args: unknown[]) => IValuesChain>()
+  .fn<(...args: unknown[]) => ValuesChain>()
   .mockImplementation(() => ({ values: mockValues }));
 
 export const mockUpdate = vi
-  .fn<(...args: unknown[]) => ISetChain>()
+  .fn<(...args: unknown[]) => SetChain>()
   .mockImplementation(() => ({ set: mockSet }));
 
 export const mockDelete = vi
-  .fn<(...args: unknown[]) => IWhereChain>()
+  .fn<(...args: unknown[]) => WhereChain>()
   .mockImplementation(() => ({ where: mockWhere }));
 
 export const mockSelect = vi
@@ -133,7 +143,9 @@ export const mockDb = {
   update: mockUpdate,
   delete: mockDelete,
   select: mockSelect,
-  transaction: vi.fn().mockImplementation((cb: (tx: unknown) => unknown) => cb(mockDb)),
+  transaction: vi
+    .fn()
+    .mockImplementation((cb: (tx: unknown) => unknown) => cb(mockDb)),
   query: {
     products: queryMocks,
     brands: queryMocks,
@@ -144,6 +156,8 @@ export const mockDb = {
     warehouses: queryMocks,
     quotes: queryMocks,
     dealerTiers: queryMocks,
+    carts: queryMocks,
+    cartItems: queryMocks,
   },
 };
 
@@ -157,7 +171,9 @@ beforeEach(() => {
   mockFindMany.mockReset();
   mockSelectResolvedValue.reset();
   mockLimit.mockReset();
-  mockLimit.mockImplementation(() => Promise.resolve(mockSelectResolvedValue.get()));
+  mockLimit.mockImplementation(() =>
+    Promise.resolve(mockSelectResolvedValue.get()),
+  );
   mockFrom.mockImplementation(defaultFrom);
   mockWhere.mockImplementation(defaultWhere);
 });
