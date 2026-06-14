@@ -73,8 +73,31 @@ export function CartTemplate() {
             <div className="space-y-4 lg:col-span-2">
               <div className="h-24 rounded-lg bg-zinc-200" />
               <div className="h-24 rounded-lg bg-zinc-200" />
+
+              {/* Sticky bottom bar skeleton for mobile */}
+              <div className="bg-background/95 sticky bottom-4 z-50 animate-pulse rounded-lg border border-zinc-200 p-4 shadow-lg lg:hidden">
+                <div className="mb-3 space-y-2 border-b border-zinc-100 pb-2">
+                  <div className="flex justify-between">
+                    <div className="h-3 w-16 rounded bg-zinc-200" />
+                    <div className="h-3 w-8 rounded bg-zinc-200" />
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="h-3 w-16 rounded bg-zinc-200" />
+                    <div className="h-3 w-16 rounded bg-zinc-200" />
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="h-3 w-16 rounded bg-zinc-200" />
+                    <div className="h-3 w-16 rounded bg-zinc-200" />
+                  </div>
+                  <div className="flex justify-between border-t border-zinc-50 pt-1">
+                    <div className="h-4 w-12 rounded bg-zinc-200" />
+                    <div className="h-4 w-20 rounded bg-zinc-200" />
+                  </div>
+                </div>
+                <div className="h-10 w-full rounded bg-zinc-200" />
+              </div>
             </div>
-            <div className="h-48 rounded-lg bg-zinc-200" />
+            <div className="hidden h-48 rounded-lg bg-zinc-200 lg:block" />
           </div>
         </div>
       </div>
@@ -91,8 +114,10 @@ export function CartTemplate() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl p-6">
-      <h1 className="font-display mb-8 text-3xl font-bold">{t("title")}</h1>
+    <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:px-8">
+      <h1 className="font-display mb-4 text-3xl font-bold lg:mb-8">
+        {t("title")}
+      </h1>
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Items List */}
         <div className="space-y-4 lg:col-span-2">
@@ -101,7 +126,7 @@ export function CartTemplate() {
               key={item.productId}
               className="overflow-hidden rounded-lg py-0"
             >
-              <CardContent className="flex flex-col items-start gap-4 p-4 sm:flex-row sm:items-center sm:gap-6">
+              <CardContent className="flex flex-col items-start gap-3 p-4 sm:flex-row sm:items-center sm:gap-6">
                 <div className="flex w-full items-start gap-4 sm:contents">
                   <div className="bg-muted relative h-20 w-20 shrink-0 overflow-hidden rounded">
                     {item.image !== "" ? (
@@ -120,13 +145,13 @@ export function CartTemplate() {
                     <h3 className="font-display text-foreground truncate text-base font-bold">
                       {item.name}
                     </h3>
-                    <p className="text-primary mt-1 text-sm font-semibold font-mono">
+                    <p className="text-primary mt-1 text-sm font-semibold">
                       {priceFormatter.format(Number(item.price))}
                     </p>
                   </div>
                 </div>
                 {/* Quantity and Actions */}
-                <div className="flex w-full items-center justify-between gap-4 mt-2 sm:w-auto sm:mt-0">
+                <div className="flex w-full items-center justify-between gap-4 sm:mt-0 sm:w-auto">
                   <div className="flex items-center rounded-md border border-zinc-200">
                     <Button
                       variant="ghost"
@@ -141,7 +166,7 @@ export function CartTemplate() {
                     </Button>
                     <input
                       type="number"
-                      className="w-12 [appearance:textfield] border-0 bg-transparent p-0 text-center font-mono text-sm font-semibold focus:ring-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                      className="w-12 [appearance:textfield] border-0 bg-transparent p-0 text-center text-sm font-semibold focus:ring-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                       value={
                         inputValues[item.productId] ?? String(item.quantity)
                       }
@@ -187,10 +212,46 @@ export function CartTemplate() {
               </CardContent>
             </Card>
           ))}
+
+          {/* Sticky Bottom Bar for Mobile */}
+          <div className="bg-background/95 sticky bottom-4 z-50 rounded-lg border border-zinc-200 p-4 shadow-lg backdrop-blur-md lg:hidden">
+            <div className="mb-3 space-y-2 border-b border-zinc-100 pb-2 text-sm">
+              <div className="text-muted-foreground flex justify-between text-xs">
+                <span>{t("totalItems")}</span>
+                <span className="text-foreground font-semibold">
+                  {totalCount}
+                </span>
+              </div>
+              <div className="text-muted-foreground flex justify-between text-xs">
+                <span>{t("subtotal")}</span>
+                <span className="text-foreground font-semibold">
+                  {priceFormatter.format(subtotal)}
+                </span>
+              </div>
+              <div className="text-muted-foreground flex justify-between text-xs">
+                <span>VAT (10%)</span>
+                <span className="text-foreground font-semibold">
+                  {priceFormatter.format(subtotal * 0.1)}
+                </span>
+              </div>
+              <div className="text-foreground flex justify-between border-t border-zinc-50 pt-1 text-sm font-bold">
+                <span>{t("total")}</span>
+                <span className="text-primary text-base font-extrabold">
+                  {priceFormatter.format(subtotal * 1.1)}
+                </span>
+              </div>
+            </div>
+            <Button
+              className="w-full rounded-md py-2.5 text-xs font-bold tracking-wider uppercase"
+              onClick={handleActionClick}
+            >
+              {t("checkout")}
+            </Button>
+          </div>
         </div>
 
         {/* Order Summary */}
-        <div>
+        <div className="hidden lg:block">
           <Card className="gap-0 rounded-lg py-0">
             <div className="border-b border-zinc-100 px-6 py-4">
               <h2 className="font-display text-lg font-bold">{t("summary")}</h2>
@@ -243,31 +304,6 @@ export function CartTemplate() {
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
-      {/* Spacer to prevent layout overlay by mobile sticky bar */}
-      <div className="h-24 md:hidden" />
-
-      {/* Sticky Bottom Bar for Mobile */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-background/95 p-4 shadow-lg backdrop-blur-md md:hidden">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col">
-            <span className="text-muted-foreground text-xs">
-              {t("totalItems")}:{" "}
-              <span className="font-mono font-semibold text-foreground">
-                {totalCount}
-              </span>
-            </span>
-            <span className="font-mono text-lg font-bold text-foreground">
-              {priceFormatter.format(subtotal * 1.1)}
-            </span>
-          </div>
-          <Button
-            className="rounded-md px-6 py-2 text-sm font-semibold uppercase tracking-wider"
-            onClick={handleActionClick}
-          >
-            {t("checkout")}
-          </Button>
         </div>
       </div>
     </div>
