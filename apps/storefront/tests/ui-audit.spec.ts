@@ -1,19 +1,24 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Hyundai B2B Storefront UI Full Audit", () => {
-  test("Homepage UI Verification", async ({ page }) => {
-    await page.goto("/");
+  test("Homepage UI Verification", async ({ page, isMobile }) => {
+    await page.goto("/vi");
 
     // 1. Check title
     await expect(page).toHaveTitle(/Hyundai/i);
 
     // 2. Verify header navigation links
-    const productsLink = page.locator("a:has-text('Sản phẩm')").first();
-    const solutionsLink = page.locator("a:has-text('Giải pháp')").first();
-    const servicesLink = page.locator("a:has-text('Dịch vụ')").first();
-    await expect(productsLink).toBeVisible();
-    await expect(solutionsLink).toBeVisible();
-    await expect(servicesLink).toBeVisible();
+    if (isMobile) {
+      const menuToggle = page.locator("button[aria-label='Toggle mobile menu']").first();
+      await expect(menuToggle).toBeVisible();
+    } else {
+      const productsLink = page.locator("a:has-text('Sản phẩm')").first();
+      const solutionsLink = page.locator("a:has-text('Giải pháp')").first();
+      const servicesLink = page.locator("a:has-text('Dịch vụ')").first();
+      await expect(productsLink).toBeVisible();
+      await expect(solutionsLink).toBeVisible();
+      await expect(servicesLink).toBeVisible();
+    }
 
     // 3. Verify footer content
     const footerText = page.locator("footer").first();
@@ -21,7 +26,7 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
   });
 
   test("Catalog Page & Quote-Only Rules", async ({ page }) => {
-    await page.goto("/products");
+    await page.goto("/vi/products");
 
     // 1. Check page header
     await expect(page.locator("h1").first()).toContainText("Danh mục sản phẩm");
@@ -38,7 +43,7 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
 
   test("Shopping Cart E2E Flow (Full Case)", async ({ page }) => {
     // 1. Go to Products catalog
-    await page.goto("/products");
+    await page.goto("/vi/products");
 
     // 2. Find a product that can be added to cart (e.g., Kubota GL-6500)
     const kubotaCard = page.locator("div:has-text('Kubota GL-6500')").first();
@@ -56,7 +61,7 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
     await expect(cartBadge).toHaveText("1");
 
     // 5. Navigate to Cart page
-    await page.goto("/cart");
+    await page.goto("/vi/cart");
 
     // 6. Check that product is in the cart
     await expect(page.locator("h1").first()).toContainText("Giỏ hàng");
@@ -96,7 +101,7 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
   });
 
   test("Mobile Navigation Menu Interactions", async ({ page, isMobile }) => {
-    await page.goto("/");
+    await page.goto("/vi");
 
     if (isMobile) {
       // 1. Verify burger toggle menu button is visible on mobile
