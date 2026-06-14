@@ -205,6 +205,7 @@ export function CartTemplate() {
                     size="icon"
                     className="size-8 text-zinc-400 hover:text-red-600"
                     onClick={() => removeItem(item.productId)}
+                    aria-label="Xóa sản phẩm"
                   >
                     <Trash2 className="size-4" />
                   </Button>
