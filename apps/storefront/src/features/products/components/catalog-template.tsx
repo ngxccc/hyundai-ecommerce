@@ -291,7 +291,7 @@ export async function CatalogTemplate({
                       </CardContent>
 
                       <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between gap-2 border-t p-4 pt-4! lg:flex-col">
-                        <span className="text-primary text-xl font-bold font-mono">
+                        <span className="text-primary text-xl font-bold">
                           {product.isQuoteOnly
                             ? tHome("contact_price")
                             : priceFormatter.format(Number(product.price))}

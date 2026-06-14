@@ -74,7 +74,7 @@ export function HeaderCart() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="text-xs font-semibold text-foreground truncate">{item.name}</h4>
-                        <p className="text-[10px] text-muted-foreground font-mono">
+                        <p className="text-[10px] text-muted-foreground">
                           {item.quantity} x {priceFormatter.format(Number(item.price))}
                         </p>
                       </div>

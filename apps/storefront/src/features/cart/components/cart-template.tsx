@@ -70,7 +70,7 @@ export function CartTemplate() {
                 </div>
                 <div className="flex-1 text-center sm:text-left min-w-0">
                   <h3 className="font-display text-base font-bold text-foreground truncate">{item.name}</h3>
-                  <p className="text-primary font-mono text-sm font-semibold mt-1">
+                  <p className="text-primary text-sm font-semibold mt-1">
                     {priceFormatter.format(Number(item.price))}
                   </p>
                 </div>
@@ -120,7 +120,7 @@ export function CartTemplate() {
             <CardContent className="p-6 space-y-6">
               <div className="flex items-center justify-between border-b pb-4">
                 <span className="text-muted-foreground text-sm font-medium">{t("summary")}</span>
-                <span className="font-mono text-lg font-bold">{priceFormatter.format(subtotal)}</span>
+                <span className="text-lg font-bold">{priceFormatter.format(subtotal)}</span>
               </div>
               <div className="space-y-3">
                 <Button className="w-full font-bold uppercase tracking-wider h-11" onClick={handleActionClick}>
