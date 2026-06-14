@@ -1,6 +1,6 @@
 import type { FieldValues, UseFormReturn } from "react-hook-form";
 
-export interface IAuthFormSectionProps<
+export interface AuthFormSectionProps<
   TForm extends FieldValues = FieldValues,
 > {
   form: UseFormReturn<TForm>;
