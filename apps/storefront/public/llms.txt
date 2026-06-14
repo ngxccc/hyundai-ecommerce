@@ -1,0 +1,17 @@
+# Hyundai B2B Storefront
+
+Hyundai B2B Storefront is a high-performance ecommerce platform for commercial and industrial generators, parts, and maintenance services.
+
+## Main Routes
+- [/](/): Homepage with featured product categories, bestselling generators, promotions, and expert insights.
+- [/products](/products): Catalog of diesel, gasoline, and gas generators with faceted search, filters for power, phase, and brands.
+- [/solutions](/solutions): Custom power solution design, calculations, ATS integration, and consultations for factories and buildings.
+- [/services](/services): Warranty registration, onsite technical support, preventative maintenance contracts, and parts sourcing.
+- [/cart](/cart): Shopping cart interface for ordering products or submitting quotes request.
+- [/login](/login): Authentication portal for business clients and partners.
+- [/register](/register): Business registration page including business license and corporate info validation.
+
+## Technical Details
+- Built with Next.js 16 (App Router), React 19, Tailwind CSS v4, and Radix UI.
+- Direct Database connection via @nhatnang/database with Drizzle ORM and PostgreSQL.
+- Hybrid Cart System utilizing Zustand client persistence for guest clients and database storage for authenticated B2B buyers.
