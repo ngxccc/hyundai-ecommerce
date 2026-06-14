@@ -101,30 +101,32 @@ export function CartTemplate() {
               key={item.productId}
               className="overflow-hidden rounded-lg py-0"
             >
-              <CardContent className="flex flex-col items-center gap-6 p-4 sm:flex-row">
-                <div className="bg-muted relative h-20 w-20 overflow-hidden rounded">
-                  {item.image !== "" ? (
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
-                      className="object-cover"
-                      sizes="80px"
-                    />
-                  ) : (
-                    <ProductImagePlaceholder />
-                  )}
-                </div>
-                <div className="min-w-0 flex-1 text-center sm:text-left">
-                  <h3 className="font-display text-foreground truncate text-base font-bold">
-                    {item.name}
-                  </h3>
-                  <p className="text-primary mt-1 text-sm font-semibold">
-                    {priceFormatter.format(Number(item.price))}
-                  </p>
+              <CardContent className="flex flex-col items-start gap-4 p-4 sm:flex-row sm:items-center sm:gap-6">
+                <div className="flex w-full items-start gap-4 sm:contents">
+                  <div className="bg-muted relative h-20 w-20 shrink-0 overflow-hidden rounded">
+                    {item.image !== "" ? (
+                      <Image
+                        src={item.image}
+                        alt={item.name}
+                        fill
+                        className="object-cover"
+                        sizes="80px"
+                      />
+                    ) : (
+                      <ProductImagePlaceholder />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1 text-left">
+                    <h3 className="font-display text-foreground truncate text-base font-bold">
+                      {item.name}
+                    </h3>
+                    <p className="text-primary mt-1 text-sm font-semibold font-mono">
+                      {priceFormatter.format(Number(item.price))}
+                    </p>
+                  </div>
                 </div>
                 {/* Quantity and Actions */}
-                <div className="flex items-center gap-4">
+                <div className="flex w-full items-center justify-between gap-4 mt-2 sm:w-auto sm:mt-0">
                   <div className="flex items-center rounded-md border border-zinc-200">
                     <Button
                       variant="ghost"
@@ -241,6 +243,31 @@ export function CartTemplate() {
               </div>
             </CardContent>
           </Card>
+        </div>
+      </div>
+      {/* Spacer to prevent layout overlay by mobile sticky bar */}
+      <div className="h-24 md:hidden" />
+
+      {/* Sticky Bottom Bar for Mobile */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-background/95 p-4 shadow-lg backdrop-blur-md md:hidden">
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="text-muted-foreground text-xs">
+              {t("totalItems")}:{" "}
+              <span className="font-mono font-semibold text-foreground">
+                {totalCount}
+              </span>
+            </span>
+            <span className="font-mono text-lg font-bold text-foreground">
+              {priceFormatter.format(subtotal * 1.1)}
+            </span>
+          </div>
+          <Button
+            className="rounded-md px-6 py-2 text-sm font-semibold uppercase tracking-wider"
+            onClick={handleActionClick}
+          >
+            {t("checkout")}
+          </Button>
         </div>
       </div>
     </div>
