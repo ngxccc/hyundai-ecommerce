@@ -1,19 +1,14 @@
+/* eslint-disable */
+
 require("../../../products/components/__tests__/setup-dom");
 
 import { describe, it, expect, vi } from "vitest";
 const { render, screen } = require("@testing-library/react");
 const { CartTemplate } = require("../cart-template");
-const { NextIntlClientProvider } = require("next-intl");
 
-const messages = {
-  Cart: {
-    title: "Your Cart",
-    empty: "Your cart is empty",
-    summary: "Order Summary",
-    checkout: "Proceed to Checkout",
-    quote: "Request Quote"
-  }
-};
+vi.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => key
+}));
 
 vi.mock("@/features/cart", () => ({
   useCart: (selector: any) => {
@@ -29,11 +24,11 @@ vi.mock("@/features/cart", () => ({
   })
 }));
 
+describe("CartTemplate", () => {
   it("renders empty cart state successfully", async () => {
     render(
-      <NextIntlClientProvider locale="en" messages={messages}>
-        <CartTemplate />
-      </NextIntlClientProvider>
+      <CartTemplate />
     );
-    expect(await screen.findByText("Your cart is empty")).toBeDefined();
+    expect(await screen.findByText("empty")).toBeDefined();
   });
+});

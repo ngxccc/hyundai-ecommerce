@@ -44,8 +44,11 @@
     "@nhatnang/typescript-config": "workspace:*",
     "@nhatnang/ui": "workspace:*",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/react": "^16.2.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "tailwindcss": "^4"
+    "happy-dom": "^14.12.3",
+    "tailwindcss": "^4",
+    "vitest": "^1.6.0"
   }
 }

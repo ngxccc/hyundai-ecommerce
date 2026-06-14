@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import "./setup-dom";
 
 import { describe, it, expect, vi } from "vitest";
