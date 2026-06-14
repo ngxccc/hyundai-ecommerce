@@ -51,7 +51,7 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
     await addToCartBtn.click();
 
     // 4. Verify toast notification appears or cart count updates
-    const cartBadge = page.locator("a[href='/cart'] [data-slot='badge']:visible").first();
+    const cartBadge = page.locator("a[href*='/cart'] [data-slot='badge']:visible").first();
     await expect(cartBadge).toBeVisible();
     await expect(cartBadge).toHaveText("1");
 

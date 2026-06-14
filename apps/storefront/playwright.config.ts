@@ -11,6 +11,8 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
     screenshot: "only-on-failure",
     trace: "on-first-retry",
+    locale: "vi-VN",
+    timezoneId: "Asia/Ho_Chi_Minh",
   },
   projects: [
     {
