@@ -226,6 +226,10 @@
     "productIsQuoteOnly": "This product is quote-only",
     "insufficientStock": "Quantity exceeds available stock",
     "addToCartFailed": "Failed to add to cart",
+    "unauthorized": "Unauthorized",
+    "updateCartFailed": "Failed to update cart",
+    "removeFromCartFailed": "Failed to remove item from cart",
+    "mergeCartFailed": "Failed to merge cart",
     "validation": {
       "slugExists": "Slug already exists"
     }

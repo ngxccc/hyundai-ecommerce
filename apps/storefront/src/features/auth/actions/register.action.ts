@@ -12,7 +12,7 @@ import {
   registerSchema,
   type TRegisterForm,
 } from "@nhatnang/database/validators";
-import { formatValidationErrors } from "@/shared/utils/validation";
+import { formatValidationErrors } from "@/shared/lib/validation";
 
 export async function registerAction(data: TRegisterForm) {
   const reqHeaders = await headers();

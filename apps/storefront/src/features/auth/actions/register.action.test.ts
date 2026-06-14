@@ -19,17 +19,17 @@ const { registerAction } = await import("./register.action");
 // Result type for the action (validation error branch + authService branch)
 // ---------------------------------------------------------------------------
 
-interface IValidationErrorResult {
+interface ValidationErrorResult {
   success: false;
   code: string;
   fieldErrors: Record<string, string[] | undefined>;
 }
 
-type TActionSuccessResult = TActionResult<{ userId: string }>;
+type ActionSuccessResult = TActionResult<{ userId: string }>;
 
-type TRegisterActionResult =
-  | IValidationErrorResult
-  | TActionSuccessResult
+type RegisterActionResult =
+  | ValidationErrorResult
+  | ActionSuccessResult
   | TActionResult;
 
 // ---------------------------------------------------------------------------
@@ -59,10 +59,10 @@ const validDealer = {
 // ---------------------------------------------------------------------------
 
 const assertValidationError = (
-  result: TRegisterActionResult,
-): IValidationErrorResult => {
+  result: RegisterActionResult,
+): ValidationErrorResult => {
   expect(result.success).toBe(false);
-  const validationResult = result as IValidationErrorResult;
+  const validationResult = result as ValidationErrorResult;
   expect(validationResult.code).toBe(SYSTEM_ERROR_CODES.VALIDATION_ERROR);
   return validationResult;
 };
@@ -109,7 +109,7 @@ describe("registerAction", () => {
     const result = (await registerAction({
       ...validEndUser,
       name: "A",
-    })) as TRegisterActionResult;
+    })) as RegisterActionResult;
 
     const validationResult = assertValidationError(result);
     expect(validationResult.fieldErrors["name"]).toBeDefined();
@@ -122,7 +122,7 @@ describe("registerAction", () => {
     const result = (await registerAction({
       ...validEndUser,
       email: "xxx",
-    })) as TRegisterActionResult;
+    })) as RegisterActionResult;
 
     const validationResult = assertValidationError(result);
     expect(validationResult.fieldErrors["email"]).toBeDefined();
@@ -133,7 +133,7 @@ describe("registerAction", () => {
     const result = (await registerAction({
       ...validEndUser,
       phone: "0901",
-    })) as TRegisterActionResult;
+    })) as RegisterActionResult;
 
     const validationResult = assertValidationError(result);
     expect(validationResult.fieldErrors["phone"]).toBeDefined();
@@ -144,7 +144,7 @@ describe("registerAction", () => {
       ...validEndUser,
       password: "12345",
       confirmPassword: "12345",
-    })) as TRegisterActionResult;
+    })) as RegisterActionResult;
 
     const validationResult = assertValidationError(result);
     expect(validationResult.fieldErrors["password"]).toBeDefined();
@@ -154,7 +154,7 @@ describe("registerAction", () => {
     const result = (await registerAction({
       ...validEndUser,
       confirmPassword: "wrong-password",
-    })) as TRegisterActionResult;
+    })) as RegisterActionResult;
 
     const validationResult = assertValidationError(result);
     expect(validationResult.fieldErrors["confirmPassword"]).toBeDefined();
@@ -164,7 +164,7 @@ describe("registerAction", () => {
     const result = (await registerAction({
       ...validEndUser,
       agreeTerms: false,
-    })) as TRegisterActionResult;
+    })) as RegisterActionResult;
 
     const validationResult = assertValidationError(result);
     expect(validationResult.fieldErrors["agreeTerms"]).toBeDefined();
@@ -176,7 +176,7 @@ describe("registerAction", () => {
     const result = (await registerAction({
       ...validDealer,
       companyName: undefined,
-    })) as TRegisterActionResult;
+    })) as RegisterActionResult;
 
     const validationResult = assertValidationError(result);
     expect(validationResult.fieldErrors["companyName"]).toBeDefined();
@@ -186,7 +186,7 @@ describe("registerAction", () => {
     const result = (await registerAction({
       ...validDealer,
       taxId: undefined,
-    })) as TRegisterActionResult;
+    })) as RegisterActionResult;
 
     const validationResult = assertValidationError(result);
     expect(validationResult.fieldErrors["taxId"]).toBeDefined();
@@ -196,7 +196,7 @@ describe("registerAction", () => {
     const result = (await registerAction({
       ...validDealer,
       province: undefined,
-    })) as TRegisterActionResult;
+    })) as RegisterActionResult;
 
     const validationResult = assertValidationError(result);
     expect(validationResult.fieldErrors["province"]).toBeDefined();
@@ -212,7 +212,7 @@ describe("registerAction", () => {
 
     const result = (await registerAction(
       validEndUser,
-    )) as IValidationErrorResult;
+    )) as ValidationErrorResult;
 
     expect(result.success).toBe(false);
     expect(result.fieldErrors["email"]).toContain(
@@ -230,7 +230,7 @@ describe("registerAction", () => {
 
     const result = (await registerAction(
       validEndUser,
-    )) as IValidationErrorResult;
+    )) as ValidationErrorResult;
 
     expect(result.success).toBe(false);
     expect(result.fieldErrors["phone"]).toContain(
@@ -248,7 +248,7 @@ describe("registerAction", () => {
 
     const result = (await registerAction(
       validEndUser,
-    )) as IValidationErrorResult;
+    )) as ValidationErrorResult;
 
     expect(result.success).toBe(false);
     expect(result.fieldErrors["email"]).toContain(
@@ -286,7 +286,7 @@ describe("registerAction", () => {
     const serviceResult = { userId: "user-789" };
     mockRegister.mockResolvedValue(serviceResult);
 
-    const result = (await registerAction(validEndUser)) as TActionSuccessResult;
+    const result = (await registerAction(validEndUser)) as ActionSuccessResult;
 
     expect(result.success).toBe(true);
 

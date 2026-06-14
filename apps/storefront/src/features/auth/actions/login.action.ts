@@ -6,7 +6,8 @@ import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import { authService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import { loginSchema, type TLoginForm } from "@nhatnang/database/validators";
-import { formatValidationErrors } from "@/shared/utils/validation";
+import { formatValidationErrors } from "@/shared/lib/validation";
+
 export const loginAction = async (data: TLoginForm) => {
   const reqHeaders = await headers();
   const ip = reqHeaders.get("x-forwarded-for") ?? "127.0.0.1";

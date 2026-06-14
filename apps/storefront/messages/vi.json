@@ -225,6 +225,10 @@
     "productIsQuoteOnly": "Sản phẩm này chỉ nhận báo giá",
     "insufficientStock": "Số lượng vượt quá tồn kho khả dụng",
     "addToCartFailed": "Thêm vào giỏ hàng thất bại",
+    "unauthorized": "Chưa đăng nhập",
+    "updateCartFailed": "Cập nhật giỏ hàng thất bại",
+    "removeFromCartFailed": "Xóa sản phẩm khỏi giỏ hàng thất bại",
+    "mergeCartFailed": "Gộp giỏ hàng thất bại",
     "validation": {
       "slugExists": "Đường dẫn đã tồn tại"
     }
