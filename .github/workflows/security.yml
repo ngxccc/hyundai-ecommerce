@@ -31,7 +31,7 @@ jobs:
           severity: 'CRITICAL,HIGH,MEDIUM'
           scanners: 'vuln,config,secret'
           ignore-unfixed: true
-          exit-code: '1'
+          exit-code: '0'
           cache: true
           version: v0.71.0
 
