@@ -29,7 +29,7 @@ export function AddToCartButton({
     const currentQty = existing ? existing.quantity : 0;
 
     if (currentQty + 1 > totalStock) {
-      toast.error(t("stockLimitExceeded", { max: totalStock }));
+      toast.error(t("stockLimitExceeded", { max: String(totalStock) }));
       return;
     }
 

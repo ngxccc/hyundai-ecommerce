@@ -12,6 +12,7 @@ import { ProductPagination } from "./product-pagination";
 import { ActiveFilterChips } from "./active-filter-chips";
 import { DesktopProductFilters } from "./desktop-product-filters";
 import { ProductFilterSheet } from "./product-filter-sheet";
+import { AddToCartButton } from "./add-to-cart-button";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -289,24 +290,36 @@ export async function CatalogTemplate({
                         </div>
                       </CardContent>
 
-                      <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between gap-1 border-t p-4 pt-4! lg:flex-col">
-                        <span className="text-primary text-xl font-bold">
+                      <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between gap-2 border-t p-4 pt-4! lg:flex-col">
+                        <span className="text-primary text-xl font-bold font-mono">
                           {product.isQuoteOnly
                             ? tHome("contact_price")
                             : priceFormatter.format(Number(product.price))}
                         </span>
 
-                        <Button
-                          asChild
-                          size="lg"
-                          className="font-bold tracking-wider uppercase lg:w-full"
-                        >
-                          <Link href={`/products/${product.slug}`}>
-                            {product.isQuoteOnly
-                              ? tHome("request_quote_cta")
-                              : tHome("buy_now_cta")}
-                          </Link>
-                        </Button>
+                        <div className="flex w-full items-center gap-2 lg:flex-col">
+                          <Button
+                            asChild
+                            size="lg"
+                            className="font-bold tracking-wider uppercase lg:w-full"
+                          >
+                            <Link href={`/products/${product.slug}`}>
+                              {product.isQuoteOnly
+                                ? tHome("request_quote_cta")
+                                : tHome("buy_now_cta")}
+                            </Link>
+                          </Button>
+
+                          {!product.isQuoteOnly && (
+                            <AddToCartButton
+                              productId={product.id}
+                              name={product.name}
+                              price={product.price}
+                              image={product.images?.[0] ?? ""}
+                              totalStock={product.totalStockCache}
+                            />
+                          )}
+                        </div>
                       </CardFooter>
                     </Card>
                   );
