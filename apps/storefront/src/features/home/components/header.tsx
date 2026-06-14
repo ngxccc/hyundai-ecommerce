@@ -58,7 +58,9 @@ export function Header() {
             </Button>
           </div>
 
-          <MobileMenu />
+          <div className="md:hidden">
+            <MobileMenu />
+          </div>
         </div>
       </div>
     </header>
