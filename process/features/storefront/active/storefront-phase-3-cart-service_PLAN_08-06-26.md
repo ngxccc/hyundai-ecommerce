@@ -1,285 +1,696 @@
-# Phase 3: Cart Service & Storefront Integration — Plan
+# Storefront Cart UI Integration - Implementation Plan
 
-**Date**: 08-06-26
-**Complexity**: Simple
-**Status**: 🔨 IN PROGRESS
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-## Overview
+**Goal:** Implement the client-side cart UI (Header Popover, Add to Cart buttons, and dedicated Cart Page) for the B2B Storefront application using Zustand, Radix UI, and Sonner toasts.
 
-This plan details the implementation of a client-first, hybrid shopping cart system for the B2B Storefront application using **Zustand** (with `localStorage` persistence) for guest sessions and **PostgreSQL** (via `CartService` in `@nhatnang/database`) for authenticated sessions.
+**Architecture:** A client-first, hydration-safe UI flow. Subscribes to the Zustand client store using a deferred mount check to prevent hydration mismatch, displays skeleton loaders for stable page layouts, and locks quantity selections based on product stock cache limits.
 
-Rather than polluting the PostgreSQL database with anonymous guest carts (which leads to table bloat and high write amplification), guest carts will live exclusively in the browser's `localStorage`. Upon successful authentication, the local guest cart items are merged atomically into the user's permanent database cart. All database operations check stock limits against `totalStockCache` in transactions.
-
-Unlike mobile-first consumer apps that use sliding drawers, this B2B storefront will integrate a dedicated, full-featured **Cart Page** at the `/cart` route, matching the layout structure of other storefront routes.
-
-This phase follows the database and coding guidelines in `process/context/all-context.md` and testing procedures in `process/context/tests/all-tests.md` (specifically `tests.md` routing).
+**Tech Stack:** React 19, Next.js 16 (App Router), Zustand (persist), Radix UI Popover, Tailwind CSS v4, Sonner.
 
 ---
 
-## Quick Links
+## File Structure
 
-- [Phase 3: Cart Service \& Storefront Integration — Plan](#phase-3-cart-service--storefront-integration--plan)
-  - [Overview](#overview)
-  - [Quick Links](#quick-links)
-  - [Goals and Success Metrics](#goals-and-success-metrics)
-  - [Phase Completion Rules](#phase-completion-rules)
-  - [Execution Brief](#execution-brief)
-    - [Phase 1: Database Cart Service Refinement](#phase-1-database-cart-service-refinement)
-    - [Phase 2: Client-side Zustand Store \& Server Actions](#phase-2-client-side-zustand-store--server-actions)
-    - [Phase 3: Storefront Cart Page \& Header Integration](#phase-3-storefront-cart-page--header-integration)
-    - [Expected Outcome](#expected-outcome)
-  - [Scope](#scope)
-  - [Assumptions and Constraints](#assumptions-and-constraints)
-  - [Functional Requirements](#functional-requirements)
-  - [Non-Functional Requirements](#non-functional-requirements)
-  - [Acceptance Criteria](#acceptance-criteria)
-  - [Implementation Checklist](#implementation-checklist)
-  - [Risks and Mitigations](#risks-and-mitigations)
-  - [Integration Notes](#integration-notes)
-  - [Touchpoints](#touchpoints)
-  - [Public Contracts](#public-contracts)
-  - [Blast Radius](#blast-radius)
-  - [Verification Evidence](#verification-evidence)
-  - [Resume and Execution Handoff](#resume-and-execution-handoff)
-  - [Cursor + RIPER-5 Guidance](#cursor--riper-5-guidance)
+- **Create**:
+  - `apps/storefront/src/features/products/components/add-to-cart-button.tsx` (Catalog card Add to Cart button)
+  - `apps/storefront/src/features/products/components/__tests__/add-to-cart-button.test.tsx` (Unit tests)
+  - `apps/storefront/src/features/home/components/header-cart.tsx` (Header Cart Icon & Popover component)
+  - `apps/storefront/src/features/home/components/__tests__/header-cart.test.tsx` (Unit tests)
+  - `apps/storefront/src/features/cart/components/cart-template.tsx` (Cart Page template)
+  - `apps/storefront/src/features/cart/components/__tests__/cart-template.test.tsx` (Unit tests)
+  - `apps/storefront/app/[locale]/(shop)/cart/page.tsx` (Dedicated Cart Page route)
+
+- **Modify**:
+  - `apps/storefront/src/features/products/components/catalog-template.tsx` (Catalog grid integration)
+  - `apps/storefront/src/features/home/components/header.tsx` (Header icon placement)
+  - `apps/storefront/messages/en.json` (English cart locales)
+  - `apps/storefront/messages/vi.json` (Vietnamese cart locales)
 
 ---
 
-## Goals and Success Metrics
+## Tasks
 
-- **Goals**:
-  - Implement a persistent Zustand store (`useCartStore`) for managing client-side cart state under `apps/storefront/src/features/cart/hooks/use-cart.ts`.
-  - Simplify `CartService` in `@nhatnang/database` to only manage authenticated carts in PostgreSQL.
-  - Create atomic Server Actions for cart CRUD and cart merging.
-  - Create a dedicated **Cart Page** at `apps/storefront/app/[locale]/(shop)/cart/page.tsx` displaying selected items, quantities, and B2B checkout/quoting CTA.
-  - Connect the global Header navigation to link to the `/cart` page with a dynamic count badge.
-- **Success Metrics**:
-  - Zero guest/anonymous carts saved in PostgreSQL database (0% DB bloat for guest sessions).
-  - Cart merge flow executes in `< 50ms` upon successful login.
-  - 100% type safety and zero typescript errors.
+### Task 1: Add translation keys for Cart UI
 
----
+**Files:**
+- Modify: `apps/storefront/messages/en.json`
+- Modify: `apps/storefront/messages/vi.json`
 
-## Phase Completion Rules
-
-A phase is NOT complete until:
-
-1. **Integration Test** - Works with other system pieces
-2. **Manual Test** - User can perform the action
-3. **Data Verification** - Database/state changes confirmed
-4. **Error Handling** - Failure cases handled gracefully
-5. **User Confirmation** - User says "it works"
-
-Status meanings:
-
-- ⏳ PLANNED - Not started
-- 🔨 CODE DONE - Written but not E2E tested
-- 🧪 TESTING - Currently being tested
-- ✅ VERIFIED - Tested AND confirmed working
-- 🚧 BLOCKED - Has issues
-
-After each phase, document:
-
-- [ ] What was tested manually
-- [ ] Data verified in DB (show query + result)
-- [ ] Errors encountered and fixed
-- [ ] User confirmation received
-
----
-
-## Execution Brief
-
-### Phase 1: Database Cart Service Refinement
-
-**What happens**: Define `ICartService` and refine `CartService` in `@nhatnang/database`. Since guest carts are stored in `localStorage`, `CartService` is simplified to only require a valid `userId` for cart creation. The `mergeCarts` method is refined to `mergeLocalItems(userId: string, localItems: { productId: string, quantity: number }[])` which receives local items and inserts/updates them atomically inside a transaction.
-
-- **Test**: Run unit tests in `packages/database/src/services/cart/cart.service.test.ts` to assert that `getOrCreateCart`, `addToCart`, `updateCartItemQuantity`, and `mergeLocalItems` operate correctly.
-- **Verify**: Run `bun test packages/database/src/services/cart/cart.service.test.ts`.
-- **Done when**: All package tests pass and the database service layer compiled cleanly.
-
-### Phase 2: Client-side Zustand Store & Server Actions
-
-**What happens**: Implement the persistent Zustand store `apps/storefront/src/features/cart/hooks/use-cart.ts` using Zustand's `persist` middleware to automatically read/write to `localStorage`. Create Next.js server actions in `apps/storefront/src/features/cart/actions.ts` (`getDbCart`, `addToDbCart`, `updateDbQuantity`, `removeFromDbCart`, `mergeLocalCart`). Integrate the cart merge flow into `login-form.tsx` so that it calls `mergeLocalCart` on successful login and clears the local store.
-
-- **Test**: Add items to cart as guest, log in, and verify that items are successfully transferred to PostgreSQL and the local storage is cleared.
-- **Verify**: Check `localStorage` state in devtools and query the `cart_item` database table to verify records.
-- **Done when**: User session transitions sync guest items to DB seamlessly.
-
-### Phase 3: Storefront Cart Page & Header Integration
-
-**What happens**: Build the dedicated Cart Route page (`apps/storefront/app/[locale]/(shop)/cart/page.tsx`) and its template component (`apps/storefront/src/features/cart/components/cart-template.tsx`). The page displays cart items, quantities, and prices, and includes increment/decrement buttons with stock-limit validations. Integrate `useIsClient` to prevent Next.js hydration mismatches. Link the cart icon in the `Header` to `/cart` and display the dynamic count badge. Wire "Add to Cart" buttons on product catalog pages.
-
-- **Test**: Open the `/cart` page, update quantities, delete items, and try adding items beyond the product's `totalStockCache` (assert UI blocks the action and shows validation toast).
-- **Verify**: Verify manual flows on both desktop and mobile viewports.
-- **Done when**: Dedicated `/cart` page behaves correctly, shows instant optimistic updates, and disables increment button when quantity reaches available stock.
-
-### Expected Outcome
-
-- Zero database storage overhead for guest carts.
-- Sub-millisecond guest cart updates locally via LocalStorage.
-- Automatic, transactional cart merging on user login.
-- A fully integrated, responsive Cart Page at `/cart`.
-
----
-
-## Scope
-
-**In Scope**:
-
-- Update `CartService` database layer to focus purely on authenticated user sessions.
-- Implement the client-side Zustand cart store with `localStorage` persistence under `apps/storefront/src/features/cart/hooks/use-cart.ts`.
-- Next.js server actions to handle authenticated database cart mutations.
-- Merge action integration in the client-side login form callback.
-- UI components: `CartTemplate`, dedicated `/cart` page route, Add to Cart buttons, and Header badge.
-- Hydration guards using `useIsClient`.
-
-**Out of Scope**:
-
-- Implementing full Checkout wizard and payment gateways (Phase 4 scope).
-- Quote request negotiation portal (Phase 4 scope).
-
----
-
-## Assumptions and Constraints
-
-- Users have a maximum of 1 active cart in the database (enforced by unique constraint on `userId` in `carts` table).
-- Guest carts are stored entirely on the client side in browser `localStorage`.
-- Product stock availability is checked against `totalStockCache` in the `product` table.
-- A product having `isQuoteOnly: true` cannot be added to the shopping cart.
-
----
-
-## Functional Requirements
-
-- **Local Persistence**: Guest cart items must persist across page reloads and browser tab closes.
-- **Merge Logic**: On login, guest items are sent to the server. If a product already exists in the user's DB cart, the quantities are summed up (capped at available stock cache). If not, it is created. The guest cart in local storage is cleared immediately after a successful merge.
-- **Real-time Stock Guard**: The quantity selector in the drawer must read the product's `totalStockCache` and disable the increment button (`+`) when `quantity === totalStock`.
-- **Hydration Guard**: Cart badge and item cards must render only on the client side after mounting to avoid Next.js hydration mismatches.
-
----
-
-## Non-Functional Requirements
-
-- **Database Performance**: Zero write load on PostgreSQL for anonymous guest shopping sessions.
-- **Page Load Performance**: Synchronous LocalStorage reads ensure the cart badge is rendered immediately on the client without API loading states.
-- **UI Responsiveness**: Deletions and quantity updates are reflected instantly on the UI.
-
----
-
-## Acceptance Criteria
-
-- [x] `CartService` methods only require `userId` and do not generate anonymous cart rows in PostgreSQL.
-- [ ] Zustand store `useCartStore` uses `persist` middleware to manage guest items in `localStorage`.
-- [ ] Logging in with local items triggers `mergeLocalCart` Server Action and runs updates inside a transaction.
-- [ ] Logging out clears the client-side store.
-- [ ] Header cart icon displays correct total items count dynamically and links to `/cart`.
-- [ ] Dedicated `/cart` page displays product names, images, prices, quantities, and calculates the total price correctly.
-- [ ] Quantity selectors block inputs higher than the available stock cache.
-- [ ] All workspaces compile cleanly with zero TypeScript errors or warnings.
-
----
-
-## Implementation Checklist
-
-- [x] Update interface `ICartService` in `packages/database/src/services/interfaces.ts` to replace guest cart flows with `mergeLocalItems`.
-- [x] Modify `packages/database/src/services/cart/cart.service.ts` to implement `mergeLocalItems(userId, localItems)`.
-- [x] Update service tests in `packages/database/src/services/cart/cart.service.test.ts` to cover `mergeLocalItems`.
-- [x] Run `bun test` in `@nhatnang/database` package to verify service tests are green.
-- [ ] Create Zustand store in `apps/storefront/src/features/cart/hooks/use-cart.ts` with local storage persistence.
-- [ ] Create Server Actions in `apps/storefront/src/features/cart/actions.ts` (`getDbCart`, `addToDbCart`, `updateDbQuantity`, `removeFromDbCart`, `mergeLocalCart`).
-- [ ] Update `LoginForm` component in `apps/storefront/src/features/auth/components/login-form.tsx` to invoke `mergeLocalCart` on successful login and clear local cart state.
-- [ ] Implement `CartTemplate` UI page layout in `apps/storefront/src/features/cart/components/cart-template.tsx`.
-- [ ] Implement dedicated `/cart` page route in `apps/storefront/app/[locale]/(shop)/cart/page.tsx` with hydration safety (`useIsClient`).
-- [ ] Update `Header` component in `apps/storefront/src/features/home/components/header.tsx` to include cart trigger button and badge linking to `/cart`.
-- [ ] Add "Add to Cart" buttons to product catalog page (`apps/storefront/src/features/products/components/catalog-template.tsx`).
-- [ ] Run `bun run check-types` across workspaces to confirm 100% type safety.
-- [ ] Manually test end-to-end: adding as guest, merging on login, quantity limits, and stock checks.
-
----
-
-## Risks and Mitigations
-
-- **Risk**: Local storage data is manipulated by the user.
-  - _Mitigation_: The server validates all quantities, product availability, and stock cache during checkout or quote request creation, rejecting invalid payloads.
-- **Risk**: Hydration mismatch between Server and Client HTML.
-  - _Mitigation_: Wrap cart components with `useIsClient` guards to ensure they are rendered client-side only.
-
----
-
-## Integration Notes
-
-- **Database**: Modifies `cart` and `cart_item` tables for authenticated users.
-- **State Persistence**: Uses browser `localStorage` under key `cart-storage` via Zustand store.
-- **Translations**: Standard translation keys for cart alerts and labels added in `vi.json` and `en.json`.
-
----
-
-## Touchpoints
-
-- `packages/database/src/services/interfaces.ts`
-- `packages/database/src/services/cart/cart.service.ts`
-- `packages/database/src/services/cart/cart.service.test.ts`
-- `apps/storefront/src/features/cart/actions.ts` (new)
-- `apps/storefront/src/features/cart/hooks/use-cart.ts` (new)
-- `apps/storefront/src/features/cart/components/cart-template.tsx` (new)
-- `apps/storefront/app/[locale]/(shop)/cart/page.tsx` (new)
-- `apps/storefront/src/features/home/components/header.tsx`
-- `apps/storefront/src/features/products/components/catalog-template.tsx`
-- `apps/storefront/src/features/auth/components/login-form.tsx`
-- `apps/storefront/messages/vi.json`
-- `apps/storefront/messages/en.json`
-
----
-
-## Public Contracts
-
-- **Server Actions**:
-  - `mergeLocalCart(localItems: { productId: string, quantity: number }[])` returning `{ success: boolean, error?: string }`
-  - `addToDbCart(productId: string, quantity: number)` returning `{ success: boolean, error?: string }`
-- **Local Storage Key**: `cart-storage`.
-
----
-
-## Blast Radius
-
-- **Storefront App**: Localized to the cart feature directory, `/cart` route, and header integration. No regression impact on catalogs page reading.
-- **Authentication Forms**: Adds a post-login side effect to merge local items.
-- **Database Service Layer**: Simplified cart service, reducing Postgres load.
-
----
-
-## Verification Evidence
-
-- Run typechecks:
-
-  ```bash
-  bun run check-types
+- [ ] **Step 1: Update English messages**
+  Add keys inside the JSON structure under `"Cart"` namespace.
+  Modify `apps/storefront/messages/en.json`:
+  ```json
+  "Cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "viewCart": "View Full Cart",
+    "addToCart": "Add to Cart",
+    "addedToCart": "Added {name} to cart",
+    "stockLimitExceeded": "Cannot add more items. Maximum stock reached ({max})",
+    "checkout": "Proceed to Checkout",
+    "quote": "Request Quote",
+    "comingSoon": "Checkout and quoting features are coming soon in Phase 4.",
+    "summary": "Order Summary",
+    "itemsCount": "{count, plural, =0 {0 items} =1 {1 item} other {# items}}",
+    "remove": "Remove"
+  }
   ```
 
-- Run unit tests:
-
-  ```bash
-  bun test packages/database/src/services/cart/cart.service.test.ts
+- [ ] **Step 2: Update Vietnamese messages**
+  Modify `apps/storefront/messages/vi.json`:
+  ```json
+  "Cart": {
+    "title": "Giỏ hàng của bạn",
+    "empty": "Giỏ hàng trống",
+    "viewCart": "Xem giỏ hàng",
+    "addToCart": "Thêm vào giỏ",
+    "addedToCart": "Đã thêm {name} vào giỏ hàng",
+    "stockLimitExceeded": "Không thể thêm. Đã đạt giới hạn tồn kho ({max})",
+    "checkout": "Tiến hành thanh toán",
+    "quote": "Yêu cầu báo giá",
+    "comingSoon": "Tính năng thanh toán và báo giá đang được phát triển ở Phase 4.",
+    "summary": "Tóm tắt đơn hàng",
+    "itemsCount": "{count} sản phẩm",
+    "remove": "Xóa"
+  }
   ```
 
-- Manual Verification:
-  - Add items as guest, verify `localStorage` contains items.
-  - Log in, verify `mergeLocalCart` is called, Postgres updates, and `localStorage` is cleared.
-  - Assert incrementing items beyond stock limits is blocked.
+- [ ] **Step 3: Commit**
+  ```bash
+  git add apps/storefront/messages/en.json apps/storefront/messages/vi.json
+  git commit -m "chore(storefront): add localization keys for cart ui"
+  ```
 
 ---
 
-## Resume and Execution Handoff
+### Task 2: AddToCartButton Component
 
-When entering execution mode, start by adjusting `ICartService` and `CartService` in `@nhatnang/database` to focus purely on authenticated user sessions and replace anonymous cart logic with `mergeLocalItems`. Once the database layer is verified green via `bun test`, proceed to storefront server actions, auth merge callback integration, Zustand store, and UI page/template components.
+**Files:**
+- Create: `apps/storefront/src/features/products/components/add-to-cart-button.tsx`
+- Create: `apps/storefront/src/features/products/components/__tests__/add-to-cart-button.test.tsx`
+
+- [ ] **Step 1: Write unit tests first**
+  Create `apps/storefront/src/features/products/components/__tests__/add-to-cart-button.test.tsx`:
+  ```tsx
+  import { describe, it, expect, vi } from "vitest";
+  import { render, screen, fireEvent } from "@testing-library/react";
+  import { AddToCartButton } from "../add-to-cart-button";
+  import { NextIntlClientProvider } from "next-intl";
+
+  const messages = {
+    Cart: {
+      addToCart: "Add to Cart",
+      addedToCart: "Added {name} to cart",
+      stockLimitExceeded: "Cannot add more items. Maximum stock reached ({max})"
+    }
+  };
+
+  vi.mock("@/features/cart", () => ({
+    useCartStore: () => ({
+      items: [],
+      addItem: vi.fn()
+    })
+  }));
+
+  vi.mock("sonner", () => ({
+    toast: {
+      success: vi.fn(),
+      error: vi.fn()
+    }
+  }));
+
+  describe("AddToCartButton", () => {
+    it("renders successfully", () => {
+      render(
+        <NextIntlClientProvider locale="en" messages={messages}>
+          <AddToCartButton
+            productId="prod-1"
+            name="Generator"
+            price="1000"
+            image="/gen.jpg"
+            totalStock={10}
+          />
+        </NextIntlClientProvider>
+      );
+      expect(screen.getByText("Add to Cart")).toBeDefined();
+    });
+  });
+  ```
+
+- [ ] **Step 2: Run test to verify it fails/passes mocks**
+  Run: `bun test apps/storefront/src/features/products/components/__tests__/add-to-cart-button.test.tsx`
+  Expected: FAIL with component file missing.
+
+- [ ] **Step 3: Write component implementation**
+  Create `apps/storefront/src/features/products/components/add-to-cart-button.tsx`:
+  ```tsx
+  "use client";
+
+  import { useCartStore } from "@/features/cart";
+  import { Button } from "@nhatnang/ui/components/ui/button";
+  import { Plus } from "lucide-react";
+  import { toast } from "sonner";
+  import { useTranslations } from "next-intl";
+
+  interface AddToCartButtonProps {
+    productId: string;
+    name: string;
+    price: string;
+    image: string;
+    totalStock: number;
+  }
+
+  export function AddToCartButton({
+    productId,
+    name,
+    price,
+    image,
+    totalStock,
+  }: AddToCartButtonProps) {
+    const t = useTranslations("Cart");
+    const { items, addItem } = useCartStore();
+
+    const handleAddToCart = () => {
+      const existing = items.find((item) => item.productId === productId);
+      const currentQty = existing ? existing.quantity : 0;
+
+      if (currentQty + 1 > totalStock) {
+        toast.error(t("stockLimitExceeded", { max: totalStock }));
+        return;
+      }
+
+      addItem({ productId, name, price, image, totalStock }, 1);
+      toast.success(t("addedToCart", { name }));
+    };
+
+    return (
+      <Button
+        variant="outline"
+        size="lg"
+        className="font-bold tracking-wider uppercase lg:w-full gap-2 border-zinc-200 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
+        onClick={handleAddToCart}
+      >
+        <Plus className="size-4" />
+        {t("addToCart")}
+      </Button>
+    );
+  }
+  ```
+
+- [ ] **Step 4: Run test to verify it passes**
+  Run: `bun test apps/storefront/src/features/products/components/__tests__/add-to-cart-button.test.tsx`
+  Expected: PASS
+
+- [ ] **Step 5: Commit**
+  ```bash
+  git add apps/storefront/src/features/products/components/add-to-cart-button.tsx apps/storefront/src/features/products/components/__tests__/add-to-cart-button.test.tsx
+  git commit -m "feat(storefront): implement AddToCartButton component"
+  ```
 
 ---
 
-## Cursor + RIPER-5 Guidance
+### Task 3: Integrate AddToCartButton in Catalog Template
 
-- Use Cursor Plan mode: import this checklist.
-- RIPER-5: RESEARCH → INNOVATE → PLAN, then request EXECUTE.
-- Avoid code until EXECUTE.
-- **After each phase: STOP and verify before proceeding.**
+**Files:**
+- Modify: `apps/storefront/src/features/products/components/catalog-template.tsx`
 
-Next Step: ENTER EXECUTE MODE on storefront-phase-3-cart-service_PLAN_08-06-26.md.
+- [ ] **Step 1: Render AddToCartButton next to Buy Now**
+  Modify `apps/storefront/src/features/products/components/catalog-template.tsx:299-310`:
+  ```tsx
+  // Add import at top
+  import { AddToCartButton } from "./add-to-cart-button";
+
+  // Replace inside productsList.map footer:
+  <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between gap-2 border-t p-4 pt-4! lg:flex-col">
+    <span className="text-primary text-xl font-bold font-mono">
+      {product.isQuoteOnly
+        ? tHome("contact_price")
+        : priceFormatter.format(Number(product.price))}
+    </span>
+
+    <div className="flex w-full items-center gap-2 lg:flex-col">
+      <Button
+        asChild
+        size="lg"
+        className="font-bold tracking-wider uppercase lg:w-full"
+      >
+        <Link href={`/products/${product.slug}`}>
+          {product.isQuoteOnly
+            ? tHome("request_quote_cta")
+            : tHome("buy_now_cta")}
+        </Link>
+      </Button>
+
+      {!product.isQuoteOnly && (
+        <AddToCartButton
+          productId={product.id}
+          name={product.name}
+          price={product.price}
+          image={product.images?.[0] ?? ""}
+          totalStock={product.totalStockCache}
+        />
+      )}
+    </div>
+  </CardFooter>
+  ```
+
+- [ ] **Step 2: Verify lint and compilation**
+  Run: `bun run check-types`
+  Expected: Clean compilation with no errors.
+
+- [ ] **Step 3: Commit**
+  ```bash
+  git add apps/storefront/src/features/products/components/catalog-template.tsx
+  git commit -m "feat(storefront): render AddToCartButton on product catalog page"
+  ```
+
+---
+
+### Task 4: Header Cart Component
+
+**Files:**
+- Create: `apps/storefront/src/features/home/components/header-cart.tsx`
+- Create: `apps/storefront/src/features/home/components/__tests__/header-cart.test.tsx`
+
+- [ ] **Step 1: Write unit tests first**
+  Create `apps/storefront/src/features/home/components/__tests__/header-cart.test.tsx`:
+  ```tsx
+  import { describe, it, expect, vi } from "vitest";
+  import { render, screen } from "@testing-library/react";
+  import { HeaderCart } from "../header-cart";
+  import { NextIntlClientProvider } from "next-intl";
+
+  const messages = {
+    Cart: {
+      empty: "Your cart is empty",
+      viewCart: "View Full Cart"
+    }
+  };
+
+  vi.mock("@/features/cart", () => ({
+    useCart: (selector: any) => {
+      const state = {
+        items: [],
+        isOpen: false
+      };
+      return selector(state);
+    }
+  }));
+
+  describe("HeaderCart", () => {
+    it("renders loading skeleton before mount", () => {
+      render(
+        <NextIntlClientProvider locale="en" messages={messages}>
+          <HeaderCart />
+        </NextIntlClientProvider>
+      );
+      expect(screen.getByTestId("cart-skeleton")).toBeDefined();
+    });
+  });
+  ```
+
+- [ ] **Step 2: Run test to verify it fails**
+  Run: `bun test apps/storefront/src/features/home/components/__tests__/header-cart.test.tsx`
+  Expected: FAIL with missing component file.
+
+- [ ] **Step 3: Write component implementation**
+  Create `apps/storefront/src/features/home/components/header-cart.tsx`:
+  ```tsx
+  "use client";
+
+  import { useState, useEffect } from "react";
+  import { useCart, type CartItem } from "@/features/cart";
+  import { Link } from "@/i18n/routing";
+  import { ShoppingCart } from "lucide-react";
+  import { useTranslations } from "next-intl";
+  import { Badge } from "@nhatnang/ui/components/ui/badge";
+  import { Button } from "@nhatnang/ui/components/ui/button";
+  import { Popover, PopoverContent, PopoverTrigger } from "@nhatnang/ui/components/ui/popover";
+  import { priceFormatter } from "@/shared/lib/utils";
+
+  export function HeaderCart() {
+    const t = useTranslations("Cart");
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsMounted(true);
+      }, 0);
+      return () => clearTimeout(timer);
+    }, []);
+
+    const cartItems = useCart((state) => state.items) ?? [];
+    const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+    if (!isMounted) {
+      return (
+        <div className="relative p-2" data-testid="cart-skeleton">
+          <ShoppingCart className="size-6 text-zinc-600" />
+          <span className="absolute top-1 right-1 flex h-4 w-4 animate-pulse rounded-full bg-zinc-200" />
+        </div>
+      );
+    }
+
+    return (
+      <>
+        {/* Mobile View: Direct Link */}
+        <Link href="/cart" className="relative p-2 md:hidden">
+          <ShoppingCart className="size-6 text-zinc-600" />
+          {totalCount > 0 && (
+            <Badge className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground font-mono text-[9px] font-bold p-0">
+              {totalCount}
+            </Badge>
+          )}
+        </Link>
+
+        {/* Desktop View: Popover */}
+        <div className="hidden md:block">
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="relative p-2 outline-none cursor-pointer">
+                <ShoppingCart className="size-6 text-zinc-600 hover:text-zinc-900 transition-colors" />
+                {totalCount > 0 && (
+                  <Badge className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground font-mono text-[9px] font-bold p-0">
+                    {totalCount}
+                  </Badge>
+                )}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 rounded-lg bg-background/95 border border-border shadow-lg p-4 backdrop-blur-md">
+              {cartItems.length === 0 ? (
+                <div className="py-6 text-center text-sm text-muted-foreground">
+                  {t("empty")}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="max-h-60 overflow-y-auto space-y-3">
+                    {cartItems.slice(0, 5).map((item) => (
+                      <div key={item.productId} className="flex items-center gap-3 border-b border-zinc-100 pb-2 last:border-0 last:pb-0">
+                        <div className="relative size-10 bg-muted rounded overflow-hidden">
+                          <img src={item.image !== "" ? item.image : "https://placehold.co/50x50"} alt={item.name} className="object-cover size-full" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-xs font-semibold text-foreground truncate">{item.name}</h4>
+                          <p className="text-[10px] text-muted-foreground font-mono">
+                            {item.quantity} x {priceFormatter.format(Number(item.price))}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <Button asChild className="w-full text-xs font-bold uppercase tracking-wider h-9 rounded-md">
+                    <Link href="/cart">{t("viewCart")}</Link>
+                  </Button>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
+        </div>
+      </>
+    );
+  }
+  ```
+
+- [ ] **Step 4: Run test to verify it passes**
+  Run: `bun test apps/storefront/src/features/home/components/__tests__/header-cart.test.tsx`
+  Expected: PASS
+
+- [ ] **Step 5: Commit**
+  ```bash
+  git add apps/storefront/src/features/home/components/header-cart.tsx apps/storefront/src/features/home/components/__tests__/header-cart.test.tsx
+  git commit -m "feat(storefront): implement HeaderCart component with popover"
+  ```
+
+---
+
+### Task 5: Integrate HeaderCart in Header
+
+**Files:**
+- Modify: `apps/storefront/src/features/home/components/header.tsx`
+
+- [ ] **Step 1: Render HeaderCart in Header actions**
+  Modify `apps/storefront/src/features/home/components/header.tsx`:
+  ```tsx
+  // Add import at top
+  import { HeaderCart } from "./header-cart";
+
+  // Replace inside actions container:
+  <div className="flex items-center gap-4">
+    <HeaderCart />
+
+    {/* Desktop Actions */}
+    <div className="hidden items-center gap-3 md:flex">
+  ```
+
+- [ ] **Step 2: Verify compile and lint**
+  Run: `bun run check-types`
+  Expected: Clean compilation with 0 errors.
+
+- [ ] **Step 3: Commit**
+  ```bash
+  git add apps/storefront/src/features/home/components/header.tsx
+  git commit -m "feat(storefront): integrate HeaderCart in main header"
+  ```
+
+---
+
+### Task 6: Cart Template UI Component
+
+**Files:**
+- Create: `apps/storefront/src/features/cart/components/cart-template.tsx`
+- Create: `apps/storefront/src/features/cart/components/__tests__/cart-template.test.tsx`
+
+- [ ] **Step 1: Write unit tests first**
+  Create `apps/storefront/src/features/cart/components/__tests__/cart-template.test.tsx`:
+  ```tsx
+  import { describe, it, expect, vi } from "vitest";
+  import { render, screen } from "@testing-library/react";
+  import { CartTemplate } from "../cart-template";
+  import { NextIntlClientProvider } from "next-intl";
+
+  const messages = {
+    Cart: {
+      title: "Your Cart",
+      empty: "Your cart is empty",
+      summary: "Order Summary",
+      checkout: "Proceed to Checkout",
+      quote: "Request Quote"
+    }
+  };
+
+  vi.mock("@/features/cart", () => ({
+    useCart: (selector: any) => {
+      const state = {
+        items: []
+      };
+      return selector(state);
+    },
+    useCartStore: () => ({
+      updateQuantity: vi.fn(),
+      removeItem: vi.fn(),
+      clearCart: vi.fn()
+    })
+  }));
+
+  describe("CartTemplate", () => {
+    it("renders empty cart state successfully", () => {
+      render(
+        <NextIntlClientProvider locale="en" messages={messages}>
+          <CartTemplate />
+        </NextIntlClientProvider>
+      );
+      expect(screen.getByText("Your cart is empty")).toBeDefined();
+    });
+  });
+  ```
+
+- [ ] **Step 2: Run test to verify it fails**
+  Run: `bun test apps/storefront/src/features/cart/components/__tests__/cart-template.test.tsx`
+  Expected: FAIL with missing component file.
+
+- [ ] **Step 3: Write component implementation**
+  Create `apps/storefront/src/features/cart/components/cart-template.tsx`:
+  ```tsx
+  "use client";
+
+  import { useState, useEffect } from "react";
+  import { useCart, useCartStore } from "@/features/cart";
+  import { Button } from "@nhatnang/ui/components/ui/button";
+  import { Card, CardContent, CardHeader } from "@nhatnang/ui/components/ui/card";
+  import { Trash2, Plus, Minus } from "lucide-react";
+  import { useTranslations } from "next-intl";
+  import { priceFormatter } from "@/shared/lib/utils";
+  import { toast } from "sonner";
+
+  export function CartTemplate() {
+    const t = useTranslations("Cart");
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsMounted(true);
+      }, 0);
+      return () => clearTimeout(timer);
+    }, []);
+
+    const cartItems = useCart((state) => state.items) ?? [];
+    const { updateQuantity, removeItem } = useCartStore();
+
+    const subtotal = cartItems.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0);
+
+    const handleActionClick = () => {
+      toast.info(t("comingSoon"));
+    };
+
+    if (!isMounted) {
+      return (
+        <div className="mx-auto max-w-7xl px-6 py-12" data-testid="cart-loading">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 w-48 bg-zinc-200 rounded" />
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+              <div className="lg:col-span-2 space-y-4">
+                <div className="h-24 bg-zinc-200 rounded-lg" />
+                <div className="h-24 bg-zinc-200 rounded-lg" />
+              </div>
+              <div className="h-48 bg-zinc-200 rounded-lg" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (cartItems.length === 0) {
+      return (
+        <div className="mx-auto max-w-3xl px-6 py-24 text-center">
+          <h1 className="font-display text-3xl font-bold mb-4">{t("title")}</h1>
+          <p className="text-muted-foreground text-lg mb-8">{t("empty")}</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        <h1 className="font-display text-3xl font-bold mb-8">{t("title")}</h1>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          {/* Items List */}
+          <div className="lg:col-span-2 space-y-4">
+            {cartItems.map((item) => (
+              <Card key={item.productId} className="overflow-hidden rounded-lg">
+                <CardContent className="flex flex-col sm:flex-row items-center gap-6 p-4">
+                  <div className="relative h-20 w-20 bg-muted rounded overflow-hidden">
+                    <img src={item.image !== "" ? item.image : "https://placehold.co/100x100"} alt={item.name} className="object-cover size-full" />
+                  </div>
+                  <div className="flex-1 text-center sm:text-left min-w-0">
+                    <h3 className="font-display text-base font-bold text-foreground truncate">{item.name}</h3>
+                    <p className="text-primary font-mono text-sm font-semibold mt-1">
+                      {priceFormatter.format(Number(item.price))}
+                    </p>
+                  </div>
+                  {/* Quantity and Actions */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center border border-zinc-200 rounded-md">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8 rounded-none"
+                        onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                        disabled={item.quantity <= 1}
+                      >
+                        <Minus className="size-3" />
+                      </Button>
+                      <span className="w-10 text-center font-mono text-sm font-semibold">{item.quantity}</span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8 rounded-none"
+                        onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                        disabled={item.quantity >= item.totalStock}
+                      >
+                        <Plus className="size-3" />
+                      </Button>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-zinc-400 hover:text-red-600 size-8"
+                      onClick={() => removeItem(item.productId)}
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Order Summary */}
+          <div>
+            <Card className="rounded-lg">
+              <CardHeader className="border-b border-zinc-100 p-6">
+                <h2 className="font-display text-lg font-bold">{t("summary")}</h2>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                <div className="flex items-center justify-between border-b pb-4">
+                  <span className="text-muted-foreground text-sm font-medium">{t("title")}</span>
+                  <span className="font-mono text-lg font-bold">{priceFormatter.format(subtotal)}</span>
+                </div>
+                <div className="space-y-3">
+                  <Button className="w-full font-bold uppercase tracking-wider h-11" onClick={handleActionClick}>
+                    {t("checkout")}
+                  </Button>
+                  <Button variant="outline" className="w-full font-bold uppercase tracking-wider h-11 border-zinc-200" onClick={handleActionClick}>
+                    {t("quote")}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  ```
+
+- [ ] **Step 4: Run test to verify it passes**
+  Run: `bun test apps/storefront/src/features/cart/components/__tests__/cart-template.test.tsx`
+  Expected: PASS
+
+- [ ] **Step 5: Commit**
+  ```bash
+  git add apps/storefront/src/features/cart/components/cart-template.tsx apps/storefront/src/features/cart/components/__tests__/cart-template.test.tsx
+  git commit -m "feat(storefront): implement CartTemplate component with items list and summary"
+  ```
+
+---
+
+### Task 7: Dedicated Cart Route Page
+
+**Files:**
+- Create: `apps/storefront/app/[locale]/(shop)/cart/page.tsx`
+
+- [ ] **Step 1: Create the cart page route**
+  Create `apps/storefront/app/[locale]/(shop)/cart/page.tsx`:
+  ```tsx
+  import { Metadata } from "next";
+  import { CartTemplate } from "@/features/cart/components/cart-template";
+
+  export const metadata: Metadata = {
+    title: "Shopping Cart | Hyundai B2B Storefront",
+    description: "Manage your shopping cart and request quotes.",
+  };
+
+  export default function CartPage() {
+    return <CartTemplate />;
+  }
+  ```
+
+- [ ] **Step 2: Run final compilation and lint verification**
+  Run: `bun run check-types && bun run lint`
+  Expected: Success without any typescript errors or linter warnings.
+
+- [ ] **Step 3: Commit**
+  ```bash
+  git add apps/storefront/app/[locale]/(shop)/cart/page.tsx
+  git commit -m "feat(storefront): create dedicated /cart page route"
+  ```
