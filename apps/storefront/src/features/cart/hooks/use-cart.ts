@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useIsMounted } from "@/shared/hooks/useIsMounted";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -85,14 +85,6 @@ export const useCartStore = create<CartState>()(
 
 export function useCart<T>(selector: (state: CartState) => T): T | undefined {
   const store = useCartStore(selector);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, []);
-
+  const isMounted = useIsMounted();
   return isMounted ? store : undefined;
 }

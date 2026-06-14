@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
 import { CartTemplate } from "@/features/cart/components/cart-template";
 
-export const metadata: Metadata = {
-  title: "Shopping Cart | Hyundai B2B Storefront",
-  description: "Manage your shopping cart and request quotes.",
-};
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const { getTranslations } = await import("next-intl/server");
+  const t = await getTranslations({ locale: locale as "vi" | "en", namespace: "Metadata" });
+  return {
+    title: `${t("cartTitle")} | Hyundai B2B Storefront`,
+    description: t("cartDescription"),
+  };
+}
 
 export default function CartPage() {
   return <CartTemplate />;
