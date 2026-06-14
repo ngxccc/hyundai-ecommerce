@@ -3,7 +3,7 @@ import type { AuthService } from "@nhatnang/database/services";
 import type { headers } from "next/headers";
 import type { getTranslations } from "next-intl/server";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import type { TActionResult } from "@nhatnang/types";
+import type { ActionResult } from "@nhatnang/shared";
 
 // ---------------------------------------------------------------------------
 // Mocks — system boundaries only
@@ -30,8 +30,8 @@ interface ValidationErrorResult {
 
 type LoginActionResult =
   | ValidationErrorResult
-  | TActionResult<{ userId: string }>
-  | TActionResult;
+  | ActionResult<{ userId: string }>
+  | ActionResult;
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -147,7 +147,7 @@ describe("loginAction", () => {
     const result = (await loginAction({
       email: "valid@example.com",
       password: "secure123",
-    })) as TActionResult<{ userId: string }>;
+    })) as ActionResult<{ userId: string }>;
 
     expect(result.success).toBe(true);
 

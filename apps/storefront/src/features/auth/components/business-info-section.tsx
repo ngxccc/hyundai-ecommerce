@@ -12,11 +12,11 @@ import {
 import { Field, FieldLabel, FieldError } from "@nhatnang/ui/components/ui/field";
 import type { TRegisterForm } from "@nhatnang/database/validators";
 import { useTranslations } from "next-intl";
-import type { IAuthFormSectionProps } from "@nhatnang/types";
+import type { AuthFormSectionProps } from "@nhatnang/shared";
 
 export const BusinessInfoSection = ({
   form,
-}: IAuthFormSectionProps<TRegisterForm>) => {
+}: AuthFormSectionProps<TRegisterForm>) => {
   const t = useTranslations("Register");
   const businessType = useWatch({
     control: form.control,

@@ -4,7 +4,7 @@ import {
   AUTH_ERROR_CODES,
   SYSTEM_ERROR_CODES,
 } from "@nhatnang/shared/constants";
-import type { TActionResult } from "@nhatnang/types";
+import type { ActionResult } from "@nhatnang/shared";
 import type { getTranslations } from "next-intl/server";
 
 // ---------------------------------------------------------------------------
@@ -25,12 +25,12 @@ interface ValidationErrorResult {
   fieldErrors: Record<string, string[] | undefined>;
 }
 
-type ActionSuccessResult = TActionResult<{ userId: string }>;
+type ActionSuccessResult = ActionResult<{ userId: string }>;
 
 type RegisterActionResult =
   | ValidationErrorResult
   | ActionSuccessResult
-  | TActionResult;
+  | ActionResult;
 
 // ---------------------------------------------------------------------------
 // Test data helpers
@@ -300,7 +300,7 @@ describe("registerAction", () => {
   it("forwards error result from authService", async () => {
     mockRegister.mockRejectedValue(new Error("errors.INTERNAL_SERVER_ERROR"));
 
-    const result = (await registerAction(validEndUser)) as TActionResult;
+    const result = (await registerAction(validEndUser)) as ActionResult;
 
     expect(result.success).toBe(false);
 

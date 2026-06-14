@@ -1,5 +1,5 @@
 import { cacheLife } from "next/cache";
-import type { PromoCampaign } from "@nhatnang/types";
+import type { PromoCampaign } from "@nhatnang/shared";
 
 export const MOCK_PROMOTIONS: PromoCampaign[] = [
   {
