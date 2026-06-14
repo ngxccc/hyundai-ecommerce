@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { productService } from "@nhatnang/database/services";
-import { mapProductToDTO } from "@nhatnang/database/dtos";
+import { mapProductToAdminDTO } from "@nhatnang/database/dtos";
 import {
   createProductSchema,
   updateProductSchema,
@@ -80,7 +80,7 @@ export const createProductAction = async (formData: FormData) => {
     revalidatePath("/products");
     return {
       success: true,
-      data: newProduct ? mapProductToDTO(newProduct) : undefined,
+      data: newProduct ? mapProductToAdminDTO(newProduct) : undefined,
     };
   } catch (error) {
     const t = await getTranslations("errors");
@@ -168,7 +168,7 @@ export async function updateProductAction(id: string, formData: FormData) {
     revalidatePath(`/products/${id}/edit`);
     return {
       success: true,
-      data: updatedProduct ? mapProductToDTO(updatedProduct) : undefined,
+      data: updatedProduct ? mapProductToAdminDTO(updatedProduct) : undefined,
     };
   } catch (error) {
     const t = await getTranslations("errors");

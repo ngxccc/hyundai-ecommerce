@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { brandService } from "@nhatnang/database/services";
-import { mapBrandToDTO } from "@nhatnang/database/dtos";
+import { mapBrandToAdminDTO } from "@nhatnang/database/dtos";
 import {
   createBrandSchema,
   updateBrandSchema,
@@ -70,7 +70,7 @@ export const createBrandAction = async (formData: FormData) => {
     }
 
     revalidatePath("/brands");
-    return { success: true as const, data: mapBrandToDTO(brandData) };
+    return { success: true as const, data: mapBrandToAdminDTO(brandData) };
   } catch (error) {
     const t = await getTranslations("errors");
 
@@ -166,7 +166,7 @@ export async function updateBrandAction(id: string, formData: FormData) {
 
     revalidatePath("/brands");
     revalidatePath(`/brands/${id}/edit`);
-    return { success: true as const, data: mapBrandToDTO(brandData) };
+    return { success: true as const, data: mapBrandToAdminDTO(brandData) };
   } catch (error) {
     const t = await getTranslations("errors");
 

@@ -5,10 +5,10 @@ import { Card } from "@nhatnang/ui/components/ui/card";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import Image from "next/image";
 
-import type { ITopSellingProduct } from "@nhatnang/database/services";
+import type { TopSellingProduct } from "@nhatnang/database/services";
 
 interface TopProductsProps {
-  products: ITopSellingProduct[];
+  products: TopSellingProduct[];
 }
 
 const formatPrice = (priceStr: string) => {

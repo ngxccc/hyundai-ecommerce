@@ -11,10 +11,10 @@ import {
   Minus,
 } from "lucide-react";
 import { Card } from "@nhatnang/ui/components/ui/card";
-import type { IDashboardMetrics } from "@nhatnang/database/services";
+import type { DashboardMetrics } from "@nhatnang/database/services";
 
 interface MetricsCardsProps {
-  metrics: IDashboardMetrics;
+  metrics: DashboardMetrics;
 }
 
 const formatVND = (value: string | number) => {
