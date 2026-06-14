@@ -5,6 +5,7 @@ import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
+import { AddToCartButton } from "@/features/products";
 import {
   Card,
   CardContent,
@@ -79,7 +80,7 @@ export async function ProductsSection() {
                   <ProductImagePlaceholder />
                 )}
                 <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
-                  {t("model")}: {product.specs?.model ?? "Unknown"}
+                  {t("model")}: {product.specs?.model ?? "Không xác định"}
                 </Badge>
               </CardHeader>
 
@@ -104,24 +105,36 @@ export async function ProductsSection() {
                 </div>
               </CardContent>
 
-              <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between border-t p-6">
-                <span className="text-primary text-xl font-bold">
+              <CardFooter className="bg-muted/20 mt-auto flex flex-col items-stretch gap-3 border-t p-4 pt-4! sm:flex-row sm:items-center sm:justify-between sm:gap-2 lg:flex-col lg:items-stretch">
+                <span className="text-primary text-center text-xl font-bold sm:text-left lg:text-center">
                   {product.isQuoteOnly
                     ? t("contactPrice")
                     : priceFormatter.format(Number(product.price))}
                 </span>
 
-                <Button
-                  asChild
-                  size="lg"
-                  className="font-bold tracking-wider uppercase"
-                >
-                  <Link href={`/products/${product.slug}`}>
-                    {product.isQuoteOnly
-                      ? t("requestQuoteCta")
-                      : t("buyNowCta")}
-                  </Link>
-                </Button>
+                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row lg:w-full lg:flex-col">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="w-full font-bold tracking-wider uppercase sm:w-auto lg:w-full"
+                  >
+                    <Link href={`/products/${product.slug}`}>
+                      {product.isQuoteOnly
+                        ? t("requestQuoteCta")
+                        : t("buyNowCta")}
+                    </Link>
+                  </Button>
+
+                  {!product.isQuoteOnly && (
+                    <AddToCartButton
+                      productId={product.id}
+                      name={product.name}
+                      price={product.price}
+                      image={product.images?.[0] ?? ""}
+                      totalStock={product.totalStockCache}
+                    />
+                  )}
+                </div>
               </CardFooter>
             </Card>
           ))}

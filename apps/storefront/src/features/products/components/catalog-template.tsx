@@ -291,18 +291,18 @@ export async function CatalogTemplate({
                         </div>
                       </CardContent>
 
-                      <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between gap-2 border-t p-4 pt-4! lg:flex-col">
-                        <span className="text-primary text-xl font-bold">
+                      <CardFooter className="bg-muted/20 mt-auto flex flex-col items-stretch gap-3 border-t p-4 pt-4! sm:flex-row sm:items-center sm:justify-between sm:gap-2 lg:flex-col lg:items-stretch">
+                        <span className="text-primary text-center text-xl font-bold sm:text-left lg:text-center">
                           {product.isQuoteOnly
                             ? tHome("contactPrice")
                             : priceFormatter.format(Number(product.price))}
                         </span>
 
-                        <div className="flex w-full items-center gap-2 lg:flex-col">
+                        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row lg:w-full lg:flex-col">
                           <Button
                             asChild
                             size="lg"
-                            className="font-bold tracking-wider uppercase lg:w-full"
+                            className="w-full font-bold tracking-wider uppercase sm:w-auto lg:w-full"
                           >
                             <Link href={`/products/${product.slug}`}>
                               {product.isQuoteOnly

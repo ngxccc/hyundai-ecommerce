@@ -41,7 +41,7 @@ export function AddToCartButton({
     <Button
       variant="outline"
       size="lg"
-      className="font-bold tracking-wider uppercase lg:w-full gap-2 border-zinc-200 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
+      className="w-full gap-2 border-zinc-200 font-bold tracking-wider text-zinc-600 uppercase hover:bg-zinc-100 hover:text-zinc-900 sm:w-auto lg:w-full"
       onClick={handleAddToCart}
     >
       <Plus className="size-4" />

@@ -55,7 +55,7 @@ export async function CategoriesSection() {
 
   return (
     <section className="bg-background pt-14">
-      <div className="mx-auto max-w-7xl px-6 md:px-8">
+      <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:px-8">
         <div className="mb-8 border-b pb-4">
           <h2 className="font-display text-foreground text-4xl font-extrabold tracking-tighter md:text-5xl">
             {t("categories.title")}
