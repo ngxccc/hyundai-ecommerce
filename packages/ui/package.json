@@ -35,7 +35,7 @@
     "lucide-react": "^1.17.0",
     "next-themes": "^0.4.6",
     "radix-ui": "^1.5.0",
-    "react-hook-form": "^7.76.1",
+    "react-hook-form": "^7.79.0",
     "react-image-crop": "^11.0.10",
     "react-resizable-panels": "^4.11.2",
     "sonner": "^2.0.7",
@@ -45,7 +45,7 @@
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.3.1",
     "@tailwindcss/typography": "^0.5.19",
     "@types/lodash-es": "^4.17.12",
     "@types/react": "^19",
@@ -53,7 +53,7 @@
     "react": "^19",
     "react-dom": "^19",
     "shadcn": "^4.8.3",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4.3.1"
   },
   "peerDependencies": {
     "react": "^19",

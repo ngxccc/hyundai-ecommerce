@@ -24,11 +24,11 @@
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.3.1",
     "@types/mdx": "^2.0.14",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "postcss": "^8.5.14",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4.3.1"
   }
 }

@@ -29,7 +29,7 @@
     "radix-ui": "^1.4.3",
     "react": "^19",
     "react-dom": "^19",
-    "react-hook-form": "^7.76.1",
+    "react-hook-form": "^7.79.0",
     "shadcn": "^4.8.3",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0",
@@ -41,15 +41,13 @@
     "@nhatnang/database": "workspace:*",
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/shared": "workspace:*",
-    "@nhatnang/types": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
     "@nhatnang/ui": "workspace:*",
-    "@tailwindcss/postcss": "^4",
+    "@playwright/test": "^1.60.0",
+    "@tailwindcss/postcss": "^4.3.1",
     "@testing-library/react": "^16.2.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "happy-dom": "^14.12.3",
-    "tailwindcss": "^4",
-    "@playwright/test": "^1.60.0"
+    "tailwindcss": "^4.3.1"
   }
 }
