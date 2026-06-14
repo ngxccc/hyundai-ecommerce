@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Menu } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Link } from "@/i18n/routing";
+import { HeaderCart } from "./header-cart";
 
 export function Header() {
   const t = useTranslations("HomePage");
@@ -40,6 +41,8 @@ export function Header() {
 
         {/* Actions Area */}
         <div className="flex items-center gap-4">
+          <HeaderCart />
+
           {/* Desktop Actions */}
           <div className="hidden items-center gap-3 md:flex">
             <Button
