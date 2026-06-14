@@ -11,7 +11,8 @@
     "lint": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
     "start": "doppler run -- next start",
-    "test": "bun test src/"
+    "test": "bun test src/",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -49,6 +50,6 @@
     "@types/react-dom": "^19",
     "happy-dom": "^14.12.3",
     "tailwindcss": "^4",
-    "vitest": "^1.6.0"
+    "@playwright/test": "^1.60.0"
   }
 }
