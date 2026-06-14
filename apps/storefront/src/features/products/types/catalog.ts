@@ -1,4 +1,4 @@
-import type { TGetAllOptions } from "@nhatnang/database/services";
+import type { GetAllOptions } from "@nhatnang/database/services";
 
 /**
  * CatalogSearchParams
@@ -8,7 +8,7 @@ import type { TGetAllOptions } from "@nhatnang/database/services";
  * filtering (brand, category).
  */
 export type CatalogSearchParams = Omit<
-  TGetAllOptions,
+  GetAllOptions,
   | "categoryId"
   | "categoryIds"
   | "brandId"

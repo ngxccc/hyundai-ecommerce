@@ -1,8 +1,8 @@
 import type { JSONContent } from "@nhatnang/ui";
 import type {
-  TBrandDTO,
-  TCategoryDTO,
-  TProductDTO,
+  BrandDTO,
+  CategoryDTO,
+  ProductDTO,
 } from "@nhatnang/database/dtos";
 import type { TProductSpecs } from "@nhatnang/database/validators";
 import type { TCategoryWithChildren } from "@nhatnang/database/services";
@@ -56,7 +56,7 @@ export interface StorefrontBrand {
 }
 
 export function mapProductToStorefront(
-  dto: TProductDTO,
+  dto: ProductDTO,
   locale: Locale,
 ): StorefrontProduct {
   return {
@@ -82,7 +82,7 @@ export function mapProductToStorefront(
 }
 
 export function mapCategoryToStorefront(
-  dto: TCategoryDTO,
+  dto: CategoryDTO,
   locale: Locale,
 ): StorefrontCategory {
   return {
@@ -98,6 +98,7 @@ export function mapCategoryToStorefront(
     isActive: dto.isActive,
   };
 }
+
 export function mapCategoryTreeToStorefront(
   node: TCategoryWithChildren,
   locale: "vi" | "en",
@@ -113,7 +114,7 @@ export function mapCategoryTreeToStorefront(
 }
 
 export function mapBrandToStorefront(
-  dto: TBrandDTO,
+  dto: BrandDTO,
   locale: Locale,
 ): StorefrontBrand {
   return {
