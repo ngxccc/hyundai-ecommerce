@@ -7,6 +7,8 @@ const handleI18nRouting = createMiddleware(routing);
 export function proxy(request: NextRequest) {
   const response = handleI18nRouting(request);
   const isDev = process.env.NODE_ENV === "development";
+  const host = request.headers.get("host") ?? "";
+  const isLocal = host.includes("localhost") || host.includes("127.0.0.1");
 
   const cspHeader = `
     default-src 'self';
@@ -19,7 +21,7 @@ export function proxy(request: NextRequest) {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    upgrade-insecure-requests;
+    ${isDev || isLocal ? "" : "upgrade-insecure-requests;"}
   `.replace(/\s{2,}/g, " ").trim();
 
   response.headers.set("Content-Security-Policy", cspHeader);
