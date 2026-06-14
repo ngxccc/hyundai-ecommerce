@@ -22,6 +22,9 @@
     "lint": "turbo run lint",
     "test": "turbo run test"
   },
+  "overrides": {
+    "esbuild": "^0.28.1"
+  },
   "devDependencies": {
     "@types/bun": "^1",
     "@types/node": "^25",
