@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it } from "bun:test";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
-import { AuthService } from "./auth.service";
+import { DbAuthService } from "./auth.service";
 import { mockDb } from "../../tests/utils/db-mock";
 import type { IDatabase } from "../../client";
 import { mockSignInEmail, mockSignUpEmail } from "../../tests/utils/auth-mock";
 
-interface IAuthErrorLike {
+interface AuthErrorLike {
   isAPIError?: boolean;
   body: {
     code?: string;
@@ -13,14 +13,14 @@ interface IAuthErrorLike {
   message?: string;
 }
 
-const createApiError = (code: string, message: string): IAuthErrorLike => {
-  const err = new Error(message) as unknown as IAuthErrorLike;
+const createApiError = (code: string, message: string): AuthErrorLike => {
+  const err = new Error(message) as unknown as AuthErrorLike;
   err.isAPIError = true;
   err.body = { code };
   return err;
 };
 
-const authService = new AuthService(mockDb as unknown as IDatabase);
+const authService = new DbAuthService(mockDb as unknown as IDatabase);
 
 describe("AuthService", () => {
   beforeEach(() => {
@@ -100,7 +100,7 @@ describe("AuthService", () => {
 
   it("register returns INVALID_CREDENTIALS when Better Auth throws API error", () => {
     const err = new Error("exists");
-    (err as unknown as IAuthErrorLike).isAPIError = true;
+    (err as unknown as AuthErrorLike).isAPIError = true;
     mockSignUpEmail.mockRejectedValue(err);
 
     expect(

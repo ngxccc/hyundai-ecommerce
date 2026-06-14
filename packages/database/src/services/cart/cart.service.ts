@@ -1,13 +1,10 @@
 import { eq, and } from "drizzle-orm";
 import type { IDatabase } from "../../client";
 import { carts, cartItems, type TCart, type TCartItem } from "../../schemas";
-import type {
-  ICartService,
-  ILocalItem,
-  TCartItemWithProduct,
-} from "../interfaces";
+import type { CartService, LocalItem } from "../interfaces";
+import { mapCartItemToDTO, type CartItemDTO } from "../../dtos";
 
-export class CartService implements ICartService {
+export class DbCartService implements CartService {
   constructor(protected readonly db: IDatabase) {}
 
   async getOrCreateCart(userId: string): Promise<TCart> {
@@ -38,7 +35,7 @@ export class CartService implements ICartService {
     return record ?? null;
   }
 
-  async getCartItems(cartId: string): Promise<TCartItemWithProduct[]> {
+  async getCartItems(cartId: string): Promise<CartItemDTO[]> {
     const items = await this.db.query.cartItems.findMany({
       where: {
         cartId,
@@ -51,7 +48,7 @@ export class CartService implements ICartService {
         },
       },
     });
-    return items;
+    return items.map(mapCartItemToDTO);
   }
 
   async addToCart(
@@ -172,7 +169,7 @@ export class CartService implements ICartService {
 
   async mergeLocalItems(
     userId: string,
-    localItems: ILocalItem[],
+    localItems: LocalItem[],
   ): Promise<TCart> {
     return await this.db.transaction(async (tx) => {
       const userCart = await this.getOrCreateCart(userId);

@@ -1,7 +1,7 @@
 import type {
-  IOrderService,
-  IDashboardMetrics,
-  IMonthlyRevenue,
+  OrderService,
+  DashboardMetrics,
+  MonthlyRevenue,
 } from "../interfaces";
 import { and, eq, ne, gte, lt, sql } from "drizzle-orm";
 import { type IDatabase } from "../../client";
@@ -28,7 +28,7 @@ const complexOrderQueryConfig = {
   },
 } as const; // khoá cứng cấy ATS, không bị xuy luận thành any
 
-export class OrderService implements IOrderService {
+export class DbOrderService implements OrderService {
   constructor(protected readonly db: IDatabase) {}
 
   // NORMAL QUERIES
@@ -156,7 +156,7 @@ export class OrderService implements IOrderService {
       return { updatedOrder, selectedBid };
     });
   }
-  async getDashboardMetrics(): Promise<IDashboardMetrics> {
+  async getDashboardMetrics(): Promise<DashboardMetrics> {
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
@@ -273,7 +273,7 @@ export class OrderService implements IOrderService {
     };
   }
 
-  async getMonthlyRevenue(year: number): Promise<IMonthlyRevenue[]> {
+  async getMonthlyRevenue(year: number): Promise<MonthlyRevenue[]> {
     const startOfYear = new Date(year, 0, 1);
     const endOfYear = new Date(year, 11, 31, 23, 59, 59, 999);
 
@@ -295,7 +295,7 @@ export class OrderService implements IOrderService {
       .orderBy(sql`to_char(${orders.createdAt}, 'MM')`);
 
     const monthlyMap = new Map(result.map((r) => [r.month, r]));
-    const fullYearData: IMonthlyRevenue[] = [];
+    const fullYearData: MonthlyRevenue[] = [];
 
     for (let i = 1; i <= 12; i++) {
       const monthStr = i.toString().padStart(2, "0");
@@ -315,5 +315,5 @@ export class OrderService implements IOrderService {
 
 // thay vì dùng BuildQueryResult thì ta lấy luôn type của hàm getComplexOrder trả về
 export type ComplexOrder = NonNullable<
-  Awaited<ReturnType<typeof OrderService.prototype.getComplexOrder>>
+  Awaited<ReturnType<typeof DbOrderService.prototype.getComplexOrder>>
 >;

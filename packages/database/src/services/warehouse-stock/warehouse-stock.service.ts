@@ -2,10 +2,10 @@ import { eq, sql } from "drizzle-orm";
 import type { IDatabase } from "../../client";
 import { warehouseStocks } from "../../schemas/warehouse-stock.schema";
 import { products } from "../../schemas/product.schema";
-import type { IWarehouseStockService } from "../interfaces";
+import type { WarehouseStockService } from "../interfaces";
 import type { TUpdateWarehouseStockInput } from "../../validators";
 
-export class WarehouseStockService implements IWarehouseStockService {
+export class DbWarehouseStockService implements WarehouseStockService {
   constructor(protected readonly db: IDatabase) {}
 
   async setStock(

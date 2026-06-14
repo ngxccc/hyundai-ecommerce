@@ -9,10 +9,10 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
-import { BrandService } from "./brand.service";
+import { DbBrandService } from "./brand.service";
 import type { IDatabase } from "../../client";
 
-const brandService = new BrandService(mockDb as unknown as IDatabase);
+const brandService = new DbBrandService(mockDb as unknown as IDatabase);
 
 describe("BrandService", () => {
   beforeEach(() => {

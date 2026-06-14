@@ -21,6 +21,7 @@ import type {
   TCart,
   TCartItem,
 } from "../schemas";
+import type { CartItemDTO } from "../dtos";
 
 import type {
   TCreateBrandInput,
@@ -35,7 +36,7 @@ import type {
 import type { ComplexOrder } from "./order/order.service";
 import type { ComplexQuote, QuoteListItem } from "./quotes/quotes.service";
 
-export interface IDashboardMetrics {
+export interface DashboardMetrics {
   totalRevenue: string;
   totalOrders: number;
   totalProducts: number;
@@ -45,13 +46,13 @@ export interface IDashboardMetrics {
   customersGrowth: number;
 }
 
-export interface IMonthlyRevenue {
+export interface MonthlyRevenue {
   month: string;
   revenue: string;
   orderCount: number;
 }
 
-export interface ITopSellingProduct {
+export interface TopSellingProduct {
   id: string;
   nameVi: string;
   nameEn: string | null;
@@ -70,7 +71,7 @@ export interface RegisterOptions {
   callbackURL?: string;
 }
 
-export interface IAuthService<TLoginForm = unknown, TRegisterForm = unknown> {
+export interface AuthService<TLoginForm = unknown, TRegisterForm = unknown> {
   loginEmail(
     data: TLoginForm,
     options?: LoginOptions,
@@ -82,7 +83,7 @@ export interface IAuthService<TLoginForm = unknown, TRegisterForm = unknown> {
 }
 
 // --- Brand Service Interfaces ---
-export interface IBrandService {
+export interface BrandService {
   getAll(): Promise<TBrand[]>;
   getById(id: string): Promise<TBrand | undefined>;
   create(input: TCreateBrandInput): Promise<TBrand>;
@@ -95,7 +96,7 @@ export type TCategoryWithChildren = TCategory & {
   children?: TCategoryWithChildren[];
 };
 
-export interface ICategoryService {
+export interface CategoryService {
   getAll(): Promise<TCategory[]>;
   getById(id: string): Promise<TCategory | undefined>;
   create(input: TCreateCategoryInput): Promise<TCategory>;
@@ -110,7 +111,7 @@ export type TUpdateProductData = Partial<{
   [K in keyof TNewProduct]: TNewProduct[K] | undefined;
 }>;
 
-export interface TGetAllOptions {
+export interface GetAllOptions {
   after?: string | undefined;
   before?: string | undefined;
   categoryId?: string | undefined;
@@ -130,7 +131,7 @@ export interface TGetAllOptions {
   sort?: "priceAsc" | "priceDesc" | "newest" | undefined;
 }
 
-export interface IProductFilterSpecs {
+export interface ProductFilterSpecs {
   power?: number | null;
   voltage?: number | null;
   phase?: "1phase" | "3phase" | null;
@@ -140,44 +141,42 @@ export interface IProductFilterSpecs {
   alternatorBrand?: string | null;
 }
 
-export interface IProductFilterMetadata {
+export interface ProductFilterMetadata {
   id: string;
   nameVi: string;
   nameEn: string | null;
   categoryId: string | null;
   brandId: string | null;
-  specs: IProductFilterSpecs | null;
+  specs: ProductFilterSpecs | null;
 }
 
-export type TCartItemWithProduct = TCartItem & { product: TProduct | null };
-
-export interface ILocalItem {
+export interface LocalItem {
   productId: string;
   quantity: number;
 }
 
-export interface IProductService {
+export interface ProductService {
   create(data: TNewProduct): Promise<TProduct | undefined>;
   update(id: string, data: TUpdateProductData): Promise<TProduct | undefined>;
   delete(id: string): Promise<boolean>;
   getById(id: string): Promise<TProduct | undefined>;
   getAll(
     limit?: number,
-    options?: TGetAllOptions,
+    options?: GetAllOptions,
   ): Promise<{
     data: TProduct[];
     hasMore: boolean;
     nextCursor?: string | undefined;
     prevCursor?: string | undefined;
   }>;
-  getTopSellingProducts(limit: number): Promise<ITopSellingProduct[]>;
-  getFiltersMetadata(): Promise<IProductFilterMetadata[]>;
+  getTopSellingProducts(limit: number): Promise<TopSellingProduct[]>;
+  getFiltersMetadata(): Promise<ProductFilterMetadata[]>;
   getAllActiveSlugs(): Promise<string[]>;
   getActiveProductBySlug(slug: string): Promise<TProduct | null>;
 }
 
 // --- Warehouse Service Interfaces ---
-export interface IWarehouseService {
+export interface WarehouseService {
   getAll(): Promise<TWarehouse[]>;
   getById(id: string): Promise<TWarehouse | undefined>;
   create(data: TCreateWarehouseInput): Promise<TWarehouse>;
@@ -186,14 +185,14 @@ export interface IWarehouseService {
 }
 
 // --- Warehouse Stock Service Interfaces ---
-export interface IWarehouseStockService {
+export interface WarehouseStockService {
   setStock(stockData: TUpdateWarehouseStockInput): Promise<TWarehouseStock>;
   syncTotalStock(productId: string): Promise<void>;
   getByProductId(productId: string): Promise<TWarehouseStock[]>;
 }
 
 // --- User Service Interfaces ---
-export interface IUserService {
+export interface UserService {
   findByPhone(phone: string): Promise<{ id: string } | undefined>;
   findByEmail(email: string): Promise<{ id: string } | undefined>;
   checkDuplicateUser(
@@ -209,7 +208,7 @@ export interface IUserService {
 }
 
 // --- Order Service Interfaces ---
-export interface IOrderService {
+export interface OrderService {
   list(filters?: { status?: TOrder["status"] }): Promise<ComplexOrder[]>;
   createOrder(data: TNewOrder): Promise<TOrder | undefined>;
   updateOrderStatus(
@@ -222,12 +221,12 @@ export interface IOrderService {
     orderId: string,
     bidId: string,
   ): Promise<{ updatedOrder: TOrder; selectedBid: TShippingBid }>;
-  getDashboardMetrics(): Promise<IDashboardMetrics>;
-  getMonthlyRevenue(year: number): Promise<IMonthlyRevenue[]>;
+  getDashboardMetrics(): Promise<DashboardMetrics>;
+  getMonthlyRevenue(year: number): Promise<MonthlyRevenue[]>;
 }
 
 // --- Quotes Service Interfaces ---
-export interface IQuotesService {
+export interface QuotesService {
   createQuote(
     data: TNewQuote,
     items: Omit<TNewQuoteItem, "quoteId">[],
@@ -253,7 +252,7 @@ export interface IQuotesService {
 }
 
 // --- Dealer Tier Service Interfaces ---
-export interface IDealerTierService {
+export interface DealerTierService {
   create(data: TNewDealerTier): Promise<TDealerTier>;
   update(
     id: string,
@@ -265,10 +264,10 @@ export interface IDealerTierService {
 }
 
 // --- Cart Service Interfaces ---
-export interface ICartService {
+export interface CartService {
   getOrCreateCart(userId: string): Promise<TCart>;
   getCartById(cartId: string): Promise<TCart | null>;
-  getCartItems(cartId: string): Promise<TCartItemWithProduct[]>;
+  getCartItems(cartId: string): Promise<CartItemDTO[]>;
   addToCart(
     cartId: string,
     productId: string,
@@ -280,5 +279,5 @@ export interface ICartService {
     quantity: number,
   ): Promise<TCartItem | null>;
   removeFromCart(cartId: string, productId: string): Promise<void>;
-  mergeLocalItems(userId: string, localItems: ILocalItem[]): Promise<TCart>;
+  mergeLocalItems(userId: string, localItems: LocalItem[]): Promise<TCart>;
 }

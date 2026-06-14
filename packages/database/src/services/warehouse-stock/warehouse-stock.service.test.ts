@@ -7,10 +7,10 @@ import {
   mockWhere,
   mockSelect,
 } from "../../tests/utils/db-mock";
-import { WarehouseStockService } from "./warehouse-stock.service";
+import { DbWarehouseStockService } from "./warehouse-stock.service";
 import type { IDatabase } from "../../client";
 
-const warehouseStockService = new WarehouseStockService(mockDb as unknown as IDatabase);
+const warehouseStockService = new DbWarehouseStockService(mockDb as unknown as IDatabase);
 
 describe("WarehouseStockService", () => {
   beforeEach(() => {

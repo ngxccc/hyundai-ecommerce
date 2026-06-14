@@ -1,4 +1,4 @@
-import type { IWarehouseService } from "../interfaces";
+import type { WarehouseService } from "../interfaces";
 import { warehouses, type TWarehouse } from "../../schemas/warehouse.schema";
 import type { IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
@@ -8,7 +8,7 @@ import type {
 } from "../../validators";
 import { handleServiceError } from "../../utils";
 
-export class WarehouseService implements IWarehouseService {
+export class DbWarehouseService implements WarehouseService {
   constructor(protected readonly db: IDatabase) {}
 
   async getAll(): Promise<TWarehouse[]> {

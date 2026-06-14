@@ -8,12 +8,12 @@ import {
   mockDelete,
   mockReturning,
 } from "../../tests/utils/db-mock";
-import { CartService } from "./cart.service";
+import { DbCartService } from "./cart.service";
 import type { IDatabase } from "../../client";
 import type { TCart, TCartItem } from "../../schemas";
-import type { TCartItemWithProduct } from "../interfaces";
+import type { CartItemDTO } from "../../dtos";
 
-const cartService = new CartService(mockDb as unknown as IDatabase);
+const cartService = new DbCartService(mockDb as unknown as IDatabase);
 
 describe("CartService", () => {
   beforeEach(() => {
@@ -42,7 +42,6 @@ describe("CartService", () => {
       expect(mockInsert).toHaveBeenCalled();
       expect(result).toEqual(mockCart);
     });
-
   });
 
   describe("getCartById()", () => {
@@ -85,7 +84,7 @@ describe("CartService", () => {
           quantity: 5,
           product: null,
         },
-      ] as TCartItemWithProduct[];
+      ] as CartItemDTO[];
       mockFindMany.mockResolvedValueOnce(mockItems);
 
       const result = await cartService.getCartItems("cart-1");

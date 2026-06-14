@@ -1,4 +1,4 @@
-import type { IQuotesService } from "../interfaces";
+import type { QuotesService } from "../interfaces";
 import { QUOTE_CONSTANTS } from "@nhatnang/shared/constants";
 import { eq } from "drizzle-orm";
 import { type IDatabase } from "../../client";
@@ -14,7 +14,7 @@ import {
   type TNewQuoteMessage,
 } from "../../schemas";
 
-export class QuotesService implements IQuotesService {
+export class DbQuotesService implements QuotesService {
   constructor(protected readonly db: IDatabase) {}
 
   /**
@@ -221,9 +221,9 @@ export class QuotesService implements IQuotesService {
 }
 
 export type ComplexQuote = NonNullable<
-  Awaited<ReturnType<typeof QuotesService.prototype.getComplexQuote>>
+  Awaited<ReturnType<typeof DbQuotesService.prototype.getComplexQuote>>
 >;
 
 export type QuoteListItem = Awaited<
-  ReturnType<typeof QuotesService.prototype.listQuotes>
+  ReturnType<typeof DbQuotesService.prototype.listQuotes>
 >[number];
