@@ -50,7 +50,7 @@ export function HeaderCart() {
   return (
     <>
       {/* Mobile View: Direct Link */}
-      <Link href="/cart" className="relative p-2 md:hidden">
+      <Link href="/cart" className="relative p-2 md:hidden" aria-label={t("title")}>
         <ShoppingCart className="size-6 text-zinc-600" />
         {totalCount > 0 && (
           <Badge className="bg-primary text-primary-foreground absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full p-0 font-mono text-[9px] font-bold">
@@ -66,6 +66,7 @@ export function HeaderCart() {
             <Link
               href="/cart"
               className="relative block cursor-pointer p-2 outline-none"
+              aria-label={t("title")}
               onMouseEnter={handleOpen}
               onMouseLeave={handleClose}
               onClick={() => setIsOpen(false)}
