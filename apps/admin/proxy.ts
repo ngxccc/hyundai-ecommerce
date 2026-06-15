@@ -58,7 +58,13 @@ export async function proxy(request: NextRequest) {
     console.error("Middleware Auth Error:", error);
   }
 
-  const isAdmin = user?.role === "admin";
+  const allowedRoles = [
+    "SUPER_ADMIN",
+    "SALES_REPRESENTATIVE",
+    "ACCOUNTANT",
+    "WAREHOUSE_MANAGER",
+  ];
+  const isAdmin = user && allowedRoles.includes(user.role);
 
   if (user) {
     if (!isAdmin && !isForbiddenRoute) return redirect(`/${locale}/forbidden`);

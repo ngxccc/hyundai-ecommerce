@@ -19,7 +19,8 @@ export async function POST(request: NextRequest) {
   try {
     // 1. Session and role check
     const session = await getCachedSession();
-    if (session?.user?.role !== "admin") {
+    const allowedRoles = ["SUPER_ADMIN", "SALES_REPRESENTATIVE", "ACCOUNTANT", "WAREHOUSE_MANAGER"];
+    if (!session?.user?.role || !allowedRoles.includes(session.user.role)) {
       return NextResponse.json({ error: t("unauthorized") }, { status: 401 });
     }
     // 2. Rate limiting check

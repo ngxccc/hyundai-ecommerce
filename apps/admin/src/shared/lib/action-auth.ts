@@ -1,4 +1,7 @@
 import { getCachedSession } from "./session";
+import type { userRoleEnum } from "@nhatnang/database/schemas";
+
+export type UserRole = (typeof userRoleEnum.enumValues)[number];
 
 export class AuthError extends Error {
   constructor(message: string) {
@@ -9,14 +12,34 @@ export class AuthError extends Error {
 
 export const requireAuth = async () => {
   const session = await getCachedSession();
-  
+
   if (!session?.user) {
-    throw new AuthError("Unauthorized");
+    throw new AuthError("UNAUTHORIZED");
   }
-  
-  if (session.user.role !== "admin") {
-    throw new AuthError("Forbidden: Admin access required");
+
+  const allowedRoles = [
+    "SUPER_ADMIN",
+    "SALES_REPRESENTATIVE",
+    "ACCOUNTANT",
+    "WAREHOUSE_MANAGER",
+  ];
+  if (!allowedRoles.includes(session.user.role)) {
+    throw new AuthError("FORBIDDEN");
   }
-  
+
+  return session;
+};
+
+export const assertRole = async (allowedRoles: UserRole[]) => {
+  const session = await getCachedSession();
+
+  if (!session?.user) {
+    throw new AuthError("UNAUTHORIZED");
+  }
+
+  if (!allowedRoles.includes(session.user.role)) {
+    throw new AuthError("FORBIDDEN");
+  }
+
   return session;
 };

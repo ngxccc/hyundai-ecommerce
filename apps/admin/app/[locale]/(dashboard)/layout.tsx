@@ -9,7 +9,8 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }>) {
   const session = await getCachedSession();
-  const isAdmin = session?.user?.role === "admin";
+  const allowedRoles = ["SUPER_ADMIN", "SALES_REPRESENTATIVE", "ACCOUNTANT", "WAREHOUSE_MANAGER"];
+  const isAdmin = session?.user?.role && allowedRoles.includes(session.user.role);
 
   return (
     <div className="bg-background text-foreground flex h-screen overflow-hidden font-sans">

@@ -8,7 +8,7 @@ import {
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { requireAuth, AuthError } from "@/shared/lib/action-auth";
+import { assertRole, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 
 /**
@@ -16,7 +16,7 @@ import { getTranslations } from "next-intl/server";
  */
 export const createDealerTierAction = async (formData: FormData) => {
   try {
-    await requireAuth();
+    await assertRole(["SUPER_ADMIN", "ACCOUNTANT"]);
 
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
@@ -66,14 +66,15 @@ export const updateCustomerTierAction = async (
   userId: string,
   payload: {
     dealerTierId: string | null;
-    businessType: "dealer" | "contractor" | "end_user" | "distributor";
+    businessType: "DEALER" | "CONTRACTOR" | "END_USER" | "DISTRIBUTOR";
   },
 ) => {
   try {
-    await requireAuth();
+    await assertRole(["SUPER_ADMIN", "ACCOUNTANT"]);
 
     // Map business role dynamically: promoting to "dealer" role if businessType is dealer
-    const role = payload.businessType === "dealer" ? "dealer_approver" : "customer";
+    const role =
+      payload.businessType === "DEALER" ? "DEALER_APPROVER" : "CUSTOMER";
 
     const updatedUser = await userService.update(userId, {
       dealerTierId: payload.dealerTierId,

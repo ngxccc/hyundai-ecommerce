@@ -54,7 +54,7 @@ interface CustomerDirectoryProps {
   dealerTiers: TDealerTier[];
 }
 
-type TabType = "all" | "dealer" | "contractor" | "distributor" | "end_user";
+type TabType = "all" | "DEALER" | "CONTRACTOR" | "DISTRIBUTOR" | "END_USER";
 
 export const CustomerDirectory = ({
   initialUsers,
@@ -71,19 +71,19 @@ export const CustomerDirectory = ({
   // Dialog State
   const [selectedUser, setSelectedUser] = useState<UserWithTier | null>(null);
   const [businessType, setBusinessType] = useState<
-    "dealer" | "contractor" | "end_user" | "distributor"
-  >("end_user");
+    "DEALER" | "CONTRACTOR" | "END_USER" | "DISTRIBUTOR"
+  >("END_USER");
   const [selectedTierId, setSelectedTierId] = useState<string | null>(null);
 
   // Compute stats/counts
   const counts = {
     all: initialUsers.length,
-    dealer: initialUsers.filter((u) => u.businessType === "dealer").length,
-    contractor: initialUsers.filter((u) => u.businessType === "contractor")
+    dealer: initialUsers.filter((u) => u.businessType === "DEALER").length,
+    contractor: initialUsers.filter((u) => u.businessType === "CONTRACTOR")
       .length,
-    distributor: initialUsers.filter((u) => u.businessType === "distributor")
+    distributor: initialUsers.filter((u) => u.businessType === "DISTRIBUTOR")
       .length,
-    end_user: initialUsers.filter((u) => u.businessType === "end_user").length,
+    end_user: initialUsers.filter((u) => u.businessType === "END_USER").length,
   };
 
   // Filter users based on tab and search query
@@ -113,7 +113,7 @@ export const CustomerDirectory = ({
     startTransition(async () => {
       const response = await updateCustomerTierAction(selectedUser.id, {
         businessType,
-        dealerTierId: businessType === "dealer" ? selectedTierId : null,
+        dealerTierId: businessType === "DEALER" ? selectedTierId : null,
       });
 
       if (response.success) {
@@ -129,19 +129,19 @@ export const CustomerDirectory = ({
   // Business Type Badges
   const renderBusinessTypeBadge = (type: TUser["businessType"]) => {
     const styles = {
-      dealer: "bg-blue-500/10 text-blue-500 border border-blue-500/20",
-      contractor:
+      DEALER: "bg-blue-500/10 text-blue-500 border border-blue-500/20",
+      CONTRACTOR:
         "bg-purple-500/10 text-purple-500 border border-purple-500/20",
-      distributor:
+      DISTRIBUTOR:
         "bg-orange-500/10 text-orange-500 border border-orange-500/20",
-      end_user: "bg-slate-500/10 text-slate-500 border border-slate-500/20",
+      END_USER: "bg-slate-500/10 text-slate-500 border border-slate-500/20",
     };
 
     const labels = {
-      dealer: t("tabs.dealer"),
-      contractor: t("tabs.contractor"),
-      distributor: t("tabs.distributor"),
-      end_user: t("tabs.end_user"),
+      DEALER: t("tabs.dealer"),
+      CONTRACTOR: t("tabs.contractor"),
+      DISTRIBUTOR: t("tabs.distributor"),
+      END_USER: t("tabs.end_user"),
     };
 
     return (
@@ -154,10 +154,10 @@ export const CustomerDirectory = ({
   // Role Badges
   const renderRoleBadge = (role: TUser["role"]) => {
     if (
-      role === "super_admin" ||
-      role === "sales_representative" ||
-      role === "accountant" ||
-      role === "warehouse_manager"
+      role === "SUPER_ADMIN" ||
+      role === "SALES_REPRESENTATIVE" ||
+      role === "ACCOUNTANT" ||
+      role === "WAREHOUSE_MANAGER"
     ) {
       return (
         <Badge
@@ -169,7 +169,7 @@ export const CustomerDirectory = ({
         </Badge>
       );
     }
-    if (role === "dealer_approver" || role === "dealer_purchaser") {
+    if (role === "DEALER_APPROVER" || role === "DEALER_PURCHASER") {
       return (
         <Badge
           variant="default"
@@ -220,25 +220,25 @@ export const CustomerDirectory = ({
                   {t("tabs.all")} ({counts.all})
                 </TabsTrigger>
                 <TabsTrigger
-                  value="dealer"
+                  value="DEALER"
                   className="snap-align-start shrink-0 px-4 py-2 text-xs font-semibold"
                 >
                   {t("tabs.dealer")} ({counts.dealer})
                 </TabsTrigger>
                 <TabsTrigger
-                  value="contractor"
+                  value="CONTRACTOR"
                   className="snap-align-start shrink-0 px-4 py-2 text-xs font-semibold"
                 >
                   {t("tabs.contractor")} ({counts.contractor})
                 </TabsTrigger>
                 <TabsTrigger
-                  value="distributor"
+                  value="DISTRIBUTOR"
                   className="snap-align-start shrink-0 px-4 py-2 text-xs font-semibold"
                 >
                   {t("tabs.distributor")} ({counts.distributor})
                 </TabsTrigger>
                 <TabsTrigger
-                  value="end_user"
+                  value="END_USER"
                   className="snap-align-start shrink-0 px-4 py-2 text-xs font-semibold"
                 >
                   {t("tabs.end_user")} ({counts.end_user})
@@ -307,7 +307,7 @@ export const CustomerDirectory = ({
                       {renderBusinessTypeBadge(user.businessType)}
                     </TableCell>
                     <TableCell className="py-4">
-                      {user.businessType === "dealer" && user.tier ? (
+                      {user.businessType === "DEALER" && user.tier ? (
                         <div className="flex flex-col">
                           <span className="text-sm font-semibold text-emerald-600">
                             {user.tier.nameVi}
@@ -397,7 +397,7 @@ export const CustomerDirectory = ({
                       <span>{user.phone}</span>
                     </div>
                   )}
-                  {user.businessType === "dealer" && user.tier && (
+                  {user.businessType === "DEALER" && user.tier && (
                     <div className="mt-2 flex items-center justify-between rounded-lg border border-emerald-500/10 bg-emerald-50/50 p-2.5">
                       <span className="text-xs font-bold text-emerald-800">
                         {t("card.assignedTier")}
@@ -486,22 +486,22 @@ export const CustomerDirectory = ({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="border bg-white shadow-md">
-                    <SelectItem value="end_user">
+                    <SelectItem value="END_USER">
                       {t("tabs.end_user")}
                     </SelectItem>
-                    <SelectItem value="contractor">
+                    <SelectItem value="CONTRACTOR">
                       {t("tabs.contractor")}
                     </SelectItem>
-                    <SelectItem value="distributor">
+                    <SelectItem value="DISTRIBUTOR">
                       {t("tabs.distributor")}
                     </SelectItem>
-                    <SelectItem value="dealer">{t("tabs.dealer")}</SelectItem>
+                    <SelectItem value="DEALER">{t("tabs.dealer")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Dealer Tiers discount selection - only visible when business type is Dealer */}
-              {businessType === "dealer" && (
+              {businessType === "DEALER" && (
                 <div className="animate-in fade-in slide-in-from-top-1 space-y-2 duration-200">
                   <label className="text-sm font-bold text-slate-700">
                     {t("dialog.dealerTierLabel")}
