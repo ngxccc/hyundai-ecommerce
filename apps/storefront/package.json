@@ -43,7 +43,7 @@
     "@nhatnang/shared": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
     "@nhatnang/ui": "workspace:*",
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.61.0",
     "@tailwindcss/postcss": "^4.3.1",
     "@testing-library/react": "^16.2.0",
     "@types/react": "^19",
