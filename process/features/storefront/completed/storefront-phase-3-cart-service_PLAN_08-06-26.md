@@ -1,15 +1,47 @@
-# Storefront Cart UI Integration - Implementation Plan
+# Phase 3: Cart Service & Storefront Integration — Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+**Date**: 15-06-26  
+**Complexity**: Simple  
+Status: ✅ COMPLETED
 
-**Goal:** Implement the client-side cart UI (Header Popover, Add to Cart buttons, and dedicated Cart Page) for the B2B Storefront application using Zustand, Radix UI, and Sonner toasts.
+## Overview
 
-**Architecture:** A client-first, hydration-safe UI flow. Subscribes to the Zustand client store using a deferred mount check to prevent hydration mismatch, displays skeleton loaders for stable page layouts, and locks quantity selections based on product stock cache limits.
+Implement the client-side cart UI (Header Popover, Add to Cart buttons, and dedicated Cart Page) for the B2B Storefront application using Zustand, Radix UI, and Sonner toasts.
+This phase aligns with the styling and layout conventions outlined in `process/context/all-context.md`.
 
-**Tech Stack:** React 19, Next.js 16 (App Router), Zustand (persist), Radix UI Popover, Tailwind CSS v4, Sonner.
+## Phase Completion Rules
 
----
+* Cart UI functions end-to-end including adding items, updating quantities, removing items, and displaying the correct subtotal in both header popover and cart page.
+* Type checks and tests pass. Refer to `process/context/tests/all-tests.md` for verification guidelines.
 
+## Acceptance Criteria
+
+* Catalog page has Add to Cart buttons that correctly add items to the cart and respect stock limits.
+* Header cart shows accurate counts and a hover popover with the first few items.
+* Dedicated `/cart` page displays the full list of items, subtotals, and lets user adjust quantities.
+
+## Touchpoints
+
+* `apps/storefront/src/features/products/components/catalog-template.tsx`
+* `apps/storefront/src/features/home/components/header.tsx`
+* Localization messages in English and Vietnamese.
+
+## Public Contracts
+
+* Cart items store contract: `useCart` and `useCartStore` API.
+
+## Blast Radius
+
+* Storefront UI layout and product details.
+
+## Verification Evidence
+
+* Unit tests for AddToCartButton, HeaderCart, and CartTemplate.
+* Verified manually in browser.
+
+## Resume and Execution Handoff
+
+* Completion instruction: This phase is completed and verified. Next Step: ENTER EXECUTE MODE on storefront-cart-mobile-ui_PLAN_14-06-26.md.
 ## File Structure
 
 - **Create**:
@@ -29,7 +61,7 @@
 
 ---
 
-## Tasks
+## Implementation Checklist
 
 ### Task 1: Add translation keys for Cart UI
 
@@ -38,7 +70,7 @@
 - Modify: `apps/storefront/messages/en.json`
 - Modify: `apps/storefront/messages/vi.json`
 
-- [ ] **Step 1: Update English messages**
+- [x] **Step 1: Update English messages**
       Add keys inside the JSON structure under `"Cart"` namespace.
       Modify `apps/storefront/messages/en.json`:
 
@@ -59,7 +91,7 @@
   }
   ```
 
-- [ ] **Step 2: Update Vietnamese messages**
+- [x] **Step 2: Update Vietnamese messages**
       Modify `apps/storefront/messages/vi.json`:
 
   ```json
@@ -79,7 +111,7 @@
   }
   ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
   ```bash
   git add apps/storefront/messages/en.json apps/storefront/messages/vi.json
   git commit -m "chore(storefront): add localization keys for cart ui"
@@ -94,7 +126,7 @@
 - Create: `apps/storefront/src/features/products/components/add-to-cart-button.tsx`
 - Create: `apps/storefront/src/features/products/components/__tests__/add-to-cart-button.test.tsx`
 
-- [ ] **Step 1: Write unit tests first**
+- [x] **Step 1: Write unit tests first**
       Create `apps/storefront/src/features/products/components/__tests__/add-to-cart-button.test.tsx`:
 
   ```tsx
@@ -144,11 +176,11 @@
   });
   ```
 
-- [ ] **Step 2: Run test to verify it fails/passes mocks**
+- [x] **Step 2: Run test to verify it fails/passes mocks**
       Run: `bun test apps/storefront/src/features/products/components/__tests__/add-to-cart-button.test.tsx`
       Expected: FAIL with component file missing.
 
-- [ ] **Step 3: Write component implementation**
+- [x] **Step 3: Write component implementation**
       Create `apps/storefront/src/features/products/components/add-to-cart-button.tsx`:
 
   ```tsx
@@ -205,11 +237,11 @@
   }
   ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
       Run: `bun test apps/storefront/src/features/products/components/__tests__/add-to-cart-button.test.tsx`
       Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   ```bash
   git add apps/storefront/src/features/products/components/add-to-cart-button.tsx apps/storefront/src/features/products/components/__tests__/add-to-cart-button.test.tsx
   git commit -m "feat(storefront): implement AddToCartButton component"
@@ -223,7 +255,7 @@
 
 - Modify: `apps/storefront/src/features/products/components/catalog-template.tsx`
 
-- [ ] **Step 1: Render AddToCartButton next to Buy Now**
+- [x] **Step 1: Render AddToCartButton next to Buy Now**
       Modify `apps/storefront/src/features/products/components/catalog-template.tsx:299-310`:
 
   ```tsx
@@ -264,11 +296,11 @@
   </CardFooter>;
   ```
 
-- [ ] **Step 2: Verify lint and compilation**
+- [x] **Step 2: Verify lint and compilation**
       Run: `bun run check-types`
       Expected: Clean compilation with no errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
   ```bash
   git add apps/storefront/src/features/products/components/catalog-template.tsx
   git commit -m "feat(storefront): render AddToCartButton on product catalog page"
@@ -283,7 +315,7 @@
 - Create: `apps/storefront/src/features/home/components/header-cart.tsx`
 - Create: `apps/storefront/src/features/home/components/__tests__/header-cart.test.tsx`
 
-- [ ] **Step 1: Write unit tests first**
+- [x] **Step 1: Write unit tests first**
       Create `apps/storefront/src/features/home/components/__tests__/header-cart.test.tsx`:
 
   ```tsx
@@ -321,11 +353,11 @@
   });
   ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
       Run: `bun test apps/storefront/src/features/home/components/__tests__/header-cart.test.tsx`
       Expected: FAIL with missing component file.
 
-- [ ] **Step 3: Write component implementation**
+- [x] **Step 3: Write component implementation**
       Create `apps/storefront/src/features/home/components/header-cart.tsx`:
 
   ```tsx
@@ -445,11 +477,11 @@
   }
   ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
       Run: `bun test apps/storefront/src/features/home/components/__tests__/header-cart.test.tsx`
       Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   ```bash
   git add apps/storefront/src/features/home/components/header-cart.tsx apps/storefront/src/features/home/components/__tests__/header-cart.test.tsx
   git commit -m "feat(storefront): implement HeaderCart component with popover"
@@ -463,7 +495,7 @@
 
 - Modify: `apps/storefront/src/features/home/components/header.tsx`
 
-- [ ] **Step 1: Render HeaderCart in Header actions**
+- [x] **Step 1: Render HeaderCart in Header actions**
       Modify `apps/storefront/src/features/home/components/header.tsx`:
 
   ```tsx
@@ -478,11 +510,11 @@
     <div className="hidden items-center gap-3 md:flex">
   ```
 
-- [ ] **Step 2: Verify compile and lint**
+- [x] **Step 2: Verify compile and lint**
       Run: `bun run check-types`
       Expected: Clean compilation with 0 errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
   ```bash
   git add apps/storefront/src/features/home/components/header.tsx
   git commit -m "feat(storefront): integrate HeaderCart in main header"
@@ -497,7 +529,7 @@
 - Create: `apps/storefront/src/features/cart/components/cart-template.tsx`
 - Create: `apps/storefront/src/features/cart/components/__tests__/cart-template.test.tsx`
 
-- [ ] **Step 1: Write unit tests first**
+- [x] **Step 1: Write unit tests first**
       Create `apps/storefront/src/features/cart/components/__tests__/cart-template.test.tsx`:
 
   ```tsx
@@ -542,11 +574,11 @@
   });
   ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
       Run: `bun test apps/storefront/src/features/cart/components/__tests__/cart-template.test.tsx`
       Expected: FAIL with missing component file.
 
-- [ ] **Step 3: Write component implementation**
+- [x] **Step 3: Write component implementation**
       Create `apps/storefront/src/features/cart/components/cart-template.tsx`:
 
   ```tsx
@@ -729,11 +761,11 @@
   }
   ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
       Run: `bun test apps/storefront/src/features/cart/components/__tests__/cart-template.test.tsx`
       Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   ```bash
   git add apps/storefront/src/features/cart/components/cart-template.tsx apps/storefront/src/features/cart/components/__tests__/cart-template.test.tsx
   git commit -m "feat(storefront): implement CartTemplate component with items list and summary"
@@ -747,7 +779,7 @@
 
 - Create: `apps/storefront/app/[locale]/(shop)/cart/page.tsx`
 
-- [ ] **Step 1: Create the cart page route**
+- [x] **Step 1: Create the cart page route**
       Create `apps/storefront/app/[locale]/(shop)/cart/page.tsx`:
 
   ```tsx
@@ -764,11 +796,11 @@
   }
   ```
 
-- [ ] **Step 2: Run final compilation and lint verification**
+- [x] **Step 2: Run final compilation and lint verification**
       Run: `bun run check-types && bun run lint`
       Expected: Success without any typescript errors or linter warnings.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
   ```bash
   git add apps/storefront/app/[locale]/(shop)/cart/page.tsx
   git commit -m "feat(storefront): create dedicated /cart page route"
