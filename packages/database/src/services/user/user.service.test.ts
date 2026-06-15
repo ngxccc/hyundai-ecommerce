@@ -19,12 +19,12 @@ const mockUser: TUser = {
   email: "test@test.com",
   emailVerified: true,
   image: null,
-  role: "dealer_approver",
+  role: "DEALER_APPROVER",
   dealerTierId: "tier-1",
   phone: "0901234567",
   companyName: "Hyundai Corp",
   taxId: null,
-  businessType: "dealer",
+  businessType: "DEALER",
   province: "HCM",
   creditLimit: "0.00",
   currentDebt: "0.00",
@@ -70,7 +70,7 @@ describe("UserService", () => {
     mockReturning.mockResolvedValueOnce([mockUser]);
 
     const result = await userService.update("user-123", {
-      role: "dealer_approver",
+      role: "DEALER_APPROVER",
       dealerTierId: "tier-1",
     });
 
@@ -82,7 +82,7 @@ describe("UserService", () => {
     const mockUsers = [mockUser];
     mockFindMany.mockResolvedValueOnce(mockUsers);
 
-    const result = await userService.list({ role: "dealer_approver" });
+    const result = await userService.list({ role: "DEALER_APPROVER" });
 
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(result).toEqual(mockUsers);

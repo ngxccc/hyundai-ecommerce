@@ -55,7 +55,7 @@ export const registerSchema = z
   })
   .strict()
   .superRefine((data, ctx) => {
-    const isBusinessCustomer = data.businessType !== "end_user";
+    const isBusinessCustomer = data.businessType !== "END_USER";
 
     if (isBusinessCustomer) {
       validateRequiredTextField(

@@ -62,14 +62,23 @@ export const auth = betterAuth({
 
   user: {
     additionalFields: {
-      role: { type: "string", required: true, defaultValue: "customer" },
+      role: {
+        type: schema.userRoleEnum.enumValues,
+        required: true,
+        defaultValue: "CUSTOMER",
+      },
       dealerTierId: { type: "string", required: false },
       deletedAt: { type: "date", required: false },
       phone: { type: "string", required: true },
       companyName: { type: "string", required: false },
       taxId: { type: "string", required: false },
-      businessType: { type: "string", required: true },
+      businessType: {
+        type: schema.businessTypeEnum.enumValues,
+        required: true,
+      },
       province: { type: "string", required: false },
+      creditLimit: { type: "string", required: false },
+      currentDebt: { type: "string", required: false },
     },
   },
 

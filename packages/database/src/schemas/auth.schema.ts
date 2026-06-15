@@ -12,20 +12,20 @@ import { dealerTiers } from "./dealer-tier.schema";
 import { fullEntity } from "./helpers.schema";
 
 export const userRoleEnum = pgEnum("user_role", [
-  "super_admin",
-  "sales_representative",
-  "accountant",
-  "warehouse_manager",
-  "dealer_approver",
-  "dealer_purchaser",
-  "customer",
+  "SUPER_ADMIN",
+  "SALES_REPRESENTATIVE",
+  "ACCOUNTANT",
+  "WAREHOUSE_MANAGER",
+  "DEALER_APPROVER",
+  "DEALER_PURCHASER",
+  "CUSTOMER",
 ]);
 
 export const businessTypeEnum = pgEnum("business_type", [
-  "dealer",
-  "contractor",
-  "end_user",
-  "distributor",
+  "DEALER",
+  "CONTRACTOR",
+  "END_USER",
+  "DISTRIBUTOR",
 ]);
 
 export const users = snakeCase.table(
@@ -36,14 +36,14 @@ export const users = snakeCase.table(
     email: text().notNull().unique(),
     emailVerified: boolean().default(false).notNull(),
     image: text(),
-    role: userRoleEnum().default("customer").notNull(),
+    role: userRoleEnum().default("CUSTOMER").notNull(),
     dealerTierId: uuid().references(() => dealerTiers.id, {
       onDelete: "set null",
     }),
     phone: text().notNull().unique(),
     companyName: text(),
     taxId: text(),
-    businessType: businessTypeEnum().default("end_user").notNull(),
+    businessType: businessTypeEnum().default("END_USER").notNull(),
     province: text(),
     creditLimit: numeric({ precision: 15, scale: 2 }).default("0.00").notNull(),
     currentDebt: numeric({ precision: 15, scale: 2 }).default("0.00").notNull(),

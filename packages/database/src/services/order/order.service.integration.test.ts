@@ -39,8 +39,8 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
         name: "Test User Concurrency",
         email: testUserEmail,
         phone: testUserPhone,
-        role: "customer",
-        businessType: "end_user",
+        role: "CUSTOMER",
+        businessType: "END_USER",
       })
       .returning();
     if (!user) {

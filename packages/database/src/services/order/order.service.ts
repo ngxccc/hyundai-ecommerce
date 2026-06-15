@@ -239,10 +239,10 @@ export class DbOrderService implements OrderService {
       .from(users)
       .where(
         and(
-          ne(users.role, "super_admin"),
-          ne(users.role, "sales_representative"),
-          ne(users.role, "accountant"),
-          ne(users.role, "warehouse_manager"),
+          ne(users.role, "SUPER_ADMIN"),
+          ne(users.role, "SALES_REPRESENTATIVE"),
+          ne(users.role, "ACCOUNTANT"),
+          ne(users.role, "WAREHOUSE_MANAGER"),
           gte(users.createdAt, thirtyDaysAgo),
         ),
       );
@@ -253,10 +253,10 @@ export class DbOrderService implements OrderService {
       .from(users)
       .where(
         and(
-          ne(users.role, "super_admin"),
-          ne(users.role, "sales_representative"),
-          ne(users.role, "accountant"),
-          ne(users.role, "warehouse_manager"),
+          ne(users.role, "SUPER_ADMIN"),
+          ne(users.role, "SALES_REPRESENTATIVE"),
+          ne(users.role, "ACCOUNTANT"),
+          ne(users.role, "WAREHOUSE_MANAGER"),
           gte(users.createdAt, sixtyDaysAgo),
           lt(users.createdAt, thirtyDaysAgo),
         ),
