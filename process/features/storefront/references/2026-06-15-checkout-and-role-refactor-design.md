@@ -16,6 +16,7 @@ This design specification details the implementation of a high-performance B2B c
 * Refactor database roles to support distinct business personas: `super_admin`, `sales_representative`, `accountant`, `warehouse_manager`, `dealer_approver`, `dealer_purchaser`, and `customer`.
 * Support split payments (20% deposit online, 80% remainder online or offline) and manual bank transfer fallback.
 * Ensure strict transaction safety (idempotency, pessimistic locking, raw body webhook validation, and clear audit logging).
+* Implement a robust, real-time notification and offline alerting system to handle immediate payment matching notifications, credit approvals, and on-duty escalation.
 
 ---
 
@@ -139,7 +140,50 @@ Provides audit logs for all credit limit updates for compliance.
 
 ---
 
-## 5. Verification and Security Constraints
+## 5. Real-Time Notification & Offline Alerting Architecture
+
+To guarantee low latency, robust data delivery, and zero missed critical alerts, the system integrates a real-time notification engine with offline fallback capabilities.
+
+### 5.1 Real-Time Subscription Stack (MVP vs. Scale)
+* **MVP Strategy**: Use a managed WebSocket platform like **Pusher / Ably** inside their free tiers (up to 100-200 concurrent connections, $0/month). It eliminates setup complexity (SSL certificates, horizontal socket routing, clustering) and handles auto-reconnections natively.
+* **Long-Term Scaling Strategy**: Migrate to a self-hosted stateful **Bun WebSocket server (or Soketi)** running inside Docker containers on local cloud providers (e.g., Viettel IDC or Vietnix). A clustered Bun server backed by a **Redis Pub/Sub** backplane costs ~$5/month while comfortably handling 100k+ concurrent idle connections.
+* **Subscription Authentication**: All client subscriptions to private user channels (e.g., `private-user-user_uuid`) must authenticate using an HMAC-SHA256 token signed by the server's private key to prevent tenant data sniffing.
+
+### 5.2 Transactional Outbox Pattern for Alerts
+To prevent database connection pool saturation, publishing notifications is decoupled from database transactions.
+1. When a business event happens (such as a payment webhook or quote submission), the transaction block writes the main tables and inserts a notification request in the `outbox_event` table.
+2. A background cron worker (running every 10 seconds under Bun or 1 minute under Vercel Serverless) queries `PENDING` events using a fail-safe optimistic query (`SELECT ... FOR UPDATE SKIP LOCKED`).
+3. The worker dispatches notifications to the target channel (WebSockets/Pusher if online, or fallback channels if offline) and updates the status to `PROCESSED`.
+
+### 5.3 Connection Heartbeat Presence
+The platform checks user connectivity before routing messages to save costs on external SMS/Zalo.
+* **Redis Heartbeat**: When clients connect, the server registers a key `presence:user:<userId>` with a 30-second TTL. The client browser pings every 15 seconds.
+* **Offline Detection**: If the presence key is missing when an alert is fired, the fallback offline routing engine is activated instantly.
+
+### 5.4 Offline Local Fallback Channels (Vietnam Context)
+When dealers or staff members are offline, notifications are automatically routed to local communication tools:
+
+#### A. External Dealers: Zalo Notification Service (ZNS) & SMS
+* **Primary Channel**: **Zalo ZNS** is the primary B2B customer update channel in Vietnam due to high adoption and low cost (~200 - 300 VNĐ per transactional message, free on failed delivery). It allows interactive call-to-action buttons (redirection to payment or order history).
+* **Setup**: Requires a verified Zalo Official Account (OA) and pre-approval of message templates by VNG.
+* **Secondary Channel (SMS Brandname)**: Used as a backup for users without a Zalo account. Cost is higher (~500 - 850 VNĐ per message) and content is restricted to plain text.
+
+#### B. Internal Staff & CRM Alerts: Telegram / Slack Bots
+* **Primary Channel**: **Telegram & Slack Bots** are used for internal CRM notifications. They are **100% free** and support inline interactive buttons (e.g., `[Verify Payment]`, `[Review Limit]`), letting accountants or sales reps act directly from their mobile phones.
+* **Staff Duty Alerting**: Telegram bots push to shared department channels (e.g., `#finance-alerts`, `#sales-pipeline-alerts`), allowing the first online staff member to claim the task.
+
+### 5.5 Critical Milestone Escalation Matrix
+If alerts remain unread or unresolved, the system enforces a strict time-based escalation tree:
+
+| B2B Milestone | T = 0 (Instant) | T = 2 Hours (Unresolved) | T = 12 Hours (Unresolved) | T = 24 Hours (Unresolved / Critical) |
+| :--- | :--- | :--- | :--- | :--- |
+| **1. B2B Trade Credit Pending Approval** | Send Zalo ZNS to `dealer_approver` & notify assigned `sales_representative` via Telegram Bot. | Resend Zalo ZNS. Alert Sales Manager on Telegram. | Direct business email to Dealer. CRM Dashboard flags record in yellow. | Auto-hold/cancel order session to release vehicle inventory. Brandname SMS alert to Sales Director. |
+| **2. Manual Bank Transfer Pending Accountant** | Push CRM Toast. Post transaction details to Telegram `#finance-alerts` group. | Direct Telegram DM to primary `accountant`. Slack alert to Lead Accountant. | Flag CRM dashboard in flashing red. High-priority email to Finance Director. | Direct Brandname SMS alert to CFO and `super_admin`. Block warehouse shipping releases. |
+| **3. Webhook Matching Mismatch / Security Hold** | Log headers, place order on `SUSPICIOUS_PAYMENT_HOLD`, post alert to Slack `#devops-security`. | Direct Telegram warning and SMS to On-duty DevOps Engineer and Lead Accountant. | Direct Telegram alert to CFO and CTO. Auto-lock user account's checkout interface. | Send detailed forensic report to executives and `super_admin`. |
+
+---
+
+## 6. Verification and Security Constraints
 
 * **Role Authorization**: Access to `apps/admin` is restricted to internal staff: `["super_admin", "sales_representative", "accountant", "warehouse_manager"].includes(user.role)`.
 * **Server-Side Action Authorization (RBAC)**: All sensitive actions modifying credit limits, current debt, or manual payment verifications MUST execute a shared helper `assertRole(["super_admin", "accountant"])` inside the server action to verify permissions against the latest database state (never trusting stale session JWTs).
@@ -149,7 +193,7 @@ Provides audit logs for all credit limit updates for compliance.
 
 ---
 
-## 6. Appendix: Comparative Analysis & Technology Choice
+## 7. Appendix: Comparative Analysis & Technology Choice
 
 To automate VietQR bank transfers with webhook matching, we compared PayOS against its main alternatives in Vietnam (SePay, Casso, and traditional payment gateways like VNPAY):
 
