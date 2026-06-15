@@ -43,7 +43,7 @@
     "@t3-oss/env-core": "^0.13.11",
     "@nhatnang/ui": "workspace:*",
     "better-auth": "^1.6.18",
-    "drizzle-orm": "v1.0.0-rc.3",
+    "drizzle-orm": "v1.0.0-rc.4-273829f",
     "postgres": "^3.4.9",
     "resend": "^6.12.3",
     "uuid": "^14.0.0",
