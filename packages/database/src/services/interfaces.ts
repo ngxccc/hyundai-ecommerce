@@ -223,6 +223,9 @@ export interface OrderService {
   ): Promise<{ updatedOrder: TOrder; selectedBid: TShippingBid }>;
   getDashboardMetrics(): Promise<DashboardMetrics>;
   getMonthlyRevenue(year: number): Promise<MonthlyRevenue[]>;
+  approveDealerOrder(orderId: string): Promise<TOrder | undefined>;
+  verifyManualBankTransfer(orderId: string, verifiedById: string): Promise<TOrder | undefined>;
+  approveOrderCancellation(orderId: string): Promise<TOrder | undefined>;
 }
 
 // --- Quotes Service Interfaces ---

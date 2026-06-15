@@ -10,6 +10,7 @@ import {
   shippingBids,
   products,
   users,
+  paymentTransactions,
   type TNewOrder,
   type TOrder,
   type TShippingBid,
@@ -319,6 +320,86 @@ export class DbOrderService implements OrderService {
     }
 
     return fullYearData;
+  }
+
+  async approveDealerOrder(orderId: string): Promise<TOrder | undefined> {
+    const [updatedOrder] = await this.db
+      .update(orders)
+      .set({ approvalStatus: "APPROVED" })
+      .where(eq(orders.id, orderId))
+      .returning();
+    return updatedOrder;
+  }
+
+  async verifyManualBankTransfer(
+    orderId: string,
+    verifiedById: string,
+  ): Promise<TOrder | undefined> {
+    return await this.db.transaction(async (tx) => {
+      const order = await tx.query.orders.findFirst({
+        where: { id: orderId },
+      });
+      if (!order) {
+        return undefined;
+      }
+
+      const [updatedOrder] = await tx
+        .update(orders)
+        .set({ paymentStatus: "FULLY_PAID" })
+        .where(eq(orders.id, orderId))
+        .returning();
+
+      await tx.insert(paymentTransactions).values({
+        orderId,
+        amount: order.totalAmount,
+        paymentMethod: "MANUAL_TRANSFER",
+        transactionType: "FULL",
+        status: "SUCCESS",
+        referenceCode: "MANUAL-" + orderId,
+        verifiedBy: verifiedById,
+      });
+
+      return updatedOrder;
+    });
+  }
+
+  async approveOrderCancellation(orderId: string): Promise<TOrder | undefined> {
+    return await this.db.transaction(async (tx) => {
+      const order = await tx.query.orders.findFirst({
+        where: { id: orderId },
+      });
+      if (!order) {
+        return undefined;
+      }
+
+      if (order.paymentMethod === "TRADE_CREDIT") {
+        const user = await tx.query.users.findFirst({
+          where: { id: order.userId },
+        });
+        if (user) {
+          const newDebt = (
+            parseFloat(user.currentDebt) - parseFloat(order.totalAmount)
+          ).toFixed(2);
+          await tx
+            .update(users)
+            .set({ currentDebt: newDebt })
+            .where(eq(users.id, order.userId));
+        }
+        const [updatedOrder] = await tx
+          .update(orders)
+          .set({ status: "CANCELLED" })
+          .where(eq(orders.id, orderId))
+          .returning();
+        return updatedOrder;
+      } else {
+        const [updatedOrder] = await tx
+          .update(orders)
+          .set({ status: "REFUND_PENDING" })
+          .where(eq(orders.id, orderId))
+          .returning();
+        return updatedOrder;
+      }
+    });
   }
 }
 
