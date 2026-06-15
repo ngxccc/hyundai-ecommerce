@@ -84,9 +84,12 @@ export class DbUserService implements UserService {
       .from(users)
       .where(
         and(
-          ne(users.role, "admin"),
-          gte(users.createdAt, cutoffDate)
-        )
+          ne(users.role, "super_admin"),
+          ne(users.role, "sales_representative"),
+          ne(users.role, "accountant"),
+          ne(users.role, "warehouse_manager"),
+          gte(users.createdAt, cutoffDate),
+        ),
       );
     return Number(result[0]?.count ?? 0);
   }

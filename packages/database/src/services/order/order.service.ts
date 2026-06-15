@@ -76,8 +76,7 @@ export class DbOrderService implements OrderService {
         .returning();
 
       const isSoldStatus = (s: TOrder["status"]) =>
-        s === "processing" || s === "shipped" || s === "delivered";
-
+        s === "PROCESSING" || s === "SHIPPED" || s === "DELIVERED";
       // trước đó đã bán hay chưa?
       const wasSold = isSoldStatus(oldStatus);
       // trước đó chuwa bán, giờ mới bán
@@ -85,7 +84,7 @@ export class DbOrderService implements OrderService {
 
       // trước đó chưa bán giờ update thành đã bán
       if (!wasSold && isNowSold) {
-        // from pending -> processing,...
+        // from PENDING -> PROCESSING,...
         for (const item of currentOrder.items) {
           await tx
             .update(products)
@@ -96,7 +95,7 @@ export class DbOrderService implements OrderService {
         }
       } else if (wasSold && !isNowSold) {
         // đã bán giờ huỷ hoặc refund
-        // from processing -> cancelled or refunded
+        // from PROCESSING -> CANCELLED or REFUNDED
         for (const item of currentOrder.items) {
           await tx
             .update(products)
@@ -177,7 +176,7 @@ export class DbOrderService implements OrderService {
     const totalRevenueRes = await this.db
       .select({ sum: sql<string | null>`sum(${orders.totalAmount})` })
       .from(orders)
-      .where(ne(orders.status, "cancelled"));
+      .where(ne(orders.status, "CANCELLED"));
     const totalRevenue = totalRevenueRes[0]?.sum ?? "0";
 
     // 4. Current 30 days revenue & count
@@ -189,7 +188,7 @@ export class DbOrderService implements OrderService {
       .from(orders)
       .where(
         and(
-          ne(orders.status, "cancelled"),
+          ne(orders.status, "CANCELLED"),
           gte(orders.createdAt, thirtyDaysAgo),
         ),
       );
@@ -205,7 +204,7 @@ export class DbOrderService implements OrderService {
       .from(orders)
       .where(
         and(
-          ne(orders.status, "cancelled"),
+          ne(orders.status, "CANCELLED"),
           gte(orders.createdAt, sixtyDaysAgo),
           lt(orders.createdAt, thirtyDaysAgo),
         ),
@@ -238,7 +237,15 @@ export class DbOrderService implements OrderService {
     const newCustomersRes = await this.db
       .select({ count: sql<number>`count(*)` })
       .from(users)
-      .where(and(ne(users.role, "admin"), gte(users.createdAt, thirtyDaysAgo)));
+      .where(
+        and(
+          ne(users.role, "super_admin"),
+          ne(users.role, "sales_representative"),
+          ne(users.role, "accountant"),
+          ne(users.role, "warehouse_manager"),
+          gte(users.createdAt, thirtyDaysAgo),
+        ),
+      );
     const newCustomers = newCustomersRes[0]?.count ?? 0;
 
     const previousCustomersRes = await this.db
@@ -246,13 +253,15 @@ export class DbOrderService implements OrderService {
       .from(users)
       .where(
         and(
-          ne(users.role, "admin"),
+          ne(users.role, "super_admin"),
+          ne(users.role, "sales_representative"),
+          ne(users.role, "accountant"),
+          ne(users.role, "warehouse_manager"),
           gte(users.createdAt, sixtyDaysAgo),
           lt(users.createdAt, thirtyDaysAgo),
         ),
       );
     const previousCustomers = previousCustomersRes[0]?.count ?? 0;
-
     const customersGrowth =
       previousCustomers === 0
         ? newCustomers > 0
@@ -286,7 +295,7 @@ export class DbOrderService implements OrderService {
       .from(orders)
       .where(
         and(
-          ne(orders.status, "cancelled"),
+          ne(orders.status, "CANCELLED"),
           gte(orders.createdAt, startOfYear),
           lt(orders.createdAt, endOfYear),
         ),

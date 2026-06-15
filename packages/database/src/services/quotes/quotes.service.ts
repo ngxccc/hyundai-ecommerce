@@ -179,7 +179,7 @@ export class DbQuotesService implements QuotesService {
         .insert(orders)
         .values({
           userId: quote.userId,
-          status: "pending",
+          status: "PENDING",
           shippingFee: "0.00",
           shippingAddress: QUOTE_CONSTANTS.DEFAULT_SHIPPING_ADDRESS,
           totalAmount: totalAmountDecimal.toFixed(2),

@@ -160,7 +160,7 @@ export class DbProductService implements ProductService {
       .from(orderItems)
       .innerJoin(products, eq(orderItems.productId, products.id))
       .innerJoin(orders, eq(orderItems.orderId, orders.id))
-      .where(ne(orders.status, "cancelled"))
+      .where(ne(orders.status, "CANCELLED"))
       .groupBy(
         orderItems.productId,
         products.nameVi,

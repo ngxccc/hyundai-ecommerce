@@ -330,7 +330,7 @@ async function seed() {
       name: "Nguyễn Văn Hùng (Nhật Năng Partner)",
       email: "hung.nguyen@nhatnangpartner.vn",
       emailVerified: true,
-      role: "dealer" as const,
+      role: "dealer_approver" as const,
       dealerTierId: goldTierId,
       phone: "0912.345.678",
       companyName: "Công ty Cổ phần Cơ điện Miền Nam",
@@ -343,7 +343,7 @@ async function seed() {
       name: "Trần Thanh Sơn",
       email: "son.tran@vietnamconstruct.com",
       emailVerified: true,
-      role: "dealer" as const,
+      role: "dealer_approver" as const,
       dealerTierId: silverTierId,
       phone: "0987.654.321",
       companyName: "Tổng Công ty Xây dựng Việt Nam",
@@ -375,7 +375,7 @@ async function seed() {
     {
       id: order1Id,
       userId: user1Id,
-      status: "pending" as const,
+      status: "PENDING" as const,
       shippingFee: "150000.00",
       shippingAddress: "302/105 Phan Huy Ích, Phường 12, Quận Gò Vấp, TP. Hồ Chí Minh",
       totalAmount: "46650000.00", // (12,500,000 * 2) + (21,500,000 * 1) + 150,000 = 46,650,000
@@ -383,7 +383,7 @@ async function seed() {
     {
       id: order2Id,
       userId: user2Id,
-      status: "processing" as const,
+      status: "PROCESSING" as const,
       shippingFee: "250000.00",
       shippingAddress: "Số 12, Ngõ 45, Đường Nguyễn Xiển, Quận Thanh Xuân, Hà Nội",
       totalAmount: "29150000.00", // (28,900,000 * 1) + 250,000 = 29,150,000
@@ -391,7 +391,7 @@ async function seed() {
     {
       id: order3Id,
       userId: user3Id,
-      status: "shipped" as const,
+      status: "SHIPPED" as const,
       shippingFee: "100000.00",
       shippingAddress: "45 Lê Lợi, Quận Hải Châu, Thành phố Đà Nẵng",
       totalAmount: "12600000.00", // (12,500,000 * 1) + 100,000 = 12,600,000
@@ -399,7 +399,7 @@ async function seed() {
     {
       id: order4Id,
       userId: user1Id,
-      status: "delivered" as const,
+      status: "DELIVERED" as const,
       shippingFee: "200000.00",
       shippingAddress: "Khu công nghiệp Amata, Biên Hòa, Đồng Nai",
       totalAmount: "64700000.00", // (21,500,000 * 3) + 200,000 = 64,700,000
