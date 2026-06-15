@@ -6,13 +6,18 @@ import {
   pgEnum,
   uuid,
   snakeCase,
+  numeric,
 } from "drizzle-orm/pg-core";
 import { dealerTiers } from "./dealer-tier.schema";
 import { fullEntity } from "./helpers.schema";
 
 export const userRoleEnum = pgEnum("user_role", [
-  "admin",
-  "dealer",
+  "super_admin",
+  "sales_representative",
+  "accountant",
+  "warehouse_manager",
+  "dealer_approver",
+  "dealer_purchaser",
   "customer",
 ]);
 
@@ -40,6 +45,8 @@ export const users = snakeCase.table(
     taxId: text(),
     businessType: businessTypeEnum().default("end_user").notNull(),
     province: text(),
+    creditLimit: numeric({ precision: 15, scale: 2 }).default("0.00").notNull(),
+    currentDebt: numeric({ precision: 15, scale: 2 }).default("0.00").notNull(),
   },
   (table) => [
     index("user_dealer_tier_idx").on(table.dealerTierId),

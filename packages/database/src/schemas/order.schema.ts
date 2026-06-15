@@ -13,12 +13,32 @@ import { products } from "./product.schema";
 import { sql } from "drizzle-orm";
 
 export const orderStatusEnum = pgEnum("order_status", [
-  "pending",
-  "processing",
-  "shipped",
-  "delivered",
-  "cancelled",
-  "refunded",
+  "PENDING",
+  "PROCESSING",
+  "SHIPPED",
+  "DELIVERED",
+  "CANCELLED",
+  "REFUNDED",
+]);
+
+export const paymentMethodEnum = pgEnum("payment_method", [
+  "GATEWAY",
+  "BANK_TRANSFER",
+  "TRADE_CREDIT",
+  "PAYOS",
+  "MANUAL_TRANSFER",
+]);
+
+export const orderPaymentStatusEnum = pgEnum("order_payment_status", [
+  "UNPAID",
+  "DEPOSIT_PAID",
+  "FULLY_PAID",
+  "PENDING_VERIFICATION",
+]);
+
+export const approvalStatusEnum = pgEnum("approval_status", [
+  "APPROVED",
+  "PENDING_APPROVAL",
 ]);
 
 export const orders = snakeCase.table(
@@ -28,10 +48,13 @@ export const orders = snakeCase.table(
     userId: uuid()
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
-    status: orderStatusEnum().notNull().default("pending"),
+    status: orderStatusEnum().notNull().default("PENDING"),
     shippingFee: numeric({ precision: 15, scale: 2 }).notNull(),
     shippingAddress: text().notNull(),
     totalAmount: numeric({ precision: 15, scale: 2 }).notNull(),
+    paymentMethod: paymentMethodEnum().notNull().default("GATEWAY"),
+    paymentStatus: orderPaymentStatusEnum().notNull().default("UNPAID"),
+    approvalStatus: approvalStatusEnum().notNull().default("APPROVED"),
   },
   (table) => [
     index("order_user_status_created_idx").on(
@@ -41,7 +64,7 @@ export const orders = snakeCase.table(
     ),
     index("order_active_metrics_idx")
       .on(table.createdAt)
-      .where(sql`${table.status} != 'cancelled'`),
+      .where(sql`${table.status} != 'CANCELLED'`),
   ],
 );
 

@@ -1,14 +1,6 @@
 import { numeric, pgEnum, snakeCase, text, uuid } from "drizzle-orm/pg-core";
-import { orders } from "./order.schema";
+import { orders, paymentMethodEnum } from "./order.schema";
 import { fullEntity } from "./helpers.schema";
-
-export const paymentMethodEnum = pgEnum("payment_method", [
-  "COD",
-  "MOMO",
-  "ZALOPAY",
-  "VNPAY",
-  "BANK_TRANSFER",
-]);
 
 export const paymentStatusEnum = pgEnum("payment_status", [
   "PENDING",
