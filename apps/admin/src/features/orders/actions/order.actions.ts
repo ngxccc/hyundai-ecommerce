@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { orderService } from "@nhatnang/database/services";
 import { type TOrder } from "@nhatnang/database/schemas";
-import { requireAuth, AuthError } from "@/shared/lib/action-auth";
+import { requireAuth, AuthError, assertRole } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import {
   updateOrderStatusSchema,
@@ -24,7 +24,7 @@ export const updateOrderStatusAction = async (
     const parsed = updateOrderStatusSchema.safeParse({ orderId, status });
     if (!parsed.success) {
       return {
-        success: false as const,
+        success: false,
         error: t("validationError"),
       };
     }
@@ -32,22 +32,22 @@ export const updateOrderStatusAction = async (
     const updated = await orderService.updateOrderStatus(orderId, status);
     if (!updated) {
       return {
-        success: false as const,
+        success: false,
         error: t("orderNotFound"),
       };
     }
 
-    revalidatePath("/orders");
-    revalidatePath(`/orders/${orderId}`);
+    revalidatePath("/[locale]/orders", "page");
+    revalidatePath("/[locale]/orders/[id]", "page");
 
     return {
-      success: true as const,
+      success: true,
       data: updated,
     };
   } catch (error) {
     if (error instanceof AuthError) {
       return {
-        success: false as const,
+        success: false,
         error:
           error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
@@ -55,7 +55,7 @@ export const updateOrderStatusAction = async (
 
     console.error("[updateOrderStatusAction]", error);
     return {
-      success: false as const,
+      success: false,
       error: t("updateOrderStatusFailed") || "Failed to update order status",
     };
   }
@@ -74,7 +74,7 @@ export const selectShippingBidAction = async (
     const parsed = selectShippingBidSchema.safeParse({ orderId, bidId });
     if (!parsed.success) {
       return {
-        success: false as const,
+        success: false,
         error: tErrors("validationError"),
       };
     }
@@ -82,16 +82,16 @@ export const selectShippingBidAction = async (
     const result = await orderService.selectWinningBid(orderId, bidId);
     if (!result) {
       return {
-        success: false as const,
+        success: false,
         error: tErrors("orderNotFound"),
       };
     }
 
-    revalidatePath("/orders");
-    revalidatePath(`/orders/${orderId}`);
+    revalidatePath("/[locale]/orders", "page");
+    revalidatePath("/[locale]/orders/[id]", "page");
 
     return {
-      success: true as const,
+      success: true,
       data: {
         shippingFee: result.updatedOrder.shippingFee,
         selectedBid: result.selectedBid,
@@ -100,7 +100,7 @@ export const selectShippingBidAction = async (
   } catch (error) {
     if (error instanceof AuthError) {
       return {
-        success: false as const,
+        success: false,
         error:
           error.message === "Unauthorized"
             ? tErrors("unauthorized")
@@ -115,7 +115,7 @@ export const selectShippingBidAction = async (
           tAdminOrders(error.message.replace("errors.", ""))
         : tAdminOrders("shippingBidsSelectWinnerError");
     return {
-      success: false as const,
+      success: false,
       error: message,
     };
   }
@@ -142,7 +142,7 @@ export const addShippingBidAction = async (data: TAddShippingBidInput) => {
         }
       }
       return {
-        success: false as const,
+        success: false,
         error: message,
       };
     }
@@ -154,17 +154,17 @@ export const addShippingBidAction = async (data: TAddShippingBidInput) => {
       internalNote: parsed.data.internalNote,
     });
 
-    revalidatePath("/orders");
-    revalidatePath(`/orders/${parsed.data.orderId}`);
+    revalidatePath("/[locale]/orders", "page");
+    revalidatePath("/[locale]/orders/[id]", "page");
 
     return {
-      success: true as const,
+      success: true,
       data: newBid,
     };
   } catch (error) {
     if (error instanceof AuthError) {
       return {
-        success: false as const,
+        success: false,
         error:
           error.message === "Unauthorized"
             ? tErrors("unauthorized")
@@ -179,8 +179,126 @@ export const addShippingBidAction = async (data: TAddShippingBidInput) => {
           tAdminOrders(error.message.replace("errors.", ""))
         : tErrors("createShippingBidFailed") || "Failed to add shipping bid";
     return {
-      success: false as const,
+      success: false,
       error: message,
+    };
+  }
+};
+
+export const approveDealerOrderAction = async (orderId: string) => {
+  const t = await getTranslations("errors");
+  try {
+    await assertRole(["SUPER_ADMIN", "SALES_REPRESENTATIVE", "ACCOUNTANT"]);
+
+    const updated = await orderService.approveDealerOrder(orderId);
+    if (!updated) {
+      return {
+        success: false,
+        error: t("orderNotFound") || "Order not found",
+      };
+    }
+
+    revalidatePath("/[locale]/orders", "page");
+    revalidatePath("/[locale]/orders/[id]", "page");
+
+    return {
+      success: true,
+      data: updated,
+    };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return {
+        success: false,
+        error:
+          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+      };
+    }
+
+    console.error("[approveDealerOrderAction]", error);
+    return {
+      success: false,
+      error: t("approveDealerOrderFailed") || "Failed to approve dealer order",
+    };
+  }
+};
+
+export const verifyManualBankTransferAction = async (orderId: string) => {
+  const t = await getTranslations("errors");
+  try {
+    const session = await assertRole(["SUPER_ADMIN", "ACCOUNTANT"]);
+
+    const updated = await orderService.verifyManualBankTransfer(
+      orderId,
+      session.user.id,
+    );
+    if (!updated) {
+      return {
+        success: false,
+        error: t("orderNotFound") || "Order not found",
+      };
+    }
+
+    revalidatePath("/[locale]/orders", "page");
+    revalidatePath("/[locale]/orders/[id]", "page");
+
+    return {
+      success: true,
+      data: updated,
+    };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return {
+        success: false,
+        error:
+          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+      };
+    }
+
+    console.error("[verifyManualBankTransferAction]", error);
+    return {
+      success: false,
+      error:
+        t("verifyManualBankTransferFailed") ||
+        "Failed to verify manual bank transfer",
+    };
+  }
+};
+
+export const approveOrderCancellationAction = async (orderId: string) => {
+  const t = await getTranslations("errors");
+  try {
+    await assertRole(["SUPER_ADMIN", "SALES_REPRESENTATIVE", "ACCOUNTANT"]);
+
+    const updated = await orderService.approveOrderCancellation(orderId);
+    if (!updated) {
+      return {
+        success: false,
+        error: t("orderNotFound") || "Order not found",
+      };
+    }
+
+    revalidatePath("/[locale]/orders", "page");
+    revalidatePath("/[locale]/orders/[id]", "page");
+
+    return {
+      success: true,
+      data: updated,
+    };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return {
+        success: false,
+        error:
+          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+      };
+    }
+
+    console.error("[approveOrderCancellationAction]", error);
+    return {
+      success: false,
+      error:
+        t("approveOrderCancellationFailed") ||
+        "Failed to approve order cancellation",
     };
   }
 };

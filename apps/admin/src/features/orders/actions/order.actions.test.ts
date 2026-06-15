@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { expect, test, describe, mock, beforeEach } from "bun:test";
 import type { Mock } from "bun:test";
-
 import "@nhatnang/shared/testing/action-mocks";
-
 import type { TOrder, TShippingBid } from "@nhatnang/database/schemas";
-import { selectShippingBidAction, addShippingBidAction } from "./order.actions";
+import {
+  selectShippingBidAction,
+  addShippingBidAction,
+  approveDealerOrderAction,
+  verifyManualBankTransferAction,
+  approveOrderCancellationAction,
+} from "./order.actions";
 import { orderService } from "@nhatnang/database/services";
 import { revalidatePath } from "next/cache";
 
@@ -58,7 +62,7 @@ describe("order.actions", () => {
         validBidId,
       );
       expect(result.success).toBe(true);
-      if (result.success) {
+      if (result.success && result.data) {
         expect(result.data.shippingFee).toBe("150000");
         expect(result.data.selectedBid.id).toBe(validBidId);
       }
@@ -117,6 +121,80 @@ describe("order.actions", () => {
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data!.vendorName).toBe("Grab");
+      }
+    });
+  });
+
+  describe("approveDealerOrderAction", () => {
+    test("calls orderService.approveDealerOrder and returns success", async () => {
+      const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
+      const mockOrder = { id: validOrderId } as unknown as TOrder;
+
+      const approveDealerOrderMock = mock().mockResolvedValueOnce(mockOrder);
+      (
+        orderService as unknown as {
+          approveDealerOrder: typeof approveDealerOrderMock;
+        }
+      ).approveDealerOrder = approveDealerOrderMock;
+
+      const result = await approveDealerOrderAction(validOrderId);
+
+      expect(approveDealerOrderMock).toHaveBeenCalledTimes(1);
+      expect(approveDealerOrderMock).toHaveBeenCalledWith(validOrderId);
+      expect(result.success).toBe(true);
+      if (result.success && result.data) {
+        expect(result.data.id).toBe(validOrderId);
+      }
+    });
+  });
+
+  describe("verifyManualBankTransferAction", () => {
+    test("calls orderService.verifyManualBankTransfer and returns success", async () => {
+      const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
+      const mockOrder = { id: validOrderId } as unknown as TOrder;
+
+      const verifyManualBankTransferMock =
+        mock().mockResolvedValueOnce(mockOrder);
+      (
+        orderService as unknown as {
+          verifyManualBankTransfer: typeof verifyManualBankTransferMock;
+        }
+      ).verifyManualBankTransfer = verifyManualBankTransferMock;
+
+      const result = await verifyManualBankTransferAction(validOrderId);
+
+      expect(verifyManualBankTransferMock).toHaveBeenCalledTimes(1);
+      expect(verifyManualBankTransferMock).toHaveBeenCalledWith(
+        validOrderId,
+        "admin-1",
+      );
+      expect(result.success).toBe(true);
+      if (result.success && result.data) {
+        expect(result.data.id).toBe(validOrderId);
+      }
+    });
+  });
+
+  describe("approveOrderCancellationAction", () => {
+    test("calls orderService.approveOrderCancellation and returns success", async () => {
+      const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
+      const mockOrder = { id: validOrderId } as unknown as TOrder;
+
+      const approveOrderCancellationMock =
+        mock().mockResolvedValueOnce(mockOrder);
+      (
+        orderService as unknown as {
+          approveOrderCancellation: typeof approveOrderCancellationMock;
+        }
+      ).approveOrderCancellation = approveOrderCancellationMock;
+
+      const result = await approveOrderCancellationAction(validOrderId);
+
+      expect(approveOrderCancellationMock).toHaveBeenCalledTimes(1);
+      expect(approveOrderCancellationMock).toHaveBeenCalledWith(validOrderId);
+      expect(result.success).toBe(true);
+      if (result.success && result.data) {
+        expect(result.data.id).toBe(validOrderId);
       }
     });
   });

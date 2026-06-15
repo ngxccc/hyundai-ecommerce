@@ -668,6 +668,9 @@
     "quoteNotEditableOrConvertible": "Báo giá không thể chỉnh sửa hoặc chuyển đổi",
     "createOrderFailed": "Tạo đơn hàng thất bại",
     "createShippingBidFailed": "Tạo giá vận chuyển thất bại",
+    "approveDealerOrderFailed": "Phê duyệt đơn hàng đại lý thất bại",
+    "verifyManualBankTransferFailed": "Xác nhận chuyển khoản thủ công thất bại",
+    "approveOrderCancellationFailed": "Phê duyệt hủy đơn hàng thất bại",
     "validation": {
       "slugExists": "Đường dẫn đã tồn tại"
     }
@@ -935,4 +938,3 @@
     "detail": "Chi tiết"
   }
 }
-
