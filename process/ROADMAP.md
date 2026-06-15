@@ -63,6 +63,7 @@ _Focus on completing this section before looking further down._
 - [x] Plan: B2B Storefront Phase 2 - Static Category Routes ([plan](features/storefront/completed/storefront-phase-2-static-category-routes_PLAN_09-06-26.md))
 - [x] Storefront Catalog Caching Migration Plan ([plan](general-plans/completed/storefront-catalog-caching-migration_PLAN_12-06-26.md))
 - [ ] Storefront Cart Mobile UI Optimization - Plan ([plan](features/storefront/active/storefront-cart-mobile-ui_PLAN_14-06-26.md))
+- [ ] B2B Checkout Flow & User Roles Refactor — Plan ([plan](features/storefront/active/storefront-b2b-checkout-and-roles_PLAN_15-06-26.md))
 
 ---
 
