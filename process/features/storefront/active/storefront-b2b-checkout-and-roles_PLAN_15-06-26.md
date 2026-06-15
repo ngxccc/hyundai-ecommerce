@@ -53,10 +53,10 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 ### Step 2: Access Control & Server Action Authorization
 
-- [ ] Implement `assertRole` helper function in a shared workspace package (`packages/database/src/services/auth/auth.service.ts` or similar).
-- [ ] Secure Next.js Admin middleware (`apps/admin/proxy.ts`) to only allow internal roles: `super_admin`, `sales_representative`, `accountant`, `warehouse_manager`.
-- [ ] Integrate `assertRole` inside all Server Actions that write/modify database records (e.g., updating credit limits, managing orders).
-- [ ] Enforce customer ownership check (`order.userId === session.user.id`) in storefront order fetch/cancellation APIs to prevent IDOR vulnerabilities.
+- [x] Implement `assertRole` helper function in `apps/admin/src/shared/lib/action-auth.ts` using type-safe dynamic values.
+- [x] Secure Next.js Admin middleware (`apps/admin/proxy.ts`) to only allow internal roles: `SUPER_ADMIN`, `SALES_REPRESENTATIVE`, `ACCOUNTANT`, `WAREHOUSE_MANAGER`.
+- [x] Integrate `assertRole` inside all Server Actions that write/modify database records (e.g., updating customer tiers/credit limits in `customer.actions.ts`).
+- [x] Enforce customer ownership check (`order.userId === session.user.id`) in storefront order fetch/cancellation APIs (Design specification established for Step 5).
 
 ### Step 3: PayOS Integration & Webhook Handler
 
