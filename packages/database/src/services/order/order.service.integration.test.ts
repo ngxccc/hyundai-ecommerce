@@ -64,13 +64,13 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
     }
     testProductId = product.id;
 
-    // 4. Create 5 pending orders (each buying 2 products)
+    // 4. Create 5 PENDING orders (each buying 2 products)
     for (let i = 0; i < 5; i++) {
       const [order] = await integrationDb
         .insert(orders)
         .values({
           userId: testUserId,
-          status: "pending",
+          status: "PENDING",
           shippingFee: "20000",
           shippingAddress: "Hanoi, Vietnam",
           totalAmount: "220000",
@@ -111,10 +111,10 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
   });
 
   test("Should increment totalSalesCache concurrently without lost updates", async () => {
-    // Trigger 5 concurrent updates (pending -> processing) in parallel
+    // Trigger 5 concurrent updates (PENDING -> PROCESSING) in parallel
     await Promise.all(
       orderIds.map((orderId) =>
-        orderService.updateOrderStatus(orderId, "processing"),
+        orderService.updateOrderStatus(orderId, "PROCESSING"),
       ),
     );
 

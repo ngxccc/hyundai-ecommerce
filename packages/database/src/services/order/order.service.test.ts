@@ -22,44 +22,44 @@ describe("OrderService", () => {
   });
 
   test("createOrder() should insert and return order", async () => {
-    const mockOrder = { id: "order-1", userId: "user-1", status: "pending" };
+    const mockOrder = { id: "order-1", userId: "user-1", status: "PENDING" };
 
     mockReturning.mockResolvedValueOnce([mockOrder]);
 
     const result = await orderService.createOrder({
       userId: "user-1",
-      status: "pending",
+      status: "PENDING",
     } as unknown as TNewOrder);
     expect(mockInsert).toHaveBeenCalledTimes(1);
     expect(result).toEqual(mockOrder as unknown as TOrder);
   });
 
   test("updateOrderStatus() should update and return order without changing sales cache when status transition is neutral", async () => {
-    const mockOrder = { id: "order-1", status: "pending", items: [] };
+    const mockOrder = { id: "order-1", status: "PENDING", items: [] };
 
     mockFindFirst.mockResolvedValueOnce(mockOrder);
     mockReturning.mockResolvedValueOnce([mockOrder]);
 
-    const result = await orderService.updateOrderStatus("order-1", "pending");
+    const result = await orderService.updateOrderStatus("order-1", "PENDING");
 
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(result).toEqual(mockOrder as unknown as TOrder);
   });
 
-  test("updateOrderStatus() should update order and increment sales cache when transition goes from pending to processing", async () => {
+  test("updateOrderStatus() should update order and increment sales cache when transition goes from PENDING to PROCESSING", async () => {
     const mockOrder = {
       id: "order-1",
-      status: "pending",
+      status: "PENDING",
       items: [{ productId: "prod-1", quantity: 3 }],
     };
-    const mockUpdatedOrder = { id: "order-1", status: "processing" };
+    const mockUpdatedOrder = { id: "order-1", status: "PROCESSING" };
 
     mockFindFirst.mockResolvedValueOnce(mockOrder);
     mockReturning.mockResolvedValueOnce([mockUpdatedOrder]);
 
     const result = await orderService.updateOrderStatus(
       "order-1",
-      "processing",
+      "PROCESSING",
     );
 
     expect(mockUpdate).toHaveBeenCalledTimes(2);
@@ -98,29 +98,29 @@ describe("OrderService", () => {
   });
 
   test("list() should return filtered list of complex orders when status filter is provided", async () => {
-    const mockOrders = [{ id: "order-1", status: "pending", items: [] }];
+    const mockOrders = [{ id: "order-1", status: "PENDING", items: [] }];
 
     mockFindMany.mockResolvedValueOnce(mockOrders);
 
-    const result = await orderService.list({ status: "pending" });
+    const result = await orderService.list({ status: "PENDING" });
 
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(mockFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: { status: { eq: "pending" } },
+        where: { status: { eq: "PENDING" } },
         orderBy: { createdAt: "desc" },
       }),
     );
     expect(result).toEqual(mockOrders as any);
   });
   test("list() should return filtered list of complex orders when status filter is provided", async () => {
-    const mockOrders = [{ id: "order-1", status: "pending", items: [] }];
+    const mockOrders = [{ id: "order-1", status: "PENDING", items: [] }];
     mockFindMany.mockResolvedValueOnce(mockOrders);
-    const result = await orderService.list({ status: "pending" });
+    const result = await orderService.list({ status: "PENDING" });
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(mockFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: { status: { eq: "pending" } },
+        where: { status: { eq: "PENDING" } },
         orderBy: { createdAt: "desc" },
       }),
     );
