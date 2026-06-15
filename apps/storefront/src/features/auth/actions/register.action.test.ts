@@ -42,13 +42,13 @@ const validEndUser = {
   phone: "0901234567",
   password: "password123",
   confirmPassword: "password123",
-  businessType: "end_user" as const,
+  businessType: "END_USER" as const,
   agreeTerms: true,
 };
 
 const validDealer = {
   ...validEndUser,
-  businessType: "dealer" as const,
+  businessType: "DEALER" as const,
   companyName: "ABC Corp",
   taxId: "12345678",
   province: "Ho Chi Minh",

@@ -21,9 +21,9 @@ export const BusinessInfoSection = ({
   const businessType = useWatch({
     control: form.control,
     name: "businessType",
-    defaultValue: "end_user",
+    defaultValue: "END_USER",
   });
-  const isBusinessCustomer = businessType && businessType !== "end_user";
+  const isBusinessCustomer = businessType && businessType !== "END_USER";
 
   return (
     <div className="border-t pt-6">
@@ -38,16 +38,16 @@ export const BusinessInfoSection = ({
                 <SelectValue placeholder={t("businessTypePlaceholder")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="dealer">
+                <SelectItem value="DEALER">
                   {t("businessTypeOptions.dealer")}
                 </SelectItem>
-                <SelectItem value="contractor">
+                <SelectItem value="CONTRACTOR">
                   {t("businessTypeOptions.contractor")}
                 </SelectItem>
-                <SelectItem value="end_user">
+                <SelectItem value="END_USER">
                   {t("businessTypeOptions.endUser")}
                 </SelectItem>
-                <SelectItem value="distributor">
+                <SelectItem value="DISTRIBUTOR">
                   {t("businessTypeOptions.distributor")}
                 </SelectItem>
               </SelectContent>

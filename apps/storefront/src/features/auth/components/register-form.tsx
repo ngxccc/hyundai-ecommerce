@@ -55,7 +55,7 @@ export function RegisterForm() {
       confirmPassword: "",
       companyName: "",
       taxId: "",
-      businessType: "end_user",
+      businessType: "END_USER",
       province: "",
       agreeTerms: false,
     },
