@@ -57,14 +57,18 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 - [x] Secure Next.js Admin middleware (`apps/admin/proxy.ts`) to only allow internal roles: `SUPER_ADMIN`, `SALES_REPRESENTATIVE`, `ACCOUNTANT`, `WAREHOUSE_MANAGER`.
 - [x] Integrate `assertRole` inside all Server Actions that write/modify database records (e.g., updating customer tiers/credit limits in `customer.actions.ts`).
 - [x] Enforce customer ownership check (`order.userId === session.user.id`) in storefront order fetch/cancellation APIs (Design specification established for Step 5).
+- [x] Implement Server Action for `dealer_approver` to review and approve/release pending orders (updating `approvalStatus` to `APPROVED`).
+- [x] Implement Server Action for manual bank transfer verification and approval (restricted to `super_admin`/`accountant` via `assertRole`).
+- [x] Implement Server Action for `sales_representative` to approve cancellation requests (reducing customer `currentDebt` by the order total for Trade Credit orders, or setting status to `REFUND_PENDING` for gateway orders).
 
 ### Step 3: PayOS Integration & Webhook Handler
 
 - [ ] Configure PayOS SDK in the storefront application. Add credentials to Doppler.
-- [ ] Implement checkout API endpoint to request PayOS checkout links (calculating prices server-side from database catalog).
+- [ ] Implement checkout API endpoint to request PayOS checkout links (calculating prices server-side from database catalog and supporting split payment configuration: 20% deposit vs. 100% full payment).
 - [ ] Create raw body parser utility to extract raw request bytes from Next.js route requests.
 - [ ] Implement `/api/payments/payos-webhook` route using raw body parser and constant-time comparison (`crypto.timingSafeEqual`) to verify signatures.
-- [ ] Wrap webhook database writes in a transaction: check duplicate `referenceCode`, update order status, write invoice/email events to the `outbox_event` table, and gracefully return `200 OK` on unique constraint violations.
+- [ ] Wrap webhook database writes in a transaction: check if `referenceCode` already exists in `payment_transaction` (returning early to handle duplicates), update order `paymentStatus` (to `DEPOSIT_PAID` or `FULLY_PAID` depending on `transactionType`), insert the transaction record into `payment_transaction`, write invoice/email events to the `outbox_event` table, and gracefully return `200 OK`/`208 Already Reported` on unique constraint violations.
+- [ ] Implement webhook data mismatch and security check: if the paid amount does not match the expected order total/deposit, place the order on `SUSPICIOUS_PAYMENT_HOLD`, log headers, and post an alert to Slack `#devops-security`.
 
 ### Step 4: B2B Trade Credit & Pessimistic Locking
 
@@ -73,20 +77,28 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 - [ ] Wrap checkout in a Drizzle `db.transaction()`: lock the user row using `.for("update", { noWait: true })`.
 - [ ] Verify limit availability: `creditLimit - currentDebt >= recalculatedTotal`. If successful, increment `currentDebt` and write Net 30/60 invoice.
 - [ ] Catch `NOWAIT` lock acquisition failure and return a clear HTTP 429/409 error message.
+- [ ] Enforce locking constraints: Ensure no external HTTP/API calls (e.g., PayOS, Zalo) are inside the `db.transaction()` block holding the lock, keeping execution time under 50ms.
 
 ### Step 5: Storefront UI, Polling & Cancellation Flows
 
+- [ ] Implement `/api/payments/verify-status` backend API endpoint or server action for short polling (checking order payment status in DB).
+- [ ] Implement the "Re-verify Payment" backend handler: calls PayOS API to query transaction status, updates the database/order status, and enforces a server-side 30-second rate limit cooldown.
 - [ ] Implement a 10-minute short-polling window on the checkout success screen.
 - [ ] Implement the "Re-verify Payment" button with a client-side 30-second cooldown timer.
 - [ ] Build the "Request Cancellation" workflow modal on the storefront customer portal for orders already in `processing` or `shipped` state.
 - [ ] Implement B2B sub-role checkout flow: allow `dealer_purchaser` to submit order for approval, updating `approvalStatus` to `PENDING_APPROVAL`.
+- [ ] Implement storefront UI checkout option and success screen display for the manual bank transfer fallback method (showing company bank account details, instructions, and setting order to `PENDING_VERIFICATION`).
+- [ ] Build UI for B2B `dealer_approver` in the customer portal order history to review, approve, and release pending orders submitted by their `dealer_purchaser`.
+- [ ] Build Admin CRM dashboard interfaces for `sales_representative` and `accountant` to review cancellation requests (and refund status) and approve manual bank transfers.
 
 ### Step 6: Real-Time & Offline Notification System
 
-- [ ] Configure Pusher client & server instances for storefront/CRM real-time toasts.
+- [ ] Configure Pusher client & server instances for storefront/CRM real-time toasts, and implement a secure private channel subscription authentication API endpoint using HMAC-SHA256 tokens.
 - [ ] Extend `outbox_event` schema with new communication channels (`SEND_ZALO_ZNS`, `SEND_TELEGRAM_ALERT`).
 - [ ] Set up Telegram Bot alerting engine and save chat IDs to Doppler.
-- [ ] Implement the outbox event processor cron job (polling `PENDING` events, checking Redis user presence, and dispatching to WebSockets/Pusher if online, or Telegram/Zalo if offline).
+- [ ] Integrate Zalo Notification Service (ZNS) API client and SMS Brandname gateway providers in the codebase.
+- [ ] Implement the Redis heartbeat presence mechanism: a client ping every 15 seconds and server-side tracking using the Redis key `presence:user:<userId>` with a 30-second TTL.
+- [ ] Implement the outbox event processor cron job, querying pending events using an optimized `SELECT ... FOR UPDATE SKIP LOCKED` query, checking user presence, and dispatching to Pusher if online, or Zalo/Telegram/SMS if offline.
 - [ ] Implement timed escalation cron worker (escalating alerts to managers and executives at 2h, 12h, and 24h).
 
 ---
