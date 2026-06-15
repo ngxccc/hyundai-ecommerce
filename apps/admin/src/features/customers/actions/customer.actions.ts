@@ -73,7 +73,7 @@ export const updateCustomerTierAction = async (
     await requireAuth();
 
     // Map business role dynamically: promoting to "dealer" role if businessType is dealer
-    const role = payload.businessType === "dealer" ? "dealer" : "customer";
+    const role = payload.businessType === "dealer" ? "dealer_approver" : "customer";
 
     const updatedUser = await userService.update(userId, {
       dealerTierId: payload.dealerTierId,

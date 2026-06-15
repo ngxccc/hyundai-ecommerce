@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import {
   Search,
   ShieldAlert,
-  UserCheck,
+  User,
   Briefcase,
   Edit2,
   Mail,
@@ -153,7 +153,12 @@ export const CustomerDirectory = ({
 
   // Role Badges
   const renderRoleBadge = (role: TUser["role"]) => {
-    if (role === "admin") {
+    if (
+      role === "super_admin" ||
+      role === "sales_representative" ||
+      role === "accountant" ||
+      role === "warehouse_manager"
+    ) {
       return (
         <Badge
           variant="destructive"
@@ -164,7 +169,7 @@ export const CustomerDirectory = ({
         </Badge>
       );
     }
-    if (role === "dealer") {
+    if (role === "dealer_approver" || role === "dealer_purchaser") {
       return (
         <Badge
           variant="default"
@@ -178,9 +183,9 @@ export const CustomerDirectory = ({
     return (
       <Badge
         variant="secondary"
-        className="flex w-fit items-center gap-1 bg-slate-100 text-xs text-slate-600 hover:bg-slate-100"
+        className="flex w-fit items-center gap-1 text-xs"
       >
-        <UserCheck className="h-3 w-3" />
+        <User className="h-3 w-3" />
         {t("roles.customer")}
       </Badge>
     );

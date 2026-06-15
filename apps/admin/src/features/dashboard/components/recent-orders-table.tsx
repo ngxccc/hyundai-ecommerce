@@ -21,26 +21,26 @@ interface RecentOrdersTableProps {
 }
 
 const statusMap: Record<string, string> = {
-  pending: "processing",
-  processing: "processing",
-  shipped: "shipping",
-  delivered: "completed",
-  cancelled: "cancelled",
-  refunded: "cancelled",
+  PENDING: "processing",
+  PROCESSING: "processing",
+  SHIPPED: "shipping",
+  DELIVERED: "completed",
+  CANCELLED: "cancelled",
+  REFUNDED: "cancelled",
 };
 
 const statusClassMap: Record<string, string> = {
-  pending:
+  PENDING:
     "bg-yellow-100 text-yellow-700 hover:bg-yellow-100/80 dark:bg-yellow-900/30 dark:text-yellow-400",
-  processing:
+  PROCESSING:
     "bg-yellow-100 text-yellow-700 hover:bg-yellow-100/80 dark:bg-yellow-900/30 dark:text-yellow-400",
-  shipped:
+  SHIPPED:
     "bg-blue-100 text-blue-700 hover:bg-blue-100/80 dark:bg-blue-900/30 dark:text-blue-400",
-  delivered:
+  DELIVERED:
     "bg-green-100 text-green-700 hover:bg-green-100/80 dark:bg-green-900/30 dark:text-green-400",
-  cancelled:
+  CANCELLED:
     "bg-red-100 text-red-700 hover:bg-red-100/80 dark:bg-red-900/30 dark:text-red-400",
-  refunded:
+  REFUNDED:
     "bg-red-100 text-red-700 hover:bg-red-100/80 dark:bg-red-900/30 dark:text-red-400",
 };
 
@@ -108,7 +108,7 @@ export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
               | "shipping"
               | "cancelled";
             const badgeClass =
-              statusClassMap[order.status] ?? statusClassMap["pending"];
+              statusClassMap[order.status] ?? statusClassMap["PENDING"];
 
             return (
               <TableRow key={order.id}>

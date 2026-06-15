@@ -62,17 +62,17 @@ export const OrderList = ({ orders }: OrderListProps) => {
 
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
-      case "pending":
+      case "PENDING":
         return "bg-yellow-100 text-yellow-700 border-transparent dark:bg-yellow-900/30 dark:text-yellow-400";
-      case "processing":
+      case "PROCESSING":
         return "bg-blue-100 text-blue-700 border-transparent dark:bg-blue-900/30 dark:text-blue-400";
-      case "shipped":
+      case "SHIPPED":
         return "bg-purple-100 text-purple-700 border-transparent dark:bg-purple-900/30 dark:text-purple-400";
-      case "delivered":
+      case "DELIVERED":
         return "bg-green-100 text-green-700 border-transparent dark:bg-green-900/30 dark:text-green-400";
-      case "cancelled":
+      case "CANCELLED":
         return "bg-red-100 text-red-700 border-transparent dark:bg-red-900/30 dark:text-red-400";
-      case "refunded":
+      case "REFUNDED":
         return "bg-gray-100 text-gray-700 border-transparent dark:bg-gray-900/30 dark:text-gray-400";
       default:
         return "bg-secondary text-secondary-foreground border-transparent";
@@ -81,17 +81,17 @@ export const OrderList = ({ orders }: OrderListProps) => {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "pending":
+      case "PENDING":
         return t("statusPending");
-      case "processing":
+      case "PROCESSING":
         return t("statusProcessing");
-      case "shipped":
+      case "SHIPPED":
         return t("statusShipped");
-      case "delivered":
+      case "DELIVERED":
         return t("statusDelivered");
-      case "cancelled":
+      case "CANCELLED":
         return t("statusCancelled");
-      case "refunded":
+      case "REFUNDED":
         return t("statusRefunded");
       default:
         return status;

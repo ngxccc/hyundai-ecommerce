@@ -60,17 +60,17 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
 
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
-      case "pending":
+      case "PENDING":
         return "bg-yellow-100 text-yellow-700 border-transparent dark:bg-yellow-900/30 dark:text-yellow-400";
-      case "processing":
+      case "PROCESSING":
         return "bg-blue-100 text-blue-700 border-transparent dark:bg-blue-900/30 dark:text-blue-400";
-      case "shipped":
+      case "SHIPPED":
         return "bg-purple-100 text-purple-700 border-transparent dark:bg-purple-900/30 dark:text-purple-400";
-      case "delivered":
+      case "DELIVERED":
         return "bg-green-100 text-green-700 border-transparent dark:bg-green-900/30 dark:text-green-400";
-      case "cancelled":
+      case "CANCELLED":
         return "bg-red-100 text-red-700 border-transparent dark:bg-red-900/30 dark:text-red-400";
-      case "refunded":
+      case "REFUNDED":
         return "bg-gray-100 text-gray-700 border-transparent dark:bg-gray-900/30 dark:text-gray-400";
       default:
         return "bg-secondary text-secondary-foreground border-transparent";
@@ -79,17 +79,17 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "pending":
+      case "PENDING":
         return t("statusPending");
-      case "processing":
+      case "PROCESSING":
         return t("statusProcessing");
-      case "shipped":
+      case "SHIPPED":
         return t("statusShipped");
-      case "delivered":
+      case "DELIVERED":
         return t("statusDelivered");
-      case "cancelled":
+      case "CANCELLED":
         return t("statusCancelled");
-      case "refunded":
+      case "REFUNDED":
         return t("statusRefunded");
       default:
         return status;
@@ -131,10 +131,10 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
   };
 
   // Timeline Steps setup
-  const steps = ["pending", "processing", "shipped", "delivered"];
+  const steps = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED"];
   const currentStepIndex = steps.indexOf(order.status);
   const isEndState =
-    order.status === "cancelled" || order.status === "refunded";
+    order.status === "CANCELLED" || order.status === "REFUNDED";
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -203,7 +203,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
           ) : (
             <div
               className={`flex items-center gap-3 rounded-lg border p-4 ${
-                order.status === "cancelled"
+                order.status === "CANCELLED"
                   ? "border-red-500/30 bg-red-50/10 text-red-600 dark:text-red-400"
                   : "border-gray-500/30 bg-gray-50/10 text-gray-600 dark:text-gray-400"
               }`}
@@ -211,7 +211,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
               <XCircle className="h-6 w-6 shrink-0" />
               <div className="flex flex-col gap-0.5">
                 <span className="text-sm font-bold">
-                  {order.status === "cancelled"
+                  {order.status === "CANCELLED"
                     ? t("statusCancelled")
                     : t("statusRefunded")}
                 </span>
@@ -225,15 +225,15 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
           )}
 
           {/* Stepper Transition Action buttons */}
-          {!isEndState && order.status !== "delivered" && (
+          {!isEndState && order.status !== "DELIVERED" && (
             <div className="border-border mt-2 flex flex-wrap items-center justify-end gap-3 border-t pt-4">
-              {order.status === "pending" && (
+              {order.status === "PENDING" && (
                 <>
                   <Button
                     variant="destructive"
                     size="sm"
                     disabled={isPending}
-                    onClick={() => handleStatusUpdate("cancelled")}
+                    onClick={() => handleStatusUpdate("CANCELLED")}
                     className="gap-1.5"
                   >
                     <XCircle className="h-4 w-4" />
@@ -242,7 +242,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
                   <Button
                     size="sm"
                     disabled={isPending}
-                    onClick={() => handleStatusUpdate("processing")}
+                    onClick={() => handleStatusUpdate("PROCESSING")}
                     className="gap-1.5"
                   >
                     {t("btnMarkProcessing")}
@@ -251,13 +251,13 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
                 </>
               )}
 
-              {order.status === "processing" && (
+              {order.status === "PROCESSING" && (
                 <>
                   <Button
                     variant="destructive"
                     size="sm"
                     disabled={isPending}
-                    onClick={() => handleStatusUpdate("cancelled")}
+                    onClick={() => handleStatusUpdate("CANCELLED")}
                     className="gap-1.5"
                   >
                     <XCircle className="h-4 w-4" />
@@ -266,7 +266,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
                   <Button
                     size="sm"
                     disabled={isPending}
-                    onClick={() => handleStatusUpdate("shipped")}
+                    onClick={() => handleStatusUpdate("SHIPPED")}
                     className="gap-1.5"
                   >
                     {t("btnMarkShipped")}
@@ -275,13 +275,13 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
                 </>
               )}
 
-              {order.status === "shipped" && (
+              {order.status === "SHIPPED" && (
                 <>
                   <Button
                     variant="destructive"
                     size="sm"
                     disabled={isPending}
-                    onClick={() => handleStatusUpdate("cancelled")}
+                    onClick={() => handleStatusUpdate("CANCELLED")}
                     className="gap-1.5"
                   >
                     <XCircle className="h-4 w-4" />
@@ -290,7 +290,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
                   <Button
                     size="sm"
                     disabled={isPending}
-                    onClick={() => handleStatusUpdate("delivered")}
+                    onClick={() => handleStatusUpdate("DELIVERED")}
                     className="gap-1.5"
                   >
                     {t("btnMarkDelivered")}
@@ -301,13 +301,13 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
             </div>
           )}
 
-          {order.status === "delivered" && (
+          {order.status === "DELIVERED" && (
             <div className="border-border mt-2 flex items-center justify-end border-t pt-4">
               <Button
                 variant="outline"
                 size="sm"
                 disabled={isPending}
-                onClick={() => handleStatusUpdate("refunded")}
+                onClick={() => handleStatusUpdate("REFUNDED")}
                 className="gap-1.5 border-red-500/30 text-red-600 hover:bg-red-50/15 dark:text-red-400"
               >
                 <Undo2 className="h-4 w-4" />
