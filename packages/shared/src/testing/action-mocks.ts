@@ -35,6 +35,9 @@ await vi.mock("@nhatnang/database/services", () => ({
   orderService: {
     updateOrderStatus: mock(),
     selectWinningBid: mock(),
+    approveDealerOrder: mock(),
+    verifyManualBankTransfer: mock(),
+    approveOrderCancellation: mock(),
   },
 }));
 
@@ -47,6 +50,12 @@ await vi.mock("@/shared/lib/action-auth", () => ({
     user: {
       id: "admin-1",
       role: "admin",
+    },
+  }),
+  assertRole: mock().mockResolvedValue({
+    user: {
+      id: "admin-1",
+      role: "SUPER_ADMIN",
     },
   }),
   AuthError: MockAuthError,
