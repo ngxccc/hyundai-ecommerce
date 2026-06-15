@@ -2,7 +2,7 @@
 
 **Date**: 2026-06-15  
 **Author**: Antigravity (Advanced Agentic Coding Agent)  
-**Status**: Approved (User-confirmed & Predict-Reviewed)
+**Status**: Approved (User-confirmed & Multi-Agent Predict-Reviewed)
 
 ---
 
@@ -13,9 +13,9 @@ This design specification details the implementation of a high-performance B2B c
 ### Goals
 * Integrate **PayOS** for 0%-fee automatic VietQR payment matching.
 * Support **B2B Trade Credit (Net Terms)** for authorized Dealers, Contractors, and Distributors to check out using credit limits.
-* Refactor database roles to support distinct business personas: `super_admin`, `sales_representative`, `accountant`, `warehouse_manager`, `dealer`, and `customer`.
+* Refactor database roles to support distinct business personas: `super_admin`, `sales_representative`, `accountant`, `warehouse_manager`, `dealer_approver`, `dealer_purchaser`, and `customer`.
 * Support split payments (20% deposit online, 80% remainder online or offline) and manual bank transfer fallback.
-* Ensure strict transaction safety (idempotency, pessimistic locking, and clear audit logging).
+* Ensure strict transaction safety (idempotency, pessimistic locking, raw body webhook validation, and clear audit logging).
 
 ---
 
@@ -29,7 +29,8 @@ The database `user_role` enumeration is refactored from `admin, dealer, customer
 | `sales_representative` | Internal | Manage quote requests, negotiate prices with dealers, view deals pipeline. |
 | `accountant` | Internal | Review payments, verify manual bank transfers, approve/set credit limits, view billing. |
 | `warehouse_manager` | Internal | Manage stock levels, view orders ready for shipment, log shipments. |
-| `dealer` | External | Access special dealer pricing tiers, purchase against trade credit, view billing invoices. |
+| `dealer_approver` | External | B2B account owner/approver. Has authority to approve trade credit usage and place orders. |
+| `dealer_purchaser` | External | B2B purchasing staff. Can build carts and initiate checkouts, but needs approval. |
 | `customer` | External | Standard retail buyer. Instant/deposit payment via gateway or bank transfer. |
 
 ---
@@ -43,7 +44,8 @@ export const userRoleEnum = pgEnum("user_role", [
   "sales_representative",
   "accountant",
   "warehouse_manager",
-  "dealer",
+  "dealer_approver",
+  "dealer_purchaser",
   "customer",
 ]);
 ```
@@ -57,6 +59,7 @@ export const userRoleEnum = pgEnum("user_role", [
 #### 2. Orders Table (`order`)
 * `paymentMethod`: `enum('GATEWAY', 'BANK_TRANSFER', 'TRADE_CREDIT')`
 * `paymentStatus`: `enum('UNPAID', 'DEPOSIT_PAID', 'FULLY_PAID', 'PENDING_VERIFICATION')`
+* `approvalStatus`: `enum('APPROVED', 'PENDING_APPROVAL')` (Default: `'APPROVED'` for retail/approver, `'PENDING_APPROVAL'` for purchaser)
 
 #### 3. Payment Transactions Table (`payment_transaction` - New Table)
 Tracks detailed payment milestones for order deposits and remainder settlements.
@@ -87,25 +90,36 @@ Provides audit logs for all credit limit updates for compliance.
 ### Flow A: Automatic VietQR payment via PayOS
 * When selecting QR payment, the system invokes PayOS API to generate a dynamic link.
 * The link renders a QR code with Hyundai's bank details, the exact 20% deposit or 100% total, and a unique reference code.
+* **Webhook Signature Verification (Raw Body)**:
+  - The webhook handler MUST parse the **raw request body string** (not the parsed JSON) to calculate the HMAC-SHA256 checksum and verify against the header signature.
+  - The signature verification MUST use a constant-time string comparison (`crypto.timingSafeEqual`) to eliminate timing attacks.
 * **Webhook Idempotency & Processing**:
   1. PayOS fires a Webhook to `/api/payments/payos-webhook`.
-  2. The webhook handler verifies the signature and checks if `referenceCode` already exists in `payment_transaction` (to prevent duplicate processing).
-  3. If new, updates `paymentStatus` to `DEPOSIT_PAID` or `FULLY_PAID`, inserts the transaction, and returns `200 OK` immediately (under 2 seconds).
-  4. Heavy asynchronous tasks (email confirmation, invoice PDF generation) are offloaded to background workers.
+  2. The webhook handler opens a database transaction and checks if `referenceCode` already exists in `payment_transaction`.
+  3. If it exists, returns `208 Already Reported` or `200 OK` immediately to gracefully ignore duplicate webhook deliveries.
+  4. If new, updates `paymentStatus` to `DEPOSIT_PAID` or `FULLY_PAID`, inserts the transaction, and writes any heavy background tasks (email notifications, PDF invoices) to the `outbox_event` table inside the *same* database transaction to ensure atomicity.
+  5. Returns `200 OK` (under 2 seconds).
 * **UI Synchronization & Polling**:
-  - The storefront checkout page uses short polling (checking order payment status every 5 seconds) for up to 3 minutes, automatically redirecting the user once `paymentStatus` updates. If it times out, displays a "Pending manual verification" notice.
+  - The storefront checkout page uses short polling (checking order payment status every 5 seconds) for up to 10 minutes (to allow for Maker-Checker B2B approvals).
+  - The payment details, dynamic QR code, and checkout instructions remain visible, and a "Keep Waiting" prompt is offered when approaching the timeout.
 * **Re-verify Payment Option**:
-  - In case the webhook is delayed or missed, the customer portal order detail page will display a "Re-verify Payment" button when the order's payment status is `PENDING_VERIFICATION`. Clicking this triggers a server-side API call to PayOS to fetch the transaction status and update the database immediately, resolving stuck payment states.
+  - The checkout timeout screen and the customer portal order detail page display a "Re-verify Payment" button when the order's payment status is `PENDING_VERIFICATION`.
+  - Clicking this triggers a server-side API call to PayOS to fetch the transaction status and update the database immediately, resolving stuck payment states.
+  - Rate limiting is enforced: the button is disabled for 30 seconds after a click (showing a countdown timer) and server-side rate limits are applied.
 
 ### Flow B: B2B Trade Credit (Net Terms) & Pessimistic Locking
-* Available only to roles `dealer` / business types with approved `creditLimit`.
-* At checkout, the system opens a database transaction and applies a pessimistic lock (`SELECT FOR UPDATE`) on the target `user` row.
-* **Lock Constraint**: No external HTTP calls (such as PayOS or third-party APIs) are allowed inside the transaction holding the lock. The transaction block must be kept under 2 seconds.
-* If `creditLimit - currentDebt >= orderTotal`:
-  1. Creates order with `paymentMethod = 'TRADE_CREDIT'` and `paymentStatus = 'UNPAID'`.
-  2. Increments `currentDebt` by the order total in the locked row.
-  3. Generates a Net 30/60 invoice.
-  4. Commits transaction. If concurrently modified, it rolls back or waits.
+* Available only to roles `dealer_approver` / `dealer_purchaser` / business types with approved `creditLimit`.
+* **Submit for Approval Flow**:
+  - If checkout is initiated by a `dealer_purchaser`, the order total is calculated but instead of executing Trade Credit immediately, the order is created with `approvalStatus = 'PENDING_APPROVAL'`. The `dealer_approver` is notified to review and release the order.
+* **Order Checkout Execution**:
+  1. System recalculates the order total server-side by querying the database product catalog prices (never trusting client-submitted pricing fields).
+  2. The system opens a database transaction and applies a pessimistic lock (`SELECT FOR UPDATE`) on the target `user` row.
+  3. **Lock Constraint**: No external HTTP calls (such as PayOS or third-party APIs) are allowed inside the transaction holding the lock. The transaction block must be kept under 50ms.
+  4. If `creditLimit - currentDebt >= recalculatedTotal`:
+     - Creates order with `paymentMethod = 'TRADE_CREDIT'` and `paymentStatus = 'UNPAID'`.
+     - Increments `currentDebt` by the order total in the locked row.
+     - Generates a Net 30/60 invoice.
+     - Commits transaction. If concurrently modified, it rolls back or waits.
 * Once offline payment is made, `accountant` logs the payment on CRM, reducing `currentDebt`.
 
 ### Flow C: Manual Bank Transfer Fallback
@@ -114,10 +128,13 @@ Provides audit logs for all credit limit updates for compliance.
 * Accountant verifies incoming funds and manually approves the payment.
 
 ### Flow D: Refunds & Order Cancellation Constraints
+* **Insecure Direct Object Reference (IDOR) Protection**:
+  - The cancellation and detail APIs must perform ownership verification: verifying that the order's `userId` matches the authenticated session's `userId`.
 * **Trade Credit cancellation**:
   - B2B users are only allowed to self-cancel orders using Trade Credit if the order status is still `pending`.
-  - Once the order transitions to `processing`, `shipped`, or `delivered`, the self-cancel option is disabled on the storefront. Any cancellation must be requested and manually processed by the `sales_representative` or `accountant` on the Admin CRM, preventing credit limit manipulation.
-  - When successfully cancelled, the system automatically reduces `currentDebt` by the order total.
+  - Once the order transitions to `processing`, `shipped`, or `delivered`, the self-cancel option is disabled on the storefront and replaced by a **"Request Cancellation"** action.
+  - Clicking "Request Cancellation" opens a modal explaining the hold, updates the order to `CANCELLATION_REQUESTED`, and routes a high-priority approval task to the assigned `sales_representative` in the Admin CRM.
+  - When successfully cancelled and approved, the system automatically reduces `currentDebt` by the order total.
 * **Online Gateway refunds**: If a PayOS order is cancelled, the order changes status to `REFUND_PENDING`. The Accountant reviews the refund request and manually processes the transfer via bank account, then updates the system status.
 
 ---
@@ -125,7 +142,7 @@ Provides audit logs for all credit limit updates for compliance.
 ## 5. Verification and Security Constraints
 
 * **Role Authorization**: Access to `apps/admin` is restricted to internal staff: `["super_admin", "sales_representative", "accountant", "warehouse_manager"].includes(user.role)`.
-* **Server-Side Action Authorization (RBAC)**: All sensitive actions modifying credit limits, current debt, or manual payment verifications MUST execute a shared helper `assertRole(["super_admin", "accountant"])` inside the server action to verify permissions using session metadata.
+* **Server-Side Action Authorization (RBAC)**: All sensitive actions modifying credit limits, current debt, or manual payment verifications MUST execute a shared helper `assertRole(["super_admin", "accountant"])` inside the server action to verify permissions against the latest database state (never trusting stale session JWTs).
 * **Signature Verification**: The PayOS webhook API MUST verify the signature using the configured PayOS checksum key to prevent payment spoofing.
 * **Role Migration**: A migration script MUST be executed to safely transition existing `admin` roles in the DB to `super_admin` and `customer` roles to `customer`.
 * **Input Isolation**: All financial updates (adjusting credit limits, debt balances) MUST be performed by authorized roles (`super_admin` or `accountant`) and validated server-side.
