@@ -24,8 +24,6 @@ export const orderStatusEnum = pgEnum("order_status", [
 ]);
 
 export const paymentMethodEnum = pgEnum("payment_method", [
-  "GATEWAY",
-  "BANK_TRANSFER",
   "TRADE_CREDIT",
   "PAYOS",
   "MANUAL_TRANSFER",
@@ -54,7 +52,7 @@ export const orders = snakeCase.table(
     shippingFee: numeric({ precision: 15, scale: 2 }).notNull(),
     shippingAddress: text().notNull(),
     totalAmount: numeric({ precision: 15, scale: 2 }).notNull(),
-    paymentMethod: paymentMethodEnum().notNull().default("GATEWAY"),
+    paymentMethod: paymentMethodEnum().notNull().default("PAYOS"),
     paymentStatus: orderPaymentStatusEnum().notNull().default("UNPAID"),
     approvalStatus: approvalStatusEnum().notNull().default("APPROVED"),
   },

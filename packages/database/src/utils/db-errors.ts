@@ -1,6 +1,7 @@
 export const POSTGRES_ERROR_CODES = {
   UNIQUE_VIOLATION: "23505",
   FOREIGN_KEY_VIOLATION: "23503",
+  LOCK_NOT_AVAILABLE: "55P03",
 } as const;
 
 export interface PostgresError extends Error {
