@@ -18,5 +18,5 @@ export const updateWarehouseSchema = createWarehouseSchema
   })
   .strict();
 
-export type TCreateWarehouseInput = z.infer<typeof createWarehouseSchema>;
-export type TUpdateWarehouseInput = z.infer<typeof updateWarehouseSchema>;
+export type TCreateWarehouse = z.infer<typeof createWarehouseSchema>;
+export type TUpdateWarehouse = z.infer<typeof updateWarehouseSchema>;

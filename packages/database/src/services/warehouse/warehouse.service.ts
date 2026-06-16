@@ -1,34 +1,33 @@
 import type { WarehouseService } from "../interfaces";
-import { warehouses, type TWarehouse } from "../../schemas/warehouse.schema";
+import { mapWarehouseToDTO, type WarehouseDTO } from "../../dtos";
+import { warehouses } from "../../schemas/warehouse.schema";
 import type { IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
-import type {
-  TCreateWarehouseInput,
-  TUpdateWarehouseInput,
-} from "../../validators";
+import type { TCreateWarehouse, TUpdateWarehouse } from "../../validators";
 import { handleServiceError } from "../../utils";
 
 export class DbWarehouseService implements WarehouseService {
   constructor(protected readonly db: IDatabase) {}
 
-  async getAll(): Promise<TWarehouse[]> {
-    return this.db.query.warehouses.findMany({
+  async getAll(): Promise<WarehouseDTO[]> {
+    const allWarehouses = await this.db.query.warehouses.findMany({
       orderBy: {
         createdAt: "desc",
       },
     });
+    return allWarehouses.map(mapWarehouseToDTO);
   }
 
-  async getById(id: string): Promise<TWarehouse | undefined> {
+  async getById(id: string): Promise<WarehouseDTO | undefined> {
     const [warehouse] = await this.db
       .select()
       .from(warehouses)
       .where(eq(warehouses.id, id))
       .limit(1);
-    return warehouse;
+    return warehouse ? mapWarehouseToDTO(warehouse) : undefined;
   }
 
-  async create(data: TCreateWarehouseInput): Promise<TWarehouse> {
+  async create(data: TCreateWarehouse): Promise<WarehouseDTO> {
     try {
       const [newWarehouse] = await this.db
         .insert(warehouses)
@@ -37,13 +36,13 @@ export class DbWarehouseService implements WarehouseService {
       if (!newWarehouse) {
         throw new Error("errors.createWarehouseFailed");
       }
-      return newWarehouse;
+      return mapWarehouseToDTO(newWarehouse);
     } catch (error: unknown) {
       handleServiceError(error, "errors.createWarehouseFailed");
     }
   }
 
-  async update({ id, ...data }: TUpdateWarehouseInput): Promise<TWarehouse> {
+  async update({ id, ...data }: TUpdateWarehouse): Promise<WarehouseDTO> {
     try {
       if (!id) {
         throw new Error("errors.warehouseNotFound");
@@ -56,7 +55,7 @@ export class DbWarehouseService implements WarehouseService {
       if (!updatedWarehouse) {
         throw new Error("errors.warehouseNotFound");
       }
-      return updatedWarehouse;
+      return mapWarehouseToDTO(updatedWarehouse);
     } catch (error: unknown) {
       handleServiceError(error, "errors.updateWarehouseFailed");
     }

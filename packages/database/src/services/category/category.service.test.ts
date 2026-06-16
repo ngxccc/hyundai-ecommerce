@@ -9,6 +9,7 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
+import { mapCategoryToDTO } from "../../dtos";
 import { DbCategoryService } from "./category.service";
 import type { IDatabase } from "../../client";
 
@@ -47,7 +48,7 @@ describe("CategoryService", () => {
       },
     });
 
-    expect(result).toEqual(mockCategories);
+    expect(result).toEqual(mockCategories.map(mapCategoryToDTO));
   });
 
   test("create() should insert and return new category", async () => {
@@ -75,7 +76,7 @@ describe("CategoryService", () => {
 
     expect(mockInsert).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockCategory);
+    expect(result).toEqual(mapCategoryToDTO(mockCategory));
   });
 
   test("create() should return error validation.slugExists on duplicate key error", () => {
@@ -111,7 +112,7 @@ describe("CategoryService", () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockCategory);
+    expect(result).toEqual(mapCategoryToDTO(mockCategory));
   });
 
   test("getById() should return category when found", async () => {
@@ -133,7 +134,7 @@ describe("CategoryService", () => {
     const result = await categoryService.getById("1");
 
     expect(mockLimit).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockCategory);
+    expect(result).toEqual(mapCategoryToDTO(mockCategory));
   });
 
   test("getById() should return undefined when not found", async () => {

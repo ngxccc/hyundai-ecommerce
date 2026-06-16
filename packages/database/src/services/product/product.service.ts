@@ -5,11 +5,8 @@ import type {
   GetAllOptions,
   ProductFilterMetadata,
 } from "../interfaces";
-import {
-  products,
-  type TProduct,
-  type TNewProduct,
-} from "../../schemas/product.schema";
+import { mapProductToDTO, type ProductDTO } from "../../dtos";
+import { products, type TNewProduct } from "../../schemas/product.schema";
 import { type IDatabase } from "../../client";
 import {
   and,
@@ -31,24 +28,24 @@ import { orderItems, orders } from "../../schemas";
 export class DbProductService implements ProductService {
   constructor(protected readonly db: IDatabase) {}
 
-  async create(data: TNewProduct): Promise<TProduct | undefined> {
+  async create(data: TNewProduct): Promise<ProductDTO | undefined> {
     const [newProduct] = await this.db
       .insert(products)
       .values(data)
       .returning();
-    return newProduct;
+    return newProduct ? mapProductToDTO(newProduct) : undefined;
   }
 
   async update(
     id: string,
     data: TUpdateProductData,
-  ): Promise<TProduct | undefined> {
+  ): Promise<ProductDTO | undefined> {
     const [updatedProduct] = await this.db
       .update(products)
       .set(data)
       .where(eq(products.id, id))
       .returning();
-    return updatedProduct;
+    return updatedProduct ? mapProductToDTO(updatedProduct) : undefined;
   }
 
   async delete(id: string): Promise<boolean> {
@@ -60,14 +57,14 @@ export class DbProductService implements ProductService {
     return !!deletedProduct;
   }
 
-  async getById(id: string): Promise<TProduct | undefined> {
+  async getById(id: string): Promise<ProductDTO | undefined> {
     const product = await this.db.query.products.findFirst({
       where: {
         id, // eq products.id == id
         deletedAt: { isNull: true },
       },
     });
-    return product;
+    return product ? mapProductToDTO(product) : undefined;
   }
 
   /**
@@ -144,7 +141,7 @@ export class DbProductService implements ProductService {
       }
     }
 
-    return { data, hasMore, nextCursor, prevCursor };
+    return { data: data.map(mapProductToDTO), hasMore, nextCursor, prevCursor };
   }
 
   async getTopSellingProducts(limit: number): Promise<TopSellingProduct[]> {
@@ -229,13 +226,13 @@ export class DbProductService implements ProductService {
     return allProducts.map((p) => p.slug);
   }
 
-  async getActiveProductBySlug(slug: string): Promise<TProduct | null> {
+  async getActiveProductBySlug(slug: string): Promise<ProductDTO | null> {
     const [product] = await this.db
       .select()
       .from(products)
       .where(and(eq(products.slug, slug), isNull(products.deletedAt)))
       .limit(1);
-    return product ?? null;
+    return product ? mapProductToDTO(product) : null;
   }
 
   /**

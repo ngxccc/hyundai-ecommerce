@@ -8,6 +8,7 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
+import { mapWarehouseToDTO } from "../../dtos";
 import { DbWarehouseService } from "./warehouse.service";
 import type { IDatabase } from "../../client";
 
@@ -43,7 +44,7 @@ describe("WarehouseService", () => {
         createdAt: "desc",
       },
     });
-    expect(result).toEqual(mockWarehouses);
+    expect(result).toEqual(mockWarehouses.map(mapWarehouseToDTO));
   });
 
   test("create() should insert and return new warehouse", async () => {
@@ -71,7 +72,7 @@ describe("WarehouseService", () => {
 
     expect(mockInsert).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockWarehouse);
+    expect(result).toEqual(mapWarehouseToDTO(mockWarehouse));
   });
 
   test("update() should update and return warehouse", async () => {
@@ -96,7 +97,7 @@ describe("WarehouseService", () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockWarehouse);
+    expect(result).toEqual(mapWarehouseToDTO(mockWarehouse));
   });
 
   test("getById() should return warehouse when found", async () => {
@@ -116,7 +117,7 @@ describe("WarehouseService", () => {
     const result = await warehouseService.getById("1");
 
     expect(mockLimit).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockWarehouse);
+    expect(result).toEqual(mapWarehouseToDTO(mockWarehouse));
   });
 
   test("delete() should soft-delete warehouse", async () => {

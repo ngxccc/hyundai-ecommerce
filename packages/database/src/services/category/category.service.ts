@@ -1,31 +1,36 @@
 import type { CategoryService, TCategoryWithChildren } from "../interfaces";
-import { categories, type TCategory } from "../../schemas";
+import { mapCategoryToDTO, type CategoryDTO } from "../../dtos";
+import { categories } from "../../schemas";
 import { type IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
-import type { TCreateCategoryInput, TUpdateCategoryInput } from "../../validators";
+import type {
+  TCreateCategoryInput,
+  TUpdateCategoryInput,
+} from "../../validators";
 import { handleServiceError } from "../../utils";
 
 export class DbCategoryService implements CategoryService {
   constructor(private readonly db: IDatabase) {}
 
-  async getAll(): Promise<TCategory[]> {
-    return this.db.query.categories.findMany({
+  async getAll(): Promise<CategoryDTO[]> {
+    const allCategories = await this.db.query.categories.findMany({
       orderBy: {
         createdAt: "desc",
       },
     });
+    return allCategories.map(mapCategoryToDTO);
   }
 
-  async getById(id: string): Promise<TCategory | undefined> {
+  async getById(id: string): Promise<CategoryDTO | undefined> {
     const [category] = await this.db
       .select()
       .from(categories)
       .where(eq(categories.id, id))
       .limit(1);
-    return category;
+    return category ? mapCategoryToDTO(category) : undefined;
   }
 
-  async create(input: TCreateCategoryInput): Promise<TCategory> {
+  async create(input: TCreateCategoryInput): Promise<CategoryDTO> {
     try {
       const [newCategory] = await this.db
         .insert(categories)
@@ -34,13 +39,13 @@ export class DbCategoryService implements CategoryService {
       if (!newCategory) {
         throw new Error("errors.createCategoryFailed");
       }
-      return newCategory;
+      return mapCategoryToDTO(newCategory);
     } catch (error: unknown) {
       handleServiceError(error, "errors.createCategoryFailed");
     }
   }
 
-  async update({ id, ...data }: TUpdateCategoryInput): Promise<TCategory> {
+  async update({ id, ...data }: TUpdateCategoryInput): Promise<CategoryDTO> {
     try {
       const [updatedCategory] = await this.db
         .update(categories)
@@ -50,7 +55,7 @@ export class DbCategoryService implements CategoryService {
       if (!updatedCategory) {
         throw new Error("errors.categoryNotFound");
       }
-      return updatedCategory;
+      return mapCategoryToDTO(updatedCategory);
     } catch (error: unknown) {
       handleServiceError(error, "errors.updateCategoryFailed");
     }

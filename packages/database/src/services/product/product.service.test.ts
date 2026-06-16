@@ -8,8 +8,9 @@ import {
   mockSelectResolvedValue,
   mockSelect,
 } from "../../tests/utils/db-mock";
+import { mapProductToDTO } from "../../dtos";
 import { DbProductService } from "./product.service";
-import type { ProductService } from "../interfaces";
+import type { TProduct } from "../../schemas";
 import type { IDatabase } from "../../client";
 
 const productService = new DbProductService(mockDb as unknown as IDatabase);
@@ -51,7 +52,7 @@ describe("ProductService", () => {
 
     expect(mockInsert).toHaveBeenCalled();
     expect(mockValues).toHaveBeenCalledWith(newProduct);
-    expect(result).toEqual(mockReturnedDbProduct);
+    expect(result).toEqual(mapProductToDTO(mockReturnedDbProduct));
   });
 
   test("getById() should return a product if found", async () => {
@@ -88,7 +89,7 @@ describe("ProductService", () => {
         where: expect.anything(),
       }),
     );
-    expect(result).toEqual(mockProduct);
+    expect(result).toEqual(mapProductToDTO(mockProduct));
   });
 
   describe("getTopSellingProducts()", () => {
@@ -156,13 +157,13 @@ describe("ProductService", () => {
           createdAt: new Date(),
           categories: null,
         },
-      ] as unknown as Awaited<ReturnType<ProductService["getAll"]>>["data"];
+      ] as unknown as TProduct[];
       mockSelectResolvedValue.mockResolvedValueOnce(mockProducts);
 
       const result = await productService.getAll(10, { sort: "priceAsc" });
 
       expect(mockSelect).toHaveBeenCalledTimes(1);
-      expect(result.data).toEqual(mockProducts);
+      expect(result.data).toEqual(mockProducts.map(mapProductToDTO));
     });
 
     test("should support categoryIds array filter", async () => {
@@ -175,7 +176,7 @@ describe("ProductService", () => {
           createdAt: new Date(),
           categories: null,
         },
-      ] as unknown as Awaited<ReturnType<ProductService["getAll"]>>["data"];
+      ] as unknown as TProduct[];
       mockSelectResolvedValue.mockResolvedValueOnce(mockProducts);
 
       const result = await productService.getAll(10, {
@@ -183,7 +184,7 @@ describe("ProductService", () => {
       });
 
       expect(mockSelect).toHaveBeenCalledTimes(1);
-      expect(result.data).toEqual(mockProducts);
+      expect(result.data).toEqual(mockProducts.map(mapProductToDTO));
     });
   });
 

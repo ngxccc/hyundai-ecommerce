@@ -9,6 +9,7 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
+import { mapBrandToDTO } from "../../dtos";
 import { DbBrandService } from "./brand.service";
 import type { IDatabase } from "../../client";
 
@@ -45,7 +46,7 @@ describe("BrandService", () => {
         createdAt: "desc",
       },
     });
-    expect(result).toEqual(mockBrands);
+    expect(result).toEqual(mockBrands.map(mapBrandToDTO));
   });
 
   test("create() should insert and return new brand", async () => {
@@ -71,7 +72,7 @@ describe("BrandService", () => {
 
     expect(mockInsert).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockBrand);
+    expect(result).toEqual(mapBrandToDTO(mockBrand));
   });
 
   test("create() should return error validation.slugExists on duplicate key error", () => {
@@ -108,7 +109,7 @@ describe("BrandService", () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockBrand);
+    expect(result).toEqual(mapBrandToDTO(mockBrand));
   });
 
   test("getById() should return brand when found", async () => {
@@ -129,7 +130,7 @@ describe("BrandService", () => {
     const result = await brandService.getById("1");
 
     expect(mockLimit).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockBrand);
+    expect(result).toEqual(mapBrandToDTO(mockBrand));
   });
 
   test("getById() should return undefined when not found", async () => {
