@@ -1,15 +1,15 @@
 import { HTTP_STATUS, FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
-import {
-  checkRateLimitWithQueue,
-  type CheckoutRequestBody,
-} from "@nhatnang/shared";
+import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import { auth } from "@nhatnang/database/auth";
 import { cartService, orderService } from "@nhatnang/database/services";
 import { env } from "@/env";
 import { generatePayOSSignature } from "@/shared/lib/payos";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import type { CreateOrderDTO } from "@nhatnang/database/dtos";
+import type {
+  CreateOrderDTO,
+  CheckoutRequestBody,
+} from "@nhatnang/database/dtos";
 
 export async function POST(request: Request) {
   try {
@@ -52,7 +52,11 @@ export async function POST(request: Request) {
       );
     }
 
-    if (paymentMethod !== "PAYOS" && paymentMethod !== "MANUAL_TRANSFER") {
+    if (
+      paymentMethod !== "PAYOS" &&
+      paymentMethod !== "MANUAL_TRANSFER" &&
+      paymentMethod !== "TRADE_CREDIT"
+    ) {
       return NextResponse.json(
         { success: false, error: "errors.invalidPaymentMethod" },
         { status: HTTP_STATUS.BAD_REQUEST },
@@ -184,31 +188,60 @@ export async function POST(request: Request) {
       unitPrice: item.product!.price,
     }));
 
-    const order = await orderService.createOrderWithItems(
-      orderData,
-      finalItems,
-      cart.id,
-    );
-
-    // If it is PayOS, we also create the payment record linking to the order
-    if (paymentMethod === "PAYOS") {
-      await orderService.createPayment({
-        orderId: order.id,
-        amount: String(paymentAmount),
-        method: "PAYOS",
-        status: "PENDING",
-        transactionId: String(orderCode),
-      });
+    let order;
+    if (paymentMethod === "TRADE_CREDIT") {
+      try {
+        order = await orderService.checkoutWithTradeCredit(
+          session.user.id,
+          orderData,
+          finalItems,
+          cart.id,
+        );
+        checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/success?orderId=${order.id}`;
+      } catch (err) {
+        if (err instanceof Error) {
+          if (err.message === "errors.lockAcquisitionFailed") {
+            return NextResponse.json(
+              { success: false, error: "errors.lockAcquisitionFailed" },
+              { status: HTTP_STATUS.TOO_MANY_REQUESTS },
+            );
+          }
+          if (err.message === "errors.insufficientCreditLimit") {
+            return NextResponse.json(
+              { success: false, error: "errors.insufficientCreditLimit" },
+              { status: HTTP_STATUS.BAD_REQUEST },
+            );
+          }
+        }
+        throw err;
+      }
     } else {
-      // For MANUAL_TRANSFER, we create a pending payment record
-      await orderService.createPayment({
-        orderId: order.id,
-        amount: String(paymentAmount),
-        method: "MANUAL_TRANSFER",
-        status: "PENDING",
-        transactionId: order.id, // Using order.id as transactionId for manual transfer
-      });
-      checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/success?orderId=${order.id}`;
+      order = await orderService.createOrderWithItems(
+        orderData,
+        finalItems,
+        cart.id,
+      );
+
+      // If it is PayOS, we also create the payment record linking to the order
+      if (paymentMethod === "PAYOS") {
+        await orderService.createPayment({
+          orderId: order.id,
+          amount: String(paymentAmount),
+          method: "PAYOS",
+          status: "PENDING",
+          transactionId: String(orderCode),
+        });
+      } else {
+        // For MANUAL_TRANSFER, we create a pending payment record
+        await orderService.createPayment({
+          orderId: order.id,
+          amount: String(paymentAmount),
+          method: "MANUAL_TRANSFER",
+          status: "PENDING",
+          transactionId: order.id, // Using order.id as transactionId for manual transfer
+        });
+        checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/success?orderId=${order.id}`;
+      }
     }
 
     return NextResponse.json(
