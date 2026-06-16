@@ -1,10 +1,27 @@
 import { routing } from "@/i18n/routing";
+import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import createMiddleware from "next-intl/middleware";
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 const handleI18nRouting = createMiddleware(routing);
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
+  // Rate limit check (e.g. max 100 page views per 60 seconds per IP)
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0] ?? "127.0.0.1";
+  const rateLimit = await checkRateLimitWithQueue(
+    `ratelimit:page:${ip}`,
+    100,
+    "60 s",
+  );
+
+  if (!rateLimit.success) {
+    return new NextResponse("Too Many Requests", {
+      status: 429,
+      statusText: "Too Many Requests",
+    });
+  }
+
   const response = handleI18nRouting(request);
   const isDev = process.env.NODE_ENV === "development";
   const host = request.headers.get("host") ?? "";
@@ -22,7 +39,9 @@ export function proxy(request: NextRequest) {
     form-action 'self';
     frame-ancestors 'none';
     ${isDev || isLocal ? "" : "upgrade-insecure-requests;"}
-  `.replace(/\s{2,}/g, " ").trim();
+  `
+    .replace(/\s{2,}/g, " ")
+    .trim();
 
   response.headers.set("Content-Security-Policy", cspHeader);
   response.headers.set("X-XSS-Protection", "1; mode=block");

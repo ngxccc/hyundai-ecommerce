@@ -1,6 +1,5 @@
 import { cacheLife } from "next/cache";
 import { categoryService as dbCategoryService } from "@nhatnang/database/services";
-import { mapCategoryToDTO } from "@nhatnang/database/dtos";
 import {
   type StorefrontCategory,
   type StorefrontCategoryWithChildren,
@@ -15,9 +14,7 @@ export const categoryService = {
     cacheLife("hours");
     try {
       const dbCategories = await dbCategoryService.getAll();
-      return dbCategories.map((c) =>
-        mapCategoryToStorefront(mapCategoryToDTO(c), locale),
-      );
+      return dbCategories.map((c) => mapCategoryToStorefront(c, locale));
     } catch (error) {
       console.error("Failed to fetch categories:", error);
       return [];

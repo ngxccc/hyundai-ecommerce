@@ -6,7 +6,6 @@ import type {
 } from "@nhatnang/database/dtos";
 import type { TProductSpecs } from "@nhatnang/database/validators";
 import type { TCategoryWithChildren } from "@nhatnang/database/services";
-import { mapCategoryToDTO } from "@nhatnang/database/dtos";
 import type { Locale } from "next-intl";
 
 export interface StorefrontProduct {
@@ -101,11 +100,10 @@ export function mapCategoryToStorefront(
 
 export function mapCategoryTreeToStorefront(
   node: TCategoryWithChildren,
-  locale: "vi" | "en",
+  locale: Locale,
 ): StorefrontCategoryWithChildren {
-  const dto = mapCategoryToDTO(node);
   return {
-    ...mapCategoryToStorefront(dto, locale),
+    ...mapCategoryToStorefront(node, locale),
     children:
       node.children?.map((child) =>
         mapCategoryTreeToStorefront(child, locale),

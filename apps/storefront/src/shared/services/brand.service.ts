@@ -1,6 +1,5 @@
 import { cacheLife } from "next/cache";
 import { brandService as dbBrandService } from "@nhatnang/database/services";
-import { mapBrandToDTO } from "@nhatnang/database/dtos";
 import { type StorefrontBrand, mapBrandToStorefront } from "./types";
 import type { Locale } from "next-intl";
 
@@ -10,9 +9,7 @@ export const brandService = {
     cacheLife("hours");
     try {
       const dbBrands = await dbBrandService.getAll();
-      return dbBrands.map((b) =>
-        mapBrandToStorefront(mapBrandToDTO(b), locale),
-      );
+      return dbBrands.map((b) => mapBrandToStorefront(b, locale));
     } catch (error) {
       console.error("Failed to fetch brands:", error);
       return [];

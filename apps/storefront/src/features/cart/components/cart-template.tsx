@@ -9,6 +9,7 @@ import { Card, CardContent } from "@nhatnang/ui/components/ui/card";
 import { Trash2, Plus, Minus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { priceFormatter } from "@/shared/lib/utils";
+import { FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
 import { toast } from "sonner";
 import { useIsMounted } from "@/shared/hooks/useIsMounted";
 
@@ -230,15 +231,19 @@ export function CartTemplate() {
                 </span>
               </div>
               <div className="text-muted-foreground flex justify-between text-xs">
-                <span>VAT (10%)</span>
+                <span>VAT ({FINANCIAL_CONSTANTS.VAT_RATE * 100}%)</span>
                 <span className="text-foreground font-semibold">
-                  {priceFormatter.format(subtotal * 0.1)}
+                  {priceFormatter.format(
+                    subtotal * FINANCIAL_CONSTANTS.VAT_RATE,
+                  )}
                 </span>
               </div>
               <div className="text-foreground flex justify-between border-t border-zinc-50 pt-1 text-sm font-bold">
                 <span>{t("total")}</span>
                 <span className="text-primary text-base font-extrabold">
-                  {priceFormatter.format(subtotal * 1.1)}
+                  {priceFormatter.format(
+                    subtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE),
+                  )}
                 </span>
               </div>
             </div>
@@ -274,9 +279,13 @@ export function CartTemplate() {
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">VAT (10%)</span>
+                  <span className="text-muted-foreground">
+                    VAT ({FINANCIAL_CONSTANTS.VAT_RATE * 100}%)
+                  </span>
                   <span className="text-foreground font-semibold">
-                    {priceFormatter.format(subtotal * 0.1)}
+                    {priceFormatter.format(
+                      subtotal * FINANCIAL_CONSTANTS.VAT_RATE,
+                    )}
                   </span>
                 </div>
               </div>
@@ -285,7 +294,9 @@ export function CartTemplate() {
                   {t("total")}
                 </span>
                 <span className="text-primary text-xl font-bold">
-                  {priceFormatter.format(subtotal * 1.1)}
+                  {priceFormatter.format(
+                    subtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE),
+                  )}
                 </span>
               </div>
               <div className="space-y-3">

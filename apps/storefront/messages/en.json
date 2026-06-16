@@ -235,6 +235,14 @@
     "updateCartFailed": "Failed to update cart",
     "removeFromCartFailed": "Failed to remove item from cart",
     "mergeCartFailed": "Failed to merge cart",
+    "cartEmpty": "Cart is empty",
+    "missingRequiredFields": "Missing required fields",
+    "invalidPaymentOption": "Invalid payment option",
+    "invalidPaymentMethod": "Invalid payment method",
+    "invalidProductInCart": "Invalid product in cart",
+    "payosLinkCreationFailed": "PayOS link creation failed",
+    "paymentGatewayConnectionFailed": "Payment gateway connection failed",
+    "internalServerError": "Internal server error",
     "validation": {
       "slugExists": "Slug already exists"
     }

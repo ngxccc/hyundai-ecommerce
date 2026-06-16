@@ -1,6 +1,5 @@
 import { cacheLife } from "next/cache";
 import { productService as dbProductService } from "@nhatnang/database/services";
-import { mapProductToDTO } from "@nhatnang/database/dtos";
 import type { GetAllOptions } from "@nhatnang/database/services";
 import {
   type StorefrontProduct,
@@ -27,9 +26,7 @@ export const productService = {
     try {
       const res = await dbProductService.getAll(limit, options);
       return {
-        data: res.data.map((p) =>
-          mapProductToStorefront(mapProductToDTO(p), locale),
-        ),
+        data: res.data.map((p) => mapProductToStorefront(p, locale)),
         hasMore: res.hasMore,
         nextCursor: res.nextCursor,
         prevCursor: res.prevCursor,
@@ -65,7 +62,7 @@ export const productService = {
     try {
       const product = await dbProductService.getActiveProductBySlug(slug);
       if (!product) return null;
-      return mapProductToStorefront(mapProductToDTO(product), locale);
+      return mapProductToStorefront(product, locale);
     } catch (error) {
       console.error("Failed to fetch product by slug:", error);
       return null;

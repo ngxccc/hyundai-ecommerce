@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
 
 test.describe("Hyundai B2B Storefront UI Full Audit", () => {
   test("Homepage UI Verification", async ({ page, isMobile }) => {
@@ -9,7 +10,9 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
 
     // 2. Verify header navigation links
     if (isMobile) {
-      const menuToggle = page.locator("button[aria-label='Toggle mobile menu']").first();
+      const menuToggle = page
+        .locator("button[aria-label='Toggle mobile menu']")
+        .first();
       await expect(menuToggle).toBeVisible();
     } else {
       const productsLink = page.locator("a:has-text('Sản phẩm')").first();
@@ -32,10 +35,16 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
     await expect(page.locator("h1").first()).toContainText("Danh mục sản phẩm");
 
     // 2. Check quote-only product (e.g. HY-30CLE) does not show Add to Cart but shows Request Quote
-    const quoteProductCard = page.locator(".group:has-text('HY-30CLE')").first();
-    if (await quoteProductCard.count() > 0) {
-      const addToCartBtn = quoteProductCard.locator("button:has-text('Thêm vào giỏ')");
-      const requestQuoteBtn = quoteProductCard.locator("a:has-text('Yêu cầu báo giá')");
+    const quoteProductCard = page
+      .locator(".group:has-text('HY-30CLE')")
+      .first();
+    if ((await quoteProductCard.count()) > 0) {
+      const addToCartBtn = quoteProductCard.locator(
+        "button:has-text('Thêm vào giỏ')",
+      );
+      const requestQuoteBtn = quoteProductCard.locator(
+        "a:has-text('Yêu cầu báo giá')",
+      );
       await expect(addToCartBtn).not.toBeVisible();
       await expect(requestQuoteBtn).toBeVisible();
     }
@@ -49,14 +58,18 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
     const kubotaCard = page.locator("div:has-text('Kubota GL-6500')").first();
     await expect(kubotaCard).toBeVisible();
 
-    const addToCartBtn = kubotaCard.locator("button:has-text('Thêm vào giỏ')").first();
+    const addToCartBtn = kubotaCard
+      .locator("button:has-text('Thêm vào giỏ')")
+      .first();
     await expect(addToCartBtn).toBeVisible();
 
     // 3. Click Add to Cart
     await addToCartBtn.click();
 
     // 4. Verify toast notification appears or cart count updates
-    const cartBadge = page.locator("a[href*='/cart'] [data-slot='badge']:visible").first();
+    const cartBadge = page
+      .locator("a[href*='/cart'] [data-slot='badge']:visible")
+      .first();
     await expect(cartBadge).toBeVisible();
     await expect(cartBadge).toHaveText("1");
 
@@ -80,9 +93,13 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
     await expect(qtyInput).toHaveValue("2");
 
     // 9. Verify sticky bottom summary bar (mobile) or summary card (desktop) updates pricing
-    const desktopSummary = page.locator(".hidden.lg\\:block:has-text('Tóm tắt đơn hàng')");
+    const desktopSummary = page.locator(
+      ".hidden.lg\\:block:has-text('Tóm tắt đơn hàng')",
+    );
     if (await desktopSummary.isVisible()) {
-      await expect(desktopSummary).toContainText("VAT (10%)");
+      await expect(desktopSummary).toContainText(
+        `VAT (${FINANCIAL_CONSTANTS.VAT_RATE * 100}%)`,
+      );
     }
 
     // 10. Remove item from cart using the delete button
@@ -91,7 +108,9 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
       await deleteBtn.click();
     } else {
       // fallback if different label is used, find by text/icon
-      const removeBtn = page.locator("button:has(svg.lucide-trash), button:has-text('Xóa')").first();
+      const removeBtn = page
+        .locator("button:has(svg.lucide-trash), button:has-text('Xóa')")
+        .first();
       await removeBtn.click();
     }
 
@@ -105,7 +124,9 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
 
     if (isMobile) {
       // 1. Verify burger toggle menu button is visible on mobile
-      const menuToggle = page.locator("button[aria-label='Toggle mobile menu']").first();
+      const menuToggle = page
+        .locator("button[aria-label='Toggle mobile menu']")
+        .first();
       await expect(menuToggle).toBeVisible();
 
       // 2. Open mobile menu
@@ -116,7 +137,9 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
       await expect(sheetContent).toBeVisible();
 
       // 4. Click 'Sản phẩm' navigation link
-      const productsLink = sheetContent.locator("a:has-text('Sản phẩm')").first();
+      const productsLink = sheetContent
+        .locator("a:has-text('Sản phẩm')")
+        .first();
       await productsLink.click();
 
       // 5. Verify URL has changed and mobile menu sheet is closed
@@ -131,7 +154,9 @@ test.describe("Hyundai B2B Storefront UI Full Audit", () => {
       await expect(page).toHaveURL(/\/products/);
     } else {
       // On desktop, the mobile menu toggle must be hidden
-      const menuToggle = page.locator("button[aria-label='Toggle mobile menu']").first();
+      const menuToggle = page
+        .locator("button[aria-label='Toggle mobile menu']")
+        .first();
       await expect(menuToggle).not.toBeVisible();
     }
   });

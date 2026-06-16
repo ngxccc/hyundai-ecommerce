@@ -1,0 +1,63 @@
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
+import { orderService } from "@nhatnang/database/services";
+import { env } from "@/env";
+import {
+  verifyPayOSSignature,
+  type PayOSWebhookBody,
+} from "@/shared/lib/payos";
+import { NextResponse } from "next/server";
+
+export async function POST(request: Request) {
+  try {
+    const { code, data, signature } =
+      (await request.json()) as PayOSWebhookBody;
+
+    // 1. Prevent payment spoofing by verifying signature
+    if (!data || !signature) {
+      return NextResponse.json(
+        { success: false, error: "errors.missingRequiredFields" },
+        { status: HTTP_STATUS.BAD_REQUEST },
+      );
+    }
+
+    const isValid = verifyPayOSSignature(
+      data,
+      signature,
+      env.PAYOS_CHECKSUM_KEY,
+    );
+    if (!isValid) {
+      console.warn("[PayOS Webhook] Invalid webhook signature detected");
+      return NextResponse.json(
+        { success: false, error: "errors.invalidSignature" },
+        { status: HTTP_STATUS.BAD_REQUEST },
+      );
+    }
+
+    // 2. Process payment state atomically in database
+    if (code === "00") {
+      const updated = await orderService.confirmPayOSPayment(
+        String(data.orderCode),
+        data.amount,
+        data.reference,
+      );
+
+      if (!updated) {
+        console.warn(
+          `[PayOS Webhook] Order code ${data.orderCode} already processed or not found`,
+        );
+      }
+    }
+
+    // 3. Acknowledge receipt to PayOS
+    return NextResponse.json(
+      { success: true, message: "Webhook processed successfully" },
+      { status: HTTP_STATUS.OK },
+    );
+  } catch (error) {
+    console.error("[PayOS Webhook] Error processing payment webhook:", error);
+    return NextResponse.json(
+      { success: false, error: "errors.internalServerError" },
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
+    );
+  }
+}

@@ -11,7 +11,7 @@
     "lint": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
     "start": "doppler run -- next start",
-    "test": "bun test src/",
+    "test": "doppler run -c stg -- bun test src/ app/",
     "test:e2e": "playwright test"
   },
   "dependencies": {

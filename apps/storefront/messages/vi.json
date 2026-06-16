@@ -234,6 +234,14 @@
     "updateCartFailed": "Cập nhật giỏ hàng thất bại",
     "removeFromCartFailed": "Xóa sản phẩm khỏi giỏ hàng thất bại",
     "mergeCartFailed": "Gộp giỏ hàng thất bại",
+    "cartEmpty": "Giỏ hàng trống",
+    "missingRequiredFields": "Thiếu các trường bắt buộc",
+    "invalidPaymentOption": "Lựa chọn thanh toán không hợp lệ",
+    "invalidPaymentMethod": "Phương thức thanh toán không hợp lệ",
+    "invalidProductInCart": "Sản phẩm trong giỏ hàng không hợp lệ",
+    "payosLinkCreationFailed": "Tạo liên kết thanh toán PayOS thất bại",
+    "paymentGatewayConnectionFailed": "Kết nối cổng thanh toán thất bại",
+    "internalServerError": "Lỗi hệ thống",
     "validation": {
       "slugExists": "Đường dẫn đã tồn tại"
     }
