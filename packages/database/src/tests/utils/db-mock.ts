@@ -34,6 +34,7 @@ export interface MockQueryChain {
   prepare: Mock<(...args: unknown[]) => unknown>;
   limit: Mock<(...args: unknown[]) => unknown>;
   where: Mock<(...args: unknown[]) => MockQueryChain>;
+  for: Mock<(...args: unknown[]) => MockQueryChain>;
   innerJoin: () => MockQueryChain;
   leftJoin: () => MockQueryChain;
   groupBy: () => MockQueryChain;
@@ -79,8 +80,9 @@ const defaultWhere = (): MockQueryChain => {
   obj.leftJoin = () => obj;
   obj.groupBy = () => obj;
   obj.orderBy = () => obj;
-  obj.then = (resolve) =>
-    Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
+  obj.for = vi.fn().mockImplementation(() => obj);
+  obj.then = (resolve, reject) =>
+    Promise.resolve(mockSelectResolvedValue.get()).then(resolve, reject);
   obj.catch = (reject) =>
     Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
   return obj;
@@ -97,8 +99,9 @@ const defaultFrom = (): MockQueryChain => {
   obj.leftJoin = () => obj;
   obj.groupBy = () => obj;
   obj.orderBy = () => obj;
-  obj.then = (resolve) =>
-    Promise.resolve(mockSelectResolvedValue.get()).then(resolve);
+  obj.for = vi.fn().mockImplementation(() => obj);
+  obj.then = (resolve, reject) =>
+    Promise.resolve(mockSelectResolvedValue.get()).then(resolve, reject);
   obj.catch = (reject) =>
     Promise.resolve(mockSelectResolvedValue.get()).catch(reject);
   return obj;

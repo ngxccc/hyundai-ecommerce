@@ -5,6 +5,7 @@ import {
   mockDb,
   mockInsert,
   mockUpdate,
+  mockDelete,
   mockReturning,
   mockFindFirst,
   mockFindMany,
@@ -14,6 +15,7 @@ import { DbOrderService } from "./order.service";
 import type { IDatabase } from "../../client";
 import type { TOrder } from "../../schemas";
 import type { CreateOrderDTO } from "../../dtos";
+import { type PostgresError, POSTGRES_ERROR_CODES } from "../../utils";
 
 const orderService = new DbOrderService(mockDb as unknown as IDatabase);
 
@@ -282,6 +284,223 @@ describe("OrderService", () => {
       expect(result).toBe(true);
       expect(mockUpdate).toHaveBeenCalledTimes(2); // Update payment (COMPLETED) & Update order paymentStatus (FULLY_PAID)
       expect(mockInsert).toHaveBeenCalledTimes(2); // Log transaction success & Send outbox events (SEND_MAIL & SEND_TELEGRAM_ALERT)
+    });
+
+    test("should process REMAINDER payment successfully when order paymentStatus is DEPOSIT_PAID", async () => {
+      const mockPayment = {
+        id: "pay-1",
+        orderId: "order-1",
+        amount: "800.00",
+        status: "PENDING",
+      };
+      const mockOrder = {
+        id: "order-1",
+        totalAmount: "1000.00",
+        userId: "user-1",
+        paymentStatus: "DEPOSIT_PAID",
+      };
+      const mockCustomer = { id: "user-1", email: "customer@test.com" };
+
+      mockSelectResolvedValue.mockResolvedValueOnce([mockPayment]);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockCustomer]);
+
+      const result = await orderService.confirmPayOSPayment(
+        "tx-1",
+        800,
+        "ref-1",
+      );
+
+      expect(result).toBe(true);
+      expect(mockUpdate).toHaveBeenCalledTimes(2);
+      expect(mockInsert).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("checkoutWithTradeCredit()", () => {
+    test("should throw errors.lockAcquisitionFailed when lock fails", () => {
+      const err = new Error("could not obtain lock") as PostgresError;
+      err.code = POSTGRES_ERROR_CODES.LOCK_NOT_AVAILABLE;
+      mockSelectResolvedValue.mockResolvedValueOnce(Promise.reject(err));
+
+      return expect(
+        orderService.checkoutWithTradeCredit("user-1", {} as any, [], "cart-1"),
+      ).rejects.toThrow("errors.lockAcquisitionFailed");
+    });
+
+    test("should throw errors.insufficientCreditLimit when credit is insufficient", () => {
+      const mockUser = {
+        id: "user-1",
+        role: "DEALER_APPROVER",
+        creditLimit: "1000.00",
+        currentDebt: "900.00",
+      };
+      const mockProduct = { id: "prod-1", price: "200.00" }; // recalculated: 200 * 1.1 = 220. available credit: 1000 - 900 = 100.
+
+      mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
+
+      const items = [{ productId: "prod-1", quantity: 1 } as any];
+
+      return expect(
+        orderService.checkoutWithTradeCredit(
+          "user-1",
+          {} as any,
+          items,
+          "cart-1",
+        ),
+      ).rejects.toThrow("errors.insufficientCreditLimit");
+    });
+
+    test("should check out successfully and deduct limit for dealer_approver", async () => {
+      const mockUser = {
+        id: "user-1",
+        role: "DEALER_APPROVER",
+        creditLimit: "1000.00",
+        currentDebt: "500.00",
+        name: "Approver",
+        email: "app@test.com",
+      };
+      const mockProduct = { id: "prod-1", price: "200.00" }; // recalculated: 220
+      const mockOrder = { id: "order-1", totalAmount: "220.00" };
+
+      mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
+      mockReturning.mockResolvedValueOnce([mockOrder]);
+
+      const items = [{ productId: "prod-1", quantity: 1 } as any];
+      const result = await orderService.checkoutWithTradeCredit(
+        "user-1",
+        {} as any,
+        items,
+        "cart-1",
+      );
+
+      expect(result.id).toBe("order-1");
+      expect(mockUpdate).toHaveBeenCalledTimes(1); // Increment currentDebt
+      expect(mockInsert).toHaveBeenCalledTimes(3); // Create order, create order items, and insert outbox events
+      expect(mockDelete).toHaveBeenCalledTimes(1); // Clear cart
+    });
+
+    test("should check out successfully and set pending approval without deducting limit for dealer_purchaser", async () => {
+      const mockUser = {
+        id: "user-1",
+        role: "DEALER_PURCHASER",
+        creditLimit: "1000.00",
+        currentDebt: "500.00",
+        name: "Purchaser",
+        email: "purch@test.com",
+      };
+      const mockProduct = { id: "prod-1", price: "200.00" }; // recalculated: 220
+      const mockOrder = { id: "order-1", totalAmount: "220.00" };
+
+      mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
+      mockReturning.mockResolvedValueOnce([mockOrder]);
+
+      const items = [{ productId: "prod-1", quantity: 1 } as any];
+      const result = await orderService.checkoutWithTradeCredit(
+        "user-1",
+        {} as any,
+        items,
+        "cart-1",
+      );
+
+      expect(result.id).toBe("order-1");
+      expect(mockUpdate).not.toHaveBeenCalled(); // No currentDebt increment for purchaser
+      expect(mockInsert).toHaveBeenCalledTimes(3); // Create order, create order items, and insert outbox alert
+      expect(mockDelete).toHaveBeenCalledTimes(1); // Clear cart
+    });
+  });
+
+  describe("approveDealerOrder()", () => {
+    test("should return undefined if order does not exist", async () => {
+      mockFindFirst.mockResolvedValueOnce(undefined);
+      const result = await orderService.approveDealerOrder("order-1");
+      expect(result).toBeUndefined();
+    });
+
+    test("should return order directly if already APPROVED", async () => {
+      const mockOrder = { id: "order-1", approvalStatus: "APPROVED" };
+      mockFindFirst.mockResolvedValueOnce(mockOrder);
+      const result = await orderService.approveDealerOrder("order-1");
+      expect(result).toEqual(mockOrder as any);
+    });
+
+    test("should throw errors.insufficientCreditLimit if available credit is insufficient for TRADE_CREDIT order", () => {
+      const mockOrder = {
+        id: "order-1",
+        approvalStatus: "PENDING_APPROVAL",
+        paymentMethod: "TRADE_CREDIT",
+        totalAmount: "200.00",
+        userId: "user-1",
+      };
+      const mockUser = {
+        id: "user-1",
+        creditLimit: "100.00",
+        currentDebt: "50.00",
+      };
+
+      mockFindFirst.mockResolvedValueOnce(mockOrder);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
+
+      expect(orderService.approveDealerOrder("order-1")).rejects.toThrow(
+        "errors.insufficientCreditLimit",
+      );
+    });
+
+    test("should approve successfully and increment currentDebt for TRADE_CREDIT order if limit is sufficient", async () => {
+      const mockOrder = {
+        id: "order-1",
+        approvalStatus: "PENDING_APPROVAL",
+        paymentMethod: "TRADE_CREDIT",
+        totalAmount: "200.00",
+        userId: "user-1",
+      };
+      const mockUser = {
+        id: "user-1",
+        creditLimit: "500.00",
+        currentDebt: "50.00",
+      };
+      const approvedOrder = { ...mockOrder, approvalStatus: "APPROVED" };
+
+      mockFindFirst.mockResolvedValueOnce(mockOrder);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
+      mockReturning.mockResolvedValueOnce([approvedOrder]);
+
+      const result = await orderService.approveDealerOrder("order-1");
+      expect(result).toEqual(approvedOrder as any);
+      expect(mockUpdate).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("verifyManualBankTransfer()", () => {
+    test("should return undefined if order does not exist", async () => {
+      mockFindFirst.mockResolvedValueOnce(undefined);
+      const result = await orderService.verifyManualBankTransfer(
+        "order-1",
+        "user-admin",
+      );
+      expect(result).toBeUndefined();
+    });
+
+    test("should update paymentStatus, payments table, and log successful transaction", async () => {
+      const mockOrder = {
+        id: "order-1",
+        totalAmount: "1000.00",
+      };
+      const updatedOrder = { ...mockOrder, paymentStatus: "FULLY_PAID" };
+
+      mockFindFirst.mockResolvedValueOnce(mockOrder);
+      mockReturning.mockResolvedValueOnce([updatedOrder]);
+
+      const result = await orderService.verifyManualBankTransfer(
+        "order-1",
+        "user-admin",
+      );
+      expect(result).toEqual(updatedOrder as any);
+      expect(mockUpdate).toHaveBeenCalledTimes(2);
+      expect(mockInsert).toHaveBeenCalledTimes(1);
     });
   });
 });
