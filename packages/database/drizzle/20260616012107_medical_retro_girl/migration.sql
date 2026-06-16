@@ -1,0 +1,1 @@
+ALTER TABLE "cart" ALTER COLUMN "user_id" SET NOT NULL;

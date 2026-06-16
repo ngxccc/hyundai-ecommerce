@@ -12,7 +12,8 @@ import {
 } from "../../tests/utils/db-mock";
 import { DbOrderService } from "./order.service";
 import type { IDatabase } from "../../client";
-import type { TOrder, TNewOrder } from "../../schemas";
+import type { TOrder } from "../../schemas";
+import type { CreateOrderDTO } from "../../dtos";
 
 const orderService = new DbOrderService(mockDb as unknown as IDatabase);
 
@@ -29,7 +30,7 @@ describe("OrderService", () => {
     const result = await orderService.createOrder({
       userId: "user-1",
       status: "PENDING",
-    } as unknown as TNewOrder);
+    } as unknown as CreateOrderDTO);
     expect(mockInsert).toHaveBeenCalledTimes(1);
     expect(result).toEqual(mockOrder as unknown as TOrder);
   });
@@ -201,6 +202,86 @@ describe("OrderService", () => {
         orderCount: 3,
       });
       expect(result[2]).toEqual({ month: "03", revenue: "0", orderCount: 0 });
+    });
+  });
+
+  describe("confirmPayOSPayment()", () => {
+    test("should return false if payment does not exist", async () => {
+      mockSelectResolvedValue.mockResolvedValueOnce([]); // payment not found
+
+      const result = await orderService.confirmPayOSPayment(
+        "tx-1",
+        1000,
+        "ref-1",
+      );
+      expect(result).toBe(false);
+    });
+
+    test("should return false if payment status is already COMPLETED", async () => {
+      mockSelectResolvedValue.mockResolvedValueOnce([{ status: "COMPLETED" }]);
+
+      const result = await orderService.confirmPayOSPayment(
+        "tx-1",
+        1000,
+        "ref-1",
+      );
+      expect(result).toBe(false);
+    });
+
+    test("should handle amount mismatch by placing order on SUSPICIOUS_PAYMENT_HOLD and logging failure", async () => {
+      const mockPayment = {
+        id: "pay-1",
+        orderId: "order-1",
+        amount: "1000.00",
+        status: "PENDING",
+      };
+      const mockOrder = {
+        id: "order-1",
+        totalAmount: "1000.00",
+        userId: "user-1",
+      };
+
+      mockSelectResolvedValue.mockResolvedValueOnce([mockPayment]);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
+
+      const result = await orderService.confirmPayOSPayment(
+        "tx-1",
+        500,
+        "ref-1",
+      ); // 500 !== 1000
+
+      expect(result).toBe(true);
+      expect(mockUpdate).toHaveBeenCalledTimes(1); // Set order status to SUSPICIOUS_PAYMENT_HOLD
+      expect(mockInsert).toHaveBeenCalledTimes(2); // Log transaction failure & Send Telegram alert
+    });
+
+    test("should process payment successfully when amounts match", async () => {
+      const mockPayment = {
+        id: "pay-1",
+        orderId: "order-1",
+        amount: "1000.00",
+        status: "PENDING",
+      };
+      const mockOrder = {
+        id: "order-1",
+        totalAmount: "1000.00",
+        userId: "user-1",
+      };
+      const mockCustomer = { id: "user-1", email: "customer@test.com" };
+
+      mockSelectResolvedValue.mockResolvedValueOnce([mockPayment]);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockCustomer]);
+
+      const result = await orderService.confirmPayOSPayment(
+        "tx-1",
+        1000,
+        "ref-1",
+      ); // 1000 === 1000
+
+      expect(result).toBe(true);
+      expect(mockUpdate).toHaveBeenCalledTimes(2); // Update payment (COMPLETED) & Update order paymentStatus (FULLY_PAID)
+      expect(mockInsert).toHaveBeenCalledTimes(2); // Log transaction success & Send outbox events (SEND_MAIL & SEND_TELEGRAM_ALERT)
     });
   });
 });

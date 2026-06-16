@@ -1,4 +1,9 @@
 import type {
+  CreateOrderDTO,
+  CreateOrderItemDTO,
+  CreatePaymentDTO,
+} from "../../dtos";
+import type {
   OrderService,
   DashboardMetrics,
   MonthlyRevenue,
@@ -7,12 +12,16 @@ import { and, eq, ne, gte, lt, sql } from "drizzle-orm";
 import { type IDatabase } from "../../client";
 import {
   orders,
+  orderItems,
+  cartItems,
+  payments,
   shippingBids,
   products,
   users,
   paymentTransactions,
-  type TNewOrder,
+  outboxEvents,
   type TOrder,
+  type TPayment,
   type TShippingBid,
   type TNewShippingBid,
 } from "../../schemas";
@@ -47,9 +56,36 @@ export class DbOrderService implements OrderService {
     });
   }
 
-  async createOrder(data: TNewOrder) {
+  async createOrder(data: CreateOrderDTO) {
     const [order] = await this.db.insert(orders).values(data).returning();
     return order;
+  }
+
+  async createOrderWithItems(
+    orderData: CreateOrderDTO,
+    items: CreateOrderItemDTO[],
+    cartIdToClear?: string,
+  ): Promise<TOrder> {
+    return await this.db.transaction(async (tx) => {
+      const [order] = await tx.insert(orders).values(orderData).returning();
+      if (!order) {
+        throw new Error("errors.createOrderFailed");
+      }
+
+      if (items.length > 0) {
+        const finalItems = items.map((item) => ({
+          ...item,
+          orderId: order.id,
+        }));
+        await tx.insert(orderItems).values(finalItems);
+      }
+
+      if (cartIdToClear) {
+        await tx.delete(cartItems).where(eq(cartItems.cartId, cartIdToClear));
+      }
+
+      return order;
+    });
   }
 
   async updateOrderStatus(id: string, status: TOrder["status"]) {
@@ -399,6 +435,167 @@ export class DbOrderService implements OrderService {
           .returning();
         return updatedOrder;
       }
+    });
+  }
+
+  async createPayment(data: CreatePaymentDTO): Promise<TPayment> {
+    const [payment] = await this.db.insert(payments).values(data).returning();
+    if (!payment) {
+      throw new Error("errors.createPaymentFailed");
+    }
+    return payment;
+  }
+
+  async getPaymentByTransactionId(
+    transactionId: string,
+  ): Promise<TPayment | undefined> {
+    const [payment] = await this.db
+      .select()
+      .from(payments)
+      .where(eq(payments.transactionId, transactionId))
+      .limit(1);
+    return payment;
+  }
+
+  async updatePayment(
+    id: string,
+    data: Partial<TPayment>,
+  ): Promise<TPayment | undefined> {
+    const [updated] = await this.db
+      .update(payments)
+      .set(data)
+      .where(eq(payments.id, id))
+      .returning();
+    return updated;
+  }
+
+  async confirmPayOSPayment(
+    orderCode: string,
+    amount: number,
+    referenceCode: string,
+  ): Promise<boolean> {
+    return await this.db.transaction(async (tx) => {
+      // 1. Get the payment by transactionId (which is orderCode)
+      const [payment] = await tx
+        .select()
+        .from(payments)
+        .where(eq(payments.transactionId, orderCode))
+        .limit(1);
+      if (!payment || payment.status === "COMPLETED") {
+        return false;
+      }
+
+      // 2. Get the order
+      const [order] = await tx
+        .select()
+        .from(orders)
+        .where(eq(orders.id, payment.orderId))
+        .limit(1);
+      if (!order) {
+        return false;
+      }
+
+      // Check for amount mismatch (Gap 4)
+      const expectedAmount = parseFloat(payment.amount);
+      const tolerance = 0.01;
+      const isMismatch = Math.abs(amount - expectedAmount) > tolerance;
+
+      if (isMismatch) {
+        // Log transaction as FAILED
+        await tx.insert(paymentTransactions).values({
+          orderId: order.id,
+          amount: String(amount),
+          paymentMethod: "PAYOS",
+          transactionType: "FULL",
+          status: "FAILED",
+          referenceCode,
+        });
+
+        // Set order status to "SUSPICIOUS_PAYMENT_HOLD" and paymentStatus to "UNPAID"
+        await tx
+          .update(orders)
+          .set({
+            status: "SUSPICIOUS_PAYMENT_HOLD",
+            paymentStatus: "UNPAID",
+          })
+          .where(eq(orders.id, order.id));
+
+        // Insert high-priority TELEGRAM alert event to outbox_event (Gap 2/4)
+        await tx.insert(outboxEvents).values({
+          eventType: "SEND_TELEGRAM_ALERT",
+          payload: {
+            message: `⚠️ [BẢO MẬT] Phát hiện lệch tiền thanh toán qua PayOS!\n- Mã đơn hàng: ${order.id}\n- Số tiền mong đợi: ${expectedAmount.toLocaleString("vi-VN")} VND\n- Số tiền thực tế: ${amount.toLocaleString("vi-VN")} VND\n- Reference: ${referenceCode}\n- Trạng thái: Đơn hàng đã bị giữ lại để kiểm tra thủ công.`,
+            metadata: {
+              orderId: order.id,
+              expectedAmount,
+              actualAmount: amount,
+              referenceCode,
+            },
+          },
+          status: "PENDING",
+        });
+
+        return true;
+      }
+
+      // If amounts match:
+      // 3. Update payment status to COMPLETED
+      await tx
+        .update(payments)
+        .set({ status: "COMPLETED" })
+        .where(eq(payments.id, payment.id));
+
+      // 4. Update order paymentStatus
+      const isFull =
+        parseFloat(payment.amount) === parseFloat(order.totalAmount);
+      const paymentStatus = isFull ? "FULLY_PAID" : "DEPOSIT_PAID";
+
+      await tx
+        .update(orders)
+        .set({ paymentStatus })
+        .where(eq(orders.id, order.id));
+
+      // 5. Insert paymentTransaction log
+      await tx.insert(paymentTransactions).values({
+        orderId: order.id,
+        amount: payment.amount,
+        paymentMethod: "PAYOS",
+        transactionType: isFull ? "FULL" : "DEPOSIT",
+        status: "SUCCESS",
+        referenceCode,
+      });
+
+      // Get customer email
+      const [customer] = await tx
+        .select()
+        .from(users)
+        .where(eq(users.id, order.userId))
+        .limit(1);
+      const customerEmail = customer?.email ?? "customer@example.com";
+
+      // 6. Insert outbox events for background jobs (Gap 3):
+      // - Confirm email (SEND_MAIL)
+      // - Telegram alert to sales department (SEND_TELEGRAM_ALERT)
+      await tx.insert(outboxEvents).values([
+        {
+          eventType: "SEND_MAIL",
+          payload: {
+            to: customerEmail,
+            subject: `Xác nhận thanh toán đơn hàng ${order.id}`,
+            body: `Đơn hàng ${order.id} đã được thanh toán thành công số tiền ${amount.toLocaleString("vi-VN")} VND qua PayOS. Trạng thái: ${paymentStatus}.`,
+          },
+          status: "PENDING",
+        },
+        {
+          eventType: "SEND_TELEGRAM_ALERT",
+          payload: {
+            message: `🎉 [THANH TOÁN] Đơn hàng mới thanh toán thành công!\n- Mã đơn hàng: ${order.id}\n- Số tiền: ${amount.toLocaleString("vi-VN")} VND\n- Cổng: PayOS\n- Loại: ${isFull ? "Toàn bộ" : "Đặt cọc (20%)"}`,
+          },
+          status: "PENDING",
+        },
+      ]);
+
+      return true;
     });
   }
 }

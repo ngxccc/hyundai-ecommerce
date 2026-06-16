@@ -20,6 +20,7 @@ export const orderStatusEnum = pgEnum("order_status", [
   "CANCELLED",
   "REFUNDED",
   "REFUND_PENDING",
+  "SUSPICIOUS_PAYMENT_HOLD",
 ]);
 
 export const paymentMethodEnum = pgEnum("payment_method", [

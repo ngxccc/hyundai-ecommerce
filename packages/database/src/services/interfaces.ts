@@ -1,11 +1,8 @@
 import type {
-  TBrand,
-  TCategory,
   TNewProduct,
-  TProduct,
   TUser,
-  TNewOrder,
   TOrder,
+  TPayment,
   TNewShippingBid,
   TShippingBid,
   TNewQuote,
@@ -16,20 +13,28 @@ import type {
   TQuote,
   TNewDealerTier,
   TDealerTier,
-  TWarehouse,
   TWarehouseStock,
   TCart,
   TCartItem,
 } from "../schemas";
-import type { CartItemDTO } from "../dtos";
+import type {
+  CartItemDTO,
+  CreateOrderDTO,
+  CreateOrderItemDTO,
+  CreatePaymentDTO,
+  BrandDTO,
+  CategoryDTO,
+  WarehouseDTO,
+  ProductDTO,
+} from "../dtos";
 
 import type {
   TCreateBrandInput,
   TUpdateBrandInput,
   TCreateCategoryInput,
   TUpdateCategoryInput,
-  TCreateWarehouseInput,
-  TUpdateWarehouseInput,
+  TCreateWarehouse,
+  TUpdateWarehouse,
   TUpdateWarehouseStockInput,
 } from "../validators";
 
@@ -84,23 +89,23 @@ export interface AuthService<TLoginForm = unknown, TRegisterForm = unknown> {
 
 // --- Brand Service Interfaces ---
 export interface BrandService {
-  getAll(): Promise<TBrand[]>;
-  getById(id: string): Promise<TBrand | undefined>;
-  create(input: TCreateBrandInput): Promise<TBrand>;
-  update(input: TUpdateBrandInput): Promise<TBrand>;
+  getAll(): Promise<BrandDTO[]>;
+  getById(id: string): Promise<BrandDTO | undefined>;
+  create(input: TCreateBrandInput): Promise<BrandDTO>;
+  update(input: TUpdateBrandInput): Promise<BrandDTO>;
   delete(id: string): Promise<boolean>;
 }
 
 // --- Category Service Interfaces ---
-export type TCategoryWithChildren = TCategory & {
+export type TCategoryWithChildren = CategoryDTO & {
   children?: TCategoryWithChildren[];
 };
 
 export interface CategoryService {
-  getAll(): Promise<TCategory[]>;
-  getById(id: string): Promise<TCategory | undefined>;
-  create(input: TCreateCategoryInput): Promise<TCategory>;
-  update(input: TUpdateCategoryInput): Promise<TCategory>;
+  getAll(): Promise<CategoryDTO[]>;
+  getById(id: string): Promise<CategoryDTO | undefined>;
+  create(input: TCreateCategoryInput): Promise<CategoryDTO>;
+  update(input: TUpdateCategoryInput): Promise<CategoryDTO>;
   delete(id: string): Promise<boolean>;
   getCategoryTree(): Promise<TCategoryWithChildren[]>;
   getCategoryDescendants(parentId: string): Promise<string[]>;
@@ -156,15 +161,15 @@ export interface LocalItem {
 }
 
 export interface ProductService {
-  create(data: TNewProduct): Promise<TProduct | undefined>;
-  update(id: string, data: TUpdateProductData): Promise<TProduct | undefined>;
+  create(data: TNewProduct): Promise<ProductDTO | undefined>;
+  update(id: string, data: TUpdateProductData): Promise<ProductDTO | undefined>;
   delete(id: string): Promise<boolean>;
-  getById(id: string): Promise<TProduct | undefined>;
+  getById(id: string): Promise<ProductDTO | undefined>;
   getAll(
     limit?: number,
     options?: GetAllOptions,
   ): Promise<{
-    data: TProduct[];
+    data: ProductDTO[];
     hasMore: boolean;
     nextCursor?: string | undefined;
     prevCursor?: string | undefined;
@@ -172,15 +177,15 @@ export interface ProductService {
   getTopSellingProducts(limit: number): Promise<TopSellingProduct[]>;
   getFiltersMetadata(): Promise<ProductFilterMetadata[]>;
   getAllActiveSlugs(): Promise<string[]>;
-  getActiveProductBySlug(slug: string): Promise<TProduct | null>;
+  getActiveProductBySlug(slug: string): Promise<ProductDTO | null>;
 }
 
 // --- Warehouse Service Interfaces ---
 export interface WarehouseService {
-  getAll(): Promise<TWarehouse[]>;
-  getById(id: string): Promise<TWarehouse | undefined>;
-  create(data: TCreateWarehouseInput): Promise<TWarehouse>;
-  update(data: TUpdateWarehouseInput): Promise<TWarehouse>;
+  getAll(): Promise<WarehouseDTO[]>;
+  getById(id: string): Promise<WarehouseDTO | undefined>;
+  create(data: TCreateWarehouse): Promise<WarehouseDTO>;
+  update(data: TUpdateWarehouse): Promise<WarehouseDTO>;
   delete(id: string): Promise<boolean>;
 }
 
@@ -210,7 +215,12 @@ export interface UserService {
 // --- Order Service Interfaces ---
 export interface OrderService {
   list(filters?: { status?: TOrder["status"] }): Promise<ComplexOrder[]>;
-  createOrder(data: TNewOrder): Promise<TOrder | undefined>;
+  createOrder(data: CreateOrderDTO): Promise<TOrder | undefined>;
+  createOrderWithItems(
+    orderData: CreateOrderDTO,
+    items: CreateOrderItemDTO[],
+    cartIdToClear?: string,
+  ): Promise<TOrder>;
   updateOrderStatus(
     id: string,
     status: TOrder["status"],
@@ -224,8 +234,24 @@ export interface OrderService {
   getDashboardMetrics(): Promise<DashboardMetrics>;
   getMonthlyRevenue(year: number): Promise<MonthlyRevenue[]>;
   approveDealerOrder(orderId: string): Promise<TOrder | undefined>;
-  verifyManualBankTransfer(orderId: string, verifiedById: string): Promise<TOrder | undefined>;
+  verifyManualBankTransfer(
+    orderId: string,
+    verifiedById: string,
+  ): Promise<TOrder | undefined>;
   approveOrderCancellation(orderId: string): Promise<TOrder | undefined>;
+  createPayment(data: CreatePaymentDTO): Promise<TPayment>;
+  getPaymentByTransactionId(
+    transactionId: string,
+  ): Promise<TPayment | undefined>;
+  updatePayment(
+    id: string,
+    data: Partial<TPayment>,
+  ): Promise<TPayment | undefined>;
+  confirmPayOSPayment(
+    orderCode: string,
+    amount: number,
+    referenceCode: string,
+  ): Promise<boolean>;
 }
 
 // --- Quotes Service Interfaces ---

@@ -12,6 +12,8 @@ import { userAddresses } from "./user-address.schema";
 import { payments } from "./payment.schema";
 import { carts, cartItems } from "./cart.schema";
 import { quotes, quoteItems, quoteMessages } from "./quotes.schema";
+import { paymentTransactions } from "./payment-transaction.schema";
+import { creditLimitHistory } from "./credit-limit-history.schema";
 
 export const schemaRelations = defineRelations(
   {
@@ -34,6 +36,8 @@ export const schemaRelations = defineRelations(
     quotes,
     quoteItems,
     quoteMessages,
+    paymentTransactions,
+    creditLimitHistory,
   },
   (r) => ({
     users: {
@@ -51,6 +55,13 @@ export const schemaRelations = defineRelations(
       userAddresses: r.many.userAddresses(),
       quotes: r.many.quotes(),
       quoteMessages: r.many.quoteMessages(),
+      verifiedTransactions: r.many.paymentTransactions(),
+      creditLimitHistory: r.many.creditLimitHistory({
+        alias: "userCreditLimitHistory",
+      }),
+      changedCreditLimits: r.many.creditLimitHistory({
+        alias: "changedByCreditLimitHistory",
+      }),
     },
 
     sessions: {
@@ -85,6 +96,7 @@ export const schemaRelations = defineRelations(
       }),
       items: r.many.orderItems(),
       bids: r.many.shippingBids(),
+      paymentTransactions: r.many.paymentTransactions(),
       quote: r.one.quotes({
         from: r.orders.id,
         to: r.quotes.orderId,
@@ -232,6 +244,29 @@ export const schemaRelations = defineRelations(
         from: r.quoteMessages.senderId,
         to: r.users.id,
         optional: false,
+      }),
+    },
+    paymentTransactions: {
+      order: r.one.orders({
+        from: r.paymentTransactions.orderId,
+        to: r.orders.id,
+        optional: false,
+      }),
+      verifiedByUser: r.one.users({
+        from: r.paymentTransactions.verifiedBy,
+        to: r.users.id,
+      }),
+    },
+    creditLimitHistory: {
+      user: r.one.users({
+        from: r.creditLimitHistory.userId,
+        to: r.users.id,
+        alias: "userCreditLimitHistory",
+      }),
+      changedByUser: r.one.users({
+        from: r.creditLimitHistory.changedBy,
+        to: r.users.id,
+        alias: "changedByCreditLimitHistory",
       }),
     },
   }),

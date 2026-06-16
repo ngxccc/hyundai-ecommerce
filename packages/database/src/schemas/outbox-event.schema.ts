@@ -11,6 +11,8 @@ import { baseEntity } from "./helpers.schema";
 export const eventTypeEnum = pgEnum("event_type", [
   "SEND_QUOTE_EMAIL",
   "SEND_MAIL",
+  "SEND_ZALO_ZNS",
+  "SEND_TELEGRAM_ALERT",
 ]);
 
 export const outboxEventStatusEnum = pgEnum("outbox_event_status", [
@@ -31,7 +33,23 @@ export interface SendEmailPayload {
   body: string;
 }
 
-export type OutboxPayload = SendQuoteEmailPayload | SendEmailPayload;
+export interface SendZaloZNSPayload {
+  phone: string;
+  templateId: string;
+  templateData: Record<string, unknown>;
+}
+
+export interface SendTelegramAlertPayload {
+  channelId?: string;
+  message: string;
+  metadata?: Record<string, unknown>;
+}
+
+export type OutboxPayload =
+  | SendQuoteEmailPayload
+  | SendEmailPayload
+  | SendZaloZNSPayload
+  | SendTelegramAlertPayload;
 
 export const outboxEvents = snakeCase.table("outbox_event", {
   ...baseEntity,
