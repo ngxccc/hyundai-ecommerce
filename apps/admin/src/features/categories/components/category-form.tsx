@@ -35,8 +35,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@nhatnang/ui/components/ui/card";
-import { type TCategory } from "@nhatnang/database/schemas";
-import { type TCreateCategoryInput, createCategorySchema } from "@nhatnang/database/validators";
+import type { CategoryDTO } from "@nhatnang/database/dtos";
+import {
+  type TCreateCategoryInput,
+  createCategorySchema,
+} from "@nhatnang/database/validators";
 import { Save, Loader2, X, Info } from "lucide-react";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import {
@@ -49,8 +52,8 @@ export const CategoryForm = ({
   categories,
   breadcrumbs,
 }: {
-  initialData?: TCategory;
-  categories: TCategory[];
+  initialData?: CategoryDTO;
+  categories: CategoryDTO[];
   breadcrumbs?: ReactNode;
 }) => {
   const t = useTranslations("AdminCategoryForm");

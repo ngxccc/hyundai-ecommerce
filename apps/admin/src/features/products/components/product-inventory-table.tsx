@@ -15,12 +15,13 @@ import {
   TableRow,
 } from "@nhatnang/ui/components/ui/table";
 import { setProductStockAction } from "../actions/inventory.actions";
-import type { TWarehouse, TWarehouseStock } from "@nhatnang/database/schemas";
+import type { TWarehouseStock } from "@nhatnang/database/schemas";
+import type { WarehouseDTO } from "@nhatnang/database/dtos";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 
 interface ProductInventoryTableProps {
   productId: string;
-  warehouses: TWarehouse[];
+  warehouses: WarehouseDTO[];
   warehouseStocks: TWarehouseStock[];
 }
 
@@ -86,7 +87,7 @@ const InventoryRow = ({
   initialStock,
   initialMinStock,
 }: {
-  warehouse: TWarehouse;
+  warehouse: WarehouseDTO;
   productId: string;
   initialStock: number;
   initialMinStock: number;

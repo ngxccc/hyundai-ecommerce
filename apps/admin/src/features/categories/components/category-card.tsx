@@ -8,7 +8,7 @@ import { Button } from "@nhatnang/ui/components/ui/button";
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
-import type { TCategory } from "@nhatnang/database/schemas";
+import type { CategoryDTO } from "@nhatnang/database/dtos";
 
 import { DeleteCategoryButton } from "./delete-category-button";
 
@@ -16,7 +16,7 @@ export const CategoryCard = ({
   category,
   parentName,
 }: {
-  category: TCategory;
+  category: CategoryDTO;
   parentName?: string | undefined;
 }) => {
   const t = useTranslations("AdminCategories.card");

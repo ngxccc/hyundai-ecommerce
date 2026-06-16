@@ -3,7 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { orderService } from "@nhatnang/database/services";
 import { type TOrder } from "@nhatnang/database/schemas";
-import { requireAuth, AuthError, assertRole } from "@/shared/lib/action-auth";
+import {
+  requireAuth,
+  AuthError,
+  assertFinanceRole,
+  assertSalesOrFinanceRole,
+} from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import {
   updateOrderStatusSchema,
@@ -188,7 +193,7 @@ export const addShippingBidAction = async (data: TAddShippingBidInput) => {
 export const approveDealerOrderAction = async (orderId: string) => {
   const t = await getTranslations("errors");
   try {
-    await assertRole(["SUPER_ADMIN", "SALES_REPRESENTATIVE", "ACCOUNTANT"]);
+    await assertSalesOrFinanceRole();
 
     const updated = await orderService.approveDealerOrder(orderId);
     if (!updated) {
@@ -225,7 +230,7 @@ export const approveDealerOrderAction = async (orderId: string) => {
 export const verifyManualBankTransferAction = async (orderId: string) => {
   const t = await getTranslations("errors");
   try {
-    const session = await assertRole(["SUPER_ADMIN", "ACCOUNTANT"]);
+    const session = await assertFinanceRole();
 
     const updated = await orderService.verifyManualBankTransfer(
       orderId,
@@ -267,7 +272,7 @@ export const verifyManualBankTransferAction = async (orderId: string) => {
 export const approveOrderCancellationAction = async (orderId: string) => {
   const t = await getTranslations("errors");
   try {
-    await assertRole(["SUPER_ADMIN", "SALES_REPRESENTATIVE", "ACCOUNTANT"]);
+    await assertSalesOrFinanceRole();
 
     const updated = await orderService.approveOrderCancellation(orderId);
     if (!updated) {

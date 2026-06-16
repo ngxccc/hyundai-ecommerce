@@ -25,8 +25,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@nhatnang/ui/components/ui/card";
-import { type TBrand } from "@nhatnang/database/schemas";
-import { type TCreateBrandInput, createBrandSchema } from "@nhatnang/database/validators";
+import type { BrandDTO } from "@nhatnang/database/dtos";
+import {
+  type TCreateBrandInput,
+  createBrandSchema,
+} from "@nhatnang/database/validators";
 import { Save, Loader2, X, Info } from "lucide-react";
 
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
@@ -39,7 +42,7 @@ export const BrandForm = ({
   initialData,
   breadcrumbs,
 }: {
-  initialData?: TBrand;
+  initialData?: BrandDTO;
   breadcrumbs?: ReactNode;
 }) => {
   const t = useTranslations("AdminBrandForm");

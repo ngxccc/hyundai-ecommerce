@@ -21,13 +21,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@nhatnang/ui/components/ui/select";
-import { type TCategory, type TBrand } from "@nhatnang/database/schemas";
+import type { CategoryDTO, BrandDTO } from "@nhatnang/database/dtos";
 import type { TCreateProductInput } from "@nhatnang/database/validators";
 
 interface ProductCategorySectionProps {
   form: UseFormReturn<TCreateProductInput>;
-  categories: TCategory[];
-  brands: TBrand[];
+  categories: CategoryDTO[];
+  brands: BrandDTO[];
 }
 
 export const ProductCategorySection = ({

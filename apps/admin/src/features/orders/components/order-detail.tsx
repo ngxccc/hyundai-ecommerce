@@ -121,7 +121,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
         if (result.success) {
           toast.success(t("statusUpdated"));
         } else {
-          toast.error(result.error || t("statusUpdateError"));
+          toast.error(result.error ?? t("statusUpdateError"));
         }
       } catch (err) {
         console.error(err);

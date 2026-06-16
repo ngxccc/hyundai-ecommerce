@@ -8,7 +8,7 @@ import {
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { assertRole, AuthError } from "@/shared/lib/action-auth";
+import { assertFinanceRole, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 
 /**
@@ -16,7 +16,7 @@ import { getTranslations } from "next-intl/server";
  */
 export const createDealerTierAction = async (formData: FormData) => {
   try {
-    await assertRole(["SUPER_ADMIN", "ACCOUNTANT"]);
+    await assertFinanceRole();
 
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
@@ -70,7 +70,7 @@ export const updateCustomerTierAction = async (
   },
 ) => {
   try {
-    await assertRole(["SUPER_ADMIN", "ACCOUNTANT"]);
+    await assertFinanceRole();
 
     // Map business role dynamically: promoting to "dealer" role if businessType is dealer
     const role =

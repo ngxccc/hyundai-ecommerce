@@ -1,10 +1,10 @@
 "use client";
 
 import { BrandCard } from "./brand-card";
-import type { TBrand } from "@nhatnang/database/schemas";
+import type { BrandDTO } from "@nhatnang/database/dtos";
 
 interface BrandGridProps {
-  brands: TBrand[];
+  brands: BrandDTO[];
 }
 
 export const BrandGrid = ({ brands }: BrandGridProps) => {

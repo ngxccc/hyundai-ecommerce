@@ -1,10 +1,10 @@
 "use client";
 
 import { WarehouseCard } from "./warehouse-card";
-import type { TWarehouse } from "@nhatnang/database/schemas";
+import type { WarehouseDTO } from "@nhatnang/database/dtos";
 
 interface WarehouseGridProps {
-  warehouses: TWarehouse[];
+  warehouses: WarehouseDTO[];
 }
 
 export const WarehouseGrid = ({ warehouses }: WarehouseGridProps) => {

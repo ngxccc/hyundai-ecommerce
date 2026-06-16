@@ -13,12 +13,15 @@ import {
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Form } from "@nhatnang/ui/components/ui/form";
 import { formatNumberInput } from "@nhatnang/shared/lib/utils";
+import type {
+  ProductDTO,
+  CategoryDTO,
+  BrandDTO,
+} from "@nhatnang/database/dtos";
 import {
-  type TProduct,
-  type TCategory,
-  type TBrand,
-} from "@nhatnang/database/schemas";
-import { type TCreateProductInput, createProductSchema } from "@nhatnang/database/validators";
+  type TCreateProductInput,
+  createProductSchema,
+} from "@nhatnang/database/validators";
 
 import {
   ProductGeneralInfo,
@@ -34,9 +37,9 @@ export const ProductForm = ({
   brands,
   breadcrumbs,
 }: {
-  initialData?: TProduct;
-  categories: TCategory[];
-  brands: TBrand[];
+  initialData?: ProductDTO;
+  categories: CategoryDTO[];
+  brands: BrandDTO[];
   breadcrumbs?: React.ReactNode;
 }) => {
   const t = useTranslations("AdminProductForm");

@@ -16,11 +16,11 @@ import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Input } from "@nhatnang/ui/components/ui/input";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Search, X } from "lucide-react";
-import type { TCategory, TBrand } from "@nhatnang/database/schemas";
+import type { CategoryDTO, BrandDTO } from "@nhatnang/database/dtos";
 
 interface ProductFiltersProps {
-  categories: TCategory[];
-  brands: TBrand[];
+  categories: CategoryDTO[];
+  brands: BrandDTO[];
 }
 
 export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {

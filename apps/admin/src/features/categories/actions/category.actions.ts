@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { categoryService } from "@nhatnang/database/services";
-import { mapCategoryToAdminDTO } from "@nhatnang/database/dtos";
 import {
   createCategorySchema,
   updateCategorySchema,
@@ -47,7 +46,7 @@ export const createCategoryAction = async (formData: FormData) => {
       if (!validation.valid && validation.error) {
         const t = await getTranslations("errors");
         return {
-          success: false as const,
+          success: false,
           error: t(validation.error as never),
         };
       }
@@ -70,13 +69,13 @@ export const createCategoryAction = async (formData: FormData) => {
     }
 
     revalidatePath("/categories");
-    return { success: true as const, data: mapCategoryToAdminDTO(categoryData) };
+    return { success: true, data: categoryData };
   } catch (error) {
     const t = await getTranslations("errors");
 
     if (error instanceof AuthError) {
       return {
-        success: false as const,
+        success: false,
         error:
           error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
@@ -87,7 +86,7 @@ export const createCategoryAction = async (formData: FormData) => {
     if (error instanceof Error) {
       if (error.message === "errors.validation.slugExists") {
         return {
-          success: false as const,
+          success: false,
           code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
           fieldErrors: { slug: [t("validation.slugExists")] },
         };
@@ -96,11 +95,11 @@ export const createCategoryAction = async (formData: FormData) => {
       if (error.message.startsWith("errors.")) {
         const key = error.message.replace("errors.", "");
         // @ts-expect-error - dynamic key
-        return { success: false as const, error: t(key) };
+        return { success: false, error: t(key) };
       }
     }
 
-    return { success: false as const, error: t("createCategoryFailed") };
+    return { success: false, error: t("createCategoryFailed") };
   }
 };
 
@@ -137,7 +136,7 @@ export async function updateCategoryAction(id: string, formData: FormData) {
       if (!validation.valid && validation.error) {
         const t = await getTranslations("errors");
         return {
-          success: false as const,
+          success: false,
           error: t(validation.error as never),
         };
       }
@@ -167,13 +166,13 @@ export async function updateCategoryAction(id: string, formData: FormData) {
 
     revalidatePath("/categories");
     revalidatePath(`/categories/${id}/edit`);
-    return { success: true as const, data: mapCategoryToAdminDTO(categoryData) };
+    return { success: true, data: categoryData };
   } catch (error) {
     const t = await getTranslations("errors");
 
     if (error instanceof AuthError) {
       return {
-        success: false as const,
+        success: false,
         error:
           error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
@@ -184,7 +183,7 @@ export async function updateCategoryAction(id: string, formData: FormData) {
     if (error instanceof Error) {
       if (error.message === "errors.validation.slugExists") {
         return {
-          success: false as const,
+          success: false,
           code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
           fieldErrors: { slug: [t("validation.slugExists")] },
         };
@@ -193,11 +192,11 @@ export async function updateCategoryAction(id: string, formData: FormData) {
       if (error.message.startsWith("errors.")) {
         const key = error.message.replace("errors.", "");
         // @ts-expect-error - dynamic key
-        return { success: false as const, error: t(key) };
+        return { success: false, error: t(key) };
       }
     }
 
-    return { success: false as const, error: t("updateCategoryFailed") };
+    return { success: false, error: t("updateCategoryFailed") };
   }
 }
 
@@ -206,13 +205,13 @@ export async function deleteCategoryAction(id: string) {
     await requireAuth();
     const categoryData = await categoryService.delete(id);
     revalidatePath("/categories");
-    return { success: true as const, data: categoryData };
+    return { success: true, data: categoryData };
   } catch (error) {
     const t = await getTranslations("errors");
 
     if (error instanceof AuthError) {
       return {
-        success: false as const,
+        success: false,
         error:
           error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
       };
@@ -223,9 +222,9 @@ export async function deleteCategoryAction(id: string) {
     if (error instanceof Error && error.message.startsWith("errors.")) {
       const key = error.message.replace("errors.", "");
       // @ts-expect-error - dynamic key
-      return { success: false as const, error: t(key) };
+      return { success: false, error: t(key) };
     }
 
-    return { success: false as const, error: t("deleteCategoryFailed") };
+    return { success: false, error: t("deleteCategoryFailed") };
   }
 }

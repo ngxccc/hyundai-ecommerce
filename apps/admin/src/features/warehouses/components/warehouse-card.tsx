@@ -6,11 +6,11 @@ import { Card } from "@nhatnang/ui/components/ui/card";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Link } from "@/i18n/routing";
-import type { TWarehouse } from "@nhatnang/database/schemas";
+import type { WarehouseDTO } from "@nhatnang/database/dtos";
 
 import { DeleteWarehouseButton } from "./delete-warehouse-button";
 
-export const WarehouseCard = ({ warehouse }: { warehouse: TWarehouse }) => {
+export const WarehouseCard = ({ warehouse }: { warehouse: WarehouseDTO }) => {
   const t = useTranslations("AdminWarehouses.card");
 
   const status = warehouse.isActive ? "active" : "inactive";

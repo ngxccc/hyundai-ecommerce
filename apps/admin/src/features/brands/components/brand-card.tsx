@@ -8,17 +8,17 @@ import { Button } from "@nhatnang/ui/components/ui/button";
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
-import type { TBrand } from "@nhatnang/database/schemas";
+import type { BrandDTO } from "@nhatnang/database/dtos";
 
 import { DeleteBrandButton } from "./delete-brand-button";
 
-export const BrandCard = ({ brand }: { brand: TBrand }) => {
+export const BrandCard = ({ brand }: { brand: BrandDTO }) => {
   const t = useTranslations("AdminBrands.card");
 
   const status = brand.isActive ? "active" : "inactive";
-  const image = brand.logo?.length ? brand.logo : "https://placehold.co/400x300/png?text=No+Image";
-
-
+  const image = brand.logo?.length
+    ? brand.logo
+    : "https://placehold.co/400x300/png?text=No+Image";
 
   return (
     <Card className="group relative flex flex-col gap-0 p-3 shadow-sm">
@@ -62,12 +62,12 @@ export const BrandCard = ({ brand }: { brand: TBrand }) => {
         <h3 className="text-primary mb-1 line-clamp-2 text-base font-semibold">
           {brand.name}
         </h3>
-        <p className="text-muted-foreground mb-4 text-sm line-clamp-2">
+        <p className="text-muted-foreground mb-4 line-clamp-2 text-sm">
           {brand.descriptionVi ?? brand.descriptionEn ?? "No description"}
         </p>
 
         <div className="mt-auto flex items-end justify-end">
-          <div className="flex gap-1 transition-opacity opacity-40 sm:group-hover:opacity-100">
+          <div className="flex gap-1 opacity-40 transition-opacity sm:group-hover:opacity-100">
             <Link href={`/brands/${brand.id}/edit`}>
               <Button
                 variant="ghost"
@@ -78,10 +78,7 @@ export const BrandCard = ({ brand }: { brand: TBrand }) => {
                 <Edit className="h-4 w-4" />
               </Button>
             </Link>
-            <DeleteBrandButton
-              brandId={brand.id}
-              brandName={brand.name}
-            />
+            <DeleteBrandButton brandId={brand.id} brandName={brand.name} />
           </div>
         </div>
       </div>

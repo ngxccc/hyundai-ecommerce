@@ -2,19 +2,18 @@
 
 import { revalidatePath } from "next/cache";
 import { warehouseService } from "@nhatnang/database/services";
-import { mapWarehouseToAdminDTO } from "@nhatnang/database/dtos";
 import {
   createWarehouseSchema,
   updateWarehouseSchema,
-  type TCreateWarehouseInput,
-  type TUpdateWarehouseInput,
+  type TCreateWarehouse,
+  type TUpdateWarehouse,
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { requireAuth, AuthError } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 
-export const createWarehouseAction = async (input: TCreateWarehouseInput) => {
+export const createWarehouseAction = async (input: TCreateWarehouse) => {
   try {
     await requireAuth();
     const parsed = await createWarehouseSchema.safeParseAsync(input);
@@ -33,13 +32,13 @@ export const createWarehouseAction = async (input: TCreateWarehouseInput) => {
 
     const data = await warehouseService.create(validatedData);
     revalidatePath("/warehouses");
-    return { success: true as const, data: mapWarehouseToAdminDTO(data) };
+    return { success: true, data };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
       const message =
         error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return { success: false, error: message };
     }
     console.error("[createWarehouseAction]", error);
     let errorMessage = t("createWarehouseFailed");
@@ -50,7 +49,7 @@ export const createWarehouseAction = async (input: TCreateWarehouseInput) => {
       errorMessage = t("createWarehouseFailed");
     }
     return {
-      success: false as const,
+      success: false,
       error: errorMessage,
     };
   }
@@ -58,7 +57,7 @@ export const createWarehouseAction = async (input: TCreateWarehouseInput) => {
 
 export async function updateWarehouseAction(
   id: string,
-  input: TUpdateWarehouseInput,
+  input: TUpdateWarehouse,
 ) {
   try {
     await requireAuth();
@@ -79,13 +78,13 @@ export async function updateWarehouseAction(
     const data = await warehouseService.update(validatedData);
     revalidatePath("/warehouses");
     revalidatePath(`/warehouses/${id}/edit`);
-    return { success: true as const, data: mapWarehouseToAdminDTO(data) };
+    return { success: true, data };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
       const message =
         error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return { success: false, error: message };
     }
     console.error("[updateWarehouseAction]", error);
     let errorMessage = t("updateWarehouseFailed");
@@ -97,7 +96,7 @@ export async function updateWarehouseAction(
       }
     }
     return {
-      success: false as const,
+      success: false,
       error: errorMessage,
     };
   }
@@ -108,13 +107,13 @@ export async function deleteWarehouseAction(id: string) {
     await requireAuth();
     const data = await warehouseService.delete(id);
     revalidatePath("/warehouses");
-    return { success: true as const, data };
+    return { success: true, data };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
       const message =
         error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return { success: false, error: message };
     }
     console.error("[deleteWarehouseAction]", error);
     let errorMessage = t("deleteWarehouseFailed");
@@ -125,7 +124,7 @@ export async function deleteWarehouseAction(id: string) {
       errorMessage = t("deleteWarehouseFailed");
     }
     return {
-      success: false as const,
+      success: false,
       error: errorMessage,
     };
   }

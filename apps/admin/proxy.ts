@@ -1,4 +1,5 @@
 import { routing } from "@/i18n/routing";
+import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import { getCachedSession } from "@/shared/lib/session";
 import type { Locale } from "next-intl";
 import createMiddleware from "next-intl/middleware";
@@ -11,6 +12,22 @@ export async function proxy(request: NextRequest) {
 
   if (pathname.startsWith("/_next/")) {
     return NextResponse.next();
+  }
+
+  // Rate limit check (e.g. max 100 page views per 60 seconds per IP)
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0] ?? "127.0.0.1";
+  const rateLimit = await checkRateLimitWithQueue(
+    `ratelimit:admin_page:${ip}`,
+    100,
+    "60 s",
+  );
+
+  if (!rateLimit.success) {
+    return new NextResponse("Too Many Requests", {
+      status: 429,
+      statusText: "Too Many Requests",
+    });
   }
 
   const isAuthRoute = pathname.includes("/login");

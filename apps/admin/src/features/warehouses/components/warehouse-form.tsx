@@ -27,15 +27,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@nhatnang/ui/components/ui/card";
-import { type TWarehouse } from "@nhatnang/database/schemas";
-import { type TCreateWarehouseInput, createWarehouseSchema } from "@nhatnang/database/validators";
+import type { WarehouseDTO } from "@nhatnang/database/dtos";
+import {
+  type TCreateWarehouse,
+  createWarehouseSchema,
+} from "@nhatnang/database/validators";
 import { Save, Loader2, X, Info } from "lucide-react";
 
 export const WarehouseForm = ({
   initialData,
   breadcrumbs,
 }: {
-  initialData?: TWarehouse;
+  initialData?: WarehouseDTO;
   breadcrumbs?: ReactNode;
 }) => {
   const t = useTranslations("AdminWarehouseForm");
@@ -44,7 +47,7 @@ export const WarehouseForm = ({
   const [isPending, startTransition] = useTransition();
   const isEditing = !!initialData;
 
-  const form = useForm<TCreateWarehouseInput>({
+  const form = useForm<TCreateWarehouse>({
     resolver: translatedZodResolver(createWarehouseSchema, t),
     defaultValues: {
       nameVi: initialData?.nameVi ?? "",
@@ -56,7 +59,7 @@ export const WarehouseForm = ({
     },
   });
 
-  const onSubmit = (data: TCreateWarehouseInput) => {
+  const onSubmit = (data: TCreateWarehouse) => {
     startTransition(async () => {
       const result = isEditing
         ? await updateWarehouseAction(initialData.id, {

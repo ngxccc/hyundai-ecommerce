@@ -43,3 +43,12 @@ export const assertRole = async (allowedRoles: UserRole[]) => {
 
   return session;
 };
+
+export const assertFinanceRole = () =>
+  assertRole(["SUPER_ADMIN", "ACCOUNTANT"]);
+
+export const assertSalesOrFinanceRole = () =>
+  assertRole(["SUPER_ADMIN", "SALES_REPRESENTATIVE", "ACCOUNTANT"]);
+
+export const assertWarehouseRole = () =>
+  assertRole(["SUPER_ADMIN", "WAREHOUSE_MANAGER"]);

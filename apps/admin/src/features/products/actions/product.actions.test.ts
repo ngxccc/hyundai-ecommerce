@@ -3,16 +3,23 @@ import {
   test,
   describe,
   beforeEach,
-  type vi,
+  vi,
+  mock,
   type Mock,
 } from "bun:test";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import type { ProductService } from "@nhatnang/database/services";
-
+import type { ProductDTO } from "@nhatnang/database/dtos";
+import type { TCreateProductInput } from "@nhatnang/database/validators";
 import "@nhatnang/shared/testing/action-mocks";
 
-import type { TProduct } from "@nhatnang/database/schemas";
-import type { TCreateProductInput } from "@nhatnang/database/validators";
+await vi.mock("@/shared/services", () => ({
+  uploadToCloudinary: mock().mockResolvedValue(
+    "http://cloudinary.com/mock-image.png",
+  ),
+  deleteFromCloudinary: mock().mockResolvedValue(true),
+  validateUploadedFile: mock().mockReturnValue({ valid: true }),
+}));
 
 describe("product.actions", () => {
   let createMock: Mock<ProductService["create"]>;
@@ -60,7 +67,7 @@ describe("product.actions", () => {
     const { uploadToCloudinary } = await import("@/shared/services");
     const { after } = await import("next/server");
 
-    const mockProduct: TProduct = {
+    const mockProduct: ProductDTO = {
       id: "prod-1",
       nameVi: "Test Product",
       nameEn: null,
@@ -74,12 +81,8 @@ describe("product.actions", () => {
       brandId: null,
       categoryId: null,
       specs: {},
-      totalSalesCache: 0,
       totalStockCache: 0,
       isQuoteOnly: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      deletedAt: null,
     };
 
     createMock.mockResolvedValueOnce(mockProduct);
@@ -144,13 +147,13 @@ describe("product.actions", () => {
 
     (
       productService.getById as Mock<typeof productService.getById>
-    ).mockResolvedValueOnce(oldProduct as unknown as TProduct);
+    ).mockResolvedValueOnce(oldProduct as unknown as ProductDTO);
     (
       productService.update as Mock<typeof productService.update>
     ).mockResolvedValueOnce({
       ...oldProduct,
       nameVi: "New",
-    } as unknown as TProduct);
+    } as unknown as ProductDTO);
 
     const updatePayload = {
       nameVi: "New",
