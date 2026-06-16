@@ -117,6 +117,37 @@ Provides audit logs for all credit limit updates for compliance.
   - Clicking this triggers a server-side API call to PayOS to fetch the transaction status and update the database immediately, resolving stuck payment states.
   - Rate limiting is enforced: the button is disabled for 30 seconds after a click (showing a countdown timer) and server-side rate limits are applied.
 
+- **Workflow Flowchart**:
+
+  ```text
+                  [Customer selects QR Payment]
+                                │
+                                ▼
+                   [Create dynamic PayOS Link]
+                                │
+                                ▼
+                   [Customer scans VietQR & pays]
+                                │
+                                ▼
+                  [PayOS triggers Webhook API]
+                                │
+         ┌──────────────────────┴──────────────────────┐
+         ▼ (Signature Valid)                           ▼ (Signature Invalid)
+  [Open DB Transaction]                           [Return 400 Bad Request]
+         │
+         ▼
+  [Reference Code exists?]
+   ├── Yes ──► [Return 200 OK / 208 Already Reported] (Idempotency)
+   └── No  ──► [Process Payment]
+                  │
+        ┌─────────┴─────────┐
+        ▼ (Amount Matches)   ▼ (Amount Mismatch)
+  [Set FULLY_PAID/DEPOSIT]    [Set SUSPICIOUS_PAYMENT_HOLD]
+  [Insert SUCCESS Tx]         [Insert FAILED Tx]
+  [Write Outbox events]       [Insert Telegram alert Outbox]
+  [Return 200 OK]             [Return 200 OK]
+  ```
+
 ### Flow B: B2B Trade Credit (Net Terms) & Pessimistic Locking
 
 - Available only to roles `dealer_approver` / `dealer_purchaser` / business types with approved `creditLimit`.
@@ -131,15 +162,37 @@ Provides audit logs for all credit limit updates for compliance.
      - Increments `currentDebt` by the order total in the locked row.
      - Generates a Net 30/60 invoice.
      - Commits transaction. If concurrently modified, it rolls back or waits.
-- Once offline payment is made, `accountant` logs the payment on CRM, reducing `currentDebt`.
 
-### Flow C: Manual Bank Transfer Fallback
+- For repayment, B2B users pay off their debt via PayOS or Cash (see Flow E below).
+- **Workflow Flowchart**:
 
-- System displays company bank account details + instructions.
-- Order marked `PENDING_VERIFICATION`.
-- Accountant verifies incoming funds and manually approves the payment.
+  ```text
+               [Customer selects Trade Credit Checkout]
+                                  │
+                                  ▼
+                     [Recalculate Order Total]
+                                  │
+                                  ▼
+                   [Open DB Tx & Lock User Row]
+                   (SELECT FOR UPDATE NOWAIT)
+                                  │
+         ┌────────────────────────┴────────────────────────┐
+         ▼ (Lock Acquired)                                 ▼ (Lock Fails - Concurrent)
+  [Is Customer a DEALER_PURCHASER?]                    [Return 429/409 Fail Fast]
+   ├── Yes ──► [Set PENDING_APPROVAL]
+   │           [Insert order/items]
+   │           [Write Telegram outbox alert]
+   │           [Commit DB Tx]
+   │
+   └── No  ──► [Check Available Credit]
+                 ├── Less than Total ──► [Rollback & Throw insufficientCreditLimit]
+                 └── More than Total ──► [Set APPROVED]
+                                         [Increment currentDebt]
+                                         [Generate Net 30/60 invoice]
+                                         [Commit DB Tx]
+  ```
 
-### Flow D: Refunds & Order Cancellation Constraints
+### Flow C: Refunds & Order Cancellation Constraints
 
 - **Insecure Direct Object Reference (IDOR) Protection**:
   - The cancellation and detail APIs must perform ownership verification: verifying that the order's `userId` matches the authenticated session's `userId`.
@@ -148,7 +201,101 @@ Provides audit logs for all credit limit updates for compliance.
   - Once the order transitions to `processing`, `shipped`, or `delivered`, the self-cancel option is disabled on the storefront and replaced by a **"Request Cancellation"** action.
   - Clicking "Request Cancellation" opens a modal explaining the hold, updates the order to `CANCELLATION_REQUESTED`, and routes a high-priority approval task to the assigned `sales_representative` in the Admin CRM.
   - When successfully cancelled and approved, the system automatically reduces `currentDebt` by the order total.
+
 - **Online Gateway refunds**: If a PayOS order is cancelled, the order changes status to `REFUND_PENDING`. The Accountant reviews the refund request and manually processes the transfer via bank account, then updates the system status.
+- **Workflow Flowchart**:
+
+  ```text
+                      [Customer requests Cancellation]
+                                     │
+                                     ▼
+                      [Ownership Check (IDOR Guard)]
+                      (Does Order.userId == Session.userId?)
+                                     │
+            ┌────────────────────────┴────────────────────────┐
+            ▼ (Owner Matches)                                 ▼ (Not Owner)
+   [Check Order Status]                              [Return 403 Forbidden]
+            │
+      ┌─────┴────────────────────────────────┐
+      ▼ (Status is PENDING)                  ▼ (Status is PROCESSING or later)
+  [Set status = CANCELLED]               [Set status = CANCELLATION_REQUESTED]
+  [Release Trade Credit limit]           [Insert CRM sales rep outbox alert]
+  (currentDebt = currentDebt - Total)          │
+                                              ▼
+                                 [Sales Rep approves on CRM]
+                                              │
+                                              ▼
+                                 [Set status = CANCELLED]
+                                 [Release Trade Credit limit]
+  ```
+
+### Flow D: B2B Debt Repayment & Overdue Locking Flow
+
+- **Net 30 Due Date (Hạn thanh toán)**:
+  - All orders purchased using credit limit (`paymentMethod = 'TRADE_CREDIT'`) that are not fully paid (`paymentStatus != 'FULLY_PAID'`) after 30 days of creation (`createdAt < NOW() - 30 days`) are flagged as **Overdue Debt**.
+- **Overdue Checkout Lock (Cơ chế Khóa đặt hàng)**:
+  - If a B2B user has any overdue debt, the system blocks them from checking out new orders using `TRADE_CREDIT`.
+  - **Performance Optimization via Redis (Hybrid Cache)**:
+    - The block status of the user is cached in Redis with key `user:overdue-lock:<userId>`.
+    - UI views (cart page, checkout page) and access check APIs read this Redis key directly to hide checkout buttons and display a red warning banner.
+    - At the moment the checkout submit action is actually triggered (Checkout API), the system executes a fast SQL index-scan query in the database to guarantee data security and prevent cache drift.
+- **Debt Repayment Feature (Thanh toán dư nợ)**:
+  - The Customer Portal displays current outstanding debt (`currentDebt`), available credit (`creditLimit - currentDebt`), and a list of overdue invoices with a "Repay Debt" button.
+  - The user can input the repayment amount $X$ and choose one of the following methods:
+    1. **PayOS (VietQR) - Automatic Matching**:
+       - The system creates a payment transaction in the `debt_repayment` table with `status = 'PENDING'` and generates a dynamic PayOS payment link.
+       - Upon scanning and paying successfully, PayOS triggers the webhook `/api/payments/payos-webhook`.
+       - The webhook handler updates the `debt_repayment` record to `COMPLETED`, locks the user row (`SELECT FOR UPDATE NOWAIT`), subtracts the amount from `currentDebt` (`currentDebt = currentDebt - X`), logs the payment transaction, and deletes the Redis block key `user:overdue-lock:<userId>`.
+    2. **Cash (CASH) - Manual Verification**:
+       - The customer makes a cash payment at the office.
+       - The Accountant logs in to the Admin CRM, registers the cash receipt, creates a `debt_repayment` record with `status = 'COMPLETED'`, decrements `currentDebt`, and deletes the Redis block key.
+- **Workflow Flowchart**:
+
+  ```text
+                               [DEALER CHECKOUT ORDER]
+                                          │
+                                          ▼
+                             [Check Overdue Debt in DB]
+                             - Query DB: Unpaid TRADE_CREDIT orders > 30 days?
+                             - Read Redis: user:overdue-lock:<userId>
+                                          │
+                      ┌───────────────────┴───────────────────┐
+                      ▼ (Has Overdue Debt)                    ▼ (No Overdue Debt)
+               [CHECKOUT LOCKED]                     [ALLOW CHECKOUT]
+           - Display warning banner              - Process B2B Trade Credit
+           - Display "Repay Debt" button
+                      │
+                      ▼
+               [DEALER REPAYS DEBT]
+                      │
+           ┌──────────┴──────────┐
+           ▼ (via PayOS QR)      ▼ (via Cash)
+      - Enter repayment amount.  - Pay cash at office.
+      - Create `debt_repayment`  - Accountant enters CRM.
+        (PENDING).               - Create `debt_repayment`
+      - Scan VietQR code.          (COMPLETED) & deduct debt.
+      - PayOS Webhook.                 │
+           │                           │
+           ▼                           ▼
+    [Set `COMPLETED` & deduct currentDebt in DB]
+    - currentDebt = currentDebt - X
+    - Delete Redis block key user:overdue-lock:<userId>
+    - Customer is unlocked instantly.
+  ```
+
+- **Database Schema (`debt_repayment` table)**:
+  - `id`: `uuid().primaryKey()` (Transaction ID)
+  - `userId`: `uuid().references(() => users.id).notNull()` (ID of the Dealer repaying debt)
+  - `amount`: `numeric(15, 2).notNull()` (Repayment amount)
+  - `paymentMethod`: `enum('PAYOS', 'CASH').notNull()` (Payment method: PayOS or Cash)
+  - `status`: `enum('PENDING', 'COMPLETED', 'FAILED').default('PENDING').notNull()` (Repayment status)
+  - `referenceCode`: `text().unique().notNull()` (PayOS orderCode or Cash receipt reference number)
+  - `verifiedBy`: `uuid().references(() => users.id)` (ID of the Accountant who verified Cash payment)
+  - `createdAt` / `updatedAt`
+- **Escalation Matrix (Leo thang cảnh báo)**:
+  - **Overdue 1 Day**: Automatically send Zalo ZNS debt reminder to `dealer_approver`.
+  - **Overdue 5 Days**: Mark dealer status as Red on Admin CRM and send debt alert to the internal sales Telegram group.
+  - **Overdue 10 Days**: Temporarily suspend credit limit (temporarily sets available credit limit to 0) until overdue invoices are fully settled.
 
 ---
 

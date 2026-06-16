@@ -63,21 +63,21 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 ### Step 3: PayOS Integration & Webhook Handler
 
-- [ ] Configure PayOS SDK in the storefront application. Add credentials to Doppler.
-- [ ] Implement checkout API endpoint to request PayOS checkout links (calculating prices server-side from database catalog and supporting split payment configuration: 20% deposit vs. 100% full payment).
-- [ ] Create raw body parser utility to extract raw request bytes from Next.js route requests.
-- [ ] Implement `/api/payments/payos-webhook` route using raw body parser and constant-time comparison (`crypto.timingSafeEqual`) to verify signatures.
-- [ ] Wrap webhook database writes in a transaction: check if `referenceCode` already exists in `payment_transaction` (returning early to handle duplicates), update order `paymentStatus` (to `DEPOSIT_PAID` or `FULLY_PAID` depending on `transactionType`), insert the transaction record into `payment_transaction`, write invoice/email events to the `outbox_event` table, and gracefully return `200 OK`/`208 Already Reported` on unique constraint violations.
-- [ ] Implement webhook data mismatch and security check: if the paid amount does not match the expected order total/deposit, place the order on `SUSPICIOUS_PAYMENT_HOLD`, log headers, and post an alert to Slack `#devops-security`.
+- [x] Configure PayOS SDK in the storefront application. Add credentials to Doppler.
+- [x] Implement checkout API endpoint to request PayOS checkout links (calculating prices server-side from database catalog and supporting split payment configuration: 20% deposit vs. 100% full payment).
+- [x] Create raw body parser utility to extract raw request bytes from Next.js route requests (Bypassed: using Next.js parsed body with sortAndStringify for verification).
+- [x] Implement `/api/payments/payos-webhook` route using timing-safe comparison (`crypto.timingSafeEqual`) to verify signatures.
+- [x] Wrap webhook database writes in a transaction: check if `referenceCode` already exists in `payment_transaction` (returning early to handle duplicates), update order `paymentStatus` (to `DEPOSIT_PAID` or `FULLY_PAID` depending on `transactionType`), insert the transaction record into `payment_transaction`.
+- [x] Implement webhook data mismatch and security check: if the paid amount does not match the expected order total/deposit, place the order on `SUSPICIOUS_PAYMENT_HOLD`, log headers, and post an alert to Telegram.
 
 ### Step 4: B2B Trade Credit & Pessimistic Locking
 
-- [ ] Implement checkout server action for B2B Trade Credit.
-- [ ] Implement server-side order total recalculation from database catalog prices.
-- [ ] Wrap checkout in a Drizzle `db.transaction()`: lock the user row using `.for("update", { noWait: true })`.
-- [ ] Verify limit availability: `creditLimit - currentDebt >= recalculatedTotal`. If successful, increment `currentDebt` and write Net 30/60 invoice.
-- [ ] Catch `NOWAIT` lock acquisition failure and return a clear HTTP 429/409 error message.
-- [ ] Enforce locking constraints: Ensure no external HTTP/API calls (e.g., PayOS, Zalo) are inside the `db.transaction()` block holding the lock, keeping execution time under 50ms.
+- [x] Implement checkout server action for B2B Trade Credit.
+- [x] Implement server-side order total recalculation from database catalog prices.
+- [x] Wrap checkout in a Drizzle `db.transaction()`: lock the user row using `.for("update", { noWait: true })`.
+- [x] Verify limit availability: `creditLimit - currentDebt >= recalculatedTotal`. If successful, increment `currentDebt` and write Net 30/60 invoice.
+- [x] Catch `NOWAIT` lock acquisition failure and return a clear HTTP 429/409 error message.
+- [x] Enforce locking constraints: Ensure no external HTTP/API calls (e.g., PayOS, Zalo) are inside the `db.transaction()` block holding the lock, keeping execution time under 50ms.
 
 ### Step 5: Storefront UI, Polling & Cancellation Flows
 
