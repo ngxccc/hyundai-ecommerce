@@ -2,6 +2,8 @@ import type {
   CreateOrderDTO,
   CreateOrderItemDTO,
   CreatePaymentDTO,
+  OrderPaymentStatus,
+  PaymentTransactionType,
 } from "../../dtos";
 import type {
   OrderService,
@@ -10,6 +12,8 @@ import type {
 } from "../interfaces";
 import { and, eq, ne, gte, lt, sql } from "drizzle-orm";
 import { type IDatabase } from "../../client";
+import { FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
+import { isPostgresError, POSTGRES_ERROR_CODES } from "../../utils";
 import {
   orders,
   orderItems,
@@ -359,12 +363,77 @@ export class DbOrderService implements OrderService {
   }
 
   async approveDealerOrder(orderId: string): Promise<TOrder | undefined> {
-    const [updatedOrder] = await this.db
-      .update(orders)
-      .set({ approvalStatus: "APPROVED" })
-      .where(eq(orders.id, orderId))
-      .returning();
-    return updatedOrder;
+    return await this.db.transaction(async (tx) => {
+      // 1. Fetch the order
+      const order = await tx.query.orders.findFirst({
+        where: {
+          id: orderId,
+        },
+      });
+
+      if (!order) {
+        return undefined;
+      }
+
+      // If already approved, return it
+      if (order.approvalStatus === "APPROVED") {
+        return order;
+      }
+
+      // 2. If it is Trade Credit, check and update the user's credit limit
+      if (order.paymentMethod === "TRADE_CREDIT") {
+        // Lock the user row
+        let user;
+        try {
+          const [lockedUser] = await tx
+            .select()
+            .from(users)
+            .where(eq(users.id, order.userId))
+            .for("update", { noWait: true });
+          user = lockedUser;
+        } catch (err) {
+          if (
+            (isPostgresError(err) &&
+              err.code === POSTGRES_ERROR_CODES.LOCK_NOT_AVAILABLE) ||
+            (err instanceof Error &&
+              err.message.includes("could not obtain lock"))
+          ) {
+            throw new Error("errors.lockAcquisitionFailed", { cause: err });
+          }
+          throw err;
+        }
+
+        if (!user) {
+          throw new Error("errors.userNotFound");
+        }
+
+        const creditLimit = parseFloat(user.creditLimit || "0");
+        const currentDebt = parseFloat(user.currentDebt || "0");
+        const orderTotal = parseFloat(order.totalAmount || "0");
+        const availableCredit = creditLimit - currentDebt;
+
+        if (availableCredit < orderTotal) {
+          throw new Error("errors.insufficientCreditLimit");
+        }
+
+        // Increment user's currentDebt
+        await tx
+          .update(users)
+          .set({
+            currentDebt: String(currentDebt + orderTotal),
+          })
+          .where(eq(users.id, order.userId));
+      }
+
+      // 3. Set approval status to APPROVED
+      const [updatedOrder] = await tx
+        .update(orders)
+        .set({ approvalStatus: "APPROVED" })
+        .where(eq(orders.id, orderId))
+        .returning();
+
+      return updatedOrder;
+    });
   }
 
   async verifyManualBankTransfer(
@@ -384,6 +453,17 @@ export class DbOrderService implements OrderService {
         .set({ paymentStatus: "FULLY_PAID" })
         .where(eq(orders.id, orderId))
         .returning();
+
+      // Update manual payment status to COMPLETED
+      await tx
+        .update(payments)
+        .set({ status: "COMPLETED" })
+        .where(
+          and(
+            eq(payments.orderId, orderId),
+            eq(payments.method, "MANUAL_TRANSFER"),
+          ),
+        );
 
       await tx.insert(paymentTransactions).values({
         orderId,
@@ -545,10 +625,20 @@ export class DbOrderService implements OrderService {
         .set({ status: "COMPLETED" })
         .where(eq(payments.id, payment.id));
 
-      // 4. Update order paymentStatus
+      // 4. Update order paymentStatus & determine transactionType
       const isFull =
         parseFloat(payment.amount) === parseFloat(order.totalAmount);
-      const paymentStatus = isFull ? "FULLY_PAID" : "DEPOSIT_PAID";
+
+      let paymentStatus: OrderPaymentStatus;
+      let transactionType: PaymentTransactionType;
+
+      if (order.paymentStatus === "DEPOSIT_PAID") {
+        paymentStatus = "FULLY_PAID";
+        transactionType = "REMAINDER";
+      } else {
+        paymentStatus = isFull ? "FULLY_PAID" : "DEPOSIT_PAID";
+        transactionType = isFull ? "FULL" : "DEPOSIT";
+      }
 
       await tx
         .update(orders)
@@ -560,7 +650,7 @@ export class DbOrderService implements OrderService {
         orderId: order.id,
         amount: payment.amount,
         paymentMethod: "PAYOS",
-        transactionType: isFull ? "FULL" : "DEPOSIT",
+        transactionType,
         status: "SUCCESS",
         referenceCode,
       });
@@ -589,13 +679,149 @@ export class DbOrderService implements OrderService {
         {
           eventType: "SEND_TELEGRAM_ALERT",
           payload: {
-            message: `🎉 [THANH TOÁN] Đơn hàng mới thanh toán thành công!\n- Mã đơn hàng: ${order.id}\n- Số tiền: ${amount.toLocaleString("vi-VN")} VND\n- Cổng: PayOS\n- Loại: ${isFull ? "Toàn bộ" : "Đặt cọc (20%)"}`,
+            message: `🎉 [THANH TOÁN] Đơn hàng mới thanh toán thành công!\n- Mã đơn hàng: ${order.id}\n- Số tiền: ${amount.toLocaleString("vi-VN")} VND\n- Cổng: PayOS\n- Loại: ${transactionType === "FULL" ? "Toàn bộ" : transactionType === "REMAINDER" ? "Phần còn lại" : "Đặt cọc (20%)"}`,
           },
           status: "PENDING",
         },
       ]);
 
       return true;
+    });
+  }
+
+  async checkoutWithTradeCredit(
+    userId: string,
+    orderData: CreateOrderDTO,
+    items: CreateOrderItemDTO[],
+    cartId: string,
+  ): Promise<TOrder> {
+    return await this.db.transaction(async (tx) => {
+      // 1. Lock the user row (pessimistic lock NOWAIT)
+      let user;
+      try {
+        const [lockedUser] = await tx
+          .select()
+          .from(users)
+          .where(eq(users.id, userId))
+          .for("update", { noWait: true });
+        user = lockedUser;
+      } catch (err) {
+        if (
+          (isPostgresError(err) &&
+            err.code === POSTGRES_ERROR_CODES.LOCK_NOT_AVAILABLE) ||
+          (err instanceof Error &&
+            err.message.includes("could not obtain lock"))
+        ) {
+          throw new Error("errors.lockAcquisitionFailed", { cause: err });
+        }
+        throw err;
+      }
+
+      if (!user) {
+        throw new Error("errors.userNotFound");
+      }
+
+      // 2. Recalculate order total from DB product catalog prices
+      let subtotal = 0;
+      for (const item of items) {
+        const [product] = await tx
+          .select()
+          .from(products)
+          .where(eq(products.id, item.productId))
+          .limit(1);
+        if (!product) {
+          throw new Error("errors.productNotFound");
+        }
+        subtotal += parseFloat(product.price) * item.quantity;
+      }
+      const recalculatedTotal = subtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE);
+
+      // 3. Check B2B role and verify limit availability
+      const isPurchaser = user.role === "DEALER_PURCHASER";
+      const approvalStatus = isPurchaser ? "PENDING_APPROVAL" : "APPROVED";
+
+      if (!isPurchaser) {
+        const creditLimit = parseFloat(user.creditLimit || "0");
+        const currentDebt = parseFloat(user.currentDebt || "0");
+        const availableCredit = creditLimit - currentDebt;
+
+        if (availableCredit < recalculatedTotal) {
+          throw new Error("errors.insufficientCreditLimit");
+        }
+
+        // Increment currentDebt
+        await tx
+          .update(users)
+          .set({
+            currentDebt: String(currentDebt + recalculatedTotal),
+          })
+          .where(eq(users.id, userId));
+      }
+
+      // 4. Create the order
+      const [order] = await tx
+        .insert(orders)
+        .values({
+          ...orderData,
+          totalAmount: String(recalculatedTotal),
+          paymentMethod: "TRADE_CREDIT",
+          paymentStatus: "UNPAID",
+          approvalStatus,
+        })
+        .returning();
+
+      if (!order) {
+        throw new Error("errors.createOrderFailed");
+      }
+
+      // 5. Create order items
+      if (items.length > 0) {
+        const finalItems = items.map((item) => ({
+          ...item,
+          orderId: order.id,
+        }));
+        await tx.insert(orderItems).values(finalItems);
+      }
+
+      // 6. Clear cart items
+      await tx.delete(cartItems).where(eq(cartItems.cartId, cartId));
+
+      // 7. Insert outbox events inside the SAME transaction
+      if (isPurchaser) {
+        await tx.insert(outboxEvents).values({
+          eventType: "SEND_TELEGRAM_ALERT",
+          payload: {
+            message: `🔔 [XÉT DUYỆT] Đơn hàng B2B mới cần phê duyệt!\n- Mã đơn hàng: ${order.id}\n- Người đặt: ${user.name} (dealer_purchaser)\n- Số tiền: ${recalculatedTotal.toLocaleString("vi-VN")} VND\n- Trạng thái: Chờ Dealer Approver duyệt hạn mức tín dụng.`,
+            metadata: {
+              orderId: order.id,
+              userId,
+              totalAmount: recalculatedTotal,
+            },
+          },
+          status: "PENDING",
+        });
+      } else {
+        await tx.insert(outboxEvents).values([
+          {
+            eventType: "SEND_MAIL",
+            payload: {
+              to: user.email,
+              subject: `Hóa đơn mua hàng bảo lãnh (Trade Credit) - Đơn hàng ${order.id}`,
+              body: `Xin chào ${user.name},\n\nĐơn hàng ${order.id} trị giá ${recalculatedTotal.toLocaleString("vi-VN")} VND đã được thanh toán thành công bằng Hạn mức tín dụng B2B (Trade Credit - Net 30/60).\nSố dư nợ hiện tại: ${(parseFloat(user.currentDebt || "0") + recalculatedTotal).toLocaleString("vi-VN")} VND.`,
+            },
+            status: "PENDING",
+          },
+          {
+            eventType: "SEND_TELEGRAM_ALERT",
+            payload: {
+              message: `💼 [TRADE CREDIT] Đơn hàng B2B thanh toán bằng hạn mức tín dụng thành công!\n- Mã đơn hàng: ${order.id}\n- Khách hàng: ${user.name}\n- Số tiền: ${recalculatedTotal.toLocaleString("vi-VN")} VND\n- Trạng thái: Tự động trừ hạn mức, duyệt giao hàng.`,
+            },
+            status: "PENDING",
+          },
+        ]);
+      }
+
+      return order;
     });
   }
 }

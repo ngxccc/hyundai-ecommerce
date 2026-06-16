@@ -1,4 +1,23 @@
-import type { TOrder, TPayment } from "../schemas";
+import type {
+  TOrder,
+  TPayment,
+  orderPaymentStatusEnum,
+  paymentMethodEnum,
+  paymentTransactionTypeEnum,
+} from "../schemas";
+
+export type PaymentMethod = (typeof paymentMethodEnum.enumValues)[number];
+export type PaymentTransactionType =
+  (typeof paymentTransactionTypeEnum.enumValues)[number];
+export type OrderPaymentStatus =
+  (typeof orderPaymentStatusEnum.enumValues)[number];
+
+export interface CheckoutRequestBody {
+  shippingAddress: string;
+  paymentMethod: PaymentMethod;
+  paymentOption: PaymentTransactionType;
+  shippingFee?: number;
+}
 
 export interface CreateOrderDTO {
   userId: string;

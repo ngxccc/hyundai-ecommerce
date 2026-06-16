@@ -1,6 +1,5 @@
 export * from "./auth.types";
 export * from "./action.types";
-export * from "./checkout.types";
 
 export interface ApiResponse<T> {
   success: boolean;

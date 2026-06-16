@@ -252,6 +252,12 @@ export interface OrderService {
     amount: number,
     referenceCode: string,
   ): Promise<boolean>;
+  checkoutWithTradeCredit(
+    userId: string,
+    orderData: CreateOrderDTO,
+    items: CreateOrderItemDTO[],
+    cartId: string,
+  ): Promise<TOrder>;
 }
 
 // --- Quotes Service Interfaces ---
