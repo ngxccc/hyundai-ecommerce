@@ -253,8 +253,8 @@ describe("OrderService", () => {
       ); // 500 !== 1000
 
       expect(result).toBe(true);
-      expect(mockUpdate).toHaveBeenCalledTimes(1); // Set order status to SUSPICIOUS_PAYMENT_HOLD
-      expect(mockInsert).toHaveBeenCalledTimes(2); // Log transaction failure & Send Telegram alert
+      expect(mockUpdate).toHaveBeenCalledTimes(2); // Set order status to SUSPICIOUS_PAYMENT_HOLD
+      expect(mockInsert).toHaveBeenCalledTimes(1); // Send Telegram alert
     });
 
     test("should process payment successfully when amounts match", async () => {
@@ -283,7 +283,7 @@ describe("OrderService", () => {
 
       expect(result).toBe(true);
       expect(mockUpdate).toHaveBeenCalledTimes(2); // Update payment (COMPLETED) & Update order paymentStatus (FULLY_PAID)
-      expect(mockInsert).toHaveBeenCalledTimes(2); // Log transaction success & Send outbox events (SEND_MAIL & SEND_TELEGRAM_ALERT)
+      expect(mockInsert).toHaveBeenCalledTimes(1); // Log transaction success & Send outbox events (SEND_MAIL & SEND_TELEGRAM_ALERT)
     });
 
     test("should process REMAINDER payment successfully when order paymentStatus is DEPOSIT_PAID", async () => {
@@ -313,7 +313,7 @@ describe("OrderService", () => {
 
       expect(result).toBe(true);
       expect(mockUpdate).toHaveBeenCalledTimes(2);
-      expect(mockInsert).toHaveBeenCalledTimes(2);
+      expect(mockInsert).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -474,10 +474,10 @@ describe("OrderService", () => {
     });
   });
 
-  describe("verifyManualBankTransfer()", () => {
+  describe("verifyCashPayment()", () => {
     test("should return undefined if order does not exist", async () => {
       mockFindFirst.mockResolvedValueOnce(undefined);
-      const result = await orderService.verifyManualBankTransfer(
+      const result = await orderService.verifyCashPayment(
         "order-1",
         "user-admin",
       );
@@ -494,7 +494,7 @@ describe("OrderService", () => {
       mockFindFirst.mockResolvedValueOnce(mockOrder);
       mockReturning.mockResolvedValueOnce([updatedOrder]);
 
-      const result = await orderService.verifyManualBankTransfer(
+      const result = await orderService.verifyCashPayment(
         "order-1",
         "user-admin",
       );
