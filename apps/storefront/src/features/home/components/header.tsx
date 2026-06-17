@@ -1,14 +1,22 @@
-import { useTranslations } from "next-intl";
+import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
+import { auth } from "@nhatnang/database/auth";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Link } from "@/i18n/routing";
+import { UserCircle } from "lucide-react";
 import { HeaderCart } from "./header-cart";
 import { MobileMenu } from "./mobile-menu";
 
-export function Header() {
-  const t = useTranslations("HomePage");
+export async function Header() {
+  const t = await getTranslations("HomePage");
   const navItems = ["products", "solutions", "services"] as const;
   const ctaClasses =
     "font-display h-10 rounded-md px-4 text-xs font-bold uppercase tracking-widest transition-all duration-200";
+
+  const reqHeaders = await headers();
+  const session = await auth.api.getSession({ headers: reqHeaders });
+  const isLoggedIn = !!session?.user;
+  const userName = session?.user?.name;
 
   return (
     <header className="bg-background/90 supports-backdrop-blur:bg-background/60 border-border fixed top-0 z-50 w-full border-b backdrop-blur-xl transition-all">
@@ -43,23 +51,38 @@ export function Header() {
         <div className="flex items-center gap-4">
           <HeaderCart />
 
-          {/* Desktop Actions */}
+          {/* Desktop Auth Actions */}
           <div className="hidden items-center gap-3 md:flex">
-            <Button
-              asChild
-              variant="outline"
-              className={`${ctaClasses} border-zinc-200 bg-transparent text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900`}
-            >
-              <Link href="/login">{t("header.login")}</Link>
-            </Button>
+            {isLoggedIn ? (
+              <Button
+                asChild
+                variant="outline"
+                className={`${ctaClasses} gap-2 border-zinc-200 bg-transparent text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900`}
+              >
+                <Link href="/portal/profile">
+                  <UserCircle className="size-4" />
+                  {userName ?? t("header.myAccount")}
+                </Link>
+              </Button>
+            ) : (
+              <>
+                <Button
+                  asChild
+                  variant="outline"
+                  className={`${ctaClasses} border-zinc-200 bg-transparent text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900`}
+                >
+                  <Link href="/login">{t("header.login")}</Link>
+                </Button>
 
-            <Button asChild className={`${ctaClasses} shadow-md`}>
-              <Link href="/register">{t("header.register")}</Link>
-            </Button>
+                <Button asChild className={`${ctaClasses} shadow-md`}>
+                  <Link href="/register">{t("header.register")}</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           <div className="md:hidden">
-            <MobileMenu />
+            <MobileMenu isLoggedIn={isLoggedIn} {...(userName && { userName })} />
           </div>
         </div>
       </div>

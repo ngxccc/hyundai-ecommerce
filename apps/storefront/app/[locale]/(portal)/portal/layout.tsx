@@ -1,5 +1,4 @@
-import { headers } from "next/headers";
-import { auth } from "@nhatnang/database/auth";
+import { getCachedSession } from "@/shared/lib/session";
 import { PortalSidebar } from "@/features/portal/components/portal-sidebar";
 import { redirect } from "@/i18n/routing";
 import type { Metadata } from "next";
@@ -32,8 +31,7 @@ export default async function PortalLayout({
 }) {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
-  const reqHeaders = await headers();
-  const session = await auth.api.getSession({ headers: reqHeaders });
+  const session = await getCachedSession();
 
   if (!session?.user) {
     redirect({
@@ -43,8 +41,8 @@ export default async function PortalLayout({
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 pt-24 sm:px-6 lg:px-8">
-      <div className="flex flex-col gap-8 md:flex-row">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:py-8">
+      <div className="flex flex-col gap-4 md:flex-row">
         <PortalSidebar />
         <main className="min-w-0 flex-1 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
           {children}

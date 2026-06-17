@@ -31,7 +31,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-muted/20 mt-14 border-t pt-14 pb-4">
+    <footer className="bg-muted/20 mt-10 border-t pt-14 pb-4 lg:mt-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-14 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Cột 1 & 2: Brand + Newsletter */}

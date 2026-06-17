@@ -11,7 +11,7 @@ import {
   setRequestLocale,
 } from "next-intl/server";
 import { NextIntlClientProvider, type Locale } from "next-intl";
-import { Header, Footer } from "@/features/home/components";
+import { Header } from "@/features/home/components";
 import { Analytics } from "@vercel/analytics/next";
 import { ScrollToTop } from "@nhatnang/ui/components/ui/scroll-to-top";
 import { Toaster } from "@nhatnang/ui/components/ui/sonner";
@@ -151,7 +151,6 @@ async function LocalizedLayoutContent({
       <Header />
       <main className="flex-1 pt-16">{children}</main>
       <Toaster position="top-center" />
-      <Footer />
       <ScrollToTop />
       <Suspense fallback={null}>
         <Analytics />
