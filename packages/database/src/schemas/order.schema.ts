@@ -26,7 +26,7 @@ export const orderStatusEnum = pgEnum("order_status", [
 export const paymentMethodEnum = pgEnum("payment_method", [
   "TRADE_CREDIT",
   "PAYOS",
-  "MANUAL_TRANSFER",
+  "CASH",
 ]);
 
 export const orderPaymentStatusEnum = pgEnum("order_payment_status", [
