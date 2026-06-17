@@ -64,6 +64,7 @@ _Focus on completing this section before looking further down._
 - [x] Storefront Catalog Caching Migration Plan ([plan](general-plans/completed/storefront-catalog-caching-migration_PLAN_12-06-26.md))
 - [ ] Storefront Cart Mobile UI Optimization - Plan ([plan](features/storefront/active/storefront-cart-mobile-ui_PLAN_14-06-26.md))
 - [ ] B2B Checkout Flow & User Roles Refactor — Plan ([plan](features/storefront/active/storefront-b2b-checkout-and-roles_PLAN_15-06-26.md))
+- [ ] Phase Plan: Customer Portal & Settings UI (Storefront) ([plan](features/storefront/active/storefront-customer-portal-and-settings_PLAN_17-06-26.md))
 
 ---
 
