@@ -1,6 +1,6 @@
 # Phase Plan: B2B Checkout Flow & User Roles Refactor
 
-**Date**: 2026-06-15
+**Date**: 2026-06-17
 **Complexity**: Complex
 **Status**: ⏳ PLANNED
 
@@ -16,11 +16,11 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 ## 2. Phase Completion Rules
 
-- Database migrations run successfully, migrating old `admin` users to `super_admin` and introducing new schemas without data loss.
+- Database migrations run successfully, migrating old `admin` users to `super_admin` and introducing new schemas (including `payment`, `payment_transaction`, and `debt_repayment` tables) without data loss.
 - Next.js route middleware and server-side `assertRole` helper restrict access to authorized roles.
 - B2B Trade Credit checkout executes inside a fast transaction using pessimistic locking (`SELECT FOR UPDATE NOWAIT`) with server-side price recalculation.
 - PayOS dynamic link creation, raw body signature checking, and duplicate webhook delivery handling are verified end-to-end.
-- Storefront checkout polling, re-verify cooldowns, and the "Request Cancellation" flow are fully functional.
+- Storefront checkout pages, polling views, re-verify cooldowns, B2B debt repayment dashboard, and the "Request Cancellation" flow are fully functional.
 - Real-time and offline alerts (Zalo ZNS, Telegram bot alerts, outbox events, and escalation worker) are validated.
 - All unit and E2E test suites pass successfully.
 
@@ -34,6 +34,7 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 - **B2B Trade Credit**: Pre-approved dealers can checkout using Net Terms, deducting from their credit limit under a pessimistic lock. If locked, immediately fails fast with HTTP 429/409.
 - **Sub-role Approval**: `dealer_purchaser` checkout requests are routed to `dealer_approver` for release.
 - **Order Cancellation**: Self-cancellation of Trade Credit orders is restricted to `pending` status. Processing orders request cancellation and log high-priority alerts.
+- **B2B Debt Repayment**: Dealers can view outstanding debt, and repay a custom amount via PayOS or Cash, clearing their overdue locks instantly.
 - **Notifications**: Online users receive instant WebSocket updates. Offline users receive Zalo ZNS / SMS. Unattended alerts escalate at 2h, 12h, and 24h via Telegram and email.
 
 ---
@@ -49,6 +50,15 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 - [x] Create `payment_transaction` table schema (event log: N rows per order; `referenceCode` becomes the webhook lookup key).
 - [x] Remove `transactionId` column from `payment` table (webhook matching now uses `payment_transaction.referenceCode`).
 - [x] Create `credit_limit_history` table schema.
+- [ ] Create `debt_repayment` table schema (`packages/database/src/schemas/payment.schema.ts` or new schema) with fields:
+  - `id`: `uuid().primaryKey()`
+  - `userId`: `uuid().references(() => users.id).notNull()`
+  - `amount`: `numeric(15, 2).notNull()`
+  - `paymentMethod`: `enum('PAYOS', 'CASH').notNull()`
+  - `status`: `enum('PENDING', 'COMPLETED', 'FAILED').default('PENDING').notNull()`
+  - `referenceCode`: `text().unique().notNull()`
+  - `verifiedBy`: `uuid().references(() => users.id)`
+  - `createdAt` / `updatedAt`
 - [x] Run `bun run db:generate`
 - [x] Write a SQL migration script to safely map legacy `admin` to `super_admin`, legacy `dealer` to `dealer_approver`, and legacy `customer` to `customer`.
 - [x] Run migration using `bun run db:migrate` and `bun run db:migrate:test`.
@@ -82,18 +92,74 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 ### Step 5: Storefront UI, Polling & Cancellation Flows
 
+#### A. Backend Support APIs
+
+- [ ] Implement `createPendingPaymentTransaction(orderId, amount, transactionType, referenceCode, method)` helper in `order.service.ts` — used by both checkout (PAYOS) and `generate-deposit-link`.
+- [ ] Implement `POST /api/payments/generate-deposit-link` (Flow E): IDOR guard (`order.userId === session.userId`), status guard (`UNPAID` + `CASH`), call PayOS API for 20% deposit QR link, insert new `payment_transaction` row (`status = 'PENDING'`, `referenceCode = payOsOrderCode`, `transactionType = 'DEPOSIT'`, `amount = 20%`), return `checkoutUrl`.
+- [ ] Implement `POST /api/payments/generate-repayment-link`: IDOR guard, call PayOS for debt repayment amount $X$, insert row in `debt_repayment` with `status = 'PENDING'` and `referenceCode = payOsOrderCode`, return `checkoutUrl`.
 - [ ] Implement `/api/payments/verify-status` backend API endpoint or server action for short polling (checking order payment status in DB).
 - [ ] Implement the "Re-verify Payment" backend handler: calls PayOS API to query transaction status, updates the database/order status, and enforces a server-side 30-second rate limit cooldown.
-- [ ] Implement a 10-minute short-polling window on the checkout success screen.
-- [ ] Implement the "Re-verify Payment" button with a client-side 30-second cooldown timer.
-- [ ] Build the "Request Cancellation" workflow modal on the storefront customer portal for orders already in `processing` or `shipped` state.
-- [ ] Implement `POST /api/payments/generate-deposit-link` (Flow E): IDOR guard (`order.userId === session.userId`), status guard (`UNPAID` + `CASH`), call PayOS API for 20% deposit QR link, insert new `payment_transaction` row (`status = 'PENDING'`, `referenceCode = payOsOrderCode`, `transactionType = 'DEPOSIT'`, `amount = 20%`), return `checkoutUrl`.
-- [ ] Implement `createPendingPaymentTransaction(orderId, amount, transactionType, referenceCode, method)` helper in `order.service.ts` — used by both checkout (PAYOS) and `generate-deposit-link`.
-- [ ] Build CASH success page warning banner: yellow alert with office address, deposit amount (20% of total), 48-hour deadline — shown when `paymentMethod = 'CASH'` and `paymentStatus = 'UNPAID'`.
-- [ ] Add "Pay 20% Deposit Online via VietQR" secondary button on CASH success page; on click calls `generate-deposit-link` and redirects to PayOS QR page.
 - [ ] Handle PayOS webhook for CASH-order online deposits: insert `payment_transaction` with `paymentMethod = 'PAYOS'` + `transactionType = 'DEPOSIT'` + `status = 'SUCCESS'`, keep order `paymentMethod = 'CASH'`, set `paymentStatus = 'DEPOSIT_PAID'`, write Telegram outbox event.
-- [ ] Build UI for B2B `dealer_approver` in the customer portal order history to review, approve, and release pending orders submitted by their `dealer_purchaser`.
-- [ ] Build Admin CRM dashboard interfaces for `sales_representative` and `accountant` to review cancellation requests (and refund status) and approve manual bank transfers.
+- [ ] Handle PayOS webhook for debt repayments: update `debt_repayment` to `COMPLETED`, lock user row via `SELECT FOR UPDATE NOWAIT`, deduct amount from `currentDebt`, delete Redis block key `user:overdue-lock:<userId>`.
+
+#### B. Checkout Flow & Overdue Limits UI
+
+- [ ] Create Checkout Page (`apps/storefront/app/[locale]/(shop)/checkout/page.tsx`):
+  - **Shipping Address Form**: Input validation (recipient name, phone, address, city/province).
+  - **Payment Option Selector**: Radio card choices: `DEPOSIT` (Pay 20% Deposit Online) or `FULL` (Pay 100% Full Payment Online). Shows dynamic amount calculations.
+  - **Payment Method Cards**: Cards for `PAYOS` (VietQR), `CASH` (Office Payment), and `TRADE_CREDIT` (B2B Net Terms).
+  - **Trade Credit Overdue Guard**:
+    - Fetch user status from `/api/users/profile`.
+    - If user has overdue debt or is locked, display red alert: _"Hạn mức Trade Credit của bạn đã bị khóa do có nợ quá hạn (>30 ngày). Vui lòng thanh toán trước."_, disable the `TRADE_CREDIT` option, and provide a CTA button redirecting to `/portal/debt`.
+  - **Purchaser Role Alert**: If role is `dealer_purchaser`, display info banner: _"Đơn hàng này cần có phê duyệt của Dealer Approver để hoàn tất thanh toán."_
+  - **Submit Button**: Trigger `POST /api/checkout` with fullscreen spinner showing progress.
+- [ ] Create Mock Payment Page (`apps/storefront/app/[locale]/(shop)/checkout/mock-payment/page.tsx`):
+  - Simulates the PayOS redirect page for local testing.
+  - Interactive buttons to simulate success webhook, amount mismatch webhook, and cancellation back-routing.
+
+#### C. Checkout Success & Verification UI
+
+- [ ] Create Checkout Success Page (`apps/storefront/app/[locale]/(shop)/checkout/success/page.tsx`):
+  - **PAYOS Order View**: Renders total transaction amount, bank details, dynamic VietQR code image, and payment description.
+  - **Webhook Status Polling**:
+    - Trigger 5-second short polling to `/api/payments/verify-status`.
+    - Automatically redirect to customer dashboard once payment status changes to `DEPOSIT_PAID` or `FULLY_PAID`.
+    - Handle 10-minute timeout: display "Keep Waiting" prompt if timer reaches zero.
+  - **Re-verify Payment Button**:
+    - Renders button triggering the server action to fetch status directly from PayOS.
+    - Handles client-side 30-second cooldown timer, displaying a countdown and disabling clicks.
+  - **CASH Order Warning Banner**:
+    - If payment method is `CASH` and status is `UNPAID`, display a yellow warning: _"Đơn hàng chưa được xử lý. Vui lòng thanh toán 20% đặt cọc (X VNĐ) tại văn phòng trong vòng 48 giờ."_
+    - Render secondary button: _"Thanh toán cọc 20% Online qua VietQR"_. Clicking generates the PayOS deposit link and redirects.
+
+#### D. Customer Portal Order History & B2B Approvals UI
+
+- [ ] Create Order Details View (`apps/storefront/app/[locale]/(shop)/portal/orders/[id]/page.tsx`):
+  - Display full payment breakdown and timeline.
+  - "Xác thực thanh toán" (Re-verify Payment) button for stuck `PENDING_VERIFICATION` orders (with 30-second countdown).
+  - **Trade Credit Cancellation Button (Flow C)**:
+    - If status is `PENDING`, render "Hủy đơn hàng" which cancels immediately.
+    - If status is `PROCESSING` or later, render "Yêu cầu hủy đơn" (Request Cancellation) which opens a modal and sets status to `CANCELLATION_REQUESTED`.
+  - **Dealer Approver Approval Tab**:
+    - If user is `dealer_approver`, render "Đơn hàng chờ duyệt" tab.
+    - Lists orders placed by `dealer_purchaser`.
+    - Provide `Phê duyệt` button (triggers pessimistic limit locking and updates order to `APPROVED`) and `Từ chối` button (cancels order).
+
+#### E. B2B Debt Repayment UI
+
+- [ ] Create Debt Repayment Dashboard (`apps/storefront/app/[locale]/(shop)/portal/debt/page.tsx`):
+  - Shows current outstanding debt (`currentDebt`), available credit (`creditLimit - currentDebt`), and lists overdue net-term invoices.
+  - **Repayment Widget**:
+    - Input field for custom repayment amount $X$ (validates $X > 0$ and $X \le currentDebt$).
+    - Payment selector: `PAYOS` or `CASH`.
+    - For `PAYOS`: Clicking "Thanh toán VietQR" triggers dynamic link generation and redirects to PayOS.
+    - For `CASH`: Displays invoice details and receipt instructions to bring to the office.
+
+#### F. Admin CRM Dashboard UI
+
+- [ ] Build CRM interfaces in Admin App (`apps/admin`):
+  - **Sales Rep Dashboard**: Add approval list for orders under `CANCELLATION_REQUESTED`, allowing them to approve (and release Trade Credit limit) or reject.
+  - **Accountant Dashboard**: Add manual bank/cash payment verification widget, allowing them to enter a cash receipt number, record payment in `payment_transaction`, and set order to `DEPOSIT_PAID` / `FULLY_PAID`.
 
 ### Step 6: Real-Time & Offline Notification System
 
@@ -111,18 +177,25 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 - `packages/database/src/schemas/auth.schema.ts`
 - `packages/database/src/schemas/order.schema.ts`
-- `packages/database/src/services/auth/auth.service.ts`
-- `apps/admin/proxy.ts`
-- `apps/storefront/app/api/payments/payos-webhook/route.ts`
 - `packages/database/src/schemas/payment.schema.ts`
-- `apps/storefront/src/features/checkout/actions.ts`
-- `apps/storefront/src/features/cart/actions.ts`
+- `packages/database/src/schemas/payment-transaction.schema.ts`
+- `packages/database/src/services/order/order.service.ts`
+- `apps/admin/proxy.ts`
+- `apps/admin/app/[locale]/(dashboard)/orders/[id]/page.tsx`
+- `apps/admin/src/features/orders/components/order-detail.tsx`
+- `apps/storefront/app/[locale]/(shop)/checkout/page.tsx`
+- `apps/storefront/app/[locale]/(shop)/checkout/success/page.tsx`
+- `apps/storefront/app/[locale]/(shop)/portal/orders/[id]/page.tsx`
+- `apps/storefront/app/[locale]/(shop)/portal/debt/page.tsx`
+- `apps/storefront/app/api/checkout/route.ts`
+- `apps/storefront/app/api/payments/payos-webhook/route.ts`
 
 ---
 
 ## 6. Public Contracts
 
 - `/api/payments/generate-deposit-link` (Flow E: dynamic PayOS deposit link for CASH orders)
+- `/api/payments/generate-repayment-link` (Dynamic PayOS debt repayment link)
 - `/api/payments/payos-webhook` (PayOS Webhook URL)
 - `/api/payments/verify-status` (Short polling checkout verification endpoint)
 - `assertRole(allowedRoles: UserRole[])` shared backend helper
@@ -131,9 +204,9 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 ## 7. Blast Radius
 
-- **High impact**: Database schemas (`user` and `order` tables require migrations).
+- **High impact**: Database schemas (requires migration for the new `debt_repayment` table and previous role/order tables).
 - **High impact**: Access control (role enum changes will affect all users, necessitating script execution).
-- **Moderate impact**: Storefront checkouts and B2B pricing flows.
+- **Moderate impact**: Storefront checkouts, B2B pricing, and cart flows.
 - **Zero impact**: Static product and categories routes.
 
 ---
