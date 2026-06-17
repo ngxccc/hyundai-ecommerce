@@ -5,6 +5,7 @@ import {
   mockCartGetCartItems,
   mockOrderCreateOrderWithItems,
   mockOrderCreatePayment,
+  mockOrderCreatePaymentTransaction,
   mockCheckRateLimitWithQueue,
   mockOrderCheckoutWithTradeCredit,
 } from "@nhatnang/shared/testing/action-mocks";
@@ -109,6 +110,7 @@ describe("POST /api/checkout", () => {
 
     mockOrderCreateOrderWithItems.mockResolvedValue({ id: "order-123" });
     mockOrderCreatePayment.mockResolvedValue({ id: "payment-123" });
+    mockOrderCreatePaymentTransaction.mockResolvedValue({ id: "tx-123" });
 
     const request = new Request("http://localhost/api/checkout", {
       method: "POST",
@@ -129,6 +131,7 @@ describe("POST /api/checkout", () => {
     expect(isMock || isReal).toBe(true);
     expect(mockOrderCreateOrderWithItems).toHaveBeenCalled();
     expect(mockOrderCreatePayment).toHaveBeenCalled();
+    expect(mockOrderCreatePaymentTransaction).toHaveBeenCalled();
   });
 
   it("returns 400 when payment method is invalid", async () => {

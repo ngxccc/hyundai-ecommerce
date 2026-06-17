@@ -16,6 +16,8 @@ export const env = createEnv({
     PAYOS_CLIENT_ID: z.string().min(1),
     PAYOS_API_KEY: z.string().min(1),
     PAYOS_CHECKSUM_KEY: z.string().min(1),
+    VAT_RATE: z.coerce.number(),
+    DEPOSIT_RATE: z.coerce.number(),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.url(MESSAGES.NEXT_URL_IS_INVALID),
@@ -29,5 +31,7 @@ export const env = createEnv({
     PAYOS_CLIENT_ID: process.env["PAYOS_CLIENT_ID"],
     PAYOS_API_KEY: process.env["PAYOS_API_KEY"],
     PAYOS_CHECKSUM_KEY: process.env["PAYOS_CHECKSUM_KEY"],
+    VAT_RATE: process.env["VAT_RATE"],
+    DEPOSIT_RATE: process.env["DEPOSIT_RATE"],
   },
 });

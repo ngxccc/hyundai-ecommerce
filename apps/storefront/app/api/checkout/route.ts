@@ -95,9 +95,12 @@ export async function POST(request: Request) {
     // Add VAT dynamically
     const totalAmount = subtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE);
 
-    // 2. Define payment amount
+    // 2. Define payment amount (spec: Math.round(total * DEPOSIT_RATE))
+    const depositAmount = Math.round(
+      totalAmount * FINANCIAL_CONSTANTS.DEPOSIT_RATE,
+    );
     const paymentAmount =
-      paymentOption === "DEPOSIT" ? totalAmount * 0.2 : totalAmount;
+      paymentOption === "DEPOSIT" ? depositAmount : totalAmount;
 
     // 3. Handle PayOS payment link creation BEFORE saving order to DB
     let checkoutUrl = "";
@@ -222,13 +225,26 @@ export async function POST(request: Request) {
         cart.id,
       );
 
-      // If it is PayOS, we also create the payment record linking to the order
       if (paymentMethod === "PAYOS") {
         await orderService.createPayment({
           orderId: order.id,
           amount: String(totalAmount),
           method: "PAYOS",
           status: "PENDING",
+        });
+
+        // Per spec Case 1/2: create pending tx anchor for webhook (orderCode)
+        const txAmount =
+          paymentOption === "DEPOSIT" ? depositAmount : totalAmount;
+        const transactionType =
+          paymentOption === "DEPOSIT" ? "DEPOSIT" : "FULL";
+        await orderService.createPaymentTransaction({
+          orderId: order.id,
+          amount: String(txAmount),
+          paymentMethod: "PAYOS",
+          transactionType,
+          status: "PENDING",
+          orderCode,
         });
       } else {
         // CASH: payment record represents the full obligation (100% of totalAmount).
