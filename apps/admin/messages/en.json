@@ -667,6 +667,15 @@
     "quoteAlreadyApproved": "Quote already approved",
     "quoteNotEditableOrConvertible": "Quote is not editable or convertible",
     "createOrderFailed": "Failed to create order",
+    "lockAcquisitionFailed": "Request is being processed, please try again in a moment",
+    "userNotFound": "User not found",
+    "insufficientCreditLimit": "Insufficient credit limit",
+    "createPaymentFailed": "Failed to create payment",
+    "createPaymentTransactionFailed": "Failed to create payment transaction",
+    "paymentTransactionNotFound": "Payment transaction not found",
+    "shippingBidNotFound": "Shipping bid not found",
+    "brandNotFound": "Brand not found",
+    "categoryNotFound": "Category not found",
     "validation": {
       "slugExists": "Slug already exists"
     }

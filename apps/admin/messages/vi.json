@@ -671,6 +671,15 @@
     "approveDealerOrderFailed": "Phê duyệt đơn hàng đại lý thất bại",
     "verifyCashPaymentFailed": "Xác nhận thanh toán tiền mặt thất bại",
     "approveOrderCancellationFailed": "Phê duyệt hủy đơn hàng thất bại",
+    "lockAcquisitionFailed": "Yêu cầu đang được xử lý, vui lòng thử lại sau giây lát",
+    "userNotFound": "Không tìm thấy người dùng",
+    "insufficientCreditLimit": "Hạn mức tín dụng không đủ",
+    "createPaymentFailed": "Tạo thông tin thanh toán thất bại",
+    "createPaymentTransactionFailed": "Tạo giao dịch thanh toán thất bại",
+    "paymentTransactionNotFound": "Không tìm thấy giao dịch thanh toán",
+    "shippingBidNotFound": "Không tìm thấy báo giá vận chuyển",
+    "brandNotFound": "Không tìm thấy thương hiệu",
+    "categoryNotFound": "Không tìm thấy danh mục",
     "validation": {
       "slugExists": "Đường dẫn đã tồn tại"
     }
