@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
     if (
       paymentMethod !== "PAYOS" &&
-      paymentMethod !== "MANUAL_TRANSFER" &&
+      paymentMethod !== "CASH" &&
       paymentMethod !== "TRADE_CREDIT"
     ) {
       return NextResponse.json(
@@ -226,19 +226,20 @@ export async function POST(request: Request) {
       if (paymentMethod === "PAYOS") {
         await orderService.createPayment({
           orderId: order.id,
-          amount: String(paymentAmount),
+          amount: String(totalAmount),
           method: "PAYOS",
           status: "PENDING",
-          transactionId: String(orderCode),
         });
       } else {
-        // For MANUAL_TRANSFER, we create a pending payment record
+        // CASH: payment record represents the full obligation (100% of totalAmount).
+        // transactionId is left null here — it will be populated later by
+        // /api/payments/generate-deposit-link when the user opts to pay the
+        // 20% deposit online via PayOS instead of at the office.
         await orderService.createPayment({
           orderId: order.id,
-          amount: String(paymentAmount),
-          method: "MANUAL_TRANSFER",
+          amount: String(totalAmount),
+          method: "CASH",
           status: "PENDING",
-          transactionId: order.id, // Using order.id as transactionId for manual transfer
         });
         checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/success?orderId=${order.id}`;
       }

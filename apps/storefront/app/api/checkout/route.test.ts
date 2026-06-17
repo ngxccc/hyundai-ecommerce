@@ -194,7 +194,7 @@ describe("POST /api/checkout", () => {
     expect(json.error).toBe("errors.invalidProductInCart");
   });
 
-  it("creates order and returns success redirect URL for MANUAL_TRANSFER on success", async () => {
+  it("creates order and returns success redirect URL for CASH on success", async () => {
     mockAuthGetSession.mockResolvedValue({ user: { id: "user-123" } });
     mockCartGetOrCreateCart.mockResolvedValue({ id: "cart-123" });
     mockCartGetCartItems.mockResolvedValue([
@@ -218,7 +218,7 @@ describe("POST /api/checkout", () => {
       method: "POST",
       body: JSON.stringify({
         ...validBody,
-        paymentMethod: "MANUAL_TRANSFER",
+        paymentMethod: "CASH",
       }),
     });
 
@@ -238,7 +238,7 @@ describe("POST /api/checkout", () => {
     expect(mockOrderCreatePayment).toHaveBeenCalledWith({
       orderId: "order-123",
       amount: "4400000",
-      method: "MANUAL_TRANSFER",
+      method: "CASH",
       status: "PENDING",
       transactionId: "order-123",
     });
