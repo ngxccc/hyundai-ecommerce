@@ -142,14 +142,14 @@ This plan integrates directly with the design spec: `process/features/storefront
 
 ### Step 3: Profile & Password settings (UI & Actions)
 
-- [ ] Create `apps/storefront/src/features/portal/actions/profile.action.ts`:
+- [x] Create `apps/storefront/src/features/portal/actions/profile.action.ts`:
   - `updateProfileAction`: Validates input using `updateProfileSchema`, calls `userService.update`, and triggers `revalidateTag("user-" + userId)`.
-- [ ] Create `apps/storefront/src/features/portal/actions/password.action.ts`:
+- [x] Create `apps/storefront/src/features/portal/actions/password.action.ts`:
   - `changePasswordAction`: Handles BetterAuth server-side password updates.
-- [ ] Create Profile Page `apps/storefront/app/[locale]/(shop)/portal/profile/page.tsx`:
+- [x] Create Profile Page `apps/storefront/app/[locale]/(shop)/portal/profile/page.tsx`:
   - Personal details form (name, phone, readonly email).
   - Business details form section if role is `dealer_approver` or `dealer_purchaser`.
-- [ ] Create Change Password Page `apps/storefront/app/[locale]/(shop)/portal/password/page.tsx`:
+- [x] Create Change Password Page `apps/storefront/app/[locale]/(shop)/portal/password/page.tsx`:
   - Fields: current password, new password, confirm new password.
   - Submits via `changePasswordAction`.
 
