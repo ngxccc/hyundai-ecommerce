@@ -34,7 +34,7 @@ export function LoginForm() {
   const rawCallbackUrl = searchParams.get("callbackUrl");
   const callbackUrl = rawCallbackUrl?.startsWith("/")
     ? rawCallbackUrl
-    : "/dashboard";
+    : "/";
 
   const router = useRouter();
   const t = useTranslations("Login");
