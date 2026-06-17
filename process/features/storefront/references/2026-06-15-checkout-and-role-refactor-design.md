@@ -145,14 +145,15 @@ Represents what the customer owes for an order. Always holds the full order valu
 
 Inserted whenever money actually moves (or a payment session is opened). Multiple rows per order for split payments.
 
-| Field             | Value                                  | Rule                                                              |
-| ----------------- | -------------------------------------- | ----------------------------------------------------------------- |
-| `amount`          | Actual amount for this session         | 20% for DEPOSIT, 80% for REMAINDER, 100% for FULL                 |
-| `paymentMethod`   | `PAYOS / CASH`                         | Method used for this specific transaction                         |
-| `transactionType` | `DEPOSIT / REMAINDER / FULL`           | Lifecycle stage of the payment                                    |
-| `status`          | `PENDING → SUCCESS / FAILED`           | `PENDING` when PayOS session opens; `SUCCESS` after webhook fires |
-| `referenceCode`   | PayOS orderCode or cash receipt number | **Primary webhook lookup key** — unique, enforces idempotency     |
-| `verifiedBy`      | Accountant UUID                        | Set only for manual cash confirmations                            |
+| Field             | Value                                 | Rule                                                              |
+| ----------------- | ------------------------------------- | ----------------------------------------------------------------- |
+| `amount`          | Actual amount for this session        | 20% for DEPOSIT, 80% for REMAINDER, 100% for FULL                 |
+| `paymentMethod`   | `PAYOS / CASH`                        | Method used for this specific transaction                         |
+| `transactionType` | `DEPOSIT / REMAINDER / FULL`          | Lifecycle stage of the payment                                    |
+| `status`          | `PENDING → SUCCESS / FAILED`          | `PENDING` when PayOS session opens; `SUCCESS` after webhook fires |
+| `orderCode`       | Merchant-generated order code (PayOS) | Set at checkout when creating the pending transaction row         |
+| `referenceCode`   | Bank transaction reference            | Set when webhook arrives or accountant enters cash receipt number |
+| `verifiedBy`      | Accountant UUID                       | Set only for manual cash confirmations                            |
 
 ### When `payment_transaction` rows are created
 
@@ -225,11 +226,11 @@ Identical to Case 1, except:
 
 ```text
 PayOS fires → { orderCode, amount, reference }
-  1. Look up: payment_transaction WHERE referenceCode = orderCode AND status = 'PENDING'
+  1. Look up: payment_transaction WHERE orderCode = data.orderCode AND status = 'PENDING' (or use referenceCode if bank reference is primary)
   2. If not found → idempotency: already processed or unknown → return 200 OK
   3. Get orderId from payment_transaction.orderId
   4. Mismatch check: |amount_received - payment_transaction.amount| > 0.01
-       → FAILED tx + SUSPICIOUS_PAYMENT_HOLD
+      → FAILED tx + SUSPICIOUS_PAYMENT_HOLD
   5. Match: UPDATE payment_transaction.status = SUCCESS
             UPDATE order.paymentStatus = DEPOSIT_PAID | FULLY_PAID
             If FULLY_PAID: UPDATE payment.status = COMPLETED
@@ -250,12 +251,12 @@ PayOS fires → { orderCode, amount, reference }
   // FINANCIAL_CONSTANTS.DEPOSIT_RATE = 0.2
   ```
 
-  The remaining 80% is settled later according to each method's own flow:
+The remaining 80% is settled later according to each method's own flow:
 
-  | Method  | 20% Deposit                                          | Remaining 80%                       |
-  | ------- | ---------------------------------------------------- | ----------------------------------- |
-  | `PAYOS` | PayOS VietQR (online)                                | PayOS VietQR (online, 2nd link)     |
-  | `CASH`  | Cash at office **or** PayOS VietQR (optional switch) | Cash at office upon receiving goods |
+| Method  | 20% Deposit                                          | Remaining 80%                       |
+| ------- | ---------------------------------------------------- | ----------------------------------- |
+| `PAYOS` | PayOS VietQR (online)                                | PayOS VietQR (online, 2nd link)     |
+| `CASH`  | Cash at office **or** PayOS VietQR (optional switch) | Cash at office upon receiving goods |
 
 - **Webhook Signature Verification (Raw Body)**:
   - The webhook handler MUST parse the **raw request body string** (not the parsed JSON) to calculate the HMAC-SHA256 checksum and verify against the header signature.
