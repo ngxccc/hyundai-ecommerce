@@ -8,13 +8,15 @@
     "nav": {
       "products": "Sản phẩm",
       "solutions": "Giải pháp",
-      "services": "Dịch vụ"
+      "services": "Dịch vụ",
+      "logout": "Đăng xuất"
     },
     "header": {
       "support": "Hỗ trợ 24/7",
       "requestQuote": "Yêu cầu báo giá",
       "login": "Đăng nhập",
-      "register": "Đăng ký"
+      "register": "Đăng ký",
+      "myAccount": "Tài khoản"
     },
     "hero": {
       "badge": "Dòng tải nặng",
@@ -257,6 +259,8 @@
     "createAddressFailed": "Tạo địa chỉ thất bại",
     "updateAddressFailed": "Cập nhật địa chỉ thất bại",
     "deleteAddressFailed": "Xóa địa chỉ thất bại",
+    "updateFailed": "Cập nhật thất bại. Vui lòng thử lại.",
+    "passwordChangeFailed": "Đổi mật khẩu thất bại. Vui lòng thử lại.",
     "validation": {
       "slugExists": "Đường dẫn đã tồn tại"
     }
@@ -364,6 +368,51 @@
       "orders": "Lịch sử đơn hàng",
       "debt": "Thanh toán công nợ",
       "logout": "Đăng xuất"
+    },
+    "validation": {
+      "fullNameMin": "Tên phải có ít nhất 2 ký tự",
+      "phoneInvalid": "Số điện thoại phải đúng 10 chữ số",
+      "currentPasswordRequired": "Vui lòng nhập mật khẩu hiện tại",
+      "passwordMin": "Mật khẩu phải có ít nhất 6 ký tự",
+      "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu mới",
+      "passwordMismatch": "Mật khẩu xác nhận không khớp",
+      "companyNameMin": "Tên công ty phải có ít nhất 2 ký tự",
+      "taxIdInvalid": "Mã số thuế phải có 10\u201314 chữ số",
+      "provinceRequired": "Vui lòng nhập tỉnh/thành phố"
+    },
+    "profile": {
+      "title": "Thông tin tài khoản",
+      "personalSection": "Thông tin cá nhân",
+      "businessSection": "Thông tin doanh nghiệp",
+      "nameLabel": "Họ và tên",
+      "emailLabel": "Địa chỉ email",
+      "emailNote": "Địa chỉ email không thể thay đổi",
+      "phoneLabel": "Số điện thoại",
+      "companyNameLabel": "Tên công ty",
+      "taxIdLabel": "Mã số thuế",
+      "businessTypeLabel": "Loại hình kinh doanh",
+      "provinceLabel": "Tỉnh / Thành phố",
+      "businessTypes": {
+        "DEALER": "Đại lý / Nhà phân phối",
+        "CONTRACTOR": "Nhà thầu xây dựng",
+        "END_USER": "Người dùng cuối (B2C)",
+        "DISTRIBUTOR": "Nhà phân phối chính thức"
+      },
+      "saveChanges": "Lưu thay đổi",
+      "saving": "Đang lưu\u2026",
+      "updateSuccess": "Cập nhật thông tin thành công.",
+      "updateError": "Cập nhật thất bại. Vui lòng thử lại."
+    },
+    "password": {
+      "title": "Đổi mật khẩu",
+      "description": "Sau khi đổi mật khẩu, bạn sẽ bị đăng xuất khỏi tất cả thiết bị để đảm bảo bảo mật.",
+      "currentPasswordLabel": "Mật khẩu hiện tại",
+      "newPasswordLabel": "Mật khẩu mới",
+      "confirmPasswordLabel": "Xác nhận mật khẩu mới",
+      "submit": "Đổi mật khẩu",
+      "submitting": "Đang xử lý\u2026",
+      "changeSuccess": "Đổi mật khẩu thành công. Vui lòng đăng nhập lại.",
+      "changeError": "Đổi mật khẩu thất bại. Vui lòng kiểm tra mật khẩu hiện tại."
     }
   }
 }

@@ -8,13 +8,15 @@
     "nav": {
       "products": "Products",
       "solutions": "Solutions",
-      "services": "Services"
+      "services": "Services",
+      "logout": "Logout"
     },
     "header": {
       "support": "24/7 Support",
       "requestQuote": "Request a Quote",
       "login": "Login",
-      "register": "Register"
+      "register": "Register",
+      "myAccount": "My Account"
     },
     "hero": {
       "badge": "Heavy-Duty Series",
@@ -258,6 +260,8 @@
     "createAddressFailed": "Failed to create address",
     "updateAddressFailed": "Failed to update address",
     "deleteAddressFailed": "Failed to delete address",
+    "updateFailed": "Failed to update. Please try again.",
+    "passwordChangeFailed": "Failed to change password. Please try again.",
     "validation": {
       "slugExists": "Slug already exists"
     }
@@ -364,6 +368,51 @@
       "orders": "Order History",
       "debt": "B2B Debt Repayment",
       "logout": "Logout"
+    },
+    "validation": {
+      "fullNameMin": "Name must be at least 2 characters",
+      "phoneInvalid": "Phone number must be exactly 10 digits",
+      "currentPasswordRequired": "Current password is required",
+      "passwordMin": "Password must be at least 6 characters",
+      "confirmPasswordRequired": "Please confirm your new password",
+      "passwordMismatch": "Passwords do not match",
+      "companyNameMin": "Company name must be at least 2 characters",
+      "taxIdInvalid": "Tax ID must be 10\u201314 digits",
+      "provinceRequired": "Province / City is required"
+    },
+    "profile": {
+      "title": "Profile Settings",
+      "personalSection": "Personal Information",
+      "businessSection": "Business Information",
+      "nameLabel": "Full Name",
+      "emailLabel": "Email Address",
+      "emailNote": "Email address cannot be changed",
+      "phoneLabel": "Phone Number",
+      "companyNameLabel": "Company Name",
+      "taxIdLabel": "Tax ID",
+      "businessTypeLabel": "Business Type",
+      "provinceLabel": "Province / City",
+      "businessTypes": {
+        "DEALER": "Dealer / Distributor",
+        "CONTRACTOR": "Contractor",
+        "END_USER": "End User (B2C)",
+        "DISTRIBUTOR": "Official Distributor"
+      },
+      "saveChanges": "Save Changes",
+      "saving": "Saving\u2026",
+      "updateSuccess": "Profile updated successfully.",
+      "updateError": "Failed to update profile. Please try again."
+    },
+    "password": {
+      "title": "Change Password",
+      "description": "After changing your password, you will be logged out from all devices for security.",
+      "currentPasswordLabel": "Current Password",
+      "newPasswordLabel": "New Password",
+      "confirmPasswordLabel": "Confirm New Password",
+      "submit": "Change Password",
+      "submitting": "Changing\u2026",
+      "changeSuccess": "Password changed successfully. Please log in again.",
+      "changeError": "Failed to change password. Please check your current password."
     }
   }
 }

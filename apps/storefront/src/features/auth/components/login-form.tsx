@@ -32,9 +32,7 @@ import { useCartStore, mergeLocalCartAction } from "@/features/cart";
 export function LoginForm() {
   const searchParams = useSearchParams();
   const rawCallbackUrl = searchParams.get("callbackUrl");
-  const callbackUrl = rawCallbackUrl?.startsWith("/")
-    ? rawCallbackUrl
-    : "/";
+  const callbackUrl = rawCallbackUrl?.startsWith("/") ? rawCallbackUrl : "/";
 
   const router = useRouter();
   const t = useTranslations("Login");
@@ -58,7 +56,9 @@ export function LoginForm() {
             Object.entries(result.fieldErrors).forEach(([key, messages]) => {
               const safeKey = key as keyof TLoginForm;
               const errorCode = messages[0];
-              const errorMessage = errorCode ? t(errorCode as never) : t("errorMessage");
+              const errorMessage = errorCode
+                ? t(errorCode as never)
+                : t("errorMessage");
 
               form.setError(safeKey, {
                 type: "server",
@@ -96,6 +96,7 @@ export function LoginForm() {
 
         toast.success(t("successMessage"));
         router.push(callbackUrl);
+        form.reset();
       } catch (error) {
         console.error("Login failed:", error);
         toast.error(t("errorMessage"));
