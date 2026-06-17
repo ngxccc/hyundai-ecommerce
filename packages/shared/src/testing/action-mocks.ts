@@ -33,6 +33,7 @@ export const mockOrderVerifyCashPayment = mock();
 export const mockOrderApproveOrderCancellation = mock();
 export const mockOrderCreateOrderWithItems = mock();
 export const mockOrderCreatePayment = mock();
+export const mockOrderCreatePaymentTransaction = mock();
 export const mockOrderGetPaymentByTransactionId = mock();
 export const mockOrderUpdatePayment = mock();
 export const mockConfirmPayOSPayment = mock();
@@ -79,6 +80,7 @@ await vi.mock("@nhatnang/database/services", () => ({
     approveOrderCancellation: mockOrderApproveOrderCancellation,
     createOrderWithItems: mockOrderCreateOrderWithItems,
     createPayment: mockOrderCreatePayment,
+    createPaymentTransaction: mockOrderCreatePaymentTransaction,
     getPaymentByTransactionId: mockOrderGetPaymentByTransactionId,
     updatePayment: mockOrderUpdatePayment,
     confirmPayOSPayment: mockConfirmPayOSPayment,
@@ -185,6 +187,7 @@ beforeEach(() => {
   mockOrderApproveOrderCancellation.mockReset();
   mockOrderCreateOrderWithItems.mockReset();
   mockOrderCreatePayment.mockReset();
+  mockOrderCreatePaymentTransaction.mockReset();
   mockOrderGetPaymentByTransactionId.mockReset();
   mockOrderUpdatePayment.mockReset();
   mockConfirmPayOSPayment.mockReset();
