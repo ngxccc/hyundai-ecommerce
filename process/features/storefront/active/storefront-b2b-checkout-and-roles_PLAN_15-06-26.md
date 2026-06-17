@@ -45,7 +45,9 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 - [x] Update `user_role` pgEnum in `packages/database/src/schemas/auth.schema.ts` to include: `super_admin`, `sales_representative`, `accountant`, `warehouse_manager`, `dealer_approver`, `dealer_purchaser`, `customer`.
 - [x] Add `creditLimit` and `currentDebt` numeric fields to `user` schema.
 - [x] Add `paymentMethod`, `paymentStatus`, and `approvalStatus` fields to `order` schema in `packages/database/src/schemas/order.schema.ts`.
-- [x] Create `payment_transaction` table schema.
+- [x] Create `payment` table schema (obligation record: 1 row per order, always stores `totalAmount`).
+- [x] Create `payment_transaction` table schema (event log: N rows per order; `referenceCode` becomes the webhook lookup key).
+- [x] Remove `transactionId` column from `payment` table (webhook matching now uses `payment_transaction.referenceCode`).
 - [x] Create `credit_limit_history` table schema.
 - [x] Run `bun run db:generate`
 - [x] Write a SQL migration script to safely map legacy `admin` to `super_admin`, legacy `dealer` to `dealer_approver`, and legacy `customer` to `customer`.
@@ -63,11 +65,10 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 ### Step 3: PayOS Integration & Webhook Handler
 
-- [x] Configure PayOS SDK in the storefront application. Add credentials to Doppler.
-- [x] Implement checkout API endpoint to request PayOS checkout links (calculating prices server-side from database catalog and supporting split payment configuration: 20% deposit vs. 100% full payment).
+- [x] Implement checkout API endpoint to request PayOS checkout links (calculating prices server-side from database catalog and supporting split payment configuration: 20% deposit vs. 100% full payment). At checkout time, for PAYOS orders, also insert the initial `payment_transaction` row with `status = 'PENDING'` and `referenceCode = orderCode` so the webhook has an anchor to match against.
 - [x] Create raw body parser utility to extract raw request bytes from Next.js route requests (Bypassed: using Next.js parsed body with sortAndStringify for verification).
 - [x] Implement `/api/payments/payos-webhook` route using timing-safe comparison (`crypto.timingSafeEqual`) to verify signatures.
-- [x] Wrap webhook database writes in a transaction: check if `referenceCode` already exists in `payment_transaction` (returning early to handle duplicates), update order `paymentStatus` (to `DEPOSIT_PAID` or `FULLY_PAID` depending on `transactionType`), insert the transaction record into `payment_transaction`.
+- [x] Refactor webhook handler and `confirmPayOSPayment` service: lookup is now performed on `payment_transaction.referenceCode` (not `payment.transactionId`). Idempotency check uses `payment_transaction.status != 'PENDING'`. Amount mismatch check compares against `payment_transaction.amount`. On success, update both `payment_transaction.status` and `order.paymentStatus`; set `payment.status = 'COMPLETED'` only when the order reaches `FULLY_PAID`.
 - [x] Implement webhook data mismatch and security check: if the paid amount does not match the expected order total/deposit, place the order on `SUSPICIOUS_PAYMENT_HOLD`, log headers, and post an alert to Telegram.
 
 ### Step 4: B2B Trade Credit & Pessimistic Locking
@@ -86,8 +87,11 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 - [ ] Implement a 10-minute short-polling window on the checkout success screen.
 - [ ] Implement the "Re-verify Payment" button with a client-side 30-second cooldown timer.
 - [ ] Build the "Request Cancellation" workflow modal on the storefront customer portal for orders already in `processing` or `shipped` state.
-- [ ] Implement B2B sub-role checkout flow: allow `dealer_purchaser` to submit order for approval, updating `approvalStatus` to `PENDING_APPROVAL`.
-- [ ] Implement storefront UI checkout option and success screen display for the manual bank transfer fallback method (showing company bank account details, instructions, and setting order to `PENDING_VERIFICATION`).
+- [ ] Implement `POST /api/payments/generate-deposit-link` (Flow E): IDOR guard (`order.userId === session.userId`), status guard (`UNPAID` + `CASH`), call PayOS API for 20% deposit QR link, insert new `payment_transaction` row (`status = 'PENDING'`, `referenceCode = payOsOrderCode`, `transactionType = 'DEPOSIT'`, `amount = 20%`), return `checkoutUrl`.
+- [ ] Implement `createPendingPaymentTransaction(orderId, amount, transactionType, referenceCode, method)` helper in `order.service.ts` — used by both checkout (PAYOS) and `generate-deposit-link`.
+- [ ] Build CASH success page warning banner: yellow alert with office address, deposit amount (20% of total), 48-hour deadline — shown when `paymentMethod = 'CASH'` and `paymentStatus = 'UNPAID'`.
+- [ ] Add "Pay 20% Deposit Online via VietQR" secondary button on CASH success page; on click calls `generate-deposit-link` and redirects to PayOS QR page.
+- [ ] Handle PayOS webhook for CASH-order online deposits: insert `payment_transaction` with `paymentMethod = 'PAYOS'` + `transactionType = 'DEPOSIT'` + `status = 'SUCCESS'`, keep order `paymentMethod = 'CASH'`, set `paymentStatus = 'DEPOSIT_PAID'`, write Telegram outbox event.
 - [ ] Build UI for B2B `dealer_approver` in the customer portal order history to review, approve, and release pending orders submitted by their `dealer_purchaser`.
 - [ ] Build Admin CRM dashboard interfaces for `sales_representative` and `accountant` to review cancellation requests (and refund status) and approve manual bank transfers.
 
@@ -110,6 +114,7 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 - `packages/database/src/services/auth/auth.service.ts`
 - `apps/admin/proxy.ts`
 - `apps/storefront/app/api/payments/payos-webhook/route.ts`
+- `packages/database/src/schemas/payment.schema.ts`
 - `apps/storefront/src/features/checkout/actions.ts`
 - `apps/storefront/src/features/cart/actions.ts`
 
@@ -117,6 +122,7 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 ## 6. Public Contracts
 
+- `/api/payments/generate-deposit-link` (Flow E: dynamic PayOS deposit link for CASH orders)
 - `/api/payments/payos-webhook` (PayOS Webhook URL)
 - `/api/payments/verify-status` (Short polling checkout verification endpoint)
 - `assertRole(allowedRoles: UserRole[])` shared backend helper

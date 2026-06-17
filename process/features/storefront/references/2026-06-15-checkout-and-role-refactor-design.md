@@ -57,27 +57,52 @@ export const userRoleEnum = pgEnum("user_role", [
 
 #### 1. Users Table (`user`)
 
-- `creditLimit`: `numeric(12, 2)` (Default: `0.00`) - The maximum approved trade credit for B2B accounts.
-- `currentDebt`: `numeric(12, 2)` (Default: `0.00`) - The outstanding debt balance of the customer.
+- `creditLimit`: `numeric(15, 2)` (Default: `0.00`) — Maximum approved trade credit for B2B accounts.
+- `currentDebt`: `numeric(15, 2)` (Default: `0.00`) — Outstanding debt balance of the customer.
 
 #### 2. Orders Table (`order`)
 
-- `paymentMethod`: `enum('GATEWAY', 'BANK_TRANSFER', 'TRADE_CREDIT')`
+- `paymentMethod`: `enum('PAYOS', 'CASH', 'TRADE_CREDIT')`
 - `paymentStatus`: `enum('UNPAID', 'DEPOSIT_PAID', 'FULLY_PAID', 'PENDING_VERIFICATION')`
 - `approvalStatus`: `enum('APPROVED', 'PENDING_APPROVAL')` (Default: `'APPROVED'` for retail/approver, `'PENDING_APPROVAL'` for purchaser)
 
-#### 3. Payment Transactions Table (`payment_transaction` - New Table)
+#### 3. Payment Table (`payment` — 1 row per order)
 
-Tracks detailed payment milestones for order deposits and remainder settlements.
+Represents the financial obligation of the order. See [Section 3.5](#35-payment-data-model-contract) for the full contract.
 
 - `id`: `uuid().primaryKey()`
-- `orderId`: `uuid().references(() => orders.id)`
-- `amount`: `numeric(12, 2).notNull()`
-- `paymentMethod`: `text().notNull()` (e.g., `'PAYOS'`, `'MANUAL_TRANSFER'`)
-- `transactionType`: `enum('DEPOSIT', 'REMAINDER', 'FULL')`
-- `status`: `enum('PENDING', 'SUCCESS', 'FAILED')`
-- `referenceCode`: `text().unique().notNull()` (Transaction ID from PayOS/Bank matching to enforce idempotency)
-- `verifiedBy`: `uuid().references(() => users.id)` (Accountant ID if approved manually)
+- `orderId`: `uuid().references(() => orders.id).notNull()` — 1:1 with order
+- `amount`: `numeric(15, 2).notNull()` — Always `totalAmount` (100%); never the deposit amount
+- `method`: `paymentMethodEnum().notNull()` — Primary payment method of the order (`PAYOS / CASH / TRADE_CREDIT`)
+- `status`: `enum('PENDING', 'COMPLETED', 'FAILED', 'REFUNDED')` — Set to `COMPLETED` only when the order reaches `FULLY_PAID`
+- `rawPayload`: `text()` — Optional: raw PayOS webhook payload for audit
+
+> `transactionId` has been removed. Webhook lookup is performed via `payment_transaction.referenceCode`.
+
+#### 4. Payment Transactions Table (`payment_transaction` — N rows per order)
+
+Tracks each individual money-collection event. Multiple rows per order for split payments (deposit + remainder).
+
+- `id`: `uuid().primaryKey()`
+- `orderId`: `uuid().references(() => orders.id).notNull()`
+- `amount`: `numeric(15, 2).notNull()` — Actual amount for this session (20% / 80% / 100%)
+- `paymentMethod`: `enum('PAYOS', 'CASH').notNull()` — Method used for this specific transaction
+- `transactionType`: `enum('DEPOSIT', 'REMAINDER', 'FULL').notNull()`
+- `status`: `enum('PENDING', 'SUCCESS', 'FAILED').notNull()` — `PENDING` when PayOS session opens; `SUCCESS` after webhook fires or cash confirmed
+- `referenceCode`: `text().unique().notNull()` — PayOS `orderCode` or cash receipt number; primary webhook lookup key enforcing idempotency
+- `verifiedBy`: `uuid().references(() => users.id)` — Accountant ID; set only for manual cash confirmations
+- `createdAt` / `updatedAt`
+
+#### 5. Credit Limit History Table (`credit_limit_history` — New Table)
+
+Provides audit logs for all credit limit updates for compliance.
+
+- `id`: `uuid().primaryKey()`
+- `userId`: `uuid().references(() => users.id)` (The B2B account)
+- `oldLimit`: `numeric(15, 2).notNull()`
+- `newLimit`: `numeric(15, 2).notNull()`
+- `changedBy`: `uuid().references(() => users.id)` (The accountant or admin who performed the change)
+- `reason`: `text()`
 - `createdAt`: `timestamp().defaultNow()`
 
 #### 4. Credit Limit History Table (`credit_limit_history` - New Table)
@@ -94,12 +119,144 @@ Provides audit logs for all credit limit updates for compliance.
 
 ---
 
+## 3.5 Payment Data Model Contract
+
+The payment subsystem uses two tables with distinct, non-overlapping responsibilities:
+
+```text
+orders (1)
+  └── payment (1)               — financial obligation of the order
+  └── payment_transaction[] (N) — each individual money-collection event
+```
+
+### `payment` — Obligation
+
+Represents what the customer owes for an order. Always holds the full order value regardless of how many installments are collected.
+
+| Field    | Value                         | Rule                                                    |
+| -------- | ----------------------------- | ------------------------------------------------------- |
+| `amount` | `totalAmount` (100%)          | Never changes; reflects the total obligation            |
+| `method` | `PAYOS / CASH / TRADE_CREDIT` | Primary payment method of the order                     |
+| `status` | `PENDING → COMPLETED`         | Set to `COMPLETED` only when order reaches `FULLY_PAID` |
+
+> `transactionId` has been removed. Webhook lookup is performed via `payment_transaction.referenceCode` instead.
+
+### `payment_transaction` — Each Money-Collection Event
+
+Inserted whenever money actually moves (or a payment session is opened). Multiple rows per order for split payments.
+
+| Field             | Value                                  | Rule                                                              |
+| ----------------- | -------------------------------------- | ----------------------------------------------------------------- |
+| `amount`          | Actual amount for this session         | 20% for DEPOSIT, 80% for REMAINDER, 100% for FULL                 |
+| `paymentMethod`   | `PAYOS / CASH`                         | Method used for this specific transaction                         |
+| `transactionType` | `DEPOSIT / REMAINDER / FULL`           | Lifecycle stage of the payment                                    |
+| `status`          | `PENDING → SUCCESS / FAILED`           | `PENDING` when PayOS session opens; `SUCCESS` after webhook fires |
+| `referenceCode`   | PayOS orderCode or cash receipt number | **Primary webhook lookup key** — unique, enforces idempotency     |
+| `verifiedBy`      | Accountant UUID                        | Set only for manual cash confirmations                            |
+
+### When `payment_transaction` rows are created
+
+| Scenario                                         | Created by                       | Initial `status` |
+| ------------------------------------------------ | -------------------------------- | ---------------- |
+| PAYOS checkout (DEPOSIT or FULL)                 | Checkout API, after PayOS link   | `PENDING`        |
+| CASH deposit paid online (generate-deposit-link) | `generate-deposit-link` API      | `PENDING`        |
+| CASH deposit paid at office                      | Accountant via CRM Server Action | `SUCCESS`        |
+| REMAINDER 80% paid via PayOS                     | `generate-remainder-link` API    | `PENDING`        |
+| REMAINDER 80% paid at office (CASH)              | Accountant via CRM Server Action | `SUCCESS`        |
+
+### Detailed Payment Lifecycle Examples
+
+#### Case 1: PAYOS Checkout with 20% Deposit
+
+**Checkout API flow**:
+
+1. Call PayOS API → receive `orderCode`.
+2. `INSERT payment (amount = totalAmount, method = 'PAYOS', status = 'PENDING')` — records the full obligation.
+3. `INSERT payment_transaction (amount = 20% of total, transactionType = 'DEPOSIT', referenceCode = orderCode, status = 'PENDING', paymentMethod = 'PAYOS')` — creates the pending PayOS session anchor for webhook lookup.
+4. Redirect customer to PayOS QR page.
+
+**Webhook processing**:
+
+1. Lookup: `payment_transaction WHERE referenceCode = orderCode AND status = 'PENDING'`.
+2. Retrieve `orderId` from the found row.
+3. Amount check: compare `data.amount` received from PayOS against `payment_transaction.amount` (the 20% value).
+4. If match: `UPDATE payment_transaction.status = 'SUCCESS'`, `UPDATE order.paymentStatus = 'DEPOSIT_PAID'`.
+5. If mismatch: `UPDATE payment_transaction.status = 'FAILED'`, `UPDATE order.status = 'SUSPICIOUS_PAYMENT_HOLD'`, raise Telegram alert.
+
+#### Case 2: PAYOS Checkout with 100% Full Payment
+
+Identical to Case 1, except:
+
+- `payment_transaction.amount = totalAmount`, `transactionType = 'FULL'`.
+- Webhook sets `order.paymentStatus = 'FULLY_PAID'` and `payment.status = 'COMPLETED'`.
+
+#### Case 3: Paying the 80% Remainder (Second Installment)
+
+**generate-remainder-link API** (similar to `generate-deposit-link`):
+
+1. Call PayOS API → receive a **new** `orderCode`.
+2. `INSERT payment_transaction (amount = 80% of total, transactionType = 'REMAINDER', referenceCode = newOrderCode, status = 'PENDING', paymentMethod = 'PAYOS')`.
+
+**Webhook**:
+
+- Sets `order.paymentStatus = 'FULLY_PAID'`.
+- Sets `payment.status = 'COMPLETED'`.
+
+#### Case 4: CASH Checkout
+
+**Checkout API flow**:
+
+1. `INSERT payment (amount = totalAmount, method = 'CASH', status = 'PENDING')` — records the full obligation.
+2. **No** `payment_transaction` row is created at checkout time (no money has moved yet).
+
+**Two possible collection paths**:
+
+- **Customer pays cash at the office** (accountant confirms via CRM):
+  - `INSERT payment_transaction (amount = 20%, transactionType = 'DEPOSIT', referenceCode = <receipt number>, status = 'SUCCESS', paymentMethod = 'CASH', verifiedBy = accountantId)`.
+  - `UPDATE order.paymentStatus = 'DEPOSIT_PAID'`.
+
+- **Customer clicks "Pay 20% Online via VietQR"** on the success page:
+  - `generate-deposit-link` API calls PayOS → receives `orderCode`.
+  - `INSERT payment_transaction (amount = 20%, transactionType = 'DEPOSIT', referenceCode = orderCode, status = 'PENDING', paymentMethod = 'PAYOS')`.
+  - Webhook processing follows the same logic as Case 1.
+  - `order.paymentMethod` remains `'CASH'` (the remaining 80% is still expected in cash at the office).
+
+### Webhook lookup contract
+
+```text
+PayOS fires → { orderCode, amount, reference }
+  1. Look up: payment_transaction WHERE referenceCode = orderCode AND status = 'PENDING'
+  2. If not found → idempotency: already processed or unknown → return 200 OK
+  3. Get orderId from payment_transaction.orderId
+  4. Mismatch check: |amount_received - payment_transaction.amount| > 0.01
+       → FAILED tx + SUSPICIOUS_PAYMENT_HOLD
+  5. Match: UPDATE payment_transaction.status = SUCCESS
+            UPDATE order.paymentStatus = DEPOSIT_PAID | FULLY_PAID
+            If FULLY_PAID: UPDATE payment.status = COMPLETED
+```
+
+---
+
 ## 4. Payment Flows & Webhook Integration
 
 ### Flow A: Automatic VietQR payment via PayOS
 
 - When selecting QR payment, the system invokes PayOS API to generate a dynamic link.
-- The link renders a QR code with Hyundai's bank details, the exact 20% deposit or 100% total, and a unique reference code.
+- The link renders a QR code with Hyundai's bank details and a unique reference code.
+- **Mandatory 20% Deposit Rule**: Both `PAYOS` and `CASH` payment methods require a 20% deposit before the order is processed. The deposit amount is calculated as:
+
+  ```ts
+  depositAmount = Math.round(totalAmount * FINANCIAL_CONSTANTS.DEPOSIT_RATE);
+  // FINANCIAL_CONSTANTS.DEPOSIT_RATE = 0.2
+  ```
+
+  The remaining 80% is settled later according to each method's own flow:
+
+  | Method  | 20% Deposit                                          | Remaining 80%                       |
+  | ------- | ---------------------------------------------------- | ----------------------------------- |
+  | `PAYOS` | PayOS VietQR (online)                                | PayOS VietQR (online, 2nd link)     |
+  | `CASH`  | Cash at office **or** PayOS VietQR (optional switch) | Cash at office upon receiving goods |
+
 - **Webhook Signature Verification (Raw Body)**:
   - The webhook handler MUST parse the **raw request body string** (not the parsed JSON) to calculate the HMAC-SHA256 checksum and verify against the header signature.
   - The signature verification MUST use a constant-time string comparison (`crypto.timingSafeEqual`) to eliminate timing attacks.
@@ -146,6 +303,67 @@ Provides audit logs for all credit limit updates for compliance.
   [Insert SUCCESS Tx]         [Insert FAILED Tx]
   [Write Outbox events]       [Insert Telegram alert Outbox]
   [Return 200 OK]             [Return 200 OK]
+  ```
+
+### Flow E: CASH Checkout — Office Deposit & Online PayOS Fallback
+
+- **Checkout Step**:
+  - API creates the order with `paymentMethod = 'CASH'`, `paymentStatus = 'UNPAID'`, `orderStatus = 'PENDING'`.
+  - A payment record is created with `method = 'CASH'`, `status = 'PENDING'`, `amount = totalAmount`.
+  - API returns `checkoutUrl = /checkout/success?orderId=xxx` — no PayOS link is generated at this stage.
+- **Success Page Warning**:
+  - If the order has `paymentMethod = 'CASH'` and `paymentStatus = 'UNPAID'`, the page displays:
+    - A yellow warning banner: _"Your order is not yet processed. Please visit our office at [address] to pay the 20% deposit (X VND) within 48 hours."_
+    - A secondary button: _"Pay 20% Deposit Online via VietQR"_.
+- **Dynamic PayOS Deposit Link Generation** (`POST /api/payments/generate-deposit-link`):
+  - Triggered only when the customer clicks the online payment button.
+  - Server Action performs:
+    1. Ownership verification (IDOR guard): `order.userId === session.userId`.
+    2. Status guard: order must still be `UNPAID` and `paymentMethod = 'CASH'`.
+    3. Calls PayOS API to generate a QR link for `depositAmount` (20% of total).
+    4. Inserts `payment_transaction` with `referenceCode = payOsOrderCode`, `amount = depositAmount`, `transactionType = 'DEPOSIT'`, `status = 'PENDING'`, `paymentMethod = 'PAYOS'` — this is the webhook lookup anchor.
+    5. Returns `checkoutUrl` pointing to PayOS QR page.
+- **Webhook Handler for Cash-Order Deposit** (`/api/payments/payos-webhook`):
+  - Upon successful PayOS deposit payment:
+    - Inserts `payment_transaction` with `paymentMethod = 'PAYOS'`, `transactionType = 'DEPOSIT'`, `status = 'SUCCESS'`.
+    - Order `paymentMethod` remains `'CASH'` (the 80% remainder is still expected as cash at the office).
+    - Updates `paymentStatus = 'DEPOSIT_PAID'`.
+    - Writes outbox event to notify the warehouse team and sales team via Telegram.
+- **Workflow Flowchart**:
+
+  ```text
+       [Customer selects CASH Checkout]
+                      │
+                      ▼
+       [Create order: CASH / UNPAID / PENDING]
+                      │
+                      ▼
+       [Redirect to /checkout/success]
+                      │
+                      ▼
+       [Show warning banner + "Pay 20% Online" button]
+                      │
+           ┌──────────┴──────────┐
+           ▼ (Goes to office)    ▼ (Clicks "Pay Online")
+   [Pays cash deposit        [POST /api/payments/generate-deposit-link]
+    at office]                          │
+           │                    [IDOR check + UNPAID status check]
+           │                            │
+           │                   [Call PayOS API → QR link]
+           │                   [Insert payment_transaction PENDING]
+           │                            │
+           │                   [Redirect to PayOS QR page]
+           │                            │
+           │                   [Customer scans & pays 20%]
+           │                            │
+           │                   [PayOS Webhook triggered]
+           │                            │
+           │                   [Insert PAYOS/DEPOSIT tx]
+           │                   [Keep paymentMethod = CASH]
+           └──────────────────►[paymentStatus = DEPOSIT_PAID]
+                                         │
+                                         ▼
+                            [Order ready for processing]
   ```
 
 ### Flow B: B2B Trade Credit (Net Terms) & Pessimistic Locking
