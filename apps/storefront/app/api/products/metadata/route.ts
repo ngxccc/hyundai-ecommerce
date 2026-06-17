@@ -1,11 +1,12 @@
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { productService } from "@/shared/services";
 import { NextResponse } from "next/server";
+import type { Locale } from "next-intl";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const locale = (searchParams.get("locale") as "vi" | "en") || "vi";
+    const locale = (searchParams.get("locale") as Locale) || "vi";
     const metadata = await productService.getFiltersMetadata(locale);
     return NextResponse.json(
       {
