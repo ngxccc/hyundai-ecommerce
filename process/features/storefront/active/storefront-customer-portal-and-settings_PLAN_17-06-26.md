@@ -18,9 +18,10 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 ## 1. Context and Goals
 
-Engage B2B/B2C users on the storefront by giving them control over their profiles, security, and addresses. 
+Engage B2B/B2C users on the storefront by giving them control over their profiles, security, and addresses.
 
 **In-scope**:
+
 - Sidebar layout `/portal/layout.tsx` with BetterAuth protection.
 - `/portal/profile` page: Personal profile & Corporate B2B detail form.
 - `/portal/password` page: Password reset form.
@@ -33,6 +34,7 @@ Engage B2B/B2C users on the storefront by giving them control over their profile
 - Login redirection: redirect to homepage `/` on success by default.
 
 **Out-of-scope**:
+
 - Admin panel integration for managing address book (already in admin customer profile).
 - Integration with third-party map APIs for geo-location lookup.
 
@@ -41,22 +43,27 @@ Engage B2B/B2C users on the storefront by giving them control over their profile
 ## 1.5 Execution Brief
 
 ### Phase 1: Database Schema & Services Setup
+
 - **What happens**: Create the `debt_repayment` schema table, compile migrations, write the address book service methods in the database package, and configure Next.js 16 `'use cache'` tags.
 - **Verification**: Database migration runs clean. Address service unit tests cover CRUD & default setting.
 
 ### Phase 2: Router Layout & Route Guards
+
 - **What happens**: Build the storefront `/portal/layout.tsx` with sidebar navigation. Secure it using BetterAuth session check. Update login success default redirection to home `/`.
 - **Verification**: Unauthenticated requests to `/portal/*` redirect to login. Login redirects to home `/` by default.
 
 ### Phase 3: Profile & Security UI
+
 - **What happens**: Build the profile page `/portal/profile` (personal & B2B details) and password change page `/portal/password`. Write Server Actions with Zod validators.
 - **Verification**: Profile edits and password changes submit correctly, validate inputs, and revalidate cache.
 
 ### Phase 4: Address Book UI
+
 - **What happens**: Build the `/portal/addresses` page with card grid, create/edit modal sheets, and actions to set default or delete.
 - **Verification**: Full CRUD lifecycle of user addresses functions correctly. Only one address holds `isDefault = true` at a time.
 
 ### Phase 5: Checkout & Repayment Integration
+
 - **What happens**: Build the "/Select from Address Book" modal on the checkout page, and build the `/portal/debt` repayment page.
 - **Verification**: Clicking an address in the modal auto-fills checkout. Repayment submits a pending transaction and redirects to PayOS.
 
@@ -110,19 +117,21 @@ This plan integrates directly with the design spec: `process/features/storefront
 ## Implementation Checklist
 
 ### Step 1: Database Schema & Address Service
-- [ ] Create `debt_repayment` table schema in `packages/database/src/schemas/payment.schema.ts` (or `payment-transaction.schema.ts` / individual file).
-- [ ] Run `bun run db:generate` to generate the migration file.
-- [ ] Run `bun run db:migrate` and `bun run db:migrate:test` to update local databases.
-- [ ] Create `address.service.ts` in `packages/database/src/services/address/address.service.ts` containing:
+
+- [x] Create `debt_repayment` table schema in `packages/database/src/schemas/payment.schema.ts` (or `payment-transaction.schema.ts` / individual file).
+- [x] Run `bun run db:generate` to generate the migration file.
+- [x] Run `bun run db:migrate` and `bun run db:migrate:test` to update local databases.
+- [x] Create `address.service.ts` in `packages/database/src/services/address/address.service.ts` containing:
   - `getByUserId(userId: string): Promise<TUserAddress[]>` (wrapped in `'use cache'` with tag `addresses-${userId}`)
   - `create(address: TNewUserAddress): Promise<TUserAddress>`
   - `update(id: string, userId: string, address: Partial<TNewUserAddress>): Promise<TUserAddress>`
   - `delete(id: string, userId: string): Promise<boolean>`
   - `setDefault(id: string, userId: string): Promise<void>` (performs atomic update transaction)
-- [ ] Expose `addressService` in `packages/database/src/services/interfaces.ts` and `registry.ts`.
-- [ ] Write unit tests for `addressService` in `packages/database/src/services/address/address.service.test.ts`. Verify unit tests pass via `bun test`.
+- [x] Expose `addressService` in `packages/database/src/services/interfaces.ts` and `registry.ts`.
+- [x] Write unit tests for `addressService` in `packages/database/src/services/address/address.service.test.ts`. Verify unit tests pass via `bun test`.
 
 ### Step 2: Route Guard, Layout & Redirection
+
 - [ ] Create `apps/storefront/app/[locale]/(shop)/portal/layout.tsx`:
   - Enforce BetterAuth server-side session check. Redirect to `/login?callbackUrl=...` if not authenticated.
   - Implement mobile-responsive double column grid: Sidebar on the left, `{children}` on the right.
@@ -132,6 +141,7 @@ This plan integrates directly with the design spec: `process/features/storefront
 - [ ] Implement side-menu navigation links mapping to profile, password, addresses, orders, and debt repayment.
 
 ### Step 3: Profile & Password settings (UI & Actions)
+
 - [ ] Create `apps/storefront/src/features/portal/actions/profile.action.ts`:
   - `updateProfileAction`: Validates input using `updateProfileSchema`, calls `userService.update`, and triggers `revalidateTag("user-" + userId)`.
 - [ ] Create `apps/storefront/src/features/portal/actions/password.action.ts`:
@@ -144,6 +154,7 @@ This plan integrates directly with the design spec: `process/features/storefront
   - Submits via `changePasswordAction`.
 
 ### Step 4: Address Book Management
+
 - [ ] Create Address Validation Schema `packages/database/validators/address.validators.ts`.
 - [ ] Create Address Server Actions in `apps/storefront/src/features/portal/actions/address.action.ts`:
   - `addAddressAction`
@@ -157,6 +168,7 @@ This plan integrates directly with the design spec: `process/features/storefront
   - Edit and Delete buttons on each address card.
 
 ### Step 5: Checkout Address Modal & Repayment Integration
+
 - [ ] Create "Select Address" Modal component in `apps/storefront/src/features/checkout/components/select-address-modal.tsx`.
 - [ ] Update `apps/storefront/app/[locale]/(shop)/checkout/page.tsx` (or target file if nested):
   - Add "Select from Address Book" button next to shipping address.
@@ -213,6 +225,7 @@ This plan integrates directly with the design spec: `process/features/storefront
 ## Resume and Execution Handoff
 
 When resuming or handing off to the next agent:
+
 - Phase 1 (Database) must be completed before implementing Phase 2 (Router layout) and Phase 3/4.
 - Cache tags `addresses-${userId}` and `user-${id}` must be cleared using `revalidateTag` inside write Server Actions.
 - Refer to the detailed `check-list` items and mark progress incrementally.

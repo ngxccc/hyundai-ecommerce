@@ -127,23 +127,23 @@ On screens narrower than `768px` (Tailwind `< md:`), each cart item card shifts 
       This floats the delete button to the right and keeps the quantity picker on the left.
 
 - [x] **Step 4: Implement Mobile Sticky Bottom Bar**
-      Add the sticky summary bar at the end of `CartTemplate`:
-      `tsx
-    {/* Sticky Bottom Bar for Mobile */}
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-background/90 p-4 shadow-lg backdrop-blur-md md:hidden">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col">
-          <span className="text-muted-foreground text-xs">{t("totalItems")}: <span className="font-mono font-semibold text-foreground">{totalCount}</span></span>
-          <span className="font-mono text-lg font-bold text-foreground">
-            {priceFormatter.format(subtotal)}
-          </span>
-        </div>
-        <Button rounded="md" className="rounded-md px-6 py-2 text-sm font-semibold" onClick={handleActionClick}>
-          {t("checkout")}
-        </Button>
+    Add the sticky summary bar at the end of `CartTemplate`:
+    `tsx
+    {/_ Sticky Bottom Bar for Mobile _/}
+  <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-background/90 p-4 shadow-lg backdrop-blur-md md:hidden">
+    <div className="flex items-center justify-between">
+      <div className="flex flex-col">
+        <span className="text-muted-foreground text-xs">{t("totalItems")}: <span className="font-mono font-semibold text-foreground">{totalCount}</span></span>
+        <span className="font-mono text-lg font-bold text-foreground">
+          {priceFormatter.format(subtotal)}
+        </span>
       </div>
+      <Button rounded="md" className="rounded-md px-6 py-2 text-sm font-semibold" onClick={handleActionClick}>
+        {t("checkout")}
+      </Button>
     </div>
-    `
+  </div>
+  `
 
 - [x] **Step 5: Add bottom spacer**
       Add a spacer `div` below the main content list to avoid overlay issues on mobile:

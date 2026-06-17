@@ -251,6 +251,10 @@
     "shippingBidNotFound": "Không tìm thấy báo giá vận chuyển",
     "brandNotFound": "Không tìm thấy thương hiệu",
     "categoryNotFound": "Không tìm thấy danh mục",
+    "addressNotFound": "Không tìm thấy địa chỉ",
+    "createAddressFailed": "Tạo địa chỉ thất bại",
+    "updateAddressFailed": "Cập nhật địa chỉ thất bại",
+    "deleteAddressFailed": "Xóa địa chỉ thất bại",
     "validation": {
       "slugExists": "Đường dẫn đã tồn tại"
     }

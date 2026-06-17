@@ -252,6 +252,10 @@
     "shippingBidNotFound": "Shipping bid not found",
     "brandNotFound": "Brand not found",
     "categoryNotFound": "Category not found",
+    "addressNotFound": "Address not found",
+    "createAddressFailed": "Failed to create address",
+    "updateAddressFailed": "Failed to update address",
+    "deleteAddressFailed": "Failed to delete address",
     "validation": {
       "slugExists": "Slug already exists"
     }
