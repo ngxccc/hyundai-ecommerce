@@ -80,6 +80,8 @@ export class DbAuthService implements AuthService<TLoginForm, TRegisterForm> {
         province,
       } = data;
 
+      const role = businessType === "END_USER" ? "CUSTOMER" : "DEALER_APPROVER";
+
       const result = await this.betterAuth.api.signUpEmail({
         body: {
           email,
@@ -90,6 +92,7 @@ export class DbAuthService implements AuthService<TLoginForm, TRegisterForm> {
           taxId,
           businessType,
           province,
+          role,
           callbackURL: options?.callbackURL ?? "/login",
         },
         asResponse: false,

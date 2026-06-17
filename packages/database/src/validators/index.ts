@@ -7,3 +7,4 @@ export * from "./warehouse-stock.validators";
 export * from "./dealer-tier.validators";
 export * from "./quotes.validators";
 export * from "./order.validators";
+export * from "./user.validators";

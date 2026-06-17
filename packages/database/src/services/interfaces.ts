@@ -31,6 +31,7 @@ import type {
   AddressDTO,
   CreateAddressDTO,
   UpdateAddressDTO,
+  UserProfileDTO,
 } from "../dtos";
 import type {
   TCreateBrandInput,
@@ -201,13 +202,14 @@ export interface WarehouseStockService {
 
 // --- User Service Interfaces ---
 export interface UserService {
+  getById(id: string): Promise<UserProfileDTO | undefined>;
   findByPhone(phone: string): Promise<{ id: string } | undefined>;
   findByEmail(email: string): Promise<{ id: string } | undefined>;
   checkDuplicateUser(
     email: string,
     phone: string,
   ): Promise<{ email: string; phone: string | null } | undefined>;
-  update(id: string, data: Partial<TUser>): Promise<TUser | undefined>;
+  update(id: string, data: Partial<TUser>): Promise<{ id: string } | undefined>;
   list(filters?: {
     role?: TUser["role"];
     businessType?: TUser["businessType"];
