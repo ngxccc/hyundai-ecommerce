@@ -132,13 +132,13 @@ This plan integrates directly with the design spec: `process/features/storefront
 
 ### Step 2: Route Guard, Layout & Redirection
 
-- [ ] Create `apps/storefront/app/[locale]/(shop)/portal/layout.tsx`:
+- [x] Create `apps/storefront/app/[locale]/(shop)/portal/layout.tsx`:
   - Enforce BetterAuth server-side session check. Redirect to `/login?callbackUrl=...` if not authenticated.
   - Implement mobile-responsive double column grid: Sidebar on the left, `{children}` on the right.
   - Add drawer drawer toggle (Hamburger menu) for mobile navigation.
-- [ ] Update `apps/storefront/src/features/auth/components/login-form.tsx`:
+- [x] Update `apps/storefront/src/features/auth/components/login-form.tsx`:
   - Change default successful login redirect target to `/` (home page).
-- [ ] Implement side-menu navigation links mapping to profile, password, addresses, orders, and debt repayment.
+- [x] Implement side-menu navigation links mapping to profile, password, addresses, orders, and debt repayment.
 
 ### Step 3: Profile & Password settings (UI & Actions)
 
