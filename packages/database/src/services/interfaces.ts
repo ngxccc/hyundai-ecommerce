@@ -17,6 +17,7 @@ import type {
   TCart,
   TCartItem,
   TPaymentTransaction,
+  TNewPaymentTransaction,
 } from "../schemas";
 import type {
   CartItemDTO,
@@ -241,9 +242,12 @@ export interface OrderService {
   ): Promise<TOrder | undefined>;
   approveOrderCancellation(orderId: string): Promise<TOrder | undefined>;
   createPayment(data: CreatePaymentDTO): Promise<TPayment>;
+  createPaymentTransaction(
+    data: TNewPaymentTransaction,
+  ): Promise<TPaymentTransaction>;
   getPaymentTransactionByReferenceCode(
     referenceCode: string,
-  ): Promise<TPaymentTransaction | undefined>;
+  ): Promise<TPaymentTransaction>;
   updatePayment(
     id: string,
     data: Partial<TPayment>,

@@ -29,6 +29,7 @@ import {
   type TShippingBid,
   type TNewShippingBid,
   type TPaymentTransaction,
+  type TNewPaymentTransaction,
 } from "../../schemas";
 
 const complexOrderQueryConfig = {
@@ -522,14 +523,30 @@ export class DbOrderService implements OrderService {
     return payment;
   }
 
+  async createPaymentTransaction(
+    data: TNewPaymentTransaction,
+  ): Promise<TPaymentTransaction> {
+    const [transaction] = await this.db
+      .insert(paymentTransactions)
+      .values(data)
+      .returning();
+    if (!transaction) {
+      throw new Error("errors.createPaymentTransactionFailed");
+    }
+    return transaction;
+  }
+
   async getPaymentTransactionByReferenceCode(
     referenceCode: string,
-  ): Promise<TPaymentTransaction | undefined> {
+  ): Promise<TPaymentTransaction> {
     const [paymentTransaction] = await this.db
       .select()
       .from(paymentTransactions)
       .where(eq(paymentTransactions.referenceCode, referenceCode))
       .limit(1);
+    if (!paymentTransaction) {
+      throw new Error("errors.paymentTransactionNotFound");
+    }
     return paymentTransaction;
   }
 
@@ -546,16 +563,16 @@ export class DbOrderService implements OrderService {
   }
 
   async confirmPayOSPayment(
-    _orderCode: string,
+    orderCode: string,
     amount: number,
     referenceCode: string,
   ): Promise<boolean> {
     return await this.db.transaction(async (tx) => {
-      // 1. Get the payment transaction by referenceCode (PayOS orderCode)
+      // 1. Get the payment transaction by orderCode
       const [paymentTransaction] = await tx
         .select()
         .from(paymentTransactions)
-        .where(eq(paymentTransactions.referenceCode, referenceCode))
+        .where(eq(paymentTransactions.orderCode, Number(orderCode)))
         .limit(1);
       if (!paymentTransaction || paymentTransaction.status === "SUCCESS") {
         return false;
@@ -611,10 +628,10 @@ export class DbOrderService implements OrderService {
       }
 
       // If amounts match:
-      // 3. Update payment_transaction status to SUCCESS
+      // 3. Update payment_transaction status to SUCCESS & set bank referenceCode
       await tx
         .update(paymentTransactions)
-        .set({ status: "SUCCESS" })
+        .set({ status: "SUCCESS", referenceCode })
         .where(eq(paymentTransactions.id, paymentTransaction.id));
 
       // 4. Determine order paymentStatus and transaction type
