@@ -9,7 +9,7 @@ import { warehouseStocks } from "./warehouse-stock.schema";
 import { brands } from "./brand.schema";
 import { categories } from "./category.schema";
 import { userAddresses } from "./user-address.schema";
-import { payments } from "./payment.schema";
+import { debtRepayments, payments } from "./payment.schema";
 import { carts, cartItems } from "./cart.schema";
 import { quotes, quoteItems, quoteMessages } from "./quotes.schema";
 import { paymentTransactions } from "./payment-transaction.schema";
@@ -38,6 +38,7 @@ export const schemaRelations = defineRelations(
     quoteMessages,
     paymentTransactions,
     creditLimitHistory,
+    debtRepayments,
   },
   (r) => ({
     users: {
@@ -61,6 +62,12 @@ export const schemaRelations = defineRelations(
       }),
       changedCreditLimits: r.many.creditLimitHistory({
         alias: "changedByCreditLimitHistory",
+      }),
+      debtRepayments: r.many.debtRepayments({
+        alias: "userDebtRepayment",
+      }),
+      verifiedRepayments: r.many.debtRepayments({
+        alias: "verifiedByDebtRepayment",
       }),
     },
 
@@ -267,6 +274,19 @@ export const schemaRelations = defineRelations(
         from: r.creditLimitHistory.changedBy,
         to: r.users.id,
         alias: "changedByCreditLimitHistory",
+      }),
+    },
+    debtRepayments: {
+      user: r.one.users({
+        from: r.debtRepayments.userId,
+        to: r.users.id,
+        alias: "userDebtRepayment",
+        optional: false,
+      }),
+      verifiedByUser: r.one.users({
+        from: r.debtRepayments.verifiedBy,
+        to: r.users.id,
+        alias: "verifiedByDebtRepayment",
       }),
     },
   }),
