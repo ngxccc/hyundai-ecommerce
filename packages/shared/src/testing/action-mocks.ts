@@ -29,7 +29,7 @@ export const mockCartGetCartItems = mock();
 export const mockOrderUpdateOrderStatus = mock();
 export const mockOrderSelectWinningBid = mock();
 export const mockOrderApproveDealerOrder = mock();
-export const mockOrderVerifyManualBankTransfer = mock();
+export const mockOrderVerifyCashPayment = mock();
 export const mockOrderApproveOrderCancellation = mock();
 export const mockOrderCreateOrderWithItems = mock();
 export const mockOrderCreatePayment = mock();
@@ -75,7 +75,7 @@ await vi.mock("@nhatnang/database/services", () => ({
     updateOrderStatus: mockOrderUpdateOrderStatus,
     selectWinningBid: mockOrderSelectWinningBid,
     approveDealerOrder: mockOrderApproveDealerOrder,
-    verifyManualBankTransfer: mockOrderVerifyManualBankTransfer,
+    verifyCashPayment: mockOrderVerifyCashPayment,
     approveOrderCancellation: mockOrderApproveOrderCancellation,
     createOrderWithItems: mockOrderCreateOrderWithItems,
     createPayment: mockOrderCreatePayment,
@@ -181,7 +181,7 @@ beforeEach(() => {
   mockOrderUpdateOrderStatus.mockReset();
   mockOrderSelectWinningBid.mockReset();
   mockOrderApproveDealerOrder.mockReset();
-  mockOrderVerifyManualBankTransfer.mockReset();
+  mockOrderVerifyCashPayment.mockReset();
   mockOrderApproveOrderCancellation.mockReset();
   mockOrderCreateOrderWithItems.mockReset();
   mockOrderCreatePayment.mockReset();

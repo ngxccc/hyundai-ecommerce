@@ -7,7 +7,7 @@ import {
   selectShippingBidAction,
   addShippingBidAction,
   approveDealerOrderAction,
-  verifyManualBankTransferAction,
+  verifyCashPaymentAction,
   approveOrderCancellationAction,
 } from "./order.actions";
 import { orderService } from "@nhatnang/database/services";
@@ -148,23 +148,22 @@ describe("order.actions", () => {
     });
   });
 
-  describe("verifyManualBankTransferAction", () => {
-    test("calls orderService.verifyManualBankTransfer and returns success", async () => {
+  describe("verifyCashPaymentAction", () => {
+    test("calls orderService.verifyCashPayment and returns success", async () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
       const mockOrder = { id: validOrderId } as unknown as TOrder;
 
-      const verifyManualBankTransferMock =
-        mock().mockResolvedValueOnce(mockOrder);
+      const verifyCashPaymentMock = mock().mockResolvedValueOnce(mockOrder);
       (
         orderService as unknown as {
-          verifyManualBankTransfer: typeof verifyManualBankTransferMock;
+          verifyCashPayment: typeof verifyCashPaymentMock;
         }
-      ).verifyManualBankTransfer = verifyManualBankTransferMock;
+      ).verifyCashPayment = verifyCashPaymentMock;
 
-      const result = await verifyManualBankTransferAction(validOrderId);
+      const result = await verifyCashPaymentAction(validOrderId);
 
-      expect(verifyManualBankTransferMock).toHaveBeenCalledTimes(1);
-      expect(verifyManualBankTransferMock).toHaveBeenCalledWith(
+      expect(verifyCashPaymentMock).toHaveBeenCalledTimes(1);
+      expect(verifyCashPaymentMock).toHaveBeenCalledWith(
         validOrderId,
         "admin-1",
       );

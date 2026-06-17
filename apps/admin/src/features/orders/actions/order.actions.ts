@@ -227,12 +227,12 @@ export const approveDealerOrderAction = async (orderId: string) => {
   }
 };
 
-export const verifyManualBankTransferAction = async (orderId: string) => {
+export const verifyCashPaymentAction = async (orderId: string) => {
   const t = await getTranslations("errors");
   try {
     const session = await assertFinanceRole();
 
-    const updated = await orderService.verifyManualBankTransfer(
+    const updated = await orderService.verifyCashPayment(
       orderId,
       session.user.id,
     );
@@ -259,12 +259,10 @@ export const verifyManualBankTransferAction = async (orderId: string) => {
       };
     }
 
-    console.error("[verifyManualBankTransferAction]", error);
+    console.error("[verifyCashPaymentAction]", error);
     return {
       success: false,
-      error:
-        t("verifyManualBankTransferFailed") ||
-        "Failed to verify manual bank transfer",
+      error: t("verifyCashPaymentFailed") || "Failed to verify cash payment",
     };
   }
 };

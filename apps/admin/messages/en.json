@@ -661,7 +661,7 @@
     "createQuoteFailed": "Failed to create quote",
     "createShippingBidFailed": "Failed to create shipping bid",
     "approveDealerOrderFailed": "Failed to approve dealer order",
-    "verifyManualBankTransferFailed": "Failed to verify manual bank transfer",
+    "verifyCashPaymentFailed": "Failed to verify cash payment",
     "approveOrderCancellationFailed": "Failed to approve order cancellation",
     "quoteNotFound": "Quote not found",
     "quoteAlreadyApproved": "Quote already approved",
