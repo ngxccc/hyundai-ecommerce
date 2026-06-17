@@ -1,19 +1,9 @@
 import { type TBrand } from "../schemas/brand.schema";
 
-export interface BrandDTO {
-  id: string;
-  name: string;
-  slug: string;
-  logo: string | null;
-  descriptionVi: string | null;
-  descriptionEn: string | null;
-  isActive: boolean;
-}
+export type BrandDTO = Omit<TBrand, "createdAt" | "updatedAt" | "deletedAt">;
 
-export interface BrandAdminDTO extends BrandDTO {
-  createdAt: Date;
-  updatedAt: Date;
-}
+export type BrandAdminDTO = Omit<TBrand, "deletedAt">;
+
 export function mapBrandToDTO(brand: TBrand): BrandDTO {
   return {
     id: brand.id,

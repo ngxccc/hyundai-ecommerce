@@ -1,29 +1,11 @@
-import type { JSONContent } from "@nhatnang/ui";
 import { type TProduct } from "../schemas/product.schema";
-import type { TProductSpecs } from "../validators";
 
-export interface ProductDTO {
-  id: string;
-  nameVi: string;
-  nameEn: string | null;
-  slug: string;
-  price: string;
-  descriptionVi: JSONContent | null;
-  descriptionEn: JSONContent | null;
-  shortDescriptionVi: string | null;
-  shortDescriptionEn: string | null;
-  images: string[];
-  brandId: string | null;
-  categoryId: string | null;
-  specs: TProductSpecs | null;
-  totalStockCache: number;
-  isQuoteOnly: boolean;
-}
+export type ProductDTO = Omit<
+  TProduct,
+  "totalSalesCache" | "createdAt" | "updatedAt" | "deletedAt"
+>;
 
-export interface ProductAdminDTO extends ProductDTO {
-  createdAt: Date;
-  updatedAt: Date;
-}
+export type ProductAdminDTO = Omit<TProduct, "deletedAt">;
 
 export function mapProductToDTO(product: TProduct): ProductDTO {
   return {
@@ -48,6 +30,7 @@ export function mapProductToDTO(product: TProduct): ProductDTO {
 export function mapProductToAdminDTO(product: TProduct): ProductAdminDTO {
   return {
     ...mapProductToDTO(product),
+    totalSalesCache: product.totalSalesCache,
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
   };

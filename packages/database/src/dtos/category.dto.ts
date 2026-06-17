@@ -1,21 +1,8 @@
 import { type TCategory } from "../schemas/category.schema";
 
-export interface CategoryDTO {
-  id: string;
-  nameVi: string;
-  nameEn: string | null;
-  slug: string;
-  parentId: string | null;
-  descriptionVi: string | null;
-  descriptionEn: string | null;
-  image: string | null;
-  isActive: boolean;
-}
+export type CategoryDTO = Omit<TCategory, "createdAt" | "updatedAt" | "deletedAt">;
 
-export interface CategoryAdminDTO extends CategoryDTO {
-  createdAt: Date;
-  updatedAt: Date;
-}
+export type CategoryAdminDTO = Omit<TCategory, "deletedAt">;
 
 export function mapCategoryToDTO(category: TCategory): CategoryDTO {
   return {

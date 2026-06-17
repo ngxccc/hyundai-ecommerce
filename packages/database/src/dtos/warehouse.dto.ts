@@ -1,19 +1,8 @@
 import { type TWarehouse } from "../schemas/warehouse.schema";
 
-export interface WarehouseDTO {
-  id: string;
-  nameVi: string;
-  nameEn: string | null;
-  streetAddress: string;
-  district: string;
-  city: string;
-  isActive: boolean;
-}
+export type WarehouseDTO = Omit<TWarehouse, "createdAt" | "updatedAt" | "deletedAt">;
 
-export interface WarehouseAdminDTO extends WarehouseDTO {
-  createdAt: Date;
-  updatedAt: Date;
-}
+export type WarehouseAdminDTO = Omit<TWarehouse, "deletedAt">;
 
 export function mapWarehouseToDTO(warehouse: TWarehouse): WarehouseDTO {
   return {

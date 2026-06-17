@@ -1,12 +1,9 @@
 import { type TCartItem, type TProduct } from "../schemas";
 import { type ProductDTO, mapProductToDTO } from "./product.dto";
 
-export interface CartItemDTO {
-  id: string;
-  productId: string;
-  quantity: number;
+export type CartItemDTO = Pick<TCartItem, "id" | "productId" | "quantity"> & {
   product: ProductDTO | null;
-}
+};
 
 export function mapCartItemToDTO(
   item: TCartItem & { product: TProduct | null },
