@@ -1,5 +1,5 @@
 import type { BrandService } from "../interfaces";
-import { mapBrandToDTO, type BrandDTO } from "../../dtos";
+import { type BrandDTO } from "../../dtos";
 import { brands } from "../../schemas/brand.schema";
 import { type IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
@@ -10,30 +10,55 @@ export class DbBrandService implements BrandService {
   constructor(protected readonly db: IDatabase) {}
 
   async getAll(): Promise<BrandDTO[]> {
-    const allBrands = await this.db.query.brands.findMany({
+    return this.db.query.brands.findMany({
+      columns: {
+        id: true,
+        name: true,
+        slug: true,
+        logo: true,
+        descriptionVi: true,
+        descriptionEn: true,
+        isActive: true,
+      },
       orderBy: {
         createdAt: "desc",
       },
     });
-    return allBrands.map(mapBrandToDTO);
   }
 
-  async getById(id: string): Promise<BrandDTO | undefined> {
+  async getById(id: string): Promise<BrandDTO> {
     const [brand] = await this.db
-      .select()
+      .select({
+        id: brands.id,
+        name: brands.name,
+        slug: brands.slug,
+        logo: brands.logo,
+        descriptionVi: brands.descriptionVi,
+        descriptionEn: brands.descriptionEn,
+        isActive: brands.isActive,
+      })
       .from(brands)
       .where(eq(brands.id, id))
       .limit(1);
-    return brand ? mapBrandToDTO(brand) : undefined;
+    if (!brand) throw new Error("errors.brandNotFound");
+    return brand;
   }
 
   async create(input: TCreateBrandInput): Promise<BrandDTO> {
     try {
-      const [newBrand] = await this.db.insert(brands).values(input).returning();
+      const [newBrand] = await this.db.insert(brands).values(input).returning({
+        id: brands.id,
+        name: brands.name,
+        slug: brands.slug,
+        logo: brands.logo,
+        descriptionVi: brands.descriptionVi,
+        descriptionEn: brands.descriptionEn,
+        isActive: brands.isActive,
+      });
       if (!newBrand) {
         throw new Error("errors.createBrandFailed");
       }
-      return mapBrandToDTO(newBrand);
+      return newBrand;
     } catch (error: unknown) {
       handleServiceError(error, "errors.createBrandFailed");
     }
@@ -45,11 +70,19 @@ export class DbBrandService implements BrandService {
         .update(brands)
         .set(data)
         .where(eq(brands.id, id))
-        .returning();
+        .returning({
+          id: brands.id,
+          name: brands.name,
+          slug: brands.slug,
+          logo: brands.logo,
+          descriptionVi: brands.descriptionVi,
+          descriptionEn: brands.descriptionEn,
+          isActive: brands.isActive,
+        });
       if (!updatedBrand) {
         throw new Error("errors.brandNotFound");
       }
-      return mapBrandToDTO(updatedBrand);
+      return updatedBrand;
     } catch (error: unknown) {
       handleServiceError(error, "errors.updateBrandFailed");
     }

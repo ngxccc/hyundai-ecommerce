@@ -5,7 +5,7 @@ import type {
   GetAllOptions,
   ProductFilterMetadata,
 } from "../interfaces";
-import { mapProductToDTO, type ProductDTO } from "../../dtos";
+import { type ProductDTO } from "../../dtos";
 import { products, type TNewProduct } from "../../schemas/product.schema";
 import { type IDatabase } from "../../client";
 import {
@@ -28,24 +28,52 @@ import { orderItems, orders } from "../../schemas";
 export class DbProductService implements ProductService {
   constructor(protected readonly db: IDatabase) {}
 
-  async create(data: TNewProduct): Promise<ProductDTO | undefined> {
-    const [newProduct] = await this.db
-      .insert(products)
-      .values(data)
-      .returning();
-    return newProduct ? mapProductToDTO(newProduct) : undefined;
+  async create(data: TNewProduct): Promise<ProductDTO> {
+    const [newProduct] = await this.db.insert(products).values(data).returning({
+      id: products.id,
+      nameVi: products.nameVi,
+      nameEn: products.nameEn,
+      slug: products.slug,
+      price: products.price,
+      descriptionVi: products.descriptionVi,
+      descriptionEn: products.descriptionEn,
+      shortDescriptionVi: products.shortDescriptionVi,
+      shortDescriptionEn: products.shortDescriptionEn,
+      images: products.images,
+      brandId: products.brandId,
+      categoryId: products.categoryId,
+      specs: products.specs,
+      totalStockCache: products.totalStockCache,
+      isQuoteOnly: products.isQuoteOnly,
+    });
+    if (!newProduct) throw new Error("errors.productNotFound");
+    return newProduct;
   }
 
-  async update(
-    id: string,
-    data: TUpdateProductData,
-  ): Promise<ProductDTO | undefined> {
+  async update(id: string, data: TUpdateProductData): Promise<ProductDTO> {
     const [updatedProduct] = await this.db
       .update(products)
       .set(data)
       .where(eq(products.id, id))
-      .returning();
-    return updatedProduct ? mapProductToDTO(updatedProduct) : undefined;
+      .returning({
+        id: products.id,
+        nameVi: products.nameVi,
+        nameEn: products.nameEn,
+        slug: products.slug,
+        price: products.price,
+        descriptionVi: products.descriptionVi,
+        descriptionEn: products.descriptionEn,
+        shortDescriptionVi: products.shortDescriptionVi,
+        shortDescriptionEn: products.shortDescriptionEn,
+        images: products.images,
+        brandId: products.brandId,
+        categoryId: products.categoryId,
+        specs: products.specs,
+        totalStockCache: products.totalStockCache,
+        isQuoteOnly: products.isQuoteOnly,
+      });
+    if (!updatedProduct) throw new Error("errors.productNotFound");
+    return updatedProduct;
   }
 
   async delete(id: string): Promise<boolean> {
@@ -57,14 +85,32 @@ export class DbProductService implements ProductService {
     return !!deletedProduct;
   }
 
-  async getById(id: string): Promise<ProductDTO | undefined> {
+  async getById(id: string): Promise<ProductDTO> {
     const product = await this.db.query.products.findFirst({
       where: {
         id, // eq products.id == id
         deletedAt: { isNull: true },
       },
+      columns: {
+        id: true,
+        nameVi: true,
+        nameEn: true,
+        slug: true,
+        price: true,
+        descriptionVi: true,
+        descriptionEn: true,
+        shortDescriptionVi: true,
+        shortDescriptionEn: true,
+        images: true,
+        brandId: true,
+        categoryId: true,
+        specs: true,
+        totalStockCache: true,
+        isQuoteOnly: true,
+      },
     });
-    return product ? mapProductToDTO(product) : undefined;
+    if (!product) throw new Error("errors.productNotFound");
+    return product;
   }
 
   /**
@@ -98,7 +144,24 @@ export class DbProductService implements ProductService {
     const whereExpr = filters.length > 0 ? and(...filters) : undefined;
 
     const allProducts = await this.db
-      .select()
+      .select({
+        id: products.id,
+        nameVi: products.nameVi,
+        nameEn: products.nameEn,
+        slug: products.slug,
+        price: products.price,
+        descriptionVi: products.descriptionVi,
+        descriptionEn: products.descriptionEn,
+        shortDescriptionVi: products.shortDescriptionVi,
+        shortDescriptionEn: products.shortDescriptionEn,
+        images: products.images,
+        brandId: products.brandId,
+        categoryId: products.categoryId,
+        specs: products.specs,
+        totalStockCache: products.totalStockCache,
+        isQuoteOnly: products.isQuoteOnly,
+        createdAt: products.createdAt,
+      })
       .from(products)
       .where(whereExpr)
       .orderBy(...orderByColumns)
@@ -141,7 +204,25 @@ export class DbProductService implements ProductService {
       }
     }
 
-    return { data: data.map(mapProductToDTO), hasMore, nextCursor, prevCursor };
+    const mappedData = data.map((p) => ({
+      id: p.id,
+      nameVi: p.nameVi,
+      nameEn: p.nameEn,
+      slug: p.slug,
+      price: p.price,
+      descriptionVi: p.descriptionVi,
+      descriptionEn: p.descriptionEn,
+      shortDescriptionVi: p.shortDescriptionVi,
+      shortDescriptionEn: p.shortDescriptionEn,
+      images: p.images,
+      brandId: p.brandId,
+      categoryId: p.categoryId,
+      specs: p.specs,
+      totalStockCache: p.totalStockCache,
+      isQuoteOnly: p.isQuoteOnly,
+    }));
+
+    return { data: mappedData, hasMore, nextCursor, prevCursor };
   }
 
   async getTopSellingProducts(limit: number): Promise<TopSellingProduct[]> {
@@ -226,13 +307,30 @@ export class DbProductService implements ProductService {
     return allProducts.map((p) => p.slug);
   }
 
-  async getActiveProductBySlug(slug: string): Promise<ProductDTO | null> {
+  async getActiveProductBySlug(slug: string): Promise<ProductDTO> {
     const [product] = await this.db
-      .select()
+      .select({
+        id: products.id,
+        nameVi: products.nameVi,
+        nameEn: products.nameEn,
+        slug: products.slug,
+        price: products.price,
+        descriptionVi: products.descriptionVi,
+        descriptionEn: products.descriptionEn,
+        shortDescriptionVi: products.shortDescriptionVi,
+        shortDescriptionEn: products.shortDescriptionEn,
+        images: products.images,
+        brandId: products.brandId,
+        categoryId: products.categoryId,
+        specs: products.specs,
+        totalStockCache: products.totalStockCache,
+        isQuoteOnly: products.isQuoteOnly,
+      })
       .from(products)
       .where(and(eq(products.slug, slug), isNull(products.deletedAt)))
       .limit(1);
-    return product ? mapProductToDTO(product) : null;
+    if (!product) throw new Error("errors.productNotFound");
+    return product;
   }
 
   /**

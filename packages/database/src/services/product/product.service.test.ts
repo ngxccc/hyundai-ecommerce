@@ -46,7 +46,7 @@ describe("ProductService", () => {
       updatedAt: new Date(),
       deletedAt: null,
     };
-    mockReturning.mockResolvedValue([mockReturnedDbProduct]);
+    mockReturning.mockResolvedValue([mapProductToDTO(mockReturnedDbProduct)]);
 
     const result = await productService.create(newProduct);
 
@@ -78,7 +78,7 @@ describe("ProductService", () => {
       deletedAt: null,
     };
 
-    mockFindFirst.mockResolvedValueOnce(mockProduct);
+    mockFindFirst.mockResolvedValueOnce(mapProductToDTO(mockProduct));
 
     const result = await productService.getById("uuid-123");
 
@@ -264,6 +264,43 @@ describe("ProductService", () => {
           alternatorBrand: null,
         },
       });
+    });
+  });
+
+  describe("getActiveProductBySlug()", () => {
+    test("should return product when found by slug", async () => {
+      const mockProduct = {
+        id: "prod-1",
+        nameVi: "Hyundai HY-30CLE",
+        nameEn: null,
+        slug: "hyundai-hy-30cle",
+        price: "12500000",
+        descriptionVi: null,
+        descriptionEn: null,
+        shortDescriptionVi: null,
+        shortDescriptionEn: null,
+        images: ["img1.png"],
+        brandId: null,
+        categoryId: null,
+        specs: null,
+        totalStockCache: 10,
+        isQuoteOnly: false,
+      };
+
+      mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
+
+      const result =
+        await productService.getActiveProductBySlug("hyundai-hy-30cle");
+
+      expect(result).toEqual(mockProduct);
+    });
+
+    test("should throw error when product is not found", () => {
+      mockSelectResolvedValue.mockResolvedValueOnce([]);
+
+      expect(
+        productService.getActiveProductBySlug("non-existent"),
+      ).rejects.toThrow("errors.productNotFound");
     });
   });
 });

@@ -1,5 +1,5 @@
 import type { CategoryService, TCategoryWithChildren } from "../interfaces";
-import { mapCategoryToDTO, type CategoryDTO } from "../../dtos";
+import { type CategoryDTO } from "../../dtos";
 import { categories } from "../../schemas";
 import { type IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
@@ -13,21 +13,42 @@ export class DbCategoryService implements CategoryService {
   constructor(private readonly db: IDatabase) {}
 
   async getAll(): Promise<CategoryDTO[]> {
-    const allCategories = await this.db.query.categories.findMany({
+    return this.db.query.categories.findMany({
+      columns: {
+        id: true,
+        nameVi: true,
+        nameEn: true,
+        slug: true,
+        parentId: true,
+        descriptionVi: true,
+        descriptionEn: true,
+        image: true,
+        isActive: true,
+      },
       orderBy: {
         createdAt: "desc",
       },
     });
-    return allCategories.map(mapCategoryToDTO);
   }
 
-  async getById(id: string): Promise<CategoryDTO | undefined> {
+  async getById(id: string): Promise<CategoryDTO> {
     const [category] = await this.db
-      .select()
+      .select({
+        id: categories.id,
+        nameVi: categories.nameVi,
+        nameEn: categories.nameEn,
+        slug: categories.slug,
+        parentId: categories.parentId,
+        descriptionVi: categories.descriptionVi,
+        descriptionEn: categories.descriptionEn,
+        image: categories.image,
+        isActive: categories.isActive,
+      })
       .from(categories)
       .where(eq(categories.id, id))
       .limit(1);
-    return category ? mapCategoryToDTO(category) : undefined;
+    if (!category) throw new Error("errors.categoryNotFound");
+    return category;
   }
 
   async create(input: TCreateCategoryInput): Promise<CategoryDTO> {
@@ -35,11 +56,21 @@ export class DbCategoryService implements CategoryService {
       const [newCategory] = await this.db
         .insert(categories)
         .values(input)
-        .returning();
+        .returning({
+          id: categories.id,
+          nameVi: categories.nameVi,
+          nameEn: categories.nameEn,
+          slug: categories.slug,
+          parentId: categories.parentId,
+          descriptionVi: categories.descriptionVi,
+          descriptionEn: categories.descriptionEn,
+          image: categories.image,
+          isActive: categories.isActive,
+        });
       if (!newCategory) {
         throw new Error("errors.createCategoryFailed");
       }
-      return mapCategoryToDTO(newCategory);
+      return newCategory;
     } catch (error: unknown) {
       handleServiceError(error, "errors.createCategoryFailed");
     }
@@ -51,11 +82,21 @@ export class DbCategoryService implements CategoryService {
         .update(categories)
         .set(data)
         .where(eq(categories.id, id))
-        .returning();
+        .returning({
+          id: categories.id,
+          nameVi: categories.nameVi,
+          nameEn: categories.nameEn,
+          slug: categories.slug,
+          parentId: categories.parentId,
+          descriptionVi: categories.descriptionVi,
+          descriptionEn: categories.descriptionEn,
+          image: categories.image,
+          isActive: categories.isActive,
+        });
       if (!updatedCategory) {
         throw new Error("errors.categoryNotFound");
       }
-      return mapCategoryToDTO(updatedCategory);
+      return updatedCategory;
     } catch (error: unknown) {
       handleServiceError(error, "errors.updateCategoryFailed");
     }

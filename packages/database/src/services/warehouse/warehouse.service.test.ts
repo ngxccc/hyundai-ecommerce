@@ -8,7 +8,7 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
-import { mapWarehouseToDTO } from "../../dtos";
+import { type WarehouseDTO } from "../../dtos";
 import { DbWarehouseService } from "./warehouse.service";
 import type { IDatabase } from "../../client";
 
@@ -29,10 +29,8 @@ describe("WarehouseService", () => {
         district: "District 1",
         city: "HCM City",
         isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
-    ];
+    ] as WarehouseDTO[];
 
     mockFindMany.mockResolvedValueOnce(mockWarehouses);
 
@@ -40,15 +38,24 @@ describe("WarehouseService", () => {
 
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(mockFindMany).toHaveBeenCalledWith({
+      columns: {
+        id: true,
+        nameVi: true,
+        nameEn: true,
+        streetAddress: true,
+        district: true,
+        city: true,
+        isActive: true,
+      },
       orderBy: {
         createdAt: "desc",
       },
     });
-    expect(result).toEqual(mockWarehouses.map(mapWarehouseToDTO));
+    expect(result).toEqual(mockWarehouses);
   });
 
   test("create() should insert and return new warehouse", async () => {
-    const mockWarehouse = {
+    const mockWarehouseDto = {
       id: "1",
       nameVi: "Main Warehouse",
       nameEn: null,
@@ -56,10 +63,8 @@ describe("WarehouseService", () => {
       district: "District 1",
       city: "HCM City",
       isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    mockReturning.mockResolvedValueOnce([mockWarehouse]);
+    } as WarehouseDTO;
+    mockReturning.mockResolvedValueOnce([mockWarehouseDto]);
 
     const result = await warehouseService.create({
       nameVi: "Main Warehouse",
@@ -72,11 +77,11 @@ describe("WarehouseService", () => {
 
     expect(mockInsert).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mapWarehouseToDTO(mockWarehouse));
+    expect(result).toEqual(mockWarehouseDto);
   });
 
   test("update() should update and return warehouse", async () => {
-    const mockWarehouse = {
+    const mockWarehouseDto = {
       id: "1",
       nameVi: "Updated Warehouse",
       nameEn: null,
@@ -84,10 +89,8 @@ describe("WarehouseService", () => {
       district: "District 1",
       city: "HCM City",
       isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    mockReturning.mockResolvedValueOnce([mockWarehouse]);
+    } as WarehouseDTO;
+    mockReturning.mockResolvedValueOnce([mockWarehouseDto]);
 
     const result = await warehouseService.update({
       id: "1",
@@ -97,11 +100,11 @@ describe("WarehouseService", () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mapWarehouseToDTO(mockWarehouse));
+    expect(result).toEqual(mockWarehouseDto);
   });
 
   test("getById() should return warehouse when found", async () => {
-    const mockWarehouse = {
+    const mockWarehouseDto = {
       id: "1",
       nameVi: "Main Warehouse",
       nameEn: null,
@@ -109,15 +112,13 @@ describe("WarehouseService", () => {
       district: "District 1",
       city: "HCM City",
       isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    mockLimit.mockResolvedValueOnce([mockWarehouse]);
+    } as WarehouseDTO;
+    mockLimit.mockResolvedValueOnce([mockWarehouseDto]);
 
     const result = await warehouseService.getById("1");
 
     expect(mockLimit).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mapWarehouseToDTO(mockWarehouse));
+    expect(result).toEqual(mockWarehouseDto);
   });
 
   test("delete() should soft-delete warehouse", async () => {

@@ -9,7 +9,7 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
-import { mapBrandToDTO } from "../../dtos";
+import { type BrandDTO } from "../../dtos";
 import { DbBrandService } from "./brand.service";
 import type { IDatabase } from "../../client";
 
@@ -21,7 +21,7 @@ describe("BrandService", () => {
   });
 
   test("getAll() should return a list of brands", async () => {
-    const mockBrands = [
+    const mockBrands: BrandDTO[] = [
       {
         id: "1",
         name: "Hyundai",
@@ -30,9 +30,6 @@ describe("BrandService", () => {
         descriptionVi: null,
         descriptionEn: null,
         isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
       },
     ];
 
@@ -42,15 +39,24 @@ describe("BrandService", () => {
 
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(mockFindMany).toHaveBeenCalledWith({
+      columns: {
+        id: true,
+        name: true,
+        slug: true,
+        logo: true,
+        descriptionVi: true,
+        descriptionEn: true,
+        isActive: true,
+      },
       orderBy: {
         createdAt: "desc",
       },
     });
-    expect(result).toEqual(mockBrands.map(mapBrandToDTO));
+    expect(result).toEqual(mockBrands);
   });
 
   test("create() should insert and return new brand", async () => {
-    const mockBrand = {
+    const mockBrandDto: BrandDTO = {
       id: "1",
       name: "Hyundai",
       slug: "hyundai",
@@ -58,11 +64,8 @@ describe("BrandService", () => {
       descriptionVi: null,
       descriptionEn: null,
       isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      deletedAt: null,
     };
-    mockReturning.mockResolvedValueOnce([mockBrand]);
+    mockReturning.mockResolvedValueOnce([mockBrandDto]);
 
     const result = await brandService.create({
       name: "Hyundai",
@@ -72,7 +75,7 @@ describe("BrandService", () => {
 
     expect(mockInsert).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mapBrandToDTO(mockBrand));
+    expect(result).toEqual(mockBrandDto);
   });
 
   test("create() should return error validation.slugExists on duplicate key error", () => {
@@ -87,7 +90,7 @@ describe("BrandService", () => {
   });
 
   test("update() should update and return brand", async () => {
-    const mockBrand = {
+    const mockBrandDto: BrandDTO = {
       id: "1",
       name: "Hyundai Updated",
       slug: "hyundai-updated",
@@ -95,11 +98,8 @@ describe("BrandService", () => {
       descriptionVi: null,
       descriptionEn: null,
       isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      deletedAt: null,
     };
-    mockReturning.mockResolvedValueOnce([mockBrand]);
+    mockReturning.mockResolvedValueOnce([mockBrandDto]);
 
     const result = await brandService.update({
       id: "1",
@@ -109,11 +109,11 @@ describe("BrandService", () => {
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mapBrandToDTO(mockBrand));
+    expect(result).toEqual(mockBrandDto);
   });
 
   test("getById() should return brand when found", async () => {
-    const mockBrand = {
+    const mockBrandDto: BrandDTO = {
       id: "1",
       name: "Hyundai",
       slug: "hyundai",
@@ -121,25 +121,21 @@ describe("BrandService", () => {
       descriptionVi: null,
       descriptionEn: null,
       isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      deletedAt: null,
     };
-    mockLimit.mockResolvedValueOnce([mockBrand]);
+    mockLimit.mockResolvedValueOnce([mockBrandDto]);
 
     const result = await brandService.getById("1");
 
     expect(mockLimit).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mapBrandToDTO(mockBrand));
+    expect(result).toEqual(mockBrandDto);
   });
 
-  test("getById() should return undefined when not found", async () => {
+  test("getById() should throw error when not found", () => {
     mockLimit.mockResolvedValueOnce([]);
 
-    const result = await brandService.getById("99");
+    expect(brandService.getById("99")).rejects.toThrow("errors.brandNotFound");
 
     expect(mockLimit).toHaveBeenCalledTimes(1);
-    expect(result).toBeUndefined();
   });
 
   test("delete() should delete brand", async () => {

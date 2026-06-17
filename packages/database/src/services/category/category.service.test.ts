@@ -9,7 +9,7 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
-import { mapCategoryToDTO } from "../../dtos";
+import { type CategoryDTO } from "../../dtos";
 import { DbCategoryService } from "./category.service";
 import type { IDatabase } from "../../client";
 
@@ -32,10 +32,8 @@ describe("CategoryService", () => {
         descriptionEn: null,
         image: null,
         isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
-    ];
+    ] as CategoryDTO[];
 
     mockFindMany.mockResolvedValueOnce(mockCategories);
 
@@ -43,16 +41,27 @@ describe("CategoryService", () => {
 
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(mockFindMany).toHaveBeenCalledWith({
+      columns: {
+        id: true,
+        nameVi: true,
+        nameEn: true,
+        slug: true,
+        parentId: true,
+        descriptionVi: true,
+        descriptionEn: true,
+        image: true,
+        isActive: true,
+      },
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    expect(result).toEqual(mockCategories.map(mapCategoryToDTO));
+    expect(result).toEqual(mockCategories);
   });
 
   test("create() should insert and return new category", async () => {
-    const mockCategory = {
+    const mockCategoryDto = {
       id: "1",
       nameVi: "Gensets",
       nameEn: null,
@@ -62,10 +71,8 @@ describe("CategoryService", () => {
       descriptionEn: null,
       image: null,
       isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    mockReturning.mockResolvedValueOnce([mockCategory]);
+    } as CategoryDTO;
+    mockReturning.mockResolvedValueOnce([mockCategoryDto]);
 
     const result = await categoryService.create({
       nameVi: "Gensets",
@@ -76,7 +83,7 @@ describe("CategoryService", () => {
 
     expect(mockInsert).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mapCategoryToDTO(mockCategory));
+    expect(result).toEqual(mockCategoryDto);
   });
 
   test("create() should return error validation.slugExists on duplicate key error", () => {
@@ -92,7 +99,7 @@ describe("CategoryService", () => {
   });
 
   test("update() should update and return category", async () => {
-    const mockCategory = {
+    const mockCategoryDto = {
       id: "1",
       nameVi: "Updated",
       nameEn: null,
@@ -102,21 +109,19 @@ describe("CategoryService", () => {
       descriptionEn: null,
       image: null,
       isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    mockReturning.mockResolvedValueOnce([mockCategory]);
+    } as CategoryDTO;
+    mockReturning.mockResolvedValueOnce([mockCategoryDto]);
 
     const result = await categoryService.update({ id: "1", nameVi: "Updated" });
 
     expect(mockUpdate).toHaveBeenCalledTimes(1);
     expect(mockWhere).toHaveBeenCalledTimes(1);
     expect(mockReturning).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mapCategoryToDTO(mockCategory));
+    expect(result).toEqual(mockCategoryDto);
   });
 
   test("getById() should return category when found", async () => {
-    const mockCategory = {
+    const mockCategoryDto = {
       id: "1",
       nameVi: "Generators",
       nameEn: null,
@@ -126,24 +131,23 @@ describe("CategoryService", () => {
       descriptionEn: null,
       image: null,
       isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    mockLimit.mockResolvedValueOnce([mockCategory]);
+    } as CategoryDTO;
+    mockLimit.mockResolvedValueOnce([mockCategoryDto]);
 
     const result = await categoryService.getById("1");
 
     expect(mockLimit).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mapCategoryToDTO(mockCategory));
+    expect(result).toEqual(mockCategoryDto);
   });
 
-  test("getById() should return undefined when not found", async () => {
+  test("getById() should throw error when not found", () => {
     mockLimit.mockResolvedValueOnce([]);
 
-    const result = await categoryService.getById("99");
+    expect(categoryService.getById("99")).rejects.toThrow(
+      "errors.categoryNotFound",
+    );
 
     expect(mockLimit).toHaveBeenCalledTimes(1);
-    expect(result).toBeUndefined();
   });
 
   test("delete() should delete category", async () => {
@@ -168,8 +172,6 @@ describe("CategoryService", () => {
         descriptionEn: null,
         image: null,
         isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         id: "2",
@@ -181,8 +183,6 @@ describe("CategoryService", () => {
         descriptionEn: null,
         image: null,
         isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     ];
 
@@ -208,8 +208,6 @@ describe("CategoryService", () => {
         descriptionEn: null,
         image: null,
         isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         id: "2",
@@ -221,8 +219,6 @@ describe("CategoryService", () => {
         descriptionEn: null,
         image: null,
         isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         id: "3",
@@ -234,8 +230,6 @@ describe("CategoryService", () => {
         descriptionEn: null,
         image: null,
         isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     ];
 

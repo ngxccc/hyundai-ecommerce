@@ -1,5 +1,5 @@
 import type { WarehouseService } from "../interfaces";
-import { mapWarehouseToDTO, type WarehouseDTO } from "../../dtos";
+import { type WarehouseDTO } from "../../dtos";
 import { warehouses } from "../../schemas/warehouse.schema";
 import type { IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
@@ -10,21 +10,38 @@ export class DbWarehouseService implements WarehouseService {
   constructor(protected readonly db: IDatabase) {}
 
   async getAll(): Promise<WarehouseDTO[]> {
-    const allWarehouses = await this.db.query.warehouses.findMany({
+    return this.db.query.warehouses.findMany({
+      columns: {
+        id: true,
+        nameVi: true,
+        nameEn: true,
+        streetAddress: true,
+        district: true,
+        city: true,
+        isActive: true,
+      },
       orderBy: {
         createdAt: "desc",
       },
     });
-    return allWarehouses.map(mapWarehouseToDTO);
   }
 
-  async getById(id: string): Promise<WarehouseDTO | undefined> {
+  async getById(id: string): Promise<WarehouseDTO> {
     const [warehouse] = await this.db
-      .select()
+      .select({
+        id: warehouses.id,
+        nameVi: warehouses.nameVi,
+        nameEn: warehouses.nameEn,
+        streetAddress: warehouses.streetAddress,
+        district: warehouses.district,
+        city: warehouses.city,
+        isActive: warehouses.isActive,
+      })
       .from(warehouses)
       .where(eq(warehouses.id, id))
       .limit(1);
-    return warehouse ? mapWarehouseToDTO(warehouse) : undefined;
+    if (!warehouse) throw new Error("errors.warehouseNotFound");
+    return warehouse;
   }
 
   async create(data: TCreateWarehouse): Promise<WarehouseDTO> {
@@ -32,11 +49,19 @@ export class DbWarehouseService implements WarehouseService {
       const [newWarehouse] = await this.db
         .insert(warehouses)
         .values(data)
-        .returning();
+        .returning({
+          id: warehouses.id,
+          nameVi: warehouses.nameVi,
+          nameEn: warehouses.nameEn,
+          streetAddress: warehouses.streetAddress,
+          district: warehouses.district,
+          city: warehouses.city,
+          isActive: warehouses.isActive,
+        });
       if (!newWarehouse) {
         throw new Error("errors.createWarehouseFailed");
       }
-      return mapWarehouseToDTO(newWarehouse);
+      return newWarehouse;
     } catch (error: unknown) {
       handleServiceError(error, "errors.createWarehouseFailed");
     }
@@ -51,11 +76,19 @@ export class DbWarehouseService implements WarehouseService {
         .update(warehouses)
         .set(data)
         .where(eq(warehouses.id, id))
-        .returning();
+        .returning({
+          id: warehouses.id,
+          nameVi: warehouses.nameVi,
+          nameEn: warehouses.nameEn,
+          streetAddress: warehouses.streetAddress,
+          district: warehouses.district,
+          city: warehouses.city,
+          isActive: warehouses.isActive,
+        });
       if (!updatedWarehouse) {
         throw new Error("errors.warehouseNotFound");
       }
-      return mapWarehouseToDTO(updatedWarehouse);
+      return updatedWarehouse;
     } catch (error: unknown) {
       handleServiceError(error, "errors.updateWarehouseFailed");
     }
