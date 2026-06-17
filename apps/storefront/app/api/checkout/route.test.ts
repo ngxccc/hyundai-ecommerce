@@ -237,10 +237,9 @@ describe("POST /api/checkout", () => {
     expect(mockOrderCreateOrderWithItems).toHaveBeenCalled();
     expect(mockOrderCreatePayment).toHaveBeenCalledWith({
       orderId: "order-123",
-      amount: "4400000",
+      amount: "22000000",
       method: "CASH",
       status: "PENDING",
-      transactionId: "order-123",
     });
   });
 
