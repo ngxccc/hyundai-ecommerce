@@ -12,6 +12,7 @@ export * from "./warehouse/warehouse.service";
 export * from "./quotes/quotes.service";
 export * from "./dealer-tier/dealer-tier.service";
 export * from "./cart/cart.service";
+export * from "./address/address.service";
 
 // interface
 export * from "./interfaces";

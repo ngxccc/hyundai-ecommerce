@@ -28,8 +28,10 @@ import type {
   CategoryDTO,
   WarehouseDTO,
   ProductDTO,
+  AddressDTO,
+  CreateAddressDTO,
+  UpdateAddressDTO,
 } from "../dtos";
-
 import type {
   TCreateBrandInput,
   TUpdateBrandInput,
@@ -39,7 +41,6 @@ import type {
   TUpdateWarehouse,
   TUpdateWarehouseStockInput,
 } from "../validators";
-
 import type { ComplexOrder } from "./order/order.service";
 import type { ComplexQuote, QuoteListItem } from "./quotes/quotes.service";
 
@@ -92,7 +93,7 @@ export interface AuthService<TLoginForm = unknown, TRegisterForm = unknown> {
 // --- Brand Service Interfaces ---
 export interface BrandService {
   getAll(): Promise<BrandDTO[]>;
-  getById(id: string): Promise<BrandDTO | undefined>;
+  getById(id: string): Promise<BrandDTO>;
   create(input: TCreateBrandInput): Promise<BrandDTO>;
   update(input: TUpdateBrandInput): Promise<BrandDTO>;
   delete(id: string): Promise<boolean>;
@@ -105,7 +106,7 @@ export type TCategoryWithChildren = CategoryDTO & {
 
 export interface CategoryService {
   getAll(): Promise<CategoryDTO[]>;
-  getById(id: string): Promise<CategoryDTO | undefined>;
+  getById(id: string): Promise<CategoryDTO>;
   create(input: TCreateCategoryInput): Promise<CategoryDTO>;
   update(input: TUpdateCategoryInput): Promise<CategoryDTO>;
   delete(id: string): Promise<boolean>;
@@ -163,10 +164,10 @@ export interface LocalItem {
 }
 
 export interface ProductService {
-  create(data: TNewProduct): Promise<ProductDTO | undefined>;
-  update(id: string, data: TUpdateProductData): Promise<ProductDTO | undefined>;
+  create(data: TNewProduct): Promise<ProductDTO>;
+  update(id: string, data: TUpdateProductData): Promise<ProductDTO>;
   delete(id: string): Promise<boolean>;
-  getById(id: string): Promise<ProductDTO | undefined>;
+  getById(id: string): Promise<ProductDTO>;
   getAll(
     limit?: number,
     options?: GetAllOptions,
@@ -185,7 +186,7 @@ export interface ProductService {
 // --- Warehouse Service Interfaces ---
 export interface WarehouseService {
   getAll(): Promise<WarehouseDTO[]>;
-  getById(id: string): Promise<WarehouseDTO | undefined>;
+  getById(id: string): Promise<WarehouseDTO>;
   create(data: TCreateWarehouse): Promise<WarehouseDTO>;
   update(data: TUpdateWarehouse): Promise<WarehouseDTO>;
   delete(id: string): Promise<boolean>;
@@ -320,4 +321,17 @@ export interface CartService {
   ): Promise<TCartItem | null>;
   removeFromCart(cartId: string, productId: string): Promise<void>;
   mergeLocalItems(userId: string, localItems: LocalItem[]): Promise<TCart>;
+}
+
+// --- Address Service Interfaces ---
+export interface AddressService {
+  getByUserId(userId: string): Promise<AddressDTO[]>;
+  create(address: CreateAddressDTO): Promise<AddressDTO>;
+  update(
+    id: string,
+    userId: string,
+    address: UpdateAddressDTO,
+  ): Promise<AddressDTO>;
+  delete(id: string, userId: string): Promise<boolean>;
+  setDefault(id: string, userId: string): Promise<void>;
 }

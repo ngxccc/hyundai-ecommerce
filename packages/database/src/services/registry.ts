@@ -10,6 +10,7 @@ import { DbWarehouseService } from "./warehouse/warehouse.service";
 import { DbQuotesService } from "./quotes/quotes.service";
 import { DbDealerTierService } from "./dealer-tier/dealer-tier.service";
 import { DbCartService } from "./cart/cart.service";
+import { DbAddressService } from "./address/address.service";
 import type {
   AuthService,
   ProductService,
@@ -22,6 +23,7 @@ import type {
   QuotesService,
   DealerTierService,
   CartService,
+  AddressService,
 } from "./interfaces";
 
 export const authService: AuthService = new DbAuthService(db);
@@ -36,3 +38,4 @@ export const warehouseService: WarehouseService = new DbWarehouseService(db);
 export const quotesService: QuotesService = new DbQuotesService(db);
 export const dealerTierService: DealerTierService = new DbDealerTierService(db);
 export const cartService: CartService = new DbCartService(db);
+export const addressService: AddressService = new DbAddressService(db);

@@ -161,6 +161,7 @@ export const mockDb = {
     dealerTiers: queryMocks,
     carts: queryMocks,
     cartItems: queryMocks,
+    userAddresses: queryMocks,
   },
 };
 
