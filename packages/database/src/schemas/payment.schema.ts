@@ -17,7 +17,6 @@ export const payments = snakeCase.table("payment", {
   amount: numeric({ precision: 15, scale: 2 }).notNull(),
   method: paymentMethodEnum().notNull(),
   status: paymentStatusEnum().default("PENDING").notNull(),
-  transactionId: text(),
   rawPayload: text(),
 });
 

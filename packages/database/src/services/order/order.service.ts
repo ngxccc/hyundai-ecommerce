@@ -28,6 +28,7 @@ import {
   type TPayment,
   type TShippingBid,
   type TNewShippingBid,
+  type TPaymentTransaction,
 } from "../../schemas";
 
 const complexOrderQueryConfig = {
@@ -436,7 +437,7 @@ export class DbOrderService implements OrderService {
     });
   }
 
-  async verifyManualBankTransfer(
+  async verifyCashPayment(
     orderId: string,
     verifiedById: string,
   ): Promise<TOrder | undefined> {
@@ -458,20 +459,15 @@ export class DbOrderService implements OrderService {
       await tx
         .update(payments)
         .set({ status: "COMPLETED" })
-        .where(
-          and(
-            eq(payments.orderId, orderId),
-            eq(payments.method, "MANUAL_TRANSFER"),
-          ),
-        );
+        .where(and(eq(payments.orderId, orderId), eq(payments.method, "CASH")));
 
       await tx.insert(paymentTransactions).values({
         orderId,
         amount: order.totalAmount,
-        paymentMethod: "MANUAL_TRANSFER",
+        paymentMethod: "CASH",
         transactionType: "FULL",
         status: "SUCCESS",
-        referenceCode: "MANUAL-" + orderId,
+        referenceCode: "CASH-" + orderId,
         verifiedBy: verifiedById,
       });
 
@@ -526,15 +522,15 @@ export class DbOrderService implements OrderService {
     return payment;
   }
 
-  async getPaymentByTransactionId(
-    transactionId: string,
-  ): Promise<TPayment | undefined> {
-    const [payment] = await this.db
+  async getPaymentTransactionByReferenceCode(
+    referenceCode: string,
+  ): Promise<TPaymentTransaction | undefined> {
+    const [paymentTransaction] = await this.db
       .select()
-      .from(payments)
-      .where(eq(payments.transactionId, transactionId))
+      .from(paymentTransactions)
+      .where(eq(paymentTransactions.referenceCode, referenceCode))
       .limit(1);
-    return payment;
+    return paymentTransaction;
   }
 
   async updatePayment(
@@ -550,18 +546,18 @@ export class DbOrderService implements OrderService {
   }
 
   async confirmPayOSPayment(
-    orderCode: string,
+    _orderCode: string,
     amount: number,
     referenceCode: string,
   ): Promise<boolean> {
     return await this.db.transaction(async (tx) => {
-      // 1. Get the payment by transactionId (which is orderCode)
-      const [payment] = await tx
+      // 1. Get the payment transaction by referenceCode (PayOS orderCode)
+      const [paymentTransaction] = await tx
         .select()
-        .from(payments)
-        .where(eq(payments.transactionId, orderCode))
+        .from(paymentTransactions)
+        .where(eq(paymentTransactions.referenceCode, referenceCode))
         .limit(1);
-      if (!payment || payment.status === "COMPLETED") {
+      if (!paymentTransaction || paymentTransaction.status === "SUCCESS") {
         return false;
       }
 
@@ -569,27 +565,23 @@ export class DbOrderService implements OrderService {
       const [order] = await tx
         .select()
         .from(orders)
-        .where(eq(orders.id, payment.orderId))
+        .where(eq(orders.id, paymentTransaction.orderId))
         .limit(1);
       if (!order) {
         return false;
       }
 
       // Check for amount mismatch (Gap 4)
-      const expectedAmount = parseFloat(payment.amount);
+      const expectedAmount = parseFloat(paymentTransaction.amount);
       const tolerance = 0.01;
       const isMismatch = Math.abs(amount - expectedAmount) > tolerance;
 
       if (isMismatch) {
-        // Log transaction as FAILED
-        await tx.insert(paymentTransactions).values({
-          orderId: order.id,
-          amount: String(amount),
-          paymentMethod: "PAYOS",
-          transactionType: "FULL",
-          status: "FAILED",
-          referenceCode,
-        });
+        // Update the existing payment_transaction to FAILED
+        await tx
+          .update(paymentTransactions)
+          .set({ status: "FAILED" })
+          .where(eq(paymentTransactions.id, paymentTransaction.id));
 
         // Set order status to "SUSPICIOUS_PAYMENT_HOLD" and paymentStatus to "UNPAID"
         await tx
@@ -619,41 +611,34 @@ export class DbOrderService implements OrderService {
       }
 
       // If amounts match:
-      // 3. Update payment status to COMPLETED
+      // 3. Update payment_transaction status to SUCCESS
       await tx
-        .update(payments)
-        .set({ status: "COMPLETED" })
-        .where(eq(payments.id, payment.id));
+        .update(paymentTransactions)
+        .set({ status: "SUCCESS" })
+        .where(eq(paymentTransactions.id, paymentTransaction.id));
 
-      // 4. Update order paymentStatus & determine transactionType
-      const isFull =
-        parseFloat(payment.amount) === parseFloat(order.totalAmount);
-
+      // 4. Determine order paymentStatus and transaction type
       let paymentStatus: OrderPaymentStatus;
       let transactionType: PaymentTransactionType;
 
-      if (order.paymentStatus === "DEPOSIT_PAID") {
+      if (
+        paymentTransaction.transactionType === "REMAINDER" ||
+        order.paymentStatus === "DEPOSIT_PAID"
+      ) {
         paymentStatus = "FULLY_PAID";
         transactionType = "REMAINDER";
+      } else if (paymentTransaction.transactionType === "DEPOSIT") {
+        paymentStatus = "DEPOSIT_PAID";
+        transactionType = "DEPOSIT";
       } else {
-        paymentStatus = isFull ? "FULLY_PAID" : "DEPOSIT_PAID";
-        transactionType = isFull ? "FULL" : "DEPOSIT";
+        paymentStatus = "FULLY_PAID";
+        transactionType = "FULL";
       }
 
       await tx
         .update(orders)
         .set({ paymentStatus })
         .where(eq(orders.id, order.id));
-
-      // 5. Insert paymentTransaction log
-      await tx.insert(paymentTransactions).values({
-        orderId: order.id,
-        amount: payment.amount,
-        paymentMethod: "PAYOS",
-        transactionType,
-        status: "SUCCESS",
-        referenceCode,
-      });
 
       // Get customer email
       const [customer] = await tx

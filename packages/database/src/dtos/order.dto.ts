@@ -44,6 +44,5 @@ export interface CreatePaymentDTO {
   amount: string;
   method: TPayment["method"];
   status?: TPayment["status"];
-  transactionId?: string;
   rawPayload?: string;
 }

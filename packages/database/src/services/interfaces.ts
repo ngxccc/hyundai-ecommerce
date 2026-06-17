@@ -16,6 +16,7 @@ import type {
   TWarehouseStock,
   TCart,
   TCartItem,
+  TPaymentTransaction,
 } from "../schemas";
 import type {
   CartItemDTO,
@@ -234,15 +235,15 @@ export interface OrderService {
   getDashboardMetrics(): Promise<DashboardMetrics>;
   getMonthlyRevenue(year: number): Promise<MonthlyRevenue[]>;
   approveDealerOrder(orderId: string): Promise<TOrder | undefined>;
-  verifyManualBankTransfer(
+  verifyCashPayment(
     orderId: string,
     verifiedById: string,
   ): Promise<TOrder | undefined>;
   approveOrderCancellation(orderId: string): Promise<TOrder | undefined>;
   createPayment(data: CreatePaymentDTO): Promise<TPayment>;
-  getPaymentByTransactionId(
-    transactionId: string,
-  ): Promise<TPayment | undefined>;
+  getPaymentTransactionByReferenceCode(
+    referenceCode: string,
+  ): Promise<TPaymentTransaction | undefined>;
   updatePayment(
     id: string,
     data: Partial<TPayment>,
