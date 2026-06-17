@@ -214,7 +214,9 @@
   "Metadata": {
     "title": "Hyundai Nhat Nang | Genuine Generators",
     "cartTitle": "Shopping Cart",
-    "cartDescription": "Manage your shopping cart and request quotes."
+    "cartDescription": "Manage your shopping cart and request quotes.",
+    "portalTitle": "Customer Portal",
+    "portalDescription": "Manage your account profile, change password, B2B debt, and address book."
   },
   "errors": {
     "loginFailed": "Login failed",
@@ -351,5 +353,17 @@
     "totalItems": "Total Items",
     "subtotal": "Subtotal",
     "total": "Total"
+  },
+  "Portal": {
+    "title": "Customer Portal",
+    "menu": "Menu",
+    "nav": {
+      "profile": "Profile Settings",
+      "password": "Change Password",
+      "addresses": "Address Book",
+      "orders": "Order History",
+      "debt": "B2B Debt Repayment",
+      "logout": "Logout"
+    }
   }
 }

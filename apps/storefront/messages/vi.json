@@ -213,7 +213,9 @@
   "Metadata": {
     "title": "Hyundai Nhật Năng | Máy Phát Điện Chính Hãng",
     "cartTitle": "Giỏ hàng",
-    "cartDescription": "Quản lý giỏ hàng của bạn và yêu cầu báo giá."
+    "cartDescription": "Quản lý giỏ hàng của bạn và yêu cầu báo giá.",
+    "portalTitle": "Cổng thông tin khách hàng",
+    "portalDescription": "Quản lý thông tin tài khoản, đổi mật khẩu, công nợ B2B và sổ địa chỉ."
   },
   "errors": {
     "loginFailed": "Đăng nhập thất bại",
@@ -351,5 +353,17 @@
     "totalItems": "Tổng số lượng",
     "subtotal": "Tạm tính",
     "total": "Tổng cộng"
+  },
+  "Portal": {
+    "title": "Cổng thông tin khách hàng",
+    "menu": "Menu",
+    "nav": {
+      "profile": "Thông tin tài khoản",
+      "password": "Đổi mật khẩu",
+      "addresses": "Sổ địa chỉ",
+      "orders": "Lịch sử đơn hàng",
+      "debt": "Thanh toán công nợ",
+      "logout": "Đăng xuất"
+    }
   }
 }
