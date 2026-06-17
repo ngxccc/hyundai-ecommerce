@@ -66,8 +66,8 @@ describe("UserService", () => {
     expect(result).toEqual(mockRes);
   });
 
-  test("update() should update and return user", async () => {
-    mockReturning.mockResolvedValueOnce([mockUser]);
+  test("update() should update and return user id", async () => {
+    mockReturning.mockResolvedValueOnce([{ id: "user-123" }]);
 
     const result = await userService.update("user-123", {
       role: "DEALER_APPROVER",
@@ -75,7 +75,7 @@ describe("UserService", () => {
     });
 
     expect(mockUpdate).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockUser);
+    expect(result).toEqual({ id: "user-123" });
   });
 
   test("list() should return list of users", async () => {
