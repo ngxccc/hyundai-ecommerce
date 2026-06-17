@@ -1,4 +1,4 @@
-import { numeric, pgEnum, snakeCase, text, uuid } from "drizzle-orm/pg-core";
+import { bigint, numeric, pgEnum, snakeCase, text, uuid } from "drizzle-orm/pg-core";
 import { orders, paymentMethodEnum } from "./order.schema";
 import { users } from "./auth.schema";
 import { fullEntity } from "./helpers.schema";
@@ -23,7 +23,8 @@ export const paymentTransactions = snakeCase.table("payment_transaction", {
   paymentMethod: paymentMethodEnum().notNull(),
   transactionType: paymentTransactionTypeEnum().notNull(),
   status: paymentTransactionStatusEnum().notNull().default("PENDING"),
-  referenceCode: text().unique().notNull(), // Transaction ID from PayOS/Bank matching to enforce idempotency
+  orderCode: bigint({ mode: "number" }).unique(),
+  referenceCode: text().unique(), // Transaction ID from PayOS/Bank matching to enforce idempotency (populated on success)
   verifiedBy: uuid().references(() => users.id, { onDelete: "set null" }),
 });
 
