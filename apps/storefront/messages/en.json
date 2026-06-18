@@ -420,7 +420,9 @@
     },
     "addresses": {
       "title": "Address Book",
-      "addNew": "Add New Address",
+      "myAddresses": "My Addresses",
+      "addressSubheader": "Address",
+      "addNew": "Add Address",
       "defaultTag": "Default",
       "edit": "Edit",
       "delete": "Delete",

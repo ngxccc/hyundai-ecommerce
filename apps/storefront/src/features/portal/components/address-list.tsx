@@ -6,9 +6,12 @@ import { toast } from "sonner";
 import { useRouter } from "@/i18n/routing";
 import { type AddressDTO } from "@nhatnang/database/dtos";
 import { Button } from "@nhatnang/ui/components/ui/button";
-import { MapPin, Plus, Edit2, Trash2, Check } from "lucide-react";
+import { MapPin, Plus, Check } from "lucide-react";
 import { AddressDialog } from "./address-dialog";
-import { deleteAddressAction, setDefaultAddressAction } from "../actions/address.action";
+import {
+  deleteAddressAction,
+  setDefaultAddressAction,
+} from "../actions/address.action";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,7 +35,9 @@ export function AddressList({ initialAddresses }: AddressListProps) {
 
   // State for AddressDialog (Add/Edit)
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState<AddressDTO | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<AddressDTO | null>(
+    null,
+  );
 
   // State for Delete Confirmation Dialog
   const [addressToDelete, setAddressToDelete] = useState<string | null>(null);
@@ -87,11 +92,8 @@ export function AddressList({ initialAddresses }: AddressListProps) {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-zinc-900 flex items-center gap-2">
-          <MapPin className="size-5 text-zinc-500" />
-          {ta("title")}
-        </h2>
+      <div className="flex items-center justify-between border-b border-zinc-200 pb-4">
+        <h2 className="text-xl font-bold text-zinc-900">{ta("myAddresses")}</h2>
         <Button onClick={handleAddNew} size="sm" className="gap-2">
           <Plus className="size-4" />
           {ta("addNew")}
@@ -99,82 +101,87 @@ export function AddressList({ initialAddresses }: AddressListProps) {
       </div>
 
       {initialAddresses.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 rounded-xl border border-dashed border-zinc-200 bg-zinc-50/50">
-          <MapPin className="size-10 text-zinc-300 mb-3" />
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-zinc-200 bg-zinc-50/50 py-12">
+          <MapPin className="mb-3 size-10 text-zinc-300" />
           <p className="text-sm text-zinc-500">{ta("noAddresses")}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="divide-y divide-zinc-200 border-t border-zinc-200">
           {initialAddresses.map((address) => (
             <div
               key={address.id}
-              className={`relative flex flex-col justify-between p-5 rounded-xl border bg-white shadow-xs transition-all ${
-                address.isDefault
-                  ? "border-primary ring-1 ring-primary/10"
-                  : "border-zinc-200 hover:border-zinc-300"
-              }`}
+              className="flex cursor-pointer items-start justify-between py-6 transition-colors duration-150 hover:bg-zinc-50/50 md:cursor-default md:hover:bg-transparent"
+              onClick={() => {
+                if (typeof window !== "undefined" && window.innerWidth < 768) {
+                  handleEdit(address);
+                }
+              }}
             >
-              <div>
-                <div className="flex items-start justify-between gap-2">
-                  <span className="font-semibold text-zinc-900">
+              {/* Left Column: Details */}
+              <div className="flex-1 space-y-1 md:pr-4">
+                <div className="flex items-center text-sm font-medium">
+                  <span className="text-base font-bold text-zinc-900">
                     {address.receiverName}
                   </span>
-                  {address.isDefault && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
-                      <Check className="size-3" />
-                      {ta("defaultTag")}
-                    </span>
-                  )}
+                  <span className="mx-2 font-light text-zinc-300">|</span>
+                  <span className="font-normal text-zinc-500">
+                    {address.phoneNumber}
+                  </span>
                 </div>
                 <div className="mt-2 space-y-1 text-sm text-zinc-600">
-                  <p>{address.phoneNumber}</p>
-                  <p className="mt-1 font-light text-zinc-700">
-                    {address.streetAddress}
-                  </p>
-                  <p className="font-light text-zinc-700">
+                  <p>{address.streetAddress}</p>
+                  <p>
                     {address.district}, {address.city}
                   </p>
                 </div>
+                {address.isDefault && (
+                  <span className="bg-primary/10 text-primary mt-2 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold">
+                    <Check className="size-3" />
+                    {ta("defaultTag")}
+                  </span>
+                )}
               </div>
 
-              <div className="mt-6 flex items-center justify-between gap-2 border-t border-zinc-100 pt-4">
-                <div>
-                  {!address.isDefault && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleSetDefault(address.id)}
-                      disabled={isPending}
-                      className="h-8 px-2 text-xs text-zinc-500 hover:text-zinc-900"
-                    >
-                      {ta("defaultLabel")}
-                    </Button>
-                  )}
-                </div>
-                <div className="flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEdit(address)}
+              {/* Right Column: Actions */}
+              <div className="hidden min-w-30 flex-col items-end gap-3 md:flex">
+                <div className="hidden items-center gap-3 text-sm md:flex">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEdit(address);
+                    }}
                     disabled={isPending}
-                    className="size-8 text-zinc-500 hover:text-zinc-900"
+                    className="cursor-pointer text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900"
                   >
-                    <Edit2 className="size-3.5" />
-                    <span className="sr-only">{ta("edit")}</span>
-                  </Button>
+                    {ta("edit")}
+                  </button>
                   {!address.isDefault && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setAddressToDelete(address.id)}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setAddressToDelete(address.id);
+                      }}
                       disabled={isPending}
-                      className="size-8 text-zinc-500 hover:text-destructive hover:bg-destructive/5"
+                      className="hover:text-destructive cursor-pointer text-sm font-medium text-zinc-500 transition-colors"
                     >
-                      <Trash2 className="size-3.5" />
-                      <span className="sr-only">{ta("delete")}</span>
-                    </Button>
+                      {ta("delete")}
+                    </button>
                   )}
                 </div>
+                {!address.isDefault && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSetDefault(address.id);
+                    }}
+                    disabled={isPending}
+                    className="h-8 border-zinc-300 px-3 text-xs font-medium text-zinc-700"
+                  >
+                    {ta("defaultLabel")}
+                  </Button>
+                )}
               </div>
             </div>
           ))}
@@ -202,7 +209,9 @@ export function AddressList({ initialAddresses }: AddressListProps) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isPending}>{ta("cancel")}</AlertDialogCancel>
+            <AlertDialogCancel disabled={isPending}>
+              {ta("cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
               disabled={isPending}

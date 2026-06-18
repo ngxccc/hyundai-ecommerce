@@ -420,7 +420,9 @@
     },
     "addresses": {
       "title": "Sổ địa chỉ",
-      "addNew": "Thêm địa chỉ mới",
+      "myAddresses": "Địa chỉ của tôi",
+      "addressSubheader": "Địa chỉ",
+      "addNew": "Thêm địa chỉ",
       "defaultTag": "Mặc định",
       "edit": "Sửa",
       "delete": "Xóa",

@@ -5,8 +5,15 @@ import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { translatedZodResolver } from "@/shared/lib/validation-resolver";
-import { addressSchema, type TAddressForm } from "@nhatnang/database/validators";
-import { addAddressAction, updateAddressAction } from "../actions/address.action";
+import {
+  addressSchema,
+  type TAddressForm,
+} from "@nhatnang/database/validators";
+import {
+  addAddressAction,
+  updateAddressAction,
+  deleteAddressAction,
+} from "../actions/address.action";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Input } from "@nhatnang/ui/components/ui/input";
 import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
@@ -17,6 +24,16 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@nhatnang/ui/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@nhatnang/ui/components/ui/alert-dialog";
 import {
   Field,
   FieldLabel,
@@ -41,6 +58,7 @@ export function AddressDialog({
   const ta = useTranslations("Portal.addresses");
   const te = useTranslations("errors");
   const [isLoading, setIsLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const form = useForm<TAddressForm>({
     resolver: translatedZodResolver(addressSchema, t),
@@ -96,7 +114,9 @@ export function AddressDialog({
           });
           return;
         }
-        toast.error("error" in result ? result.error : te("updateAddressFailed"));
+        toast.error(
+          "error" in result ? result.error : te("updateAddressFailed"),
+        );
         return;
       }
 
@@ -105,9 +125,32 @@ export function AddressDialog({
       onOpenChange(false);
     } catch (error) {
       console.error(error);
-      toast.error(address ? te("updateAddressFailed") : te("createAddressFailed"));
+      toast.error(
+        address ? te("updateAddressFailed") : te("createAddressFailed"),
+      );
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!address) return;
+    setIsLoading(true);
+    try {
+      const result = await deleteAddressAction(address.id);
+      if (result.success) {
+        toast.success(ta("deleteSuccess"));
+        onSubmitSuccess();
+        onOpenChange(false);
+      } else {
+        toast.error(result.error);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(te("deleteAddressFailed"));
+    } finally {
+      setIsLoading(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -130,7 +173,9 @@ export function AddressDialog({
               {...form.register("receiverName")}
               aria-invalid={!!form.formState.errors.receiverName}
             />
-            <FieldError>{form.formState.errors.receiverName?.message}</FieldError>
+            <FieldError>
+              {form.formState.errors.receiverName?.message}
+            </FieldError>
           </Field>
 
           <Field data-invalid={!!form.formState.errors.phoneNumber}>
@@ -143,7 +188,9 @@ export function AddressDialog({
               {...form.register("phoneNumber")}
               aria-invalid={!!form.formState.errors.phoneNumber}
             />
-            <FieldError>{form.formState.errors.phoneNumber?.message}</FieldError>
+            <FieldError>
+              {form.formState.errors.phoneNumber?.message}
+            </FieldError>
           </Field>
 
           <Field data-invalid={!!form.formState.errors.streetAddress}>
@@ -156,12 +203,16 @@ export function AddressDialog({
               {...form.register("streetAddress")}
               aria-invalid={!!form.formState.errors.streetAddress}
             />
-            <FieldError>{form.formState.errors.streetAddress?.message}</FieldError>
+            <FieldError>
+              {form.formState.errors.streetAddress?.message}
+            </FieldError>
           </Field>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field data-invalid={!!form.formState.errors.district}>
-              <FieldLabel htmlFor="district">{ta("districtLabel")} *</FieldLabel>
+              <FieldLabel htmlFor="district">
+                {ta("districtLabel")} *
+              </FieldLabel>
               <Input
                 id="district"
                 disabled={isLoading}
@@ -198,26 +249,64 @@ export function AddressDialog({
             />
             <label
               htmlFor="isDefault"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-zinc-700 cursor-pointer"
+              className="cursor-pointer text-sm leading-none font-medium text-zinc-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
               {ta("defaultLabel")}
             </label>
           </div>
 
-          <DialogFooter className="pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isLoading}
-            >
-              {ta("cancel")}
-            </Button>
-            <Button type="submit" disabled={isLoading} className="min-w-24">
-              {ta("save")}
-            </Button>
+          <DialogFooter className="flex flex-row items-center justify-between gap-2 pt-4">
+            {address && !address.isDefault && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setShowDeleteConfirm(true)}
+                disabled={isLoading}
+                className="text-destructive hover:bg-destructive/5 hover:text-destructive mr-auto cursor-pointer"
+              >
+                {ta("delete")}
+              </Button>
+            )}
+            <div className="ml-auto flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isLoading}
+              >
+                {ta("cancel")}
+              </Button>
+              <Button type="submit" disabled={isLoading} className="min-w-24">
+                {ta("save")}
+              </Button>
+            </div>
           </DialogFooter>
         </form>
+        <AlertDialog
+          open={showDeleteConfirm}
+          onOpenChange={setShowDeleteConfirm}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{ta("deleteConfirmTitle")}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {ta("deleteConfirmDesc")}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isLoading}>
+                {ta("cancel")}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                disabled={isLoading}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {ta("delete")}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </DialogContent>
     </Dialog>
   );
