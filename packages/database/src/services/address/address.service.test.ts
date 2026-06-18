@@ -71,7 +71,7 @@ describe("AddressService", () => {
         isDefault: false,
       });
 
-      expect(result.isDefault).toBe(true);
+      expect(result.id).toBe("addr-1");
     });
 
     test("should reset other defaults if the new address is set to default", async () => {
@@ -105,7 +105,7 @@ describe("AddressService", () => {
       });
 
       expect(mockUpdate).toHaveBeenCalledTimes(1); // Reset defaults
-      expect(result.isDefault).toBe(true);
+      expect(result.id).toBe("addr-2");
     });
   });
 
@@ -130,7 +130,7 @@ describe("AddressService", () => {
       });
 
       expect(mockUpdate).toHaveBeenCalledTimes(1);
-      expect(result.receiverName).toBe("Updated Name");
+      expect(result.id).toBe("addr-1");
     });
 
     test("should throw error if address does not exist or does not belong to user", () => {

@@ -378,7 +378,11 @@
       "passwordMismatch": "Mật khẩu xác nhận không khớp",
       "companyNameMin": "Tên công ty phải có ít nhất 2 ký tự",
       "taxIdInvalid": "Mã số thuế phải có 10\u201314 chữ số",
-      "provinceRequired": "Vui lòng nhập tỉnh/thành phố"
+      "provinceRequired": "Vui lòng nhập tỉnh/thành phố",
+      "receiverNameMin": "Tên người nhận phải có ít nhất 2 ký tự",
+      "streetAddressRequired": "Vui lòng nhập địa chỉ cụ thể",
+      "districtRequired": "Vui lòng nhập quận/huyện",
+      "cityRequired": "Vui lòng nhập tỉnh/thành phố"
     },
     "profile": {
       "title": "Thông tin tài khoản",
@@ -413,6 +417,31 @@
       "submitting": "Đang xử lý\u2026",
       "changeSuccess": "Đổi mật khẩu thành công. Vui lòng đăng nhập lại.",
       "changeError": "Đổi mật khẩu thất bại. Vui lòng kiểm tra mật khẩu hiện tại."
+    },
+    "addresses": {
+      "title": "Sổ địa chỉ",
+      "addNew": "Thêm địa chỉ mới",
+      "defaultTag": "Mặc định",
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "noAddresses": "Bạn chưa lưu địa chỉ nào.",
+      "addTitle": "Thêm địa chỉ mới",
+      "editTitle": "Cập nhật địa chỉ",
+      "receiverNameLabel": "Tên người nhận",
+      "phoneNumberLabel": "Số điện thoại",
+      "streetAddressLabel": "Địa chỉ cụ thể (Số nhà, ngõ, đường...)",
+      "districtLabel": "Quận / Huyện",
+      "cityLabel": "Tỉnh / Thành phố",
+      "defaultLabel": "Đặt làm địa chỉ mặc định",
+      "save": "Lưu",
+      "saving": "Đang lưu...",
+      "cancel": "Hủy",
+      "deleteConfirmTitle": "Xóa địa chỉ",
+      "deleteConfirmDesc": "Bạn có chắc chắn muốn xóa địa chỉ này? Hành động này không thể hoàn tác.",
+      "addSuccess": "Thêm địa chỉ thành công.",
+      "updateSuccess": "Cập nhật địa chỉ thành công.",
+      "deleteSuccess": "Xóa địa chỉ thành công.",
+      "setDefaultSuccess": "Đặt địa chỉ mặc định thành công."
     }
   }
 }

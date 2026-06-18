@@ -378,7 +378,11 @@
       "passwordMismatch": "Passwords do not match",
       "companyNameMin": "Company name must be at least 2 characters",
       "taxIdInvalid": "Tax ID must be 10\u201314 digits",
-      "provinceRequired": "Province / City is required"
+      "provinceRequired": "Province / City is required",
+      "receiverNameMin": "Receiver name must be at least 2 characters",
+      "streetAddressRequired": "Street address is required",
+      "districtRequired": "District is required",
+      "cityRequired": "Province / City is required"
     },
     "profile": {
       "title": "Profile Settings",
@@ -413,6 +417,31 @@
       "submitting": "Changing\u2026",
       "changeSuccess": "Password changed successfully. Please log in again.",
       "changeError": "Failed to change password. Please check your current password."
+    },
+    "addresses": {
+      "title": "Address Book",
+      "addNew": "Add New Address",
+      "defaultTag": "Default",
+      "edit": "Edit",
+      "delete": "Delete",
+      "noAddresses": "You have no saved addresses.",
+      "addTitle": "Add New Address",
+      "editTitle": "Edit Address",
+      "receiverNameLabel": "Receiver Name",
+      "phoneNumberLabel": "Phone Number",
+      "streetAddressLabel": "Street Address",
+      "districtLabel": "District",
+      "cityLabel": "Province / City",
+      "defaultLabel": "Set as default address",
+      "save": "Save",
+      "saving": "Saving...",
+      "cancel": "Cancel",
+      "deleteConfirmTitle": "Delete Address",
+      "deleteConfirmDesc": "Are you sure you want to delete this address? This action cannot be undone.",
+      "addSuccess": "Address added successfully.",
+      "updateSuccess": "Address updated successfully.",
+      "deleteSuccess": "Address deleted successfully.",
+      "setDefaultSuccess": "Set default address successfully."
     }
   }
 }

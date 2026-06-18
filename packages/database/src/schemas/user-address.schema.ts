@@ -1,9 +1,9 @@
 import { boolean, snakeCase, text, uuid } from "drizzle-orm/pg-core";
-import { fullEntity } from "./helpers.schema";
+import { baseEntity } from "./helpers.schema";
 import { users } from "./auth.schema";
 
 export const userAddresses = snakeCase.table("user_address", {
-  ...fullEntity,
+  ...baseEntity,
   userId: uuid()
     .references(() => users.id, { onDelete: "cascade" })
     .notNull(),

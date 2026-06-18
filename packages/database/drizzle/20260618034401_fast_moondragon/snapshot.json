@@ -1,9 +1,9 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "450c1f83-6b42-4bc7-abce-815cf6ef0fa0",
+  "id": "c0f1f9db-9698-4308-a563-c4ea18f970c6",
   "prevIds": [
-    "61124586-d90f-4f62-8fe1-42d3bc4d32ae"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
     {
@@ -94,6 +94,16 @@
         "FAILED"
       ],
       "name": "outbox_event_status",
+      "entityType": "enums",
+      "schema": "public"
+    },
+    {
+      "values": [
+        "PENDING",
+        "COMPLETED",
+        "FAILED"
+      ],
+      "name": "debt_repayment_status",
       "entityType": "enums",
       "schema": "public"
     },
@@ -227,6 +237,12 @@
     {
       "isRlsEnabled": false,
       "name": "user_address",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "debt_repayment",
       "entityType": "tables",
       "schema": "public"
     },
@@ -2164,19 +2180,6 @@
       "table": "user_address"
     },
     {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "deleted_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "user_address"
-    },
-    {
       "type": "uuid",
       "typeSchema": null,
       "notNull": true,
@@ -2266,6 +2269,149 @@
       "entityType": "columns",
       "schema": "public",
       "table": "user_address"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "type": "numeric(15,2)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "amount",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "type": "payment_method",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "payment_method",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "type": "debt_repayment_status",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'PENDING'",
+      "generated": null,
+      "identity": null,
+      "name": "status",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "type": "bigint",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "order_code",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "reference_code",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "verified_by",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "debt_repayment"
     },
     {
       "type": "uuid",
@@ -3919,6 +4065,40 @@
     {
       "nameExplicit": false,
       "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "user",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "RESTRICT",
+      "name": "debt_repayment_user_id_user_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "verified_by"
+      ],
+      "schemaTo": "public",
+      "tableTo": "user",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "name": "debt_repayment_verified_by_user_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "debt_repayment"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
         "order_id"
       ],
       "schemaTo": "public",
@@ -4310,6 +4490,16 @@
         "id"
       ],
       "nameExplicit": false,
+      "name": "debt_repayment_pkey",
+      "schema": "public",
+      "table": "debt_repayment",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
       "name": "payment_pkey",
       "schema": "public",
       "table": "payment",
@@ -4460,6 +4650,28 @@
       "name": "category_slug_key",
       "schema": "public",
       "table": "category",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "order_code"
+      ],
+      "nullsNotDistinct": false,
+      "name": "debt_repayment_order_code_key",
+      "schema": "public",
+      "table": "debt_repayment",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "reference_code"
+      ],
+      "nullsNotDistinct": false,
+      "name": "debt_repayment_reference_code_key",
+      "schema": "public",
+      "table": "debt_repayment",
       "entityType": "uniques"
     },
     {

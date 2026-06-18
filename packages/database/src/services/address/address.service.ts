@@ -2,7 +2,11 @@ import type { AddressService } from "../interfaces";
 import { userAddresses } from "../../schemas/user-address.schema";
 import type { IDatabase } from "../../client";
 import { and, eq } from "drizzle-orm";
-import { type AddressDTO, type CreateAddressDTO, type UpdateAddressDTO } from "../../dtos";
+import {
+  type AddressDTO,
+  type CreateAddressDTO,
+  type UpdateAddressDTO,
+} from "../../dtos";
 import { handleServiceError } from "../../utils";
 
 export class DbAddressService implements AddressService {
@@ -29,7 +33,7 @@ export class DbAddressService implements AddressService {
     });
   }
 
-  async create(data: CreateAddressDTO): Promise<AddressDTO> {
+  async create(data: CreateAddressDTO): Promise<{ id: string }> {
     try {
       // If setting as default, or if it's the first address, we should handle default state
       const existing = await this.db
@@ -50,7 +54,7 @@ export class DbAddressService implements AddressService {
             .where(eq(userAddresses.userId, data.userId));
         }
 
-        const [newAddress] = await tx
+        const [result] = await tx
           .insert(userAddresses)
           .values({
             ...data,
@@ -58,18 +62,12 @@ export class DbAddressService implements AddressService {
           })
           .returning({
             id: userAddresses.id,
-            receiverName: userAddresses.receiverName,
-            phoneNumber: userAddresses.phoneNumber,
-            streetAddress: userAddresses.streetAddress,
-            district: userAddresses.district,
-            city: userAddresses.city,
-            isDefault: userAddresses.isDefault,
           });
 
-        if (!newAddress) {
+        if (!result) {
           throw new Error("errors.createAddressFailed");
         }
-        return newAddress;
+        return result;
       });
     } catch (error: unknown) {
       handleServiceError(error, "errors.createAddressFailed");
@@ -80,7 +78,7 @@ export class DbAddressService implements AddressService {
     id: string,
     userId: string,
     data: UpdateAddressDTO,
-  ): Promise<AddressDTO> {
+  ): Promise<{ id: string }> {
     try {
       return await this.db.transaction(async (tx) => {
         // 1. Verify existence
@@ -103,7 +101,7 @@ export class DbAddressService implements AddressService {
             .where(eq(userAddresses.userId, userId));
         }
 
-        const [updatedAddress] = await tx
+        const [result] = await tx
           .update(userAddresses)
           .set(data)
           .where(
@@ -111,18 +109,12 @@ export class DbAddressService implements AddressService {
           )
           .returning({
             id: userAddresses.id,
-            receiverName: userAddresses.receiverName,
-            phoneNumber: userAddresses.phoneNumber,
-            streetAddress: userAddresses.streetAddress,
-            district: userAddresses.district,
-            city: userAddresses.city,
-            isDefault: userAddresses.isDefault,
           });
 
-        if (!updatedAddress) {
+        if (!result) {
           throw new Error("errors.addressNotFound");
         }
-        return updatedAddress;
+        return result;
       });
     } catch (error: unknown) {
       handleServiceError(error, "errors.updateAddressFailed");

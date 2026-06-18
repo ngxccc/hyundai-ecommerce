@@ -1,11 +1,12 @@
-CREATE TYPE "business_type" AS ENUM('dealer', 'contractor', 'end_user', 'distributor');--> statement-breakpoint
-CREATE TYPE "user_role" AS ENUM('super_admin', 'sales_representative', 'accountant', 'warehouse_manager', 'dealer_approver', 'dealer_purchaser', 'customer');--> statement-breakpoint
+CREATE TYPE "business_type" AS ENUM('DEALER', 'CONTRACTOR', 'END_USER', 'DISTRIBUTOR');--> statement-breakpoint
+CREATE TYPE "user_role" AS ENUM('SUPER_ADMIN', 'SALES_REPRESENTATIVE', 'ACCOUNTANT', 'WAREHOUSE_MANAGER', 'DEALER_APPROVER', 'DEALER_PURCHASER', 'CUSTOMER');--> statement-breakpoint
 CREATE TYPE "approval_status" AS ENUM('APPROVED', 'PENDING_APPROVAL');--> statement-breakpoint
 CREATE TYPE "order_payment_status" AS ENUM('UNPAID', 'DEPOSIT_PAID', 'FULLY_PAID', 'PENDING_VERIFICATION');--> statement-breakpoint
-CREATE TYPE "order_status" AS ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded');--> statement-breakpoint
-CREATE TYPE "payment_method" AS ENUM('GATEWAY', 'BANK_TRANSFER', 'TRADE_CREDIT', 'PAYOS', 'MANUAL_TRANSFER');--> statement-breakpoint
-CREATE TYPE "event_type" AS ENUM('SEND_QUOTE_EMAIL', 'SEND_MAIL');--> statement-breakpoint
+CREATE TYPE "order_status" AS ENUM('PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'REFUNDED', 'REFUND_PENDING', 'SUSPICIOUS_PAYMENT_HOLD');--> statement-breakpoint
+CREATE TYPE "payment_method" AS ENUM('TRADE_CREDIT', 'PAYOS', 'CASH');--> statement-breakpoint
+CREATE TYPE "event_type" AS ENUM('SEND_QUOTE_EMAIL', 'SEND_MAIL', 'SEND_ZALO_ZNS', 'SEND_TELEGRAM_ALERT');--> statement-breakpoint
 CREATE TYPE "outbox_event_status" AS ENUM('PENDING', 'PROCESSED', 'FAILED');--> statement-breakpoint
+CREATE TYPE "debt_repayment_status" AS ENUM('PENDING', 'COMPLETED', 'FAILED');--> statement-breakpoint
 CREATE TYPE "payment_status" AS ENUM('PENDING', 'COMPLETED', 'FAILED', 'REFUNDED');--> statement-breakpoint
 CREATE TYPE "quote_status" AS ENUM('pending_review', 'negotiating', 'approved', 'rejected', 'expired');--> statement-breakpoint
 CREATE TYPE "payment_transaction_status" AS ENUM('PENDING', 'SUCCESS', 'FAILED');--> statement-breakpoint
@@ -68,12 +69,12 @@ CREATE TABLE "user" (
 	"email" text NOT NULL UNIQUE,
 	"email_verified" boolean DEFAULT false NOT NULL,
 	"image" text,
-	"role" "user_role" DEFAULT 'customer'::"user_role" NOT NULL,
+	"role" "user_role" DEFAULT 'CUSTOMER'::"user_role" NOT NULL,
 	"dealer_tier_id" uuid,
 	"phone" text NOT NULL UNIQUE,
 	"company_name" text,
 	"tax_id" text,
-	"business_type" "business_type" DEFAULT 'end_user'::"business_type" NOT NULL,
+	"business_type" "business_type" DEFAULT 'END_USER'::"business_type" NOT NULL,
 	"province" text,
 	"credit_limit" numeric(15,2) DEFAULT '0.00' NOT NULL,
 	"current_debt" numeric(15,2) DEFAULT '0.00' NOT NULL
@@ -137,11 +138,11 @@ CREATE TABLE "order" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"user_id" uuid NOT NULL,
-	"status" "order_status" DEFAULT 'pending'::"order_status" NOT NULL,
+	"status" "order_status" DEFAULT 'PENDING'::"order_status" NOT NULL,
 	"shipping_fee" numeric(15,2) NOT NULL,
 	"shipping_address" text NOT NULL,
 	"total_amount" numeric(15,2) NOT NULL,
-	"payment_method" "payment_method" DEFAULT 'GATEWAY'::"payment_method" NOT NULL,
+	"payment_method" "payment_method" DEFAULT 'PAYOS'::"payment_method" NOT NULL,
 	"payment_status" "order_payment_status" DEFAULT 'UNPAID'::"order_payment_status" NOT NULL,
 	"approval_status" "approval_status" DEFAULT 'APPROVED'::"approval_status" NOT NULL
 );
@@ -199,7 +200,6 @@ CREATE TABLE "user_address" (
 	"id" uuid PRIMARY KEY,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"deleted_at" timestamp with time zone,
 	"user_id" uuid NOT NULL,
 	"receiver_name" text NOT NULL,
 	"phone_number" text NOT NULL,
@@ -207,6 +207,20 @@ CREATE TABLE "user_address" (
 	"district" text NOT NULL,
 	"city" text NOT NULL,
 	"is_default" boolean DEFAULT false NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "debt_repayment" (
+	"id" uuid PRIMARY KEY,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"deleted_at" timestamp with time zone,
+	"user_id" uuid NOT NULL,
+	"amount" numeric(15,2) NOT NULL,
+	"payment_method" "payment_method" NOT NULL,
+	"status" "debt_repayment_status" DEFAULT 'PENDING'::"debt_repayment_status" NOT NULL,
+	"order_code" bigint UNIQUE,
+	"reference_code" text UNIQUE,
+	"verified_by" uuid
 );
 --> statement-breakpoint
 CREATE TABLE "payment" (
@@ -218,7 +232,6 @@ CREATE TABLE "payment" (
 	"amount" numeric(15,2) NOT NULL,
 	"method" "payment_method" NOT NULL,
 	"status" "payment_status" DEFAULT 'PENDING'::"payment_status" NOT NULL,
-	"transaction_id" text,
 	"raw_payload" text
 );
 --> statement-breakpoint
@@ -235,7 +248,7 @@ CREATE TABLE "cart" (
 	"id" uuid PRIMARY KEY,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"user_id" uuid UNIQUE
+	"user_id" uuid NOT NULL UNIQUE
 );
 --> statement-breakpoint
 CREATE TABLE "quote_item" (
@@ -280,7 +293,8 @@ CREATE TABLE "payment_transaction" (
 	"payment_method" "payment_method" NOT NULL,
 	"transaction_type" "payment_transaction_type" NOT NULL,
 	"status" "payment_transaction_status" DEFAULT 'PENDING'::"payment_transaction_status" NOT NULL,
-	"reference_code" text NOT NULL UNIQUE,
+	"order_code" bigint UNIQUE,
+	"reference_code" text UNIQUE,
 	"verified_by" uuid
 );
 --> statement-breakpoint
@@ -314,7 +328,7 @@ CREATE INDEX "warehouse_stock_product_idx" ON "warehouse_stock" ("product_id");-
 CREATE INDEX "order_item_order_idx" ON "order_item" ("order_id");--> statement-breakpoint
 CREATE INDEX "order_item_product_idx" ON "order_item" ("product_id");--> statement-breakpoint
 CREATE INDEX "order_user_status_created_idx" ON "order" ("user_id","status","created_at");--> statement-breakpoint
-CREATE INDEX "order_active_metrics_idx" ON "order" ("created_at") WHERE "status" != 'cancelled';--> statement-breakpoint
+CREATE INDEX "order_active_metrics_idx" ON "order" ("created_at") WHERE "status" != 'CANCELLED';--> statement-breakpoint
 CREATE UNIQUE INDEX "one_selected_bid_order_idx" ON "shipping_bid" ("order_id") WHERE "is_selected" = true;--> statement-breakpoint
 CREATE UNIQUE INDEX "cart_product_unique_idx" ON "cart_item" ("cart_id","product_id");--> statement-breakpoint
 CREATE INDEX "quote_item_quote_idx" ON "quote_item" ("quote_id");--> statement-breakpoint
@@ -337,6 +351,8 @@ ALTER TABLE "order" ADD CONSTRAINT "order_user_id_user_id_fkey" FOREIGN KEY ("us
 ALTER TABLE "shipping_bid" ADD CONSTRAINT "shipping_bid_order_id_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "order"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "category" ADD CONSTRAINT "category_parent_id_category_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "category"("id") ON DELETE SET NULL;--> statement-breakpoint
 ALTER TABLE "user_address" ADD CONSTRAINT "user_address_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "debt_repayment" ADD CONSTRAINT "debt_repayment_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT;--> statement-breakpoint
+ALTER TABLE "debt_repayment" ADD CONSTRAINT "debt_repayment_verified_by_user_id_fkey" FOREIGN KEY ("verified_by") REFERENCES "user"("id") ON DELETE SET NULL;--> statement-breakpoint
 ALTER TABLE "payment" ADD CONSTRAINT "payment_order_id_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "order"("id") ON DELETE RESTRICT;--> statement-breakpoint
 ALTER TABLE "cart_item" ADD CONSTRAINT "cart_item_cart_id_cart_id_fkey" FOREIGN KEY ("cart_id") REFERENCES "cart"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "cart_item" ADD CONSTRAINT "cart_item_product_id_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE CASCADE;--> statement-breakpoint
