@@ -1,6 +1,6 @@
 "use client";
 
-import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@nhatnang/ui/lib/utils";
 import {
   User,
@@ -10,7 +10,7 @@ import {
   CreditCard,
   LogOut,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { authClient } from "@nhatnang/database/auth-client";
 
 const navItems = [
@@ -29,15 +29,15 @@ interface NavLinksProps {
 export function NavLinks({ onClick, orientation = "vertical" }: NavLinksProps) {
   const t = useTranslations("Portal.nav");
   const pathname = usePathname();
-  const router = useRouter();
+  const locale = useLocale();
   const isHorizontal = orientation === "horizontal";
 
   const handleLogout = async () => {
     try {
       onClick?.();
       await authClient.signOut();
-      router.push("/login");
-      router.refresh();
+      const loginPath = locale === "vi" ? "/login" : `/${locale}/login`;
+      window.location.href = loginPath;
     } catch (error) {
       console.error("Failed to sign out:", error);
     }

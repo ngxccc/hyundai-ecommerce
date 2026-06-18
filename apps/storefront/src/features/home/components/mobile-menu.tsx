@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Menu, UserCircle } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import {
   Sheet,
@@ -12,7 +12,7 @@ import {
   SheetDescription,
   SheetTrigger,
 } from "@nhatnang/ui/components/ui/sheet";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import { authClient } from "@nhatnang/database/auth-client";
 
 interface MobileMenuProps {
@@ -22,9 +22,9 @@ interface MobileMenuProps {
 
 export function MobileMenu({ isLoggedIn, userName }: MobileMenuProps) {
   const t = useTranslations("HomePage");
+  const locale = useLocale();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
   const navItems = ["products", "solutions", "services"] as const;
   const ctaClasses =
     "font-display h-10 rounded-md px-4 text-xs font-bold uppercase tracking-widest transition-all duration-200";
@@ -34,8 +34,8 @@ export function MobileMenu({ isLoggedIn, userName }: MobileMenuProps) {
   const handleLogout = async () => {
     close();
     await authClient.signOut();
-    router.push("/");
-    router.refresh();
+    const homePath = locale === "vi" ? "/" : `/${locale}`;
+    window.location.href = homePath;
   };
 
   return (

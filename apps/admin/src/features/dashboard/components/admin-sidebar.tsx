@@ -54,8 +54,8 @@ export const AdminSidebar = () => {
     try {
       await authClient.signOut();
       toast.success(t("logoutSuccess"));
-      router.refresh();
-      router.push("/login");
+      const loginPath = locale === "vi" ? "/login" : `/${locale}/login`;
+      window.location.href = loginPath;
     } catch {
       toast.error(t("logoutError"));
     }
