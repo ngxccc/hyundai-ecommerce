@@ -155,14 +155,14 @@ This plan integrates directly with the design spec: `process/features/storefront
 
 ### Step 4: Address Book Management
 
-- [ ] Create Address Validation Schema `packages/database/validators/address.validators.ts`.
-- [ ] Create Address Server Actions in `apps/storefront/src/features/portal/actions/address.action.ts`:
+- [x] Create Address Validation Schema `packages/database/validators/address.validators.ts`.
+- [x] Create Address Server Actions in `apps/storefront/src/features/portal/actions/address.action.ts`:
   - `addAddressAction`
   - `updateAddressAction`
   - `deleteAddressAction`
   - `setDefaultAddressAction`
   - All write actions must execute `revalidateTag("addresses-" + userId)`.
-- [ ] Create Address Page `apps/storefront/app/[locale]/(shop)/portal/addresses/page.tsx`:
+- [x] Create Address Page `apps/storefront/app/[locale]/(shop)/portal/addresses/page.tsx`:
   - Grid list of saved addresses.
   - "Add Address" modal sheet containing recipient details, street address, district, province/city, default toggle.
   - Edit and Delete buttons on each address card.
