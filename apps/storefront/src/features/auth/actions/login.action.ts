@@ -1,12 +1,11 @@
 "use server";
 
 import { headers } from "next/headers";
-import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import { authService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import { loginSchema, type TLoginForm } from "@nhatnang/database/validators";
-import { formatValidationErrors } from "@/shared/lib/validation";
+import { validateSchema } from "@/shared/lib/validation";
 
 export const loginAction = async (data: TLoginForm) => {
   const reqHeaders = await headers();
@@ -27,18 +26,13 @@ export const loginAction = async (data: TLoginForm) => {
     };
   }
 
-  const parsed = await loginSchema.safeParseAsync(data);
-
-  if (!parsed.success) {
-    return {
-      success: false,
-      code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-      fieldErrors: formatValidationErrors(parsed.error),
-    };
+  const validation = validateSchema(loginSchema, data);
+  if (!validation.success) {
+    return validation;
   }
 
   try {
-    const data = await authService.loginEmail(parsed.data, {
+    const data = await authService.loginEmail(validation.data, {
       headers: reqHeaders,
     });
     return { success: true as const, data };

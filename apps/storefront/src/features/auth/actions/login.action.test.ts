@@ -172,6 +172,6 @@ describe("loginAction", () => {
       throw new Error("Expected loginAction to fail");
     }
 
-    expect(result.error).toBe("translated.INVALID_CREDENTIALS");
+    expect("error" in result ? result.error : null).toBe("translated.INVALID_CREDENTIALS");
   });
 });

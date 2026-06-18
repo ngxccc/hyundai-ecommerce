@@ -7,8 +7,7 @@ import {
   changePasswordSchema,
   type TChangePasswordForm,
 } from "@nhatnang/database/validators";
-import { formatValidationErrors } from "@/shared/lib/validation";
-import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
+import { validateSchema } from "@/shared/lib/validation";
 import { getTranslations } from "next-intl/server";
 
 export const changePasswordAction = async (data: TChangePasswordForm) => {
@@ -22,20 +21,16 @@ export const changePasswordAction = async (data: TChangePasswordForm) => {
     return { success: false, error: t("unauthorized") };
   }
 
-  const parsed = changePasswordSchema.safeParse(data);
-  if (!parsed.success) {
-    return {
-      success: false,
-      code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-      fieldErrors: formatValidationErrors(parsed.error),
-    };
+  const validation = validateSchema(changePasswordSchema, data);
+  if (!validation.success) {
+    return validation;
   }
 
   try {
     await auth.api.changePassword({
       body: {
-        currentPassword: parsed.data.currentPassword,
-        newPassword: parsed.data.newPassword,
+        currentPassword: validation.data.currentPassword,
+        newPassword: validation.data.newPassword,
         revokeOtherSessions: true,
       },
       headers: reqHeaders,

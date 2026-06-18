@@ -1,4 +1,6 @@
-import type { ZodError } from "zod";
+import type { ZodError, ZodType, infer as zInfer } from "zod";
+import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
+import type { ActionResult } from "@nhatnang/shared";
 
 export function formatValidationErrors(
   error: ZodError,
@@ -41,4 +43,22 @@ export function formatValidationErrors(
   });
 
   return fieldErrors;
+}
+
+export function validateSchema<T extends ZodType>(
+  schema: T,
+  data: unknown,
+): ActionResult<zInfer<T>> {
+  const parsed = schema.safeParse(data);
+  if (!parsed.success) {
+    return {
+      success: false,
+      code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+      fieldErrors: formatValidationErrors(parsed.error),
+    };
+  }
+  return {
+    success: true,
+    data: parsed.data,
+  };
 }

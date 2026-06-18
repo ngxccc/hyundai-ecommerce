@@ -1,5 +1,4 @@
 "use server";
-import { revalidateTag } from "next/cache";
 
 import { getCachedSession } from "@/shared/lib/session";
 import { userService } from "@nhatnang/database/services";
@@ -7,8 +6,7 @@ import {
   updateProfileSchema,
   type TUpdateProfileForm,
 } from "@nhatnang/database/validators";
-import { formatValidationErrors } from "@/shared/lib/validation";
-import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
+import { validateSchema } from "@/shared/lib/validation";
 import { getTranslations } from "next-intl/server";
 
 export const updateProfileAction = async (data: TUpdateProfileForm) => {
@@ -21,13 +19,9 @@ export const updateProfileAction = async (data: TUpdateProfileForm) => {
     return { success: false, error: t("unauthorized") };
   }
 
-  const parsed = updateProfileSchema.safeParse(data);
-  if (!parsed.success) {
-    return {
-      success: false,
-      code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-      fieldErrors: formatValidationErrors(parsed.error),
-    };
+  const validation = validateSchema(updateProfileSchema, data);
+  if (!validation.success) {
+    return validation;
   }
 
   try {
@@ -36,28 +30,27 @@ export const updateProfileAction = async (data: TUpdateProfileForm) => {
       session.user.role === "DEALER_PURCHASER";
 
     const updateData: Record<string, unknown> = {
-      name: parsed.data.name,
-      phone: parsed.data.phone,
+      name: validation.data.name,
+      phone: validation.data.phone,
     };
 
     if (!isDealer) {
-      if (parsed.data.companyName !== undefined) {
-        updateData["companyName"] = parsed.data.companyName || null;
+      if (validation.data.companyName !== undefined) {
+        updateData["companyName"] = validation.data.companyName || null;
       }
-      if (parsed.data.taxId !== undefined) {
-        updateData["taxId"] = parsed.data.taxId || null;
+      if (validation.data.taxId !== undefined) {
+        updateData["taxId"] = validation.data.taxId || null;
       }
-      if (parsed.data.businessType !== undefined) {
-        updateData["businessType"] = parsed.data.businessType;
+      if (validation.data.businessType !== undefined) {
+        updateData["businessType"] = validation.data.businessType;
       }
-      if (parsed.data.province !== undefined) {
-        updateData["province"] = parsed.data.province || null;
+      if (validation.data.province !== undefined) {
+        updateData["province"] = validation.data.province || null;
       }
     }
 
     await userService.update(session.user.id, updateData);
 
-    revalidateTag(`user-${session.user.id}`, "default");
     return { success: true };
   } catch (error) {
     console.error("[updateProfileAction]", error);

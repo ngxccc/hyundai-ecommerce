@@ -2,17 +2,14 @@
 
 import { headers } from "next/headers";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
-import {
-  AUTH_ERROR_CODES,
-  SYSTEM_ERROR_CODES,
-} from "@nhatnang/shared/constants";
+import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
 import { authService, userService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import {
   registerSchema,
   type TRegisterForm,
 } from "@nhatnang/database/validators";
-import { formatValidationErrors } from "@/shared/lib/validation";
+import { validateSchema } from "@/shared/lib/validation";
 
 export async function registerAction(data: TRegisterForm) {
   const reqHeaders = await headers();
@@ -32,17 +29,12 @@ export async function registerAction(data: TRegisterForm) {
     };
   }
 
-  const parsed = await registerSchema.safeParseAsync(data);
-
-  if (!parsed.success) {
-    return {
-      success: false,
-      code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-      fieldErrors: formatValidationErrors(parsed.error),
-    };
+  const validation = validateSchema(registerSchema, data);
+  if (!validation.success) {
+    return validation;
   }
 
-  const validatedData = parsed.data;
+  const validatedData = validation.data;
 
   const duplicateRecord = await userService.checkDuplicateUser(
     validatedData.email,
