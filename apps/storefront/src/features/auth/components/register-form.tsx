@@ -91,6 +91,7 @@ export function RegisterForm() {
         return;
       }
 
+      toast.success(t("successMessage"));
       router.push("/login");
       form.reset();
     } catch (error) {

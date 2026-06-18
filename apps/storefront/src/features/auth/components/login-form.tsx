@@ -94,7 +94,6 @@ export function LoginForm() {
           }
         }
 
-        toast.success(t("successMessage"));
         router.push(callbackUrl);
         form.reset();
       } catch (error) {

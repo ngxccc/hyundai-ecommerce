@@ -80,7 +80,6 @@ export function ProfileForm({
   const businessType = useWatch({
     control: form.control,
     name: "businessType",
-    defaultValue: "END_USER",
   });
 
   return (
