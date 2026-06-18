@@ -65,6 +65,7 @@ _Focus on completing this section before looking further down._
 - [ ] Storefront Cart Mobile UI Optimization - Plan ([plan](features/storefront/active/storefront-cart-mobile-ui_PLAN_14-06-26.md))
 - [ ] B2B Checkout Flow & User Roles Refactor — Plan ([plan](features/storefront/active/storefront-b2b-checkout-and-roles_PLAN_15-06-26.md))
 - [ ] Phase Plan: Customer Portal & Settings UI (Storefront) ([plan](features/storefront/active/storefront-customer-portal-and-settings_PLAN_17-06-26.md))
+- [ ] Logout Cache Fix Plan ([plan](general-plans/active/logout_cache_fix_PLAN_18-06-26.md))
 
 ---
 
