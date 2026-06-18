@@ -4,6 +4,7 @@ import type { Locale } from "next-intl";
 import type { Metadata } from "next";
 import { ProfileForm } from "@/features/portal/components/profile-form";
 import { getCachedSession } from "@/shared/lib/session";
+import { userService } from "@nhatnang/database/services";
 
 export async function generateMetadata({
   params,
@@ -32,13 +33,22 @@ export default async function ProfilePage({
       href: `/login?callbackUrl=${encodeURIComponent("/portal/profile")}`,
       locale,
     });
+    return null;
+  }
+
+  const dbUser = await userService.getById(session.user.id);
+  if (!dbUser) {
+    redirect({
+      href: `/login?callbackUrl=${encodeURIComponent("/portal/profile")}`,
+      locale,
+    });
+    return null;
   }
 
   const t = await getTranslations({ locale, namespace: "Portal.profile" });
 
-  const user = session!.user;
   const isDealer =
-    user.role === "DEALER_APPROVER" || user.role === "DEALER_PURCHASER";
+    dbUser.role === "DEALER_APPROVER" || dbUser.role === "DEALER_PURCHASER";
 
   return (
     <div>
@@ -49,15 +59,15 @@ export default async function ProfilePage({
       </div>
 
       <ProfileForm
-        email={user.email}
+        email={dbUser.email}
         isDealer={isDealer}
         defaultValues={{
-          name: user.name,
-          phone: user.phone ?? "",
-          companyName: user.companyName ?? "",
-          taxId: user.taxId ?? "",
-          businessType: user.businessType,
-          province: user.province ?? "",
+          name: dbUser.name,
+          phone: dbUser.phone ?? "",
+          companyName: dbUser.companyName ?? "",
+          taxId: dbUser.taxId ?? "",
+          businessType: dbUser.businessType ?? "END_USER",
+          province: dbUser.province ?? "",
         }}
       />
     </div>
