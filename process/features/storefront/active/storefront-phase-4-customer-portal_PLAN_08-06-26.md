@@ -1,7 +1,7 @@
 # Phase 4: Customer Quoting & Negotiation Portal — Plan
 
-**Date**: 08-06-26  
-**Complexity**: Simple  
+**Date**: 08-06-26
+**Complexity**: Simple
 **Status**: ⏳ PLANNED
 
 ## Overview
@@ -14,8 +14,8 @@ This phase conforms to the B2B CRM standards set in `process/context/all-context
 
 ## Phase Completion Rules
 
-* Complete when the storefront quoting drawer and user quotes pages compile and allow bid/pricing timeline updates.
-* Integration tests between the admin CRM cockpit and storefront user quotes flow pass.
+- Complete when the storefront quoting drawer and user quotes pages compile and allow bid/pricing timeline updates.
+- Integration tests between the admin CRM cockpit and storefront user quotes flow pass.
 
 ---
 
@@ -66,8 +66,8 @@ This phase conforms to the B2B CRM standards set in `process/context/all-context
 
 ## Resume and Execution Handoff
 
-* Fetch data using existing `QuotesService` capabilities.
-* Align timeline message structures with B2B CRM schemas.
-* Verify security context of quotes reads (user scope only).
+- Fetch data using existing `QuotesService` capabilities.
+- Align timeline message structures with B2B CRM schemas.
+- Verify security context of quotes reads (user scope only).
 
 Next Step: ENTER EXECUTE MODE on storefront-phase-4-customer-portal_PLAN_08-06-26.md.
