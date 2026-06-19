@@ -19,7 +19,7 @@ export function PortalSidebar() {
       </aside>
 
       {/* Mobile Horizontal Navigation Tab Bar */}
-      <div className="mb-4 md:hidden">
+      <div className="mb-2 md:hidden">
         <NavLinks orientation="horizontal" />
       </div>
     </>

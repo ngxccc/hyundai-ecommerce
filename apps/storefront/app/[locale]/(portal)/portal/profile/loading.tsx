@@ -11,7 +11,6 @@ export default function ProfileLoading() {
       <div className="space-y-6">
         {/* Personal Info Section */}
         <section className="space-y-4">
-          <Skeleton className="h-4 w-40 animate-pulse rounded-md" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Skeleton className="h-4 w-24 animate-pulse rounded-md" />

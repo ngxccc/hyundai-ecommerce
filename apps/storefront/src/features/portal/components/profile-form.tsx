@@ -89,9 +89,6 @@ export function ProfileForm({
     >
       {/* Personal Information */}
       <section>
-        <h2 className="mb-4 text-sm font-semibold tracking-wide text-zinc-500 uppercase">
-          {tp("personalSection")}
-        </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field data-invalid={!!form.formState.errors.name}>
             <FieldLabel htmlFor="name">{tp("nameLabel")} *</FieldLabel>

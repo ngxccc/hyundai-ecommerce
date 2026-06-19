@@ -3,15 +3,20 @@
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@nhatnang/ui/lib/utils";
 import {
-  User,
-  Lock,
-  MapPin,
   ClipboardList,
   CreditCard,
+  Lock,
   LogOut,
+  MapPin,
+  User,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { authClient } from "@nhatnang/database/auth-client";
+
+interface NavLinksProps {
+  onClick?: () => void;
+  orientation?: "vertical" | "horizontal";
+}
 
 const navItems = [
   { key: "profile", href: "/portal/profile", icon: User },
@@ -27,6 +32,18 @@ interface NavLinksProps {
 }
 
 export function NavLinks({ onClick, orientation = "vertical" }: NavLinksProps) {
+  const { data: session } = authClient.useSession();
+  const userRole = (session?.user as { role?: string })?.role;
+  const isDealer =
+    userRole === "DEALER_APPROVER" || userRole === "DEALER_PURCHASER";
+
+  const filteredNavItems = navItems.filter((item) => {
+    if (item.key === "debt") {
+      return isDealer;
+    }
+    return true;
+  });
+
   const t = useTranslations("Portal.nav");
   const pathname = usePathname();
   const locale = useLocale();
@@ -68,7 +85,7 @@ export function NavLinks({ onClick, orientation = "vertical" }: NavLinksProps) {
             : undefined
         }
       >
-        {navItems.map((item) => {
+        {filteredNavItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           const Icon = item.icon;
           return (
