@@ -36,15 +36,24 @@ export async function POST(request: Request) {
 
     // 2. Process payment state atomically in database
     if (code === PAYOS_SUCCESS_CODE) {
-      const updated = await paymentService.confirmPayOSPayment(
+      let updated = await paymentService.confirmPayOSPayment(
         String(data.orderCode),
         data.amount,
         data.reference,
       );
 
       if (!updated) {
+        // Fallback: check if it matches a B2B debt repayment
+        updated = await paymentService.confirmDebtRepayment(
+          String(data.orderCode),
+          data.amount,
+          data.reference,
+        );
+      }
+
+      if (!updated) {
         console.warn(
-          `[PayOS Webhook] Order code ${data.orderCode} already processed or not found`,
+          `[PayOS Webhook] Order code ${data.orderCode} already processed or not found in order payments or debt repayments`,
         );
       }
     }

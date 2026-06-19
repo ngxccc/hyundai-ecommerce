@@ -12,7 +12,7 @@ import { Button } from "@nhatnang/ui/components/ui/button";
 import { SelectAddressModal } from "./select-address-modal";
 import { toast } from "sonner";
 import { Link, useRouter } from "@/i18n/routing";
-import { fetchApi } from "@/shared/lib/api-client";
+import { fetchApi } from "@nhatnang/shared/lib/api-client";
 import {
   calculateCheckoutTotals,
   priceFormatter,

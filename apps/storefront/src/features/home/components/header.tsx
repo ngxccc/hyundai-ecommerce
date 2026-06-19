@@ -1,6 +1,5 @@
-import { headers } from "next/headers";
+import { getCachedSession } from "@/shared/lib/session";
 import { getTranslations } from "next-intl/server";
-import { auth } from "@nhatnang/database/auth";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { UserCircle } from "lucide-react";
@@ -13,8 +12,7 @@ export async function Header() {
   const ctaClasses =
     "font-display h-10 rounded-md px-4 text-xs font-bold uppercase tracking-widest transition-all duration-200";
 
-  const reqHeaders = await headers();
-  const session = await auth.api.getSession({ headers: reqHeaders });
+  const session = await getCachedSession();
   const isLoggedIn = !!session?.user;
   const userName = session?.user?.name;
 

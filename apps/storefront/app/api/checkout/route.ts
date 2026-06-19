@@ -1,7 +1,7 @@
 import { HTTP_STATUS, FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import { calculateCheckoutTotals } from "@nhatnang/shared/lib/utils";
-import { auth } from "@nhatnang/database/auth";
+import { getCachedSession } from "@/shared/lib/session";
 import {
   cartService,
   orderService,
@@ -13,7 +13,6 @@ import {
   generatePayOSOrderCode,
   PAYOS_SUCCESS_CODE,
 } from "@nhatnang/shared/lib/payos";
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import type {
   CreateOrderDTO,
@@ -37,8 +36,7 @@ export async function POST(request: Request) {
         { status: HTTP_STATUS.TOO_MANY_REQUESTS },
       );
     }
-    const reqHeaders = await headers();
-    const session = await auth.api.getSession({ headers: reqHeaders });
+    const session = await getCachedSession();
     if (!session?.user) {
       return NextResponse.json(
         { success: false, error: "errors.unauthorized" },

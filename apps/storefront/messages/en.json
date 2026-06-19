@@ -236,6 +236,8 @@
     "insufficientStock": "Quantity exceeds available stock",
     "addToCartFailed": "Failed to add to cart",
     "unauthorized": "Unauthorized",
+    "orderNotFound": "Order not found",
+    "forbidden": "Access denied",
     "invalidAmount": "Invalid repayment amount",
     "checkoutFailed": "Checkout failed",
     "updateCartFailed": "Failed to update cart",

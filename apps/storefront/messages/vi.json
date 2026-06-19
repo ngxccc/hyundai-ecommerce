@@ -235,6 +235,8 @@
     "insufficientStock": "Số lượng vượt quá tồn kho khả dụng",
     "addToCartFailed": "Thêm vào giỏ hàng thất bại",
     "unauthorized": "Chưa đăng nhập",
+    "orderNotFound": "Không tìm thấy đơn hàng",
+    "forbidden": "Không có quyền thực hiện hành động này",
     "invalidAmount": "Số tiền thanh toán không hợp lệ",
     "checkoutFailed": "Thanh toán thất bại",
     "updateCartFailed": "Cập nhật giỏ hàng thất bại",

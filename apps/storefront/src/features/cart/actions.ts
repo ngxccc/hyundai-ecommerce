@@ -1,16 +1,14 @@
 "use server";
 
-import { headers } from "next/headers";
+import { getCachedSession } from "@/shared/lib/session";
 import { getLocale } from "next-intl/server";
-import { auth } from "@nhatnang/database/auth";
 import { cartService } from "@nhatnang/database/services";
 import type { CartItem } from "./hooks/use-cart";
 import { getTranslationError } from "@/shared/lib/utils";
 
 export const getDbCartAction = async () => {
   try {
-    const reqHeaders = await headers();
-    const session = await auth.api.getSession({ headers: reqHeaders });
+    const session = await getCachedSession();
     if (!session?.user) {
       return { success: true, items: [] as CartItem[] };
     }
@@ -53,8 +51,7 @@ export const addToDbCartAction = async (
   quantity: number,
 ) => {
   try {
-    const reqHeaders = await headers();
-    const session = await auth.api.getSession({ headers: reqHeaders });
+    const session = await getCachedSession();
     if (!session?.user) {
       const errorMessage = await getTranslationError("unauthorized");
       return { success: false, error: errorMessage };
@@ -76,8 +73,7 @@ export const updateDbQuantityAction = async (
   quantity: number,
 ) => {
   try {
-    const reqHeaders = await headers();
-    const session = await auth.api.getSession({ headers: reqHeaders });
+    const session = await getCachedSession();
     if (!session?.user) {
       const errorMessage = await getTranslationError("unauthorized");
       return { success: false, error: errorMessage };
@@ -96,8 +92,7 @@ export const updateDbQuantityAction = async (
 
 export const removeFromDbCartAction = async (productId: string) => {
   try {
-    const reqHeaders = await headers();
-    const session = await auth.api.getSession({ headers: reqHeaders });
+    const session = await getCachedSession();
     if (!session?.user) {
       const errorMessage = await getTranslationError("unauthorized");
       return { success: false, error: errorMessage };
@@ -121,8 +116,7 @@ export const mergeLocalCartAction = async (
   localItems: { productId: string; quantity: number }[],
 ) => {
   try {
-    const reqHeaders = await headers();
-    const session = await auth.api.getSession({ headers: reqHeaders });
+    const session = await getCachedSession();
     if (!session?.user) {
       const errorMessage = await getTranslationError("unauthorized");
       return { success: false, error: errorMessage };
