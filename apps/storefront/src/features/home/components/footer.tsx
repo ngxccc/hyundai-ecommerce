@@ -1,6 +1,6 @@
 import { CopyrightYear } from "./copyright-year";
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Send } from "lucide-react";
 import { Input } from "@nhatnang/ui/components/ui/input";
@@ -19,8 +19,8 @@ const CATEGORY_SLUG_MAP: Record<string, string> = {
   atsPanels: "may-phat-dien",
 };
 
-export function Footer() {
-  const t = useTranslations("HomePage");
+export async function Footer() {
+  const t = await getTranslations("HomePage");
 
   // eslint-disable-next-line @typescript-eslint/require-await
   const subscribeToNewsletter = async (formData: FormData) => {
