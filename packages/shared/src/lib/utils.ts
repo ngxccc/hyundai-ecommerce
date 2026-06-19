@@ -1,3 +1,10 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 export const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -35,3 +42,26 @@ export const toIntegerString = (value: string | null | undefined) => {
   if (!value) return "";
   return value.split(".")[0] ?? "";
 };
+
+export interface CheckoutTotals {
+  subtotal: number;
+  vat: number;
+  totalAmount: number;
+  depositAmount: number;
+}
+
+export function calculateCheckoutTotals(
+  subtotal: number,
+  vatRate: number,
+  depositRate: number,
+): CheckoutTotals {
+  const vat = subtotal * vatRate;
+  const totalAmount = subtotal + vat;
+  const depositAmount = Math.round(totalAmount * depositRate);
+  return {
+    subtotal,
+    vat,
+    totalAmount,
+    depositAmount,
+  };
+}

@@ -38,6 +38,7 @@ export const mockOrderGetPaymentByTransactionId = mock();
 export const mockOrderUpdatePayment = mock();
 export const mockConfirmPayOSPayment = mock();
 export const mockOrderCheckoutWithTradeCredit = mock();
+export const mockPaymentCreateDebtRepayment = mock();
 
 export const mockAuthGetSession = mock();
 export const mockCheckRateLimit = mock();
@@ -76,15 +77,17 @@ await vi.mock("@nhatnang/database/services", () => ({
     updateOrderStatus: mockOrderUpdateOrderStatus,
     selectWinningBid: mockOrderSelectWinningBid,
     approveDealerOrder: mockOrderApproveDealerOrder,
-    verifyCashPayment: mockOrderVerifyCashPayment,
     approveOrderCancellation: mockOrderApproveOrderCancellation,
     createOrderWithItems: mockOrderCreateOrderWithItems,
+    checkoutWithTradeCredit: mockOrderCheckoutWithTradeCredit,
+  },
+  paymentService: {
+    verifyCashPayment: mockOrderVerifyCashPayment,
     createPayment: mockOrderCreatePayment,
     createPaymentTransaction: mockOrderCreatePaymentTransaction,
-    getPaymentByTransactionId: mockOrderGetPaymentByTransactionId,
     updatePayment: mockOrderUpdatePayment,
     confirmPayOSPayment: mockConfirmPayOSPayment,
-    checkoutWithTradeCredit: mockOrderCheckoutWithTradeCredit,
+    createDebtRepayment: mockPaymentCreateDebtRepayment,
   },
 }));
 
@@ -192,6 +195,7 @@ beforeEach(() => {
   mockOrderUpdatePayment.mockReset();
   mockConfirmPayOSPayment.mockReset();
   mockOrderCheckoutWithTradeCredit.mockReset();
+  mockPaymentCreateDebtRepayment.mockReset();
   mockAuthGetSession.mockReset();
   mockCheckRateLimit.mockReset();
   mockCheckRateLimitWithQueue.mockReset();
