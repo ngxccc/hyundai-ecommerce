@@ -15,11 +15,12 @@ import {
   PopoverContent,
   PopoverAnchor,
 } from "@nhatnang/ui/components/ui/popover";
-import { priceFormatter } from "@/shared/lib/utils";
+import { priceFormatter } from "@nhatnang/shared/lib/utils";
 
 export function HeaderCart() {
   const t = useTranslations("Cart");
   const isMounted = useIsMounted();
+  const isCartSynced = useCart((state) => state.isCartSynced) ?? false;
 
   const cartItems = useCart((state) => state.items) ?? [];
   const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -38,11 +39,11 @@ export function HeaderCart() {
     }, 150);
   };
 
-  if (!isMounted) {
+  if (!isMounted || !isCartSynced) {
     return (
       <div className="relative p-2" data-testid="cart-skeleton">
         <ShoppingCart className="size-6 text-zinc-600" />
-        <span className="absolute top-1 right-1 flex h-4 w-4 animate-pulse rounded-full bg-zinc-200" />
+        {/* <span className="absolute top-1 right-1 flex h-4 w-4 animate-pulse rounded-full bg-zinc-200" /> */}
       </div>
     );
   }
@@ -50,7 +51,11 @@ export function HeaderCart() {
   return (
     <>
       {/* Mobile View: Direct Link */}
-      <Link href="/cart" className="relative p-2 md:hidden" aria-label={t("title")}>
+      <Link
+        href="/cart"
+        className="relative p-2 md:hidden"
+        aria-label={t("title")}
+      >
         <ShoppingCart className="size-6 text-zinc-600" />
         {totalCount > 0 && (
           <Badge className="bg-primary text-primary-foreground absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full p-0 font-mono text-[9px] font-bold">
@@ -106,7 +111,10 @@ export function HeaderCart() {
                             sizes="40px"
                           />
                         ) : (
-                          <ProductImagePlaceholder showText={false} iconClassName="size-4" />
+                          <ProductImagePlaceholder
+                            showText={false}
+                            iconClassName="size-4"
+                          />
                         )}
                       </div>
                       <div className="min-w-0 flex-1">

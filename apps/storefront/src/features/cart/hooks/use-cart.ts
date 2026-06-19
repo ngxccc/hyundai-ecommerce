@@ -1,6 +1,12 @@
 import { useIsMounted } from "@/shared/hooks/useIsMounted";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import {
+  addToDbCartAction,
+  updateDbQuantityAction,
+  removeFromDbCartAction,
+} from "../actions";
+import { toast } from "sonner";
 
 export interface CartItem {
   productId: string;
@@ -14,21 +20,37 @@ export interface CartItem {
 interface CartState {
   items: CartItem[];
   isOpen: boolean;
+  isLoggedIn: boolean;
+  isCartSynced: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  addItem: (item: Omit<CartItem, "quantity">, quantity: number) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  removeItem: (productId: string) => void;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
+  setIsCartSynced: (isCartSynced: boolean) => void;
+  addItem: (
+    item: Omit<CartItem, "quantity">,
+    quantity: number,
+  ) => Promise<void>;
+  updateQuantity: (productId: string, quantity: number) => Promise<void>;
+  removeItem: (productId: string) => Promise<void>;
   clearCart: () => void;
   syncWithServer: (serverItems: CartItem[]) => void;
 }
 
 export const useCartStore = create<CartState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       items: [],
       isOpen: false,
+      isLoggedIn: false,
+      isCartSynced: true,
       setIsOpen: (isOpen) => set({ isOpen }),
-      addItem: (item, quantity) =>
+      setIsLoggedIn: (isLoggedIn) =>
+        set({
+          isLoggedIn,
+          isCartSynced: isLoggedIn ? false : true,
+        }),
+      setIsCartSynced: (isCartSynced) => set({ isCartSynced }),
+      addItem: async (item, quantity) => {
+        // 1. Update local state immediately (Optimistic Update)
         set((state) => {
           const existingItem = state.items.find(
             (i) => i.productId === item.productId,
@@ -52,8 +74,18 @@ export const useCartStore = create<CartState>()(
           return {
             items: [...state.items, { ...item, quantity: newQty }],
           };
-        }),
-      updateQuantity: (productId, quantity) =>
+        });
+
+        // 2. If logged in, sync with database
+        if (get().isLoggedIn) {
+          const result = await addToDbCartAction(item.productId, quantity);
+          if (!result.success) {
+            toast.error(result.error ?? "Failed to add item to server cart");
+          }
+        }
+      },
+      updateQuantity: async (productId, quantity) => {
+        // 1. Update local state immediately
         set((state) => {
           if (quantity <= 0) {
             return {
@@ -68,17 +100,40 @@ export const useCartStore = create<CartState>()(
               return i;
             }),
           };
-        }),
-      removeItem: (productId) =>
+        });
+
+        // 2. If logged in, sync with database
+        if (get().isLoggedIn) {
+          const result = await updateDbQuantityAction(productId, quantity);
+          if (!result.success) {
+            toast.error(result.error ?? "Failed to update quantity on server");
+          }
+        }
+      },
+      removeItem: async (productId) => {
+        // 1. Update local state immediately
         set((state) => ({
           items: state.items.filter((i) => i.productId !== productId),
-        })),
+        }));
+
+        // 2. If logged in, sync with database
+        if (get().isLoggedIn) {
+          const result = await removeFromDbCartAction(productId);
+          if (!result.success) {
+            toast.error(result.error ?? "Failed to remove item from server");
+          }
+        }
+      },
       clearCart: () => set({ items: [] }),
-      syncWithServer: (serverItems) => set({ items: serverItems }),
+      syncWithServer: (serverItems) =>
+        set({ items: serverItems, isCartSynced: true }),
     }),
     {
       name: "cart-storage",
-      partialize: (state) => ({ items: state.items }),
+      partialize: (state) => ({
+        // Only store items in localStorage if the user is a guest (not logged in)
+        items: state.isLoggedIn ? [] : state.items,
+      }),
     },
   ),
 );

@@ -8,15 +8,17 @@ import { Button } from "@nhatnang/ui/components/ui/button";
 import { Card, CardContent } from "@nhatnang/ui/components/ui/card";
 import { Trash2, Plus, Minus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { priceFormatter } from "@/shared/lib/utils";
+import { priceFormatter } from "@nhatnang/shared/lib/utils";
 import { FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
-import { toast } from "sonner";
+import { useRouter } from "@/i18n/routing";
 import { useIsMounted } from "@/shared/hooks/useIsMounted";
 
 export function CartTemplate() {
   const t = useTranslations("Cart");
   const isMounted = useIsMounted();
+  const router = useRouter();
 
+  const isCartSynced = useCart((state) => state.isCartSynced) ?? false;
   const cartItems = useCart((state) => state.items) ?? [];
   const { updateQuantity, removeItem } = useCartStore();
 
@@ -32,7 +34,7 @@ export function CartTemplate() {
     const parsed = parseInt(val, 10);
     if (!isNaN(parsed) && parsed > 0) {
       const clamped = Math.min(parsed, totalStock);
-      updateQuantity(productId, clamped);
+      void updateQuantity(productId, clamped);
     }
   };
 
@@ -43,9 +45,9 @@ export function CartTemplate() {
   ) => {
     const parsed = parseInt(val, 10);
     if (isNaN(parsed) || parsed < 1) {
-      updateQuantity(productId, 1);
+      void updateQuantity(productId, 1);
     } else if (parsed > totalStock) {
-      updateQuantity(productId, totalStock);
+      void updateQuantity(productId, totalStock);
     }
 
     setInputValues((prev) => {
@@ -62,10 +64,10 @@ export function CartTemplate() {
   const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleActionClick = () => {
-    toast.info(t("comingSoon"));
+    router.push("/checkout");
   };
 
-  if (!isMounted) {
+  if (!isMounted || !isCartSynced) {
     return (
       <div className="mx-auto max-w-7xl px-6 py-12" data-testid="cart-loading">
         <div className="animate-pulse space-y-6">
@@ -159,7 +161,7 @@ export function CartTemplate() {
                       size="icon"
                       className="size-8 rounded-none"
                       onClick={() =>
-                        updateQuantity(item.productId, item.quantity - 1)
+                        void updateQuantity(item.productId, item.quantity - 1)
                       }
                       disabled={item.quantity <= 1}
                     >
@@ -194,7 +196,7 @@ export function CartTemplate() {
                       size="icon"
                       className="size-8 rounded-none"
                       onClick={() =>
-                        updateQuantity(item.productId, item.quantity + 1)
+                        void updateQuantity(item.productId, item.quantity + 1)
                       }
                       disabled={item.quantity >= item.totalStock}
                     >
@@ -205,7 +207,7 @@ export function CartTemplate() {
                     variant="ghost"
                     size="icon"
                     className="size-8 text-zinc-400 hover:text-red-600"
-                    onClick={() => removeItem(item.productId)}
+                    onClick={() => void removeItem(item.productId)}
                     aria-label="Xóa sản phẩm"
                   >
                     <Trash2 className="size-4" />

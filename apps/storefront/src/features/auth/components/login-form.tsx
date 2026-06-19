@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { type TLoginForm, loginSchema } from "@nhatnang/database/validators";
 import { loginAction } from "../actions/login.action";
-import { useRouter, Link } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -27,14 +27,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@nhatnang/ui/components/ui/form";
-import { useCartStore, mergeLocalCartAction } from "@/features/cart";
+import {
+  useCartStore,
+  mergeLocalCartAction,
+} from "@/features/cart";
 
 export function LoginForm() {
   const searchParams = useSearchParams();
   const rawCallbackUrl = searchParams.get("callbackUrl");
   const callbackUrl = rawCallbackUrl?.startsWith("/") ? rawCallbackUrl : "/";
 
-  const router = useRouter();
   const t = useTranslations("Login");
   const [isPending, startTransition] = useTransition();
 
@@ -76,25 +78,24 @@ export function LoginForm() {
           return;
         }
 
-        // Merge guest cart if items exist
+        // Merge guest cart if items exist.
+        // We do NOT need to call getDbCartAction here because window.location.href
+        // triggers a full page reload, which mounts the global CartSync component
+        // and syncs the cart from the DB automatically.
         const localItems = useCartStore.getState().items;
         if (localItems.length > 0) {
           try {
-            const mergeResult = await mergeLocalCartAction(
+            await mergeLocalCartAction(
               localItems.map((item) => ({
                 productId: item.productId,
                 quantity: item.quantity,
               })),
             );
-            if (mergeResult.success) {
-              useCartStore.getState().clearCart();
-            }
           } catch (mergeError) {
             console.error("Cart merge failed:", mergeError);
           }
         }
-
-        router.push(callbackUrl);
+        window.location.href = callbackUrl;
         form.reset();
       } catch (error) {
         console.error("Login failed:", error);

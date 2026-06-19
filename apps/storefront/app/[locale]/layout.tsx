@@ -15,6 +15,7 @@ import { Header } from "@/features/home/components";
 import { Analytics } from "@vercel/analytics/next";
 import { ScrollToTop } from "@nhatnang/ui/components/ui/scroll-to-top";
 import { Toaster } from "@nhatnang/ui/components/ui/sonner";
+import { CartSync } from "@/features/cart";
 
 const inter = Inter({
   subsets: ["vietnamese", "latin"],
@@ -148,6 +149,7 @@ async function LocalizedLayoutContent({
 
   return (
     <NextIntlClientProvider messages={messages}>
+      <CartSync />
       <Header />
       <main className="flex-1 pt-16">{children}</main>
       <Toaster position="top-center" />
