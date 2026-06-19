@@ -82,7 +82,7 @@ export function MobileMenu({ isLoggedIn, userName }: MobileMenuProps) {
           {navItems.map((item) => (
             <Link
               key={item}
-              className="font-display text-muted-foreground hover:text-primary focus-visible:ring-ring text-sm font-bold tracking-widest uppercase transition-all duration-300 outline-none hover:pl-2"
+              className="font-display text-muted-foreground hover:text-primary focus-visible:ring-ring text-[12px] font-bold tracking-widest uppercase transition-all duration-300 outline-none hover:pl-2"
               href={`/${item}`}
               onClick={(e) => {
                 close();
