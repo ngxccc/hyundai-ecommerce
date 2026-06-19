@@ -1,9 +1,18 @@
 import { HTTP_STATUS, FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
+import { calculateCheckoutTotals } from "@nhatnang/shared/lib/utils";
 import { auth } from "@nhatnang/database/auth";
-import { cartService, orderService } from "@nhatnang/database/services";
+import {
+  cartService,
+  orderService,
+  paymentService,
+} from "@nhatnang/database/services";
 import { env } from "@/env";
-import { generatePayOSSignature } from "@/shared/lib/payos";
+import {
+  createPayOSPaymentLink,
+  generatePayOSOrderCode,
+  PAYOS_SUCCESS_CODE,
+} from "@nhatnang/shared/lib/payos";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import type {
@@ -92,12 +101,10 @@ export async function POST(request: Request) {
       subtotal += Number(item.product.price) * item.quantity;
     }
 
-    // Add VAT dynamically
-    const totalAmount = subtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE);
-
-    // 2. Define payment amount (spec: Math.round(total * DEPOSIT_RATE))
-    const depositAmount = Math.round(
-      totalAmount * FINANCIAL_CONSTANTS.DEPOSIT_RATE,
+    const { totalAmount, depositAmount } = calculateCheckoutTotals(
+      subtotal,
+      FINANCIAL_CONSTANTS.VAT_RATE,
+      FINANCIAL_CONSTANTS.DEPOSIT_RATE,
     );
     const paymentAmount =
       paymentOption === "DEPOSIT" ? depositAmount : totalAmount;
@@ -107,7 +114,7 @@ export async function POST(request: Request) {
     let orderCode = 0;
 
     if (paymentMethod === "PAYOS") {
-      orderCode = Date.now() * 1000 + Math.floor(Math.random() * 1000);
+      orderCode = generatePayOSOrderCode();
       checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/mock-payment?orderCode=${orderCode}`;
 
       if (
@@ -115,44 +122,16 @@ export async function POST(request: Request) {
         env.PAYOS_API_KEY !== "mock_api_key" &&
         !env.PAYOS_CLIENT_ID.startsWith("mock")
       ) {
-        const requestData = {
-          orderCode,
-          amount: Math.round(paymentAmount),
-          description: `Thanh toan DH ${orderCode}`.slice(0, 25),
-          cancelUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout/cancel`,
-          returnUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout/success`,
-        };
-
-        const signature = generatePayOSSignature(
-          requestData,
-          env.PAYOS_CHECKSUM_KEY,
-        );
-
         try {
-          const response = await fetch(
-            "https://api-merchant.payos.vn/v2/payment-requests",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "x-client-id": env.PAYOS_CLIENT_ID,
-                "x-api-key": env.PAYOS_API_KEY,
-              },
-              body: JSON.stringify({
-                ...requestData,
-                signature,
-              }),
-            },
-          );
+          const result = await createPayOSPaymentLink({
+            orderCode,
+            amount: Math.round(paymentAmount),
+            description: `Thanh toan GD ${orderCode}`.slice(0, 25),
+            cancelUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout/cancel`,
+            returnUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout/success`,
+          });
 
-          const result = (await response.json()) as {
-            code: string;
-            data?: {
-              checkoutUrl: string;
-            };
-          };
-
-          if (result?.code === "00" && result.data?.checkoutUrl) {
+          if (result?.code === PAYOS_SUCCESS_CODE && result.data?.checkoutUrl) {
             checkoutUrl = result.data.checkoutUrl;
           } else {
             console.error("PayOS API error:", result);
@@ -226,7 +205,7 @@ export async function POST(request: Request) {
       );
 
       if (paymentMethod === "PAYOS") {
-        await orderService.createPayment({
+        await paymentService.createPayment({
           orderId: order.id,
           amount: String(totalAmount),
           method: "PAYOS",
@@ -238,7 +217,7 @@ export async function POST(request: Request) {
           paymentOption === "DEPOSIT" ? depositAmount : totalAmount;
         const transactionType =
           paymentOption === "DEPOSIT" ? "DEPOSIT" : "FULL";
-        await orderService.createPaymentTransaction({
+        await paymentService.createPaymentTransaction({
           orderId: order.id,
           amount: String(txAmount),
           paymentMethod: "PAYOS",
@@ -251,7 +230,7 @@ export async function POST(request: Request) {
         // transactionId is left null here — it will be populated later by
         // /api/payments/generate-deposit-link when the user opts to pay the
         // 20% deposit online via PayOS instead of at the office.
-        await orderService.createPayment({
+        await paymentService.createPayment({
           orderId: order.id,
           amount: String(totalAmount),
           method: "CASH",

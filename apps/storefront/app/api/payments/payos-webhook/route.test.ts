@@ -3,7 +3,8 @@ import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import {
   generatePayOSSignature,
   type PayOSWebhookData,
-} from "@/shared/lib/payos";
+  PAYOS_SUCCESS_CODE,
+} from "@nhatnang/shared";
 import { env } from "@/env";
 import { mockConfirmPayOSPayment } from "@nhatnang/shared/testing/action-mocks";
 
@@ -15,18 +16,18 @@ describe("POST /api/payments/payos-webhook", () => {
     vi.clearAllMocks();
   });
 
-  const validData: PayOSWebhookData = {
+  const validData = {
     orderCode: 12345678,
     amount: 20000,
     description: "Thanh toan DH 12345678",
     reference: "REF-123",
-  };
+  } as unknown as PayOSWebhookData;
 
   it("returns 400 when signature is missing", async () => {
     const request = new Request("http://localhost/api/payments/payos-webhook", {
       method: "POST",
       body: JSON.stringify({
-        code: "00",
+        code: PAYOS_SUCCESS_CODE,
         desc: "success",
         data: validData,
       }),
@@ -44,7 +45,7 @@ describe("POST /api/payments/payos-webhook", () => {
     const request = new Request("http://localhost/api/payments/payos-webhook", {
       method: "POST",
       body: JSON.stringify({
-        code: "00",
+        code: PAYOS_SUCCESS_CODE,
         desc: "success",
         data: validData,
         signature: "invalid_signature",
@@ -68,7 +69,7 @@ describe("POST /api/payments/payos-webhook", () => {
     const request = new Request("http://localhost/api/payments/payos-webhook", {
       method: "POST",
       body: JSON.stringify({
-        code: "00",
+        code: PAYOS_SUCCESS_CODE,
         desc: "success",
         data: validData,
         signature,
@@ -126,7 +127,7 @@ describe("POST /api/payments/payos-webhook", () => {
     const request = new Request("http://localhost/api/payments/payos-webhook", {
       method: "POST",
       body: JSON.stringify({
-        code: "00",
+        code: PAYOS_SUCCESS_CODE,
         desc: "success",
         data: validData,
         signature,
@@ -160,7 +161,7 @@ describe("POST /api/payments/payos-webhook", () => {
     const request = new Request("http://localhost/api/payments/payos-webhook", {
       method: "POST",
       body: JSON.stringify({
-        code: "00",
+        code: PAYOS_SUCCESS_CODE,
         desc: "success",
         data: validData,
         signature,

@@ -1,10 +1,11 @@
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
-import { orderService } from "@nhatnang/database/services";
+import { paymentService } from "@nhatnang/database/services";
 import { env } from "@/env";
 import {
   verifyPayOSSignature,
   type PayOSWebhookBody,
-} from "@/shared/lib/payos";
+  PAYOS_SUCCESS_CODE,
+} from "@nhatnang/shared";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -34,8 +35,8 @@ export async function POST(request: Request) {
     }
 
     // 2. Process payment state atomically in database
-    if (code === "00") {
-      const updated = await orderService.confirmPayOSPayment(
+    if (code === PAYOS_SUCCESS_CODE) {
+      const updated = await paymentService.confirmPayOSPayment(
         String(data.orderCode),
         data.amount,
         data.reference,
