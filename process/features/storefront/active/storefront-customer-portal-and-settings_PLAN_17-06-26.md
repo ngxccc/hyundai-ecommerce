@@ -169,13 +169,13 @@ This plan integrates directly with the design spec: `process/features/storefront
 
 ### Step 5: Checkout Address Modal & Repayment Integration
 
-- [ ] Create "Select Address" Modal component in `apps/storefront/src/features/checkout/components/select-address-modal.tsx`.
-- [ ] Update `apps/storefront/app/[locale]/(shop)/checkout/page.tsx` (or target file if nested):
+- [x] Create "Select Address" Modal component in `apps/storefront/src/features/checkout/components/select-address-modal.tsx`.
+- [x] Update `apps/storefront/app/[locale]/(shop)/checkout/page.tsx` (or target file if nested):
   - Add "Select from Address Book" button next to shipping address.
   - Open modal on click, fetch addresses client-side or pass via server component, auto-fill form on selection.
-- [ ] Create Repayment Server Action `apps/storefront/src/features/portal/actions/repayment.action.ts`:
+- [x] Create Repayment Server Action `apps/storefront/src/features/portal/actions/repayment.action.ts`:
   - `generateRepaymentLinkAction`: creates a pending row in `debt_repayment` and calls PayOS to get repayment checkout URL.
-- [ ] Create Debt Repayment Page `apps/storefront/app/[locale]/(shop)/portal/debt/page.tsx`:
+- [x] Create Debt Repayment Page `apps/storefront/app/[locale]/(shop)/portal/debt/page.tsx`:
   - Show available credit limit and current outstanding debt.
   - Repayment amount input field.
   - Select PAYOS (VietQR link) or CASH (instruction view).

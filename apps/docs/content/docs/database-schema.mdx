@@ -1,12 +1,12 @@
 ---
 title: Database Schema
 description: Complete database schema with ERD for Hyundai E-commerce project (auto-generated from Drizzle)
-date: 2026-05-03
+date: 2026-06-18
 ---
 
 # Database Schema
 
-**Generated automatically** from Drizzle schema on 2026-05-03
+**Generated automatically** from Drizzle schema on 2026-06-18
 
 ---
 
@@ -19,12 +19,24 @@ erDiagram
     cartItems ||--o{ product : "product_id"
     carts ||--o{ user : "user_id"
     categories ||--o{ category : "parent_id"
+    creditLimitHistory ||--o{ user : "user_id"
+    creditLimitHistory ||--o{ user : "changed_by"
+    debtRepayments ||--o{ user : "user_id"
+    debtRepayments ||--o{ user : "verified_by"
     orderItems ||--o{ order : "order_id"
     orderItems ||--o{ product : "product_id"
     orders ||--o{ user : "user_id"
+    paymentTransactions ||--o{ order : "order_id"
+    paymentTransactions ||--o{ user : "verified_by"
     payments ||--o{ order : "order_id"
     products ||--o{ brand : "brand_id"
     products ||--o{ category : "category_id"
+    quoteItems ||--o{ quote : "quote_id"
+    quoteItems ||--o{ product : "product_id"
+    quoteMessages ||--o{ quote : "quote_id"
+    quoteMessages ||--o{ user : "sender_id"
+    quotes ||--o{ user : "user_id"
+    quotes ||--o{ order : "order_id"
     sessions ||--o{ user : "user_id"
     shippingBids ||--o{ order : "order_id"
     userAddresses ||--o{ user : "user_id"
@@ -66,15 +78,33 @@ erDiagram
         uuid parent_id FK
         timestamptz created_at
         timestamptz updated_at
-        text name
-        text slug
+        text name_vi
+        text name_en
+    }
+    creditLimitHistory {
+        uuid id PK
+        uuid user_id FK
+        uuid changed_by FK
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+        numeric old_limit
     }
     dealerTiers {
         uuid id PK
         timestamptz created_at
         timestamptz updated_at
-        text name
-        numeric discount_percentage
+        text name_vi
+        text name_en
+    }
+    debtRepayments {
+        uuid id PK
+        uuid user_id FK
+        uuid verified_by FK
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+        numeric amount
     }
     orderItems {
         uuid id PK
@@ -100,6 +130,15 @@ erDiagram
         enum event_type
         jsonb payload
     }
+    paymentTransactions {
+        uuid id PK
+        uuid order_id FK
+        uuid verified_by FK
+        timestamptz created_at
+        timestamptz updated_at
+        timestamptz deleted_at
+        numeric amount
+    }
     payments {
         uuid id PK
         uuid order_id FK
@@ -115,7 +154,33 @@ erDiagram
         timestamptz created_at
         timestamptz updated_at
         timestamptz deleted_at
-        text name
+        text name_vi
+    }
+    quoteItems {
+        uuid id PK
+        uuid quote_id FK
+        uuid product_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        int quantity
+        numeric requested_price
+    }
+    quoteMessages {
+        uuid id PK
+        uuid quote_id FK
+        uuid sender_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        text message
+    }
+    quotes {
+        uuid id PK
+        uuid user_id FK
+        uuid order_id FK
+        timestamptz created_at
+        timestamptz updated_at
+        enum status
+        numeric total_quoted_price
     }
     sessions {
         text id PK
@@ -138,8 +203,8 @@ erDiagram
         uuid user_id FK
         timestamptz created_at
         timestamptz updated_at
-        timestamptz deleted_at
         text receiver_name
+        text phone_number
     }
     users {
         uuid id PK
@@ -168,8 +233,8 @@ erDiagram
         uuid id PK
         timestamptz created_at
         timestamptz updated_at
-        text name
-        text street_address
+        text name_vi
+        text name_en
     }
 
 ```
@@ -183,12 +248,18 @@ erDiagram
 - [cartItems](#cartitems)
 - [carts](#carts)
 - [categories](#categories)
+- [creditLimitHistory](#creditlimithistory)
 - [dealerTiers](#dealertiers)
+- [debtRepayments](#debtrepayments)
 - [orderItems](#orderitems)
 - [orders](#orders)
 - [outboxEvents](#outboxevents)
+- [paymentTransactions](#paymenttransactions)
 - [payments](#payments)
 - [products](#products)
+- [quoteItems](#quoteitems)
+- [quoteMessages](#quotemessages)
+- [quotes](#quotes)
 - [sessions](#sessions)
 - [shippingBids](#shippingbids)
 - [userAddresses](#useraddresses)
@@ -241,7 +312,8 @@ erDiagram
 | name | text | NO | - | - |
 | slug | text | NO | - | - |
 | logo | text | YES | - | - |
-| description | text | YES | - | - |
+| description_vi | text | YES | - | - |
+| description_en | text | YES | - | - |
 | is_active | bool | NO | true | - |
 
 ---
@@ -279,7 +351,7 @@ erDiagram
 | id | uuid | NO | Dynamic Fn | YES |
 | created_at | timestamptz | NO | SQL: now() | - |
 | updated_at | timestamptz | NO | Auto-update | - |
-| user_id | uuid | YES | - | - |
+| user_id | uuid | NO | - | - |
 
 ### Foreign Keys
 
@@ -296,16 +368,41 @@ erDiagram
 | id | uuid | NO | Dynamic Fn | YES |
 | created_at | timestamptz | NO | SQL: now() | - |
 | updated_at | timestamptz | NO | Auto-update | - |
-| name | text | NO | - | - |
+| name_vi | text | NO | - | - |
+| name_en | text | YES | - | - |
 | slug | text | NO | - | - |
 | parent_id | uuid | YES | - | - |
-| description | text | YES | - | - |
+| description_vi | text | YES | - | - |
+| description_en | text | YES | - | - |
 | image | text | YES | - | - |
 | is_active | bool | NO | true | - |
 
 ### Foreign Keys
 
 - `parent_id` → `category.id` (ON DELETE set null)
+
+---
+
+## creditLimitHistory
+
+### Columns
+
+| Column | Type | Nullable | Default | Primary |
+|--------|------|----------|---------|---------|
+| id | uuid | NO | Dynamic Fn | YES |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| deleted_at | timestamptz | YES | - | - |
+| user_id | uuid | NO | - | - |
+| old_limit | numeric | NO | - | - |
+| new_limit | numeric | NO | - | - |
+| changed_by | uuid | NO | - | - |
+| reason | text | YES | - | - |
+
+### Foreign Keys
+
+- `user_id` → `user.id` (ON DELETE cascade)
+- `changed_by` → `user.id` (ON DELETE restrict)
 
 ---
 
@@ -318,9 +415,35 @@ erDiagram
 | id | uuid | NO | Dynamic Fn | YES |
 | created_at | timestamptz | NO | SQL: now() | - |
 | updated_at | timestamptz | NO | Auto-update | - |
-| name | text | NO | - | - |
+| name_vi | text | NO | - | - |
+| name_en | text | YES | - | - |
 | discount_percentage | numeric | NO | - | - |
 | minimum_spend | numeric | NO | 0 | - |
+
+---
+
+## debtRepayments
+
+### Columns
+
+| Column | Type | Nullable | Default | Primary |
+|--------|------|----------|---------|---------|
+| id | uuid | NO | Dynamic Fn | YES |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| deleted_at | timestamptz | YES | - | - |
+| user_id | uuid | NO | - | - |
+| amount | numeric | NO | - | - |
+| payment_method | enum | NO | - | - |
+| status | enum | NO | PENDING | - |
+| order_code | bigint:number | YES | - | - |
+| reference_code | text | YES | - | - |
+| verified_by | uuid | YES | - | - |
+
+### Foreign Keys
+
+- `user_id` → `user.id` (ON DELETE restrict)
+- `verified_by` → `user.id` (ON DELETE set null)
 
 ---
 
@@ -345,6 +468,11 @@ erDiagram
 - `order_id` → `order.id` (ON DELETE cascade)
 - `product_id` → `product.id` (ON DELETE restrict)
 
+### Indexes
+
+- `order_item_order_idx`: (order_id)
+- `order_item_product_idx`: (product_id)
+
 ---
 
 ## orders
@@ -361,10 +489,18 @@ erDiagram
 | shipping_fee | numeric | NO | - | - |
 | shipping_address | text | NO | - | - |
 | total_amount | numeric | NO | - | - |
+| payment_method | enum | NO | PAYOS | - |
+| payment_status | enum | NO | UNPAID | - |
+| approval_status | enum | NO | APPROVED | - |
 
 ### Foreign Keys
 
 - `user_id` → `user.id` (ON DELETE restrict)
+
+### Indexes
+
+- `order_user_status_created_idx`: (user_id, status, created_at)
+- `order_active_metrics_idx`: (created_at)
 
 ---
 
@@ -386,6 +522,32 @@ erDiagram
 
 ---
 
+## paymentTransactions
+
+### Columns
+
+| Column | Type | Nullable | Default | Primary |
+|--------|------|----------|---------|---------|
+| id | uuid | NO | Dynamic Fn | YES |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| deleted_at | timestamptz | YES | - | - |
+| order_id | uuid | NO | - | - |
+| amount | numeric | NO | - | - |
+| payment_method | enum | NO | - | - |
+| transaction_type | enum | NO | - | - |
+| status | enum | NO | PENDING | - |
+| order_code | bigint:number | YES | - | - |
+| reference_code | text | YES | - | - |
+| verified_by | uuid | YES | - | - |
+
+### Foreign Keys
+
+- `order_id` → `order.id` (ON DELETE cascade)
+- `verified_by` → `user.id` (ON DELETE set null)
+
+---
+
 ## payments
 
 ### Columns
@@ -400,7 +562,6 @@ erDiagram
 | amount | numeric | NO | - | - |
 | method | enum | NO | - | - |
 | status | enum | NO | PENDING | - |
-| transaction_id | text | YES | - | - |
 | raw_payload | text | YES | - | - |
 
 ### Foreign Keys
@@ -419,16 +580,20 @@ erDiagram
 | created_at | timestamptz | NO | SQL: now() | - |
 | updated_at | timestamptz | NO | Auto-update | - |
 | deleted_at | timestamptz | YES | - | - |
-| name | text | NO | - | - |
+| name_vi | text | NO | - | - |
+| name_en | text | YES | - | - |
 | slug | text | NO | - | - |
 | price | numeric | NO | - | - |
-| description | text | YES | - | - |
-| short_description | text | YES | - | - |
+| description_vi | jsonb | YES | - | - |
+| description_en | jsonb | YES | - | - |
+| short_description_vi | text | YES | - | - |
+| short_description_en | text | YES | - | - |
 | images | text | NO | Complex Object | - |
 | brand_id | uuid | YES | - | - |
 | category_id | uuid | YES | - | - |
 | specs | jsonb | YES | Complex Object | - |
 | total_stock_cache | int | NO | 0 | - |
+| total_sales_cache | int | NO | 0 | - |
 | is_quote_only | bool | NO | false | - |
 
 ### Foreign Keys
@@ -439,9 +604,94 @@ erDiagram
 ### Indexes
 
 - `product_slug_active_idx`: (slug)
-- `product_name_active_idx`: (name)
+- `product_name_active_idx`: (name_vi)
 - `product_brand_idx`: (brand_id)
 - `product_category_idx`: (category_id)
+- `product_sales_cache_idx`: (total_sales_cache)
+- `product_created_at_idx`: (created_at)
+- `product_power_idx`: (unknown)
+- `product_voltage_idx`: (unknown)
+
+---
+
+## quoteItems
+
+### Columns
+
+| Column | Type | Nullable | Default | Primary |
+|--------|------|----------|---------|---------|
+| id | uuid | NO | Dynamic Fn | YES |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| quote_id | uuid | NO | - | - |
+| product_id | uuid | NO | - | - |
+| quantity | int | NO | 1 | - |
+| requested_price | numeric | NO | - | - |
+| agreed_price | numeric | YES | - | - |
+
+### Foreign Keys
+
+- `quote_id` → `quote.id` (ON DELETE cascade)
+- `product_id` → `product.id` (ON DELETE restrict)
+
+### Indexes
+
+- `quote_item_quote_idx`: (quote_id)
+- `quote_item_product_idx`: (product_id)
+
+---
+
+## quoteMessages
+
+### Columns
+
+| Column | Type | Nullable | Default | Primary |
+|--------|------|----------|---------|---------|
+| id | uuid | NO | Dynamic Fn | YES |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| quote_id | uuid | NO | - | - |
+| sender_id | uuid | NO | - | - |
+| message | text | NO | - | - |
+
+### Foreign Keys
+
+- `quote_id` → `quote.id` (ON DELETE cascade)
+- `sender_id` → `user.id` (ON DELETE restrict)
+
+### Indexes
+
+- `quote_message_quote_idx`: (quote_id)
+- `quote_message_sender_idx`: (sender_id)
+
+---
+
+## quotes
+
+### Columns
+
+| Column | Type | Nullable | Default | Primary |
+|--------|------|----------|---------|---------|
+| id | uuid | NO | Dynamic Fn | YES |
+| created_at | timestamptz | NO | SQL: now() | - |
+| updated_at | timestamptz | NO | Auto-update | - |
+| user_id | uuid | NO | - | - |
+| status | enum | NO | pending_review | - |
+| total_quoted_price | numeric | YES | - | - |
+| expiration_date | timestamptz | YES | - | - |
+| note | text | YES | - | - |
+| order_id | uuid | YES | - | - |
+
+### Foreign Keys
+
+- `user_id` → `user.id` (ON DELETE restrict)
+- `order_id` → `order.id` (ON DELETE set null)
+
+### Indexes
+
+- `quote_user_idx`: (user_id)
+- `quote_order_idx`: (order_id)
+- `quote_created_at_idx`: (created_at)
 
 ---
 
@@ -504,7 +754,6 @@ erDiagram
 | id | uuid | NO | Dynamic Fn | YES |
 | created_at | timestamptz | NO | SQL: now() | - |
 | updated_at | timestamptz | NO | Auto-update | - |
-| deleted_at | timestamptz | YES | - | - |
 | user_id | uuid | NO | - | - |
 | receiver_name | text | NO | - | - |
 | phone_number | text | NO | - | - |
@@ -540,10 +789,17 @@ erDiagram
 | tax_id | text | YES | - | - |
 | business_type | enum | NO | END_USER | - |
 | province | text | YES | - | - |
+| credit_limit | numeric | NO | 0.00 | - |
+| current_debt | numeric | NO | 0.00 | - |
 
 ### Foreign Keys
 
 - `dealer_tier_id` → `dealer_tier.id` (ON DELETE set null)
+
+### Indexes
+
+- `user_dealer_tier_idx`: (dealer_tier_id)
+- `user_created_at_idx`: (created_at)
 
 ---
 
@@ -584,6 +840,10 @@ erDiagram
 - `warehouse_id` → `warehouse.id` (ON DELETE cascade)
 - `product_id` → `product.id` (ON DELETE cascade)
 
+### Indexes
+
+- `warehouse_stock_product_idx`: (product_id)
+
 ---
 
 ## warehouses
@@ -595,7 +855,8 @@ erDiagram
 | id | uuid | NO | Dynamic Fn | YES |
 | created_at | timestamptz | NO | SQL: now() | - |
 | updated_at | timestamptz | NO | Auto-update | - |
-| name | text | NO | - | - |
+| name_vi | text | NO | - | - |
+| name_en | text | YES | - | - |
 | street_address | text | NO | - | - |
 | district | text | NO | - | - |
 | city | text | NO | - | - |
@@ -603,7 +864,7 @@ erDiagram
 
 ### Indexes
 
-- `warehouse_name_idx`: (name)
+- `warehouse_name_idx`: (name_vi)
 
 ---
 
