@@ -6,14 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const delay = (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
-export const priceFormatter = new Intl.NumberFormat("vi-VN", {
-  style: "currency",
-  currency: "VND",
-});
-
 export const getTranslationError = async (
   errorOrKey: unknown,
   fallbackKey = "INTERNAL_SERVER_ERROR",

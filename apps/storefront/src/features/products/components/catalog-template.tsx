@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import type { _Translator, AppConfig, Locale } from "next-intl";
+import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { Link, redirect } from "@/i18n/routing";
+import { redirect } from "@/i18n/routing";
 import {
   productService,
   categoryService,
@@ -12,52 +12,9 @@ import { ProductPagination } from "./product-pagination";
 import { ActiveFilterChips } from "./active-filter-chips";
 import { DesktopProductFilters } from "./desktop-product-filters";
 import { ProductFilterSheet } from "./product-filter-sheet";
-import { AddToCartButton } from "./add-to-cart-button";
-import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
-import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
-import { Badge } from "@nhatnang/ui/components/ui/badge";
-import { Button } from "@nhatnang/ui/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@nhatnang/ui/components/ui/card";
+import { ProductCard } from "./product-card";
 import { Skeleton } from "@nhatnang/ui/components/ui/skeleton";
-import { priceFormatter } from "@/shared/lib/utils";
-import type { StorefrontProduct } from "@/shared/services";
 import type { CatalogSearchParams } from "../types/catalog";
-
-const formatSpecs = (
-  specs: StorefrontProduct["specs"],
-  tProduct: _Translator<AppConfig["Messages"], "ProductDetails">,
-): string[] => {
-  if (!specs || typeof specs !== "object") return [];
-  const specsObj = specs as Record<
-    string,
-    string | number | boolean | null | undefined
-  >;
-  const specsArray: string[] = [];
-  if (specsObj["power"]) specsArray.push(`${String(specsObj["power"])}kW`);
-  if (typeof specsObj["fuelType"] === "string") {
-    const fuelType = specsObj["fuelType"];
-    if (
-      fuelType === "gasoline" ||
-      fuelType === "diesel" ||
-      fuelType === "gas"
-    ) {
-      specsArray.push(tProduct(`fuelTypes.${fuelType}`));
-    }
-  }
-  if (typeof specsObj["phase"] === "string") {
-    const phase = specsObj["phase"];
-    if (phase === "1phase" || phase === "3phase") {
-      specsArray.push(tProduct(`phases.${phase}`));
-    }
-  }
-  return specsArray;
-};
-
 interface CatalogTemplateProps {
   title?: string;
   categorySlug?: string | undefined;
@@ -98,8 +55,6 @@ export async function CatalogTemplate({
     });
   }
   const t = await getTranslations("Catalog");
-  const tHome = await getTranslations("HomePage.products");
-  const tProduct = await getTranslations("ProductDetails");
 
   // Get raw search parameters
   const brandParam = searchParams.brand;
@@ -242,89 +197,13 @@ export async function CatalogTemplate({
             {/* Product Grid */}
             {productsList.length > 0 ? (
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {productsList.map((product, index) => {
-                  return (
-                    <Card
-                      key={product.id}
-                      className="group hover:border-primary/50 flex h-full flex-col gap-4 overflow-hidden py-0 transition-all hover:shadow-xl"
-                    >
-                      <Link href={`/products/${product.slug}`}>
-                        <CardHeader className="relative aspect-4/3 w-full p-0">
-                          {product.images[0] && product.images[0] !== "" ? (
-                            <ImageWithSkeleton
-                              src={product.images[0]}
-                              alt={product.name}
-                              fill
-                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 250px"
-                              className="object-cover transition-all duration-300 group-hover:scale-105"
-                              loading={index < 3 ? "eager" : "lazy"}
-                              preload={index < 3}
-                            />
-                          ) : (
-                            <ProductImagePlaceholder />
-                          )}
-                          <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
-                            {tHome("model")}:{" "}
-                            {product.specs?.model ?? t("unknown")}
-                          </Badge>
-                        </CardHeader>
-                      </Link>
-
-                      <CardContent className="flex grow flex-col gap-2">
-                        <Link href={`/products/${product.slug}`}>
-                          <h2 className="font-display text-foreground group-hover:text-primary line-clamp-2 text-xl leading-tight font-bold transition-colors">
-                            {product.name}
-                          </h2>
-                        </Link>
-
-                        {/* Specs List */}
-                        <div className="flex flex-wrap gap-2">
-                          {formatSpecs(product.specs, tProduct).map((spec) => (
-                            <Badge
-                              variant="secondary"
-                              key={`${product.id}-${spec}`}
-                              className="rounded-sm text-[13px] font-semibold"
-                            >
-                              {spec}
-                            </Badge>
-                          ))}
-                        </div>
-                      </CardContent>
-
-                      <CardFooter className="bg-muted/20 mt-auto flex flex-col items-stretch gap-3 border-t p-4 pt-4! sm:flex-row sm:items-center sm:justify-between sm:gap-2 lg:flex-col lg:items-stretch">
-                        <span className="text-primary text-center text-xl font-bold sm:text-left lg:text-center">
-                          {product.isQuoteOnly
-                            ? tHome("contactPrice")
-                            : priceFormatter.format(Number(product.price))}
-                        </span>
-
-                        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row lg:w-full lg:flex-col">
-                          <Button
-                            asChild
-                            size="lg"
-                            className="w-full font-bold tracking-wider uppercase sm:w-auto lg:w-full"
-                          >
-                            <Link href={`/products/${product.slug}`}>
-                              {product.isQuoteOnly
-                                ? tHome("requestQuoteCta")
-                                : tHome("buyNowCta")}
-                            </Link>
-                          </Button>
-
-                          {!product.isQuoteOnly && (
-                            <AddToCartButton
-                              productId={product.id}
-                              name={product.name}
-                              price={product.price}
-                              image={product.images?.[0] ?? ""}
-                              totalStock={product.totalStockCache}
-                            />
-                          )}
-                        </div>
-                      </CardFooter>
-                    </Card>
-                  );
-                })}
+                {productsList.map((product, index) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    index={index}
+                  />
+                ))}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-24 text-center">

@@ -3,7 +3,7 @@ import { ProductDetailsSkeleton } from "@/features/products/components/skeletons
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { StorefrontProduct } from "@/shared/services/types";
 import { routing } from "@/i18n/routing";
-import { priceFormatter } from "@/shared/lib/utils";
+import { priceFormatter } from "@nhatnang/shared/lib/utils";
 import { productService } from "@/shared/services";
 import type { Metadata } from "next";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";

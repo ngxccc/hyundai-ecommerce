@@ -1,41 +1,6 @@
-import type { StorefrontProduct } from "@/shared/services";
-import { Link } from "@/i18n/routing";
 import { getLocale, getTranslations } from "next-intl/server";
-import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
-import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
-import { Badge } from "@nhatnang/ui/components/ui/badge";
-import { Button } from "@nhatnang/ui/components/ui/button";
-import { AddToCartButton } from "@/features/products";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@nhatnang/ui/components/ui/card";
+import { ProductCard } from "@/features/products";
 import { productService } from "@/shared/services";
-import { priceFormatter } from "@/shared/lib/utils";
-
-const formatSpecs = (specs: StorefrontProduct["specs"]): string[] => {
-  if (!specs || typeof specs !== "object") return [];
-  const specsObj = specs as Record<
-    string,
-    string | number | boolean | null | undefined
-  >;
-  const specsArray: string[] = [];
-  if (specsObj["power"]) specsArray.push(`${String(specsObj["power"])}kW`);
-  if (typeof specsObj["fuelType"] === "string") {
-    const fuelMap: Record<string, string> = {
-      gasoline: "Xăng",
-      diesel: "Diesel",
-      gas: "Gas",
-    };
-    specsArray.push(fuelMap[specsObj["fuelType"]] ?? specsObj["fuelType"]);
-  }
-  if (typeof specsObj["phase"] === "string") {
-    specsArray.push(specsObj["phase"] === "1phase" ? "1 Pha" : "3 Pha");
-  }
-  return specsArray;
-};
 
 export async function ProductsSection() {
   const [t, locale] = await Promise.all([
@@ -62,81 +27,12 @@ export async function ProductsSection() {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <Card
+          {products.map((product, index) => (
+            <ProductCard
               key={product.id}
-              className="group hover:border-primary/50 flex h-full flex-col gap-4 overflow-hidden py-0 transition-all hover:shadow-xl"
-            >
-              <CardHeader className="relative aspect-4/3 w-full p-0">
-                {product.images[0] && product.images[0] !== "" ? (
-                  <ImageWithSkeleton
-                    src={product.images[0]}
-                    alt={product.name}
-                    fill
-                    className="object-cover transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                ) : (
-                  <ProductImagePlaceholder />
-                )}
-                <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
-                  {t("model")}: {product.specs?.model ?? "Không xác định"}
-                </Badge>
-              </CardHeader>
-
-              <CardContent className="flex grow flex-col gap-2">
-                <Link href={`/products/${product.slug}`}>
-                  <h3 className="font-display text-foreground group-hover:text-primary line-clamp-2 text-xl leading-tight font-bold transition-colors">
-                    {product.name}
-                  </h3>
-                </Link>
-
-                {/* Specs List */}
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {formatSpecs(product.specs).map((spec) => (
-                    <Badge
-                      variant="secondary"
-                      key={`${product.id}-${spec}`}
-                      className="rounded-sm text-[13px] font-semibold"
-                    >
-                      {spec}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-
-              <CardFooter className="bg-muted/20 mt-auto flex flex-col items-stretch gap-3 border-t p-4 pt-4! sm:flex-row sm:items-center sm:justify-between sm:gap-2 lg:flex-col lg:items-stretch">
-                <span className="text-primary text-center text-xl font-bold sm:text-left lg:text-center">
-                  {product.isQuoteOnly
-                    ? t("contactPrice")
-                    : priceFormatter.format(Number(product.price))}
-                </span>
-
-                <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row lg:w-full lg:flex-col">
-                  <Button
-                    asChild
-                    size="lg"
-                    className="w-full font-bold tracking-wider uppercase sm:w-auto lg:w-full"
-                  >
-                    <Link href={`/products/${product.slug}`}>
-                      {product.isQuoteOnly
-                        ? t("requestQuoteCta")
-                        : t("buyNowCta")}
-                    </Link>
-                  </Button>
-
-                  {!product.isQuoteOnly && (
-                    <AddToCartButton
-                      productId={product.id}
-                      name={product.name}
-                      price={product.price}
-                      image={product.images?.[0] ?? ""}
-                      totalStock={product.totalStockCache}
-                    />
-                  )}
-                </div>
-              </CardFooter>
-            </Card>
+              product={product}
+              index={index}
+            />
           ))}
         </div>
       </div>

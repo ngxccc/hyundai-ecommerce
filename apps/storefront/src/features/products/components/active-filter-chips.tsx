@@ -45,7 +45,7 @@ export function ActiveFilterChips() {
   };
 
   searchParams.forEach((value, key) => {
-    if (["after", "before", "category", "sort"].includes(key)) return;
+    if (!(key in FILTER_KEY_MAP)) return;
 
     if (key === "brand") {
       value.split(",").forEach((v) => {

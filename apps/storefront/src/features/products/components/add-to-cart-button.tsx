@@ -33,7 +33,7 @@ export function AddToCartButton({
       return;
     }
 
-    addItem({ productId, name, price, image, totalStock }, 1);
+    void addItem({ productId, name, price, image, totalStock }, 1);
     toast.success(t("addedToCart", { name }));
   };
 
