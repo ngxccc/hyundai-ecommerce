@@ -1,7 +1,5 @@
 import { getCachedSession } from "./session";
-import type { userRoleEnum } from "@nhatnang/database/schemas";
-
-export type UserRole = (typeof userRoleEnum.enumValues)[number];
+import type { UserRole } from "@nhatnang/database/schemas";
 
 export class AuthError extends Error {
   constructor(message: string) {

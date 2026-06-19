@@ -10,7 +10,7 @@ import {
   verifyCashPaymentAction,
   approveOrderCancellationAction,
 } from "./order.actions";
-import { orderService } from "@nhatnang/database/services";
+import { orderService, paymentService } from "@nhatnang/database/services";
 import { revalidatePath } from "next/cache";
 
 describe("order.actions", () => {
@@ -120,7 +120,7 @@ describe("order.actions", () => {
       expect(createShippingBidMock).toHaveBeenCalledTimes(1);
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data!.vendorName).toBe("Grab");
+        expect(result.data!.id).toBe("123e4567-e89b-12d3-a456-426614174001");
       }
     });
   });
@@ -149,13 +149,13 @@ describe("order.actions", () => {
   });
 
   describe("verifyCashPaymentAction", () => {
-    test("calls orderService.verifyCashPayment and returns success", async () => {
+    test("calls paymentService.verifyCashPayment and returns success", async () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
       const mockOrder = { id: validOrderId } as unknown as TOrder;
 
       const verifyCashPaymentMock = mock().mockResolvedValueOnce(mockOrder);
       (
-        orderService as unknown as {
+        paymentService as unknown as {
           verifyCashPayment: typeof verifyCashPaymentMock;
         }
       ).verifyCashPayment = verifyCashPaymentMock;

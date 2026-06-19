@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { orderService } from "@nhatnang/database/services";
+import { orderService, paymentService } from "@nhatnang/database/services";
 import { type TOrder } from "@nhatnang/database/schemas";
 import {
   requireAuth,
@@ -232,7 +232,7 @@ export const verifyCashPaymentAction = async (orderId: string) => {
   try {
     const session = await assertFinanceRole();
 
-    const updated = await orderService.verifyCashPayment(
+    const updated = await paymentService.verifyCashPayment(
       orderId,
       session.user.id,
     );

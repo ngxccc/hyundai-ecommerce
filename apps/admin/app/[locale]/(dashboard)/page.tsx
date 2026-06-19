@@ -34,7 +34,7 @@ export const AdminDashboard = async () => {
     orderService.getDashboardMetrics(),
     orderService.getMonthlyRevenue(currentYear),
     productService.getTopSellingProducts(5),
-    orderService.list(),
+    orderService.listOrders(),
   ]);
 
   const recentOrders = allOrders.slice(0, 5);

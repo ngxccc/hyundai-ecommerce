@@ -51,7 +51,7 @@ export default async function AdminOrdersPage({
       : undefined;
 
   // Fetch filtered orders
-  const orders = await orderService.list(status ? { status } : undefined);
+  const orders = await orderService.listOrders(status ? { status } : undefined);
 
   // In-memory search filtering (ID, user name, email, company)
   const filteredOrders = search
