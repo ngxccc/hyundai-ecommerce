@@ -1,4 +1,11 @@
-import { bigint, numeric, pgEnum, snakeCase, text, uuid } from "drizzle-orm/pg-core";
+import {
+  bigint,
+  numeric,
+  pgEnum,
+  snakeCase,
+  text,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { orders, paymentMethodEnum } from "./order.schema";
 import { users } from "./auth.schema";
 import { fullEntity } from "./helpers.schema";
@@ -30,3 +37,6 @@ export const paymentTransactions = snakeCase.table("payment_transaction", {
 
 export type TPaymentTransaction = typeof paymentTransactions.$inferSelect;
 export type TNewPaymentTransaction = typeof paymentTransactions.$inferInsert;
+
+export type PaymentTransactionType =
+  (typeof paymentTransactionTypeEnum.enumValues)[number];

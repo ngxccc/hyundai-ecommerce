@@ -5,6 +5,7 @@ export * from "./auth/auth.service";
 export * from "./product/product.service";
 export * from "./user/user.service";
 export * from "./order/order.service";
+export * from "./payment/payment.service";
 export * from "./category/category.service";
 export * from "./brand/brand.service";
 export * from "./warehouse-stock/warehouse-stock.service";

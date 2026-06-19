@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { expect, test, describe, vi, beforeEach } from "bun:test";
 import {
   mockDb,
@@ -11,10 +9,10 @@ import {
   mockFindMany,
   mockSelectResolvedValue,
 } from "../../tests/utils/db-mock";
-import { DbOrderService } from "./order.service";
+import { DbOrderService, type ComplexOrder } from "./order.service";
 import type { IDatabase } from "../../client";
 import type { TOrder } from "../../schemas";
-import type { CreateOrderDTO } from "../../dtos";
+import type { CreateOrderDTO, CreateOrderItemDTO } from "../../dtos";
 import { type PostgresError, POSTGRES_ERROR_CODES } from "../../utils";
 
 const orderService = new DbOrderService(mockDb as unknown as IDatabase);
@@ -77,10 +75,10 @@ describe("OrderService", () => {
     const result = await orderService.getComplexOrder("order-1");
 
     expect(mockFindFirst).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockOrder as any);
+    expect(result).toEqual(mockOrder as unknown as ComplexOrder);
   });
 
-  test("list() should return list of complex orders with no filters", async () => {
+  test("listOrders() should return list of complex orders with no filters", async () => {
     const mockOrders = [
       { id: "order-1", items: [] },
       { id: "order-2", items: [] },
@@ -88,7 +86,7 @@ describe("OrderService", () => {
 
     mockFindMany.mockResolvedValueOnce(mockOrders);
 
-    const result = await orderService.list();
+    const result = await orderService.listOrders();
 
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(mockFindMany).toHaveBeenCalledWith(
@@ -97,15 +95,15 @@ describe("OrderService", () => {
         orderBy: { createdAt: "desc" },
       }),
     );
-    expect(result).toEqual(mockOrders as any);
+    expect(result).toEqual(mockOrders as unknown as ComplexOrder[]);
   });
 
-  test("list() should return filtered list of complex orders when status filter is provided", async () => {
+  test("listOrders() should return filtered list of complex orders when status filter is provided", async () => {
     const mockOrders = [{ id: "order-1", status: "PENDING", items: [] }];
 
     mockFindMany.mockResolvedValueOnce(mockOrders);
 
-    const result = await orderService.list({ status: "PENDING" });
+    const result = await orderService.listOrders({ status: "PENDING" });
 
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(mockFindMany).toHaveBeenCalledWith(
@@ -114,20 +112,7 @@ describe("OrderService", () => {
         orderBy: { createdAt: "desc" },
       }),
     );
-    expect(result).toEqual(mockOrders as any);
-  });
-  test("list() should return filtered list of complex orders when status filter is provided", async () => {
-    const mockOrders = [{ id: "order-1", status: "PENDING", items: [] }];
-    mockFindMany.mockResolvedValueOnce(mockOrders);
-    const result = await orderService.list({ status: "PENDING" });
-    expect(mockFindMany).toHaveBeenCalledTimes(1);
-    expect(mockFindMany).toHaveBeenCalledWith(
-      expect.objectContaining({
-        where: { status: { eq: "PENDING" } },
-        orderBy: { createdAt: "desc" },
-      }),
-    );
-    expect(result).toEqual(mockOrders as any);
+    expect(result).toEqual(mockOrders as unknown as ComplexOrder[]);
   });
   describe("selectWinningBid()", () => {
     test("should select the winning bid, deselect others, and update order shippingFee", async () => {
@@ -144,8 +129,8 @@ describe("OrderService", () => {
       mockReturning.mockResolvedValueOnce([mockUpdatedOrder]);
       const result = await orderService.selectWinningBid("order-1", "bid-1");
       expect(mockUpdate).toHaveBeenCalledTimes(3);
-      expect(result.updatedOrder).toEqual(mockUpdatedOrder as any);
-      expect(result.selectedBid).toEqual(mockSelectedBid as any);
+      expect(result.updatedOrder).toEqual(mockUpdatedOrder);
+      expect(result.selectedBid).toEqual(mockSelectedBid);
     });
     test("should throw when bid does not belong to the order", () => {
       mockReturning.mockResolvedValueOnce([]); // select fails
@@ -156,17 +141,26 @@ describe("OrderService", () => {
   });
   describe("getDashboardMetrics()", () => {
     test("should return aggregated metrics with correct growth calculations", async () => {
+      // 1. Total products
       mockSelectResolvedValue.mockResolvedValueOnce([{ count: 10 }]);
-      mockSelectResolvedValue.mockResolvedValueOnce([{ count: 5 }]);
-      mockSelectResolvedValue.mockResolvedValueOnce([{ sum: "500000" }]);
+      // 2. Orders metrics (aggregated)
       mockSelectResolvedValue.mockResolvedValueOnce([
-        { sum: "300000", count: 3 },
+        {
+          totalOrders: 5,
+          totalRevenue: "500000",
+          currentRevenue: "300000",
+          currentOrders: 3,
+          previousRevenue: "200000",
+          previousOrders: 2,
+        },
       ]);
+      // 3. Customers/Users metrics (aggregated)
       mockSelectResolvedValue.mockResolvedValueOnce([
-        { sum: "200000", count: 2 },
+        {
+          newCustomers: 4,
+          previousCustomers: 2,
+        },
       ]);
-      mockSelectResolvedValue.mockResolvedValueOnce([{ count: 4 }]);
-      mockSelectResolvedValue.mockResolvedValueOnce([{ count: 2 }]);
 
       const result = await orderService.getDashboardMetrics();
 
@@ -207,116 +201,6 @@ describe("OrderService", () => {
     });
   });
 
-  describe("confirmPayOSPayment()", () => {
-    test("should return false if payment does not exist", async () => {
-      mockSelectResolvedValue.mockResolvedValueOnce([]); // payment not found
-
-      const result = await orderService.confirmPayOSPayment(
-        "tx-1",
-        1000,
-        "ref-1",
-      );
-      expect(result).toBe(false);
-    });
-
-    test("should return false if payment status is already COMPLETED", async () => {
-      mockSelectResolvedValue.mockResolvedValueOnce([{ status: "COMPLETED" }]);
-
-      const result = await orderService.confirmPayOSPayment(
-        "tx-1",
-        1000,
-        "ref-1",
-      );
-      expect(result).toBe(false);
-    });
-
-    test("should handle amount mismatch by placing order on SUSPICIOUS_PAYMENT_HOLD and logging failure", async () => {
-      const mockPayment = {
-        id: "pay-1",
-        orderId: "order-1",
-        amount: "1000.00",
-        status: "PENDING",
-      };
-      const mockOrder = {
-        id: "order-1",
-        totalAmount: "1000.00",
-        userId: "user-1",
-      };
-
-      mockSelectResolvedValue.mockResolvedValueOnce([mockPayment]);
-      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
-
-      const result = await orderService.confirmPayOSPayment(
-        "tx-1",
-        500,
-        "ref-1",
-      ); // 500 !== 1000
-
-      expect(result).toBe(true);
-      expect(mockUpdate).toHaveBeenCalledTimes(2); // Set order status to SUSPICIOUS_PAYMENT_HOLD
-      expect(mockInsert).toHaveBeenCalledTimes(1); // Send Telegram alert
-    });
-
-    test("should process payment successfully when amounts match", async () => {
-      const mockPayment = {
-        id: "pay-1",
-        orderId: "order-1",
-        amount: "1000.00",
-        status: "PENDING",
-      };
-      const mockOrder = {
-        id: "order-1",
-        totalAmount: "1000.00",
-        userId: "user-1",
-      };
-      const mockCustomer = { id: "user-1", email: "customer@test.com" };
-
-      mockSelectResolvedValue.mockResolvedValueOnce([mockPayment]);
-      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
-      mockSelectResolvedValue.mockResolvedValueOnce([mockCustomer]);
-
-      const result = await orderService.confirmPayOSPayment(
-        "tx-1",
-        1000,
-        "ref-1",
-      ); // 1000 === 1000
-
-      expect(result).toBe(true);
-      expect(mockUpdate).toHaveBeenCalledTimes(2); // Update payment (COMPLETED) & Update order paymentStatus (FULLY_PAID)
-      expect(mockInsert).toHaveBeenCalledTimes(1); // Log transaction success & Send outbox events (SEND_MAIL & SEND_TELEGRAM_ALERT)
-    });
-
-    test("should process REMAINDER payment successfully when order paymentStatus is DEPOSIT_PAID", async () => {
-      const mockPayment = {
-        id: "pay-1",
-        orderId: "order-1",
-        amount: "800.00",
-        status: "PENDING",
-      };
-      const mockOrder = {
-        id: "order-1",
-        totalAmount: "1000.00",
-        userId: "user-1",
-        paymentStatus: "DEPOSIT_PAID",
-      };
-      const mockCustomer = { id: "user-1", email: "customer@test.com" };
-
-      mockSelectResolvedValue.mockResolvedValueOnce([mockPayment]);
-      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
-      mockSelectResolvedValue.mockResolvedValueOnce([mockCustomer]);
-
-      const result = await orderService.confirmPayOSPayment(
-        "tx-1",
-        800,
-        "ref-1",
-      );
-
-      expect(result).toBe(true);
-      expect(mockUpdate).toHaveBeenCalledTimes(2);
-      expect(mockInsert).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe("checkoutWithTradeCredit()", () => {
     test("should throw errors.lockAcquisitionFailed when lock fails", () => {
       const err = new Error("could not obtain lock") as PostgresError;
@@ -324,7 +208,12 @@ describe("OrderService", () => {
       mockSelectResolvedValue.mockResolvedValueOnce(Promise.reject(err));
 
       return expect(
-        orderService.checkoutWithTradeCredit("user-1", {} as any, [], "cart-1"),
+        orderService.checkoutWithTradeCredit(
+          "user-1",
+          {} as unknown as CreateOrderDTO,
+          [],
+          "cart-1",
+        ),
       ).rejects.toThrow("errors.lockAcquisitionFailed");
     });
 
@@ -340,12 +229,14 @@ describe("OrderService", () => {
       mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
 
-      const items = [{ productId: "prod-1", quantity: 1 } as any];
+      const items = [
+        { productId: "prod-1", quantity: 1 } as unknown as CreateOrderItemDTO,
+      ];
 
       return expect(
         orderService.checkoutWithTradeCredit(
           "user-1",
-          {} as any,
+          {} as unknown as CreateOrderDTO,
           items,
           "cart-1",
         ),
@@ -368,10 +259,12 @@ describe("OrderService", () => {
       mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
       mockReturning.mockResolvedValueOnce([mockOrder]);
 
-      const items = [{ productId: "prod-1", quantity: 1 } as any];
+      const items = [
+        { productId: "prod-1", quantity: 1 } as unknown as CreateOrderItemDTO,
+      ];
       const result = await orderService.checkoutWithTradeCredit(
         "user-1",
-        {} as any,
+        {} as unknown as CreateOrderDTO,
         items,
         "cart-1",
       );
@@ -398,10 +291,12 @@ describe("OrderService", () => {
       mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
       mockReturning.mockResolvedValueOnce([mockOrder]);
 
-      const items = [{ productId: "prod-1", quantity: 1 } as any];
+      const items = [
+        { productId: "prod-1", quantity: 1 } as unknown as CreateOrderItemDTO,
+      ];
       const result = await orderService.checkoutWithTradeCredit(
         "user-1",
-        {} as any,
+        {} as unknown as CreateOrderDTO,
         items,
         "cart-1",
       );
@@ -424,7 +319,7 @@ describe("OrderService", () => {
       const mockOrder = { id: "order-1", approvalStatus: "APPROVED" };
       mockFindFirst.mockResolvedValueOnce(mockOrder);
       const result = await orderService.approveDealerOrder("order-1");
-      expect(result).toEqual(mockOrder as any);
+      expect(result).toEqual(mockOrder);
     });
 
     test("should throw errors.insufficientCreditLimit if available credit is insufficient for TRADE_CREDIT order", () => {
@@ -469,38 +364,8 @@ describe("OrderService", () => {
       mockReturning.mockResolvedValueOnce([approvedOrder]);
 
       const result = await orderService.approveDealerOrder("order-1");
-      expect(result).toEqual(approvedOrder as any);
+      expect(result).toEqual(approvedOrder);
       expect(mockUpdate).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  describe("verifyCashPayment()", () => {
-    test("should return undefined if order does not exist", async () => {
-      mockFindFirst.mockResolvedValueOnce(undefined);
-      const result = await orderService.verifyCashPayment(
-        "order-1",
-        "user-admin",
-      );
-      expect(result).toBeUndefined();
-    });
-
-    test("should update paymentStatus, payments table, and log successful transaction", async () => {
-      const mockOrder = {
-        id: "order-1",
-        totalAmount: "1000.00",
-      };
-      const updatedOrder = { ...mockOrder, paymentStatus: "FULLY_PAID" };
-
-      mockFindFirst.mockResolvedValueOnce(mockOrder);
-      mockReturning.mockResolvedValueOnce([updatedOrder]);
-
-      const result = await orderService.verifyCashPayment(
-        "order-1",
-        "user-admin",
-      );
-      expect(result).toEqual(updatedOrder as any);
-      expect(mockUpdate).toHaveBeenCalledTimes(2);
-      expect(mockInsert).toHaveBeenCalledTimes(1);
     });
   });
 });

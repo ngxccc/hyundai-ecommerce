@@ -4,7 +4,6 @@ import type {
   TOrder,
   TPayment,
   TNewShippingBid,
-  TShippingBid,
   TNewQuote,
   TNewQuoteItem,
   TQuoteItem,
@@ -14,9 +13,6 @@ import type {
   TNewDealerTier,
   TDealerTier,
   TWarehouseStock,
-  TCart,
-  TCartItem,
-  TPaymentTransaction,
   TNewPaymentTransaction,
 } from "../schemas";
 import type {
@@ -32,6 +28,10 @@ import type {
   CreateAddressDTO,
   UpdateAddressDTO,
   UserProfileDTO,
+  UserB2BProfileDTO,
+  DebtRepaymentDTO,
+  CreateDebtRepaymentDTO,
+  UpdateDebtRepaymentDTO,
 } from "../dtos";
 import type {
   TCreateBrandInput,
@@ -215,57 +215,78 @@ export interface UserService {
     businessType?: TUser["businessType"];
   }): Promise<TUser[]>;
   getNewUsersCount(days: number): Promise<number>;
+  getB2BProfile(id: string): Promise<UserB2BProfileDTO | undefined>;
 }
 
 // --- Order Service Interfaces ---
 export interface OrderService {
-  list(filters?: { status?: TOrder["status"] }): Promise<ComplexOrder[]>;
-  createOrder(data: CreateOrderDTO): Promise<TOrder | undefined>;
+  listOrders(filters?: { status?: TOrder["status"] }): Promise<ComplexOrder[]>;
+  createOrder(data: CreateOrderDTO): Promise<{ id: string } | undefined>;
   createOrderWithItems(
     orderData: CreateOrderDTO,
     items: CreateOrderItemDTO[],
     cartIdToClear?: string,
-  ): Promise<TOrder>;
+  ): Promise<{ id: string }>;
   updateOrderStatus(
     id: string,
     status: TOrder["status"],
-  ): Promise<TOrder | undefined>;
+  ): Promise<{ id: string } | undefined>;
   getComplexOrder(orderId: string): Promise<ComplexOrder | undefined>;
-  createShippingBid(data: TNewShippingBid): Promise<TShippingBid | undefined>;
+  createShippingBid(data: TNewShippingBid): Promise<{ id: string } | undefined>;
   selectWinningBid(
     orderId: string,
     bidId: string,
-  ): Promise<{ updatedOrder: TOrder; selectedBid: TShippingBid }>;
+  ): Promise<{
+    updatedOrder: { id: string; shippingFee: string | null };
+    selectedBid: { id: string };
+  }>;
   getDashboardMetrics(): Promise<DashboardMetrics>;
   getMonthlyRevenue(year: number): Promise<MonthlyRevenue[]>;
-  approveDealerOrder(orderId: string): Promise<TOrder | undefined>;
-  verifyCashPayment(
-    orderId: string,
-    verifiedById: string,
-  ): Promise<TOrder | undefined>;
-  approveOrderCancellation(orderId: string): Promise<TOrder | undefined>;
-  createPayment(data: CreatePaymentDTO): Promise<TPayment>;
-  createPaymentTransaction(
-    data: TNewPaymentTransaction,
-  ): Promise<TPaymentTransaction>;
-  getPaymentTransactionByReferenceCode(
-    referenceCode: string,
-  ): Promise<TPaymentTransaction>;
-  updatePayment(
-    id: string,
-    data: Partial<TPayment>,
-  ): Promise<TPayment | undefined>;
-  confirmPayOSPayment(
-    orderCode: string,
-    amount: number,
-    referenceCode: string,
-  ): Promise<boolean>;
+  approveDealerOrder(orderId: string): Promise<{ id: string } | undefined>;
   checkoutWithTradeCredit(
     userId: string,
     orderData: CreateOrderDTO,
     items: CreateOrderItemDTO[],
     cartId: string,
-  ): Promise<TOrder>;
+  ): Promise<{ id: string }>;
+  approveOrderCancellation(
+    orderId: string,
+  ): Promise<{ id: string } | undefined>;
+}
+
+export interface PaymentService {
+  verifyCashPayment(
+    orderId: string,
+    verifiedById: string,
+  ): Promise<{ id: string } | undefined>;
+  createPayment(data: CreatePaymentDTO): Promise<{ id: string }>;
+  createPaymentTransaction(
+    data: TNewPaymentTransaction,
+  ): Promise<{ id: string }>;
+  getPaymentTransactionByReferenceCode(
+    referenceCode: string,
+  ): Promise<{ id: string }>;
+  updatePayment(
+    id: string,
+    data: Partial<TPayment>,
+  ): Promise<{ id: string } | undefined>;
+  confirmPayOSPayment(
+    orderCode: string,
+    amount: number,
+    referenceCode: string,
+  ): Promise<boolean>;
+  createDebtRepayment(data: CreateDebtRepaymentDTO): Promise<{ id: string }>;
+  getDebtRepaymentByReferenceCode(
+    referenceCode: string,
+  ): Promise<DebtRepaymentDTO | undefined>;
+  getDebtRepaymentByOrderCode(
+    orderCode: number,
+  ): Promise<DebtRepaymentDTO | undefined>;
+  updateDebtRepayment(
+    id: string,
+    data: UpdateDebtRepaymentDTO,
+  ): Promise<DebtRepaymentDTO>;
+  getDebtRepaymentsByUserId(userId: string): Promise<DebtRepaymentDTO[]>;
 }
 
 // --- Quotes Service Interfaces ---
@@ -308,21 +329,17 @@ export interface DealerTierService {
 
 // --- Cart Service Interfaces ---
 export interface CartService {
-  getOrCreateCart(userId: string): Promise<TCart>;
-  getCartById(cartId: string): Promise<TCart | null>;
+  getOrCreateCart(userId: string): Promise<{ id: string }>;
+  getCartById(cartId: string): Promise<{ id: string } | undefined>;
   getCartItems(cartId: string): Promise<CartItemDTO[]>;
-  addToCart(
-    cartId: string,
-    productId: string,
-    quantity: number,
-  ): Promise<TCartItem>;
+  addToCart(cartId: string, productId: string, quantity: number): Promise<void>;
   updateCartItemQuantity(
     cartId: string,
     productId: string,
     quantity: number,
-  ): Promise<TCartItem | null>;
+  ): Promise<void>;
   removeFromCart(cartId: string, productId: string): Promise<void>;
-  mergeLocalItems(userId: string, localItems: LocalItem[]): Promise<TCart>;
+  mergeLocalItems(userId: string, localItems: LocalItem[]): Promise<void>;
 }
 
 // --- Address Service Interfaces ---

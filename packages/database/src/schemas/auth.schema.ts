@@ -134,3 +134,5 @@ export const verifications = snakeCase.table(
 export type TUser = typeof users.$inferSelect;
 export type TNewUser = typeof users.$inferInsert;
 export type TSession = typeof sessions.$inferSelect;
+
+export type UserRole = (typeof userRoleEnum.enumValues)[number];

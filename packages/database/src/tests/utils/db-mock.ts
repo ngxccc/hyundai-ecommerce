@@ -53,6 +53,7 @@ export const mockSelectResolvedValue = {
   queue: [] as unknown[],
   mockResolvedValueOnce(val: unknown) {
     this.queue.push(val);
+    return this;
   },
   reset() {
     this.value = [];

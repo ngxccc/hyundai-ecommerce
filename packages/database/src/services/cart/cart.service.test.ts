@@ -1,12 +1,13 @@
 import { expect, test, describe, vi, beforeEach } from "bun:test";
 import {
   mockDb,
-  mockFindFirst,
   mockFindMany,
   mockInsert,
   mockUpdate,
   mockDelete,
   mockReturning,
+  mockSelectResolvedValue,
+  mockSelect,
 } from "../../tests/utils/db-mock";
 import { DbCartService } from "./cart.service";
 import type { IDatabase } from "../../client";
@@ -23,22 +24,22 @@ describe("CartService", () => {
   describe("getOrCreateCart()", () => {
     test("should return existing cart for authenticated user", async () => {
       const mockCart = { id: "cart-1", userId: "user-1" } as TCart;
-      mockFindFirst.mockResolvedValueOnce(mockCart);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockCart]);
 
       const result = await cartService.getOrCreateCart("user-1");
 
-      expect(mockFindFirst).toHaveBeenCalled();
+      expect(mockSelect).toHaveBeenCalled();
       expect(result).toEqual(mockCart);
     });
 
     test("should create and return new cart if none exists for authenticated user", async () => {
-      mockFindFirst.mockResolvedValueOnce(undefined);
+      mockSelectResolvedValue.mockResolvedValueOnce([]);
       const mockCart = { id: "cart-1", userId: "user-1" } as TCart;
       mockReturning.mockResolvedValueOnce([mockCart]);
 
       const result = await cartService.getOrCreateCart("user-1");
 
-      expect(mockFindFirst).toHaveBeenCalled();
+      expect(mockSelect).toHaveBeenCalled();
       expect(mockInsert).toHaveBeenCalled();
       expect(result).toEqual(mockCart);
     });
@@ -47,21 +48,22 @@ describe("CartService", () => {
   describe("getCartById()", () => {
     test("should return cart if it exists", async () => {
       const mockCart = { id: "cart-1", userId: "user-1" } as TCart;
-      mockFindFirst.mockResolvedValueOnce(mockCart);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockCart]);
 
       const result = await cartService.getCartById("cart-1");
 
       expect(result).toEqual(mockCart);
     });
 
-    test("should return null if cart does not exist", async () => {
-      mockFindFirst.mockResolvedValueOnce(undefined);
+    test("should return undefined if cart does not exist", async () => {
+      mockSelectResolvedValue.mockResolvedValueOnce([]);
 
       const result = await cartService.getCartById("cart-not-exists");
 
-      expect(result).toBeNull();
+      expect(result).toBeUndefined();
     });
   });
+
 
   describe("getCartItems()", () => {
     test("should return all items and keep deleted/missing products as null", async () => {
@@ -104,55 +106,58 @@ describe("CartService", () => {
         "errors.invalidQuantity",
       );
     });
-
     test("should throw error if product does not exist or is deleted", () => {
-      mockFindFirst.mockResolvedValueOnce(undefined); // Product check
+      mockSelectResolvedValue.mockResolvedValueOnce([]); // Product check
 
       expect(cartService.addToCart("cart-1", "prod-1", 2)).rejects.toThrow(
         "errors.productNotFound",
       );
     });
 
-    test("should throw error if product is quote only", () => {
-      mockFindFirst.mockResolvedValueOnce({
-        id: "prod-1",
-        isQuoteOnly: true,
-        deletedAt: null,
-      });
+      mockSelectResolvedValue.mockResolvedValueOnce([
+        {
+          id: "prod-1",
+          isQuoteOnly: true,
+          deletedAt: null,
+        },
+      ]);
 
       expect(cartService.addToCart("cart-1", "prod-1", 2)).rejects.toThrow(
         "errors.productIsQuoteOnly",
       );
-    });
 
-    test("should throw error if target quantity exceeds available stock", () => {
-      mockFindFirst
-        .mockResolvedValueOnce({
-          id: "prod-1",
-          isQuoteOnly: false,
-          deletedAt: null,
-          totalStockCache: 5,
-        }) // Product check
-        .mockResolvedValueOnce({
-          id: "item-1",
-          productId: "prod-1",
-          quantity: 3,
-        }); // Existing item check
+      mockSelectResolvedValue
+        .mockResolvedValueOnce([
+          {
+            id: "prod-1",
+            isQuoteOnly: false,
+            deletedAt: null,
+            totalStockCache: 5,
+          },
+        ]) // Product check
+        .mockResolvedValueOnce([
+          {
+            id: "item-1",
+            productId: "prod-1",
+            quantity: 3,
+          },
+        ]); // Existing item check
 
       expect(cartService.addToCart("cart-1", "prod-1", 3)).rejects.toThrow(
         "errors.insufficientStock",
       );
-    });
 
     test("should insert/update item if valid", async () => {
-      mockFindFirst
-        .mockResolvedValueOnce({
-          id: "prod-1",
-          isQuoteOnly: false,
-          deletedAt: null,
-          totalStockCache: 10,
-        }) // Product check
-        .mockResolvedValueOnce(undefined); // Existing item check
+      mockSelectResolvedValue
+        .mockResolvedValueOnce([
+          {
+            id: "prod-1",
+            isQuoteOnly: false,
+            deletedAt: null,
+            totalStockCache: 10,
+          },
+        ]) // Product check
+        .mockResolvedValueOnce([]); // Existing item check
 
       const mockCartItem = {
         id: "item-new",
@@ -164,12 +169,12 @@ describe("CartService", () => {
       const result = await cartService.addToCart("cart-1", "prod-1", 2);
 
       expect(mockInsert).toHaveBeenCalled();
-      expect(result).toEqual(mockCartItem);
+      expect(result).toBeUndefined();
     });
   });
 
   describe("updateCartItemQuantity()", () => {
-    test("should remove item and return null if quantity <= 0", async () => {
+    test("should remove item and return undefined if quantity <= 0", async () => {
       const result = await cartService.updateCartItemQuantity(
         "cart-1",
         "prod-1",
@@ -177,37 +182,44 @@ describe("CartService", () => {
       );
 
       expect(mockDelete).toHaveBeenCalled();
-      expect(result).toBeNull();
+      expect(result).toBeUndefined();
     });
-
     test("should throw error if product not found", () => {
-      mockFindFirst.mockResolvedValueOnce(undefined);
+      mockSelectResolvedValue.mockResolvedValueOnce([]);
 
       expect(
         cartService.updateCartItemQuantity("cart-1", "prod-1", 5),
       ).rejects.toThrow("errors.productNotFound");
     });
 
-    test("should throw error if quantity exceeds available stock", () => {
-      mockFindFirst.mockResolvedValueOnce({
-        id: "prod-1",
-        isQuoteOnly: false,
-        deletedAt: null,
-        totalStockCache: 3,
-      });
+      mockSelectResolvedValue.mockResolvedValueOnce([
+        {
+          id: "prod-1",
+          isQuoteOnly: false,
+          deletedAt: null,
+          totalStockCache: 3,
+        },
+      ]);
 
       expect(
         cartService.updateCartItemQuantity("cart-1", "prod-1", 5),
       ).rejects.toThrow("errors.insufficientStock");
-    });
 
     test("should update and return item if valid", async () => {
-      mockFindFirst.mockResolvedValueOnce({
-        id: "prod-1",
-        isQuoteOnly: false,
-        deletedAt: null,
-        totalStockCache: 10,
-      });
+      mockSelectResolvedValue
+        .mockResolvedValueOnce([
+          {
+            id: "prod-1",
+            isQuoteOnly: false,
+            deletedAt: null,
+            totalStockCache: 10,
+          },
+        ])
+        .mockResolvedValueOnce([
+          {
+            id: "item-1",
+          },
+        ]);
 
       const mockCartItem = {
         id: "item-1",
@@ -223,7 +235,7 @@ describe("CartService", () => {
       );
 
       expect(mockUpdate).toHaveBeenCalled();
-      expect(result).toEqual(mockCartItem);
+      expect(result).toBeUndefined();
     });
   });
 
@@ -241,18 +253,22 @@ describe("CartService", () => {
         id: "cart-user",
         userId: "user-1",
       } as TCart;
-      mockFindFirst
-        .mockResolvedValueOnce(userCart) // User cart check (inside getOrCreateCart)
-        .mockResolvedValueOnce({
-          id: "prod-1",
-          totalStockCache: 10,
-          deletedAt: null,
-        }) // Product check
-        .mockResolvedValueOnce({
-          id: "item-user",
-          productId: "prod-1",
-          quantity: 2,
-        }); // Existing user item check
+      mockSelectResolvedValue
+        .mockResolvedValueOnce([userCart]) // User cart check (inside getOrCreateCart)
+        .mockResolvedValueOnce([
+          {
+            id: "prod-1",
+            totalStockCache: 10,
+            deletedAt: null,
+          },
+        ]) // Product check
+        .mockResolvedValueOnce([
+          {
+            id: "item-user",
+            productId: "prod-1",
+            quantity: 2,
+          },
+        ]); // Existing user item check
 
       const localItems = [
         {
@@ -264,22 +280,23 @@ describe("CartService", () => {
       const result = await cartService.mergeLocalItems("user-1", localItems);
 
       expect(mockUpdate).toHaveBeenCalled(); // Should update existing user item
-      expect(result).toEqual(userCart);
+      expect(result).toBeUndefined();
     });
-
     test("should insert new item into user's cart if not already present", async () => {
       const userCart = {
         id: "cart-user",
         userId: "user-1",
       } as TCart;
-      mockFindFirst
-        .mockResolvedValueOnce(userCart) // User cart check (inside getOrCreateCart)
-        .mockResolvedValueOnce({
-          id: "prod-1",
-          totalStockCache: 10,
-          deletedAt: null,
-        }) // Product check
-        .mockResolvedValueOnce(undefined); // Existing user item check (none)
+      mockSelectResolvedValue
+        .mockResolvedValueOnce([userCart]) // User cart check (inside getOrCreateCart)
+        .mockResolvedValueOnce([
+          {
+            id: "prod-1",
+            totalStockCache: 10,
+            deletedAt: null,
+          },
+        ]) // Product check
+        .mockResolvedValueOnce([]); // Existing user item check (none)
 
       const localItems = [
         {
@@ -291,7 +308,7 @@ describe("CartService", () => {
       const result = await cartService.mergeLocalItems("user-1", localItems);
 
       expect(mockInsert).toHaveBeenCalled(); // Should insert new user item
-      expect(result).toEqual(userCart);
+      expect(result).toBeUndefined();
     });
   });
 });

@@ -1,10 +1,4 @@
-import type {
-  CreateOrderDTO,
-  CreateOrderItemDTO,
-  CreatePaymentDTO,
-  OrderPaymentStatus,
-  PaymentTransactionType,
-} from "../../dtos";
+import type { CreateOrderDTO, CreateOrderItemDTO } from "../../dtos";
 import type {
   OrderService,
   DashboardMetrics,
@@ -18,52 +12,64 @@ import {
   orders,
   orderItems,
   cartItems,
-  payments,
   shippingBids,
   products,
   users,
-  paymentTransactions,
   outboxEvents,
   type TOrder,
-  type TPayment,
-  type TShippingBid,
   type TNewShippingBid,
-  type TPaymentTransaction,
-  type TNewPaymentTransaction,
+  type OrderStatus,
 } from "../../schemas";
 
-const complexOrderQueryConfig = {
-  with: {
-    items: {
-      with: {
-        product: true, // product ở order-item
-      },
-    },
-    bids: true,
-    user: true,
-  },
-} as const; // khoá cứng cấy ATS, không bị xuy luận thành any
+const ORDER_STATUS_TRANSITIONS = {
+  PENDING: ["PROCESSING", "CANCELLED", "SUSPICIOUS_PAYMENT_HOLD"] as const,
+  PROCESSING: ["SHIPPED", "CANCELLED"] as const,
+  SHIPPED: ["DELIVERED", "REFUND_PENDING"] as const,
+  DELIVERED: ["REFUND_PENDING"] as const,
+  CANCELLED: [] as const,
+  REFUNDED: [] as const,
+  REFUND_PENDING: ["REFUNDED", "CANCELLED"] as const,
+  SUSPICIOUS_PAYMENT_HOLD: ["CANCELLED", "PROCESSING"] as const,
+} as const;
 
 export class DbOrderService implements OrderService {
   constructor(protected readonly db: IDatabase) {}
 
-  // NORMAL QUERIES
-  async list(filters?: { status?: TOrder["status"] }): Promise<ComplexOrder[]> {
-    const whereConditions: Record<string, { eq: string }> = {};
-    if (filters?.status) {
-      whereConditions["status"] = { eq: filters.status };
-    }
-
-    return await this.db.query.orders.findMany({
-      where:
-        Object.keys(whereConditions).length > 0 ? whereConditions : undefined,
-      ...complexOrderQueryConfig,
+  async listOrders(filters?: {
+    status?: TOrder["status"];
+  }): Promise<ComplexOrder[]> {
+    return (await this.db.query.orders.findMany({
+      where: filters?.status ? { status: { eq: filters.status } } : undefined,
+      columns: {
+        id: true,
+        status: true,
+        createdAt: true,
+        totalAmount: true,
+      },
+      with: {
+        user: {
+          columns: {
+            name: true,
+            email: true,
+            companyName: true, // dùng cho bộ lọc tìm kiếm
+          },
+        },
+        items: {
+          columns: {
+            productName: true,
+            quantity: true, // dùng để hiển thị tên sản phẩm đầu tiên + số lượng
+          },
+        },
+      },
       orderBy: { createdAt: "desc" },
-    });
+    })) as unknown as ComplexOrder[];
   }
 
-  async createOrder(data: CreateOrderDTO) {
-    const [order] = await this.db.insert(orders).values(data).returning();
+  async createOrder(data: CreateOrderDTO): Promise<{ id: string } | undefined> {
+    const [order] = await this.db
+      .insert(orders)
+      .values(data)
+      .returning({ id: orders.id });
     return order;
   }
 
@@ -71,9 +77,12 @@ export class DbOrderService implements OrderService {
     orderData: CreateOrderDTO,
     items: CreateOrderItemDTO[],
     cartIdToClear?: string,
-  ): Promise<TOrder> {
+  ): Promise<{ id: string }> {
     return await this.db.transaction(async (tx) => {
-      const [order] = await tx.insert(orders).values(orderData).returning();
+      const [order] = await tx
+        .insert(orders)
+        .values(orderData)
+        .returning({ id: orders.id });
       if (!order) {
         throw new Error("errors.createOrderFailed");
       }
@@ -94,29 +103,42 @@ export class DbOrderService implements OrderService {
     });
   }
 
-  async updateOrderStatus(id: string, status: TOrder["status"]) {
+  async updateOrderStatus(
+    id: string,
+    status: OrderStatus,
+  ): Promise<{ id: string } | undefined> {
     return await this.db.transaction(async (tx) => {
       // get current order
       const currentOrder = await tx.query.orders.findFirst({
-        where: {
-          id,
-        },
+        columns: { status: true },
+        where: { id },
         with: {
-          items: true,
+          items: {
+            columns: { productId: true, quantity: true },
+          },
         },
       });
 
-      // throw error if cant find order
       if (!currentOrder) throw new Error("errors.orderNotFound");
 
       const oldStatus = currentOrder.status;
 
+      // Strict transition validation (Single Source of Truth)
+      // Cast needed because terminal states (CANCELLED, REFUNDED) have empty transition arrays (never[])
+      const allowedNext = ORDER_STATUS_TRANSITIONS[
+        oldStatus
+      ] as readonly string[];
+
+      if (!allowedNext.includes(status)) {
+        throw new Error("errors.invalidStatusTransition");
+      }
+
       // update order status
       const [updated] = await tx
         .update(orders)
-        .set({ status, updatedAt: new Date() })
+        .set({ status })
         .where(eq(orders.id, id))
-        .returning();
+        .returning({ id: orders.id });
 
       const isSoldStatus = (s: TOrder["status"]) =>
         s === "PROCESSING" || s === "SHIPPED" || s === "DELIVERED";
@@ -158,23 +180,72 @@ export class DbOrderService implements OrderService {
       where: {
         id: orderId,
       },
-      ...complexOrderQueryConfig,
+      columns: {
+        id: true,
+        status: true,
+        shippingFee: true,
+        shippingAddress: true,
+        totalAmount: true,
+        createdAt: true,
+        userId: true,
+      },
+      with: {
+        user: {
+          columns: {
+            id: true,
+            name: true,
+            email: true,
+            companyName: true,
+            taxId: true,
+            phone: true,
+            businessType: true,
+          },
+        },
+        items: {
+          columns: {
+            id: true,
+            productName: true,
+            productSku: true,
+            quantity: true,
+            unitPrice: true,
+          },
+        },
+        bids: {
+          columns: {
+            id: true,
+            vendorName: true,
+            quotedPrice: true,
+            internalNote: true,
+            isSelected: true,
+          },
+        },
+      },
     });
   }
-  async createShippingBid(data: TNewShippingBid) {
-    const [bid] = await this.db.insert(shippingBids).values(data).returning();
+
+  async createShippingBid(
+    data: TNewShippingBid,
+  ): Promise<{ id: string } | undefined> {
+    const [bid] = await this.db.insert(shippingBids).values(data).returning({
+      id: shippingBids.id,
+    });
     return bid;
   }
+
   async selectWinningBid(
     orderId: string,
     bidId: string,
-  ): Promise<{ updatedOrder: TOrder; selectedBid: TShippingBid }> {
+  ): Promise<{
+    updatedOrder: { id: string; shippingFee: string | null };
+    selectedBid: { id: string };
+  }> {
     return await this.db.transaction(async (tx) => {
       // 1. Deselect all bids for this order
       await tx
         .update(shippingBids)
         .set({ isSelected: false })
         .where(eq(shippingBids.orderId, orderId));
+
       // 2. Select the winning bid
       const [selectedBid] = await tx
         .update(shippingBids)
@@ -182,78 +253,75 @@ export class DbOrderService implements OrderService {
         .where(
           and(eq(shippingBids.id, bidId), eq(shippingBids.orderId, orderId)),
         )
-        .returning();
+        .returning({
+          id: shippingBids.id,
+          quotedPrice: shippingBids.quotedPrice,
+        });
       if (!selectedBid) {
         throw new Error("errors.shippingBidNotFound");
       }
+
       // 3. Update order shippingFee
       const [updatedOrder] = await tx
         .update(orders)
         .set({ shippingFee: selectedBid.quotedPrice, updatedAt: new Date() })
         .where(eq(orders.id, orderId))
-        .returning();
+        .returning({ id: orders.id, shippingFee: orders.shippingFee });
       if (!updatedOrder) {
         throw new Error("errors.orderNotFound");
       }
-      return { updatedOrder, selectedBid };
+
+      return { updatedOrder, selectedBid: { id: selectedBid.id } };
     });
   }
+
   async getDashboardMetrics(): Promise<DashboardMetrics> {
     const now = new Date();
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
 
-    // 1. Total products
-    const productsRes = await this.db
-      .select({ count: sql<number>`count(*)` })
-      .from(products);
+    const [productsRes, [ordersMetrics], [usersMetrics]] = await Promise.all([
+      // 1. Total products (separate table)
+      this.db.select({ count: sql<number>`count(*)` }).from(products),
+
+      // 2. Orders metrics (aggregated in a single query)
+      this.db
+        .select({
+          totalOrders: sql<number>`count(*)::integer`,
+          totalRevenue: sql<string>`coalesce(sum(case when ${orders.status} != 'CANCELLED' then ${orders.totalAmount} else 0 end), '0')`,
+          currentRevenue: sql<string>`coalesce(sum(case when ${orders.status} != 'CANCELLED' and ${orders.createdAt} >= ${thirtyDaysAgo} then ${orders.totalAmount} else 0 end), '0')`,
+          currentOrders: sql<number>`count(case when ${orders.status} != 'CANCELLED' and ${orders.createdAt} >= ${thirtyDaysAgo} then 1 else null end)::integer`,
+          previousRevenue: sql<string>`coalesce(sum(case when ${orders.status} != 'CANCELLED' and ${orders.createdAt} >= ${sixtyDaysAgo} and ${orders.createdAt} < ${thirtyDaysAgo} then ${orders.totalAmount} else 0 end), '0')`,
+          previousOrders: sql<number>`count(case when ${orders.status} != 'CANCELLED' and ${orders.createdAt} >= ${sixtyDaysAgo} and ${orders.createdAt} < ${thirtyDaysAgo} then 1 else null end)::integer`,
+        })
+        .from(orders),
+
+      // 3. Customers/Users metrics (aggregated in a single query)
+      this.db
+        .select({
+          newCustomers: sql<number>`count(case when ${users.createdAt} >= ${thirtyDaysAgo} then 1 else null end)::integer`,
+          previousCustomers: sql<number>`count(case when ${users.createdAt} >= ${sixtyDaysAgo} and ${users.createdAt} < ${thirtyDaysAgo} then 1 else null end)::integer`,
+        })
+        .from(users)
+        .where(
+          and(
+            ne(users.role, "SUPER_ADMIN"),
+            ne(users.role, "SALES_REPRESENTATIVE"),
+            ne(users.role, "ACCOUNTANT"),
+            ne(users.role, "WAREHOUSE_MANAGER"),
+          ),
+        ),
+    ]);
+
     const totalProducts = productsRes[0]?.count ?? 0;
-
-    // 2. Total orders
-    const ordersRes = await this.db
-      .select({ count: sql<number>`count(*)` })
-      .from(orders);
-    const totalOrders = ordersRes[0]?.count ?? 0;
-
-    // 3. Total revenue
-    const totalRevenueRes = await this.db
-      .select({ sum: sql<string | null>`sum(${orders.totalAmount})` })
-      .from(orders)
-      .where(ne(orders.status, "CANCELLED"));
-    const totalRevenue = totalRevenueRes[0]?.sum ?? "0";
-
-    // 4. Current 30 days revenue & count
-    const currentRes = await this.db
-      .select({
-        sum: sql<string | null>`sum(${orders.totalAmount})`,
-        count: sql<number>`count(*)`,
-      })
-      .from(orders)
-      .where(
-        and(
-          ne(orders.status, "CANCELLED"),
-          gte(orders.createdAt, thirtyDaysAgo),
-        ),
-      );
-    const currentRevenueRaw = currentRes[0]?.sum ?? "0";
-    const currentOrders = currentRes[0]?.count ?? 0;
-
-    // 5. Previous 30 days (30-60 days ago) revenue & count
-    const previousRes = await this.db
-      .select({
-        sum: sql<string | null>`sum(${orders.totalAmount})`,
-        count: sql<number>`count(*)`,
-      })
-      .from(orders)
-      .where(
-        and(
-          ne(orders.status, "CANCELLED"),
-          gte(orders.createdAt, sixtyDaysAgo),
-          lt(orders.createdAt, thirtyDaysAgo),
-        ),
-      );
-    const previousRevenueRaw = previousRes[0]?.sum ?? "0";
-    const previousOrders = previousRes[0]?.count ?? 0;
+    const totalOrders = ordersMetrics?.totalOrders ?? 0;
+    const totalRevenue = ordersMetrics?.totalRevenue ?? "0";
+    const currentRevenueRaw = ordersMetrics?.currentRevenue ?? "0";
+    const currentOrders = ordersMetrics?.currentOrders ?? 0;
+    const previousRevenueRaw = ordersMetrics?.previousRevenue ?? "0";
+    const previousOrders = ordersMetrics?.previousOrders ?? 0;
+    const newCustomers = usersMetrics?.newCustomers ?? 0;
+    const previousCustomers = usersMetrics?.previousCustomers ?? 0;
 
     const currentRevenue = parseFloat(currentRevenueRaw);
     const previousRevenue = parseFloat(previousRevenueRaw);
@@ -276,35 +344,6 @@ export class DbOrderService implements OrderService {
             ((currentOrders - previousOrders) / previousOrders) * 10000,
           ) / 100;
 
-    // 6. New customers count & growth
-    const newCustomersRes = await this.db
-      .select({ count: sql<number>`count(*)` })
-      .from(users)
-      .where(
-        and(
-          ne(users.role, "SUPER_ADMIN"),
-          ne(users.role, "SALES_REPRESENTATIVE"),
-          ne(users.role, "ACCOUNTANT"),
-          ne(users.role, "WAREHOUSE_MANAGER"),
-          gte(users.createdAt, thirtyDaysAgo),
-        ),
-      );
-    const newCustomers = newCustomersRes[0]?.count ?? 0;
-
-    const previousCustomersRes = await this.db
-      .select({ count: sql<number>`count(*)` })
-      .from(users)
-      .where(
-        and(
-          ne(users.role, "SUPER_ADMIN"),
-          ne(users.role, "SALES_REPRESENTATIVE"),
-          ne(users.role, "ACCOUNTANT"),
-          ne(users.role, "WAREHOUSE_MANAGER"),
-          gte(users.createdAt, sixtyDaysAgo),
-          lt(users.createdAt, thirtyDaysAgo),
-        ),
-      );
-    const previousCustomers = previousCustomersRes[0]?.count ?? 0;
     const customersGrowth =
       previousCustomers === 0
         ? newCustomers > 0
@@ -316,9 +355,9 @@ export class DbOrderService implements OrderService {
 
     return {
       totalRevenue,
-      totalOrders: Number(totalOrders),
-      totalProducts: Number(totalProducts),
-      newCustomers: Number(newCustomers),
+      totalOrders,
+      totalProducts,
+      newCustomers,
       revenueGrowth,
       ordersGrowth,
       customersGrowth,
@@ -364,14 +403,22 @@ export class DbOrderService implements OrderService {
     return fullYearData;
   }
 
-  async approveDealerOrder(orderId: string): Promise<TOrder | undefined> {
+  async approveDealerOrder(
+    orderId: string,
+  ): Promise<{ id: string } | undefined> {
     return await this.db.transaction(async (tx) => {
       // 1. Fetch the order
-      const order = await tx.query.orders.findFirst({
-        where: {
-          id: orderId,
-        },
-      });
+      const [order] = await tx
+        .select({
+          id: orders.id,
+          approvalStatus: orders.approvalStatus,
+          paymentMethod: orders.paymentMethod,
+          userId: orders.userId,
+          totalAmount: orders.totalAmount,
+        })
+        .from(orders)
+        .where(eq(orders.id, orderId))
+        .limit(1);
 
       if (!order) {
         return undefined;
@@ -379,7 +426,7 @@ export class DbOrderService implements OrderService {
 
       // If already approved, return it
       if (order.approvalStatus === "APPROVED") {
-        return order;
+        return { id: order.id };
       }
 
       // 2. If it is Trade Credit, check and update the user's credit limit
@@ -388,7 +435,10 @@ export class DbOrderService implements OrderService {
         let user;
         try {
           const [lockedUser] = await tx
-            .select()
+            .select({
+              creditLimit: users.creditLimit,
+              currentDebt: users.currentDebt,
+            })
             .from(users)
             .where(eq(users.id, order.userId))
             .for("update", { noWait: true });
@@ -432,63 +482,35 @@ export class DbOrderService implements OrderService {
         .update(orders)
         .set({ approvalStatus: "APPROVED" })
         .where(eq(orders.id, orderId))
-        .returning();
+        .returning({ id: orders.id });
 
       return updatedOrder;
     });
   }
 
-  async verifyCashPayment(
+  async approveOrderCancellation(
     orderId: string,
-    verifiedById: string,
-  ): Promise<TOrder | undefined> {
+  ): Promise<{ id: string } | undefined> {
     return await this.db.transaction(async (tx) => {
-      const order = await tx.query.orders.findFirst({
-        where: { id: orderId },
-      });
-      if (!order) {
-        return undefined;
-      }
-
-      const [updatedOrder] = await tx
-        .update(orders)
-        .set({ paymentStatus: "FULLY_PAID" })
+      const [order] = await tx
+        .select({
+          userId: orders.userId,
+          paymentMethod: orders.paymentMethod,
+          totalAmount: orders.totalAmount,
+        })
+        .from(orders)
         .where(eq(orders.id, orderId))
-        .returning();
-
-      // Update manual payment status to COMPLETED
-      await tx
-        .update(payments)
-        .set({ status: "COMPLETED" })
-        .where(and(eq(payments.orderId, orderId), eq(payments.method, "CASH")));
-
-      await tx.insert(paymentTransactions).values({
-        orderId,
-        amount: order.totalAmount,
-        paymentMethod: "CASH",
-        transactionType: "FULL",
-        status: "SUCCESS",
-        referenceCode: "CASH-" + orderId,
-        verifiedBy: verifiedById,
-      });
-
-      return updatedOrder;
-    });
-  }
-
-  async approveOrderCancellation(orderId: string): Promise<TOrder | undefined> {
-    return await this.db.transaction(async (tx) => {
-      const order = await tx.query.orders.findFirst({
-        where: { id: orderId },
-      });
+        .limit(1);
       if (!order) {
         return undefined;
       }
 
       if (order.paymentMethod === "TRADE_CREDIT") {
-        const user = await tx.query.users.findFirst({
-          where: { id: order.userId },
-        });
+        const [user] = await tx
+          .select({ currentDebt: users.currentDebt })
+          .from(users)
+          .where(eq(users.id, order.userId))
+          .limit(1);
         if (user) {
           const newDebt = (
             parseFloat(user.currentDebt) - parseFloat(order.totalAmount)
@@ -502,192 +524,16 @@ export class DbOrderService implements OrderService {
           .update(orders)
           .set({ status: "CANCELLED" })
           .where(eq(orders.id, orderId))
-          .returning();
+          .returning({ id: orders.id });
         return updatedOrder;
       } else {
         const [updatedOrder] = await tx
           .update(orders)
           .set({ status: "REFUND_PENDING" })
           .where(eq(orders.id, orderId))
-          .returning();
+          .returning({ id: orders.id });
         return updatedOrder;
       }
-    });
-  }
-
-  async createPayment(data: CreatePaymentDTO): Promise<TPayment> {
-    const [payment] = await this.db.insert(payments).values(data).returning();
-    if (!payment) {
-      throw new Error("errors.createPaymentFailed");
-    }
-    return payment;
-  }
-
-  async createPaymentTransaction(
-    data: TNewPaymentTransaction,
-  ): Promise<TPaymentTransaction> {
-    const [transaction] = await this.db
-      .insert(paymentTransactions)
-      .values(data)
-      .returning();
-    if (!transaction) {
-      throw new Error("errors.createPaymentTransactionFailed");
-    }
-    return transaction;
-  }
-
-  async getPaymentTransactionByReferenceCode(
-    referenceCode: string,
-  ): Promise<TPaymentTransaction> {
-    const [paymentTransaction] = await this.db
-      .select()
-      .from(paymentTransactions)
-      .where(eq(paymentTransactions.referenceCode, referenceCode))
-      .limit(1);
-    if (!paymentTransaction) {
-      throw new Error("errors.paymentTransactionNotFound");
-    }
-    return paymentTransaction;
-  }
-
-  async updatePayment(
-    id: string,
-    data: Partial<TPayment>,
-  ): Promise<TPayment | undefined> {
-    const [updated] = await this.db
-      .update(payments)
-      .set(data)
-      .where(eq(payments.id, id))
-      .returning();
-    return updated;
-  }
-
-  async confirmPayOSPayment(
-    orderCode: string,
-    amount: number,
-    referenceCode: string,
-  ): Promise<boolean> {
-    return await this.db.transaction(async (tx) => {
-      // 1. Get the payment transaction by orderCode
-      const [paymentTransaction] = await tx
-        .select()
-        .from(paymentTransactions)
-        .where(eq(paymentTransactions.orderCode, Number(orderCode)))
-        .limit(1);
-      if (!paymentTransaction || paymentTransaction.status === "SUCCESS") {
-        return false;
-      }
-
-      // 2. Get the order
-      const [order] = await tx
-        .select()
-        .from(orders)
-        .where(eq(orders.id, paymentTransaction.orderId))
-        .limit(1);
-      if (!order) {
-        return false;
-      }
-
-      // Check for amount mismatch (Gap 4)
-      const expectedAmount = parseFloat(paymentTransaction.amount);
-      const tolerance = 0.01;
-      const isMismatch = Math.abs(amount - expectedAmount) > tolerance;
-
-      if (isMismatch) {
-        // Update the existing payment_transaction to FAILED
-        await tx
-          .update(paymentTransactions)
-          .set({ status: "FAILED" })
-          .where(eq(paymentTransactions.id, paymentTransaction.id));
-
-        // Set order status to "SUSPICIOUS_PAYMENT_HOLD" and paymentStatus to "UNPAID"
-        await tx
-          .update(orders)
-          .set({
-            status: "SUSPICIOUS_PAYMENT_HOLD",
-            paymentStatus: "UNPAID",
-          })
-          .where(eq(orders.id, order.id));
-
-        // Insert high-priority TELEGRAM alert event to outbox_event (Gap 2/4)
-        await tx.insert(outboxEvents).values({
-          eventType: "SEND_TELEGRAM_ALERT",
-          payload: {
-            message: `⚠️ [BẢO MẬT] Phát hiện lệch tiền thanh toán qua PayOS!\n- Mã đơn hàng: ${order.id}\n- Số tiền mong đợi: ${expectedAmount.toLocaleString("vi-VN")} VND\n- Số tiền thực tế: ${amount.toLocaleString("vi-VN")} VND\n- Reference: ${referenceCode}\n- Trạng thái: Đơn hàng đã bị giữ lại để kiểm tra thủ công.`,
-            metadata: {
-              orderId: order.id,
-              expectedAmount,
-              actualAmount: amount,
-              referenceCode,
-            },
-          },
-          status: "PENDING",
-        });
-
-        return true;
-      }
-
-      // If amounts match:
-      // 3. Update payment_transaction status to SUCCESS & set bank referenceCode
-      await tx
-        .update(paymentTransactions)
-        .set({ status: "SUCCESS", referenceCode })
-        .where(eq(paymentTransactions.id, paymentTransaction.id));
-
-      // 4. Determine order paymentStatus and transaction type
-      let paymentStatus: OrderPaymentStatus;
-      let transactionType: PaymentTransactionType;
-
-      if (
-        paymentTransaction.transactionType === "REMAINDER" ||
-        order.paymentStatus === "DEPOSIT_PAID"
-      ) {
-        paymentStatus = "FULLY_PAID";
-        transactionType = "REMAINDER";
-      } else if (paymentTransaction.transactionType === "DEPOSIT") {
-        paymentStatus = "DEPOSIT_PAID";
-        transactionType = "DEPOSIT";
-      } else {
-        paymentStatus = "FULLY_PAID";
-        transactionType = "FULL";
-      }
-
-      await tx
-        .update(orders)
-        .set({ paymentStatus })
-        .where(eq(orders.id, order.id));
-
-      // Get customer email
-      const [customer] = await tx
-        .select()
-        .from(users)
-        .where(eq(users.id, order.userId))
-        .limit(1);
-      const customerEmail = customer?.email ?? "customer@example.com";
-
-      // 6. Insert outbox events for background jobs (Gap 3):
-      // - Confirm email (SEND_MAIL)
-      // - Telegram alert to sales department (SEND_TELEGRAM_ALERT)
-      await tx.insert(outboxEvents).values([
-        {
-          eventType: "SEND_MAIL",
-          payload: {
-            to: customerEmail,
-            subject: `Xác nhận thanh toán đơn hàng ${order.id}`,
-            body: `Đơn hàng ${order.id} đã được thanh toán thành công số tiền ${amount.toLocaleString("vi-VN")} VND qua PayOS. Trạng thái: ${paymentStatus}.`,
-          },
-          status: "PENDING",
-        },
-        {
-          eventType: "SEND_TELEGRAM_ALERT",
-          payload: {
-            message: `🎉 [THANH TOÁN] Đơn hàng mới thanh toán thành công!\n- Mã đơn hàng: ${order.id}\n- Số tiền: ${amount.toLocaleString("vi-VN")} VND\n- Cổng: PayOS\n- Loại: ${transactionType === "FULL" ? "Toàn bộ" : transactionType === "REMAINDER" ? "Phần còn lại" : "Đặt cọc (20%)"}`,
-          },
-          status: "PENDING",
-        },
-      ]);
-
-      return true;
     });
   }
 
@@ -696,13 +542,19 @@ export class DbOrderService implements OrderService {
     orderData: CreateOrderDTO,
     items: CreateOrderItemDTO[],
     cartId: string,
-  ): Promise<TOrder> {
+  ): Promise<{ id: string }> {
     return await this.db.transaction(async (tx) => {
       // 1. Lock the user row (pessimistic lock NOWAIT)
       let user;
       try {
         const [lockedUser] = await tx
-          .select()
+          .select({
+            role: users.role,
+            creditLimit: users.creditLimit,
+            currentDebt: users.currentDebt,
+            name: users.name,
+            email: users.email,
+          })
           .from(users)
           .where(eq(users.id, userId))
           .for("update", { noWait: true });
@@ -727,7 +579,7 @@ export class DbOrderService implements OrderService {
       let subtotal = 0;
       for (const item of items) {
         const [product] = await tx
-          .select()
+          .select({ price: products.price })
           .from(products)
           .where(eq(products.id, item.productId))
           .limit(1);
@@ -770,7 +622,7 @@ export class DbOrderService implements OrderService {
           paymentStatus: "UNPAID",
           approvalStatus,
         })
-        .returning();
+        .returning({ id: orders.id });
 
       if (!order) {
         throw new Error("errors.createOrderFailed");

@@ -16,3 +16,13 @@ export type UserDTO = Omit<
   TUser,
   "emailVerified" | "image" | "createdAt" | "updatedAt" | "deletedAt"
 >;
+
+export type UserB2BProfileDTO = Omit<
+  TUser,
+  | "password"
+  | "emailVerified"
+  | "image"
+  | "createdAt"
+  | "updatedAt"
+  | "deletedAt"
+>;

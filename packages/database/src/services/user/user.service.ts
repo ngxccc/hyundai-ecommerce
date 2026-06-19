@@ -1,6 +1,6 @@
 import type { UserService } from "../interfaces";
-import { type UserProfileDTO } from "../../dtos";
-import { and, eq, ne, gte, sql } from "drizzle-orm";
+import { type UserProfileDTO, type UserB2BProfileDTO } from "../../dtos";
+import { and, or, eq, ne, gte, sql } from "drizzle-orm";
 import { type IDatabase } from "../../client";
 import { users, type TUser } from "../../schemas/auth.schema";
 
@@ -11,56 +11,86 @@ export class DbUserService implements UserService {
    * Get a user's profile fields by ID (for portal display)
    */
   async getById(id: string): Promise<UserProfileDTO | undefined> {
-    return await this.db.query.users.findFirst({
-      where: { id },
-      columns: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        role: true,
-        companyName: true,
-        taxId: true,
-        businessType: true,
-        province: true,
-      },
-    });
+    const [user] = await this.db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        phone: users.phone,
+        role: users.role,
+        companyName: users.companyName,
+        taxId: users.taxId,
+        businessType: users.businessType,
+        province: users.province,
+      })
+      .from(users)
+      .where(eq(users.id, id))
+      .limit(1);
+    return user;
+  }
+
+  /**
+   * Get a user's B2B profile fields by ID (including credit/debt details)
+   */
+  async getB2BProfile(id: string): Promise<UserB2BProfileDTO | undefined> {
+    const [user] = await this.db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        phone: users.phone,
+        role: users.role,
+        companyName: users.companyName,
+        taxId: users.taxId,
+        businessType: users.businessType,
+        province: users.province,
+        creditLimit: users.creditLimit,
+        currentDebt: users.currentDebt,
+        dealerTierId: users.dealerTierId,
+      })
+      .from(users)
+      .where(eq(users.id, id))
+      .limit(1);
+    return user;
   }
 
   /**
    * Find a user by phone number
    */
-  async findByPhone(phone: string) {
-    return await this.db.query.users.findFirst({
-      where: {
-        phone,
-      },
-      columns: { id: true },
-    });
+  async findByPhone(phone: string): Promise<{ id: string } | undefined> {
+    const [user] = await this.db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.phone, phone))
+      .limit(1);
+    return user;
   }
 
   /**
    * Find a user by email address
    */
-  async findByEmail(email: string) {
-    return await this.db.query.users.findFirst({
-      where: {
-        email,
-      },
-      columns: { id: true },
-    });
+  async findByEmail(email: string): Promise<{ id: string } | undefined> {
+    const [user] = await this.db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+    return user;
   }
 
   /**
    * Check if an email or phone number is already registered
    */
-  async checkDuplicateUser(email: string, phone: string) {
-    return await this.db.query.users.findFirst({
-      where: {
-        OR: [{ email }, { phone }],
-      },
-      columns: { email: true, phone: true },
-    });
+  async checkDuplicateUser(
+    email: string,
+    phone: string,
+  ): Promise<{ email: string; phone: string | null } | undefined> {
+    const [user] = await this.db
+      .select({ email: users.email, phone: users.phone })
+      .from(users)
+      .where(or(eq(users.email, email), eq(users.phone, phone)))
+      .limit(1);
+    return user;
   }
 
   /**

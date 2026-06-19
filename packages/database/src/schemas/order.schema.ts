@@ -93,3 +93,8 @@ export type TOrder = typeof orders.$inferSelect;
 export type TNewOrder = typeof orders.$inferInsert;
 export type TOrderItem = typeof orderItems.$inferSelect;
 export type TNewOrderItem = typeof orderItems.$inferInsert;
+
+export type PaymentMethod = (typeof paymentMethodEnum.enumValues)[number];
+export type OrderPaymentStatus =
+  (typeof orderPaymentStatusEnum.enumValues)[number];
+export type OrderStatus = (typeof orderStatusEnum.enumValues)[number];
