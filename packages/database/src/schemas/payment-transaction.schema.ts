@@ -40,3 +40,5 @@ export type TNewPaymentTransaction = typeof paymentTransactions.$inferInsert;
 
 export type PaymentTransactionType =
   (typeof paymentTransactionTypeEnum.enumValues)[number];
+export type PaymentTransactionStatus =
+  (typeof paymentTransactionStatusEnum.enumValues)[number];
