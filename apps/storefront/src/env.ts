@@ -1,3 +1,4 @@
+import { initializeSharedConfig } from "@nhatnang/shared";
 import { ENVIRONMENT_MODES, MESSAGES } from "@nhatnang/shared/constants";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
@@ -34,4 +35,14 @@ export const env = createEnv({
     VAT_RATE: process.env["VAT_RATE"],
     DEPOSIT_RATE: process.env["DEPOSIT_RATE"],
   },
+});
+
+initializeSharedConfig({
+  vatRate: env.VAT_RATE,
+  depositRate: env.DEPOSIT_RATE,
+  payosClientId: env.PAYOS_CLIENT_ID,
+  payosApiKey: env.PAYOS_API_KEY,
+  payosChecksumKey: env.PAYOS_CHECKSUM_KEY,
+  nextPublicAppUrl: env.NEXT_PUBLIC_APP_URL,
+  isProduction: env.NODE_ENV === "production",
 });

@@ -1,3 +1,4 @@
+import { getSharedConfig } from "../config";
 import crypto from "crypto";
 
 export const PAYOS_SUCCESS_CODE = "00";
@@ -57,6 +58,23 @@ export type PayOSPaymentRes = PayOSRes<{
   checkoutUrl: string;
   qrCode: string;
 }>;
+
+export interface PayOSPaymentLinkInformation {
+  id: string;
+  orderCode: number;
+  amount: number;
+  amountPaid: number;
+  amountRemaining: number;
+  status: string;
+  createdAt: string;
+  transactions: {
+    amount: number;
+    description: string;
+    accountNumber: string;
+    reference: string;
+    transactionDateTime: string;
+  }[];
+}
 
 function sortObjDataByKey(
   object: Record<string, unknown>,
@@ -136,12 +154,15 @@ export async function createPayOSPaymentLink(
   requestData: PayOSPaymentRequest,
   credentials?: { clientId?: string; apiKey?: string; checksumKey?: string },
 ): Promise<PayOSPaymentRes> {
-  const clientId = credentials?.clientId ?? process.env["PAYOS_CLIENT_ID"];
-  const apiKey = credentials?.apiKey ?? process.env["PAYOS_API_KEY"];
-  const checksumKey = credentials?.checksumKey ?? process.env["PAYOS_CHECKSUM_KEY"];
+  const clientId = credentials?.clientId ?? getSharedConfig().payosClientId;
+  const apiKey = credentials?.apiKey ?? getSharedConfig().payosApiKey;
+  const checksumKey =
+    credentials?.checksumKey ?? getSharedConfig().payosChecksumKey;
 
   if (!clientId || !apiKey || !checksumKey) {
-    throw new Error("Missing PayOS credentials (PAYOS_CLIENT_ID, PAYOS_API_KEY, PAYOS_CHECKSUM_KEY)");
+    throw new Error(
+      "Missing PayOS credentials (PAYOS_CLIENT_ID, PAYOS_API_KEY, PAYOS_CHECKSUM_KEY)",
+    );
   }
 
   const signature = generatePayOSSignature(
@@ -171,4 +192,36 @@ export async function createPayOSPaymentLink(
   }
 
   return (await response.json()) as PayOSPaymentRes;
+}
+
+export async function getPayOSPaymentLinkInformation(
+  orderCode: number,
+  credentials?: { clientId?: string; apiKey?: string },
+): Promise<PayOSRes<PayOSPaymentLinkInformation>> {
+  const clientId = credentials?.clientId ?? getSharedConfig().payosClientId;
+  const apiKey = credentials?.apiKey ?? getSharedConfig().payosApiKey;
+
+  if (!clientId || !apiKey) {
+    throw new Error(
+      "Missing PayOS credentials (PAYOS_CLIENT_ID, PAYOS_API_KEY)",
+    );
+  }
+
+  const response = await fetch(
+    `https://api-merchant.payos.vn/v2/payment-requests/${orderCode}`,
+    {
+      method: "GET",
+      headers: {
+        "x-client-id": clientId,
+        "x-api-key": apiKey,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`PayOS API error: ${response.status} - ${errText}`);
+  }
+
+  return await response.json();
 }
