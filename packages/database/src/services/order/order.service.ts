@@ -16,9 +16,12 @@ import {
   products,
   users,
   outboxEvents,
+  paymentTransactions,
   type TOrder,
   type TNewShippingBid,
   type OrderStatus,
+  type PaymentTransactionType,
+  type PaymentMethod,
 } from "../../schemas";
 
 const ORDER_STATUS_TRANSITIONS = {
@@ -183,6 +186,8 @@ export class DbOrderService implements OrderService {
       columns: {
         id: true,
         status: true,
+        paymentStatus: true,
+        paymentMethod: true,
         shippingFee: true,
         shippingAddress: true,
         totalAmount: true,
@@ -677,6 +682,32 @@ export class DbOrderService implements OrderService {
 
       return order;
     });
+  }
+
+  async createPendingPaymentTransaction(
+    orderId: string,
+    amount: number,
+    transactionType: PaymentTransactionType,
+    referenceCode: number,
+    method: Exclude<PaymentMethod, "TRADE_CREDIT"> = "PAYOS",
+  ): Promise<void> {
+    const [transaction] = await this.db
+      .insert(paymentTransactions)
+      .values({
+        orderId,
+        amount: amount.toFixed(2),
+        paymentMethod: method,
+        transactionType,
+        status: "PENDING",
+        orderCode: referenceCode,
+      })
+      .returning({ id: paymentTransactions.id });
+
+    if (!transaction) {
+      throw new Error("errors.createPaymentTransactionFailed");
+    }
+
+    return;
   }
 }
 

@@ -11,6 +11,7 @@ import {
   type TNewPaymentTransaction,
   type OrderPaymentStatus,
   type PaymentTransactionType,
+  type PaymentTransactionStatus,
 } from "../../schemas";
 import type {
   CreatePaymentDTO,
@@ -111,6 +112,44 @@ export class DbPaymentService implements PaymentService {
       .where(eq(payments.id, id))
       .returning({ id: payments.id });
     return updated;
+  }
+
+  async getPendingPayOSTransactionByOrderId(orderId: string): Promise<
+    | {
+        id: string;
+        orderCode: number | null;
+        amount: string;
+        status: PaymentTransactionStatus;
+      }
+    | undefined
+  > {
+    const [pendingTx] = await this.db
+      .select({
+        id: paymentTransactions.id,
+        orderCode: paymentTransactions.orderCode,
+        amount: paymentTransactions.amount,
+        status: paymentTransactions.status,
+      })
+      .from(paymentTransactions)
+      .where(
+        and(
+          eq(paymentTransactions.orderId, orderId),
+          eq(paymentTransactions.status, "PENDING"),
+          eq(paymentTransactions.paymentMethod, "PAYOS"),
+        ),
+      )
+      .limit(1);
+    return pendingTx;
+  }
+
+  async updatePaymentTransactionStatus(
+    id: string,
+    status: PaymentTransactionStatus,
+  ): Promise<void> {
+    await this.db
+      .update(paymentTransactions)
+      .set({ status })
+      .where(eq(paymentTransactions.id, id));
   }
 
   async confirmPayOSPayment(
@@ -329,6 +368,104 @@ export class DbPaymentService implements PaymentService {
       throw new Error("errors.debtRepaymentNotFound");
     }
     return updated;
+  }
+
+  async confirmDebtRepayment(
+    orderCode: string,
+    amount: number,
+    referenceCode: string,
+  ): Promise<boolean> {
+    return await this.db.transaction(async (tx) => {
+      // 1. Get the debt repayment by orderCode
+      const [repayment] = await tx
+        .select({
+          id: debtRepayments.id,
+          userId: debtRepayments.userId,
+          amount: debtRepayments.amount,
+          status: debtRepayments.status,
+        })
+        .from(debtRepayments)
+        .where(eq(debtRepayments.orderCode, Number(orderCode)))
+        .limit(1);
+
+      if (!repayment || repayment.status === "COMPLETED") {
+        return false;
+      }
+
+      // Check amount mismatch
+      const expectedAmount = parseFloat(repayment.amount);
+      const tolerance = 0.01;
+      const isMismatch = Math.abs(amount - expectedAmount) > tolerance;
+
+      if (isMismatch) {
+        await tx
+          .update(debtRepayments)
+          .set({ status: "FAILED" })
+          .where(eq(debtRepayments.id, repayment.id));
+        return false;
+      }
+
+      // 2. Lock the user row (pessimistic lock SELECT FOR UPDATE)
+      const [user] = await tx
+        .select({
+          id: users.id,
+          currentDebt: users.currentDebt,
+          email: users.email,
+          name: users.name,
+        })
+        .from(users)
+        .where(eq(users.id, repayment.userId))
+        .for("update", { noWait: true });
+
+      if (!user) {
+        throw new Error("errors.userNotFound");
+      }
+
+      // 3. Deduct debt: currentDebt = currentDebt - amount
+      const currentDebtNum = parseFloat(user.currentDebt || "0");
+      const newDebt = Math.max(0, currentDebtNum - amount).toFixed(2);
+
+      await tx
+        .update(users)
+        .set({ currentDebt: newDebt })
+        .where(eq(users.id, user.id));
+
+      // 4. Update debt repayment status to COMPLETED and set referenceCode
+      await tx
+        .update(debtRepayments)
+        .set({ status: "COMPLETED", referenceCode })
+        .where(eq(debtRepayments.id, repayment.id));
+
+      // 5. Delete Redis block key for overdue lock
+      try {
+        const { clearOverdueLock } = await import("@nhatnang/shared");
+        await clearOverdueLock(user.id);
+      } catch (e) {
+        console.warn("Failed to delete Redis overdue lock key:", e);
+      }
+
+      // 6. Write outbox alert/mail events
+      await tx.insert(outboxEvents).values([
+        {
+          eventType: "SEND_MAIL",
+          payload: {
+            to: user.email,
+            subject: `Xác nhận thanh toán công nợ`,
+            body: `Xin chào ${user.name},\n\nYêu cầu thanh toán công nợ trị giá ${amount.toLocaleString("vi-VN")} VND đã được hoàn tất.\nSố dư nợ hiện tại của bạn là: ${parseFloat(newDebt).toLocaleString("vi-VN")} VND.`,
+          },
+          status: "PENDING",
+        },
+        {
+          eventType: "SEND_TELEGRAM_ALERT",
+          payload: {
+            message: `💼 [CÔNG NỢ] Khách hàng ${user.name} đã thanh toán dư nợ thành công!\n- Số tiền: ${amount.toLocaleString("vi-VN")} VND\n- Số dư nợ còn lại: ${parseFloat(newDebt).toLocaleString("vi-VN")} VND\n- Cổng: PayOS\n- Mã GD: ${referenceCode}`,
+          },
+          status: "PENDING",
+        },
+      ]);
+
+      return true;
+    });
   }
 
   async getDebtRepaymentsByUserId(userId: string): Promise<DebtRepaymentDTO[]> {

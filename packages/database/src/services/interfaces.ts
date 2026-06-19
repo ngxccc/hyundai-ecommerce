@@ -12,8 +12,11 @@ import type {
   TQuote,
   TNewDealerTier,
   TDealerTier,
-  TWarehouseStock,
   TNewPaymentTransaction,
+  PaymentTransactionType,
+  TWarehouseStock,
+  PaymentMethod,
+  PaymentTransactionStatus,
 } from "../schemas";
 import type {
   CartItemDTO,
@@ -252,6 +255,13 @@ export interface OrderService {
   approveOrderCancellation(
     orderId: string,
   ): Promise<{ id: string } | undefined>;
+  createPendingPaymentTransaction(
+    orderId: string,
+    amount: number,
+    transactionType: PaymentTransactionType,
+    referenceCode: number,
+    method?: Exclude<PaymentMethod, "TRADE_CREDIT">,
+  ): Promise<void>;
 }
 
 export interface PaymentService {
@@ -266,10 +276,30 @@ export interface PaymentService {
   getPaymentTransactionByReferenceCode(
     referenceCode: string,
   ): Promise<{ id: string }>;
+  confirmDebtRepayment(
+    orderCode: string,
+    amount: number,
+    referenceCode: string,
+  ): Promise<boolean>;
   updatePayment(
     id: string,
     data: Partial<TPayment>,
   ): Promise<{ id: string } | undefined>;
+  getPendingPayOSTransactionByOrderId(
+    orderId: string,
+  ): Promise<
+    | {
+        id: string;
+        orderCode: number | null;
+        amount: string;
+        status: PaymentTransactionStatus;
+      }
+    | undefined
+  >;
+  updatePaymentTransactionStatus(
+    id: string,
+    status: PaymentTransactionStatus,
+  ): Promise<void>;
   confirmPayOSPayment(
     orderCode: string,
     amount: number,

@@ -4,11 +4,21 @@ import {
   mockInsert,
   mockUpdate,
   mockReturning,
-  mockFindFirst,
   mockSelectResolvedValue,
 } from "../../tests/utils/db-mock";
 import { DbPaymentService } from "./payment.service";
 import type { IDatabase } from "../../client";
+import { initializeSharedConfig } from "@nhatnang/shared";
+
+initializeSharedConfig({
+  vatRate: 0.1,
+  depositRate: 0.2,
+  payosClientId: "mock_client_id",
+  payosApiKey: "mock_api_key",
+  payosChecksumKey: "mock_checksum_key",
+  nextPublicAppUrl: "http://localhost:3000",
+  isProduction: false,
+});
 
 const paymentService = new DbPaymentService(mockDb as unknown as IDatabase);
 
@@ -19,7 +29,7 @@ describe("PaymentService", () => {
 
   describe("verifyCashPayment()", () => {
     test("should return undefined if order does not exist", async () => {
-      mockFindFirst.mockResolvedValueOnce(undefined);
+      mockSelectResolvedValue.mockResolvedValueOnce([]);
       const result = await paymentService.verifyCashPayment(
         "order-1",
         "user-admin",
@@ -34,7 +44,7 @@ describe("PaymentService", () => {
       };
       const updatedOrder = { ...mockOrder, paymentStatus: "FULLY_PAID" };
 
-      mockFindFirst.mockResolvedValueOnce(mockOrder);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
       mockReturning.mockResolvedValueOnce([updatedOrder]);
 
       const result = await paymentService.verifyCashPayment(
@@ -167,5 +177,27 @@ describe("PaymentService", () => {
       expect(mockUpdate).toHaveBeenCalledTimes(2);
       expect(mockInsert).toHaveBeenCalledTimes(1);
     });
+
+  describe("getPendingPayOSTransactionByOrderId()", () => {
+    test("should retrieve pending transaction", async () => {
+      const mockTx = {
+        id: "tx-1",
+        orderCode: 123456,
+        amount: "1000.00",
+        status: "PENDING" as const,
+      };
+      mockSelectResolvedValue.mockResolvedValueOnce([mockTx]);
+
+      const result = await paymentService.getPendingPayOSTransactionByOrderId("order-1");
+      expect(result).toEqual(mockTx);
+    });
+  });
+
+  describe("updatePaymentTransactionStatus()", () => {
+    test("should update transaction status", async () => {
+      await paymentService.updatePaymentTransactionStatus("tx-1", "FAILED");
+      expect(mockUpdate).toHaveBeenCalledTimes(1);
+    });
+  });
   });
 });
