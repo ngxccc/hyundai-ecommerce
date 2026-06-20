@@ -1,4 +1,5 @@
-import { beforeEach, mock, vi } from "bun:test";
+import { beforeEach, mock } from "bun:test";
+import * as actualShared from "../index";
 
 export class MockAuthError extends Error {
   constructor(message: string) {
@@ -39,16 +40,17 @@ export const mockOrderUpdatePayment = mock();
 export const mockConfirmPayOSPayment = mock();
 export const mockOrderCheckoutWithTradeCredit = mock();
 export const mockPaymentCreateDebtRepayment = mock();
+export const mockPaymentConfirmDebtRepayment = mock();
 
 export const mockAuthGetSession = mock();
 export const mockCheckRateLimit = mock();
 export const mockCheckRateLimitWithQueue = mock();
 
-await vi.mock("next/headers", () => ({
+await mock.module("next/headers", () => ({
   headers: mock(() => new Map([["x-forwarded-for", "127.0.0.1"]])),
 }));
 
-await vi.mock("@nhatnang/database/services", () => ({
+await mock.module("@nhatnang/database/services", () => ({
   authService: {
     loginEmail: mockAuthLoginEmail,
     register: mockAuthRegister,
@@ -88,22 +90,16 @@ await vi.mock("@nhatnang/database/services", () => ({
     updatePayment: mockOrderUpdatePayment,
     confirmPayOSPayment: mockConfirmPayOSPayment,
     createDebtRepayment: mockPaymentCreateDebtRepayment,
+    confirmDebtRepayment: mockPaymentConfirmDebtRepayment,
   },
 }));
 
-await vi.mock("@nhatnang/database/auth", () => ({
-  auth: {
-    api: {
-      getSession: mockAuthGetSession,
-    },
-  },
-}));
 
-await vi.mock("next/cache", () => ({
+await mock.module("next/cache", () => ({
   revalidatePath: mock(),
 }));
 
-await vi.mock("@/shared/lib/action-auth", () => ({
+await mock.module("@/shared/lib/action-auth", () => ({
   requireAuth: mock().mockResolvedValue({
     user: {
       id: "admin-1",
@@ -137,7 +133,7 @@ await vi.mock("@/shared/lib/action-auth", () => ({
   AuthError: MockAuthError,
 }));
 
-await vi.mock("next-intl/server", () => ({
+await mock.module("next-intl/server", () => ({
   getTranslations: mock().mockResolvedValue((key: string) => key),
 }));
 
@@ -147,15 +143,17 @@ class MockNextResponse extends Response {
   }
 }
 
-await vi.mock("next/server", () => ({
+await mock.module("next/server", () => ({
   NextResponse: MockNextResponse,
+  connection: mock().mockResolvedValue(undefined),
   after: mock((cb: () => void) => {
     // Execute immediately for testing but let it run asynchronously
     void cb();
   }),
 }));
 
-await vi.mock("@nhatnang/shared", () => ({
+await mock.module("@nhatnang/shared", () => ({
+  ...actualShared,
   checkRateLimit: mockCheckRateLimit,
   checkRateLimitWithQueue: mockCheckRateLimitWithQueue,
 }));
@@ -196,6 +194,7 @@ beforeEach(() => {
   mockConfirmPayOSPayment.mockReset();
   mockOrderCheckoutWithTradeCredit.mockReset();
   mockPaymentCreateDebtRepayment.mockReset();
+  mockPaymentConfirmDebtRepayment.mockReset();
   mockAuthGetSession.mockReset();
   mockCheckRateLimit.mockReset();
   mockCheckRateLimitWithQueue.mockReset();

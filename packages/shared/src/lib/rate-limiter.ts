@@ -96,3 +96,11 @@ export async function clearOverdueLock(userId: string): Promise<void> {
   }
   await redis.del(`user:overdue-lock:${userId}`);
 }
+
+export async function isOverdueLocked(userId: string): Promise<boolean> {
+  if (!redis) {
+    redis = Redis.fromEnv();
+  }
+  const locked = await redis.get(`user:overdue-lock:${userId}`);
+  return !!locked;
+}

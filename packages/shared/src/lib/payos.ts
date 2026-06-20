@@ -1,3 +1,4 @@
+import type { PaymentTransactionType } from "../../../database/src/schemas/payment-transaction.schema";
 import { getSharedConfig } from "../config";
 import crypto from "crypto";
 
@@ -75,6 +76,8 @@ export interface PayOSPaymentLinkInformation {
     transactionDateTime: string;
   }[];
 }
+
+export type PayOSDescriptionKind = "full" | "deposit" | "repay";
 
 function sortObjDataByKey(
   object: Record<string, unknown>,
@@ -224,4 +227,89 @@ export async function getPayOSPaymentLinkInformation(
   }
 
   return await response.json();
+}
+
+export async function cancelPayOSPaymentLink(
+  orderCode: number,
+  cancellationReason?: string,
+  credentials?: { clientId?: string; apiKey?: string },
+): Promise<PayOSRes<PayOSPaymentLinkInformation>> {
+  const clientId = credentials?.clientId ?? getSharedConfig().payosClientId;
+  const apiKey = credentials?.apiKey ?? getSharedConfig().payosApiKey;
+
+  if (!clientId || !apiKey) {
+    throw new Error(
+      "Missing PayOS credentials (PAYOS_CLIENT_ID, PAYOS_API_KEY)",
+    );
+  }
+
+  const response = await fetch(
+    `https://api-merchant.payos.vn/v2/payment-requests/${orderCode}/cancel`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-client-id": clientId,
+        "x-api-key": apiKey,
+      },
+      body: JSON.stringify({
+        cancellationReason: cancellationReason ?? "User requested cancellation",
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`PayOS API error: ${response.status} - ${errText}`);
+  }
+
+  return await response.json();
+}
+
+/** @internal */
+export const PAYOS_DESCRIPTION_PREFIXES: Record<PayOSDescriptionKind, string> =
+  {
+    full: "Thanh toan GD",
+    deposit: "Coc 20% DH",
+    repay: "Tra no CN",
+  } as const;
+
+/**
+ * Generates the PayOS payment description.
+ * For PayOS API limits, kind "full", "deposit", and "repay" descriptions are sliced to 25 characters.
+ */
+export function makePayOSDescription(
+  kind: PayOSDescriptionKind,
+  orderCode: string | number,
+): string {
+  const prefix = PAYOS_DESCRIPTION_PREFIXES[kind];
+  const desc = `${prefix} ${orderCode}`;
+  return desc.slice(0, 25);
+}
+
+/**
+ * Maps transaction type enum values to PayOSDescriptionKind.
+ */
+export function kindFromTxType(
+  txType: PaymentTransactionType,
+): PayOSDescriptionKind {
+  switch (txType) {
+    case "DEPOSIT":
+      return "deposit";
+    case "REMAINDER":
+    case "FULL":
+      return "full";
+    default:
+      return "full";
+  }
+}
+
+/**
+ * Returns the URI encoded string for the VietQR `addInfo` parameter.
+ */
+export function payosAddInfo(
+  kind: PayOSDescriptionKind,
+  orderCode: string | number,
+): string {
+  return encodeURIComponent(makePayOSDescription(kind, orderCode));
 }
