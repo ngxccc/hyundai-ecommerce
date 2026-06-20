@@ -28,6 +28,7 @@ export const mockCartGetOrCreateCart = mock();
 export const mockCartGetCartItems = mock();
 
 export const mockOrderUpdateOrderStatus = mock();
+export const mockOrderExpirePendingOrders = mock();
 export const mockOrderSelectWinningBid = mock();
 export const mockOrderApproveDealerOrder = mock();
 export const mockOrderVerifyCashPayment = mock();
@@ -82,6 +83,7 @@ await mock.module("@nhatnang/database/services", () => ({
     approveOrderCancellation: mockOrderApproveOrderCancellation,
     createOrderWithItems: mockOrderCreateOrderWithItems,
     checkoutWithTradeCredit: mockOrderCheckoutWithTradeCredit,
+    expirePendingOrders: mockOrderExpirePendingOrders,
   },
   paymentService: {
     verifyCashPayment: mockOrderVerifyCashPayment,
@@ -186,6 +188,7 @@ beforeEach(() => {
   mockOrderApproveDealerOrder.mockReset();
   mockOrderVerifyCashPayment.mockReset();
   mockOrderApproveOrderCancellation.mockReset();
+  mockOrderExpirePendingOrders.mockReset();
   mockOrderCreateOrderWithItems.mockReset();
   mockOrderCreatePayment.mockReset();
   mockOrderCreatePaymentTransaction.mockReset();

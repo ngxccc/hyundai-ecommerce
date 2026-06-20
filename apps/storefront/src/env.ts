@@ -20,12 +20,16 @@ export const env = createEnv({
     VAT_RATE: z.coerce.number(),
     DEPOSIT_RATE: z.coerce.number(),
     FORCE_MOCK_PAYMENT: z.string().optional(),
+    CRON_SECRET: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.url(MESSAGES.NEXT_URL_IS_INVALID),
     NEXT_PUBLIC_BANK_BIN: z.string().min(1).default("vietinbank"),
     NEXT_PUBLIC_BANK_ACCOUNT_NO: z.string().min(1).default("123456789"),
-    NEXT_PUBLIC_BANK_ACCOUNT_NAME: z.string().min(1).default("HYUNDAI NHAT NANG"),
+    NEXT_PUBLIC_BANK_ACCOUNT_NAME: z
+      .string()
+      .min(1)
+      .default("HYUNDAI NHAT NANG"),
   },
 
   runtimeEnv: {
@@ -42,6 +46,7 @@ export const env = createEnv({
     VAT_RATE: process.env["VAT_RATE"],
     DEPOSIT_RATE: process.env["DEPOSIT_RATE"],
     FORCE_MOCK_PAYMENT: process.env["FORCE_MOCK_PAYMENT"],
+    CRON_SECRET: process.env["CRON_SECRET"],
   },
 });
 
