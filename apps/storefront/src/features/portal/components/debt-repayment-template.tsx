@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -29,6 +30,21 @@ export function DebtRepaymentTemplate({
 }: DebtRepaymentTemplateProps) {
   const t = useTranslations("Portal.debt");
   const te = useTranslations("errors");
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const success = searchParams.get("repaymentSuccess");
+    const cancel = searchParams.get("repaymentCancel");
+    const mismatch = searchParams.get("repaymentMismatch");
+
+    if (success === "true") {
+      toast.success(t("repaymentSuccessMsg"));
+    } else if (cancel === "true") {
+      toast.error(t("repaymentCancelMsg"));
+    } else if (mismatch === "true") {
+      toast.warning(t("repaymentMismatchMsg"));
+    }
+  }, [searchParams, t]);
 
   const [amount, setAmount] = useState<number>(currentDebt);
   const [paymentMethod, setPaymentMethod] =

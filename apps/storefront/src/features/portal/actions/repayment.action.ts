@@ -7,6 +7,7 @@ import {
   createPayOSPaymentLink,
   generatePayOSOrderCode,
   PAYOS_SUCCESS_CODE,
+  makePayOSDescription,
 } from "@nhatnang/shared";
 import { getTranslations } from "next-intl/server";
 
@@ -49,6 +50,7 @@ export const generateRepaymentLinkAction = async (amount: number) => {
     let checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/mock-payment?orderCode=${orderCode}`;
 
     if (
+      env.FORCE_MOCK_PAYMENT !== "true" &&
       env.PAYOS_CLIENT_ID !== "mock_client_id" &&
       env.PAYOS_API_KEY !== "mock_api_key" &&
       !env.PAYOS_CLIENT_ID.startsWith("mock")
@@ -56,7 +58,7 @@ export const generateRepaymentLinkAction = async (amount: number) => {
       const result = await createPayOSPaymentLink({
         orderCode,
         amount: Math.round(amount),
-        description: `Tra no CN ${orderCode}`.slice(0, 25),
+        description: makePayOSDescription("repay", orderCode),
         cancelUrl: `${env.NEXT_PUBLIC_APP_URL}/portal/debt?repaymentCancel=true`,
         returnUrl: `${env.NEXT_PUBLIC_APP_URL}/portal/debt?repaymentSuccess=true`,
       });

@@ -9,6 +9,7 @@ import {
   createPayOSPaymentLink,
   generatePayOSOrderCode,
   PAYOS_SUCCESS_CODE,
+  makePayOSDescription,
 } from "@nhatnang/shared/lib/payos";
 
 interface GenerateRepaymentLinkRequestBody {
@@ -85,7 +86,12 @@ export async function POST(request: Request) {
     const orderCode = generatePayOSOrderCode();
     let checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/mock-payment?orderCode=${orderCode}`;
 
+    const isMockPayment =
+      env.FORCE_MOCK_PAYMENT === "true" ||
+      (env.FORCE_MOCK_PAYMENT !== "false" && process.env.NODE_ENV !== "production");
+
     if (
+      !isMockPayment &&
       env.PAYOS_CLIENT_ID !== "mock_client_id" &&
       env.PAYOS_API_KEY !== "mock_api_key" &&
       !env.PAYOS_CLIENT_ID.startsWith("mock")
@@ -94,7 +100,7 @@ export async function POST(request: Request) {
         const result = await createPayOSPaymentLink({
           orderCode,
           amount: Math.round(parsedAmount),
-          description: `Tra no CN ${orderCode}`.slice(0, 25),
+          description: makePayOSDescription("repay", orderCode),
           cancelUrl: `${reqHeaders.get("origin") ?? env.NEXT_PUBLIC_APP_URL}/portal/debt?repaymentCancel=true`,
           returnUrl: `${reqHeaders.get("origin") ?? env.NEXT_PUBLIC_APP_URL}/portal/debt?repaymentSuccess=true`,
         });
@@ -133,6 +139,14 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
+    const errObj = error as Record<string, unknown>;
+    if (
+      error instanceof Error &&
+      (errObj["digest"] === "NEXT_PRERENDER_INTERRUPTED" ||
+        error.message.includes("bail out of prerendering"))
+    ) {
+      throw error;
+    }
     console.error("[generate-repayment-link error]", error);
     return NextResponse.json(
       { success: false, error: "errors.internalServerError" },

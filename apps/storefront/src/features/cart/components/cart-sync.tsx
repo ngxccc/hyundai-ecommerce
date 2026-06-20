@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { authClient } from "@nhatnang/database/auth-client";
 import { useCartStore } from "../hooks/use-cart";
-import { getDbCartAction } from "../actions";
+import { getDbCartAction, mergeLocalCartAction } from "../actions";
 
 export function CartSync() {
   const { data: session, isPending } = authClient.useSession();
@@ -27,7 +27,19 @@ export function CartSync() {
       lastSessionIdRef.current = currentSessionId;
 
       if (isLoggedIn) {
-        getDbCartAction()
+        const localItems = useCartStore.getState().items;
+        const mergePromise =
+          localItems.length > 0
+            ? mergeLocalCartAction(
+                localItems.map((item) => ({
+                  productId: item.productId,
+                  quantity: item.quantity,
+                })),
+              )
+            : Promise.resolve({ success: true });
+
+        mergePromise
+          .then(() => getDbCartAction())
           .then((dbCart) => {
             if (dbCart.success && dbCart.items) {
               syncWithServer(dbCart.items);

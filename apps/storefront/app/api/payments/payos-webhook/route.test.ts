@@ -4,6 +4,7 @@ import {
   generatePayOSSignature,
   type PayOSWebhookData,
   PAYOS_SUCCESS_CODE,
+  makePayOSDescription,
 } from "@nhatnang/shared";
 import { env } from "@/env";
 import { mockConfirmPayOSPayment } from "@nhatnang/shared/testing/action-mocks";
@@ -19,7 +20,7 @@ describe("POST /api/payments/payos-webhook", () => {
   const validData = {
     orderCode: 12345678,
     amount: 20000,
-    description: "Thanh toan DH 12345678",
+    description: makePayOSDescription("full", 12345678),
     reference: "REF-123",
   } as unknown as PayOSWebhookData;
 

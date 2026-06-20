@@ -1,6 +1,8 @@
 "use client";
 
 import { Link, useRouter } from "@/i18n/routing";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { useCartStore } from "@/features/cart";
 import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
 import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
@@ -62,15 +64,16 @@ export function ProductCard({ product, index }: ProductCardProps) {
   const tCart = useTranslations("Cart");
 
   const { items, addItem } = useCartStore();
+  const [isBuying, setIsBuying] = useState(false);
 
-  const handleBuyNow = (e: React.MouseEvent) => {
+  const handleBuyNow = async (e: React.MouseEvent) => {
     if (product.isQuoteOnly) {
       // Let the default link handle navigation for quote-only products
       return;
     }
 
     e.preventDefault();
-
+    setIsBuying(true);
     const existing = items.find((item) => item.productId === product.id);
     const currentQty = existing ? existing.quantity : 0;
 
@@ -78,11 +81,12 @@ export function ProductCard({ product, index }: ProductCardProps) {
       toast.error(
         tCart("stockLimitExceeded", { max: String(product.totalStockCache) }),
       );
+      setIsBuying(false);
       return;
     }
 
-    // Add item to cart with quantity 1
-    void addItem(
+    // Add item to cart with quantity 1 and await server synchronization
+    const success = await addItem(
       {
         productId: product.id,
         name: product.name,
@@ -93,8 +97,12 @@ export function ProductCard({ product, index }: ProductCardProps) {
       1,
     );
 
-    // Redirect directly to checkout
-    router.push("/checkout");
+    setIsBuying(false);
+
+    if (success) {
+      // Redirect directly to checkout
+      router.push("/checkout");
+    }
   };
 
   return (
@@ -151,23 +159,27 @@ export function ProductCard({ product, index }: ProductCardProps) {
         </span>
 
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row lg:w-full lg:flex-col">
-          <Button
-            asChild
-            size="lg"
-            className="w-full font-bold tracking-wider uppercase sm:w-auto lg:w-full"
-            onClick={handleBuyNow}
-          >
-            <Link
-              href={
-                product.isQuoteOnly ? `/products/${product.slug}` : "/checkout"
-              }
+          {product.isQuoteOnly ? (
+            <Button
+              asChild
+              size="lg"
+              className="w-full font-bold tracking-wider uppercase sm:w-auto lg:w-full"
             >
-              {product.isQuoteOnly
-                ? tHome("requestQuoteCta")
-                : tHome("buyNowCta")}
-            </Link>
-          </Button>
-
+              <Link href={`/products/${product.slug}`}>
+                {tHome("requestQuoteCta")}
+              </Link>
+            </Button>
+          ) : (
+            <Button
+              size="lg"
+              className="w-full font-bold tracking-wider uppercase sm:w-auto lg:w-full"
+              onClick={handleBuyNow}
+              disabled={isBuying}
+            >
+              {isBuying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {tHome("buyNowCta")}
+            </Button>
+          )}
           {!product.isQuoteOnly && (
             <AddToCartButton
               productId={product.id}

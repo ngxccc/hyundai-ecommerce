@@ -48,6 +48,14 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
+    const errObj = error as Record<string, unknown>;
+    if (
+      error instanceof Error &&
+      (errObj["digest"] === "NEXT_PRERENDER_INTERRUPTED" ||
+        error.message.includes("bail out of prerendering"))
+    ) {
+      throw error;
+    }
     console.error("[verify-status error]", error);
     return NextResponse.json(
       { success: false, error: "errors.internalServerError" },

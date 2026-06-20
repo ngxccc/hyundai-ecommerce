@@ -8,6 +8,7 @@ import {
   createPayOSPaymentLink,
   generatePayOSOrderCode,
   PAYOS_SUCCESS_CODE,
+  makePayOSDescription,
 } from "@nhatnang/shared/lib/payos";
 import { orderService } from "@nhatnang/database/services";
 
@@ -92,9 +93,17 @@ export async function POST(request: Request) {
     const reqHeaders = await headers();
     // 5. Generate PayOS Payment Link
     const orderCode = generatePayOSOrderCode();
-    let checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/mock-payment?orderCode=${orderCode}`;
 
+    const isMockPayment =
+      env.FORCE_MOCK_PAYMENT === "true" ||
+      (env.FORCE_MOCK_PAYMENT !== "false" &&
+        process.env.NODE_ENV !== "production");
+
+    const checkoutUrl = isMockPayment
+      ? `${env.NEXT_PUBLIC_APP_URL}/checkout/mock-payment?orderCode=${orderCode}`
+      : `${env.NEXT_PUBLIC_APP_URL}/checkout/pay?orderId=${order.id}`;
     if (
+      !isMockPayment &&
       env.PAYOS_CLIENT_ID !== "mock_client_id" &&
       env.PAYOS_API_KEY !== "mock_api_key" &&
       !env.PAYOS_CLIENT_ID.startsWith("mock")
@@ -103,13 +112,13 @@ export async function POST(request: Request) {
         const result = await createPayOSPaymentLink({
           orderCode,
           amount: depositAmount,
-          description: `Coc 20% DH ${orderCode}`.slice(0, 25),
-          cancelUrl: `${reqHeaders.get("origin")}/checkout/success?orderId=${order.id}`,
-          returnUrl: `${reqHeaders.get("origin")}/checkout/success?orderId=${order.id}`,
+          description: makePayOSDescription("deposit", orderCode),
+          cancelUrl: `${reqHeaders.get("origin") ?? env.NEXT_PUBLIC_APP_URL}/checkout/cancel`,
+          returnUrl: `${reqHeaders.get("origin") ?? env.NEXT_PUBLIC_APP_URL}/checkout/success?orderId=${order.id}`,
         });
 
-        if (result?.code === PAYOS_SUCCESS_CODE && result.data?.checkoutUrl) {
-          checkoutUrl = result.data.checkoutUrl;
+        if (result?.code === PAYOS_SUCCESS_CODE) {
+          // Registered successfully, but keep checkoutUrl pointing to our success/mock page
         } else {
           console.error("PayOS API error:", result);
           return NextResponse.json(
@@ -142,6 +151,14 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
+    const errObj = error as Record<string, unknown>;
+    if (
+      error instanceof Error &&
+      (errObj["digest"] === "NEXT_PRERENDER_INTERRUPTED" ||
+        error.message.includes("bail out of prerendering"))
+    ) {
+      throw error;
+    }
     console.error("[generate-deposit-link error]", error);
     return NextResponse.json(
       { success: false, error: "errors.internalServerError" },

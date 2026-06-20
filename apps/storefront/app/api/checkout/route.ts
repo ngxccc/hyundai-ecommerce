@@ -12,6 +12,7 @@ import {
   createPayOSPaymentLink,
   generatePayOSOrderCode,
   PAYOS_SUCCESS_CODE,
+  makePayOSDescription,
 } from "@nhatnang/shared/lib/payos";
 import { NextResponse } from "next/server";
 import type {
@@ -115,7 +116,13 @@ export async function POST(request: Request) {
       orderCode = generatePayOSOrderCode();
       checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/mock-payment?orderCode=${orderCode}`;
 
+      const isMockPayment =
+        env.FORCE_MOCK_PAYMENT === "true" ||
+        (env.FORCE_MOCK_PAYMENT !== "false" &&
+          process.env.NODE_ENV !== "production");
+
       if (
+        !isMockPayment &&
         env.PAYOS_CLIENT_ID !== "mock_client_id" &&
         env.PAYOS_API_KEY !== "mock_api_key" &&
         !env.PAYOS_CLIENT_ID.startsWith("mock")
@@ -124,13 +131,13 @@ export async function POST(request: Request) {
           const result = await createPayOSPaymentLink({
             orderCode,
             amount: Math.round(paymentAmount),
-            description: `Thanh toan GD ${orderCode}`.slice(0, 25),
+            description: makePayOSDescription("full", orderCode),
             cancelUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout/cancel`,
             returnUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout/success`,
           });
 
-          if (result?.code === PAYOS_SUCCESS_CODE && result.data?.checkoutUrl) {
-            checkoutUrl = result.data.checkoutUrl;
+          if (result?.code === PAYOS_SUCCESS_CODE) {
+            // Register link successfully, but keep checkoutUrl pointing to our success/mock page
           } else {
             console.error("PayOS API error:", result);
             return NextResponse.json(
@@ -203,6 +210,10 @@ export async function POST(request: Request) {
       );
 
       if (paymentMethod === "PAYOS") {
+        const isMockPayment =
+          env.FORCE_MOCK_PAYMENT === "true" ||
+          (env.FORCE_MOCK_PAYMENT !== "false" &&
+            process.env.NODE_ENV !== "production");
         await paymentService.createPayment({
           orderId: order.id,
           amount: String(totalAmount),
@@ -223,6 +234,11 @@ export async function POST(request: Request) {
           status: "PENDING",
           orderCode,
         });
+
+        // Redirect to success page in production or mock payment page in development
+        checkoutUrl = isMockPayment
+          ? `${env.NEXT_PUBLIC_APP_URL}/checkout/mock-payment?orderCode=${orderCode}`
+          : `${env.NEXT_PUBLIC_APP_URL}/checkout/pay?orderId=${order.id}`;
       } else {
         // CASH: payment record represents the full obligation (100% of totalAmount).
         // transactionId is left null here — it will be populated later by
@@ -249,6 +265,14 @@ export async function POST(request: Request) {
       { status: HTTP_STATUS.OK },
     );
   } catch (error) {
+    const errObj = error as Record<string, unknown>;
+    if (
+      error instanceof Error &&
+      (errObj["digest"] === "NEXT_PRERENDER_INTERRUPTED" ||
+        error.message.includes("bail out of prerendering"))
+    ) {
+      throw error;
+    }
     console.error("Checkout error:", error);
     return NextResponse.json(
       { success: false, error: "errors.internalServerError" },

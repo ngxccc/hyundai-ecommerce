@@ -64,6 +64,14 @@ export async function POST(request: Request) {
       { status: HTTP_STATUS.OK },
     );
   } catch (error) {
+    const errObj = error as Record<string, unknown>;
+    if (
+      error instanceof Error &&
+      (errObj["digest"] === "NEXT_PRERENDER_INTERRUPTED" ||
+        error.message.includes("bail out of prerendering"))
+    ) {
+      throw error;
+    }
     console.error("[PayOS Webhook] Error processing payment webhook:", error);
     return NextResponse.json(
       { success: false, error: "errors.internalServerError" },

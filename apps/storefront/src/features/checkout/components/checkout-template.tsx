@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useForm, FormProvider } from "react-hook-form";
 import {
@@ -17,7 +17,7 @@ import {
   calculateCheckoutTotals,
   priceFormatter,
 } from "@nhatnang/shared/lib/utils";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 import type {
   PaymentMethod,
   PaymentTransactionType,
@@ -27,6 +27,7 @@ import { CheckoutPaymentOption } from "./checkout-payment-option";
 import { CheckoutPaymentMethod } from "./checkout-payment-method";
 import { CheckoutOrderSummary } from "./checkout-order-summary";
 import { CheckoutSkeleton } from "./checkout-skeleton";
+import { getB2BProfileWithLockAction } from "../actions/payment.action";
 
 interface CheckoutTemplateProps {
   addresses: AddressDTO[];
@@ -61,6 +62,26 @@ export function CheckoutTemplate({
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobileSummaryOpen, setIsMobileSummaryOpen] = useState(false);
+  const [isLockedByApi, setIsLockedByApi] = useState(false);
+
+  const isB2B =
+    b2bProfile !== null &&
+    (b2bProfile.role === "DEALER_APPROVER" ||
+      b2bProfile.role === "DEALER_PURCHASER");
+
+  useEffect(() => {
+    if (isB2B) {
+      getB2BProfileWithLockAction()
+        .then((res) => {
+          if (res.success && res.profile?.isLocked) {
+            setIsLockedByApi(true);
+          }
+        })
+        .catch((err) =>
+          console.error("Failed to fetch B2B profile status:", err),
+        );
+    }
+  }, [isB2B]);
 
   const defaultAddress =
     addresses.find((addr) => addr.isDefault) ?? addresses[0];
@@ -91,11 +112,6 @@ export function CheckoutTemplate({
     depositRate,
   );
 
-  // B2B checks
-  const isB2B =
-    b2bProfile !== null &&
-    (b2bProfile.role === "DEALER_APPROVER" ||
-      b2bProfile.role === "DEALER_PURCHASER");
   const creditLimit = b2bProfile
     ? parseFloat(b2bProfile.creditLimit ?? "0")
     : 0;
@@ -106,7 +122,10 @@ export function CheckoutTemplate({
 
   // Rule: Lock Trade Credit if available credit is insufficient OR if custom simulated lock is present (or outstanding debt > credit limit)
   const isCreditLocked =
-    isB2B && (availableCredit < totalAmount || currentDebt > creditLimit);
+    isB2B &&
+    (availableCredit < totalAmount ||
+      currentDebt > creditLimit ||
+      isLockedByApi);
   const isPurchaser = b2bProfile?.role === "DEALER_PURCHASER";
 
   const handleSelectAddress = (address: AddressDTO) => {
@@ -324,6 +343,17 @@ export function CheckoutTemplate({
           addresses={addresses}
           onSelect={handleSelectAddress}
         />
+        {/* Fullscreen Spinner showing progress */}
+        {isSubmitting && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="flex flex-col items-center gap-3 rounded-xl bg-white p-6 shadow-xl">
+              <Loader2 className="text-primary h-8 w-8 animate-spin" />
+              <p className="text-sm font-semibold text-zinc-700">
+                {t("processing")}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </FormProvider>
   );

@@ -28,7 +28,7 @@ interface CartState {
   addItem: (
     item: Omit<CartItem, "quantity">,
     quantity: number,
-  ) => Promise<void>;
+  ) => Promise<boolean>;
   updateQuantity: (productId: string, quantity: number) => Promise<void>;
   removeItem: (productId: string) => Promise<void>;
   clearCart: () => void;
@@ -81,8 +81,10 @@ export const useCartStore = create<CartState>()(
           const result = await addToDbCartAction(item.productId, quantity);
           if (!result.success) {
             toast.error(result.error ?? "Failed to add item to server cart");
+            return false;
           }
         }
+        return true;
       },
       updateQuantity: async (productId, quantity) => {
         // 1. Update local state immediately
