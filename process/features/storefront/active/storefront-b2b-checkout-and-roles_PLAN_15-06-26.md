@@ -94,17 +94,17 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 #### A. Backend Support APIs
 
-- [ ] Implement `createPendingPaymentTransaction(orderId, amount, transactionType, referenceCode, method)` helper in `order.service.ts` — used by both checkout (PAYOS) and `generate-deposit-link`.
-- [ ] Implement `POST /api/payments/generate-deposit-link` (Flow E): IDOR guard (`order.userId === session.userId`), status guard (`UNPAID` + `CASH`), call PayOS API for 20% deposit QR link, insert new `payment_transaction` row (`status = 'PENDING'`, `referenceCode = payOsOrderCode`, `transactionType = 'DEPOSIT'`, `amount = 20%`), return `checkoutUrl`.
-- [ ] Implement `POST /api/payments/generate-repayment-link`: IDOR guard, call PayOS for debt repayment amount $X$, insert row in `debt_repayment` with `status = 'PENDING'` and `referenceCode = payOsOrderCode`, return `checkoutUrl`.
-- [ ] Implement `/api/payments/verify-status` backend API endpoint or server action for short polling (checking order payment status in DB).
-- [ ] Implement the "Re-verify Payment" backend handler: calls PayOS API to query transaction status, updates the database/order status, and enforces a server-side 30-second rate limit cooldown.
-- [ ] Handle PayOS webhook for CASH-order online deposits: insert `payment_transaction` with `paymentMethod = 'PAYOS'` + `transactionType = 'DEPOSIT'` + `status = 'SUCCESS'`, keep order `paymentMethod = 'CASH'`, set `paymentStatus = 'DEPOSIT_PAID'`, write Telegram outbox event.
-- [ ] Handle PayOS webhook for debt repayments: update `debt_repayment` to `COMPLETED`, lock user row via `SELECT FOR UPDATE NOWAIT`, deduct amount from `currentDebt`, delete Redis block key `user:overdue-lock:<userId>`.
+- [x] Implement `createPendingPaymentTransaction(orderId, amount, transactionType, referenceCode, method)` helper in `order.service.ts` — used by both checkout (PAYOS) and `generate-deposit-link`.
+- [x] Implement `POST /api/payments/generate-deposit-link` (Flow E): IDOR guard (`order.userId === session.userId`), status guard (`UNPAID` + `CASH`), call PayOS API for 20% deposit QR link, insert new `payment_transaction` row (`status = 'PENDING'`, `referenceCode = payOsOrderCode`, `transactionType = 'DEPOSIT'`, `amount = 20%`), return `checkoutUrl`.
+- [x] Implement `POST /api/payments/generate-repayment-link`: IDOR guard, call PayOS for debt repayment amount $X$, insert row in `debt_repayment` with `status = 'PENDING'` and `referenceCode = payOsOrderCode`, return `checkoutUrl`.
+- [x] Implement `/api/payments/verify-status` backend API endpoint or server action for short polling (checking order payment status in DB).
+- [x] Implement the "Re-verify Payment" backend handler: calls PayOS API to query transaction status, updates the database/order status, and enforces a server-side 30-second rate limit cooldown.
+- [x] Handle PayOS webhook for CASH-order online deposits: insert `payment_transaction` with `paymentMethod = 'PAYOS'` + `transactionType = 'DEPOSIT'` + `status = 'SUCCESS'`, keep order `paymentMethod = 'CASH'`, set `paymentStatus = 'DEPOSIT_PAID'`, write Telegram outbox event.
+- [x] Handle PayOS webhook for debt repayments: update `debt_repayment` to `COMPLETED`, lock user row via `SELECT FOR UPDATE NOWAIT`, deduct amount from `currentDebt`, delete Redis block key `user:overdue-lock:<userId>`.
 
 #### B. Checkout Flow & Overdue Limits UI
 
-- [ ] Create Checkout Page (`apps/storefront/app/[locale]/(shop)/checkout/page.tsx`):
+- [x] Create Checkout Page (`apps/storefront/app/[locale]/(shop)/checkout/page.tsx`):
   - **Shipping Address Form**: Input validation (recipient name, phone, address, city/province).
   - **Payment Option Selector**: Radio card choices: `DEPOSIT` (Pay 20% Deposit Online) or `FULL` (Pay 100% Full Payment Online). Shows dynamic amount calculations.
   - **Payment Method Cards**: Cards for `PAYOS` (VietQR), `CASH` (Office Payment), and `TRADE_CREDIT` (B2B Net Terms).
@@ -113,7 +113,7 @@ This plan conforms to the guidelines in `process/features/storefront/references/
     - If user has overdue debt or is locked, display red alert: _"Hạn mức Trade Credit của bạn đã bị khóa do có nợ quá hạn (>30 ngày). Vui lòng thanh toán trước."_, disable the `TRADE_CREDIT` option, and provide a CTA button redirecting to `/portal/debt`.
   - **Purchaser Role Alert**: If role is `dealer_purchaser`, display info banner: _"Đơn hàng này cần có phê duyệt của Dealer Approver để hoàn tất thanh toán."_
   - **Submit Button**: Trigger `POST /api/checkout` with fullscreen spinner showing progress.
-- [ ] Create Mock Payment Page (`apps/storefront/app/[locale]/(shop)/checkout/mock-payment/page.tsx`):
+- [x] Create Mock Payment Page (`apps/storefront/app/[locale]/(shop)/checkout/mock-payment/page.tsx`):
   - Simulates the PayOS redirect page for local testing.
   - Interactive buttons to simulate success webhook, amount mismatch webhook, and cancellation back-routing.
 
