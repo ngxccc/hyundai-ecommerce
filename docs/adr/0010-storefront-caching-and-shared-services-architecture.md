@@ -25,7 +25,7 @@ However, implementing caching and data-fetching in `apps/storefront` using the N
 
 ## Decision
 
-We will establish a centralized **Storefront Shared Services Layer** in `apps/storefront/src/shared/services`. 
+We will establish a centralized **Storefront Shared Services Layer** in `apps/storefront/src/shared/services`.
 
 1. **Storefront-Specific Service Wrapper**:
    - Create a service layer in `apps/storefront/src/shared/services` that wraps the raw database services.
@@ -34,6 +34,7 @@ We will establish a centralized **Storefront Shared Services Layer** in `apps/st
    - Apply the `"use cache"` directive to service functions.
    - Design service signatures to accept only serializable inputs (such as product slugs, pagination numbers, or search queries) instead of request objects.
    - Configure cache lifetimes (`cacheLife`) and revalidation tags (`cacheTag`) inside these services:
+
      ```typescript
      export async function getCachedCategoryBySlug(slug: string) {
        "use cache";
@@ -42,6 +43,7 @@ We will establish a centralized **Storefront Shared Services Layer** in `apps/st
        return await dbService.getCategoryBySlug(slug);
      }
      ```
+
 3. **Unified Consumer Access**:
    - Both **React Server Components (RSCs)** (Pages, Layouts, `generateMetadata`) and **API Route Handlers** must import from `apps/storefront/src/shared/services`.
    - API Routes will act as thin, lightweight controller wrappers. They parse incoming query params from `NextRequest`, invoke the shared cached service, and return the data as `NextResponse.json()`.
