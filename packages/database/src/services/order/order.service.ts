@@ -4,7 +4,7 @@ import type {
   DashboardMetrics,
   MonthlyRevenue,
 } from "../interfaces";
-import { and, eq, ne, gte, lt, sql } from "drizzle-orm";
+import { and, eq, ne, gte, lt, sql, inArray } from "drizzle-orm";
 import { type IDatabase } from "../../client";
 import { FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
 import { isPostgresError, POSTGRES_ERROR_CODES } from "../../utils";
@@ -16,6 +16,7 @@ import {
   products,
   users,
   outboxEvents,
+  payments,
   paymentTransactions,
   type TOrder,
   type TNewShippingBid,
@@ -708,6 +709,59 @@ export class DbOrderService implements OrderService {
     }
 
     return;
+  }
+  async expirePendingOrders(
+    expirationWindowMinutes = 15,
+  ): Promise<{ expiredCount: number }> {
+    return await this.db.transaction(async (tx) => {
+      const expirationThreshold = new Date(
+        Date.now() - expirationWindowMinutes * 60 * 1000,
+      );
+
+      const expiredOrders = await tx
+        .select({ id: orders.id })
+        .from(orders)
+        .where(
+          and(
+            eq(orders.status, "PENDING"),
+            eq(orders.paymentStatus, "UNPAID"),
+            lt(orders.createdAt, expirationThreshold),
+          ),
+        );
+
+      if (expiredOrders.length === 0) {
+        return { expiredCount: 0 };
+      }
+
+      const expiredIds = expiredOrders.map((o) => o.id);
+
+      await tx
+        .update(orders)
+        .set({ status: "CANCELLED" })
+        .where(inArray(orders.id, expiredIds));
+
+      await tx
+        .update(paymentTransactions)
+        .set({ status: "FAILED" })
+        .where(
+          and(
+            inArray(paymentTransactions.orderId, expiredIds),
+            eq(paymentTransactions.status, "PENDING"),
+          ),
+        );
+
+      await tx
+        .update(payments)
+        .set({ status: "FAILED" })
+        .where(
+          and(
+            inArray(payments.orderId, expiredIds),
+            eq(payments.status, "PENDING"),
+          ),
+        );
+
+      return { expiredCount: expiredIds.length };
+    });
   }
 }
 

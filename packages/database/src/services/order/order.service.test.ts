@@ -368,4 +368,24 @@ describe("OrderService", () => {
       expect(mockUpdate).toHaveBeenCalledTimes(2);
     });
   });
+  describe("expirePendingOrders()", () => {
+    test("should expire pending unpaid orders older than the threshold", async () => {
+      const mockExpiredOrders = [{ id: "order-1" }];
+      mockSelectResolvedValue.mockResolvedValueOnce(mockExpiredOrders);
+
+      const result = await orderService.expirePendingOrders(15);
+
+      expect(result).toEqual({ expiredCount: 1 });
+      expect(mockUpdate).toHaveBeenCalledTimes(3);
+    });
+
+    test("should return 0 expired orders if no orders are found", async () => {
+      mockSelectResolvedValue.mockResolvedValueOnce([]);
+
+      const result = await orderService.expirePendingOrders(15);
+
+      expect(result).toEqual({ expiredCount: 0 });
+      expect(mockUpdate).not.toHaveBeenCalled();
+    });
+  });
 });

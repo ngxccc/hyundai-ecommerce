@@ -263,6 +263,9 @@ export interface OrderService {
     referenceCode: number,
     method?: Exclude<PaymentMethod, "TRADE_CREDIT">,
   ): Promise<void>;
+  expirePendingOrders(
+    expirationWindowMinutes?: number,
+  ): Promise<{ expiredCount: number }>;
 }
 
 export interface PaymentService {
