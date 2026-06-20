@@ -1,9 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextResponse, connection } from "next/server";
 import { getCachedSession } from "@/shared/lib/session";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { orderService } from "@nhatnang/database/services";
 
 export async function GET(request: Request) {
+  await connection();
   try {
     const session = await getCachedSession();
     if (!session?.user) {

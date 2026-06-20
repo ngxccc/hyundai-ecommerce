@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, connection } from "next/server";
 import { getCachedSession } from "@/shared/lib/session";
 import { headers } from "next/headers";
 import { HTTP_STATUS, FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
@@ -17,6 +17,7 @@ interface GenerateDepositLinkRequestBody {
 }
 
 export async function POST(request: Request) {
+  await connection();
   try {
     // 0. Rate limiting (max 5 requests per minute per IP)
     const ip =

@@ -14,13 +14,14 @@ import {
   PAYOS_SUCCESS_CODE,
   makePayOSDescription,
 } from "@nhatnang/shared/lib/payos";
-import { NextResponse } from "next/server";
+import { NextResponse, connection } from "next/server";
 import type {
   CreateOrderDTO,
   CheckoutRequestBody,
 } from "@nhatnang/database/dtos";
 
 export async function POST(request: Request) {
+  await connection();
   try {
     // 0. Rate limiting check (e.g. max 5 checkout requests per 60 seconds per IP)
     const ip =
