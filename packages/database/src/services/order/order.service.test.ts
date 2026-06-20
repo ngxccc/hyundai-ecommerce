@@ -130,7 +130,7 @@ describe("OrderService", () => {
       const result = await orderService.selectWinningBid("order-1", "bid-1");
       expect(mockUpdate).toHaveBeenCalledTimes(3);
       expect(result.updatedOrder).toEqual(mockUpdatedOrder);
-      expect(result.selectedBid).toEqual(mockSelectedBid);
+      expect(result.selectedBid).toEqual({ id: mockSelectedBid.id });
     });
     test("should throw when bid does not belong to the order", () => {
       mockReturning.mockResolvedValueOnce([]); // select fails
@@ -310,16 +310,16 @@ describe("OrderService", () => {
 
   describe("approveDealerOrder()", () => {
     test("should return undefined if order does not exist", async () => {
-      mockFindFirst.mockResolvedValueOnce(undefined);
+      mockSelectResolvedValue.mockResolvedValueOnce([]);
       const result = await orderService.approveDealerOrder("order-1");
       expect(result).toBeUndefined();
     });
 
     test("should return order directly if already APPROVED", async () => {
       const mockOrder = { id: "order-1", approvalStatus: "APPROVED" };
-      mockFindFirst.mockResolvedValueOnce(mockOrder);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
       const result = await orderService.approveDealerOrder("order-1");
-      expect(result).toEqual(mockOrder);
+      expect(result).toEqual({ id: mockOrder.id });
     });
 
     test("should throw errors.insufficientCreditLimit if available credit is insufficient for TRADE_CREDIT order", () => {
@@ -336,7 +336,7 @@ describe("OrderService", () => {
         currentDebt: "50.00",
       };
 
-      mockFindFirst.mockResolvedValueOnce(mockOrder);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
 
       expect(orderService.approveDealerOrder("order-1")).rejects.toThrow(
@@ -359,12 +359,12 @@ describe("OrderService", () => {
       };
       const approvedOrder = { ...mockOrder, approvalStatus: "APPROVED" };
 
-      mockFindFirst.mockResolvedValueOnce(mockOrder);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
-      mockReturning.mockResolvedValueOnce([approvedOrder]);
+      mockReturning.mockResolvedValueOnce([{ id: approvedOrder.id }]);
 
       const result = await orderService.approveDealerOrder("order-1");
-      expect(result).toEqual(approvedOrder);
+      expect(result).toEqual({ id: approvedOrder.id });
       expect(mockUpdate).toHaveBeenCalledTimes(2);
     });
   });

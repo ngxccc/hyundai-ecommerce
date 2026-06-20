@@ -170,7 +170,7 @@ await vi.mock("../../client", () => ({
   db: mockDb,
 }));
 
-beforeEach(() => {
+export function resetDbMocks() {
   mockReturning.mockReset();
   mockFindFirst.mockReset();
   mockFindMany.mockReset();
@@ -181,4 +181,8 @@ beforeEach(() => {
   );
   mockFrom.mockImplementation(defaultFrom);
   mockWhere.mockImplementation(defaultWhere);
+}
+
+beforeEach(() => {
+  resetDbMocks();
 });

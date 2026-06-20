@@ -132,7 +132,7 @@ export class DbOrderService implements OrderService {
         oldStatus
       ] as readonly string[];
 
-      if (!allowedNext.includes(status)) {
+      if (status !== oldStatus && !allowedNext.includes(status)) {
         throw new Error("errors.invalidStatusTransition");
       }
 

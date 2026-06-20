@@ -185,6 +185,8 @@ describe("PaymentService", () => {
         orderCode: 123456,
         amount: "1000.00",
         status: "PENDING" as const,
+        transactionType: "FULL" as const,
+        createdAt: new Date(),
       };
       mockSelectResolvedValue.mockResolvedValueOnce([mockTx]);
 

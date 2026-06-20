@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, desc } from "drizzle-orm";
 import { type IDatabase } from "../../client";
 import {
   orders,
@@ -18,6 +18,7 @@ import type {
   DebtRepaymentDTO,
   CreateDebtRepaymentDTO,
   UpdateDebtRepaymentDTO,
+  PaymentTransactionDetailsDTO,
 } from "../../dtos";
 import type { PaymentService } from "../interfaces";
 
@@ -102,6 +103,30 @@ export class DbPaymentService implements PaymentService {
     return paymentTransaction;
   }
 
+  async getPaymentTransactionByOrderCode(orderCode: number): Promise<
+    | {
+        id: string;
+        amount: string;
+        orderId: string;
+        orderCode: number | null;
+        status: PaymentTransactionStatus;
+      }
+    | undefined
+  > {
+    const [paymentTransaction] = await this.db
+      .select({
+        id: paymentTransactions.id,
+        amount: paymentTransactions.amount,
+        orderId: paymentTransactions.orderId,
+        orderCode: paymentTransactions.orderCode,
+        status: paymentTransactions.status,
+      })
+      .from(paymentTransactions)
+      .where(eq(paymentTransactions.orderCode, orderCode))
+      .limit(1);
+    return paymentTransaction;
+  }
+
   async updatePayment(
     id: string,
     data: Partial<TPayment>,
@@ -115,13 +140,7 @@ export class DbPaymentService implements PaymentService {
   }
 
   async getPendingPayOSTransactionByOrderId(orderId: string): Promise<
-    | {
-        id: string;
-        orderCode: number | null;
-        amount: string;
-        status: PaymentTransactionStatus;
-      }
-    | undefined
+    PaymentTransactionDetailsDTO | undefined
   > {
     const [pendingTx] = await this.db
       .select({
@@ -129,6 +148,8 @@ export class DbPaymentService implements PaymentService {
         orderCode: paymentTransactions.orderCode,
         amount: paymentTransactions.amount,
         status: paymentTransactions.status,
+        transactionType: paymentTransactions.transactionType,
+        createdAt: paymentTransactions.createdAt,
       })
       .from(paymentTransactions)
       .where(
@@ -140,6 +161,30 @@ export class DbPaymentService implements PaymentService {
       )
       .limit(1);
     return pendingTx;
+  }
+
+  async getLastPayOSTransactionByOrderId(orderId: string): Promise<
+    PaymentTransactionDetailsDTO | undefined
+  > {
+    const [tx] = await this.db
+      .select({
+        id: paymentTransactions.id,
+        orderCode: paymentTransactions.orderCode,
+        amount: paymentTransactions.amount,
+        status: paymentTransactions.status,
+        transactionType: paymentTransactions.transactionType,
+        createdAt: paymentTransactions.createdAt,
+      })
+      .from(paymentTransactions)
+      .where(
+        and(
+          eq(paymentTransactions.orderId, orderId),
+          eq(paymentTransactions.paymentMethod, "PAYOS"),
+        ),
+      )
+      .orderBy(desc(paymentTransactions.createdAt))
+      .limit(1);
+    return tx;
   }
 
   async updatePaymentTransactionStatus(

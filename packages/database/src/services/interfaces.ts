@@ -35,6 +35,7 @@ import type {
   DebtRepaymentDTO,
   CreateDebtRepaymentDTO,
   UpdateDebtRepaymentDTO,
+  PaymentTransactionDetailsDTO,
 } from "../dtos";
 import type {
   TCreateBrandInput,
@@ -276,6 +277,18 @@ export interface PaymentService {
   getPaymentTransactionByReferenceCode(
     referenceCode: string,
   ): Promise<{ id: string }>;
+  getPaymentTransactionByOrderCode(
+    orderCode: number,
+  ): Promise<
+    | {
+        id: string;
+        amount: string;
+        orderId: string;
+        orderCode: number | null;
+        status: PaymentTransactionStatus;
+      }
+    | undefined
+  >;
   confirmDebtRepayment(
     orderCode: string,
     amount: number,
@@ -285,16 +298,11 @@ export interface PaymentService {
     id: string,
     data: Partial<TPayment>,
   ): Promise<{ id: string } | undefined>;
-  getPendingPayOSTransactionByOrderId(
-    orderId: string,
-  ): Promise<
-    | {
-        id: string;
-        orderCode: number | null;
-        amount: string;
-        status: PaymentTransactionStatus;
-      }
-    | undefined
+  getPendingPayOSTransactionByOrderId(orderId: string): Promise<
+    PaymentTransactionDetailsDTO | undefined
+  >;
+  getLastPayOSTransactionByOrderId(orderId: string): Promise<
+    PaymentTransactionDetailsDTO | undefined
   >;
   updatePaymentTransactionStatus(
     id: string,
