@@ -17,17 +17,17 @@ import { generateRepaymentLinkAction } from "../actions/repayment.action";
 import { priceFormatter } from "@nhatnang/shared/lib/utils";
 import type { PaymentMethod } from "@nhatnang/database/schemas";
 
-interface DebtRepaymentTemplateProps {
+interface DebtRepaymentProps {
   creditLimit: number;
   currentDebt: number;
   userName: string;
 }
 
-export function DebtRepaymentTemplate({
+export function DebtRepayment({
   creditLimit,
   currentDebt,
   userName,
-}: DebtRepaymentTemplateProps) {
+}: DebtRepaymentProps) {
   const t = useTranslations("Portal.debt");
   const te = useTranslations("errors");
   const searchParams = useSearchParams();
@@ -46,7 +46,16 @@ export function DebtRepaymentTemplate({
     }
   }, [searchParams, t]);
 
-  const [amount, setAmount] = useState<number>(currentDebt);
+  const [amount, setAmount] = useState<number>(() => {
+    const amtParam = searchParams.get("amount");
+    if (amtParam) {
+      const parsed = parseFloat(amtParam);
+      if (!isNaN(parsed) && parsed > 0) {
+        return parsed;
+      }
+    }
+    return currentDebt;
+  });
   const [paymentMethod, setPaymentMethod] =
     useState<Exclude<PaymentMethod, "TRADE_CREDIT">>("PAYOS");
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +63,7 @@ export function DebtRepaymentTemplate({
 
   const availableCredit = Math.max(0, creditLimit - currentDebt);
 
-  const handleSubmit = async (e: React.SubmitEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (amount <= 0 || amount > currentDebt) {
@@ -71,10 +80,7 @@ export function DebtRepaymentTemplate({
     try {
       const result = await generateRepaymentLinkAction(amount);
       if (result.success) {
-        toast.success(
-          t("linkGeneratedSuccess") ||
-            "Repayment link generated. Redirecting...",
-        );
+        toast.success(t("linkGeneratedSuccess"));
         window.location.assign(result.checkoutUrl);
       } else {
         toast.error(result.error);
@@ -90,20 +96,15 @@ export function DebtRepaymentTemplate({
   return (
     <div className="space-y-6">
       <div className="border-b pb-4">
-        <h2 className="text-xl font-bold text-zinc-900">
-          {t("title") || "B2B Debt Repayment"}
-        </h2>
-        <p className="text-sm text-zinc-500">
-          {t("subtitle") ||
-            "Manage outstanding net-term invoices & repay balance."}
-        </p>
+        <h2 className="text-xl font-bold text-zinc-900">{t("title")}</h2>
+        <p className="text-sm text-zinc-500">{t("subtitle")}</p>
       </div>
 
       {/* Credit Summary Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card className="rounded-xl border border-zinc-200 bg-white p-4 shadow-2xs">
           <p className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">
-            {t("creditLimit") || "Credit Limit"}
+            {t("creditLimit")}
           </p>
           <p className="mt-2 text-2xl font-extrabold text-zinc-900">
             {priceFormatter.format(creditLimit)}
@@ -111,7 +112,7 @@ export function DebtRepaymentTemplate({
         </Card>
         <Card className="rounded-xl border border-zinc-200 bg-white p-4 shadow-2xs">
           <p className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">
-            {t("outstandingDebt") || "Outstanding Debt"}
+            {t("outstandingDebt")}
           </p>
           <p className="mt-2 text-2xl font-extrabold text-red-600">
             {priceFormatter.format(currentDebt)}
@@ -119,7 +120,7 @@ export function DebtRepaymentTemplate({
         </Card>
         <Card className="rounded-xl border border-zinc-200 bg-white p-4 shadow-2xs">
           <p className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">
-            {t("availableCredit") || "Available Credit"}
+            {t("availableCredit")}
           </p>
           <p className="mt-2 text-2xl font-extrabold text-green-600">
             {priceFormatter.format(availableCredit)}
@@ -133,46 +134,37 @@ export function DebtRepaymentTemplate({
             <Check className="size-6" />
           </div>
           <h3 className="text-base font-bold text-zinc-900">
-            {t("noDebtTitle") || "All Paid Up!"}
+            {t("noDebtTitle")}
           </h3>
-          <p className="mt-1 text-sm text-zinc-500">
-            {t("noDebtDesc") ||
-              "Your account has no outstanding debt. Thank you!"}
-          </p>
+          <p className="mt-1 text-sm text-zinc-500">{t("noDebtDesc")}</p>
         </div>
       ) : showCashInstructions ? (
         <Card className="space-y-4 rounded-xl border border-zinc-200 bg-zinc-50 p-6 shadow-2xs">
           <h3 className="text-base font-bold text-zinc-900">
-            {t("cashInstructionsTitle") || "Office Payment Instructions"}
+            {t("cashInstructionsTitle")}
           </h3>
           <div className="space-y-3 text-sm text-zinc-600">
-            <p>
-              {t("cashInstructionsDesc1") ||
-                "Vui lòng mang số tiền mặt tương ứng đến văn phòng giao dịch của Hyundai Ecommerce để hoàn tất thanh toán."}
-            </p>
+            <p>{t("cashInstructionsDesc1")}</p>
             <div className="space-y-2 rounded-lg border bg-white p-4">
               <p className="font-semibold text-zinc-900">
-                {t("repaymentAmount") || "Repayment Amount"}:{" "}
+                {t("repaymentAmount")}:{" "}
                 <span className="font-extrabold text-red-600">
                   {priceFormatter.format(amount)}
                 </span>
               </p>
               <p>
-                {t("payer") || "Payer"}:{" "}
+                {t("payer")}:{" "}
                 <span className="font-medium text-zinc-800">{userName}</span>
               </p>
             </div>
-            <p>
-              {t("cashInstructionsDesc2") ||
-                "Sau khi nhận tiền mặt, Kế toán viên của chúng tôi sẽ xác nhận trực tiếp trên hệ thống và tự động mở khóa hạn mức tín dụng của bạn ngay lập tức."}
-            </p>
+            <p>{t("cashInstructionsDesc2")}</p>
           </div>
           <div className="flex justify-end gap-2 border-t pt-4">
             <Button
               variant="outline"
               onClick={() => setShowCashInstructions(false)}
             >
-              {t("back") || "Back"}
+              {t("back")}
             </Button>
           </div>
         </Card>
@@ -184,7 +176,7 @@ export function DebtRepaymentTemplate({
               htmlFor="repaymentAmount"
               className="text-sm font-semibold text-zinc-700"
             >
-              {t("enterAmount") || "Repayment Amount (VND)"}
+              {t("enterAmount")}
             </Label>
             <div className="flex gap-2">
               <Input
@@ -204,19 +196,16 @@ export function DebtRepaymentTemplate({
                 onClick={() => setAmount(currentDebt)}
                 disabled={isLoading}
               >
-                {t("payAll") || "Pay Full Balance"}
+                {t("payAll")}
               </Button>
             </div>
-            <p className="text-xs text-zinc-500">
-              {t("amountNote") ||
-                "Enter a custom amount or pay the full outstanding balance."}
-            </p>
+            <p className="text-xs text-zinc-500">{t("amountNote")}</p>
           </div>
 
           {/* Payment Method Selector */}
           <div className="space-y-3">
             <Label className="text-sm font-semibold text-zinc-700">
-              {t("selectMethod") || "Payment Method"}
+              {t("selectMethod")}
             </Label>
             <RadioGroup
               value={paymentMethod}
@@ -239,11 +228,10 @@ export function DebtRepaymentTemplate({
                   <CreditCard className="size-5 text-zinc-400" />
                   <div className="space-y-0.5">
                     <p className="font-semibold text-zinc-900">
-                      {t("methodPayOS") || "VietQR (PayOS)"}
+                      {t("methodPayOS")}
                     </p>
                     <p className="text-xs text-zinc-500">
-                      {t("methodPayOSDesc") ||
-                        "Thanh toán trực tuyến 24/7 qua QR code ngân hàng."}
+                      {t("methodPayOSDesc")}
                     </p>
                   </div>
                 </Label>
@@ -262,11 +250,10 @@ export function DebtRepaymentTemplate({
                   <Landmark className="size-5 text-zinc-400" />
                   <div className="space-y-0.5">
                     <p className="font-semibold text-zinc-900">
-                      {t("methodCash") || "CASH"}
+                      {t("methodCash")}
                     </p>
                     <p className="text-xs text-zinc-500">
-                      {t("methodCashDesc") ||
-                        "Nộp tiền mặt trực tiếp tại văn phòng đại lý."}
+                      {t("methodCashDesc")}
                     </p>
                   </div>
                 </Label>
@@ -281,9 +268,7 @@ export function DebtRepaymentTemplate({
               disabled={isLoading}
               className="bg-primary text-primary-foreground hover:bg-primary/95 min-w-32"
             >
-              {isLoading
-                ? t("processing") || "Processing..."
-                : t("submitRepayment") || "Thanh toán ngay"}
+              {isLoading ? t("processing") : t("submitRepayment")}
             </Button>
           </div>
         </form>

@@ -5,6 +5,14 @@ import type { Metadata } from "next";
 import { ProfileForm } from "@/features/portal/components/profile-form";
 import { getCachedSession } from "@/shared/lib/session";
 import { userService } from "@nhatnang/database/services";
+import { cacheLife, cacheTag } from "next/cache";
+
+async function getCachedUserProfile(userId: string) {
+  "use cache: private";
+  cacheLife("days");
+  cacheTag(`user-profile-${userId}`);
+  return await userService.getById(userId);
+}
 
 export async function generateMetadata({
   params,
@@ -36,7 +44,7 @@ export default async function ProfilePage({
     return null;
   }
 
-  const dbUser = await userService.getById(session.user.id);
+  const dbUser = await getCachedUserProfile(session.user.id);
   if (!dbUser) {
     redirect({
       href: `/login?callbackUrl=${encodeURIComponent("/portal/profile")}`,

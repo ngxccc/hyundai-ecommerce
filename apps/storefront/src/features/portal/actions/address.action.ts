@@ -5,6 +5,7 @@ import { addressService } from "@nhatnang/database/services";
 import { addressSchema, type TAddressForm } from "@nhatnang/database/validators";
 import { validateSchema } from "@/shared/lib/validation";
 import { getTranslations } from "next-intl/server";
+import { revalidateTag } from "next/cache";
 
 export const addAddressAction = async (data: TAddressForm) => {
   const [session, t] = await Promise.all([
@@ -31,7 +32,7 @@ export const addAddressAction = async (data: TAddressForm) => {
       city: validation.data.city,
       isDefault: validation.data.isDefault,
     });
-
+    revalidateTag(`user-addresses-${session.user.id}`, "default");
     return { success: true };
   } catch (error) {
     console.error("[addAddressAction]", error);
@@ -63,7 +64,7 @@ export const updateAddressAction = async (id: string, data: TAddressForm) => {
       city: validation.data.city,
       isDefault: validation.data.isDefault,
     });
-
+    revalidateTag(`user-addresses-${session.user.id}`, "default");
     return { success: true };
   } catch (error) {
     console.error("[updateAddressAction]", error);
@@ -83,6 +84,7 @@ export const deleteAddressAction = async (id: string) => {
 
   try {
     await addressService.delete(id, session.user.id);
+    revalidateTag(`user-addresses-${session.user.id}`, "default");
     return { success: true };
   } catch (error) {
     console.error("[deleteAddressAction]", error);
@@ -102,6 +104,7 @@ export const setDefaultAddressAction = async (id: string) => {
 
   try {
     await addressService.setDefault(id, session.user.id);
+    revalidateTag(`user-addresses-${session.user.id}`, "default");
     return { success: true };
   } catch (error) {
     console.error("[setDefaultAddressAction]", error);

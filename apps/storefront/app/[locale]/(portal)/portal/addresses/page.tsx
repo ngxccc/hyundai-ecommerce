@@ -5,6 +5,14 @@ import { getCachedSession } from "@/shared/lib/session";
 import { addressService } from "@nhatnang/database/services";
 import { AddressList } from "@/features/portal/components/address-list";
 import { redirect } from "@/i18n/routing";
+import { cacheLife, cacheTag } from "next/cache";
+
+async function getCachedAddresses(userId: string) {
+  "use cache: private";
+  cacheLife("days");
+  cacheTag(`user-addresses-${userId}`);
+  return await addressService.getByUserId(userId);
+}
 
 export async function generateMetadata({
   params,
@@ -22,8 +30,7 @@ export default async function AddressesPage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { locale: rawLocale } = await params;
-  const locale = rawLocale as Locale;
+  const locale = (await params).locale as Locale;
 
   const session = await getCachedSession();
   if (!session?.user) {
@@ -34,7 +41,7 @@ export default async function AddressesPage({
   }
 
   // Fetch addresses using service layer
-  const addresses = await addressService.getByUserId(session!.user.id);
+  const addresses = await getCachedAddresses(session!.user.id);
 
   return (
     <div className="space-y-6">

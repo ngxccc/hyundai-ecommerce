@@ -1,7 +1,7 @@
 import { getCachedSession } from "@/shared/lib/session";
 import { userService } from "@nhatnang/database/services";
 import { redirect } from "@/i18n/routing";
-import { DebtRepaymentTemplate } from "@/features/portal/components/debt-repayment-template";
+import { DebtRepayment } from "@/features/portal/components/debt-repayment";
 import type { Locale } from "next-intl";
 
 export default async function DebtRepaymentPage({
@@ -36,7 +36,7 @@ export default async function DebtRepaymentPage({
   const currentDebt = parseFloat(user.currentDebt || "0");
 
   return (
-    <DebtRepaymentTemplate
+    <DebtRepayment
       creditLimit={creditLimit}
       currentDebt={currentDebt}
       userName={user.name}

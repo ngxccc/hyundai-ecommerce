@@ -8,6 +8,7 @@ import {
 } from "@nhatnang/database/validators";
 import { validateSchema } from "@/shared/lib/validation";
 import { getTranslations } from "next-intl/server";
+import { revalidateTag } from "next/cache";
 
 export const updateProfileAction = async (data: TUpdateProfileForm) => {
   const [session, t] = await Promise.all([
@@ -50,6 +51,7 @@ export const updateProfileAction = async (data: TUpdateProfileForm) => {
     }
 
     await userService.update(session.user.id, updateData);
+    revalidateTag(`user-profile-${session.user.id}`, "default");
 
     return { success: true };
   } catch (error) {
