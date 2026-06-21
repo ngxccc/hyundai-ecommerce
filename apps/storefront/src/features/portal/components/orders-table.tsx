@@ -15,6 +15,10 @@ import {
 import { ClipboardList, Eye } from "lucide-react";
 import type { ComplexOrder } from "@nhatnang/database/services";
 import { priceFormatter } from "@nhatnang/shared/lib/utils";
+import {
+  getStatusDetails,
+  getPaymentStatusDetails,
+} from "./order-status-utils";
 
 interface OrdersTableProps {
   orders: ComplexOrder[];
@@ -23,85 +27,6 @@ interface OrdersTableProps {
 export function OrdersTable({ orders }: OrdersTableProps) {
   const locale = useLocale();
   const t = useTranslations("Orders");
-
-  const getStatusDetails = (status: ComplexOrder["status"]) => {
-    switch (status) {
-      case "PENDING":
-        return {
-          label: t("status.PENDING"),
-          color: "bg-amber-100 text-amber-800",
-        };
-      case "PROCESSING":
-        return {
-          label: t("status.PROCESSING"),
-          color: "bg-blue-100 text-blue-800",
-        };
-      case "SHIPPED":
-        return {
-          label: t("status.SHIPPED"),
-          color: "bg-indigo-100 text-indigo-800",
-        };
-      case "DELIVERED":
-        return {
-          label: t("status.DELIVERED"),
-          color: "bg-emerald-100 text-emerald-800",
-        };
-      case "CANCELLED":
-        return {
-          label: t("status.CANCELLED"),
-          color: "bg-rose-100 text-rose-800",
-        };
-      case "REFUNDED":
-        return {
-          label: t("status.REFUNDED"),
-          color: "bg-zinc-100 text-zinc-800",
-        };
-      case "REFUND_PENDING":
-        return {
-          label: t("status.REFUND_PENDING"),
-          color: "bg-orange-100 text-orange-800",
-        };
-      case "SUSPICIOUS_PAYMENT_HOLD":
-        return {
-          label: t("status.SUSPICIOUS_PAYMENT_HOLD"),
-          color: "bg-red-100 text-red-800",
-        };
-      case "CANCELLATION_REQUESTED":
-        return {
-          label: t("status.CANCELLATION_REQUESTED"),
-          color: "bg-orange-100 text-orange-800",
-        };
-      default:
-        return { label: status, color: "bg-zinc-100 text-zinc-800" };
-    }
-  };
-
-  const getPaymentStatusDetails = (status: ComplexOrder["paymentStatus"]) => {
-    switch (status) {
-      case "UNPAID":
-        return {
-          label: t("paymentStatus.UNPAID"),
-          color: "border-rose-200 text-rose-700 bg-rose-50/50",
-        };
-      case "DEPOSIT_PAID":
-        return {
-          label: t("paymentStatus.DEPOSIT_PAID"),
-          color: "border-blue-200 text-blue-700 bg-blue-50/50",
-        };
-      case "FULLY_PAID":
-        return {
-          label: t("paymentStatus.FULLY_PAID"),
-          color: "border-emerald-200 text-emerald-700 bg-emerald-50/50",
-        };
-      case "PENDING_VERIFICATION":
-        return {
-          label: t("paymentStatus.PENDING_VERIFICATION"),
-          color: "border-amber-200 text-amber-700 bg-amber-50/50",
-        };
-      default:
-        return { label: status, color: "border-zinc-200 text-zinc-700" };
-    }
-  };
 
   if (orders.length === 0) {
     return (
@@ -139,9 +64,10 @@ export function OrdersTable({ orders }: OrdersTableProps) {
         </TableHeader>
         <TableBody>
           {orders.map((order) => {
-            const statusInfo = getStatusDetails(order.status);
+            const statusInfo = getStatusDetails(order.status, t);
             const paymentStatusInfo = getPaymentStatusDetails(
               order.paymentStatus,
+              t,
             );
             const firstItemName = order.items[0]?.productName ?? "";
             const extraItemsCount = order.items.length - 1;
