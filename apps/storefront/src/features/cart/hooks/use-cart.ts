@@ -17,6 +17,20 @@ export interface CartItem {
   totalStock: number;
 }
 
+export function createCartItem(
+  item: Omit<CartItem, "quantity">,
+  quantity: number,
+): CartItem {
+  return {
+    productId: item.productId,
+    quantity,
+    name: item.name,
+    price: item.price,
+    image: item.image,
+    totalStock: item.totalStock,
+  };
+}
+
 interface CartState {
   items: CartItem[];
   isOpen: boolean;
@@ -62,7 +76,7 @@ export const useCartStore = create<CartState>()(
             return {
               items: state.items.map((i) =>
                 i.productId === item.productId
-                  ? { ...i, quantity: finalQty }
+                  ? createCartItem(i, finalQty)
                   : i,
               ),
             };
@@ -72,7 +86,7 @@ export const useCartStore = create<CartState>()(
           if (newQty <= 0) return {};
 
           return {
-            items: [...state.items, { ...item, quantity: newQty }],
+            items: [...state.items, createCartItem(item, newQty)],
           };
         });
 
@@ -97,7 +111,7 @@ export const useCartStore = create<CartState>()(
           return {
             items: state.items.map((i) => {
               if (i.productId === productId) {
-                return { ...i, quantity: Math.min(quantity, i.totalStock) };
+                return createCartItem(i, Math.min(quantity, i.totalStock));
               }
               return i;
             }),
