@@ -1,6 +1,7 @@
 import { useIsMounted } from "@/shared/hooks/useIsMounted";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { produce } from "immer";
 import {
   addToDbCartAction,
   updateDbQuantityAction,
@@ -65,30 +66,23 @@ export const useCartStore = create<CartState>()(
       setIsCartSynced: (isCartSynced) => set({ isCartSynced }),
       addItem: async (item, quantity) => {
         // 1. Update local state immediately (Optimistic Update)
-        set((state) => {
-          const existingItem = state.items.find(
-            (i) => i.productId === item.productId,
-          );
+        set(
+          produce((state: CartState) => {
+            const existingItem = state.items.find(
+              (i) => i.productId === item.productId,
+            );
 
-          if (existingItem) {
-            const targetQty = existingItem.quantity + quantity;
-            const finalQty = Math.min(targetQty, item.totalStock);
-            return {
-              items: state.items.map((i) =>
-                i.productId === item.productId
-                  ? createCartItem(i, finalQty)
-                  : i,
-              ),
-            };
-          }
-
-          const newQty = Math.min(quantity, item.totalStock);
-          if (newQty <= 0) return {};
-
-          return {
-            items: [...state.items, createCartItem(item, newQty)],
-          };
-        });
+            if (existingItem) {
+              const targetQty = existingItem.quantity + quantity;
+              existingItem.quantity = Math.min(targetQty, item.totalStock);
+            } else {
+              const newQty = Math.min(quantity, item.totalStock);
+              if (newQty > 0) {
+                state.items.push(createCartItem(item, newQty));
+              }
+            }
+          }),
+        );
 
         // 2. If logged in, sync with database
         if (get().isLoggedIn) {
@@ -102,21 +96,18 @@ export const useCartStore = create<CartState>()(
       },
       updateQuantity: async (productId, quantity) => {
         // 1. Update local state immediately
-        set((state) => {
-          if (quantity <= 0) {
-            return {
-              items: state.items.filter((i) => i.productId !== productId),
-            };
-          }
-          return {
-            items: state.items.map((i) => {
-              if (i.productId === productId) {
-                return createCartItem(i, Math.min(quantity, i.totalStock));
+        set(
+          produce((state: CartState) => {
+            if (quantity <= 0) {
+              state.items = state.items.filter((i) => i.productId !== productId);
+            } else {
+              const item = state.items.find((i) => i.productId === productId);
+              if (item) {
+                item.quantity = Math.min(quantity, item.totalStock);
               }
-              return i;
-            }),
-          };
-        });
+            }
+          }),
+        );
 
         // 2. If logged in, sync with database
         if (get().isLoggedIn) {
@@ -128,9 +119,11 @@ export const useCartStore = create<CartState>()(
       },
       removeItem: async (productId) => {
         // 1. Update local state immediately
-        set((state) => ({
-          items: state.items.filter((i) => i.productId !== productId),
-        }));
+        set(
+          produce((state: CartState) => {
+            state.items = state.items.filter((i) => i.productId !== productId);
+          }),
+        );
 
         // 2. If logged in, sync with database
         if (get().isLoggedIn) {
