@@ -24,18 +24,8 @@ export function CartTemplate() {
 
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
 
-  const handleInputChange = (
-    productId: string,
-    val: string,
-    totalStock: number,
-  ) => {
+  const handleInputChange = (productId: string, val: string) => {
     setInputValues((prev) => ({ ...prev, [productId]: val }));
-
-    const parsed = parseInt(val, 10);
-    if (!isNaN(parsed) && parsed > 0) {
-      const clamped = Math.min(parsed, totalStock);
-      void updateQuantity(productId, clamped);
-    }
   };
 
   const handleInputBlur = (
@@ -48,6 +38,8 @@ export function CartTemplate() {
       void updateQuantity(productId, 1);
     } else if (parsed > totalStock) {
       void updateQuantity(productId, totalStock);
+    } else {
+      void updateQuantity(productId, parsed);
     }
 
     setInputValues((prev) => {
@@ -173,11 +165,7 @@ export function CartTemplate() {
                         inputValues[item.productId] ?? String(item.quantity)
                       }
                       onChange={(e) =>
-                        handleInputChange(
-                          item.productId,
-                          e.target.value,
-                          item.totalStock,
-                        )
+                        handleInputChange(item.productId, e.target.value)
                       }
                       onBlur={(e) =>
                         handleInputBlur(
@@ -186,6 +174,11 @@ export function CartTemplate() {
                           item.totalStock,
                         )
                       }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.currentTarget.blur();
+                        }
+                      }}
                       onWheel={(e) => e.currentTarget.blur()}
                       min={1}
                       max={item.totalStock}
