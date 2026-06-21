@@ -119,7 +119,7 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 #### C. Checkout Success & Verification UI
 
-- [ ] Create Checkout Success Page (`apps/storefront/app/[locale]/(shop)/checkout/success/page.tsx`):
+- [x] Create Checkout Success Page (`apps/storefront/app/[locale]/(shop)/checkout/success/page.tsx`):
   - **PAYOS Order View**: Renders total transaction amount, bank details, dynamic VietQR code image, and payment description.
   - **Webhook Status Polling**:
     - Trigger 5-second short polling to `/api/payments/verify-status`.
