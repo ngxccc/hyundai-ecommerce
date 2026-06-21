@@ -17,6 +17,7 @@ import type {
   TWarehouseStock,
   PaymentMethod,
   PaymentTransactionStatus,
+  ApprovalStatus,
 } from "../schemas";
 import type {
   CartItemDTO,
@@ -225,6 +226,38 @@ export interface UserService {
 // --- Order Service Interfaces ---
 export interface OrderService {
   listOrders(filters?: { status?: TOrder["status"] }): Promise<ComplexOrder[]>;
+  listUserOrders(userId: string): Promise<ComplexOrder[]>;
+  listUserOrdersPaginated(
+    userId: string,
+    limit?: number,
+    options?: {
+      after?: string | undefined;
+      before?: string | undefined;
+      last?: boolean | undefined;
+    },
+  ): Promise<{
+    orders: ComplexOrder[];
+    nextCursor?: string | undefined;
+    prevCursor?: string | undefined;
+    hasMore: boolean;
+  }>;
+  listCompanyOrders(companyName: string): Promise<ComplexOrder[]>;
+  listCompanyOrdersPaginated(
+    companyName: string,
+    limit?: number,
+    options?: {
+      after?: string | undefined;
+      before?: string | undefined;
+      excludeUserId?: string | undefined;
+      approvalStatus?: ApprovalStatus | undefined;
+      last?: boolean | undefined;
+    },
+  ): Promise<{
+    orders: ComplexOrder[];
+    nextCursor?: string | undefined;
+    prevCursor?: string | undefined;
+    hasMore: boolean;
+  }>;
   createOrder(data: CreateOrderDTO): Promise<{ id: string } | undefined>;
   createOrderWithItems(
     orderData: CreateOrderDTO,
@@ -256,6 +289,9 @@ export interface OrderService {
   approveOrderCancellation(
     orderId: string,
   ): Promise<{ id: string } | undefined>;
+  requestOrderCancellation(
+    orderId: string,
+  ): Promise<{ id: string } | undefined>;
   createPendingPaymentTransaction(
     orderId: string,
     amount: number,
@@ -280,9 +316,7 @@ export interface PaymentService {
   getPaymentTransactionByReferenceCode(
     referenceCode: string,
   ): Promise<{ id: string }>;
-  getPaymentTransactionByOrderCode(
-    orderCode: number,
-  ): Promise<
+  getPaymentTransactionByOrderCode(orderCode: number): Promise<
     | {
         id: string;
         amount: string;
@@ -301,12 +335,12 @@ export interface PaymentService {
     id: string,
     data: Partial<TPayment>,
   ): Promise<{ id: string } | undefined>;
-  getPendingPayOSTransactionByOrderId(orderId: string): Promise<
-    PaymentTransactionDetailsDTO | undefined
-  >;
-  getLastPayOSTransactionByOrderId(orderId: string): Promise<
-    PaymentTransactionDetailsDTO | undefined
-  >;
+  getPendingPayOSTransactionByOrderId(
+    orderId: string,
+  ): Promise<PaymentTransactionDetailsDTO | undefined>;
+  getLastPayOSTransactionByOrderId(
+    orderId: string,
+  ): Promise<PaymentTransactionDetailsDTO | undefined>;
   updatePaymentTransactionStatus(
     id: string,
     status: PaymentTransactionStatus,

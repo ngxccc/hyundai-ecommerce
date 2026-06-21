@@ -4,7 +4,19 @@ import type {
   DashboardMetrics,
   MonthlyRevenue,
 } from "../interfaces";
-import { and, eq, ne, gte, lt, sql, inArray } from "drizzle-orm";
+import {
+  and,
+  eq,
+  ne,
+  gte,
+  lt,
+  sql,
+  inArray,
+  gt,
+  asc,
+  desc,
+  type SQL,
+} from "drizzle-orm";
 import { type IDatabase } from "../../client";
 import { FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
 import { isPostgresError, POSTGRES_ERROR_CODES } from "../../utils";
@@ -23,17 +35,23 @@ import {
   type OrderStatus,
   type PaymentTransactionType,
   type PaymentMethod,
+  type ApprovalStatus,
 } from "../../schemas";
 
 const ORDER_STATUS_TRANSITIONS = {
   PENDING: ["PROCESSING", "CANCELLED", "SUSPICIOUS_PAYMENT_HOLD"] as const,
-  PROCESSING: ["SHIPPED", "CANCELLED"] as const,
-  SHIPPED: ["DELIVERED", "REFUND_PENDING"] as const,
+  PROCESSING: ["SHIPPED", "CANCELLED", "CANCELLATION_REQUESTED"] as const,
+  SHIPPED: ["DELIVERED", "REFUND_PENDING", "CANCELLATION_REQUESTED"] as const,
   DELIVERED: ["REFUND_PENDING"] as const,
   CANCELLED: [] as const,
   REFUNDED: [] as const,
   REFUND_PENDING: ["REFUNDED", "CANCELLED"] as const,
   SUSPICIOUS_PAYMENT_HOLD: ["CANCELLED", "PROCESSING"] as const,
+  CANCELLATION_REQUESTED: [
+    "CANCELLED",
+    "PROCESSING",
+    "REFUND_PENDING",
+  ] as const,
 } as const;
 
 export class DbOrderService implements OrderService {
@@ -67,6 +85,365 @@ export class DbOrderService implements OrderService {
       },
       orderBy: { createdAt: "desc" },
     })) as unknown as ComplexOrder[];
+  }
+
+  async listUserOrders(userId: string): Promise<ComplexOrder[]> {
+    return (await this.db.query.orders.findMany({
+      where: { userId: { eq: userId } },
+      columns: {
+        id: true,
+        status: true,
+        paymentStatus: true,
+        paymentMethod: true,
+        shippingFee: true,
+        shippingAddress: true,
+        totalAmount: true,
+        createdAt: true,
+        userId: true,
+        approvalStatus: true,
+      },
+      with: {
+        user: {
+          columns: {
+            id: true,
+            name: true,
+            email: true,
+            companyName: true,
+            taxId: true,
+            phone: true,
+            businessType: true,
+          },
+        },
+        items: {
+          columns: {
+            id: true,
+            productName: true,
+            productSku: true,
+            quantity: true,
+            unitPrice: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    })) as unknown as ComplexOrder[];
+  }
+  async listUserOrdersPaginated(
+    userId: string,
+    limit = 10,
+    options?: {
+      after?: string | undefined;
+      before?: string | undefined;
+      last?: boolean | undefined;
+    },
+  ): Promise<{
+    orders: ComplexOrder[];
+    nextCursor?: string | undefined;
+    prevCursor?: string | undefined;
+    hasMore: boolean;
+  }> {
+    const isGoingBack = !!options?.before || !!options?.last;
+    const cursorId = options?.after ?? options?.before;
+
+    const clauses: (SQL | undefined)[] = [eq(orders.userId, userId)];
+    if (cursorId) {
+      clauses.push(
+        isGoingBack ? gt(orders.id, cursorId) : lt(orders.id, cursorId),
+      );
+    }
+
+    let targetLimit = limit;
+    if (options?.last) {
+      const [countResult] = await this.db
+        .select({ count: sql<number>`count(*)` })
+        .from(orders)
+        .where(eq(orders.userId, userId));
+      const totalCount = Number(countResult?.count ?? 0);
+      const rem = totalCount % limit;
+      targetLimit = rem === 0 && totalCount > 0 ? limit : rem;
+    }
+
+    const orderRows = await this.db
+      .select({ id: orders.id })
+      .from(orders)
+      .where(and(...clauses))
+      .orderBy(isGoingBack ? asc(orders.id) : desc(orders.id))
+      .limit(targetLimit + 1);
+
+    const hasMore = orderRows.length > targetLimit;
+    let finalOrderRows = orderRows.slice(0, targetLimit);
+
+    if (isGoingBack) {
+      finalOrderRows = [...finalOrderRows].reverse();
+    }
+    const orderIds = finalOrderRows.map((r) => r.id);
+    if (orderIds.length === 0) {
+      return {
+        orders: [],
+        nextCursor: undefined,
+        prevCursor: undefined,
+        hasMore,
+      };
+    }
+
+    const hydratedRows = await this.db.query.orders.findMany({
+      where: { id: { in: orderIds } },
+      columns: {
+        id: true,
+        status: true,
+        paymentStatus: true,
+        paymentMethod: true,
+        shippingFee: true,
+        shippingAddress: true,
+        totalAmount: true,
+        createdAt: true,
+        userId: true,
+        approvalStatus: true,
+      },
+      with: {
+        user: {
+          columns: {
+            id: true,
+            name: true,
+            email: true,
+            companyName: true,
+            taxId: true,
+            phone: true,
+            businessType: true,
+          },
+        },
+        items: {
+          columns: {
+            id: true,
+            productName: true,
+            productSku: true,
+            quantity: true,
+            unitPrice: true,
+          },
+        },
+      },
+    });
+
+    // Sort hydratedRows to match the order of orderIds
+    const rowsMap = new Map(hydratedRows.map((row) => [row.id, row]));
+    const finalOrders = orderIds
+      .map((id) => rowsMap.get(id))
+      .filter((row): row is (typeof hydratedRows)[number] => !!row);
+
+    let nextCursor: string | undefined;
+    let prevCursor: string | undefined;
+    if (finalOrders.length > 0) {
+      const firstItem = finalOrders[0]!;
+      const lastItem = finalOrders[finalOrders.length - 1]!;
+
+      if (options?.last) {
+        nextCursor = undefined;
+        prevCursor = hasMore ? firstItem.id : undefined;
+      } else {
+        nextCursor =
+          (hasMore && !isGoingBack) || isGoingBack ? lastItem.id : undefined;
+
+        prevCursor =
+          (isGoingBack && hasMore) || (!isGoingBack && options?.after)
+            ? firstItem.id
+            : undefined;
+      }
+    }
+
+    return {
+      orders: finalOrders as unknown as ComplexOrder[],
+      nextCursor,
+      prevCursor,
+      hasMore,
+    };
+  }
+
+  async listCompanyOrders(companyName: string): Promise<ComplexOrder[]> {
+    const companyUsers = await this.db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.companyName, companyName));
+
+    const userIds = companyUsers.map((u) => u.id);
+    if (userIds.length === 0) return [];
+
+    return (await this.db.query.orders.findMany({
+      where: { userId: { in: userIds } },
+      columns: {
+        id: true,
+        status: true,
+        paymentStatus: true,
+        paymentMethod: true,
+        shippingFee: true,
+        shippingAddress: true,
+        totalAmount: true,
+        createdAt: true,
+        userId: true,
+        approvalStatus: true,
+      },
+      with: {
+        user: {
+          columns: {
+            id: true,
+            name: true,
+            email: true,
+            companyName: true,
+            taxId: true,
+            phone: true,
+            businessType: true,
+          },
+        },
+        items: {
+          columns: {
+            id: true,
+            productName: true,
+            productSku: true,
+            quantity: true,
+            unitPrice: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    })) as unknown as ComplexOrder[];
+  }
+  async listCompanyOrdersPaginated(
+    companyName: string,
+    limit = 10,
+    options?: {
+      after?: string | undefined;
+      before?: string | undefined;
+      excludeUserId?: string | undefined;
+      approvalStatus?: ApprovalStatus | undefined;
+      last?: boolean | undefined;
+    },
+  ): Promise<{
+    orders: ComplexOrder[];
+    nextCursor?: string | undefined;
+    prevCursor?: string | undefined;
+    hasMore: boolean;
+  }> {
+    const isGoingBack = !!options?.before || !!options?.last;
+    const cursorId = options?.after ?? options?.before;
+
+    const clauses: (SQL | undefined)[] = [eq(users.companyName, companyName)];
+    if (options?.excludeUserId) {
+      clauses.push(ne(orders.userId, options.excludeUserId));
+    }
+    if (options?.approvalStatus) {
+      clauses.push(eq(orders.approvalStatus, options.approvalStatus));
+    }
+    if (cursorId) {
+      clauses.push(
+        isGoingBack ? gt(orders.id, cursorId) : lt(orders.id, cursorId),
+      );
+    }
+
+    let targetLimit = limit;
+    if (options?.last) {
+      const [countResult] = await this.db
+        .select({ count: sql<number>`count(*)` })
+        .from(orders)
+        .innerJoin(users, eq(orders.userId, users.id))
+        .where(and(...clauses));
+      const totalCount = Number(countResult?.count ?? 0);
+      const rem = totalCount % limit;
+      targetLimit = rem === 0 && totalCount > 0 ? limit : rem;
+    }
+
+    const orderRows = await this.db
+      .select({ id: orders.id })
+      .from(orders)
+      .innerJoin(users, eq(orders.userId, users.id))
+      .where(and(...clauses))
+      .orderBy(isGoingBack ? asc(orders.id) : desc(orders.id))
+      .limit(targetLimit + 1);
+
+    const hasMore = orderRows.length > targetLimit;
+    let finalOrderRows = orderRows.slice(0, targetLimit);
+
+    if (isGoingBack) {
+      finalOrderRows = [...finalOrderRows].reverse();
+    }
+    const orderIds = finalOrderRows.map((r) => r.id);
+    if (orderIds.length === 0) {
+      return {
+        orders: [],
+        nextCursor: undefined,
+        prevCursor: undefined,
+        hasMore,
+      };
+    }
+
+    const hydratedRows = await this.db.query.orders.findMany({
+      where: { id: { in: orderIds } },
+      columns: {
+        id: true,
+        status: true,
+        paymentStatus: true,
+        paymentMethod: true,
+        shippingFee: true,
+        shippingAddress: true,
+        totalAmount: true,
+        createdAt: true,
+        userId: true,
+        approvalStatus: true,
+      },
+      with: {
+        user: {
+          columns: {
+            id: true,
+            name: true,
+            email: true,
+            companyName: true,
+            taxId: true,
+            phone: true,
+            businessType: true,
+          },
+        },
+        items: {
+          columns: {
+            id: true,
+            productName: true,
+            productSku: true,
+            quantity: true,
+            unitPrice: true,
+          },
+        },
+      },
+    });
+
+    // Sort hydratedRows to match the order of orderIds
+    const rowsMap = new Map(hydratedRows.map((row) => [row.id, row]));
+    const finalOrders = orderIds
+      .map((id) => rowsMap.get(id))
+      .filter((row): row is (typeof hydratedRows)[number] => !!row);
+
+    let nextCursor: string | undefined;
+    let prevCursor: string | undefined;
+
+    if (finalOrders.length > 0) {
+      const firstItem = finalOrders[0]!;
+      const lastItem = finalOrders[finalOrders.length - 1]!;
+
+      if (options?.last) {
+        nextCursor = undefined;
+        prevCursor = hasMore ? firstItem.id : undefined;
+      } else {
+        nextCursor =
+          (hasMore && !isGoingBack) || isGoingBack ? lastItem.id : undefined;
+
+        prevCursor =
+          (isGoingBack && hasMore) || (!isGoingBack && options?.after)
+            ? firstItem.id
+            : undefined;
+      }
+    }
+
+    return {
+      orders: finalOrders as unknown as ComplexOrder[],
+      nextCursor,
+      prevCursor,
+      hasMore,
+    };
   }
 
   async createOrder(data: CreateOrderDTO): Promise<{ id: string } | undefined> {
@@ -194,6 +571,7 @@ export class DbOrderService implements OrderService {
         totalAmount: true,
         createdAt: true,
         userId: true,
+        approvalStatus: true,
       },
       with: {
         user: {
@@ -223,6 +601,17 @@ export class DbOrderService implements OrderService {
             quotedPrice: true,
             internalNote: true,
             isSelected: true,
+          },
+        },
+        paymentTransactions: {
+          columns: {
+            id: true,
+            status: true,
+            paymentMethod: true,
+            transactionType: true,
+            amount: true,
+            referenceCode: true,
+            createdAt: true,
           },
         },
       },
@@ -539,6 +928,60 @@ export class DbOrderService implements OrderService {
           .where(eq(orders.id, orderId))
           .returning({ id: orders.id });
         return updatedOrder;
+      }
+    });
+  }
+
+  async requestOrderCancellation(
+    orderId: string,
+  ): Promise<{ id: string } | undefined> {
+    return await this.db.transaction(async (tx) => {
+      const [order] = await tx
+        .select({
+          id: orders.id,
+          status: orders.status,
+          paymentMethod: orders.paymentMethod,
+          userId: orders.userId,
+          totalAmount: orders.totalAmount,
+        })
+        .from(orders)
+        .where(eq(orders.id, orderId))
+        .limit(1);
+
+      if (!order) return undefined;
+
+      if (order.status === "PENDING") {
+        if (order.paymentMethod === "TRADE_CREDIT") {
+          const [user] = await tx
+            .select({ currentDebt: users.currentDebt })
+            .from(users)
+            .where(eq(users.id, order.userId))
+            .limit(1);
+          if (user) {
+            const newDebt = (
+              parseFloat(user.currentDebt) - parseFloat(order.totalAmount)
+            ).toFixed(2);
+            await tx
+              .update(users)
+              .set({ currentDebt: newDebt })
+              .where(eq(users.id, order.userId));
+          }
+        }
+        const [updated] = await tx
+          .update(orders)
+          .set({ status: "CANCELLED" })
+          .where(eq(orders.id, orderId))
+          .returning({ id: orders.id });
+        return updated;
+      } else if (order.status === "PROCESSING" || order.status === "SHIPPED") {
+        const [updated] = await tx
+          .update(orders)
+          .set({ status: "CANCELLATION_REQUESTED" })
+          .where(eq(orders.id, orderId))
+          .returning({ id: orders.id });
+        return updated;
+      } else {
+        throw new Error("errors.cannotCancelInCurrentStatus");
       }
     });
   }
