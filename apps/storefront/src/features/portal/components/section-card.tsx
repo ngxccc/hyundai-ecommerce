@@ -35,7 +35,7 @@ export function SectionCard({
     >
       <CardHeader
         className={cn(
-          "flex flex-col gap-0 border-b bg-zinc-50/50 px-6 py-4!",
+          "flex flex-col gap-0 border-b bg-zinc-50/50 p-4!",
           headerClassName,
         )}
       >

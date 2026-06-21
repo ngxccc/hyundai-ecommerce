@@ -44,7 +44,7 @@ export default async function PortalLayout({
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:py-8">
       <div className="flex flex-col gap-4 md:flex-row">
         <PortalSidebar />
-        <main className="min-w-0 flex-1 border-0 bg-white shadow-none md:rounded-xl md:border md:border-zinc-200 md:p-6 md:shadow-sm">
+        <main className="min-w-0 flex-1 border-0 bg-white shadow-none md:rounded-xl md:border md:border-zinc-200 md:p-4 md:shadow-sm">
           {children}
         </main>
       </div>
