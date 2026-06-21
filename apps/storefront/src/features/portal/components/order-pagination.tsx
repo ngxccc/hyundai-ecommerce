@@ -93,40 +93,40 @@ export function OrderPagination({
         size="sm"
         disabled={!canGoPrev}
         onClick={handleResetToFirstPage}
-        className="h-8 text-xs font-semibold hover:text-zinc-900 disabled:opacity-50"
+        className="h-8 px-2 text-xs font-semibold hover:text-zinc-900 disabled:opacity-50 sm:px-3"
       >
-        <ChevronsLeft className="mr-1 h-3.5 w-3.5" />
-        {t("pagination.first")}
+        <ChevronsLeft className="h-3.5 w-3.5 sm:mr-1" />
+        <span className="hidden sm:inline">{t("pagination.first")}</span>
       </Button>
       <Button
         variant="outline"
         size="sm"
         disabled={!canGoPrev}
         onClick={() => handlePageChange("prev")}
-        className="h-8 text-xs font-semibold disabled:opacity-50"
+        className="h-8 px-2 text-xs font-semibold disabled:opacity-50 sm:px-3"
       >
-        <ChevronLeft className="mr-1 h-3.5 w-3.5" />
-        {t("pagination.previous")}
+        <ChevronLeft className="h-3.5 w-3.5 sm:mr-1" />
+        <span className="hidden sm:inline">{t("pagination.previous")}</span>
       </Button>
       <Button
         variant="outline"
         size="sm"
         disabled={!canGoNext}
         onClick={() => handlePageChange("next")}
-        className="h-8 text-xs font-semibold disabled:opacity-50"
+        className="h-8 px-2 text-xs font-semibold disabled:opacity-50 sm:px-3"
       >
-        {t("pagination.next")}
-        <ChevronRight className="ml-1 h-3.5 w-3.5" />
+        <span className="hidden sm:inline">{t("pagination.next")}</span>
+        <ChevronRight className="h-3.5 w-3.5 sm:ml-1" />
       </Button>
       <Button
         variant="outline"
         size="sm"
         disabled={!canGoNext}
         onClick={handleGoToLastPage}
-        className="h-8 text-xs font-semibold hover:text-zinc-900 disabled:opacity-50"
+        className="h-8 px-2 text-xs font-semibold hover:text-zinc-900 disabled:opacity-50 sm:px-3"
       >
-        {t("pagination.last")}
-        <ChevronsRight className="ml-1 h-3.5 w-3.5" />
+        <span className="hidden sm:inline">{t("pagination.last")}</span>
+        <ChevronsRight className="h-3.5 w-3.5 sm:ml-1" />
       </Button>
     </div>
   );

@@ -13,6 +13,7 @@ import { AlertCircle } from "lucide-react";
 import type { ComplexOrder } from "@nhatnang/database/services";
 import type { UserRole } from "@nhatnang/database/schemas";
 import { OrdersTable } from "./orders-table";
+import { OrdersMobileList } from "./orders-mobile-list";
 import { OrderPagination } from "./order-pagination";
 
 interface OrderListProps {
@@ -75,19 +76,31 @@ export function OrderList({
               )}
             </TabsTrigger>
           </TabsList>
-
           <TabsContent value="my-orders" className="m-0">
-            <Card className="overflow-hidden rounded-xl border border-zinc-200 py-0 shadow-sm">
-              <CardContent className="p-0">
-                <OrdersTable orders={myOrders} />
-                <OrderPagination
-                  type="my"
-                  nextCursor={myPagination.nextCursor}
-                  prevCursor={myPagination.prevCursor}
-                  hasMore={myPagination.hasMore}
-                />
-              </CardContent>
-            </Card>
+            {/* Desktop View */}
+            <div className="hidden md:block">
+              <Card className="overflow-hidden rounded-xl border border-zinc-200 py-0 shadow-sm">
+                <CardContent className="p-0">
+                  <OrdersTable orders={myOrders} />
+                  <OrderPagination
+                    type="my"
+                    nextCursor={myPagination.nextCursor}
+                    prevCursor={myPagination.prevCursor}
+                    hasMore={myPagination.hasMore}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+            {/* Mobile View */}
+            <div className="block space-y-4 md:hidden">
+              <OrdersMobileList orders={myOrders} />
+              <OrderPagination
+                type="my"
+                nextCursor={myPagination.nextCursor}
+                prevCursor={myPagination.prevCursor}
+                hasMore={myPagination.hasMore}
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="pending-approval" className="m-0">
@@ -101,31 +114,59 @@ export function OrderList({
                 </p>
               </div>
             )}
-            <Card className="overflow-hidden rounded-xl border border-zinc-200 py-0 shadow-sm">
-              <CardContent className="p-0">
-                <OrdersTable orders={companyOrders} />
-                <OrderPagination
-                  type="company"
-                  nextCursor={companyPagination.nextCursor}
-                  prevCursor={companyPagination.prevCursor}
-                  hasMore={companyPagination.hasMore}
-                />
-              </CardContent>
-            </Card>
+            {/* Desktop View */}
+            <div className="hidden md:block">
+              <Card className="overflow-hidden rounded-xl border border-zinc-200 py-0 shadow-sm">
+                <CardContent className="p-0">
+                  <OrdersTable orders={companyOrders} />
+                  <OrderPagination
+                    type="company"
+                    nextCursor={companyPagination.nextCursor}
+                    prevCursor={companyPagination.prevCursor}
+                    hasMore={companyPagination.hasMore}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+            {/* Mobile View */}
+            <div className="block space-y-4 md:hidden">
+              <OrdersMobileList orders={companyOrders} />
+              <OrderPagination
+                type="company"
+                nextCursor={companyPagination.nextCursor}
+                prevCursor={companyPagination.prevCursor}
+                hasMore={companyPagination.hasMore}
+              />
+            </div>
           </TabsContent>
         </Tabs>
       ) : (
-        <Card className="overflow-hidden rounded-xl border border-zinc-200 py-0 shadow-sm">
-          <CardContent className="p-0">
-            <OrdersTable orders={myOrders} />
+        <>
+          {/* Desktop View */}
+          <div className="hidden md:block">
+            <Card className="overflow-hidden rounded-xl border border-zinc-200 py-0 shadow-sm">
+              <CardContent className="p-0">
+                <OrdersTable orders={myOrders} />
+                <OrderPagination
+                  type="my"
+                  nextCursor={myPagination.nextCursor}
+                  prevCursor={myPagination.prevCursor}
+                  hasMore={myPagination.hasMore}
+                />
+              </CardContent>
+            </Card>
+          </div>
+          {/* Mobile View */}
+          <div className="block space-y-4 md:hidden">
+            <OrdersMobileList orders={myOrders} />
             <OrderPagination
               type="my"
               nextCursor={myPagination.nextCursor}
               prevCursor={myPagination.prevCursor}
               hasMore={myPagination.hasMore}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </>
       )}
     </div>
   );
