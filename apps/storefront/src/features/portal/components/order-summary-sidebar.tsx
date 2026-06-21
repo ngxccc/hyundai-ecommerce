@@ -31,6 +31,7 @@ interface OrderSummarySidebarProps {
   cooldown: number;
   onReVerifyPayment: () => Promise<void>;
   onCancelOrder: () => Promise<void>;
+  variant?: "summary" | "actions" | "all";
 }
 
 export function OrderSummarySidebar({
@@ -39,6 +40,7 @@ export function OrderSummarySidebar({
   cooldown,
   onReVerifyPayment,
   onCancelOrder,
+  variant = "all",
 }: OrderSummarySidebarProps) {
   const t = useTranslations("Orders");
   const tc = useTranslations("Checkout");
@@ -97,12 +99,16 @@ export function OrderSummarySidebar({
   );
   const vatAmount = itemsSubtotal * FINANCIAL_CONSTANTS.VAT_RATE;
 
+  const showSummary = variant === "all" || variant === "summary";
+  const showActions = variant === "all" || variant === "actions";
+
   return (
     <div className="space-y-6">
-      <SectionCard
-        title={t("labels.orderSummaryLabel")}
-        contentClassName="space-y-4 p-5 text-sm"
-      >
+      {showSummary && (
+        <SectionCard
+          title={t("labels.orderSummaryLabel")}
+          contentClassName="space-y-4 p-5 text-sm"
+        >
         <div className="flex justify-between text-zinc-500">
           <span>{t("labels.summarySubtotal")}</span>
           <span className="font-medium text-zinc-900">
@@ -139,8 +145,11 @@ export function OrderSummarySidebar({
             </span>
           </div>
         </div>
-      </SectionCard>
+        </SectionCard>
+      )}
 
+      {showActions && (
+        <>
       {/* PayOS pending or stuck verification widget */}
       {order.paymentMethod === "PAYOS" &&
         order.paymentStatus === "PENDING_VERIFICATION" && (
@@ -331,6 +340,8 @@ export function OrderSummarySidebar({
             </AlertDialogContent>
           </AlertDialog>
         ))}
+      </>
+    )}
     </div>
   );
 }

@@ -202,6 +202,18 @@ export function OrderDetail({ order, currentUser }: OrderDetailProps) {
       <div className="grid gap-6 md:grid-cols-3">
         {/* Main Details Section */}
         <div className="space-y-6 md:col-span-2">
+          {/* Mobile-only Action widgets container */}
+          <div className="block md:hidden">
+            <OrderSummarySidebar
+              order={order}
+              isPending={isPending}
+              cooldown={cooldown}
+              onReVerifyPayment={handleReVerifyPayment}
+              onCancelOrder={handleCancelOrder}
+              variant="actions"
+            />
+          </div>
+
           {/* Order Items Table */}
           <OrderItemsTable items={order.items} />
 
@@ -213,15 +225,30 @@ export function OrderDetail({ order, currentUser }: OrderDetailProps) {
 
           {/* Payment Transactions History */}
           <PaymentTransactionsCard transactions={order.paymentTransactions} />
+
+          {/* Mobile-only Price Summary */}
+          <div className="block md:hidden">
+            <OrderSummarySidebar
+              order={order}
+              isPending={isPending}
+              cooldown={cooldown}
+              onReVerifyPayment={handleReVerifyPayment}
+              onCancelOrder={handleCancelOrder}
+              variant="summary"
+            />
+          </div>
         </div>
         {/* Sidebar Order Summary */}
-        <OrderSummarySidebar
-          order={order}
-          isPending={isPending}
-          cooldown={cooldown}
-          onReVerifyPayment={handleReVerifyPayment}
-          onCancelOrder={handleCancelOrder}
-        />
+        <div className="hidden md:block">
+          <OrderSummarySidebar
+            order={order}
+            isPending={isPending}
+            cooldown={cooldown}
+            onReVerifyPayment={handleReVerifyPayment}
+            onCancelOrder={handleCancelOrder}
+            variant="all"
+          />
+        </div>
       </div>
     </div>
   );
