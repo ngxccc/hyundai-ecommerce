@@ -1,9 +1,6 @@
 import { useTranslations } from "next-intl";
 import { CheckCircle2 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-} from "@nhatnang/ui/components/ui/card";
+import { Card, CardContent } from "@nhatnang/ui/components/ui/card";
 import type { ComplexOrder } from "@nhatnang/database/services";
 
 interface OrderProgressProps {

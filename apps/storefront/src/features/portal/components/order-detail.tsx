@@ -131,9 +131,10 @@ export function OrderDetail({ order, currentUser }: OrderDetailProps) {
     currentUser.role === "DEALER_PURCHASER";
 
   return (
-    <div className="space-y-6">
+    <div className="mb-6 space-y-6 sm:mb-0">
       {/* Back button and page title */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-col gap-3">
+        {/* Row 1: Back button and Page Title */}
         <div className="flex items-center gap-3">
           <Button
             asChild
@@ -145,30 +146,32 @@ export function OrderDetail({ order, currentUser }: OrderDetailProps) {
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-900 md:text-2xl">
-              {t("labels.orderDetails")}
-            </h1>
-            <p className="text-sm text-zinc-500">
-              #{order.id.substring(0, 8)} •{" "}
-              {new Date(order.createdAt).toLocaleDateString(
-                locale === "vi" ? "vi-VN" : "en-US",
-              )}
-            </p>
-          </div>
+          <h1 className="text-xl font-bold tracking-tight text-zinc-900 md:text-2xl">
+            {t("labels.orderDetails")}
+          </h1>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge
-            className={`rounded-md px-2.5 py-1 text-xs font-semibold ${statusInfo.color}`}
-          >
-            {statusInfo.label}
-          </Badge>
-          <Badge
-            variant="outline"
-            className={`rounded-md px-2.5 py-1 text-xs font-semibold ${paymentStatusInfo.color}`}
-          >
-            {paymentStatusInfo.label}
-          </Badge>
+
+        {/* Row 2: Metadata and Badges */}
+        <div className="flex flex-wrap items-center justify-start gap-3">
+          <p className="text-sm text-zinc-500">
+            #{order.id.substring(0, 8)} •{" "}
+            {new Date(order.createdAt).toLocaleDateString(
+              locale === "vi" ? "vi-VN" : "en-US",
+            )}
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge
+              className={`rounded-md px-2 py-0.5 text-[10px] font-semibold ${statusInfo.color}`}
+            >
+              {statusInfo.label}
+            </Badge>
+            <Badge
+              variant="outline"
+              className={`rounded-md px-2 py-0.5 text-[10px] font-semibold ${paymentStatusInfo.color}`}
+            >
+              {paymentStatusInfo.label}
+            </Badge>
+          </div>
         </div>
       </div>
 
@@ -199,7 +202,7 @@ export function OrderDetail({ order, currentUser }: OrderDetailProps) {
         onReject={handleCancelOrder}
       />
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="w-full space-y-6 md:grid md:grid-cols-3 md:gap-6 md:space-y-0">
         {/* Main Details Section */}
         <div className="space-y-6 md:col-span-2">
           {/* Mobile-only Action widgets container */}
@@ -218,7 +221,7 @@ export function OrderDetail({ order, currentUser }: OrderDetailProps) {
           <OrderItemsTable items={order.items} />
 
           {/* Delivery & Billing Address Info */}
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="w-full space-y-6 sm:grid sm:grid-cols-2 sm:gap-6 sm:space-y-0">
             <ShippingAddressCard shippingAddress={order.shippingAddress} />
             <BuyerInfoCard user={order.user} isB2B={isB2B} />
           </div>
