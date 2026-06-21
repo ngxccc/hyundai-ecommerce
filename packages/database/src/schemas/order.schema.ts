@@ -21,6 +21,7 @@ export const orderStatusEnum = pgEnum("order_status", [
   "REFUNDED",
   "REFUND_PENDING",
   "SUSPICIOUS_PAYMENT_HOLD",
+  "CANCELLATION_REQUESTED",
 ]);
 
 export const paymentMethodEnum = pgEnum("payment_method", [
@@ -98,3 +99,4 @@ export type PaymentMethod = (typeof paymentMethodEnum.enumValues)[number];
 export type OrderPaymentStatus =
   (typeof orderPaymentStatusEnum.enumValues)[number];
 export type OrderStatus = (typeof orderStatusEnum.enumValues)[number];
+export type ApprovalStatus = (typeof approvalStatusEnum.enumValues)[number];

@@ -19,6 +19,7 @@ if (!dbInstance) {
     client: pool,
     relations: schema.schemaRelations,
     jit: true,
+    logger: process.env.NODE_ENV !== "production",
   });
   if (process.env.NODE_ENV !== "production") {
     globalForDb.dbInstance = dbInstance as DatabaseType;
