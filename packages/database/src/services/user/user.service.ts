@@ -117,17 +117,15 @@ export class DbUserService implements UserService {
     role?: TUser["role"];
     businessType?: TUser["businessType"];
   }): Promise<TUser[]> {
-    const whereConditions: Record<string, { eq: string }> = {};
-    if (filters?.role) {
-      whereConditions["role"] = { eq: filters.role };
-    }
-    if (filters?.businessType) {
-      whereConditions["businessType"] = { eq: filters.businessType };
-    }
+    const whereConditions = filters?.role || filters?.businessType
+      ? {
+          ...(filters.role ? { role: { eq: filters.role } } : {}),
+          ...(filters.businessType ? { businessType: { eq: filters.businessType } } : {}),
+        }
+      : undefined;
 
     return await this.db.query.users.findMany({
-      where:
-        Object.keys(whereConditions).length > 0 ? whereConditions : undefined,
+      where: whereConditions,
       with: {
         tier: true,
       },

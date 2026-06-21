@@ -67,17 +67,15 @@ export class DbQuotesService implements QuotesService {
    * List quotes with optional filters by user ID (dealer) or quote status
    */
   async listQuotes(filters?: { userId?: string; status?: TQuote["status"] }) {
-    const whereConditions: Record<string, { eq: string }> = {};
-    if (filters?.userId) {
-      whereConditions["userId"] = { eq: filters.userId };
-    }
-    if (filters?.status) {
-      whereConditions["status"] = { eq: filters.status };
-    }
+    const whereConditions = filters?.userId || filters?.status
+      ? {
+          ...(filters.userId ? { userId: { eq: filters.userId } } : {}),
+          ...(filters.status ? { status: { eq: filters.status } } : {}),
+        }
+      : undefined;
 
     return await this.db.query.quotes.findMany({
-      where:
-        Object.keys(whereConditions).length > 0 ? whereConditions : undefined,
+      where: whereConditions,
       with: {
         user: true,
         items: {

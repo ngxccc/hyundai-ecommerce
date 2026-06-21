@@ -1,7 +1,6 @@
 import { expect, test, describe, vi, beforeEach } from "bun:test";
 import {
   mockDb,
-  mockFindFirst,
   mockFindMany,
   mockUpdate,
   mockReturning,

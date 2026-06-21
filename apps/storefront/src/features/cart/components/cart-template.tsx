@@ -51,9 +51,8 @@ export function CartTemplate() {
     }
 
     setInputValues((prev) => {
-      const copy = { ...prev };
-      delete copy[productId];
-      return copy;
+      const { [productId]: _, ...rest } = prev;
+      return rest;
     });
   };
 
