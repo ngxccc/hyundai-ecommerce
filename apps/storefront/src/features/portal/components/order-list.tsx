@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Card, CardContent } from "@nhatnang/ui/components/ui/card";
 import {
   Tabs,
   TabsContent,
@@ -77,29 +76,27 @@ export function OrderList({
             </TabsTrigger>
           </TabsList>
           <TabsContent value="my-orders" className="m-0">
-            {/* Desktop View */}
-            <div className="hidden md:block">
-              <Card className="overflow-hidden rounded-xl border border-zinc-200 py-0 shadow-sm">
-                <CardContent className="p-0">
-                  <OrdersTable orders={myOrders} />
-                  <OrderPagination
-                    type="my"
-                    nextCursor={myPagination.nextCursor}
-                    prevCursor={myPagination.prevCursor}
-                    hasMore={myPagination.hasMore}
-                  />
-                </CardContent>
-              </Card>
-            </div>
-            {/* Mobile View */}
-            <div className="block space-y-4 md:hidden">
-              <OrdersMobileList orders={myOrders} />
-              <OrderPagination
-                type="my"
-                nextCursor={myPagination.nextCursor}
-                prevCursor={myPagination.prevCursor}
-                hasMore={myPagination.hasMore}
-              />
+            <div>
+              {/* Desktop View */}
+              <div className="hidden md:block">
+                <OrdersTable orders={myOrders} />
+                <OrderPagination
+                  type="my"
+                  nextCursor={myPagination.nextCursor}
+                  prevCursor={myPagination.prevCursor}
+                  hasMore={myPagination.hasMore}
+                />
+              </div>
+              {/* Mobile View */}
+              <div className="block space-y-4 md:hidden">
+                <OrdersMobileList orders={myOrders} />
+                <OrderPagination
+                  type="my"
+                  nextCursor={myPagination.nextCursor}
+                  prevCursor={myPagination.prevCursor}
+                  hasMore={myPagination.hasMore}
+                />
+              </div>
             </div>
           </TabsContent>
 
@@ -114,47 +111,41 @@ export function OrderList({
                 </p>
               </div>
             )}
-            {/* Desktop View */}
-            <div className="hidden md:block">
-              <Card className="overflow-hidden rounded-xl border border-zinc-200 py-0 shadow-sm">
-                <CardContent className="p-0">
-                  <OrdersTable orders={companyOrders} />
-                  <OrderPagination
-                    type="company"
-                    nextCursor={companyPagination.nextCursor}
-                    prevCursor={companyPagination.prevCursor}
-                    hasMore={companyPagination.hasMore}
-                  />
-                </CardContent>
-              </Card>
-            </div>
-            {/* Mobile View */}
-            <div className="block space-y-4 md:hidden">
-              <OrdersMobileList orders={companyOrders} />
-              <OrderPagination
-                type="company"
-                nextCursor={companyPagination.nextCursor}
-                prevCursor={companyPagination.prevCursor}
-                hasMore={companyPagination.hasMore}
-              />
+            <div>
+              {/* Desktop View */}
+              <div className="hidden md:block">
+                <OrdersTable orders={companyOrders} />
+                <OrderPagination
+                  type="company"
+                  nextCursor={companyPagination.nextCursor}
+                  prevCursor={companyPagination.prevCursor}
+                  hasMore={companyPagination.hasMore}
+                />
+              </div>
+              {/* Mobile View */}
+              <div className="block space-y-4 md:hidden">
+                <OrdersMobileList orders={companyOrders} />
+                <OrderPagination
+                  type="company"
+                  nextCursor={companyPagination.nextCursor}
+                  prevCursor={companyPagination.prevCursor}
+                  hasMore={companyPagination.hasMore}
+                />
+              </div>
             </div>
           </TabsContent>
         </Tabs>
       ) : (
-        <>
+        <div>
           {/* Desktop View */}
           <div className="hidden md:block">
-            <Card className="overflow-hidden rounded-xl border border-zinc-200 py-0 shadow-sm">
-              <CardContent className="p-0">
-                <OrdersTable orders={myOrders} />
-                <OrderPagination
-                  type="my"
-                  nextCursor={myPagination.nextCursor}
-                  prevCursor={myPagination.prevCursor}
-                  hasMore={myPagination.hasMore}
-                />
-              </CardContent>
-            </Card>
+            <OrdersTable orders={myOrders} />
+            <OrderPagination
+              type="my"
+              nextCursor={myPagination.nextCursor}
+              prevCursor={myPagination.prevCursor}
+              hasMore={myPagination.hasMore}
+            />
           </div>
           {/* Mobile View */}
           <div className="block space-y-4 md:hidden">
@@ -166,7 +157,7 @@ export function OrderList({
               hasMore={myPagination.hasMore}
             />
           </div>
-        </>
+        </div>
       )}
     </div>
   );

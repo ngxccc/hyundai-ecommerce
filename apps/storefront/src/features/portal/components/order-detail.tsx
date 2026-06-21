@@ -205,20 +205,22 @@ export function OrderDetail({ order, currentUser }: OrderDetailProps) {
       <div className="w-full space-y-6 md:grid md:grid-cols-3 md:gap-6 md:space-y-0">
         {/* Main Details Section */}
         <div className="space-y-6 md:col-span-2">
-          {/* Mobile-only Action widgets container */}
-          <div className="block md:hidden">
-            <OrderSummarySidebar
-              order={order}
-              isPending={isPending}
-              cooldown={cooldown}
-              onReVerifyPayment={handleReVerifyPayment}
-              onCancelOrder={handleCancelOrder}
-              variant="actions"
-            />
-          </div>
+          <div className="space-y-6 md:space-y-0">
+            {/* Mobile-only Action widgets container */}
+            <div className="block md:hidden">
+              <OrderSummarySidebar
+                order={order}
+                isPending={isPending}
+                cooldown={cooldown}
+                onReVerifyPayment={handleReVerifyPayment}
+                onCancelOrder={handleCancelOrder}
+                variant="actions"
+              />
+            </div>
 
-          {/* Order Items Table */}
-          <OrderItemsTable items={order.items} />
+            {/* Order Items Table */}
+            <OrderItemsTable items={order.items} />
+          </div>
 
           {/* Delivery & Billing Address Info */}
           <div className="w-full space-y-6 sm:grid sm:grid-cols-2 sm:gap-6 sm:space-y-0">
@@ -226,19 +228,21 @@ export function OrderDetail({ order, currentUser }: OrderDetailProps) {
             <BuyerInfoCard user={order.user} isB2B={isB2B} />
           </div>
 
-          {/* Payment Transactions History */}
-          <PaymentTransactionsCard transactions={order.paymentTransactions} />
+          <div className="space-y-6 md:space-y-0">
+            {/* Payment Transactions History */}
+            <PaymentTransactionsCard transactions={order.paymentTransactions} />
 
-          {/* Mobile-only Price Summary */}
-          <div className="block md:hidden">
-            <OrderSummarySidebar
-              order={order}
-              isPending={isPending}
-              cooldown={cooldown}
-              onReVerifyPayment={handleReVerifyPayment}
-              onCancelOrder={handleCancelOrder}
-              variant="summary"
-            />
+            {/* Mobile-only Price Summary */}
+            <div className="block md:hidden">
+              <OrderSummarySidebar
+                order={order}
+                isPending={isPending}
+                cooldown={cooldown}
+                onReVerifyPayment={handleReVerifyPayment}
+                onCancelOrder={handleCancelOrder}
+                variant="summary"
+              />
+            </div>
           </div>
         </div>
         {/* Sidebar Order Summary */}
