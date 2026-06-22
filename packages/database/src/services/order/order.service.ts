@@ -555,7 +555,19 @@ export class DbOrderService implements OrderService {
       return updated;
     });
   }
-
+  async getOrderStatus(orderId: string) {
+    const [order] = await this.db
+      .select({
+        id: orders.id,
+        userId: orders.userId,
+        status: orders.status,
+        paymentStatus: orders.paymentStatus,
+      })
+      .from(orders)
+      .where(eq(orders.id, orderId))
+      .limit(1);
+    return order;
+  }
   async getComplexOrder(orderId: string) {
     return await this.db.query.orders.findFirst({
       where: {

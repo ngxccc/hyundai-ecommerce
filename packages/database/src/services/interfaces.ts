@@ -269,6 +269,17 @@ export interface OrderService {
     status: TOrder["status"],
   ): Promise<{ id: string } | undefined>;
   getComplexOrder(orderId: string): Promise<ComplexOrder | undefined>;
+  getOrderStatus(
+    orderId: string,
+  ): Promise<
+    | {
+        id: string;
+        userId: string;
+        status: TOrder["status"];
+        paymentStatus: TOrder["paymentStatus"];
+      }
+    | undefined
+  >;
   createShippingBid(data: TNewShippingBid): Promise<{ id: string } | undefined>;
   selectWinningBid(
     orderId: string,

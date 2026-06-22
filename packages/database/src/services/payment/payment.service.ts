@@ -139,9 +139,9 @@ export class DbPaymentService implements PaymentService {
     return updated;
   }
 
-  async getPendingPayOSTransactionByOrderId(orderId: string): Promise<
-    PaymentTransactionDetailsDTO | undefined
-  > {
+  async getPendingPayOSTransactionByOrderId(
+    orderId: string,
+  ): Promise<PaymentTransactionDetailsDTO | undefined> {
     const [pendingTx] = await this.db
       .select({
         id: paymentTransactions.id,
@@ -163,9 +163,9 @@ export class DbPaymentService implements PaymentService {
     return pendingTx;
   }
 
-  async getLastPayOSTransactionByOrderId(orderId: string): Promise<
-    PaymentTransactionDetailsDTO | undefined
-  > {
+  async getLastPayOSTransactionByOrderId(
+    orderId: string,
+  ): Promise<PaymentTransactionDetailsDTO | undefined> {
     const [tx] = await this.db
       .select({
         id: paymentTransactions.id,
@@ -244,7 +244,6 @@ export class DbPaymentService implements PaymentService {
           .update(paymentTransactions)
           .set({ status: "FAILED" })
           .where(eq(paymentTransactions.id, paymentTransaction.id));
-
         // Set order status to "SUSPICIOUS_PAYMENT_HOLD" and paymentStatus to "UNPAID"
         await tx
           .update(orders)
