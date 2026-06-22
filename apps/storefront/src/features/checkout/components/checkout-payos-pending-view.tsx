@@ -73,14 +73,20 @@ export function CheckoutPayOSPendingView({
   const [timeLeft, setTimeLeft] = useState(() => {
     if (!initialTransaction.createdAt) return 600;
     const createdAtTime = new Date(initialTransaction.createdAt).getTime();
-    const elapsedSeconds = Math.floor((Date.now() - createdAtTime) / 1000);
+    const elapsedSeconds = Math.max(
+      0,
+      Math.floor((Date.now() - createdAtTime) / 1000),
+    );
     return Math.max(0, 600 - elapsedSeconds);
   });
 
   const [isTimeout, setIsTimeout] = useState(() => {
     if (!initialTransaction.createdAt) return false;
     const createdAtTime = new Date(initialTransaction.createdAt).getTime();
-    const elapsedSeconds = Math.floor((Date.now() - createdAtTime) / 1000);
+    const elapsedSeconds = Math.max(
+      0,
+      Math.floor((Date.now() - createdAtTime) / 1000),
+    );
     return elapsedSeconds >= 600;
   });
 
@@ -132,10 +138,30 @@ export function CheckoutPayOSPendingView({
           if (!res.ok) return;
           const data = (await res.json()) as {
             success: boolean;
-            data?: { paymentStatus: string };
+            data?: {
+              paymentStatus: string;
+              status: string;
+              transactionStatus?: string | null;
+            };
           };
           if (data.success && data.data) {
             const currentStatus = data.data.paymentStatus;
+            const currentOrderStatus = data.data.status;
+            const currentTxStatus = data.data.transactionStatus;
+
+            if (currentTxStatus === "FAILED") {
+              clearInterval(pollInterval);
+              router.push(`/checkout/cancel?orderCode=${orderCode || orderId}`);
+              return;
+            }
+
+            if (currentOrderStatus === "SUSPICIOUS_PAYMENT_HOLD") {
+              toast.warning(t("amountMismatchTitle"));
+              clearInterval(pollInterval);
+              router.push(`/checkout/success?orderId=${orderId}`);
+              return;
+            }
+
             if (
               currentStatus === "DEPOSIT_PAID" ||
               currentStatus === "FULLY_PAID"
@@ -174,7 +200,7 @@ export function CheckoutPayOSPendingView({
       clearInterval(pollInterval);
       clearInterval(timer);
     };
-  }, [isTimeout, orderId, order, transaction, t]);
+  }, [isTimeout, orderId, order, transaction, t, router, orderCode]);
 
   const handleReVerify = async () => {
     if (!orderId) return;
@@ -206,7 +232,10 @@ export function CheckoutPayOSPendingView({
     if (!orderId) return;
     setIsProcessingAction(true);
     try {
-      const res = await cancelOrderPaymentLinkAction(orderId, "Khách hàng hủy thanh toán trực tuyến");
+      const res = await cancelOrderPaymentLinkAction(
+        orderId,
+        "Khách hàng hủy thanh toán trực tuyến",
+      );
       if (res.success) {
         toast.success(t("paymentCancelled"));
         router.push(`/checkout/cancel?orderCode=${res.orderCode}`);
@@ -221,8 +250,7 @@ export function CheckoutPayOSPendingView({
     }
   };
 
-  const isPayOSPending =
-    !!transaction && transaction.status === "PENDING";
+  const isPayOSPending = !!transaction && transaction.status === "PENDING";
 
   return (
     <div className="flex items-center justify-center bg-zinc-50 p-4 py-4 md:py-6">

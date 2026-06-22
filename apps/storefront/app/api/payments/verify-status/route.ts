@@ -1,7 +1,7 @@
 import { NextResponse, connection } from "next/server";
 import { getCachedSession } from "@/shared/lib/session";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
-import { orderService } from "@nhatnang/database/services";
+import { orderService, paymentService } from "@nhatnang/database/services";
 
 export async function GET(request: Request) {
   await connection();
@@ -24,9 +24,8 @@ export async function GET(request: Request) {
       );
     }
 
-    // 1. Fetch order details from database
-    const order = await orderService.getComplexOrder(orderId);
-
+    // 1. Fetch order details from database using lightweight status query
+    const order = await orderService.getOrderStatus(orderId);
     if (!order) {
       return NextResponse.json(
         { success: false, error: "errors.orderNotFound" },
@@ -42,10 +41,15 @@ export async function GET(request: Request) {
       );
     }
 
+    // 3. Fetch latest payment transaction to detect cancellation
+    const lastTx = await paymentService.getLastPayOSTransactionByOrderId(orderId);
+
     return NextResponse.json({
       success: true,
       data: {
         paymentStatus: order.paymentStatus,
+        status: order.status,
+        transactionStatus: lastTx?.status ?? null,
       },
     });
   } catch (error) {

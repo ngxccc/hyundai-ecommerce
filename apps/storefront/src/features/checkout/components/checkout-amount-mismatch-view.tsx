@@ -37,21 +37,21 @@ export function CheckoutAmountMismatchView({
             {t("amountMismatchDesc")}
           </p>
         </CardHeader>
-        <CardContent className="space-y-6 p-6">
+        <CardContent className="space-y-6 p-6 pb-0">
           <div className="rounded-md border border-amber-200 bg-amber-50 p-4">
             <p className="text-xs leading-relaxed font-medium text-amber-800">
               {t("amountMismatchHoldAlert")}
             </p>
           </div>
 
-          <div className="space-y-4 rounded-xl border bg-zinc-50 p-4 text-sm">
-            <div className="flex justify-between">
+          <div className="rounded-xl border bg-zinc-50 px-4 text-sm">
+            <div className="flex justify-between py-3">
               <span className="text-zinc-500">{t("orderNumber")}:</span>
               <span className="font-mono font-semibold text-zinc-900">
                 {transactionOrderCode ?? orderId}
               </span>
             </div>
-            <div className="flex items-center justify-between border-t pt-2">
+            <div className="flex items-center justify-between border-t py-3">
               <span className="font-bold text-zinc-500">{t("total")}:</span>
               <span className="text-primary text-lg font-extrabold">
                 {priceFormatter.format(orderTotal)}
