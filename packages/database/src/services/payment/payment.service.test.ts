@@ -5,6 +5,7 @@ import {
   mockUpdate,
   mockReturning,
   mockSelectResolvedValue,
+  mockValues,
 } from "../../tests/utils/db-mock";
 import { DbPaymentService } from "./payment.service";
 import type { IDatabase } from "../../client";
@@ -54,6 +55,39 @@ describe("PaymentService", () => {
       expect(result).toEqual(updatedOrder as unknown as { id: string });
       expect(mockUpdate).toHaveBeenCalledTimes(2);
       expect(mockInsert).toHaveBeenCalledTimes(1);
+    });
+
+    test("should handle DEPOSIT_PAID order and record REMAINDER amount in transaction", async () => {
+      const mockOrder = {
+        id: "order-1",
+        totalAmount: "1000.00",
+        paymentStatus: "DEPOSIT_PAID",
+      };
+      const mockDepositTx = {
+        amount: "200.00",
+      };
+      const updatedOrder = { ...mockOrder, paymentStatus: "FULLY_PAID" };
+
+      // First select is for the order
+      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
+      // Second select is for the successful deposit transaction
+      mockSelectResolvedValue.mockResolvedValueOnce([mockDepositTx]);
+      mockReturning.mockResolvedValueOnce([updatedOrder]);
+
+      const result = await paymentService.verifyCashPayment(
+        "order-1",
+        "user-admin",
+      );
+      expect(result).toEqual(updatedOrder as unknown as { id: string });
+      // mockSelectResolvedValue is not a standard mock fn, we don't assert call times on it directly
+      expect(mockUpdate).toHaveBeenCalledTimes(2);
+      expect(mockInsert).toHaveBeenCalledTimes(1);
+      expect(mockValues).toHaveBeenCalledWith(
+        expect.objectContaining({
+          amount: "800",
+          transactionType: "REMAINDER",
+        }),
+      );
     });
   });
 
