@@ -120,13 +120,16 @@ export function CheckoutTemplate({
     : 0;
   const availableCredit = Math.max(0, creditLimit - currentDebt);
 
-  // Rule: Lock Trade Credit if available credit is insufficient OR if custom simulated lock is present (or outstanding debt > credit limit)
+  const isPurchaser = b2bProfile?.role === "DEALER_PURCHASER";
+
+  // Rule: Lock Trade Credit if:
+  // - User is locked by API/overdue debt (applies to both approver and purchaser)
+  // - OR if user is NOT a purchaser and available credit is insufficient (or outstanding debt > credit limit)
   const isCreditLocked =
     isB2B &&
-    (availableCredit < totalAmount ||
-      currentDebt > creditLimit ||
-      isLockedByApi);
-  const isPurchaser = b2bProfile?.role === "DEALER_PURCHASER";
+    (isLockedByApi ||
+      (!isPurchaser &&
+        (availableCredit < totalAmount || currentDebt > creditLimit)));
 
   const handleSelectAddress = (address: AddressDTO) => {
     form.setValue("receiverName", address.receiverName);
