@@ -15,6 +15,6 @@
   "dependencies": {
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
-    "react-hook-form": "^7.79.0"
+    "react-hook-form": "^7.80.0"
   }
 }
