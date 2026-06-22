@@ -21,6 +21,7 @@ import type {
   PaymentTransactionDetailsDTO,
 } from "../../dtos";
 import type { PaymentService } from "../interfaces";
+import { getSharedConfig } from "@nhatnang/shared";
 
 export class DbPaymentService implements PaymentService {
   constructor(protected readonly db: IDatabase) {}
@@ -31,12 +32,40 @@ export class DbPaymentService implements PaymentService {
   ): Promise<{ id: string } | undefined> {
     return await this.db.transaction(async (tx) => {
       const [order] = await tx
-        .select({ totalAmount: orders.totalAmount })
+        .select({
+          totalAmount: orders.totalAmount,
+          paymentStatus: orders.paymentStatus,
+        })
         .from(orders)
         .where(eq(orders.id, orderId))
         .limit(1);
       if (!order) {
         return undefined;
+      }
+
+      let cashAmount = order.totalAmount;
+      let transactionType: PaymentTransactionType = "FULL";
+
+      if (order.paymentStatus === "DEPOSIT_PAID") {
+        // Find the successful deposit transaction
+        const [depositTx] = await tx
+          .select({ amount: paymentTransactions.amount })
+          .from(paymentTransactions)
+          .where(
+            and(
+              eq(paymentTransactions.orderId, orderId),
+              eq(paymentTransactions.transactionType, "DEPOSIT"),
+              eq(paymentTransactions.status, "SUCCESS"),
+            ),
+          )
+          .limit(1);
+
+        const totalNum = parseFloat(order.totalAmount);
+        const depositNum = depositTx
+          ? parseFloat(depositTx.amount)
+          : Math.round(totalNum * getSharedConfig().depositRate);
+        cashAmount = String(totalNum - depositNum);
+        transactionType = "REMAINDER";
       }
 
       const [updatedOrder] = await tx
@@ -53,9 +82,9 @@ export class DbPaymentService implements PaymentService {
 
       await tx.insert(paymentTransactions).values({
         orderId,
-        amount: order.totalAmount,
+        amount: cashAmount,
         paymentMethod: "CASH",
-        transactionType: "FULL",
+        transactionType,
         status: "SUCCESS",
         referenceCode: "CASH-" + orderId,
         verifiedBy: verifiedById,
@@ -214,6 +243,7 @@ export class DbPaymentService implements PaymentService {
         })
         .from(paymentTransactions)
         .where(eq(paymentTransactions.orderCode, Number(orderCode)))
+        .for("update")
         .limit(1);
       if (!paymentTransaction || paymentTransaction.status === "SUCCESS") {
         return false;
