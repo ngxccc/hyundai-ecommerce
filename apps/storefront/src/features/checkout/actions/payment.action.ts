@@ -259,6 +259,13 @@ export async function regenerateOrderPaymentLinkAction(orderId: string) {
     return { success: false as const, error: t("unauthorized") };
   }
 
+  // Rate limit link regeneration (max 3 times per 30 seconds per order)
+  const cooldownKey = `ratelimit:regenerate-payment-link:${orderId}`;
+  const rateLimitResult = await checkRateLimitWithQueue(cooldownKey, 3, "30 s");
+  if (!rateLimitResult.success) {
+    return { success: false as const, error: t("rateLimitExceeded") };
+  }
+
   try {
     const order = await orderService.getComplexOrder(orderId);
     if (order?.userId !== session.user.id) {

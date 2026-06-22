@@ -51,8 +51,10 @@ export async function POST(request: Request) {
       shippingAddress,
       paymentMethod,
       paymentOption,
-      shippingFee = 0,
     } = body;
+
+    // Calculate shipping fee server-side (free shipping by default)
+    const shippingFee = 0;
 
     if (!shippingAddress || !paymentMethod || !paymentOption) {
       return NextResponse.json(
