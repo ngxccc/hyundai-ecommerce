@@ -20,7 +20,7 @@ import type {
   UpdateDebtRepaymentDTO,
   PaymentTransactionDetailsDTO,
 } from "../../dtos";
-import type { PaymentService } from "../interfaces";
+import type { PaymentService, PaymentTransactionSummary } from "./payment.interface";
 import { getSharedConfig } from "@nhatnang/shared";
 
 export class DbPaymentService implements PaymentService {
@@ -132,16 +132,9 @@ export class DbPaymentService implements PaymentService {
     return paymentTransaction;
   }
 
-  async getPaymentTransactionByOrderCode(orderCode: number): Promise<
-    | {
-        id: string;
-        amount: string;
-        orderId: string;
-        orderCode: number | null;
-        status: PaymentTransactionStatus;
-      }
-    | undefined
-  > {
+  async getPaymentTransactionByOrderCode(
+    orderCode: number,
+  ): Promise<PaymentTransactionSummary | undefined> {
     const [paymentTransaction] = await this.db
       .select({
         id: paymentTransactions.id,

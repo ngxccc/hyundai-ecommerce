@@ -3,7 +3,9 @@ import type {
   OrderService,
   DashboardMetrics,
   MonthlyRevenue,
-} from "../interfaces";
+  OrderStatusDetails,
+  SelectWinningBidResult,
+} from "./order.interface";
 import {
   and,
   eq,
@@ -598,7 +600,10 @@ export class DbOrderService implements OrderService {
     });
   }
 
-  async getOrderStatus(orderId: string, userId?: string) {
+  async getOrderStatus(
+    orderId: string,
+    userId?: string,
+  ): Promise<OrderStatusDetails | undefined> {
     const whereCondition = userId
       ? and(eq(orders.id, orderId), eq(orders.userId, userId))
       : eq(orders.id, orderId);
@@ -689,10 +694,7 @@ export class DbOrderService implements OrderService {
   async selectWinningBid(
     orderId: string,
     bidId: string,
-  ): Promise<{
-    updatedOrder: { id: string; shippingFee: string | null };
-    selectedBid: { id: string };
-  }> {
+  ): Promise<SelectWinningBidResult> {
     return await this.db.transaction(async (tx) => {
       // 1. Deselect all bids for this order
       await tx
