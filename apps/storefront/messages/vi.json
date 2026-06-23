@@ -248,6 +248,7 @@
     "removeFromCartFailed": "Xóa sản phẩm khỏi giỏ hàng thất bại",
     "mergeCartFailed": "Gộp giỏ hàng thất bại",
     "cartEmpty": "Giỏ hàng trống",
+    "cartChanged": "Giỏ hàng của bạn đã thay đổi. Vui lòng kiểm tra lại trước khi thanh toán.",
     "missingRequiredFields": "Thiếu các trường bắt buộc",
     "invalidPaymentOption": "Lựa chọn thanh toán không hợp lệ",
     "invalidPaymentMethod": "Phương thức thanh toán không hợp lệ",
@@ -378,6 +379,7 @@
       "addresses": "Sổ địa chỉ",
       "orders": "Lịch sử đơn hàng",
       "debt": "Thanh toán công nợ",
+      "employees": "Quản lý nhân viên",
       "logout": "Đăng xuất"
     },
     "validation": {
@@ -417,6 +419,24 @@
       "saving": "Đang lưu\u2026",
       "updateSuccess": "Cập nhật thông tin thành công.",
       "updateError": "Cập nhật thất bại. Vui lòng thử lại."
+    },
+    "employees": {
+      "title": "Quản lý nhân viên",
+      "description": "Thêm và quản lý tài khoản nhân viên của doanh nghiệp. Nhân viên có thể đặt hàng B2B qua Trade Credit, đơn hàng sẽ cần bạn phê duyệt để hoàn tất.",
+      "addButton": "Thêm nhân viên",
+      "nameLabel": "Họ và tên",
+      "emailLabel": "Địa chỉ Email",
+      "phoneLabel": "Số điện thoại",
+      "passwordLabel": "Mật khẩu",
+      "confirmPasswordLabel": "Xác nhận mật khẩu",
+      "submit": "Tạo tài khoản nhân viên",
+      "submitting": "Đang tạo...",
+      "cancel": "Hủy",
+      "successAdd": "Tạo tài khoản nhân viên thành công.",
+      "errorAdd": "Tạo tài khoản nhân viên thất bại. Vui lòng thử lại.",
+      "noEmployees": "Chưa có nhân viên nào. Hãy thêm nhân viên đầu tiên.",
+      "role": "Vai trò",
+      "created": "Ngày tạo"
     },
     "password": {
       "title": "Đổi mật khẩu",

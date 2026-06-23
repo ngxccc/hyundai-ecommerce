@@ -249,6 +249,7 @@
     "removeFromCartFailed": "Failed to remove item from cart",
     "mergeCartFailed": "Failed to merge cart",
     "cartEmpty": "Cart is empty",
+    "cartChanged": "Your cart has changed. Please review it before checking out.",
     "missingRequiredFields": "Missing required fields",
     "invalidPaymentOption": "Invalid payment option",
     "invalidPaymentMethod": "Invalid payment method",
@@ -378,6 +379,7 @@
       "addresses": "Address Book",
       "orders": "Order History",
       "debt": "B2B Debt Repayment",
+      "employees": "Manage Employees",
       "logout": "Logout"
     },
     "validation": {
@@ -417,6 +419,24 @@
       "saving": "Saving\u2026",
       "updateSuccess": "Profile updated successfully.",
       "updateError": "Failed to update profile. Please try again."
+    },
+    "employees": {
+      "title": "Manage Employees",
+      "description": "Add and manage employee accounts under your company. Employees can place B2B orders using Trade Credit, which will require your approval.",
+      "addButton": "Add Employee",
+      "nameLabel": "Full Name",
+      "emailLabel": "Email Address",
+      "phoneLabel": "Phone Number",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm Password",
+      "submit": "Create Employee Account",
+      "submitting": "Creating...",
+      "cancel": "Cancel",
+      "successAdd": "Employee account created successfully.",
+      "errorAdd": "Failed to create employee account. Please try again.",
+      "noEmployees": "No employees found. Add your first employee to get started.",
+      "role": "Role",
+      "created": "Created"
     },
     "password": {
       "title": "Change Password",

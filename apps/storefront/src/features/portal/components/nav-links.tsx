@@ -9,6 +9,7 @@ import {
   LogOut,
   MapPin,
   User,
+  Users,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { authClient } from "@nhatnang/database/auth-client";
@@ -24,6 +25,7 @@ const navItems = [
   { key: "addresses", href: "/portal/addresses", icon: MapPin },
   { key: "orders", href: "/portal/orders", icon: ClipboardList },
   { key: "debt", href: "/portal/debt", icon: CreditCard },
+  { key: "employees", href: "/portal/employees", icon: Users },
 ] as const;
 
 interface NavLinksProps {
@@ -40,6 +42,9 @@ export function NavLinks({ onClick, orientation = "vertical" }: NavLinksProps) {
   const filteredNavItems = navItems.filter((item) => {
     if (item.key === "debt") {
       return isDealer;
+    }
+    if (item.key === "employees") {
+      return userRole === "DEALER_APPROVER";
     }
     return true;
   });
