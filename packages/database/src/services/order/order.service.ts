@@ -973,20 +973,7 @@ export class DbOrderService implements OrderService {
       }
 
       // 2. Recalculate order total from DB product catalog prices
-      let subtotal = 0;
-      for (const item of items) {
-        const [product] = await tx
-          .select({ price: products.price })
-          .from(products)
-          .where(eq(products.id, item.productId))
-          .limit(1);
-        if (!product) {
-          throw new Error("errors.productNotFound");
-        }
-        subtotal += parseFloat(product.price) * item.quantity;
-      }
-      const recalculatedTotal =
-        Math.round(subtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE) * 100) / 100;
+      const recalculatedTotal = await this.recalculateOrderTotal(tx, items);
 
       // 3. Check B2B role and verify limit availability
       const isPurchaser = user.role === "DEALER_PURCHASER";
@@ -1181,6 +1168,25 @@ export class DbOrderService implements OrderService {
 
       return { expiredCount: expiredIds.length };
     });
+  }
+
+  private async recalculateOrderTotal(
+    tx: IDatabase,
+    items: CreateOrderItemDTO[],
+  ): Promise<number> {
+    let subtotal = 0;
+    for (const item of items) {
+      const [product] = await tx
+        .select({ price: products.price })
+        .from(products)
+        .where(eq(products.id, item.productId))
+        .limit(1);
+      if (!product) {
+        throw new Error("errors.productNotFound");
+      }
+      subtotal += parseFloat(product.price) * item.quantity;
+    }
+    return Math.round(subtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE) * 100) / 100;
   }
 
   private async validateAndLockCart(
