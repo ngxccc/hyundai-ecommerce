@@ -57,6 +57,44 @@ const ORDER_STATUS_TRANSITIONS = {
   ] as const,
 } as const;
 
+const COMPLEX_ORDER_SELECT = {
+  columns: {
+    id: true,
+    status: true,
+    paymentStatus: true,
+    paymentMethod: true,
+    shippingFee: true,
+    shippingAddress: true,
+    totalAmount: true,
+    createdAt: true,
+    userId: true,
+    approvalStatus: true,
+  },
+  with: {
+    user: {
+      columns: {
+        id: true,
+        name: true,
+        email: true,
+        companyName: true,
+        taxId: true,
+        phone: true,
+        businessType: true,
+        parentId: true,
+      },
+    },
+    items: {
+      columns: {
+        id: true,
+        productName: true,
+        productSku: true,
+        quantity: true,
+        unitPrice: true,
+      },
+    },
+  },
+} as const;
+
 export class DbOrderService implements OrderService {
   constructor(protected readonly db: IDatabase) {}
 
@@ -93,40 +131,7 @@ export class DbOrderService implements OrderService {
   async listUserOrders(userId: string): Promise<ComplexOrder[]> {
     return (await this.db.query.orders.findMany({
       where: { userId: { eq: userId } },
-      columns: {
-        id: true,
-        status: true,
-        paymentStatus: true,
-        paymentMethod: true,
-        shippingFee: true,
-        shippingAddress: true,
-        totalAmount: true,
-        createdAt: true,
-        userId: true,
-        approvalStatus: true,
-      },
-      with: {
-        user: {
-          columns: {
-            id: true,
-            name: true,
-            email: true,
-            companyName: true,
-            taxId: true,
-            phone: true,
-            businessType: true,
-          },
-        },
-        items: {
-          columns: {
-            id: true,
-            productName: true,
-            productSku: true,
-            quantity: true,
-            unitPrice: true,
-          },
-        },
-      },
+      ...COMPLEX_ORDER_SELECT,
       orderBy: { createdAt: "desc" },
     })) as unknown as ComplexOrder[];
   }
@@ -190,40 +195,7 @@ export class DbOrderService implements OrderService {
 
     const hydratedRows = await this.db.query.orders.findMany({
       where: { id: { in: orderIds } },
-      columns: {
-        id: true,
-        status: true,
-        paymentStatus: true,
-        paymentMethod: true,
-        shippingFee: true,
-        shippingAddress: true,
-        totalAmount: true,
-        createdAt: true,
-        userId: true,
-        approvalStatus: true,
-      },
-      with: {
-        user: {
-          columns: {
-            id: true,
-            name: true,
-            email: true,
-            companyName: true,
-            taxId: true,
-            phone: true,
-            businessType: true,
-          },
-        },
-        items: {
-          columns: {
-            id: true,
-            productName: true,
-            productSku: true,
-            quantity: true,
-            unitPrice: true,
-          },
-        },
-      },
+      ...COMPLEX_ORDER_SELECT,
     });
 
     // Sort hydratedRows to match the order of orderIds
@@ -271,40 +243,7 @@ export class DbOrderService implements OrderService {
 
     return (await this.db.query.orders.findMany({
       where: { userId: { in: userIds } },
-      columns: {
-        id: true,
-        status: true,
-        paymentStatus: true,
-        paymentMethod: true,
-        shippingFee: true,
-        shippingAddress: true,
-        totalAmount: true,
-        createdAt: true,
-        userId: true,
-        approvalStatus: true,
-      },
-      with: {
-        user: {
-          columns: {
-            id: true,
-            name: true,
-            email: true,
-            companyName: true,
-            taxId: true,
-            phone: true,
-            businessType: true,
-          },
-        },
-        items: {
-          columns: {
-            id: true,
-            productName: true,
-            productSku: true,
-            quantity: true,
-            unitPrice: true,
-          },
-        },
-      },
+      ...COMPLEX_ORDER_SELECT,
       orderBy: { createdAt: "desc" },
     })) as unknown as ComplexOrder[];
   }
@@ -378,40 +317,7 @@ export class DbOrderService implements OrderService {
 
     const hydratedRows = await this.db.query.orders.findMany({
       where: { id: { in: orderIds } },
-      columns: {
-        id: true,
-        status: true,
-        paymentStatus: true,
-        paymentMethod: true,
-        shippingFee: true,
-        shippingAddress: true,
-        totalAmount: true,
-        createdAt: true,
-        userId: true,
-        approvalStatus: true,
-      },
-      with: {
-        user: {
-          columns: {
-            id: true,
-            name: true,
-            email: true,
-            companyName: true,
-            taxId: true,
-            phone: true,
-            businessType: true,
-          },
-        },
-        items: {
-          columns: {
-            id: true,
-            productName: true,
-            productSku: true,
-            quantity: true,
-            unitPrice: true,
-          },
-        },
-      },
+      ...COMPLEX_ORDER_SELECT,
     });
 
     // Sort hydratedRows to match the order of orderIds
@@ -624,40 +530,9 @@ export class DbOrderService implements OrderService {
   async getComplexOrder(orderId: string, userId?: string) {
     return await this.db.query.orders.findFirst({
       where: userId ? { id: orderId, userId } : { id: orderId },
-      columns: {
-        id: true,
-        status: true,
-        paymentStatus: true,
-        paymentMethod: true,
-        shippingFee: true,
-        shippingAddress: true,
-        totalAmount: true,
-        createdAt: true,
-        userId: true,
-        approvalStatus: true,
-      },
+      columns: COMPLEX_ORDER_SELECT.columns,
       with: {
-        user: {
-          columns: {
-            id: true,
-            name: true,
-            email: true,
-            companyName: true,
-            taxId: true,
-            phone: true,
-            businessType: true,
-            parentId: true,
-          },
-        },
-        items: {
-          columns: {
-            id: true,
-            productName: true,
-            productSku: true,
-            quantity: true,
-            unitPrice: true,
-          },
-        },
+        ...COMPLEX_ORDER_SELECT.with,
         bids: {
           columns: {
             id: true,
