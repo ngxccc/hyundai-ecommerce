@@ -68,6 +68,7 @@ export const auth = betterAuth({
         defaultValue: "CUSTOMER",
       },
       dealerTierId: { type: "string", required: false },
+      parentId: { type: "string", required: false },
       deletedAt: { type: "date", required: false },
       phone: { type: "string", required: true },
       companyName: { type: "string", required: false },

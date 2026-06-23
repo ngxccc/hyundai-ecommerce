@@ -29,6 +29,7 @@ const mockUser: TUser = {
   image: null,
   role: "DEALER_APPROVER",
   dealerTierId: null,
+  parentId: null,
   phone: "0901234567",
   companyName: "Hyundai Corp",
   taxId: null,

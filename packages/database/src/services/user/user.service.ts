@@ -18,6 +18,7 @@ export class DbUserService implements UserService {
         email: users.email,
         phone: users.phone,
         role: users.role,
+        parentId: users.parentId,
         companyName: users.companyName,
         taxId: users.taxId,
         businessType: users.businessType,
@@ -47,6 +48,7 @@ export class DbUserService implements UserService {
         creditLimit: users.creditLimit,
         currentDebt: users.currentDebt,
         dealerTierId: users.dealerTierId,
+        parentId: users.parentId,
       })
       .from(users)
       .where(eq(users.id, id))
@@ -117,12 +119,15 @@ export class DbUserService implements UserService {
     role?: TUser["role"];
     businessType?: TUser["businessType"];
   }): Promise<TUser[]> {
-    const whereConditions = filters?.role || filters?.businessType
-      ? {
-          ...(filters.role ? { role: { eq: filters.role } } : {}),
-          ...(filters.businessType ? { businessType: { eq: filters.businessType } } : {}),
-        }
-      : undefined;
+    const whereConditions =
+      filters?.role || filters?.businessType
+        ? {
+            ...(filters.role ? { role: { eq: filters.role } } : {}),
+            ...(filters.businessType
+              ? { businessType: { eq: filters.businessType } }
+              : {}),
+          }
+        : undefined;
 
     return await this.db.query.users.findMany({
       where: whereConditions,
@@ -150,5 +155,27 @@ export class DbUserService implements UserService {
         ),
       );
     return Number(result[0]?.count ?? 0);
+  }
+
+  /**
+   * List all employee accounts associated with a dealer owner
+   */
+  async listEmployees(ownerId: string): Promise<UserProfileDTO[]> {
+    return await this.db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        phone: users.phone,
+        role: users.role,
+        companyName: users.companyName,
+        taxId: users.taxId,
+        businessType: users.businessType,
+        province: users.province,
+        parentId: users.parentId,
+      })
+      .from(users)
+      .where(eq(users.parentId, ownerId))
+      .orderBy(users.name);
   }
 }

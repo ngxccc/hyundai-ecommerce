@@ -24,6 +24,7 @@ import {
   orders,
   orderItems,
   cartItems,
+  carts,
   shippingBids,
   products,
   users,
@@ -460,6 +461,47 @@ export class DbOrderService implements OrderService {
     cartIdToClear?: string,
   ): Promise<{ id: string }> {
     return await this.db.transaction(async (tx) => {
+      if (cartIdToClear) {
+        try {
+          await tx
+            .select({ id: carts.id })
+            .from(carts)
+            .where(eq(carts.id, cartIdToClear))
+            .for("update", { noWait: true });
+        } catch (err) {
+          if (
+            (isPostgresError(err) &&
+              err.code === POSTGRES_ERROR_CODES.LOCK_NOT_AVAILABLE) ||
+            (err instanceof Error &&
+              err.message.includes("could not obtain lock"))
+          ) {
+            throw new Error("errors.lockAcquisitionFailed", { cause: err });
+          }
+          throw err;
+        }
+
+        const currentCartItems = await tx
+          .select({
+            productId: cartItems.productId,
+            quantity: cartItems.quantity,
+          })
+          .from(cartItems)
+          .where(eq(cartItems.cartId, cartIdToClear));
+
+        if (currentCartItems.length !== items.length) {
+          throw new Error("errors.cartChanged");
+        }
+        for (const item of items) {
+          const matching = currentCartItems.find(
+            (c) =>
+              c.productId === item.productId && c.quantity === item.quantity,
+          );
+          if (!matching) {
+            throw new Error("errors.cartChanged");
+          }
+        }
+      }
+
       const [order] = await tx
         .insert(orders)
         .values(orderData)
@@ -555,7 +597,12 @@ export class DbOrderService implements OrderService {
       return updated;
     });
   }
-  async getOrderStatus(orderId: string) {
+
+  async getOrderStatus(orderId: string, userId?: string) {
+    const whereCondition = userId
+      ? and(eq(orders.id, orderId), eq(orders.userId, userId))
+      : eq(orders.id, orderId);
+
     const [order] = await this.db
       .select({
         id: orders.id,
@@ -564,15 +611,14 @@ export class DbOrderService implements OrderService {
         paymentStatus: orders.paymentStatus,
       })
       .from(orders)
-      .where(eq(orders.id, orderId))
+      .where(whereCondition)
       .limit(1);
     return order;
   }
-  async getComplexOrder(orderId: string) {
+
+  async getComplexOrder(orderId: string, userId?: string) {
     return await this.db.query.orders.findFirst({
-      where: {
-        id: orderId,
-      },
+      where: userId ? { id: orderId, userId } : { id: orderId },
       columns: {
         id: true,
         status: true,
@@ -595,6 +641,7 @@ export class DbOrderService implements OrderService {
             taxId: true,
             phone: true,
             businessType: true,
+            parentId: true,
           },
         },
         items: {
@@ -836,8 +883,45 @@ export class DbOrderService implements OrderService {
         return { id: order.id };
       }
 
+      // 1.5. Integrity check: verify order items total recalculation matches order.totalAmount
+      const orderItemsList = await tx
+        .select({
+          productId: orderItems.productId,
+          quantity: orderItems.quantity,
+          unitPrice: orderItems.unitPrice,
+        })
+        .from(orderItems)
+        .where(eq(orderItems.orderId, orderId));
+
+      let calculatedSubtotal = 0;
+      for (const item of orderItemsList) {
+        calculatedSubtotal += parseFloat(item.unitPrice) * item.quantity;
+      }
+      const calculatedTotal =
+        Math.round(
+          calculatedSubtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE) * 100,
+        ) / 100;
+      const orderTotal = parseFloat(order.totalAmount || "0");
+      if (Math.abs(orderTotal - calculatedTotal) > 0.01) {
+        throw new Error("errors.invalidAmount");
+      }
+
       // 2. If it is Trade Credit, check and update the user's credit limit
       if (order.paymentMethod === "TRADE_CREDIT") {
+        const [buyer] = await tx
+          .select({
+            parentId: users.parentId,
+          })
+          .from(users)
+          .where(eq(users.id, order.userId))
+          .limit(1);
+
+        if (!buyer) {
+          throw new Error("errors.userNotFound");
+        }
+
+        const targetUserId = buyer.parentId ?? order.userId;
+
         // Lock the user row
         let user;
         try {
@@ -847,7 +931,7 @@ export class DbOrderService implements OrderService {
               currentDebt: users.currentDebt,
             })
             .from(users)
-            .where(eq(users.id, order.userId))
+            .where(eq(users.id, targetUserId))
             .for("update", { noWait: true });
           user = lockedUser;
         } catch (err) {
@@ -868,20 +952,21 @@ export class DbOrderService implements OrderService {
 
         const creditLimit = parseFloat(user.creditLimit || "0");
         const currentDebt = parseFloat(user.currentDebt || "0");
-        const orderTotal = parseFloat(order.totalAmount || "0");
-        const availableCredit = creditLimit - currentDebt;
+        const availableCredit =
+          Math.round((creditLimit - currentDebt) * 100) / 100;
 
         if (availableCredit < orderTotal) {
           throw new Error("errors.insufficientCreditLimit");
         }
 
-        // Increment user's currentDebt
+        const newDebt = Math.round((currentDebt + orderTotal) * 100) / 100;
+        // Increment targetUser's currentDebt
         await tx
           .update(users)
           .set({
-            currentDebt: String(currentDebt + orderTotal),
+            currentDebt: String(newDebt.toFixed(2)),
           })
-          .where(eq(users.id, order.userId));
+          .where(eq(users.id, targetUserId));
       }
 
       // 3. Set approval status to APPROVED
@@ -1011,6 +1096,7 @@ export class DbOrderService implements OrderService {
         const [lockedUser] = await tx
           .select({
             role: users.role,
+            parentId: users.parentId,
             creditLimit: users.creditLimit,
             currentDebt: users.currentDebt,
             name: users.name,
@@ -1036,6 +1122,53 @@ export class DbOrderService implements OrderService {
         throw new Error("errors.userNotFound");
       }
 
+      // Verify user has B2B role to use Trade Credit
+      if (user.role !== "DEALER_APPROVER" && user.role !== "DEALER_PURCHASER") {
+        throw new Error("errors.forbidden");
+      }
+
+      // 1.5. Lock the cart row and check if cart items changed
+      if (cartId) {
+        try {
+          await tx
+            .select({ id: carts.id })
+            .from(carts)
+            .where(eq(carts.id, cartId))
+            .for("update", { noWait: true });
+        } catch (err) {
+          if (
+            (isPostgresError(err) &&
+              err.code === POSTGRES_ERROR_CODES.LOCK_NOT_AVAILABLE) ||
+            (err instanceof Error &&
+              err.message.includes("could not obtain lock"))
+          ) {
+            throw new Error("errors.lockAcquisitionFailed", { cause: err });
+          }
+          throw err;
+        }
+
+        const currentCartItems = await tx
+          .select({
+            productId: cartItems.productId,
+            quantity: cartItems.quantity,
+          })
+          .from(cartItems)
+          .where(eq(cartItems.cartId, cartId));
+
+        if (currentCartItems.length !== items.length) {
+          throw new Error("errors.cartChanged");
+        }
+        for (const item of items) {
+          const matching = currentCartItems.find(
+            (c) =>
+              c.productId === item.productId && c.quantity === item.quantity,
+          );
+          if (!matching) {
+            throw new Error("errors.cartChanged");
+          }
+        }
+      }
+
       // 2. Recalculate order total from DB product catalog prices
       let subtotal = 0;
       for (const item of items) {
@@ -1049,26 +1182,53 @@ export class DbOrderService implements OrderService {
         }
         subtotal += parseFloat(product.price) * item.quantity;
       }
-      const recalculatedTotal = subtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE);
+      const recalculatedTotal =
+        Math.round(subtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE) * 100) / 100;
 
       // 3. Check B2B role and verify limit availability
       const isPurchaser = user.role === "DEALER_PURCHASER";
       const approvalStatus = isPurchaser ? "PENDING_APPROVAL" : "APPROVED";
 
-      if (!isPurchaser) {
+      if (isPurchaser) {
+        if (!user.parentId) {
+          throw new Error("errors.parentNotFound");
+        }
+        const [parent] = await tx
+          .select({
+            creditLimit: users.creditLimit,
+            currentDebt: users.currentDebt,
+          })
+          .from(users)
+          .where(eq(users.id, user.parentId))
+          .limit(1);
+        if (!parent) {
+          throw new Error("errors.parentNotFound");
+        }
+        const creditLimit = parseFloat(parent.creditLimit || "0");
+        const currentDebt = parseFloat(parent.currentDebt || "0");
+        const availableCredit =
+          Math.round((creditLimit - currentDebt) * 100) / 100;
+
+        if (availableCredit < recalculatedTotal) {
+          throw new Error("errors.insufficientCreditLimit");
+        }
+      } else {
         const creditLimit = parseFloat(user.creditLimit || "0");
         const currentDebt = parseFloat(user.currentDebt || "0");
-        const availableCredit = creditLimit - currentDebt;
+        const availableCredit =
+          Math.round((creditLimit - currentDebt) * 100) / 100;
 
         if (availableCredit < recalculatedTotal) {
           throw new Error("errors.insufficientCreditLimit");
         }
 
+        const newDebt =
+          Math.round((currentDebt + recalculatedTotal) * 100) / 100;
         // Increment currentDebt
         await tx
           .update(users)
           .set({
-            currentDebt: String(currentDebt + recalculatedTotal),
+            currentDebt: String(newDebt.toFixed(2)),
           })
           .where(eq(users.id, userId));
       }
@@ -1165,6 +1325,7 @@ export class DbOrderService implements OrderService {
 
     return;
   }
+
   async expirePendingOrders(
     expirationWindowMinutes = 15,
   ): Promise<{ expiredCount: number }> {

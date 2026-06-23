@@ -102,5 +102,28 @@ export const loginSchema = z
   })
   .strip();
 
+export const createEmployeeSchema = z
+  .object({
+    name: z.string().min(2, "validation.fullNameMin"),
+    email: z.email("validation.emailInvalid"),
+    phone: z
+      .string()
+      .min(10, "validation.phoneInvalid")
+      .max(10, "validation.phoneInvalid"),
+    password: z.string().min(6, "validation.passwordMin"),
+    confirmPassword: z.string().min(1, "validation.confirmPasswordRequired"),
+  })
+  .strict()
+  .superRefine((data, ctx) => {
+    if (data.confirmPassword && data.password !== data.confirmPassword) {
+      addFieldIssue(
+        ctx,
+        "confirmPassword",
+        "validation.confirmPasswordMismatch",
+      );
+    }
+  });
+
 export type TLoginForm = z.infer<typeof loginSchema>;
 export type TRegisterForm = z.infer<typeof registerSchema>;
+export type TCreateEmployeeForm = z.infer<typeof createEmployeeSchema>;

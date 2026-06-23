@@ -46,6 +46,7 @@ import type {
   TCreateWarehouse,
   TUpdateWarehouse,
   TUpdateWarehouseStockInput,
+  TCreateEmployeeForm,
 } from "../validators";
 import type { ComplexOrder } from "./order/order.service";
 import type { ComplexQuote, QuoteListItem } from "./quotes/quotes.service";
@@ -93,6 +94,10 @@ export interface AuthService<TLoginForm = unknown, TRegisterForm = unknown> {
   register(
     data: TRegisterForm,
     options?: RegisterOptions,
+  ): Promise<{ userId: string }>;
+  createEmployee(
+    data: TCreateEmployeeForm,
+    ownerId: string,
   ): Promise<{ userId: string }>;
 }
 
@@ -221,6 +226,7 @@ export interface UserService {
   }): Promise<TUser[]>;
   getNewUsersCount(days: number): Promise<number>;
   getB2BProfile(id: string): Promise<UserB2BProfileDTO | undefined>;
+  listEmployees(ownerId: string): Promise<UserProfileDTO[]>;
 }
 
 // --- Order Service Interfaces ---
@@ -268,9 +274,10 @@ export interface OrderService {
     id: string,
     status: TOrder["status"],
   ): Promise<{ id: string } | undefined>;
-  getComplexOrder(orderId: string): Promise<ComplexOrder | undefined>;
+  getComplexOrder(orderId: string, userId?: string): Promise<ComplexOrder | undefined>;
   getOrderStatus(
     orderId: string,
+    userId?: string,
   ): Promise<
     | {
         id: string;

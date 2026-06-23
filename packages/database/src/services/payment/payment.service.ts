@@ -265,9 +265,7 @@ export class DbPaymentService implements PaymentService {
 
       // Check for amount mismatch
       const expectedAmount = parseFloat(paymentTransaction.amount);
-      const tolerance = 0.01;
-      const isMismatch = Math.abs(amount - expectedAmount) > tolerance;
-
+      const isMismatch = Math.round(amount) !== Math.round(expectedAmount);
       if (isMismatch) {
         // Update the existing payment_transaction to FAILED
         await tx
@@ -468,9 +466,7 @@ export class DbPaymentService implements PaymentService {
 
       // Check amount mismatch
       const expectedAmount = parseFloat(repayment.amount);
-      const tolerance = 0.01;
-      const isMismatch = Math.abs(amount - expectedAmount) > tolerance;
-
+      const isMismatch = Math.round(amount) !== Math.round(expectedAmount);
       if (isMismatch) {
         await tx
           .update(debtRepayments)
@@ -497,8 +493,10 @@ export class DbPaymentService implements PaymentService {
 
       // 3. Deduct debt: currentDebt = currentDebt - amount
       const currentDebtNum = parseFloat(user.currentDebt || "0");
-      const newDebt = Math.max(0, currentDebtNum - amount).toFixed(2);
-
+      const newDebt = Math.max(
+        0,
+        Math.round((currentDebtNum - amount) * 100) / 100,
+      ).toFixed(2);
       await tx
         .update(users)
         .set({ currentDebt: newDebt })

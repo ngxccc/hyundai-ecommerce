@@ -227,6 +227,8 @@ describe("OrderService", () => {
       const mockProduct = { id: "prod-1", price: "200.00" }; // recalculated: 200 * 1.1 = 220. available credit: 1000 - 900 = 100.
 
       mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ id: "cart-1" }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ productId: "prod-1", quantity: 1 }]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
 
       const items = [
@@ -256,6 +258,8 @@ describe("OrderService", () => {
       const mockOrder = { id: "order-1", totalAmount: "220.00" };
 
       mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ id: "cart-1" }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ productId: "prod-1", quantity: 1 }]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
       mockReturning.mockResolvedValueOnce([mockOrder]);
 
@@ -279,16 +283,26 @@ describe("OrderService", () => {
       const mockUser = {
         id: "user-1",
         role: "DEALER_PURCHASER",
-        creditLimit: "1000.00",
-        currentDebt: "500.00",
+        parentId: "user-parent",
+        creditLimit: "0.00",
+        currentDebt: "0.00",
         name: "Purchaser",
         email: "purch@test.com",
+      };
+      const mockParent = {
+        id: "user-parent",
+        role: "DEALER_APPROVER",
+        creditLimit: "1000.00",
+        currentDebt: "500.00",
       };
       const mockProduct = { id: "prod-1", price: "200.00" }; // recalculated: 220
       const mockOrder = { id: "order-1", totalAmount: "220.00" };
 
       mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ id: "cart-1" }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ productId: "prod-1", quantity: 1 }]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockParent]);
       mockReturning.mockResolvedValueOnce([mockOrder]);
 
       const items = [
@@ -302,7 +316,7 @@ describe("OrderService", () => {
       );
 
       expect(result.id).toBe("order-1");
-      expect(mockUpdate).not.toHaveBeenCalled(); // No currentDebt increment for purchaser
+      expect(mockUpdate).not.toHaveBeenCalled(); // No currentDebt increment for purchaser at checkout
       expect(mockInsert).toHaveBeenCalledTimes(3); // Create order, create order items, and insert outbox alert
       expect(mockDelete).toHaveBeenCalledTimes(1); // Clear cart
     });
@@ -327,7 +341,7 @@ describe("OrderService", () => {
         id: "order-1",
         approvalStatus: "PENDING_APPROVAL",
         paymentMethod: "TRADE_CREDIT",
-        totalAmount: "200.00",
+        totalAmount: "220.00",
         userId: "user-1",
       };
       const mockUser = {
@@ -335,8 +349,11 @@ describe("OrderService", () => {
         creditLimit: "100.00",
         currentDebt: "50.00",
       };
+      const mockItems = [{ productId: "prod-1", quantity: 1, unitPrice: "200.00" }];
 
       mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
+      mockSelectResolvedValue.mockResolvedValueOnce(mockItems);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ parentId: null }]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
 
       expect(orderService.approveDealerOrder("order-1")).rejects.toThrow(
@@ -349,7 +366,7 @@ describe("OrderService", () => {
         id: "order-1",
         approvalStatus: "PENDING_APPROVAL",
         paymentMethod: "TRADE_CREDIT",
-        totalAmount: "200.00",
+        totalAmount: "220.00",
         userId: "user-1",
       };
       const mockUser = {
@@ -357,15 +374,45 @@ describe("OrderService", () => {
         creditLimit: "500.00",
         currentDebt: "50.00",
       };
+      const mockItems = [{ productId: "prod-1", quantity: 1, unitPrice: "200.00" }];
       const approvedOrder = { ...mockOrder, approvalStatus: "APPROVED" };
 
       mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
+      mockSelectResolvedValue.mockResolvedValueOnce(mockItems);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ parentId: null }]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
       mockReturning.mockResolvedValueOnce([{ id: approvedOrder.id }]);
 
       const result = await orderService.approveDealerOrder("order-1");
       expect(result).toEqual({ id: approvedOrder.id });
       expect(mockUpdate).toHaveBeenCalledTimes(2);
+    });
+
+    test("should approve purchaser order and update parent company debt when purchaser has parentId", async () => {
+      const mockOrder = {
+        id: "order-1",
+        approvalStatus: "PENDING_APPROVAL",
+        paymentMethod: "TRADE_CREDIT",
+        totalAmount: "220.00",
+        userId: "user-employee",
+      };
+      const mockParent = {
+        id: "user-parent",
+        creditLimit: "500.00",
+        currentDebt: "50.00",
+      };
+      const mockItems = [{ productId: "prod-1", quantity: 1, unitPrice: "200.00" }];
+      const approvedOrder = { ...mockOrder, approvalStatus: "APPROVED" };
+
+      mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
+      mockSelectResolvedValue.mockResolvedValueOnce(mockItems);
+      mockSelectResolvedValue.mockResolvedValueOnce([{ parentId: "user-parent" }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([mockParent]);
+      mockReturning.mockResolvedValueOnce([{ id: approvedOrder.id }]);
+
+      const result = await orderService.approveDealerOrder("order-1");
+      expect(result).toEqual({ id: approvedOrder.id });
+      expect(mockUpdate).toHaveBeenCalledTimes(2); // updates order status AND updates parent currentDebt
     });
   });
   describe("expirePendingOrders()", () => {
