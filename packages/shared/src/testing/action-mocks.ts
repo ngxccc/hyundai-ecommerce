@@ -10,8 +10,10 @@ export class MockAuthError extends Error {
 
 export const mockAuthLoginEmail = mock();
 export const mockAuthRegister = mock();
+export const mockAuthCreateEmployee = mock();
 
 export const mockUserCheckDuplicateUser = mock();
+export const mockUserListEmployees = mock();
 
 export const mockProductCreate = mock();
 export const mockProductUpdate = mock();
@@ -55,9 +57,11 @@ await mock.module("@nhatnang/database/services", () => ({
   authService: {
     loginEmail: mockAuthLoginEmail,
     register: mockAuthRegister,
+    createEmployee: mockAuthCreateEmployee,
   },
   userService: {
     checkDuplicateUser: mockUserCheckDuplicateUser,
+    listEmployees: mockUserListEmployees,
   },
   productService: {
     create: mockProductCreate,
@@ -99,7 +103,9 @@ await mock.module("@nhatnang/database/services", () => ({
 
 await mock.module("next/cache", () => ({
   revalidatePath: mock(),
+  revalidateTag: mock(),
 }));
+
 
 await mock.module("@/shared/lib/action-auth", () => ({
   requireAuth: mock().mockResolvedValue({
@@ -172,6 +178,8 @@ beforeEach(() => {
   mockAuthLoginEmail.mockReset();
   mockAuthRegister.mockReset();
   mockUserCheckDuplicateUser.mockReset();
+  mockAuthCreateEmployee.mockReset();
+  mockUserListEmployees.mockReset();
   mockProductCreate.mockReset();
   mockProductUpdate.mockReset();
   mockProductDelete.mockReset();
