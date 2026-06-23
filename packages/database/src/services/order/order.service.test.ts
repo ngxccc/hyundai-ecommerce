@@ -9,13 +9,16 @@ import {
   mockFindMany,
   mockSelectResolvedValue,
 } from "../../tests/utils/db-mock";
-import { DbOrderService, type ComplexOrder } from "./order.service";
+import { DbOrderService } from "./order.service";
+import { DbOrderQueryService } from "./order-query.service";
+import type { ComplexOrder } from "./order.interface";
 import type { IDatabase } from "../../client";
 import type { TOrder } from "../../schemas";
 import type { CreateOrderDTO, CreateOrderItemDTO } from "../../dtos";
 import { type PostgresError, POSTGRES_ERROR_CODES } from "../../utils";
 
 const orderService = new DbOrderService(mockDb as unknown as IDatabase);
+const orderQueryService = new DbOrderQueryService(mockDb as unknown as IDatabase);
 
 describe("OrderService", () => {
   beforeEach(() => {
@@ -72,7 +75,7 @@ describe("OrderService", () => {
 
     mockFindFirst.mockResolvedValueOnce(mockOrder);
 
-    const result = await orderService.getComplexOrder("order-1");
+    const result = await orderQueryService.getComplexOrder("order-1");
 
     expect(mockFindFirst).toHaveBeenCalledTimes(1);
     expect(result).toEqual(mockOrder as unknown as ComplexOrder);
@@ -86,7 +89,7 @@ describe("OrderService", () => {
 
     mockFindMany.mockResolvedValueOnce(mockOrders);
 
-    const result = await orderService.listOrders();
+    const result = await orderQueryService.listOrders();
 
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(mockFindMany).toHaveBeenCalledWith(
@@ -103,7 +106,7 @@ describe("OrderService", () => {
 
     mockFindMany.mockResolvedValueOnce(mockOrders);
 
-    const result = await orderService.listOrders({ status: "PENDING" });
+    const result = await orderQueryService.listOrders({ status: "PENDING" });
 
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(mockFindMany).toHaveBeenCalledWith(
@@ -162,7 +165,7 @@ describe("OrderService", () => {
         },
       ]);
 
-      const result = await orderService.getDashboardMetrics();
+      const result = await orderQueryService.getDashboardMetrics();
 
       expect(result).toEqual({
         totalRevenue: "500000",
@@ -184,7 +187,7 @@ describe("OrderService", () => {
       ];
       mockSelectResolvedValue.mockResolvedValueOnce(queryResult);
 
-      const result = await orderService.getMonthlyRevenue(2026);
+      const result = await orderQueryService.getMonthlyRevenue(2026);
 
       expect(result).toHaveLength(12);
       expect(result[0]).toEqual({
