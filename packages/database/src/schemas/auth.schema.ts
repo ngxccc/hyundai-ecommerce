@@ -7,6 +7,7 @@ import {
   uuid,
   snakeCase,
   numeric,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { dealerTiers } from "./dealer-tier.schema";
 import { fullEntity } from "./helpers.schema";
@@ -40,6 +41,9 @@ export const users = snakeCase.table(
     dealerTierId: uuid().references(() => dealerTiers.id, {
       onDelete: "set null",
     }),
+    parentId: uuid().references((): AnyPgColumn => users.id, {
+      onDelete: "set null",
+    }),
     phone: text().notNull().unique(),
     companyName: text(),
     taxId: text(),
@@ -50,6 +54,7 @@ export const users = snakeCase.table(
   },
   (table) => [
     index("user_dealer_tier_idx").on(table.dealerTierId),
+    index("user_parent_id_idx").on(table.parentId),
     index("user_created_at_idx").on(table.createdAt),
   ],
 );

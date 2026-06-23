@@ -46,6 +46,16 @@ export const schemaRelations = defineRelations(
         from: r.users.dealerTierId,
         to: r.dealerTiers.id,
       }),
+      employees: r.many.users({
+        from: r.users.id,
+        to: r.users.parentId,
+        alias: "employees",
+      }),
+      parent: r.one.users({
+        from: r.users.parentId,
+        to: r.users.id,
+        alias: "parent",
+      }),
       cart: r.one.carts({
         from: r.users.id,
         to: r.carts.userId,
