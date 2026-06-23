@@ -370,44 +370,7 @@ export class DbOrderService implements OrderService {
   ): Promise<{ id: string }> {
     return await this.db.transaction(async (tx) => {
       if (cartIdToClear) {
-        try {
-          await tx
-            .select({ id: carts.id })
-            .from(carts)
-            .where(eq(carts.id, cartIdToClear))
-            .for("update", { noWait: true });
-        } catch (err) {
-          if (
-            (isPostgresError(err) &&
-              err.code === POSTGRES_ERROR_CODES.LOCK_NOT_AVAILABLE) ||
-            (err instanceof Error &&
-              err.message.includes("could not obtain lock"))
-          ) {
-            throw new Error("errors.lockAcquisitionFailed", { cause: err });
-          }
-          throw err;
-        }
-
-        const currentCartItems = await tx
-          .select({
-            productId: cartItems.productId,
-            quantity: cartItems.quantity,
-          })
-          .from(cartItems)
-          .where(eq(cartItems.cartId, cartIdToClear));
-
-        if (currentCartItems.length !== items.length) {
-          throw new Error("errors.cartChanged");
-        }
-        for (const item of items) {
-          const matching = currentCartItems.find(
-            (c) =>
-              c.productId === item.productId && c.quantity === item.quantity,
-          );
-          if (!matching) {
-            throw new Error("errors.cartChanged");
-          }
-        }
+        await this.validateAndLockCart(tx, cartIdToClear, items);
       }
 
       const [order] = await tx
@@ -1006,44 +969,7 @@ export class DbOrderService implements OrderService {
 
       // 1.5. Lock the cart row and check if cart items changed
       if (cartId) {
-        try {
-          await tx
-            .select({ id: carts.id })
-            .from(carts)
-            .where(eq(carts.id, cartId))
-            .for("update", { noWait: true });
-        } catch (err) {
-          if (
-            (isPostgresError(err) &&
-              err.code === POSTGRES_ERROR_CODES.LOCK_NOT_AVAILABLE) ||
-            (err instanceof Error &&
-              err.message.includes("could not obtain lock"))
-          ) {
-            throw new Error("errors.lockAcquisitionFailed", { cause: err });
-          }
-          throw err;
-        }
-
-        const currentCartItems = await tx
-          .select({
-            productId: cartItems.productId,
-            quantity: cartItems.quantity,
-          })
-          .from(cartItems)
-          .where(eq(cartItems.cartId, cartId));
-
-        if (currentCartItems.length !== items.length) {
-          throw new Error("errors.cartChanged");
-        }
-        for (const item of items) {
-          const matching = currentCartItems.find(
-            (c) =>
-              c.productId === item.productId && c.quantity === item.quantity,
-          );
-          if (!matching) {
-            throw new Error("errors.cartChanged");
-          }
-        }
+        await this.validateAndLockCart(tx, cartId, items);
       }
 
       // 2. Recalculate order total from DB product catalog prices
@@ -1255,6 +1181,49 @@ export class DbOrderService implements OrderService {
 
       return { expiredCount: expiredIds.length };
     });
+  }
+
+  private async validateAndLockCart(
+    tx: IDatabase,
+    cartId: string,
+    items: CreateOrderItemDTO[],
+  ): Promise<void> {
+    try {
+      await tx
+        .select({ id: carts.id })
+        .from(carts)
+        .where(eq(carts.id, cartId))
+        .for("update", { noWait: true });
+    } catch (err) {
+      if (
+        (isPostgresError(err) &&
+          err.code === POSTGRES_ERROR_CODES.LOCK_NOT_AVAILABLE) ||
+        (err instanceof Error && err.message.includes("could not obtain lock"))
+      ) {
+        throw new Error("errors.lockAcquisitionFailed", { cause: err });
+      }
+      throw err;
+    }
+
+    const currentCartItems = await tx
+      .select({
+        productId: cartItems.productId,
+        quantity: cartItems.quantity,
+      })
+      .from(cartItems)
+      .where(eq(cartItems.cartId, cartId));
+
+    if (currentCartItems.length !== items.length) {
+      throw new Error("errors.cartChanged");
+    }
+    for (const item of items) {
+      const matching = currentCartItems.find(
+        (c) => c.productId === item.productId && c.quantity === item.quantity,
+      );
+      if (!matching) {
+        throw new Error("errors.cartChanged");
+      }
+    }
   }
 }
 
