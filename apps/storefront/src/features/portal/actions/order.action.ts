@@ -1,7 +1,7 @@
 "use server";
 
 import { getCachedSession } from "@/shared/lib/session";
-import { orderService, userService } from "@nhatnang/database/services";
+import { orderService, orderQueryService, userService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 
@@ -17,7 +17,7 @@ export async function cancelOrderAction(orderId: string) {
 
   try {
     const isCustomer = session.user.role === "CUSTOMER" || session.user.role === "DEALER_APPROVER" || session.user.role === "DEALER_PURCHASER";
-    const order = await orderService.getComplexOrder(
+    const order = await orderQueryService.getComplexOrder(
       orderId,
       isCustomer ? session.user.id : undefined,
     );
@@ -73,7 +73,7 @@ export async function approveB2BOrderAction(orderId: string) {
   }
 
   try {
-    const order = await orderService.getComplexOrder(orderId);
+    const order = await orderQueryService.getComplexOrder(orderId);
     if (!order) {
       return { success: false as const, error: t("orderNotFound") };
     }

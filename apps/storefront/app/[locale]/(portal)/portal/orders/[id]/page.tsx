@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "next-intl";
 import { getCachedSession } from "@/shared/lib/session";
-import { orderService } from "@nhatnang/database/services";
+import { orderQueryService } from "@nhatnang/database/services";
 import { Link, redirect } from "@/i18n/routing";
 import { OrderDetail } from "@/features/portal/components/order-detail";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -36,7 +36,7 @@ export default async function OrderDetailPage({
   const isSelfOnlyRole =
     session.user.role === "CUSTOMER" ||
     session.user.role === "DEALER_PURCHASER";
-  const order = await orderService.getComplexOrder(
+  const order = await orderQueryService.getComplexOrder(
     orderId,
     isSelfOnlyRole ? session.user.id : undefined,
   );

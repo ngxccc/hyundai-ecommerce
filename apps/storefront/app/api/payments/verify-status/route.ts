@@ -2,7 +2,7 @@ import { NextResponse, connection } from "next/server";
 import { getCachedSession } from "@/shared/lib/session";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
-import { orderService, paymentService } from "@nhatnang/database/services";
+import { orderQueryService, paymentService } from "@nhatnang/database/services";
 export async function GET(request: Request) {
   await connection();
   try {
@@ -39,7 +39,7 @@ export async function GET(request: Request) {
     }
 
     // 1. Fetch order details from database using lightweight status query
-    const order = await orderService.getOrderStatus(orderId, session.user.id);
+    const order = await orderQueryService.getOrderStatus(orderId, session.user.id);
     if (!order) {
       return NextResponse.json(
         { success: false, error: "errors.orderNotFound" },

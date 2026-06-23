@@ -4,7 +4,7 @@ import { env } from "@/env";
 import { getCachedSession } from "@/shared/lib/session";
 import { getTranslations } from "next-intl/server";
 import { generatePayOSSignature } from "@nhatnang/shared";
-import { paymentService, orderService } from "@nhatnang/database/services";
+import { paymentService, orderQueryService } from "@nhatnang/database/services";
 
 export async function simulatePayOSWebhookAction(
   orderCode: string,
@@ -90,7 +90,7 @@ export async function getMockPaymentDetailsAction(orderCodeOrId: string) {
       const tx =
         await paymentService.getPendingPayOSTransactionByOrderId(orderCodeOrId);
       if (tx) {
-        const order = await orderService.getComplexOrder(orderCodeOrId, session.user.id);
+        const order = await orderQueryService.getComplexOrder(orderCodeOrId, session.user.id);
         if (!order) {
           return { success: false as const, error: t("forbidden") };
         }
@@ -113,7 +113,7 @@ export async function getMockPaymentDetailsAction(orderCodeOrId: string) {
     // 2a. Check payment transaction table
     const tx = await paymentService.getPaymentTransactionByOrderCode(codeNum);
     if (tx) {
-      const order = await orderService.getComplexOrder(tx.orderId, session.user.id);
+      const order = await orderQueryService.getComplexOrder(tx.orderId, session.user.id);
       if (!order) {
         return { success: false as const, error: t("forbidden") };
       }
@@ -164,7 +164,7 @@ export async function getRecentPendingTransactionsAction() {
   }
 
   try {
-    const orders = await orderService.listUserOrders(session.user.id);
+    const orders = await orderQueryService.listUserOrders(session.user.id);
     const eligibleOrders = [];
 
     for (const order of orders) {
@@ -231,7 +231,7 @@ export async function simulatePayOSCancelAction(orderCode: string) {
     // 1. Check payment transaction table
     const tx = await paymentService.getPaymentTransactionByOrderCode(codeNum);
     if (tx) {
-      const order = await orderService.getComplexOrder(tx.orderId, session.user.id);
+      const order = await orderQueryService.getComplexOrder(tx.orderId, session.user.id);
       if (!order) {
         return { success: false as const, error: t("forbidden") };
       }
@@ -293,7 +293,7 @@ export async function simulatePayOSMismatchAction(
     // Verify ownership of the transaction or repayment
     const txCheck = await paymentService.getPaymentTransactionByOrderCode(codeNum);
     if (txCheck) {
-      const order = await orderService.getComplexOrder(txCheck.orderId, session.user.id);
+      const order = await orderQueryService.getComplexOrder(txCheck.orderId, session.user.id);
       if (!order) {
         return { success: false as const, error: t("forbidden") };
       }

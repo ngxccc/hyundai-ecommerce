@@ -10,7 +10,7 @@ import {
   PAYOS_SUCCESS_CODE,
   makePayOSDescription,
 } from "@nhatnang/shared/lib/payos";
-import { orderService } from "@nhatnang/database/services";
+import { orderService, orderQueryService } from "@nhatnang/database/services";
 
 interface GenerateDepositLinkRequestBody {
   orderId: string;
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     }
 
     // 1. Fetch order details from database
-    const order = await orderService.getComplexOrder(orderId, session.user.id);
+    const order = await orderQueryService.getComplexOrder(orderId, session.user.id);
     if (!order) {
       return NextResponse.json(
         { success: false, error: "errors.orderNotFound" },

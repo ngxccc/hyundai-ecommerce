@@ -1,7 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "next-intl";
 import { getCachedSession } from "@/shared/lib/session";
-import { orderService, userService } from "@nhatnang/database/services";
+import { orderQueryService, userService } from "@nhatnang/database/services";
 import { redirect } from "@/i18n/routing";
 import { OrderList } from "@/features/portal/components/order-list";
 import type { ComplexOrder } from "@nhatnang/database/services";
@@ -40,7 +40,7 @@ export default async function OrderListPage({
   const resolvedSearchParams = await searchParams;
 
   // Fetch current user orders paginated
-  const myOrdersResult = await orderService.listUserOrdersPaginated(
+  const myOrdersResult = await orderQueryService.listUserOrdersPaginated(
     session.user.id,
     10,
     {
@@ -64,7 +64,7 @@ export default async function OrderListPage({
     if (approverProfile?.companyName) {
       companyName = approverProfile.companyName;
 
-      const companyOrdersResult = await orderService.listCompanyOrdersPaginated(
+      const companyOrdersResult = await orderQueryService.listCompanyOrdersPaginated(
         companyName,
         10,
         {

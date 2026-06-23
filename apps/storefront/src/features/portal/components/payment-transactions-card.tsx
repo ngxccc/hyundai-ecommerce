@@ -137,7 +137,7 @@ export function PaymentTransactionsCard({
                   <TableCell>{getStatusBadge(tx.status)}</TableCell>
                   <TableCell
                     className="max-w-30 truncate font-mono text-xs text-zinc-500"
-                    title={tx.referenceCode ?? undefined}
+                    title={tx.referenceCode ? String(tx.referenceCode) : undefined}
                   >
                     {tx.referenceCode ?? "-"}
                   </TableCell>
@@ -180,7 +180,7 @@ export function PaymentTransactionsCard({
                   {tx.referenceCode && (
                     <p
                       className="inline-block max-w-37.5 truncate rounded border border-zinc-100 bg-zinc-50 px-1.5 py-0.5 font-mono text-[10px]"
-                      title={tx.referenceCode}
+                      title={String(tx.referenceCode)}
                     >
                       Ref: {tx.referenceCode}
                     </p>

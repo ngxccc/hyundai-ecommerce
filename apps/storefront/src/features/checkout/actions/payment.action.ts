@@ -17,7 +17,7 @@ import {
 } from "@nhatnang/shared/lib/payos";
 import {
   paymentService,
-  orderService,
+  orderQueryService,
   userService,
 } from "@nhatnang/database/services";
 import type {
@@ -80,7 +80,7 @@ export async function reVerifyPaymentAction(orderId: string) {
 
   try {
     // 2. Fetch the order
-    const order = await orderService.getComplexOrder(orderId, session.user.id);
+    const order = await orderQueryService.getComplexOrder(orderId, session.user.id);
 
     if (!order) {
       return { success: false as const, error: t("orderNotFound") };
@@ -208,7 +208,7 @@ export async function getPaymentDetailsByOrderCodeAction(orderCode: string) {
     // 1. Check payment transaction table
     const tx = await paymentService.getPaymentTransactionByOrderCode(codeNum);
     if (tx) {
-      const order = await orderService.getComplexOrder(tx.orderId, session.user.id);
+      const order = await orderQueryService.getComplexOrder(tx.orderId, session.user.id);
       if (order?.userId !== session.user.id) {
         return { success: false as const, error: t("forbidden") };
       }
@@ -267,7 +267,7 @@ export async function regenerateOrderPaymentLinkAction(orderId: string) {
   }
 
   try {
-    const order = await orderService.getComplexOrder(orderId, session.user.id);
+    const order = await orderQueryService.getComplexOrder(orderId, session.user.id);
     if (order?.userId !== session.user.id) {
       return { success: false as const, error: t("orderNotFound") };
     }
@@ -351,7 +351,7 @@ export async function getOrderSuccessDetailsAction(
     return { success: false, error: t("unauthorized") };
   }
   try {
-    const order = await orderService.getComplexOrder(orderId, session.user.id);
+    const order = await orderQueryService.getComplexOrder(orderId, session.user.id);
     if (!order) {
       return { success: false, error: t("orderNotFound") };
     }
@@ -418,7 +418,7 @@ export async function cancelOrderPaymentLinkAction(
 
   try {
     // 1. Fetch the order
-    const order = await orderService.getComplexOrder(orderId, session.user.id);
+    const order = await orderQueryService.getComplexOrder(orderId, session.user.id);
 
     if (!order) {
       return { success: false as const, error: t("orderNotFound") };
