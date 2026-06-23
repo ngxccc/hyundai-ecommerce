@@ -1,8 +1,8 @@
 import { NextResponse, connection } from "next/server";
 import { getCachedSession } from "@/shared/lib/session";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
+import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import { orderService, paymentService } from "@nhatnang/database/services";
-
 export async function GET(request: Request) {
   await connection();
   try {
@@ -11,6 +11,20 @@ export async function GET(request: Request) {
       return NextResponse.json(
         { success: false, error: "errors.unauthorized" },
         { status: HTTP_STATUS.UNAUTHORIZED },
+      );
+    }
+
+    // Rate limiting: max 10 status checks per 30 seconds per user
+    const rateLimitResult = await checkRateLimitWithQueue(
+      `ratelimit:verify-status:${session.user.id}`,
+      10,
+      "30 s",
+    );
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { success: false, error: "errors.rateLimitExceeded" },
+        { status: HTTP_STATUS.TOO_MANY_REQUESTS },
       );
     }
 
@@ -25,7 +39,7 @@ export async function GET(request: Request) {
     }
 
     // 1. Fetch order details from database using lightweight status query
-    const order = await orderService.getOrderStatus(orderId);
+    const order = await orderService.getOrderStatus(orderId, session.user.id);
     if (!order) {
       return NextResponse.json(
         { success: false, error: "errors.orderNotFound" },

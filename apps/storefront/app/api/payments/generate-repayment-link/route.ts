@@ -19,11 +19,15 @@ interface GenerateRepaymentLinkRequestBody {
 export async function POST(request: Request) {
   await connection();
   try {
-    // 0. Rate limiting (max 5 requests per minute per IP)
+    const session = await getCachedSession();
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0] ?? "127.0.0.1";
+    const rateLimitKey = session?.user
+      ? `ratelimit:generate-repayment-link:${session.user.id}`
+      : `ratelimit:generate-repayment-link:${ip}`;
+
     const rateLimitResult = await checkRateLimitWithQueue(
-      `ratelimit:generate-repayment-link:${ip}`,
+      rateLimitKey,
       5,
       "60 s",
     );
@@ -35,8 +39,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const reqHeaders = await headers();
-    const session = await getCachedSession();
     if (!session?.user) {
       return NextResponse.json(
         { success: false, error: "errors.unauthorized" },
@@ -44,6 +46,7 @@ export async function POST(request: Request) {
       );
     }
 
+    const reqHeaders = await headers();
     const body = (await request.json()) as GenerateRepaymentLinkRequestBody;
     const { amount } = body;
 
@@ -89,7 +92,8 @@ export async function POST(request: Request) {
 
     const isMockPayment =
       env.FORCE_MOCK_PAYMENT === "true" ||
-      (env.FORCE_MOCK_PAYMENT !== "false" && process.env.NODE_ENV !== "production");
+      (env.FORCE_MOCK_PAYMENT !== "false" &&
+        process.env.NODE_ENV !== "production");
 
     if (
       !isMockPayment &&

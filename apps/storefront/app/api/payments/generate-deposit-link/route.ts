@@ -19,11 +19,15 @@ interface GenerateDepositLinkRequestBody {
 export async function POST(request: Request) {
   await connection();
   try {
-    // 0. Rate limiting (max 5 requests per minute per IP)
+    const session = await getCachedSession();
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0] ?? "127.0.0.1";
+    const rateLimitKey = session?.user
+      ? `ratelimit:generate-deposit-link:${session.user.id}`
+      : `ratelimit:generate-deposit-link:${ip}`;
+
     const rateLimitResult = await checkRateLimitWithQueue(
-      `ratelimit:generate-deposit-link:${ip}`,
+      rateLimitKey,
       5,
       "60 s",
     );
@@ -35,7 +39,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const session = await getCachedSession();
     if (!session?.user) {
       return NextResponse.json(
         { success: false, error: "errors.unauthorized" },
@@ -54,7 +57,7 @@ export async function POST(request: Request) {
     }
 
     // 1. Fetch order details from database
-    const order = await orderService.getComplexOrder(orderId);
+    const order = await orderService.getComplexOrder(orderId, session.user.id);
     if (!order) {
       return NextResponse.json(
         { success: false, error: "errors.orderNotFound" },

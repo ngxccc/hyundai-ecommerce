@@ -90,6 +90,10 @@ export async function getMockPaymentDetailsAction(orderCodeOrId: string) {
       const tx =
         await paymentService.getPendingPayOSTransactionByOrderId(orderCodeOrId);
       if (tx) {
+        const order = await orderService.getComplexOrder(orderCodeOrId, session.user.id);
+        if (!order) {
+          return { success: false as const, error: t("forbidden") };
+        }
         return {
           success: true as const,
           type: "order" as const,
@@ -109,6 +113,10 @@ export async function getMockPaymentDetailsAction(orderCodeOrId: string) {
     // 2a. Check payment transaction table
     const tx = await paymentService.getPaymentTransactionByOrderCode(codeNum);
     if (tx) {
+      const order = await orderService.getComplexOrder(tx.orderId, session.user.id);
+      if (!order) {
+        return { success: false as const, error: t("forbidden") };
+      }
       return {
         success: true as const,
         type: "order" as const,
@@ -121,6 +129,9 @@ export async function getMockPaymentDetailsAction(orderCodeOrId: string) {
     // 2b. Check debt repayment table
     const repayment = await paymentService.getDebtRepaymentByOrderCode(codeNum);
     if (repayment) {
+      if (repayment.userId !== session.user.id) {
+        return { success: false as const, error: t("forbidden") };
+      }
       return {
         success: true as const,
         type: "debt" as const,
@@ -220,6 +231,10 @@ export async function simulatePayOSCancelAction(orderCode: string) {
     // 1. Check payment transaction table
     const tx = await paymentService.getPaymentTransactionByOrderCode(codeNum);
     if (tx) {
+      const order = await orderService.getComplexOrder(tx.orderId, session.user.id);
+      if (!order) {
+        return { success: false as const, error: t("forbidden") };
+      }
       await paymentService.updatePaymentTransactionStatus(tx.id, "FAILED");
       return {
         success: true as const,
@@ -231,6 +246,9 @@ export async function simulatePayOSCancelAction(orderCode: string) {
     // 2. Check debt repayment table
     const repayment = await paymentService.getDebtRepaymentByOrderCode(codeNum);
     if (repayment) {
+      if (repayment.userId !== session.user.id) {
+        return { success: false as const, error: t("forbidden") };
+      }
       await paymentService.updateDebtRepayment(repayment.id, {
         status: "FAILED",
       });
@@ -267,9 +285,32 @@ export async function simulatePayOSMismatchAction(
   }
 
   try {
+    const codeNum = parseInt(orderCode, 10);
+    if (isNaN(codeNum)) {
+      return { success: false as const, error: t("invalidOrderCode") };
+    }
+
+    // Verify ownership of the transaction or repayment
+    const txCheck = await paymentService.getPaymentTransactionByOrderCode(codeNum);
+    if (txCheck) {
+      const order = await orderService.getComplexOrder(txCheck.orderId, session.user.id);
+      if (!order) {
+        return { success: false as const, error: t("forbidden") };
+      }
+    } else {
+      const repaymentCheck = await paymentService.getDebtRepaymentByOrderCode(codeNum);
+      if (repaymentCheck) {
+        if (repaymentCheck.userId !== session.user.id) {
+          return { success: false as const, error: t("forbidden") };
+        }
+      } else {
+        return { success: false as const, error: t("paymentTransactionNotFound") };
+      }
+    }
+
     const finalAmount = amount - 1000;
     const data = {
-      orderCode: parseInt(orderCode, 10),
+      orderCode: codeNum,
       amount: finalAmount,
       description: "Mock PayOS mismatch simulation",
       reference:
@@ -308,14 +349,12 @@ export async function simulatePayOSMismatchAction(
     }
 
     // Get the order ID to return
-    const codeNum = parseInt(orderCode, 10);
-    const tx = await paymentService.getPaymentTransactionByOrderCode(codeNum);
-    if (tx) {
-      await paymentService.updatePaymentTransactionStatus(tx.id, "FAILED");
+    if (txCheck) {
+      await paymentService.updatePaymentTransactionStatus(txCheck.id, "FAILED");
       return {
         success: true as const,
         type: "order" as const,
-        orderId: tx.orderId,
+        orderId: txCheck.orderId,
       };
     }
 

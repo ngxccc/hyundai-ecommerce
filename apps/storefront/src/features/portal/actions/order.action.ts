@@ -16,7 +16,11 @@ export async function cancelOrderAction(orderId: string) {
   }
 
   try {
-    const order = await orderService.getComplexOrder(orderId);
+    const isCustomer = session.user.role === "CUSTOMER" || session.user.role === "DEALER_APPROVER" || session.user.role === "DEALER_PURCHASER";
+    const order = await orderService.getComplexOrder(
+      orderId,
+      isCustomer ? session.user.id : undefined,
+    );
     if (!order) {
       return { success: false as const, error: t("orderNotFound") };
     }

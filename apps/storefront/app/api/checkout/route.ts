@@ -23,11 +23,15 @@ import type {
 export async function POST(request: Request) {
   await connection();
   try {
-    // 0. Rate limiting check (e.g. max 5 checkout requests per 60 seconds per IP)
+    const session = await getCachedSession();
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0] ?? "127.0.0.1";
+    const rateLimitKey = session?.user
+      ? `ratelimit:checkout:${session.user.id}`
+      : `ratelimit:checkout:${ip}`;
+
     const rateLimitResult = await checkRateLimitWithQueue(
-      `ratelimit:checkout:${ip}`,
+      rateLimitKey,
       5,
       "60 s",
     );
@@ -38,20 +42,15 @@ export async function POST(request: Request) {
         { status: HTTP_STATUS.TOO_MANY_REQUESTS },
       );
     }
-    const session = await getCachedSession();
+
     if (!session?.user) {
       return NextResponse.json(
         { success: false, error: "errors.unauthorized" },
         { status: HTTP_STATUS.UNAUTHORIZED },
       );
     }
-
     const body = (await request.json()) as CheckoutRequestBody;
-    const {
-      shippingAddress,
-      paymentMethod,
-      paymentOption,
-    } = body;
+    const { shippingAddress, paymentMethod, paymentOption } = body;
 
     // Calculate shipping fee server-side (free shipping by default)
     const shippingFee = 0;
@@ -202,15 +201,45 @@ export async function POST(request: Request) {
               { status: HTTP_STATUS.BAD_REQUEST },
             );
           }
+          if (err.message === "errors.cartChanged") {
+            return NextResponse.json(
+              { success: false, error: "errors.cartChanged" },
+              { status: HTTP_STATUS.BAD_REQUEST },
+            );
+          }
+          if (err.message === "errors.forbidden") {
+            return NextResponse.json(
+              { success: false, error: "errors.forbidden" },
+              { status: HTTP_STATUS.FORBIDDEN },
+            );
+          }
         }
         throw err;
       }
     } else {
-      order = await orderService.createOrderWithItems(
-        orderData,
-        finalItems,
-        cart.id,
-      );
+      try {
+        order = await orderService.createOrderWithItems(
+          orderData,
+          finalItems,
+          cart.id,
+        );
+      } catch (err) {
+        if (err instanceof Error) {
+          if (err.message === "errors.lockAcquisitionFailed") {
+            return NextResponse.json(
+              { success: false, error: "errors.lockAcquisitionFailed" },
+              { status: HTTP_STATUS.TOO_MANY_REQUESTS },
+            );
+          }
+          if (err.message === "errors.cartChanged") {
+            return NextResponse.json(
+              { success: false, error: "errors.cartChanged" },
+              { status: HTTP_STATUS.BAD_REQUEST },
+            );
+          }
+        }
+        throw err;
+      }
 
       if (paymentMethod === "PAYOS") {
         const isMockPayment =

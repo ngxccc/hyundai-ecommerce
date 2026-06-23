@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "next-intl";
 import { getCachedSession } from "@/shared/lib/session";
-import { orderService, userService } from "@nhatnang/database/services";
+import { orderService } from "@nhatnang/database/services";
 import { Link, redirect } from "@/i18n/routing";
 import { OrderDetail } from "@/features/portal/components/order-detail";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -33,7 +33,13 @@ export default async function OrderDetailPage({
     return null;
   }
 
-  const order = await orderService.getComplexOrder(orderId);
+  const isSelfOnlyRole =
+    session.user.role === "CUSTOMER" ||
+    session.user.role === "DEALER_PURCHASER";
+  const order = await orderService.getComplexOrder(
+    orderId,
+    isSelfOnlyRole ? session.user.id : undefined,
+  );
 
   if (!order) {
     return (
@@ -71,10 +77,9 @@ export default async function OrderDetailPage({
   let approverCompany: string | null = null;
 
   if (session.user.role === "DEALER_APPROVER") {
-    const approverProfile = await userService.getB2BProfile(session.user.id);
-    if (approverProfile?.companyName) {
-      approverCompany = approverProfile.companyName;
-      isCompanyApprover = order.user.companyName === approverCompany;
+    isCompanyApprover = order.user.parentId === session.user.id;
+    if (isOwner || isCompanyApprover) {
+      approverCompany = order.user.companyName;
     }
   }
 
