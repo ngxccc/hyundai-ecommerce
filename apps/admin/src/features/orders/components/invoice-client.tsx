@@ -253,7 +253,7 @@ export const InvoiceClient = ({ order }: InvoiceClientProps) => {
                   {t("invoiceShippingFee")}
                 </TableCell>
                 <TableCell className="text-right text-xs font-semibold">
-                  {formatCurrency(order.shippingFee)}
+                  {formatCurrency(order.shippingFee ?? "0")}
                 </TableCell>
               </TableRow>
 

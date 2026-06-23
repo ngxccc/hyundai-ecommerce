@@ -1,7 +1,7 @@
 import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { OrderList } from "@/features/orders/components";
-import { orderService } from "@nhatnang/database/services";
+import { orderQueryService } from "@nhatnang/database/services";
 import { orderStatusEnum, type TOrder } from "@nhatnang/database/schemas";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
@@ -51,7 +51,7 @@ export default async function AdminOrdersPage({
       : undefined;
 
   // Fetch filtered orders
-  const orders = await orderService.listOrders(status ? { status } : undefined);
+  const orders = await orderQueryService.listOrders(status ? { status } : undefined);
 
   // In-memory search filtering (ID, user name, email, company)
   const filteredOrders = search

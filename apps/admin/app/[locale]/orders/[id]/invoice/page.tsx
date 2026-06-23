@@ -1,5 +1,5 @@
 import { InvoiceClient } from "@/features/orders/components";
-import { orderService } from "@nhatnang/database/services";
+import { orderQueryService } from "@nhatnang/database/services";
 import { notFound } from "next/navigation";
 import { type Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
@@ -25,7 +25,7 @@ export default async function AdminInvoicePage({
 }) {
   const { id } = await params;
 
-  const order = await orderService.getComplexOrder(id);
+  const order = await orderQueryService.getComplexOrder(id);
   if (!order) {
     notFound();
   }

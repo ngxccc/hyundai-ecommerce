@@ -6,7 +6,7 @@ import { RecentOrdersTable } from "@/features/dashboard/components/recent-orders
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
-import { orderService, productService } from "@nhatnang/database/services";
+import { orderQueryService, productService } from "@nhatnang/database/services";
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -31,10 +31,10 @@ export const AdminDashboard = async () => {
 
   // Fetch data in parallel
   const [metrics, monthlyRevenue, topProducts, allOrders] = await Promise.all([
-    orderService.getDashboardMetrics(),
-    orderService.getMonthlyRevenue(currentYear),
+    orderQueryService.getDashboardMetrics(),
+    orderQueryService.getMonthlyRevenue(currentYear),
     productService.getTopSellingProducts(5),
-    orderService.listOrders(),
+    orderQueryService.listOrders(),
   ]);
 
   const recentOrders = allOrders.slice(0, 5);

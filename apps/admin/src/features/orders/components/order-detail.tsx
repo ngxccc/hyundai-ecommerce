@@ -377,7 +377,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
                     {t("invoiceShippingFee")}
                   </TableCell>
                   <TableCell className="text-right text-sm font-semibold">
-                    {formatCurrency(order.shippingFee)}
+                    {formatCurrency(order.shippingFee ?? "0")}
                   </TableCell>
                 </TableRow>
                 <TableRow className="bg-muted/20 hover:bg-muted/20 border-border border-t font-bold">
