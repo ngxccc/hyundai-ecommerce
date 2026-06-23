@@ -135,6 +135,7 @@ export class DbOrderService implements OrderService {
       orderBy: { createdAt: "desc" },
     })) as unknown as ComplexOrder[];
   }
+
   async listUserOrdersPaginated(
     userId: string,
     limit = 10,
@@ -247,6 +248,7 @@ export class DbOrderService implements OrderService {
       orderBy: { createdAt: "desc" },
     })) as unknown as ComplexOrder[];
   }
+
   async listCompanyOrdersPaginated(
     companyName: string,
     limit = 10,
@@ -1186,7 +1188,9 @@ export class DbOrderService implements OrderService {
       }
       subtotal += parseFloat(product.price) * item.quantity;
     }
-    return Math.round(subtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE) * 100) / 100;
+    return (
+      Math.round(subtotal * (1 + FINANCIAL_CONSTANTS.VAT_RATE) * 100) / 100
+    );
   }
 
   private async validateAndLockCart(
