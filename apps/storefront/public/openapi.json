@@ -1,0 +1,32 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Hyundai Nhật Năng E-commerce API",
+    "description": "API catalog description for automated discovery and commerce integration.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/products": {
+      "get": {
+        "summary": "Retrieve products",
+        "description": "Returns a list of products with optional filters.",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/categories": {
+      "get": {
+        "summary": "Retrieve categories",
+        "description": "Returns a list of product categories.",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    }
+  }
+}
