@@ -19,7 +19,7 @@
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
     "clsx": "^2.1.1",
-    "react-hook-form": "^7.79.0",
+    "react-hook-form": "^7.80.0",
     "tailwind-merge": "^3.6.0"
   }
 }
