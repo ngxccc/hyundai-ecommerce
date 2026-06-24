@@ -22,6 +22,39 @@ export async function proxy(request: NextRequest) {
     });
   }
 
+  const acceptHeader = request.headers.get("accept") ?? "";
+  const internalFetchHeader = request.headers.get("x-internal-fetch");
+
+  // Intercept if Accept header prefers text/markdown and it's not an internal fetch
+  if (acceptHeader.includes("text/markdown") && !internalFetchHeader) {
+    const { pathname, search } = request.nextUrl;
+
+    // Bypass API routes, static assets, and Next.js internal files
+    const isApi = pathname.startsWith("/api/");
+    const isNextInternal = pathname.startsWith("/_next/");
+    const isStaticAsset = /\.(png|jpg|jpeg|gif|svg|ico|css|js|json)$/i.test(
+      pathname,
+    );
+
+    if (!isApi && !isNextInternal && !isStaticAsset) {
+      const url = request.nextUrl.clone();
+      const targetPath = `${pathname}${search}`;
+
+      // Rewrite request to the markdown converter API
+      url.pathname = "/api/markdown-converter";
+      url.searchParams.set("path", targetPath);
+
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set("x-markdown-path", targetPath);
+
+      return NextResponse.rewrite(url, {
+        request: {
+          headers: requestHeaders,
+        },
+      });
+    }
+  }
+
   const response = handleI18nRouting(request);
   const isDev = process.env.NODE_ENV === "development";
   const host = request.headers.get("host") ?? "";
