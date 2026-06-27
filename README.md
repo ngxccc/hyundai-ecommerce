@@ -105,14 +105,21 @@ export function mapProductToStorefront(
   return {
     id: dto.id,
     name: locale === "en" && dto.nameEn ? dto.nameEn : dto.nameVi,
-    description: locale === "en" && dto.descriptionEn ? dto.descriptionEn : dto.descriptionVi,
-    shortDescription: locale === "en" && dto.shortDescriptionEn ? dto.shortDescriptionEn : dto.shortDescriptionVi,
+    description:
+      locale === "en" && dto.descriptionEn
+        ? dto.descriptionEn
+        : dto.descriptionVi,
+    shortDescription:
+      locale === "en" && dto.shortDescriptionEn
+        ? dto.shortDescriptionEn
+        : dto.shortDescriptionVi,
     // ...other fields
   };
 }
 ```
 
-#### Fallback Rules:
+#### Fallback Rules
+
 1. If the current locale is `"en"` and the English translation column (e.g., `nameEn`) is populated and non-empty, the English translation is displayed.
 2. If the current locale is `"vi"`, or if the English field is null, undefined, or empty, the platform dynamically falls back to the Vietnamese value (e.g., `nameVi`). This configuration ensures that the UI never displays blank content for untranslated fields.
 
@@ -123,12 +130,14 @@ export function mapProductToStorefront(
 The platform provides a custom Tiptap-based Rich Text Editor (`RichTextEditor`) implemented within `packages/ui` at `src/editor/index.tsx`.
 
 ### Editor Features
+
 - **Core Extensions**: Built using `@tiptap/react` and configured with `StarterKit` (handling lists, marks, headings, and configured with `openOnClick: false` for links).
 - **Custom Image Support**: Integrates custom Image components, image bubble menu overlays, and an image cropper (`react-image-crop`) to allow on-the-fly resizing, cropping, and uploading of visual assets.
 - **UI & Styling**: Outfitted with a custom top toolbar, an optional toggle for formatting guide characters (`showInvisibles`), and styled using custom Prose typography classes (`prose dark:prose-invert prose-sm sm:prose-base`).
 - **Data Contract**: Communicates updates back to form state via a structured `JSONContent` format from `@tiptap/core`.
 
 ### Re-Export and Type Definition
+
 To prevent direct package dependencies on editor internals outside the UI package, the underlying `JSONContent` type is re-exported at the main entry point:
 
 ```typescript
@@ -150,36 +159,41 @@ Within database schemas or validator structures, this type is used directly to d
 ### Local Development Setup
 
 1. **Authenticate Doppler** and connect the CLI to the project configurations:
+
    ```bash
    doppler login
    doppler setup
    ```
 
 2. **Install monorepo dependencies**:
+
    ```bash
    bun install
    ```
 
 3. **Database Setup**:
    Generate database schemas, apply migrations, and populate seeds inside the development database:
+
    ```bash
    # Generate migrations based on schemas
    bun run db:generate
-   
+
    # Apply pending migrations to database
    bun run db:push
-   
+
    # Seed the database with initial categories, products, and admin users
    bun --filter=@nhatnang/database run db:seed
    ```
 
 4. **Launch development servers**:
-   ```bash
+
+```bash
    # Run all apps simultaneously with Doppler injected environment variables
    bun run dev
-   ```
+```
 
 To run individual applications independently, use Turborepo filters:
+
 ```bash
 # Run the customer storefront app
 bun run dev:storefront
