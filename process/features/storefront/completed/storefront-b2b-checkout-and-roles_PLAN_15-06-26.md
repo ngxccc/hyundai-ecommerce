@@ -2,7 +2,7 @@
 
 **Date**: 2026-06-17
 **Complexity**: Complex
-**Status**: ⏳ PLANNED
+**Status**: ✅ VERIFIED
 
 ---
 
@@ -163,13 +163,13 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 ### Step 6: Real-Time & Offline Notification System
 
-- [ ] Configure Pusher client & server instances for storefront/CRM real-time toasts, and implement a secure private channel subscription authentication API endpoint using HMAC-SHA256 tokens.
-- [ ] Extend `outbox_event` schema with new communication channels (`SEND_ZALO_ZNS`, `SEND_TELEGRAM_ALERT`).
-- [ ] Set up Telegram Bot alerting engine and save chat IDs to Doppler.
-- [ ] Integrate Zalo Notification Service (ZNS) API client and SMS Brandname gateway providers in the codebase.
-- [ ] Implement the Redis heartbeat presence mechanism: a client ping every 15 seconds and server-side tracking using the Redis key `presence:user:<userId>` with a 30-second TTL.
-- [ ] Implement the outbox event processor cron job, querying pending events using an optimized `SELECT ... FOR UPDATE SKIP LOCKED` query, checking user presence, and dispatching to Pusher if online, or Zalo/Telegram/SMS if offline.
-- [ ] Implement timed escalation cron worker (escalating alerts to managers and executives at 2h, 12h, and 24h).
+- [x] Configure Pusher client & server instances for storefront/CRM real-time toasts, and implement a secure private channel subscription authentication API endpoint using HMAC-SHA256 tokens.
+- [x] Extend `outbox_event` schema with new communication channels (`SEND_ZALO_ZNS`, `SEND_TELEGRAM_ALERT`).
+- [x] Set up Telegram Bot alerting engine and save chat IDs to Doppler.
+- [x] Integrate Zalo Notification Service (ZNS) API client and SMS Brandname gateway providers in the codebase.
+- [x] Implement the Redis heartbeat presence mechanism: a client ping every 15 seconds and server-side tracking using the Redis key `presence:user:<userId>` with a 30-second TTL.
+- [x] Implement the outbox event processor cron job, querying pending events using an optimized `SELECT ... FOR UPDATE SKIP LOCKED` query, checking user presence, and dispatching to Pusher if online, or Zalo/Telegram/SMS if offline.
+- [x] Implement timed escalation cron worker (escalating alerts to managers and executives at 2h, 12h, and 24h).
 
 ---
 
