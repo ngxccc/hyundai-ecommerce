@@ -3,20 +3,33 @@ import { expect, test, describe, mock, beforeEach } from "bun:test";
 import type { Mock } from "bun:test";
 import "@nhatnang/shared/testing/action-mocks";
 import type { TOrder, TShippingBid } from "@nhatnang/database/schemas";
-import {
-  selectShippingBidAction,
-  addShippingBidAction,
-  approveDealerOrderAction,
-  verifyCashPaymentAction,
-  approveOrderCancellationAction,
-} from "./order.actions";
-import { orderService, paymentService } from "@nhatnang/database/services";
-import { revalidatePath } from "next/cache";
 
 describe("order.actions", () => {
   let selectWinningBidMock: Mock<(...args: any[]) => any>;
+  let selectShippingBidAction: any;
+  let addShippingBidAction: any;
+  let approveDealerOrderAction: any;
+  let verifyCashPaymentAction: any;
+  let approveOrderCancellationAction: any;
+  let orderService: any;
+  let paymentService: any;
+  let revalidatePath: any;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    const databaseServices = await import("@nhatnang/database/services");
+    const orderActions = await import("./order.actions");
+    const nextCache = await import("next/cache");
+    revalidatePath = nextCache.revalidatePath;
+
+    orderService = databaseServices.orderService;
+    paymentService = databaseServices.paymentService;
+
+    selectShippingBidAction = orderActions.selectShippingBidAction;
+    addShippingBidAction = orderActions.addShippingBidAction;
+    approveDealerOrderAction = orderActions.approveDealerOrderAction;
+    verifyCashPaymentAction = orderActions.verifyCashPaymentAction;
+    approveOrderCancellationAction = orderActions.approveOrderCancellationAction;
+
     // using as unknown as Mock due to vi.mock boundary override
     // eslint-disable-next-line @typescript-eslint/unbound-method
     selectWinningBidMock = orderService.selectWinningBid as unknown as Mock<
