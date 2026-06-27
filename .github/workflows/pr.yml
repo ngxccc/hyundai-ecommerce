@@ -20,6 +20,8 @@ jobs:
       DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_STAGING }}
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
       - name: Setup Environment
         uses: ./.github/setup-environment
 

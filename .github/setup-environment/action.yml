@@ -1,20 +1,8 @@
 name: Setup Monorepo Environment
-description: Bootstraps Git checkout, Bun, and dependencies
-
-inputs:
-  fetch-depth:
-    description: "Number of commits to fetch"
-    required: false
-    default: "1"
-
+description: Bootstraps Bun and dependencies
 runs:
   using: "composite"
   steps:
-    - name: Centralized Checkout
-      uses: ./.github/checkout
-      with:
-        fetch-depth: ${{ inputs.fetch-depth }}
-
     - name: Setup Bun
       uses: oven-sh/setup-bun@v2
       with:
