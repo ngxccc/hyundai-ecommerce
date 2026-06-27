@@ -11,7 +11,7 @@
     "lint": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
     "start": "doppler run -- next start",
-    "test": "doppler run -c stg -- bun test src/ app/"
+    "test": "doppler run -- bun test src/ app/"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
