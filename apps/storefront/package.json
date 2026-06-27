@@ -11,8 +11,7 @@
     "lint": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
     "start": "doppler run -- next start",
-    "test": "doppler run -c stg -- bun test src/ app/",
-    "test:e2e": "playwright test"
+    "test": "doppler run -c stg -- bun test src/ app/"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -44,7 +43,6 @@
     "@nhatnang/shared": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
     "@nhatnang/ui": "workspace:*",
-    "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4.3.1",
     "@testing-library/react": "^16.2.0",
     "@types/react": "^19",
