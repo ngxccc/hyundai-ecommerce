@@ -4,6 +4,8 @@ import type {
   PaymentTransactionType,
   PaymentMethod,
   ApprovalStatus,
+  TOutboxEvent,
+  OutboxEventStatus,
 } from "../../schemas";
 import type { CreateOrderDTO, CreateOrderItemDTO } from "../../dtos";
 
@@ -115,7 +117,10 @@ export interface OrderQueryService {
     prevCursor?: string | undefined;
     hasMore: boolean;
   }>;
-  getComplexOrder(orderId: string, userId?: string): Promise<ComplexOrder | undefined>;
+  getComplexOrder(
+    orderId: string,
+    userId?: string,
+  ): Promise<ComplexOrder | undefined>;
   getOrderStatus(
     orderId: string,
     userId?: string,
@@ -163,4 +168,14 @@ export interface OrderService {
   expirePendingOrders(
     expirationWindowMinutes?: number,
   ): Promise<{ expiredCount: number }>;
+  fetchPendingOutboxEvents(
+    limit: number,
+  ): Promise<
+    Pick<TOutboxEvent, "id" | "eventType" | "payload" | "retryCount">[]
+  >;
+  updateOutboxEventStatus(
+    id: string,
+    status: OutboxEventStatus,
+    error?: string,
+  ): Promise<void>;
 }

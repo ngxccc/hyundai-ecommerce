@@ -17,6 +17,7 @@ export const eventTypeEnum = pgEnum("event_type", [
 
 export const outboxEventStatusEnum = pgEnum("outbox_event_status", [
   "PENDING",
+  "PROCESSING",
   "PROCESSED",
   "FAILED",
 ]);
@@ -63,3 +64,5 @@ export const outboxEvents = snakeCase.table("outbox_event", {
 
 export type TOutboxEvent = typeof outboxEvents.$inferSelect;
 export type TNewOutboxEvent = typeof outboxEvents.$inferInsert;
+export type OutboxEventStatus =
+  (typeof outboxEventStatusEnum.enumValues)[number];

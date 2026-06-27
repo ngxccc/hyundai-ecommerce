@@ -8,7 +8,7 @@ import { Resend } from "resend";
 import { env } from "./env";
 import { nextCookies } from "better-auth/next-js";
 
-const resend = new Resend(env.RESEND_API_KEY || "re_dummy");
+export const resend = new Resend(env.RESEND_API_KEY || "re_dummy");
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -42,20 +42,31 @@ export const auth = betterAuth({
       const senderEmail =
         env.EMAIL_FROM ?? "Hyundai Nhat Nang <onboarding@resend.dev>";
 
+      const sendMail = async () => {
+        try {
+          await resend.emails.send({
+            from: senderEmail,
+            to: user.email,
+            subject: "Xác thực tài khoản của bạn",
+            // NOTE: Có thể dùng thư viện React Email để ui đẹp thay vì HTML thô
+            html: `
+              <h2>Chào ${user.name},</h2>
+              <p>Vui lòng click vào đường link bên dưới để xác thực tài khoản:</p>
+              <a href="${url}" style="padding: 10px 20px; background: #000; color: #fff; text-decoration: none; border-radius: 5px;">Xác thực ngay</a>
+            `,
+          });
+        } catch (error) {
+          console.error("Lỗi bắn mail Resend:", error);
+        }
+      };
+
       try {
-        await resend.emails.send({
-          from: senderEmail,
-          to: user.email,
-          subject: "Xác thực tài khoản của bạn",
-          // NOTE: Có thể dùng thư viện React Email để ui đẹp thay vì HTML thô
-          html: `
-            <h2>Chào ${user.name},</h2>
-            <p>Vui lòng click vào đường link bên dưới để xác thực tài khoản:</p>
-            <a href="${url}" style="padding: 10px 20px; background: #000; color: #fff; text-decoration: none; border-radius: 5px;">Xác thực ngay</a>
-          `,
-        });
-      } catch (error) {
-        console.error("Lỗi bắn mail Resend:", error);
+        const nextServerModule = "next/server";
+        const { after } = await import(nextServerModule);
+        after(sendMail);
+      } catch {
+        // Fallback for non-Next.js environments (e.g. testing)
+        await sendMail();
       }
     },
   },

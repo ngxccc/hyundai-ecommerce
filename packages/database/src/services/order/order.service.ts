@@ -1,15 +1,6 @@
 import type { CreateOrderDTO, CreateOrderItemDTO } from "../../dtos";
-import type {
-  OrderService,
-  SelectWinningBidResult,
-} from "./order.interface";
-import {
-  and,
-  eq,
-  lt,
-  sql,
-  inArray,
-} from "drizzle-orm";
+import type { OrderService, SelectWinningBidResult } from "./order.interface";
+import { and, eq, lt, sql, inArray } from "drizzle-orm";
 import { type IDatabase } from "../../client";
 import { FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
 import { isPostgresError, POSTGRES_ERROR_CODES } from "../../utils";
@@ -25,10 +16,12 @@ import {
   paymentTransactions,
   shippingBids,
   type TOrder,
+  type TOutboxEvent,
   type TNewShippingBid,
   type OrderStatus,
   type PaymentTransactionType,
   type PaymentMethod,
+  type OutboxEventStatus,
 } from "../../schemas";
 
 const ORDER_STATUS_TRANSITIONS = {
@@ -47,10 +40,8 @@ const ORDER_STATUS_TRANSITIONS = {
   ] as const,
 } as const;
 
-
 export class DbOrderService implements OrderService {
   constructor(protected readonly db: IDatabase) {}
-
 
   async createOrder(data: CreateOrderDTO): Promise<{ id: string } | undefined> {
     const [order] = await this.db
@@ -166,7 +157,6 @@ export class DbOrderService implements OrderService {
     });
   }
 
-
   async createShippingBid(
     data: TNewShippingBid,
   ): Promise<{ id: string } | undefined> {
@@ -215,7 +205,6 @@ export class DbOrderService implements OrderService {
       return { updatedOrder, selectedBid: { id: selectedBid.id } };
     });
   }
-
 
   async approveDealerOrder(
     orderId: string,
@@ -753,5 +742,60 @@ export class DbOrderService implements OrderService {
       }
     }
   }
-}
 
+  async fetchPendingOutboxEvents(
+    limit: number,
+  ): Promise<
+    Pick<TOutboxEvent, "id" | "eventType" | "payload" | "retryCount">[]
+  > {
+    return await this.db.transaction(async (tx) => {
+      const events = await tx
+        .select({
+          id: outboxEvents.id,
+          eventType: outboxEvents.eventType,
+          payload: outboxEvents.payload,
+          retryCount: outboxEvents.retryCount,
+        })
+        .from(outboxEvents)
+        .where(eq(outboxEvents.status, "PENDING"))
+        .limit(limit)
+        .for("update", { skipLocked: true });
+
+      if (events.length > 0) {
+        const ids = events.map((e) => e.id);
+        await tx
+          .update(outboxEvents)
+          .set({ status: "PROCESSING", updatedAt: new Date() })
+          .where(inArray(outboxEvents.id, ids));
+      }
+
+      return events;
+    });
+  }
+
+  async updateOutboxEventStatus(
+    id: string,
+    status: OutboxEventStatus,
+    error?: string,
+  ): Promise<void> {
+    await this.db.transaction(async (tx) => {
+      const updates: Partial<TOutboxEvent> = { status };
+      if (status === "PROCESSED") {
+        updates.processedAt = new Date();
+      } else if (status === "FAILED" || status === "PENDING") {
+        const [event] = await tx
+          .select({ retryCount: outboxEvents.retryCount })
+          .from(outboxEvents)
+          .where(eq(outboxEvents.id, id))
+          .limit(1);
+
+        if (event) {
+          updates.retryCount = event.retryCount + 1;
+        }
+        updates.lastError = error ?? null;
+      }
+
+      await tx.update(outboxEvents).set(updates).where(eq(outboxEvents.id, id));
+    });
+  }
+}

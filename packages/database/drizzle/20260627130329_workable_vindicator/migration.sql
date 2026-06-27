@@ -1,0 +1,1 @@
+ALTER TYPE "outbox_event_status" ADD VALUE 'PROCESSING' BEFORE 'PROCESSED';
