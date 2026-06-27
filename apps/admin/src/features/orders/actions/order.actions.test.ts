@@ -1,21 +1,30 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { expect, test, describe, mock, beforeEach } from "bun:test";
 import type { Mock } from "bun:test";
 import "@nhatnang/shared/testing/action-mocks";
 import type { TOrder, TShippingBid } from "@nhatnang/database/schemas";
+import type { OrderService, PaymentService, SelectWinningBidResult } from "@nhatnang/database/services";
+import type {
+  selectShippingBidAction as TSelectShippingBidAction,
+  addShippingBidAction as TAddShippingBidAction,
+  approveDealerOrderAction as TApproveDealerOrderAction,
+  verifyCashPaymentAction as TVerifyCashPaymentAction,
+  approveOrderCancellationAction as TApproveOrderCancellationAction,
+} from "./order.actions";
+import type { revalidatePath as TRevalidatePath } from "next/cache";
 
 describe("order.actions", () => {
-  let selectWinningBidMock: Mock<(...args: any[]) => any>;
-  let selectShippingBidAction: any;
-  let addShippingBidAction: any;
-  let approveDealerOrderAction: any;
-  let verifyCashPaymentAction: any;
-  let approveOrderCancellationAction: any;
-  let orderService: any;
-  let paymentService: any;
-  let revalidatePath: any;
+  let selectWinningBidMock: Mock<OrderService["selectWinningBid"]>;
+  let selectShippingBidAction: typeof TSelectShippingBidAction;
+  let addShippingBidAction: typeof TAddShippingBidAction;
+  let approveDealerOrderAction: typeof TApproveDealerOrderAction;
+  let verifyCashPaymentAction: typeof TVerifyCashPaymentAction;
+  let approveOrderCancellationAction: typeof TApproveOrderCancellationAction;
+  let orderService: OrderService;
+  let paymentService: PaymentService;
+  let revalidatePath: typeof TRevalidatePath;
 
   beforeEach(async () => {
+    // Static import cannot work here because Bun's async mock.module must run before importing these modules.
     const databaseServices = await import("@nhatnang/database/services");
     const orderActions = await import("./order.actions");
     const nextCache = await import("next/cache");
@@ -30,13 +39,13 @@ describe("order.actions", () => {
     verifyCashPaymentAction = orderActions.verifyCashPaymentAction;
     approveOrderCancellationAction = orderActions.approveOrderCancellationAction;
 
-    // using as unknown as Mock due to vi.mock boundary override
-    // eslint-disable-next-line @typescript-eslint/unbound-method
+    // Cast as Mock is safe here because database services are mocked in the test environment setup.
     selectWinningBidMock = orderService.selectWinningBid as unknown as Mock<
-      (...args: any[]) => any
+      typeof orderService.selectWinningBid
     >;
     selectWinningBidMock.mockClear();
-    (revalidatePath as Mock<(...args: unknown[]) => void>).mockClear();
+    // Cast as Mock is safe here because revalidatePath is mocked in next/cache mock.
+    (revalidatePath as unknown as Mock<typeof revalidatePath>).mockClear();
   });
 
   describe("selectShippingBidAction", () => {
@@ -85,7 +94,10 @@ describe("order.actions", () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
       const validBidId = "123e4567-e89b-12d3-a456-426614174001";
 
-      selectWinningBidMock.mockResolvedValueOnce(null);
+      // Cast as SelectWinningBidResult is safe here because we intentionally simulate a failure result.
+      selectWinningBidMock.mockResolvedValueOnce(
+        undefined as unknown as SelectWinningBidResult,
+      );
 
       const result = await selectShippingBidAction(validOrderId, validBidId);
 
