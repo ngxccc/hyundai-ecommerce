@@ -134,7 +134,7 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 #### D. Customer Portal Order History & B2B Approvals UI
 
-- [ ] Create Order Details View (`apps/storefront/app/[locale]/(shop)/portal/orders/[id]/page.tsx`):
+- [x] Create Order Details View (`apps/storefront/app/[locale]/(shop)/portal/orders/[id]/page.tsx`):
   - Display full payment breakdown and timeline.
   - "Xác thực thanh toán" (Re-verify Payment) button for stuck `PENDING_VERIFICATION` orders (with 30-second countdown).
   - **Trade Credit Cancellation Button (Flow C)**:
@@ -147,7 +147,7 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 #### E. B2B Debt Repayment UI
 
-- [ ] Create Debt Repayment Dashboard (`apps/storefront/app/[locale]/(shop)/portal/debt/page.tsx`):
+- [x] Create Debt Repayment Dashboard (`apps/storefront/app/[locale]/(shop)/portal/debt/page.tsx`):
   - Shows current outstanding debt (`currentDebt`), available credit (`creditLimit - currentDebt`), and lists overdue net-term invoices.
   - **Repayment Widget**:
     - Input field for custom repayment amount $X$ (validates $X > 0$ and $X \le currentDebt$).
@@ -157,7 +157,7 @@ This plan conforms to the guidelines in `process/features/storefront/references/
 
 #### F. Admin CRM Dashboard UI
 
-- [ ] Build CRM interfaces in Admin App (`apps/admin`):
+- [x] Build CRM interfaces in Admin App (`apps/admin`):
   - **Sales Rep Dashboard**: Add approval list for orders under `CANCELLATION_REQUESTED`, allowing them to approve (and release Trade Credit limit) or reject.
   - **Accountant Dashboard**: Add manual bank/cash payment verification widget, allowing them to enter a cash receipt number, record payment in `payment_transaction`, and set order to `DEPOSIT_PAID` / `FULLY_PAID`.
 
