@@ -26,7 +26,12 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import type { ComplexOrder } from "@nhatnang/database/services";
-import { updateOrderStatusAction } from "../actions";
+import {
+  updateOrderStatusAction,
+  verifyCashPaymentAction,
+  approveOrderCancellationAction,
+} from "../actions";
+import type { UserRole } from "@nhatnang/database/schemas";
 import {
   Stepper,
   StepperItem,
@@ -40,9 +45,16 @@ import { ShippingBidPanel } from "./shipping-bid-panel";
 
 interface OrderDetailProps {
   order: ComplexOrder;
+  currentUser?:
+    | {
+        id: string;
+        role: UserRole;
+        name: string;
+      }
+    | undefined;
 }
 
-export const OrderDetail = ({ order }: OrderDetailProps) => {
+export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
   const t = useTranslations("AdminOrders");
   const [isPending, startTransition] = useTransition();
   const [orientation, setOrientation] = useState<"horizontal" | "vertical">(
@@ -72,6 +84,12 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
         return "bg-red-100 text-red-700 border-transparent dark:bg-red-900/30 dark:text-red-400";
       case "REFUNDED":
         return "bg-gray-100 text-gray-700 border-transparent dark:bg-gray-900/30 dark:text-gray-400";
+      case "REFUND_PENDING":
+        return "bg-amber-100 text-amber-700 border-transparent dark:bg-amber-900/30 dark:text-amber-400";
+      case "CANCELLATION_REQUESTED":
+        return "bg-pink-100 text-pink-700 border-transparent dark:bg-pink-900/30 dark:text-pink-400";
+      case "SUSPICIOUS_PAYMENT_HOLD":
+        return "bg-red-100 text-red-700 border-transparent dark:bg-red-900/30 dark:text-red-400";
       default:
         return "bg-secondary text-secondary-foreground border-transparent";
     }
@@ -91,6 +109,12 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
         return t("statusCancelled");
       case "REFUNDED":
         return t("statusRefunded");
+      case "REFUND_PENDING":
+        return t("statusRefundPending");
+      case "SUSPICIOUS_PAYMENT_HOLD":
+        return t("statusSuspiciousPaymentHold");
+      case "CANCELLATION_REQUESTED":
+        return t("statusCancellationRequested");
       default:
         return status;
     }
@@ -132,14 +156,85 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
 
   // Timeline Steps setup
   const steps = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED"];
-  const currentStepIndex = steps.indexOf(order.status);
+  const currentStepIndex = steps.indexOf(
+    order.status === "CANCELLATION_REQUESTED"
+      ? "PROCESSING"
+      : order.status === "SUSPICIOUS_PAYMENT_HOLD"
+        ? "PENDING"
+        : order.status,
+  );
   const isEndState =
-    order.status === "CANCELLED" || order.status === "REFUNDED";
+    order.status === "CANCELLED" ||
+    order.status === "REFUNDED" ||
+    order.status === "REFUND_PENDING";
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       {/* Left side (Timeline Stepper & Items list) */}
       <div className="flex flex-col gap-6 lg:col-span-2">
+        {/* Cancellation Request Banner */}
+        {order.status === "CANCELLATION_REQUESTED" && (
+          <Card className="flex flex-col gap-4 border border-red-200 bg-red-50/50 p-5 dark:border-red-900/30 dark:bg-red-950/10">
+            <div className="flex items-start gap-3">
+              <XCircle className="h-6 w-6 shrink-0 text-red-600 dark:text-red-400" />
+              <div className="flex flex-col gap-1">
+                <h4 className="text-base font-bold text-red-900 dark:text-red-400">
+                  {t("cancellationRequestedAlertTitle")}
+                </h4>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  {t("cancellationRequestedAlertDesc")}
+                </p>
+              </div>
+            </div>
+            {currentUser &&
+              ["SUPER_ADMIN", "SALES_REPRESENTATIVE", "ACCOUNTANT"].includes(
+                currentUser.role,
+              ) && (
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    size="sm"
+                    disabled={isPending}
+                    onClick={() => {
+                      startTransition(async () => {
+                        const res = await approveOrderCancellationAction(
+                          order.id,
+                        );
+                        if (res.success) {
+                          toast.success(t("cancellationApproveSuccess"));
+                        } else {
+                          toast.error(res.error);
+                        }
+                      });
+                    }}
+                    className="bg-red-600 text-white hover:bg-red-700"
+                  >
+                    {t("btnApproveCancellation")}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={isPending}
+                    onClick={() => {
+                      startTransition(async () => {
+                        const res = await updateOrderStatusAction(
+                          order.id,
+                          "PROCESSING",
+                        );
+                        if (res.success) {
+                          toast.success(t("cancellationRejectSuccess"));
+                        } else {
+                          toast.error(res.error);
+                        }
+                      });
+                    }}
+                    className="border-red-200 text-red-700 hover:bg-red-50 dark:border-red-900"
+                  >
+                    {t("btnRejectCancellation")}
+                  </Button>
+                </div>
+              )}
+          </Card>
+        )}
         {/* Stepper Card */}
         <Card className="border-border bg-card flex flex-col gap-6 border p-4 shadow-sm">
           <div className="border-border flex items-center justify-between border-b pb-4">
@@ -205,15 +300,15 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
               className={`flex items-center gap-3 rounded-lg border p-4 ${
                 order.status === "CANCELLED"
                   ? "border-red-500/30 bg-red-50/10 text-red-600 dark:text-red-400"
-                  : "border-gray-500/30 bg-gray-50/10 text-gray-600 dark:text-gray-400"
+                  : order.status === "REFUND_PENDING"
+                    ? "border-amber-500/30 bg-amber-50/10 text-amber-600 dark:text-amber-400"
+                    : "border-gray-500/30 bg-gray-50/10 text-gray-600 dark:text-gray-400"
               }`}
             >
               <XCircle className="h-6 w-6 shrink-0" />
               <div className="flex flex-col gap-0.5">
                 <span className="text-sm font-bold">
-                  {order.status === "CANCELLED"
-                    ? t("statusCancelled")
-                    : t("statusRefunded")}
+                  {getStatusLabel(order.status)}
                 </span>
                 <span className="text-muted-foreground text-xs">
                   {t("orderFinalizedStatus", {
@@ -397,6 +492,40 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
 
       {/* Right side (Buyer portfolio & Invoice trigger) */}
       <div className="flex flex-col gap-6">
+        {/* Cash Payment Verification Card */}
+        {order.paymentMethod === "CASH" &&
+          order.paymentStatus !== "FULLY_PAID" && (
+            <Card className="border-border bg-card flex flex-col gap-4 border p-4 shadow-sm">
+              <div className="flex flex-col gap-1">
+                <h4 className="flex items-center gap-1.5 text-base font-bold text-amber-950 dark:text-amber-400">
+                  <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                  {t("cashPaymentVerificationTitle")}
+                </h4>
+                <p className="text-muted-foreground text-xs leading-relaxed">
+                  {t("cashPaymentVerificationDesc")}
+                </p>
+              </div>
+              {currentUser &&
+                ["SUPER_ADMIN", "ACCOUNTANT"].includes(currentUser.role) && (
+                  <Button
+                    disabled={isPending}
+                    onClick={() => {
+                      startTransition(async () => {
+                        const res = await verifyCashPaymentAction(order.id);
+                        if (res.success) {
+                          toast.success(t("verifyCashSuccess"));
+                        } else {
+                          toast.error(res.error);
+                        }
+                      });
+                    }}
+                    className="w-full bg-amber-600 text-white hover:bg-amber-700"
+                  >
+                    {t("btnVerifyCashPayment")}
+                  </Button>
+                )}
+            </Card>
+          )}
         {/* Buyer Portfolio Card */}
         <Card className="border-border bg-card flex flex-col gap-6 border p-4 shadow-sm">
           <div className="border-border flex items-center gap-2 border-b pb-4">

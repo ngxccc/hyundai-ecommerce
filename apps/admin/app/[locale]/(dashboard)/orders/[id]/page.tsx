@@ -1,6 +1,7 @@
 import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { OrderDetail } from "@/features/orders/components";
+import { getCachedSession } from "@/shared/lib/session";
 import { orderQueryService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -29,7 +30,10 @@ export default async function AdminOrderDetailPage({
   const tNav = await getTranslations("AdminDashboard.nav");
   const tHeader = await getTranslations("AdminOrders");
 
-  const order = await orderQueryService.getComplexOrder(id);
+  const [order, session] = await Promise.all([
+    orderQueryService.getComplexOrder(id),
+    getCachedSession(),
+  ]);
   if (!order) {
     notFound();
   }
@@ -50,7 +54,7 @@ export default async function AdminOrderDetailPage({
             { label: `#${id.slice(0, 8)}` },
           ]}
         />
-        <OrderDetail order={order} />
+        <OrderDetail order={order} currentUser={session?.user} />
       </div>
     </>
   );

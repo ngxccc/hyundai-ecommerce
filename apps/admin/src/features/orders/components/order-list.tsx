@@ -74,6 +74,12 @@ export const OrderList = ({ orders }: OrderListProps) => {
         return "bg-red-100 text-red-700 border-transparent dark:bg-red-900/30 dark:text-red-400";
       case "REFUNDED":
         return "bg-gray-100 text-gray-700 border-transparent dark:bg-gray-900/30 dark:text-gray-400";
+      case "REFUND_PENDING":
+        return "bg-amber-100 text-amber-700 border-transparent dark:bg-amber-900/30 dark:text-amber-400";
+      case "CANCELLATION_REQUESTED":
+        return "bg-pink-100 text-pink-700 border-transparent dark:bg-pink-900/30 dark:text-pink-400";
+      case "SUSPICIOUS_PAYMENT_HOLD":
+        return "bg-red-100 text-red-700 border-transparent dark:bg-red-900/30 dark:text-red-400";
       default:
         return "bg-secondary text-secondary-foreground border-transparent";
     }
@@ -93,6 +99,12 @@ export const OrderList = ({ orders }: OrderListProps) => {
         return t("statusCancelled");
       case "REFUNDED":
         return t("statusRefunded");
+      case "REFUND_PENDING":
+        return t("statusRefundPending");
+      case "SUSPICIOUS_PAYMENT_HOLD":
+        return t("statusSuspiciousPaymentHold");
+      case "CANCELLATION_REQUESTED":
+        return t("statusCancellationRequested");
       default:
         return status;
     }
