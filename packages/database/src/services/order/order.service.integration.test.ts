@@ -20,10 +20,11 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
   const testUserPhone = `0${Math.floor(100000000 + Math.random() * 900000000)}`;
 
   let integrationDb: IDatabase;
+  let pool: NeonPool | undefined;
 
   beforeAll(async () => {
     // 1. Initialize a fresh, unmocked connection matching client.ts environment
-    const pool = new NeonPool({ connectionString: env.DATABASE_URL });
+    pool = new NeonPool({ connectionString: env.DATABASE_URL });
     integrationDb = drizzleNeon({
       client: pool,
       relations: schema.schemaRelations,
@@ -90,7 +91,7 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
         unitPrice: "100000",
       });
     }
-  });
+  }, 30000);
 
   afterAll(async () => {
     // Clean up created test data in reverse dependency order
@@ -108,7 +109,10 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
     if (testUserId) {
       await integrationDb.delete(users).where(eq(users.id, testUserId));
     }
-  });
+    if (pool) {
+      await pool.end();
+    }
+  }, 30000);
 
   test("Should increment totalSalesCache concurrently without lost updates", async () => {
     // Trigger 5 concurrent updates (PENDING -> PROCESSING) in parallel
@@ -127,5 +131,5 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
 
     // Total sales count should be exactly 5 orders * 2 quantity = 10
     expect(updatedProduct?.totalSalesCache).toBe(10);
-  });
+  }, 30000);
 });
