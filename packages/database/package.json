@@ -37,15 +37,15 @@
     "test": "doppler run -- bun test src/"
   },
   "dependencies": {
-    "@better-auth/drizzle-adapter": "^1.6.18",
+    "@better-auth/drizzle-adapter": "^1.6.22",
     "@neondatabase/serverless": "^1.1.0",
+    "@nhatnang/ui": "workspace:*",
     "@paralleldrive/cuid2": "^3.3.0",
     "@t3-oss/env-core": "^0.13.11",
-    "@nhatnang/ui": "workspace:*",
-    "better-auth": "^1.6.18",
-    "drizzle-orm": "v1.0.0-rc.3",
+    "better-auth": "^1.6.22",
+    "drizzle-orm": "^1.0.0-rc.4",
     "postgres": "^3.4.9",
-    "resend": "^6.12.3",
+    "resend": "^6.16.0",
     "uuid": "^14.0.0",
     "zod": "^4.4.3"
   },
@@ -54,8 +54,8 @@
     "@nhatnang/shared": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
     "@types/bun": "^1",
-    "@types/node": "^25",
+    "@types/node": "^26.0.1",
     "@types/uuid": "^11.0.0",
-    "drizzle-kit": "v1.0.0-rc.3"
+    "drizzle-kit": "^1.0.0-rc.4"
   }
 }
