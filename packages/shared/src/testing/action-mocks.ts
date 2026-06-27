@@ -44,10 +44,21 @@ export const mockConfirmPayOSPayment = mock();
 export const mockOrderCheckoutWithTradeCredit = mock();
 export const mockPaymentCreateDebtRepayment = mock();
 export const mockPaymentConfirmDebtRepayment = mock();
+export const mockOrderFetchPendingOutboxEvents = mock();
+export const mockOrderUpdateOutboxEventStatus = mock();
+export const mockResendSend = mock();
 
 export const mockAuthGetSession = mock();
 export const mockCheckRateLimit = mock();
 export const mockCheckRateLimitWithQueue = mock();
+
+await mock.module("resend", () => ({
+  Resend: class {
+    emails = {
+      send: mockResendSend,
+    };
+  },
+}));
 
 await mock.module("next/headers", () => ({
   headers: mock(() => new Map([["x-forwarded-for", "127.0.0.1"]])),
@@ -88,6 +99,8 @@ await mock.module("@nhatnang/database/services", () => ({
     createOrderWithItems: mockOrderCreateOrderWithItems,
     checkoutWithTradeCredit: mockOrderCheckoutWithTradeCredit,
     expirePendingOrders: mockOrderExpirePendingOrders,
+    fetchPendingOutboxEvents: mockOrderFetchPendingOutboxEvents,
+    updateOutboxEventStatus: mockOrderUpdateOutboxEventStatus,
   },
   paymentService: {
     verifyCashPayment: mockOrderVerifyCashPayment,
@@ -100,12 +113,10 @@ await mock.module("@nhatnang/database/services", () => ({
   },
 }));
 
-
 await mock.module("next/cache", () => ({
   revalidatePath: mock(),
   revalidateTag: mock(),
 }));
-
 
 await mock.module("@/shared/lib/action-auth", () => ({
   requireAuth: mock().mockResolvedValue({
@@ -150,9 +161,15 @@ class MockNextResponse extends Response {
     return new Response(JSON.stringify(body), init);
   }
 }
+class MockNextRequest extends Request {
+  get nextUrl() {
+    return new URL(this.url);
+  }
+}
 
 await mock.module("next/server", () => ({
   NextResponse: MockNextResponse,
+  NextRequest: MockNextRequest,
   connection: mock().mockResolvedValue(undefined),
   after: mock((cb: () => void) => {
     // Execute immediately for testing but let it run asynchronously
@@ -170,6 +187,11 @@ await mock.module("@nhatnang/database/auth", () => ({
   auth: {
     api: {
       getSession: mockAuthGetSession,
+    },
+  },
+  resend: {
+    emails: {
+      send: mockResendSend,
     },
   },
 }));
@@ -206,6 +228,9 @@ beforeEach(() => {
   mockOrderCheckoutWithTradeCredit.mockReset();
   mockPaymentCreateDebtRepayment.mockReset();
   mockPaymentConfirmDebtRepayment.mockReset();
+  mockOrderFetchPendingOutboxEvents.mockReset();
+  mockOrderUpdateOutboxEventStatus.mockReset();
+  mockResendSend.mockReset();
   mockAuthGetSession.mockReset();
   mockCheckRateLimit.mockReset();
   mockCheckRateLimitWithQueue.mockReset();

@@ -21,6 +21,8 @@ export const env = createEnv({
     DEPOSIT_RATE: z.coerce.number(),
     FORCE_MOCK_PAYMENT: z.string().optional(),
     CRON_SECRET: z.string().min(1),
+    TELEGRAM_BOT_TOKEN: z.string().min(1),
+    TELEGRAM_ADMIN_CHAT_ID: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.url(MESSAGES.NEXT_URL_IS_INVALID),
@@ -47,6 +49,8 @@ export const env = createEnv({
     DEPOSIT_RATE: process.env["DEPOSIT_RATE"],
     FORCE_MOCK_PAYMENT: process.env["FORCE_MOCK_PAYMENT"],
     CRON_SECRET: process.env["CRON_SECRET"],
+    TELEGRAM_BOT_TOKEN: process.env["TELEGRAM_BOT_TOKEN"],
+    TELEGRAM_ADMIN_CHAT_ID: process.env["TELEGRAM_ADMIN_CHAT_ID"],
   },
 });
 
