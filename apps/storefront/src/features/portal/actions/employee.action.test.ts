@@ -18,14 +18,18 @@ interface ActionFailure {
 }
 
 // Bun module mocks require dynamic imports to resolve correctly at load time
-const { listEmployeesAction, createEmployeeAction } = await import("./employee.action");
+const { listEmployeesAction, createEmployeeAction } =
+  await import("./employee.action");
 
 describe("employeeAction", () => {
   let mockGetTranslations: Mock<typeof getTranslations>;
 
   beforeEach(async () => {
-    const { getTranslations: nextGetTranslations } = await import("next-intl/server");
-    mockGetTranslations = nextGetTranslations as Mock<typeof nextGetTranslations>;
+    const { getTranslations: nextGetTranslations } =
+      await import("next-intl/server");
+    mockGetTranslations = nextGetTranslations as Mock<
+      typeof nextGetTranslations
+    >;
 
     mockAuthGetSession.mockReset();
     mockAuthCreateEmployee.mockReset();
@@ -35,7 +39,7 @@ describe("employeeAction", () => {
     mockGetTranslations.mockResolvedValue(
       ((key: string) => `translated.${key}`) as unknown as Awaited<
         ReturnType<typeof getTranslations>
-      >
+      >,
     );
   });
 
@@ -128,8 +132,8 @@ describe("employeeAction", () => {
       const result = await createEmployeeAction(validForm);
       expect(result.success).toBe(false);
       expect((result as ActionFailure).code).toBe("VALIDATION_ERROR");
-      expect((result as ActionFailure).fieldErrors?.email).toContain(
-        AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS
+      expect((result as ActionFailure).fieldErrors?.["email"]).toContain(
+        AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS,
       );
     });
 
@@ -147,7 +151,7 @@ describe("employeeAction", () => {
           name: "New Employee",
           email: "new_emp@test.com",
         }),
-        "user-1"
+        "user-1",
       );
     });
   });
