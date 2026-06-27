@@ -11,7 +11,7 @@ jobs:
     outputs:
       docs: ${{ steps.filter.outputs.docs }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: ./.github/checkout
       - uses: dorny/paths-filter@v4
         id: filter
         with:
@@ -36,9 +36,6 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v6
-
       - name: Setup Environment
         uses: ./.github/setup-environment
 

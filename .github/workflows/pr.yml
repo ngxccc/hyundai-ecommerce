@@ -20,9 +20,6 @@ jobs:
       DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_STAGING }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
       - name: Setup Environment
         uses: ./.github/setup-environment
 
@@ -35,7 +32,7 @@ jobs:
 
       - name: Cache Playwright Browsers
         id: playwright-cache
-        uses: actions/cache@v5
+        uses: ./.github/cache
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('apps/storefront/package.json') }}
