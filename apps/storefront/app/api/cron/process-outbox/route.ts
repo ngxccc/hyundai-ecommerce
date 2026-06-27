@@ -67,7 +67,7 @@ export async function POST(request: Request) {
                 };
                 const botToken = appEnv.TELEGRAM_BOT_TOKEN;
                 const adminChatId =
-                  payload.channelId || appEnv.TELEGRAM_ADMIN_CHAT_ID;
+                  payload.channelId ?? appEnv.TELEGRAM_ADMIN_CHAT_ID;
 
                 if (!botToken || !adminChatId) {
                   throw new Error(
@@ -118,7 +118,7 @@ export async function POST(request: Request) {
               await orderService.updateOutboxEventStatus(
                 event.id,
                 nextStatus,
-                lastError || undefined,
+                lastError ?? undefined,
               );
 
               // If failed, trigger Telegram alert to admin channel (Human backstop)

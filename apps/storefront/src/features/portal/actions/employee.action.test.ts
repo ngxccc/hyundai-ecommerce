@@ -3,14 +3,19 @@ import type { UserProfileDTO } from "@nhatnang/database/dtos";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
 import type { getTranslations } from "next-intl/server";
 
-// Register mocks first
-import "@nhatnang/shared/testing/action-mocks";
 import {
   mockAuthCreateEmployee,
   mockUserListEmployees,
   mockAuthGetSession,
   mockUserCheckDuplicateUser,
 } from "@nhatnang/shared/testing/action-mocks";
+
+interface ActionFailure {
+  success: false;
+  error: string;
+  code?: string;
+  fieldErrors?: Record<string, string[]>;
+}
 
 // Bun module mocks require dynamic imports to resolve correctly at load time
 const { listEmployeesAction, createEmployeeAction } = await import("./employee.action");
@@ -28,7 +33,9 @@ describe("employeeAction", () => {
     mockUserCheckDuplicateUser.mockReset();
     mockGetTranslations.mockReset();
     mockGetTranslations.mockResolvedValue(
-      ((key: string) => `translated.${key}`) as any
+      ((key: string) => `translated.${key}`) as unknown as Awaited<
+        ReturnType<typeof getTranslations>
+      >
     );
   });
 
@@ -106,7 +113,7 @@ describe("employeeAction", () => {
         name: "", // Invalid
       });
       expect(result.success).toBe(false);
-      expect((result as any).code).toBe("VALIDATION_ERROR");
+      expect((result as ActionFailure).code).toBe("VALIDATION_ERROR");
     });
 
     it("returns VALIDATION_ERROR when email already exists", async () => {
@@ -120,8 +127,10 @@ describe("employeeAction", () => {
 
       const result = await createEmployeeAction(validForm);
       expect(result.success).toBe(false);
-      expect((result as any).code).toBe("VALIDATION_ERROR");
-      expect((result as any).fieldErrors?.email).toContain(AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS);
+      expect((result as ActionFailure).code).toBe("VALIDATION_ERROR");
+      expect((result as ActionFailure).fieldErrors?.email).toContain(
+        AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS
+      );
     });
 
     it("creates employee successfully", async () => {

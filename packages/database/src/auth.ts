@@ -62,7 +62,9 @@ export const auth = betterAuth({
 
       try {
         const nextServerModule = "next/server";
-        const { after } = await import(nextServerModule);
+        const { after } = (await import(nextServerModule)) as {
+          after: (cb: () => void | Promise<void>) => void;
+        };
         after(sendMail);
       } catch {
         // Fallback for non-Next.js environments (e.g. testing)

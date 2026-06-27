@@ -118,7 +118,7 @@ export function OrderSummarySidebar({
         <div className="flex justify-between text-zinc-500">
           <span>{t("labels.summaryShippingFee")}</span>
           <span className="font-medium text-zinc-900">
-            {priceFormatter.format(parseFloat(order.shippingFee || "0"))}
+            {priceFormatter.format(parseFloat(order.shippingFee ?? "0"))}
           </span>
         </div>
         <div className="flex justify-between text-zinc-500">
@@ -130,7 +130,7 @@ export function OrderSummarySidebar({
         <div className="my-2 flex justify-between border-t border-dashed pt-3 text-base font-bold text-zinc-900">
           <span>{t("labels.summaryTotal")}</span>
           <span>
-            {priceFormatter.format(parseFloat(order.totalAmount || "0"))}
+            {priceFormatter.format(parseFloat(order.totalAmount ?? "0"))}
           </span>
         </div>
 

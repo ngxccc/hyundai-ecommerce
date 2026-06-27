@@ -56,7 +56,6 @@ export function CheckoutProgressTracker({ isB2B = false }: CheckoutProgressTrack
       </h3>
       <div className="relative space-y-8 pl-6 before:absolute before:top-2 before:bottom-2 before:left-2 before:w-0.5 before:bg-zinc-200">
         {steps.map((step, idx) => {
-          // eslint-disable-next-line no-useless-assignment
           let icon = null;
           let connectingLine = null;
 

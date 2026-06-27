@@ -40,6 +40,7 @@ describe("order.actions", () => {
     approveOrderCancellationAction = orderActions.approveOrderCancellationAction;
 
     // Cast as Mock is safe here because database services are mocked in the test environment setup.
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     selectWinningBidMock = orderService.selectWinningBid as unknown as Mock<
       typeof orderService.selectWinningBid
     >;
