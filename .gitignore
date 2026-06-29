@@ -51,8 +51,14 @@ Thumbs.db
 # AI config files
 .cursor/
 .opencode/
+.codex
+.omp
+.agents
+.claude
 .antigravitycli/
 opencode.json
+AGENTS.md
+CLAUDE.md
 
 # Turborepo
 .turbo

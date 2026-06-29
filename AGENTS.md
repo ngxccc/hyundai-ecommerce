@@ -1,1 +1,0 @@
-../../agent-skills-kit/AGENTS.md
