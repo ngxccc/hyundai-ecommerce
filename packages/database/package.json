@@ -37,12 +37,12 @@
     "test": "doppler run -- bun test src/"
   },
   "dependencies": {
-    "@better-auth/drizzle-adapter": "^1.6.22",
+    "@better-auth/drizzle-adapter": "^1.6.23",
     "@neondatabase/serverless": "^1.1.0",
     "@nhatnang/ui": "workspace:*",
     "@paralleldrive/cuid2": "^3.3.0",
     "@t3-oss/env-core": "^0.13.11",
-    "better-auth": "^1.6.22",
+    "better-auth": "^1.6.23",
     "drizzle-orm": "^1.0.0-rc.4",
     "postgres": "^3.4.9",
     "resend": "^6.16.0",

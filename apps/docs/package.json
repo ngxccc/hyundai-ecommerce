@@ -12,10 +12,10 @@
     "start": "next start -p 3002"
   },
   "dependencies": {
-    "fumadocs-core": "^16.9.3",
-    "fumadocs-mdx": "^15.0.11",
-    "fumadocs-ui": "^16.9.3",
-    "lucide-react": "^1.21.0",
+    "fumadocs-core": "^16.10.7",
+    "fumadocs-mdx": "^15.0.13",
+    "fumadocs-ui": "^16.10.7",
+    "lucide-react": "^1.22.0",
     "next": "^16.2.9",
     "react": "^19",
     "react-dom": "^19",
@@ -24,11 +24,11 @@
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
-    "@tailwindcss/postcss": "^4.3.1",
+    "@tailwindcss/postcss": "^4.3.2",
     "@types/mdx": "^2.0.14",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "postcss": "^8.5.14",
+    "postcss": "^8.5.16",
     "tailwindcss": "^4.3.1"
   }
 }
