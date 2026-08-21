@@ -23,7 +23,7 @@
     "next-intl": "^4.13.6",
     "react": "^19",
     "react-dom": "^19",
-    "react-dropzone": "^15.0.0",
+    "react-dropzone": "^20.1.0",
     "react-hook-form": "^7.85.0",
     "zod": "^4.4.3"
   },
