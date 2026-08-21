@@ -28,7 +28,7 @@
     "@types/mdx": "^2.0.14",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "postcss": "^8.5.14",
+    "postcss": "^8.5.26",
     "tailwindcss": "^4.3.1"
   }
 }
