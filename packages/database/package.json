@@ -56,6 +56,6 @@
     "@types/bun": "^1",
     "@types/node": "^26.2.0",
     "@types/uuid": "^11.0.0",
-    "drizzle-kit": "^1.0.0-rc.4"
+    "drizzle-kit": "^1.0.0-rc.5-ab785fc"
   }
 }
