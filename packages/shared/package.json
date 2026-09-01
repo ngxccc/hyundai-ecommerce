@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "@upstash/ratelimit": "^2.0.8",
-    "@upstash/redis": "^1.38.2",
+    "@upstash/redis": "^1.38.3",
     "clsx": "^2.1.1",
-    "react-hook-form": "^7.85.0",
+    "react-hook-form": "^7.86.0",
     "tailwind-merge": "^3.6.0"
   }
 }
