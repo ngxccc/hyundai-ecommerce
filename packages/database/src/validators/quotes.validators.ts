@@ -22,35 +22,44 @@ export const updateQuoteStatusSchema = z.object({
 });
 
 export const adminQuoteItemInputSchema = z.object({
-  productId: z.string().uuid().optional(),
+  productId: z.string().uuid().nullable().optional(),
   isCustomItem: z.boolean().default(false),
   itemName: z.string().min(1, "Item name must not be empty"),
-  itemModel: z.string().optional(),
-  itemSpecs: z.string().optional(),
+  itemModel: z.string().nullable().optional(),
+  itemSpecs: z.string().nullable().optional(),
   quantity: z.number().int().positive("Quantity must be greater than 0"),
   unitPrice: z.union([z.number().nonnegative(), z.string().regex(/^\d+(\.\d{1,2})?$/)]),
   discountPercent: z.union([z.number().min(0).max(100), z.string().regex(/^\d+(\.\d{1,2})?$/)]).default(0),
 });
 
 export const createAdminQuoteSchema = z.object({
-  userId: z.string().uuid().optional(),
+  userId: z.string().uuid().nullable().optional(),
   customerName: z.string().min(2, "Customer name must have at least 2 characters"),
   customerPhone: z.string().regex(/^[0-9+() -]{8,20}$/, "Invalid phone number"),
-  customerEmail: z.string().email("Invalid email format").optional().or(z.literal("")),
-  companyName: z.string().optional(),
-  taxId: z.string().optional(),
-  shippingAddress: z.string().optional(),
+  customerEmail: z
+    .string()
+    .email("Invalid email format")
+    .nullable()
+    .optional()
+    .or(z.literal(""))
+    .or(z.null()),
+  companyName: z.string().nullable().optional(),
+  taxId: z.string().nullable().optional(),
+  shippingAddress: z.string().nullable().optional(),
   vatRate: z.number().int().min(0).max(20).default(10),
-  commercialTerms: z.object({
-    validityDays: z.number().int().positive().default(15),
-    paymentSchedule: z.string().optional(),
-    warrantyTerms: z.string().optional(),
-    deliveryTime: z.string().optional(),
-    deliveryLocation: z.string().optional(),
-  }).optional(),
-  note: z.string().optional(),
-  expirationDate: z.date().optional(),
-  createdByAdminId: z.string().uuid().optional(),
+  commercialTerms: z
+    .object({
+      validityDays: z.number().int().positive().default(15),
+      paymentSchedule: z.string().nullable().optional(),
+      warrantyTerms: z.string().nullable().optional(),
+      deliveryTime: z.string().nullable().optional(),
+      deliveryLocation: z.string().nullable().optional(),
+    })
+    .nullable()
+    .optional(),
+  note: z.string().nullable().optional(),
+  expirationDate: z.date().nullable().optional(),
+  createdByAdminId: z.string().uuid().nullable().optional(),
   items: z.array(adminQuoteItemInputSchema).min(1, "Quote must contain at least 1 item"),
 });
 
