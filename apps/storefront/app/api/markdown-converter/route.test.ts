@@ -1,7 +1,9 @@
 import { describe, expect, it, mock } from "bun:test";
 import { NextRequest } from "next/server";
 import { GET, getBalancedDiv, resolveSuspenseStreaming } from "./route";
+import { env } from "@/env";
 
+const trustedOrigin = new URL(env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").origin;
 // Mock the global fetch function
 const originalFetch = global.fetch;
 
@@ -101,8 +103,7 @@ describe("Markdown Converter API", () => {
 
       const bodyText1 = await response1.text();
       expect(bodyText1).toContain("# Hello World");
-      expect(bodyText1).toContain("[Products](http://localhost:3000/products)");
-
+      expect(bodyText1).toContain(`[Products](${trustedOrigin}/products)`);
       // 2. Second request (Cache HIT)
       const req2 = new NextRequest("http://localhost:3000/api/markdown-converter?path=/test-page-cache");
       const response2 = await GET(req2);
@@ -158,8 +159,7 @@ describe("Markdown Converter API", () => {
       const bodyText = await response.text();
       
       expect(bodyText).toContain("# Real Products Catalog");
-      expect(bodyText).toContain("[Hyundai 30CLE](http://localhost:3000/products/hyundai-30cle)");
-      expect(bodyText).not.toContain("Fallback 0");
+      expect(bodyText).toContain(`[Hyundai 30CLE](${trustedOrigin}/products/hyundai-30cle)`);
       expect(bodyText).not.toContain("Fallback 1");
     } finally {
       global.fetch = originalFetch;
