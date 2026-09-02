@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
@@ -18,6 +18,8 @@ import {
   CheckCircle2,
   ExternalLink,
   Printer,
+  FileSpreadsheet,
+  Loader2,
 } from "lucide-react";
 import type { ComplexQuote } from "@nhatnang/database/services";
 import {
@@ -33,7 +35,29 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
   const t = useTranslations("AdminQuotes");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [isExportingExcel, setIsExportingExcel] = useState(false);
 
+  const handleExportExcel = async () => {
+    try {
+      setIsExportingExcel(true);
+      const res = await fetch(`/api/quotes/${quote.id}/excel`);
+      if (!res.ok) throw new Error("Export failed");
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Bao-Gia-Hyundai-${quote.quoteNumber ?? quote.id.slice(0, 8)}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      toast.success(t("exportExcelSuccess" as never) || "Tải file Excel báo giá thành công!");
+    } catch {
+      toast.error(t("exportExcelError" as never) || "Xuất file Excel thất bại. Vui lòng thử lại.");
+    } finally {
+      setIsExportingExcel(false);
+    }
+  };
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case "pending_review":
@@ -127,6 +151,20 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
               <Printer className="h-4 w-4" />
               In / Xuất PDF
             </Link>
+          </Button>
+
+          <Button
+            variant="outline"
+            className="gap-2 shadow-xs"
+            disabled={isExportingExcel}
+            onClick={handleExportExcel}
+          >
+            {isExportingExcel ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <FileSpreadsheet className="h-4 w-4 text-emerald-600" />
+            )}
+            Xuất Excel (.xlsx)
           </Button>
 
           {quote.status === "pending_review" && (

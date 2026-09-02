@@ -17,6 +17,7 @@
     "@hookform/resolvers": "^5.9.1",
     "@t3-oss/env-nextjs": "^0.13.11",
     "cloudinary": "^2.11.0",
+    "exceljs": "^4.4.0",
     "lucide-react": "^1.37.0",
     "next": "^16.3.3",
     "next-cloudinary": "^6.18.8",
@@ -35,6 +36,7 @@
     "@nhatnang/typescript-config": "workspace:*",
     "@nhatnang/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.3.3",
+    "@types/exceljs": "^1.3.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "^4.3.1"
