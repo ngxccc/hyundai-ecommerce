@@ -119,6 +119,14 @@ await mock.module("@nhatnang/database/services", () => ({
 await mock.module("next/cache", () => ({
   revalidatePath: mock(),
   revalidateTag: mock(),
+  cacheLife: mock(),
+  cacheTag: mock(),
+  unstable_cache: mock((fn: (...args: unknown[]) => unknown) => fn),
+  unstable_noStore: mock(),
+  unstable_cacheLife: mock(),
+  unstable_cacheTag: mock(),
+  refresh: mock(),
+  updateTag: mock(),
 }));
 
 await mock.module("@/shared/lib/action-auth", () => ({

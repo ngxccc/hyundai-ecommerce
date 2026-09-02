@@ -49,8 +49,7 @@ jobs:
       - name: Final Safety Check (Lint, Test)
         run: bun turbo run lint check-types test --filter=storefront
         env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_STAGING }}
-
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
       - name: Deploy to Vercel
         uses: ./.github/vercel-deploy
         with:
