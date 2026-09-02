@@ -19,13 +19,14 @@ export const mockProductCreate = mock();
 export const mockProductUpdate = mock();
 export const mockProductDelete = mock();
 export const mockProductGetById = mock();
+export const mockProductGetAll = mock();
 
 export const mockQuotesApproveAndConvertToOrder = mock();
 export const mockQuotesGetComplexQuote = mock();
 export const mockQuotesUpdateQuoteItemPrice = mock();
 export const mockQuotesAddQuoteMessage = mock();
 export const mockQuotesUpdateQuoteStatus = mock();
-
+export const mockQuotesCreateAdminQuote = mock();
 export const mockCartGetOrCreateCart = mock();
 export const mockCartGetCartItems = mock();
 
@@ -79,6 +80,7 @@ await mock.module("@nhatnang/database/services", () => ({
     update: mockProductUpdate,
     delete: mockProductDelete,
     getById: mockProductGetById,
+    getAll: mockProductGetAll,
   },
   quotesService: {
     approveAndConvertToOrder: mockQuotesApproveAndConvertToOrder,
@@ -86,6 +88,7 @@ await mock.module("@nhatnang/database/services", () => ({
     updateQuoteItemPrice: mockQuotesUpdateQuoteItemPrice,
     addQuoteMessage: mockQuotesAddQuoteMessage,
     updateQuoteStatus: mockQuotesUpdateQuoteStatus,
+    createAdminQuote: mockQuotesCreateAdminQuote,
   },
   cartService: {
     getOrCreateCart: mockCartGetOrCreateCart,
@@ -206,11 +209,13 @@ beforeEach(() => {
   mockProductUpdate.mockReset();
   mockProductDelete.mockReset();
   mockProductGetById.mockReset();
+  mockProductGetAll.mockReset();
   mockQuotesApproveAndConvertToOrder.mockReset();
   mockQuotesGetComplexQuote.mockReset();
   mockQuotesUpdateQuoteItemPrice.mockReset();
   mockQuotesAddQuoteMessage.mockReset();
   mockQuotesUpdateQuoteStatus.mockReset();
+  mockQuotesCreateAdminQuote.mockReset();
   mockCartGetOrCreateCart.mockReset();
   mockCartGetCartItems.mockReset();
   mockOrderUpdateOrderStatus.mockReset();

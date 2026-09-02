@@ -182,4 +182,65 @@ describe("product.actions", () => {
       "products",
     );
   });
+
+  describe("searchProductsAction()", () => {
+    describe("when search query is empty or whitespace", () => {
+      test("should return empty list without querying the database", async () => {
+        const { searchProductsAction } = await import("./product.actions");
+        const res = await searchProductsAction("   ");
+        expect(res).toEqual({ success: true, data: [] });
+      });
+    });
+
+    describe("when search query contains model keyword", () => {
+      test("should query productService.getAll with keyword and return matching products", async () => {
+        const { productService } = await import("@nhatnang/database/services");
+        const { searchProductsAction } = await import("./product.actions");
+
+        const mockProducts: ProductDTO[] = [
+          {
+            id: "prod-1",
+            nameVi: "Máy phát điện Hyundai DHY12500SE",
+            nameEn: null,
+            slug: "hyundai-dhy12500se",
+            price: "70000000.00",
+            descriptionVi: null,
+            descriptionEn: null,
+            shortDescriptionVi: null,
+            shortDescriptionEn: null,
+            images: ["https://res.cloudinary.com/demo/image/upload/sample.jpg"],
+            brandId: "brand-1",
+            categoryId: "cat-1",
+            specs: {
+              model: "DHY12500SE",
+              power: 12.5,
+              phase: "1phase",
+              fuelType: "diesel",
+            },
+            totalStockCache: 4,
+            isQuoteOnly: false,
+          },
+        ];
+
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        const getAllMock = productService.getAll as Mock<
+          typeof productService.getAll
+        >;
+        getAllMock.mockResolvedValueOnce({
+          data: mockProducts,
+          hasMore: false,
+          nextCursor: undefined,
+          prevCursor: undefined,
+        });
+
+        const res = await searchProductsAction("DHY12500SE", 5);
+
+        expect(getAllMock).toHaveBeenCalledWith(5, { search: "DHY12500SE" });
+        expect(res).toEqual({
+          success: true,
+          data: mockProducts,
+        });
+      });
+    });
+  });
 });

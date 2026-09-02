@@ -228,7 +228,10 @@
       "actions": {
         "edit": "Sửa",
         "delete": "Xóa",
-        "inventory": "Tồn kho"
+        "inventory": "Tồn kho",
+        "addToQuote": "Thêm vào báo giá",
+        "addedToQuoteSuccess": "Đã thêm {name} vào bản nháp báo giá",
+        "viewQuoteDraft": "Xem báo giá"
       }
     },
     "messages": {
@@ -678,6 +681,7 @@
     "createPaymentTransactionFailed": "Tạo giao dịch thanh toán thất bại",
     "paymentTransactionNotFound": "Không tìm thấy giao dịch thanh toán",
     "shippingBidNotFound": "Không tìm thấy báo giá vận chuyển",
+    "searchProductsFailed": "Tìm kiếm sản phẩm thất bại",
     "brandNotFound": "Không tìm thấy thương hiệu",
     "categoryNotFound": "Không tìm thấy danh mục",
     "validation": {
@@ -963,6 +967,20 @@
     "searchPlaceholder": "Tìm kiếm theo Mã báo giá, Tên đại lý B2B...",
     "noQuotesFound": "Không tìm thấy báo giá B2B nào khớp với bộ lọc.",
     "noCompany": "Không có công ty",
-    "detail": "Chi tiết"
+    "detail": "Chi tiết",
+    "searchModal": {
+      "title": "Tìm kiếm sản phẩm vào báo giá",
+      "description": "Tìm kiếm nhanh theo tên máy phát điện, model, công suất hoặc mã định danh để thêm vào báo giá.",
+      "inputPlaceholder": "Nhập tên máy (ví dụ: DHY12500SE, HY3200, 10kVA)...",
+      "searching": "Đang tìm kiếm sản phẩm...",
+      "inStock": "Còn {count} máy",
+      "outOfStock": "Hết hàng / Đặt trước",
+      "select": "Chọn",
+      "added": "Đã thêm",
+      "noResults": "Không tìm thấy sản phẩm nào",
+      "noResultsHint": "Vui lòng kiểm tra lại từ khóa hoặc mã model máy phát điện.",
+      "emptyPrompt": "Nhập ít nhất 1 ký tự để tìm kiếm máy phát điện trong kho",
+      "productAddedToast": "Đã thêm \"{name}\" vào bản nháp báo giá"
+    }
   }
 }
