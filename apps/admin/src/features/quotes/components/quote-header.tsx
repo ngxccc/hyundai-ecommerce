@@ -185,7 +185,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
                 {t("buyer")}
               </p>
               <p className="text-foreground text-sm font-semibold">
-                {quote.user.name}
+                {quote.user?.name ?? quote.customerName ?? "Khách hàng"}
               </p>
             </div>
           </div>
@@ -197,7 +197,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
                 {t("buyer")} (B2B Entity)
               </p>
               <p className="text-foreground text-sm font-semibold">
-                {quote.user.companyName ?? "N/A"}
+                {quote.user?.companyName ?? quote.companyName ?? "N/A"}
               </p>
             </div>
           </div>
@@ -209,7 +209,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
                 Email
               </p>
               <p className="text-foreground max-w-50 truncate text-sm font-semibold">
-                {quote.user.email}
+                {quote.user?.email ?? quote.customerEmail ?? "N/A"}
               </p>
             </div>
           </div>
@@ -221,7 +221,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
                 {t("buyer")} Location
               </p>
               <p className="text-foreground text-sm font-semibold">
-                {quote.user.province ?? "N/A"}
+                {quote.user?.province ?? quote.shippingAddress ?? "N/A"}
               </p>
             </div>
           </div>

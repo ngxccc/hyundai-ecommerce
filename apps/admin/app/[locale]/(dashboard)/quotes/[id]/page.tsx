@@ -19,9 +19,10 @@ export async function generateMetadata({
   const { locale: rawLocale, id } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "AdminQuotes" });
+  const shortId = id.length > 8 ? id.slice(0, 8) : id;
 
   return {
-    title: `${t("title")} #${id.slice(0, 8)}`,
+    title: `${t("title")} #${shortId}`,
   };
 }
 
@@ -41,11 +42,13 @@ export default async function AdminQuoteDetailPage({
   if (!quote) {
     notFound();
   }
+  const displayId =
+    quote.quoteNumber ?? (id.length > 8 ? `#${id.slice(0, 8)}` : id);
 
   return (
     <>
       <BrandHeader
-        title={`${tHeader("title")} #${id.slice(0, 8)}`}
+        title={`${tHeader("title")} ${displayId}`}
         description={tHeader("description")}
         showAddButton={false}
       />
@@ -55,10 +58,9 @@ export default async function AdminQuoteDetailPage({
           items={[
             { label: tNav("overview"), href: "/" },
             { label: "Báo giá", href: "/quotes" },
-            { label: `#${id.slice(0, 8)}` },
+            { label: displayId },
           ]}
         />
-
         <QuoteHeader quote={quote} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">

@@ -1,5 +1,11 @@
 import { env } from "@/env";
 import { v2 as cloudinary } from "cloudinary";
+import {
+  validateUploadedFile,
+  isCloudinaryUrl,
+} from "../utils/cloudinary.utils";
+
+export { validateUploadedFile, isCloudinaryUrl };
 
 // Configure Cloudinary
 cloudinary.config({
@@ -7,34 +13,6 @@ cloudinary.config({
   api_key: env.CLOUDINARY_API_KEY,
   api_secret: env.CLOUDINARY_API_SECRET,
 });
-
-export const validateUploadedFile = (
-  file: unknown,
-): { valid: boolean; error?: "fileTooLarge" | "invalidMimeType" } => {
-  if (!(file instanceof File)) {
-    return { valid: true };
-  }
-  if (file.size > 10 * 1024 * 1024) {
-    return { valid: false, error: "fileTooLarge" };
-  }
-  if (!file.type.startsWith("image/")) {
-    return { valid: false, error: "invalidMimeType" };
-  }
-  return { valid: true };
-};
-export const isCloudinaryUrl = (url: string | null | undefined): boolean => {
-  if (!url || typeof url !== "string") return false;
-  try {
-    const parsed = new URL(url);
-    return (
-      parsed.hostname === "res.cloudinary.com" ||
-      parsed.hostname === "cloudinary.com" ||
-      parsed.hostname.endsWith(".cloudinary.com")
-    );
-  } catch {
-    return false;
-  }
-};
 
 
 export const uploadToCloudinary = async (

@@ -10,7 +10,7 @@ import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
 import type { TProductGridItem } from "../product-form-types";
 import { DeleteProductButton } from "./delete-product-button";
-import { isCloudinaryUrl } from "@/shared/services";
+import { isCloudinaryUrl } from "@/shared/utils";
 
 
 export const ProductCard = ({ product }: { product: TProductGridItem }) => {
