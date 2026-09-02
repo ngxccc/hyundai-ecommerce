@@ -22,7 +22,7 @@ import {
 } from "@nhatnang/ui/components/ui/card";
 import { Input } from "@nhatnang/ui/components/ui/input";
 
-import { isCloudinaryUrl } from "@/shared/services";
+import { isCloudinaryUrl } from "@/shared/utils";
 
 export type AdminImageItem = string | File;
 

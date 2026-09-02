@@ -26,7 +26,7 @@ import {
   CardTitle,
 } from "@nhatnang/ui/components/ui/card";
 import type { BrandDTO } from "@nhatnang/database/dtos";
-import { isCloudinaryUrl } from "@/shared/services";
+import { isCloudinaryUrl } from "@/shared/utils";
 
 import {
   type TCreateBrandInput,

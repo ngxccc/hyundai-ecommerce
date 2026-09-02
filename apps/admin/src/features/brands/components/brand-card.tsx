@@ -10,7 +10,7 @@ import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
 import type { BrandDTO } from "@nhatnang/database/dtos";
 
-import { isCloudinaryUrl } from "@/shared/services";
+import { isCloudinaryUrl } from "@/shared/utils";
 
 import { DeleteBrandButton } from "./delete-brand-button";
 

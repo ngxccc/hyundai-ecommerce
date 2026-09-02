@@ -6,7 +6,7 @@
     "analyze": "next experimental-analyze",
     "build": "doppler run -- next build",
     "check-types": "tsc --noEmit",
-    "dev": "doppler run -- next dev -p 3001",
+    "dev": "doppler run -c dev -- next dev -p 3001",
     "inspect": "bunx @eslint/config-inspector@latest",
     "lint": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",

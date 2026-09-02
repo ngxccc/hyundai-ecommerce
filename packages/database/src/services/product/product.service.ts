@@ -246,7 +246,7 @@ export class DbProductService implements ProductService {
         products.price,
         products.images,
       )
-      .orderBy(desc(products.totalSalesCache))
+      .orderBy(desc(sql<number>`sum(${orderItems.quantity})`))
       .limit(limit);
 
     return result.map((r) => ({

@@ -107,7 +107,14 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
   const calculateTotal = (quote: QuoteListItem) => {
     let total = 0;
     for (const line of quote.items) {
-      total += parseFloat(line.agreedPrice ?? line.requestedPrice) * line.quantity;
+      const price = parseFloat(
+        line.agreedPrice ??
+          line.finalUnitPrice ??
+          line.requestedPrice ??
+          line.unitPrice ??
+          "0",
+      );
+      total += price * line.quantity;
     }
     return total;
   };
@@ -172,9 +179,15 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="text-sm font-medium">{quote.user.name}</span>
+                        <span className="text-sm font-medium">
+                          {quote.user?.name ??
+                            quote.customerName ??
+                            t("noCompany")}
+                        </span>
                         <span className="text-muted-foreground text-xs">
-                          {quote.user.companyName ?? t("noCompany")}
+                          {quote.user?.companyName ??
+                            quote.companyName ??
+                            t("noCompany")}
                         </span>
                       </div>
                     </TableCell>
@@ -219,9 +232,15 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
 
                 <div className="flex flex-col gap-1">
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold">{quote.user.name}</span>
+                    <span className="text-sm font-bold">
+                      {quote.user?.name ??
+                        quote.customerName ??
+                        t("noCompany")}
+                    </span>
                     <span className="text-muted-foreground text-xs">
-                      {quote.user.companyName ?? t("noCompany")}
+                      {quote.user?.companyName ??
+                        quote.companyName ??
+                        t("noCompany")}
                     </span>
                   </div>
                   <span className="text-muted-foreground mt-1 text-xs">

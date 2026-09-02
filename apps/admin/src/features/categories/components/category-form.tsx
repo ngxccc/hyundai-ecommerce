@@ -10,7 +10,7 @@ import {
   createCategoryAction,
   updateCategoryAction,
 } from "../actions/category.actions";
-import { isCloudinaryUrl } from "@/shared/services";
+import { isCloudinaryUrl } from "@/shared/utils";
 
 import { Button } from "@nhatnang/ui/components/ui/button";
 import {

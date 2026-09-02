@@ -129,10 +129,12 @@ export const updateQuoteItemPriceAction = async (
 
     const formattedPrice =
       parseFloat(agreedPrice).toLocaleString("vi-VN") + " VND";
+    const itemName =
+      item.itemName ?? item.product?.nameVi ?? "hạng mục báo giá";
     await quotesService.addQuoteMessage({
       quoteId,
       senderId: adminUserId,
-      message: `[SYSTEM] Đã cập nhật giá thương lượng cho sản phẩm "${item.product.nameVi}" thành ${formattedPrice}`,
+      message: `[SYSTEM] Đã cập nhật giá thương lượng cho sản phẩm "${itemName}" thành ${formattedPrice}`,
     });
 
     if (quote.status === "pending_review") {

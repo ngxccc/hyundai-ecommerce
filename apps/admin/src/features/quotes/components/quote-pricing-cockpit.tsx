@@ -117,10 +117,18 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
   let totalNegotiatedAmount = 0;
 
   for (const item of quote.items) {
-    const reqPrice = parseFloat(item.requestedPrice);
+    const reqPrice = parseFloat(
+      item.requestedPrice ?? item.unitPrice ?? "0",
+    );
     totalRequestedAmount += reqPrice * item.quantity;
 
-    const finalPrice = parseFloat(item.agreedPrice ?? item.requestedPrice);
+    const finalPrice = parseFloat(
+      item.agreedPrice ??
+        item.finalUnitPrice ??
+        item.requestedPrice ??
+        item.unitPrice ??
+        "0",
+    );
     totalNegotiatedAmount += finalPrice * item.quantity;
   }
 
@@ -153,16 +161,16 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
               {quote.items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="max-w-50 truncate font-medium">
-                    {item.product.nameVi}
+                    {item.itemName ?? item.product?.nameVi ?? "Sản phẩm"}
                   </TableCell>
                   <TableCell className="text-right font-medium">
                     {item.quantity}
                   </TableCell>
                   <TableCell className="text-muted-foreground text-right font-semibold">
-                    {formatCurrency(item.product.price)}
+                    {formatCurrency(item.product?.price ?? item.unitPrice ?? "0")}
                   </TableCell>
                   <TableCell className="text-right font-semibold text-orange-600 dark:text-orange-400">
-                    {formatCurrency(item.requestedPrice)}
+                    {formatCurrency(item.requestedPrice ?? item.unitPrice ?? "0")}
                   </TableCell>
                   <TableCell className="text-right">
                     {isFinalized ? (
@@ -176,7 +184,7 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
                         <Input
                           type="text"
                           disabled={isPending}
-                          placeholder={item.requestedPrice}
+                          placeholder={item.requestedPrice ?? item.unitPrice ?? undefined}
                           value={inputValues[item.id] ?? ""}
                           onChange={(e) =>
                             handleInputChange(item.id, e.target.value)

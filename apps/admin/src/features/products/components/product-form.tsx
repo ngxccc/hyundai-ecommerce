@@ -22,7 +22,7 @@ import {
   type TCreateProductInput,
   createProductSchema,
 } from "@nhatnang/database/validators";
-import { isCloudinaryUrl } from "@/shared/services";
+import { isCloudinaryUrl } from "@/shared/utils";
 
 
 import {
