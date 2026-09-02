@@ -3,3 +3,8 @@ export * from "./quote-pricing-cockpit";
 export * from "./quote-negotiation-chat";
 export * from "./quote-list";
 export * from "./product-search-modal";
+export * from "./customer-info-form";
+export * from "./quote-line-items-table";
+export * from "./commercial-terms-editor";
+export * from "./quote-financial-summary";
+export * from "./quote-composer";

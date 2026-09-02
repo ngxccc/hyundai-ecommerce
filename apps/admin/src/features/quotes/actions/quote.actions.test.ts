@@ -6,6 +6,7 @@ import {
   updateQuoteItemPriceAction,
   sendQuoteMessageAction,
   updateQuoteStatusAction,
+  createAdminQuoteAction,
 } from "./quote.actions";
 import { quotesService, type ComplexQuote } from "@nhatnang/database/services";
 import {
@@ -186,6 +187,95 @@ describe("quote.actions", () => {
         "rejected",
       );
       expect(quotesService.addQuoteMessage).toHaveBeenCalled();
+    });
+  });
+
+  describe("createAdminQuoteAction", () => {
+    describe("when input payload is valid", () => {
+      test("should call quotesService.createAdminQuote and return created quote", async () => {
+        const mockCreatedQuote: TQuote = {
+          id: "019dee3c-0163-777a-825a-a4732f2ecce9",
+          quoteNumber: "QT-20260902-001",
+          userId: null,
+          customerName: "Nguyen Van A",
+          customerPhone: "0987654321",
+          customerEmail: "anguyen@example.com",
+          companyName: "Alpha Construction JSC",
+          taxId: "0101234567",
+          shippingAddress: "123 Hanoi Street",
+          status: "approved",
+          subtotalPrice: "70000000.00",
+          vatRate: 10,
+          vatAmount: "7000000.00",
+          totalQuotedPrice: "77000000.00",
+          commercialTerms: {
+            validityDays: 15,
+            paymentSchedule: "30% deposit, 70% before delivery",
+            warrantyTerms: "12 months",
+            deliveryTime: "3-5 days",
+            deliveryLocation: "Hanoi",
+          },
+          expirationDate: new Date("2026-09-17T00:00:00.000Z"),
+          note: null,
+          orderId: null,
+          createdByAdminId: "admin-1",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        (
+          quotesService.createAdminQuote as Mock<
+            typeof quotesService.createAdminQuote
+          >
+        ).mockResolvedValueOnce(mockCreatedQuote);
+
+        const res = await createAdminQuoteAction({
+          customerName: "Nguyen Van A",
+          customerPhone: "0987654321",
+          customerEmail: "anguyen@example.com",
+          companyName: "Alpha Construction JSC",
+          taxId: "0101234567",
+          shippingAddress: "123 Hanoi Street",
+          vatRate: 10,
+          commercialTerms: {
+            validityDays: 15,
+            paymentSchedule: "30% deposit, 70% before delivery",
+            warrantyTerms: "12 months",
+            deliveryTime: "3-5 days",
+            deliveryLocation: "Hanoi",
+          },
+          items: [
+            {
+              productId: "00000000-0000-4000-8000-000000000001",
+              isCustomItem: false,
+              itemName: "Hyundai Generator 10kVA",
+              itemModel: "DHY12500SE",
+              itemSpecs: "10kVA, 1 Phase",
+              quantity: 1,
+              unitPrice: 70000000,
+              discountPercent: 0,
+            },
+          ],
+        });
+
+        expect(res.success).toBe(true);
+        expect(res.data).toEqual(mockCreatedQuote);
+        expect(quotesService.createAdminQuote).toHaveBeenCalled();
+        expect(revalidatePath).toHaveBeenCalledWith("/quotes");
+      });
+    });
+
+    describe("when input payload is missing required customer fields", () => {
+      test("should return validation error without calling quote service", async () => {
+        const res = await createAdminQuoteAction({
+          customerName: "",
+          customerPhone: "invalid-phone",
+          items: [],
+        });
+
+        expect(res.success).toBe(false);
+        expect(quotesService.createAdminQuote).not.toHaveBeenCalled();
+      });
     });
   });
 });

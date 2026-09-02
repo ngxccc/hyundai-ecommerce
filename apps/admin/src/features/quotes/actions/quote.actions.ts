@@ -10,8 +10,10 @@ import {
   updateQuoteItemPriceSchema,
   sendQuoteMessageSchema,
   updateQuoteStatusSchema,
+  createAdminQuoteSchema,
 } from "@nhatnang/database/validators";
-
+import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
+import { formatValidationErrors } from "@/shared/utils/validation";
 export const approveAndConvertToOrderAction = async (quoteId: string) => {
   const t = await getTranslations("errors");
   try {
@@ -333,6 +335,58 @@ export const updateQuoteStatusAction = async (
     return {
       success: false as const,
       error: t("default"),
+    };
+  }
+};
+
+/**
+ * Server Action to create a new formal admin quote with line items and snapshot fields.
+ */
+export const createAdminQuoteAction = async (payload: unknown) => {
+  const t = await getTranslations("errors");
+  try {
+    const session = await requireAuth();
+
+    const parsed = await createAdminQuoteSchema.safeParseAsync(payload);
+    if (!parsed.success) {
+      return {
+        success: false as const,
+        code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+        error: t("validationError"),
+        fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
+          t(key as never),
+        ),
+      };
+    }
+
+    const createdQuote = await quotesService.createAdminQuote({
+      ...parsed.data,
+      createdByAdminId: session.user.id,
+    });
+
+    revalidatePath("/quotes");
+
+    return {
+      success: true as const,
+      data: createdQuote,
+    };
+  } catch (error: unknown) {
+    if (error instanceof AuthError) {
+      const message =
+        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
+      return { success: false as const, error: message };
+    }
+
+    if (error instanceof Error && error.message.startsWith("errors.")) {
+      const key = error.message.replace("errors.", "");
+      // @ts-expect-error dynamic translation key lookup
+      return { success: false as const, error: t(key) };
+    }
+
+    console.error("[createAdminQuoteAction]", error);
+    return {
+      success: false as const,
+      error: t("createQuoteFailed"),
     };
   }
 };
