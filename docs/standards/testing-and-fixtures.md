@@ -2,12 +2,12 @@
 
 ## 1. Test Suite Hierarchy & Naming Conventions
 
-All test suites (`*.test.ts`) MUST adhere to the standardized BDD hierarchical structure using `bun:test`:
+All test suites (`*.test.ts`) MUST strictly adhere to the mandatory 3-Tier BDD hierarchical structure using `bun:test`:
 
-- **Level 1 (Domain Boundary / Service Root)**: `describe("<Domain> Service Integration", () => { ... })` or `describe("<Domain> Module", () => { ... })`
-- **Level 2 (Method / Endpoint Scope)**: Pure method name or route — `describe("createOrder()", () => { ... })` or `describe("POST /api/checkout", () => { ... })`. Never append custom parenthetical qualifiers to Level 2.
-- **Level 2.5 (Context / Scenarios — Optional)**: When a method/endpoint encompasses multiple distinct scenarios (validation, concurrency, edge cases), group them using `describe("when <context/scenario>", () => { ... })`.
-- **Level 3 (Test Case)**: `test("should <action and expected outcome> when <condition>", async () => { ... })` (or `it(...)`).
+- **Tier 1 (Domain Boundary / Service Root)**: `describe("<Domain> Service", () => { ... })` or `describe("<Domain> Module Integration", () => { ... })`
+- **Tier 2 (Method / Endpoint Scope)**: Pure method name or route — `describe("<methodName>()", () => { ... })` or `describe("<HTTP_METHOD> <route>", () => { ... })`. Never append custom parenthetical qualifiers to Tier 2.
+- **Tier 2.5 (Scenario Context — Mandatory)**: Every single test case MUST be enclosed in a context block — `describe("when <context/scenario>", () => { ... })`. Direct test cases under Tier 2 without a `when` context block are PROHIBITED.
+- **Tier 3 (Test Case)**: `test("should <action and expected outcome> when <condition>", async () => { ... })` (or `it(...)`).
 
 ```ts
 import { expect, test, describe, beforeEach, vi } from "bun:test";
@@ -28,8 +28,10 @@ describe("OrderService", () => {
   });
 
   describe("updateOrderStatus()", () => {
-    test("should update status and increment product sales cache when transition is PENDING to PROCESSING", async () => {
-      // Arrange, Act, Assert
+    describe("when transition goes from PENDING to PROCESSING", () => {
+      test("should update status and increment product sales cache", async () => {
+        // Arrange, Act, Assert
+      });
     });
   });
 });
