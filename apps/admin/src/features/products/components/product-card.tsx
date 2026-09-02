@@ -1,20 +1,22 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Edit, Package } from "lucide-react";
+import { Edit, Package, FilePlus } from "lucide-react";
 import { Card } from "@nhatnang/ui/components/ui/card";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
+import { toast } from "@nhatnang/ui/components/ui/sonner";
 import type { TProductGridItem } from "../product-form-types";
 import { DeleteProductButton } from "./delete-product-button";
 import { isCloudinaryUrl } from "@/shared/utils";
-
-
+import { useQuoteDraftStore } from "@/features/quotes/stores";
 export const ProductCard = ({ product }: { product: TProductGridItem }) => {
   const t = useTranslations("AdminProducts.card");
+  const router = useRouter();
+  const addProductToDraft = useQuoteDraftStore((s) => s.addProduct);
 
   const status = product.totalStockCache > 0 ? "active" : "outOfStock";
   const image =
@@ -24,6 +26,42 @@ export const ProductCard = ({ product }: { product: TProductGridItem }) => {
     currency: "VND",
   }).format(Number(product.price));
 
+  const handleAddToQuote = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    addProductToDraft({
+      id: product.id,
+      nameVi: product.nameVi,
+      nameEn: null,
+      slug: product.slug,
+      price: product.price,
+      descriptionVi: null,
+      descriptionEn: null,
+      shortDescriptionVi: null,
+      shortDescriptionEn: null,
+      images: product.images ?? [],
+      brandId: null,
+      categoryId: product.categoryId,
+      specs: {},
+      totalStockCache: product.totalStockCache,
+      isQuoteOnly: product.isQuoteOnly,
+    });
+
+    const translate = t as unknown as (
+      key: string,
+      params?: Record<string, unknown>,
+    ) => string;
+    toast.success(
+      translate("actions.addedToQuoteSuccess", { name: product.nameVi }),
+      {
+        action: {
+          label: translate("actions.viewQuoteDraft"),
+          onClick: () => router.push("/quotes/new"),
+        },
+      },
+    );
+  };
   return (
     <Card className="group relative flex flex-col gap-0 p-3 shadow-sm">
       <div className="absolute top-4 right-4 z-10">
@@ -82,6 +120,16 @@ export const ProductCard = ({ product }: { product: TProductGridItem }) => {
             </p>
           </div>
           <div className="flex gap-1 transition-opacity sm:opacity-40 sm:group-hover:opacity-100">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={handleAddToQuote}
+              className="text-muted-foreground hover:bg-muted hover:text-primary h-8 w-8 transition-colors"
+              title={t("actions.addToQuote" as never)}
+            >
+              <FilePlus className="h-4 w-4" />
+            </Button>
             <Link href={`/products/${product.id}/inventory`}>
               <Button
                 variant="ghost"

@@ -213,3 +213,39 @@ export async function deleteProductAction(id: string) {
     };
   }
 }
+
+/**
+ * Server action for searching products with debounced querying.
+ * Used by the ProductSearchModal and Quote Composer to locate generator models.
+ *
+ * @param query - Keyword matching nameVi, nameEn, model, or slug
+ * @param limit - Max number of items to return (default: 10)
+ */
+export async function searchProductsAction(query: string, limit = 10) {
+  try {
+    await requireAuth();
+
+    const cleanQuery = query.trim();
+    if (!cleanQuery) {
+      return { success: true as const, data: [] };
+    }
+
+    const { data } = await productService.getAll(limit, {
+      search: cleanQuery,
+    });
+
+    return { success: true as const, data };
+  } catch (error) {
+    const t = await getTranslations("errors");
+    if (error instanceof AuthError) {
+      const message =
+        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
+      return { success: false as const, error: message };
+    }
+    console.error("[searchProductsAction]", error);
+    return {
+      success: false as const,
+      error: t("searchProductsFailed" as never),
+    };
+  }
+}

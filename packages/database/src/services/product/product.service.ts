@@ -352,6 +352,7 @@ export class DbProductService implements ProductService {
             this.buildSpecLikeFilter("model", options.search),
             sql`${products.nameVi} ILIKE ${`%${options.search}%`}`,
             sql`${products.nameEn} ILIKE ${`%${options.search}%`}`,
+            sql`${products.slug} ILIKE ${`%${options.search}%`}`,
           )
         : undefined,
       isNull(products.deletedAt),

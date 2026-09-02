@@ -228,7 +228,10 @@
       "actions": {
         "edit": "Edit",
         "delete": "Delete",
-        "inventory": "Inventory"
+        "inventory": "Inventory",
+        "addToQuote": "Add to Quote",
+        "addedToQuoteSuccess": "Added {name} to quote draft",
+        "viewQuoteDraft": "View Quote"
       }
     },
     "messages": {
@@ -674,7 +677,7 @@
     "createPaymentTransactionFailed": "Failed to create payment transaction",
     "paymentTransactionNotFound": "Payment transaction not found",
     "shippingBidNotFound": "Shipping bid not found",
-    "brandNotFound": "Brand not found",
+    "searchProductsFailed": "Failed to search products",
     "categoryNotFound": "Category not found",
     "validation": {
       "slugExists": "Slug already exists"
@@ -959,6 +962,20 @@
     "searchPlaceholder": "Search by Quote ID, B2B Dealer name...",
     "noQuotesFound": "No B2B quotes found matching filters.",
     "noCompany": "No Company",
-    "detail": "Detail"
+    "detail": "Detail",
+    "searchModal": {
+      "title": "Search Products for Quote",
+      "description": "Quickly search by generator name, model, power rating, or slug to add line items.",
+      "inputPlaceholder": "Enter model name (e.g. DHY12500SE, HY3200, 10kVA)...",
+      "searching": "Searching products...",
+      "inStock": "{count} in stock",
+      "outOfStock": "Out of Stock / Pre-order",
+      "select": "Select",
+      "added": "Added",
+      "noResults": "No products found",
+      "noResultsHint": "Please verify your search query or model number.",
+      "emptyPrompt": "Type at least 1 character to search generator catalog",
+      "productAddedToast": "Added \"{name}\" to quote draft"
+    }
   }
 }
