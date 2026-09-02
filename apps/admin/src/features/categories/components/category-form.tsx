@@ -10,6 +10,8 @@ import {
   createCategoryAction,
   updateCategoryAction,
 } from "../actions/category.actions";
+import { isCloudinaryUrl } from "@/shared/services";
+
 import { Button } from "@nhatnang/ui/components/ui/button";
 import {
   Form,
@@ -90,7 +92,7 @@ export const CategoryForm = ({
           imagesToUpload.push(item);
         } else if (
           typeof item === "string" &&
-          !item.includes("cloudinary.com")
+          !isCloudinaryUrl(item)
         ) {
           imagesToUpload.push(item);
         } else {

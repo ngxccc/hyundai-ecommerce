@@ -22,6 +22,20 @@ export const validateUploadedFile = (
   }
   return { valid: true };
 };
+export const isCloudinaryUrl = (url: string | null | undefined): boolean => {
+  if (!url || typeof url !== "string") return false;
+  try {
+    const parsed = new URL(url);
+    return (
+      parsed.hostname === "res.cloudinary.com" ||
+      parsed.hostname === "cloudinary.com" ||
+      parsed.hostname.endsWith(".cloudinary.com")
+    );
+  } catch {
+    return false;
+  }
+};
+
 
 export const uploadToCloudinary = async (
   item: File | string,
@@ -54,7 +68,7 @@ export const uploadToCloudinary = async (
       return result.secure_url;
     }
 
-    if (typeof item === "string" && !item.includes("cloudinary.com")) {
+    if (typeof item === "string" && !isCloudinaryUrl(item)) {
       const result = await cloudinary.uploader.upload(item, {
         folder,
       });
@@ -62,7 +76,7 @@ export const uploadToCloudinary = async (
     }
 
     // Already a Cloudinary URL or invalid format
-    if (typeof item === "string" && item.includes("cloudinary.com")) {
+    if (typeof item === "string" && isCloudinaryUrl(item)) {
       return item;
     }
 
@@ -75,7 +89,7 @@ export const uploadToCloudinary = async (
 
 export const getPublicIdFromUrl = (url: string): string | null => {
   if (!url || typeof url !== "string") return null;
-  if (!url.includes("cloudinary.com")) return null;
+  if (!isCloudinaryUrl(url)) return null;
 
   try {
     const parts = url.split("/");

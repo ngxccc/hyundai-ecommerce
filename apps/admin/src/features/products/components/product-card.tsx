@@ -10,6 +10,8 @@ import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
 import type { TProductGridItem } from "../product-form-types";
 import { DeleteProductButton } from "./delete-product-button";
+import { isCloudinaryUrl } from "@/shared/services";
+
 
 export const ProductCard = ({ product }: { product: TProductGridItem }) => {
   const t = useTranslations("AdminProducts.card");
@@ -38,7 +40,7 @@ export const ProductCard = ({ product }: { product: TProductGridItem }) => {
       </div>
 
       <div className="bg-muted relative mb-4 aspect-4/3 overflow-hidden rounded-lg">
-        {image.includes("cloudinary.com") ? (
+        {isCloudinaryUrl(image) ? (
           <CldImage
             src={image}
             alt={product.nameVi}

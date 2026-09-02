@@ -26,6 +26,8 @@ import {
   CardTitle,
 } from "@nhatnang/ui/components/ui/card";
 import type { BrandDTO } from "@nhatnang/database/dtos";
+import { isCloudinaryUrl } from "@/shared/services";
+
 import {
   type TCreateBrandInput,
   createBrandSchema,
@@ -77,7 +79,7 @@ export const BrandForm = ({
           imagesToUpload.push(item);
         } else if (
           typeof item === "string" &&
-          !item.includes("cloudinary.com")
+          !isCloudinaryUrl(item)
         ) {
           imagesToUpload.push(item);
         } else {

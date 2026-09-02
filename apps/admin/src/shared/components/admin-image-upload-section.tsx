@@ -22,6 +22,8 @@ import {
 } from "@nhatnang/ui/components/ui/card";
 import { Input } from "@nhatnang/ui/components/ui/input";
 
+import { isCloudinaryUrl } from "@/shared/services";
+
 export type AdminImageItem = string | File;
 
 export interface AdminImageUploadSectionProps {
@@ -62,7 +64,7 @@ const PreviewImage = ({ item }: { item: AdminImageItem }) => {
     return null;
   }
 
-  return previewUrl.includes("cloudinary.com") ? (
+  return isCloudinaryUrl(previewUrl) ? (
     <CldImage
       src={previewUrl}
       alt="Preview"

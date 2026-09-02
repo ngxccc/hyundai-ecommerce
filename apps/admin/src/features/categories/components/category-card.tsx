@@ -10,6 +10,8 @@ import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
 import type { CategoryDTO } from "@nhatnang/database/dtos";
 
+import { isCloudinaryUrl } from "@/shared/services";
+
 import { DeleteCategoryButton } from "./delete-category-button";
 
 export const CategoryCard = ({
@@ -42,7 +44,7 @@ export const CategoryCard = ({
       </div>
 
       <div className="bg-muted relative mb-4 aspect-4/3 overflow-hidden rounded-lg">
-        {image.includes("cloudinary.com") ? (
+        {isCloudinaryUrl(image) ? (
           <CldImage
             src={image}
             alt={category.nameVi}

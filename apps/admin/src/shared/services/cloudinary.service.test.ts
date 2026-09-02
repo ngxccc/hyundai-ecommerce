@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, test, expect, vi, beforeEach, type Mock } from "bun:test";
-import { getPublicIdFromUrl, deleteFromCloudinary } from "./cloudinary.service";
+import { getPublicIdFromUrl, deleteFromCloudinary, isCloudinaryUrl } from "./cloudinary.service";
 import { v2 as cloudinary } from "cloudinary";
 
 await vi.mock("cloudinary", () => ({
@@ -17,6 +17,30 @@ await vi.mock("cloudinary", () => ({
 describe("Cloudinary Service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  describe("isCloudinaryUrl", () => {
+    test("identifies valid Cloudinary URLs", () => {
+      expect(
+        isCloudinaryUrl("https://res.cloudinary.com/demo/image/upload/sample.jpg"),
+      ).toBe(true);
+      expect(
+        isCloudinaryUrl("https://cloudinary.com/demo/image/upload/sample.jpg"),
+      ).toBe(true);
+      expect(
+        isCloudinaryUrl("https://subdomain.cloudinary.com/sample.jpg"),
+      ).toBe(true);
+    });
+
+    test("rejects invalid, empty, or phishing URLs", () => {
+      expect(isCloudinaryUrl("https://attacker.com/cloudinary.com")).toBe(false);
+      expect(isCloudinaryUrl("https://cloudinary.com.attacker.com")).toBe(false);
+      expect(isCloudinaryUrl("data:image/png;base64,iVBORw0KGgoAAA")).toBe(false);
+      expect(isCloudinaryUrl("blob:http://localhost:3000/123-456")).toBe(false);
+      expect(isCloudinaryUrl("")).toBe(false);
+      expect(isCloudinaryUrl(null)).toBe(false);
+      expect(isCloudinaryUrl(undefined)).toBe(false);
+    });
   });
 
   describe("getPublicIdFromUrl", () => {

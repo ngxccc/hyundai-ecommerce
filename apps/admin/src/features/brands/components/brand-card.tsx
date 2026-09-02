@@ -10,6 +10,8 @@ import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
 import type { BrandDTO } from "@nhatnang/database/dtos";
 
+import { isCloudinaryUrl } from "@/shared/services";
+
 import { DeleteBrandButton } from "./delete-brand-button";
 
 export const BrandCard = ({ brand }: { brand: BrandDTO }) => {
@@ -36,7 +38,7 @@ export const BrandCard = ({ brand }: { brand: BrandDTO }) => {
       </div>
 
       <div className="bg-muted relative mb-4 aspect-4/3 overflow-hidden rounded-lg">
-        {image.includes("cloudinary.com") ? (
+        {isCloudinaryUrl(image) ? (
           <CldImage
             src={image}
             alt={brand.name}

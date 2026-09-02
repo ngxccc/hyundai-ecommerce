@@ -22,6 +22,8 @@ import {
   type TCreateProductInput,
   createProductSchema,
 } from "@nhatnang/database/validators";
+import { isCloudinaryUrl } from "@/shared/services";
+
 
 import {
   ProductGeneralInfo,
@@ -97,7 +99,7 @@ export const ProductForm = ({
           imagesToUpload.push(item);
         } else if (
           typeof item === "string" &&
-          !item.includes("cloudinary.com")
+          !isCloudinaryUrl(item)
         ) {
           imagesToUpload.push(item);
         } else {
