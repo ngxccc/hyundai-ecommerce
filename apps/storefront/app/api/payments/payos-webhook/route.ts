@@ -10,17 +10,24 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const { code, data, signature } =
-      (await request.json()) as PayOSWebhookBody;
-
-    // 1. Prevent payment spoofing by verifying signature
-    if (!data || !signature) {
+    const body = (await request.json()) as PayOSWebhookBody;
+    if (
+      !body ||
+      typeof body !== "object" ||
+      !body.data ||
+      typeof body.data !== "object" ||
+      typeof body.signature !== "string" ||
+      !body.signature.trim()
+    ) {
       return NextResponse.json(
         { success: false, error: "errors.missingRequiredFields" },
         { status: HTTP_STATUS.BAD_REQUEST },
       );
     }
 
+    const { code, data, signature } = body;
+
+    // 1. Prevent payment spoofing by verifying signature
     const isValid = verifyPayOSSignature(
       data,
       signature,
@@ -35,25 +42,29 @@ export async function POST(request: Request) {
     }
 
     // 2. Process payment state atomically in database
-    if (code === PAYOS_SUCCESS_CODE) {
+    const isSuccess =
+      code === PAYOS_SUCCESS_CODE || data.code === PAYOS_SUCCESS_CODE;
+
+    if (isSuccess) {
+      const orderCodeStr = String(data.orderCode ?? "").replace(/[^\w-]/g, "");
       let updated = await paymentService.confirmPayOSPayment(
-        String(data.orderCode),
-        data.amount,
-        data.reference,
+        orderCodeStr,
+        Number(data.amount) || 0,
+        String(data.reference ?? ""),
       );
 
       if (!updated) {
         // Fallback: check if it matches a B2B debt repayment
         updated = await paymentService.confirmDebtRepayment(
-          String(data.orderCode),
-          data.amount,
-          data.reference,
+          orderCodeStr,
+          Number(data.amount) || 0,
+          String(data.reference ?? ""),
         );
       }
 
       if (!updated) {
         console.warn(
-          `[PayOS Webhook] Order code ${data.orderCode} already processed or not found in order payments or debt repayments`,
+          `[PayOS Webhook] Order code ${orderCodeStr} already processed or not found in order payments or debt repayments`,
         );
       }
     }

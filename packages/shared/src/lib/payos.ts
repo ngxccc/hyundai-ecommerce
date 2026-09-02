@@ -126,9 +126,10 @@ export function generatePayOSSignature(
   data: Record<string, unknown>,
   checksumKey: string,
 ): string {
+  const key = typeof checksumKey === "string" && checksumKey.length > 0 ? checksumKey : "invalid_key";
   const queryString = sortAndStringify(data);
   return crypto
-    .createHmac("sha256", checksumKey)
+    .createHmac("sha256", key)
     .update(queryString)
     .digest("hex");
 }
@@ -138,8 +139,11 @@ export function verifyPayOSSignature(
   signature: string,
   checksumKey: string,
 ): boolean {
-  const calculatedSignature = generatePayOSSignature(data, checksumKey);
+  if (!checksumKey || typeof checksumKey !== "string" || !signature || typeof signature !== "string") {
+    return false;
+  }
   try {
+    const calculatedSignature = generatePayOSSignature(data, checksumKey);
     return crypto.timingSafeEqual(
       Buffer.from(calculatedSignature, "utf-8"),
       Buffer.from(signature, "utf-8"),

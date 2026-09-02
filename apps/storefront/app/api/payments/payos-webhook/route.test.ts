@@ -13,8 +13,12 @@ import { mockConfirmPayOSPayment } from "@nhatnang/shared/testing/action-mocks";
 const { POST } = await import("./route");
 
 describe("POST /api/payments/payos-webhook", () => {
+  const testChecksumKey = "test_payos_checksum_key_12345";
+
   beforeEach(() => {
     vi.clearAllMocks();
+    // @ts-expect-error - Ensure checksum key exists in test environment
+    env.PAYOS_CHECKSUM_KEY = env.PAYOS_CHECKSUM_KEY || testChecksumKey;
   });
 
   const validData = {
@@ -62,7 +66,7 @@ describe("POST /api/payments/payos-webhook", () => {
   });
 
   it("calls confirmPayOSPayment and returns 200 on successful signature verification", async () => {
-    const checksumKey = env.PAYOS_CHECKSUM_KEY;
+    const checksumKey = env.PAYOS_CHECKSUM_KEY || testChecksumKey;
     const signature = generatePayOSSignature(validData, checksumKey);
 
     mockConfirmPayOSPayment.mockResolvedValue(true);
@@ -94,7 +98,7 @@ describe("POST /api/payments/payos-webhook", () => {
   });
 
   it("does not call confirmPayOSPayment but returns 200 when code is not 00", async () => {
-    const checksumKey = env.PAYOS_CHECKSUM_KEY;
+    const checksumKey = env.PAYOS_CHECKSUM_KEY || testChecksumKey;
     const signature = generatePayOSSignature(validData, checksumKey);
 
     const request = new Request("http://localhost/api/payments/payos-webhook", {
@@ -120,7 +124,7 @@ describe("POST /api/payments/payos-webhook", () => {
   });
 
   it("returns 200 even when order is already processed or not found", async () => {
-    const checksumKey = env.PAYOS_CHECKSUM_KEY;
+    const checksumKey = env.PAYOS_CHECKSUM_KEY || testChecksumKey;
     const signature = generatePayOSSignature(validData, checksumKey);
 
     mockConfirmPayOSPayment.mockResolvedValue(false); // already processed or not found
@@ -152,7 +156,7 @@ describe("POST /api/payments/payos-webhook", () => {
   });
 
   it("returns 500 when confirmPayOSPayment throws database error", async () => {
-    const checksumKey = env.PAYOS_CHECKSUM_KEY;
+    const checksumKey = env.PAYOS_CHECKSUM_KEY || testChecksumKey;
     const signature = generatePayOSSignature(validData, checksumKey);
 
     mockConfirmPayOSPayment.mockRejectedValue(
