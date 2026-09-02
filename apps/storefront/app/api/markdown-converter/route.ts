@@ -1,6 +1,8 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import TurndownService from "turndown";
+import { env } from "@/env";
+
 
 interface CacheEntry {
   markdown: string;
@@ -146,12 +148,12 @@ export async function GET(request: NextRequest) {
       status: 400,
     });
   }
-
-  const origin = request.nextUrl.origin;
-  const targetUrl = new URL(origin);
+  // Use trusted application origin from environment configuration
+  const trustedOrigin = env.NEXT_PUBLIC_APP_URL || "http://127.0.0.1:3000";
+  const targetUrl = new URL(trustedOrigin);
   try {
-    const parsed = new URL(rawPath, origin);
-    if (parsed.origin !== origin) {
+    const parsed = new URL(rawPath, trustedOrigin);
+    if (parsed.origin !== targetUrl.origin) {
       return new NextResponse("Forbidden: origin mismatch", { status: 403 });
     }
     targetUrl.pathname = parsed.pathname;
@@ -161,7 +163,7 @@ export async function GET(request: NextRequest) {
   }
 
   const targetPath = targetUrl.pathname + targetUrl.search;
-  const cacheKey = `${origin}:${targetPath}`;
+  const cacheKey = `${trustedOrigin}:${targetPath}`;
   const now = Date.now();
 
   // Check in-memory cache first
@@ -215,7 +217,7 @@ export async function GET(request: NextRequest) {
     let markdown = turndownService.turndown(mainHtml);
 
     // Resolve relative links and images to absolute URLs
-    markdown = markdown.replace(/\]\(\/(?!\/)/g, `](${origin}/`);
+    markdown = markdown.replace(/\]\(\/(?!\/)/g, `](${trustedOrigin}/`);
 
     // 5. Cache the result
     markdownCache.set(cacheKey, {
