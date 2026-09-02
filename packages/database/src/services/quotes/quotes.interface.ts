@@ -6,6 +6,7 @@ import type {
   TQuoteMessage,
   TQuote,
 } from "../../schemas";
+import type { CreateAdminQuoteDTO } from "../../dtos/quote.dto";
 import type { ComplexQuote, QuoteListItem } from "./quotes.service";
 
 export interface QuotesService {
@@ -13,6 +14,7 @@ export interface QuotesService {
     data: TNewQuote,
     items: Omit<TNewQuoteItem, "quoteId">[],
   ): Promise<TQuote>;
+  createAdminQuote(dto: CreateAdminQuoteDTO): Promise<TQuote>;
   getComplexQuote(quoteId: string): Promise<ComplexQuote | undefined>;
   listQuotes(filters?: {
     userId?: string;
