@@ -7,15 +7,19 @@ const filteredNextVitals = nextVitals
   .filter((config) => config.name !== "next/typescript")
   .map((config) => {
     if (config.languageOptions && "parser" in config.languageOptions) {
+      const langOpts = config.languageOptions as {
+        parserOptions?: { ecmaFeatures?: Record<string, boolean> };
+      };
+      const existingParserOpts = langOpts.parserOptions ?? {};
       return {
         ...config,
         languageOptions: {
           ...config.languageOptions,
           parser: tseslint.parser,
           parserOptions: {
-            ...config.languageOptions.parserOptions,
+            ...existingParserOpts,
             ecmaFeatures: {
-              ...(config.languageOptions.parserOptions?.ecmaFeatures ?? {}),
+              ...(existingParserOpts.ecmaFeatures ?? {}),
               jsx: true,
             },
           },
