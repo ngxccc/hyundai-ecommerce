@@ -1,20 +1,32 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
 
-await mock.module("next/server", () => ({
-  connection: mock().mockResolvedValue(undefined),
-  NextResponse: {
-    json: (body: unknown, init?: { status?: number }) => ({
-      json: () => Promise.resolve(body),
-      status: init?.status ?? 200,
-    }),
-  },
-  NextRequest: class {
-    url: string;
-    constructor(url: string) {
-      this.url = url;
+await mock.module("next/server", () => {
+  class MockNextResponse extends Response {
+    public static override json(
+      body: unknown,
+      init?: { status?: number; headers?: HeadersInit },
+    ) {
+      return new Response(JSON.stringify(body), {
+        status: init?.status ?? 200,
+        headers: { "Content-Type": "application/json", ...init?.headers },
+      });
     }
-  },
-}));
+  }
+
+  class MockNextRequest extends Request {
+    public nextUrl: URL;
+    constructor(input: string | URL, init?: RequestInit) {
+      super(input.toString(), init);
+      this.nextUrl = new URL(input.toString());
+    }
+  }
+
+  return {
+    connection: mock().mockResolvedValue(undefined),
+    NextResponse: MockNextResponse,
+    NextRequest: MockNextRequest,
+  };
+});
 
 const mockGetProducts = mock();
 const mockGetCategories = mock();

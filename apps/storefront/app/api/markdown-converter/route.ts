@@ -1,5 +1,4 @@
 import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
 import TurndownService from "turndown";
 import { env } from "@/env";
 
@@ -130,10 +129,14 @@ function extractMainHTML(html: string): string {
   return html;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest | Request) {
+  const url =
+    "nextUrl" in request && request.nextUrl
+      ? request.nextUrl
+      : new URL(request.url);
   const rawPath =
     request.headers?.get?.("x-markdown-path") ??
-    request.nextUrl?.searchParams?.get?.("path") ??
+    url.searchParams?.get?.("path") ??
     null;
 
   // Strict SSRF path sanitization: only allow standard internal relative paths
@@ -145,7 +148,7 @@ export async function GET(request: NextRequest) {
     rawPath.includes("\\") ||
     !/^\/[a-zA-Z0-9_\-./]+(\?[a-zA-Z0-9_=&%.-]*)?$/.test(rawPath)
   ) {
-    return new NextResponse("Invalid path parameter: must be a relative path", {
+    return new Response("Invalid path parameter: must be a relative path", {
       status: 400,
     });
   }
@@ -155,12 +158,12 @@ export async function GET(request: NextRequest) {
   try {
     const parsed = new URL(rawPath, trustedOrigin);
     if (parsed.origin !== targetUrl.origin) {
-      return new NextResponse("Forbidden: origin mismatch", { status: 403 });
+      return new Response("Forbidden: origin mismatch", { status: 403 });
     }
     targetUrl.pathname = parsed.pathname;
     targetUrl.search = parsed.search;
   } catch {
-    return new NextResponse("Invalid path parameter", { status: 400 });
+    return new Response("Invalid path parameter", { status: 400 });
   }
 
   const targetPath = targetUrl.pathname + targetUrl.search;
@@ -170,7 +173,7 @@ export async function GET(request: NextRequest) {
   // Check in-memory cache first
   const cached = markdownCache.get(cacheKey);
   if (cached && now - cached.timestamp < CACHE_TTL) {
-    return new NextResponse(cached.markdown, {
+    return new Response(cached.markdown, {
       headers: {
         "Content-Type": "text/markdown; charset=utf-8",
         "x-markdown-tokens": Math.round(cached.markdown.length / 4).toString(),
@@ -180,7 +183,6 @@ export async function GET(request: NextRequest) {
       },
     });
   }
-
   try {
     // Request text/html and force fresh fetch of the underlying page
     const response = await fetch(targetUrl.toString(), {
@@ -192,7 +194,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!response.ok) {
-      return new NextResponse(
+      return new Response(
         `Failed to fetch target page: ${response.statusText}`,
         {
           status: response.status,
@@ -227,7 +229,7 @@ export async function GET(request: NextRequest) {
     });
 
     // 6. Return the markdown response
-    return new NextResponse(markdown, {
+    return new Response(markdown, {
       headers: {
         "Content-Type": "text/markdown; charset=utf-8",
         "x-markdown-tokens": Math.round(markdown.length / 4).toString(),
@@ -238,7 +240,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error converting HTML to Markdown:", error);
-    return new NextResponse("Internal Server Error during conversion", {
+    return new Response("Internal Server Error during conversion", {
       status: 500,
     });
   }
