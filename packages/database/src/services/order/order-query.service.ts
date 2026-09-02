@@ -65,7 +65,7 @@ export class DbOrderQueryService implements OrderQueryService {
     status?: (typeof orders.$inferSelect)["status"];
   }): Promise<ComplexOrder[]> {
     return (await this.db.query.orders.findMany({
-      where: filters?.status ? { status: { eq: filters.status } } : undefined,
+      ...(filters?.status ? { where: { status: { eq: filters.status } } } : {}),
       columns: {
         id: true,
         status: true,

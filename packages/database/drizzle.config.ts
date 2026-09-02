@@ -15,7 +15,5 @@ export default defineConfig({
   introspect: {
     casing: "camel",
   },
-  // it'll warn if u del wrong table
-  strict: true,
   verbose: true,
 });

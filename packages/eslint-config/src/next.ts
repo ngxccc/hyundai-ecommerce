@@ -1,7 +1,29 @@
 import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
 import { defineConfig, globalIgnores } from "eslint/config";
+import tseslint from "typescript-eslint";
 
+// Filter out duplicate next/typescript and standardize parser to tseslint.parser
+const filteredNextVitals = nextVitals
+  .filter((config) => config.name !== "next/typescript")
+  .map((config) => {
+    if (config.languageOptions && "parser" in config.languageOptions) {
+      return {
+        ...config,
+        languageOptions: {
+          ...config.languageOptions,
+          parser: tseslint.parser,
+          parserOptions: {
+            ...config.languageOptions.parserOptions,
+            ecmaFeatures: {
+              ...(config.languageOptions.parserOptions?.ecmaFeatures ?? {}),
+              jsx: true,
+            },
+          },
+        },
+      };
+    }
+    return config;
+  });
 export default defineConfig([
   globalIgnores([
     ".next/**",
@@ -12,9 +34,10 @@ export default defineConfig([
     "src/shared/components/ui/**",
   ]),
 
+  ...filteredNextVitals,
+
   {
     files: ["**/*.ts", "**/*.tsx"],
-    extends: [nextVitals, nextTs],
     rules: {
       "@next/next/no-img-element": "error",
       "no-restricted-syntax": [

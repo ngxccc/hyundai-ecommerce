@@ -75,7 +75,7 @@ export class DbQuotesService implements QuotesService {
       : undefined;
 
     return await this.db.query.quotes.findMany({
-      where: whereConditions,
+      ...(whereConditions ? { where: whereConditions } : {}),
       with: {
         user: true,
         items: {

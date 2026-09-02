@@ -94,7 +94,6 @@ describe("OrderService", () => {
     expect(mockFindMany).toHaveBeenCalledTimes(1);
     expect(mockFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: undefined,
         orderBy: { createdAt: "desc" },
       }),
     );

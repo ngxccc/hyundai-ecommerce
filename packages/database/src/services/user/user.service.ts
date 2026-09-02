@@ -130,7 +130,7 @@ export class DbUserService implements UserService {
         : undefined;
 
     return await this.db.query.users.findMany({
-      where: whereConditions,
+      ...(whereConditions ? { where: whereConditions } : {}),
       with: {
         tier: true,
       },
