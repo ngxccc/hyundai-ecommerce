@@ -103,31 +103,29 @@ export function resolveSuspenseStreaming(html: string): string {
  * Extracts the main content of the HTML page and removes noisy tags
  * like script, style, and comments.
  */
-function cleanAndExtractHTML(html: string): string {
-  // 1. Remove scripts and styles first
-  const cleaned = html
-    .replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, "")
-    .replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, "")
-    .replace(/<!--[\s\S]*?-->/g, "");
-
-  // 2. Extract content of <main> or <article> if available
-  const mainMatch = /<main[^>]*>([\s\S]*?)<\/main>/i.exec(cleaned);
+/**
+ * Extracts the main content of the HTML page.
+ * Unwanted tags (script, style, etc.) are safely stripped by TurndownService.
+ */
+function extractMainHTML(html: string): string {
+  // Extract content of <main> or <article> if available
+  const mainMatch = /<main\b[^>]*>([\s\S]*?)<\/main>/i.exec(html);
   if (mainMatch?.[1]) {
     return mainMatch[1];
   }
 
-  const articleMatch = /<article[^>]*>([\s\S]*?)<\/article>/i.exec(cleaned);
+  const articleMatch = /<article\b[^>]*>([\s\S]*?)<\/article>/i.exec(html);
   if (articleMatch?.[1]) {
     return articleMatch[1];
   }
 
   // Fallback to body content
-  const bodyMatch = /<body[^>]*>([\s\S]*?)<\/body>/i.exec(cleaned);
+  const bodyMatch = /<body\b[^>]*>([\s\S]*?)<\/body>/i.exec(html);
   if (bodyMatch?.[1]) {
     return bodyMatch[1];
   }
 
-  return cleaned;
+  return html;
 }
 
 export async function GET(request: NextRequest) {
@@ -139,7 +137,24 @@ export async function GET(request: NextRequest) {
     return new NextResponse("Missing path parameter", { status: 400 });
   }
 
+  // Defend against SSRF: targetPath must be a relative path on the same origin
+  if (
+    !targetPath.startsWith("/") ||
+    targetPath.startsWith("//") ||
+    targetPath.includes("\\") ||
+    /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(targetPath)
+  ) {
+    return new NextResponse("Invalid path parameter: must be a relative path", { status: 400 });
+  }
+
   const origin = request.nextUrl.origin;
+  const targetUrl = new URL(targetPath, origin);
+
+  // Strictly enforce same-origin
+  if (targetUrl.origin !== origin || (targetUrl.protocol !== "http:" && targetUrl.protocol !== "https:")) {
+    return new NextResponse("Forbidden: target origin mismatch", { status: 403 });
+  }
+
   const cacheKey = `${origin}:${targetPath}`;
   const now = Date.now();
 
@@ -158,9 +173,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // 1. Construct the internal URL to fetch the original HTML page
-    const targetUrl = new URL(targetPath, origin);
-
     // Request text/html and force fresh fetch of the underlying page
     const response = await fetch(targetUrl.toString(), {
       headers: {
@@ -184,16 +196,17 @@ export async function GET(request: NextRequest) {
     // 2. Resolve Next.js Suspense streaming templates before extraction
     const fullyRenderedHtml = resolveSuspenseStreaming(htmlContent);
 
-    // 3. Extract and clean the HTML content to avoid headers/footers/scripts noise
-    const cleanedHtml = cleanAndExtractHTML(fullyRenderedHtml);
+    // 3. Extract main content to avoid headers/footers noise
+    const mainHtml = extractMainHTML(fullyRenderedHtml);
 
     // 4. Convert HTML to Markdown using Turndown
     const turndownService = new TurndownService({
       headingStyle: "atx",
       codeBlockStyle: "fenced",
     });
+    turndownService.remove(["script", "style", "head", "noscript", "template", "iframe"]);
 
-    let markdown = turndownService.turndown(cleanedHtml);
+    let markdown = turndownService.turndown(mainHtml);
 
     // Resolve relative links and images to absolute URLs
     markdown = markdown.replace(/\]\(\/(?!\/)/g, `](${origin}/`);

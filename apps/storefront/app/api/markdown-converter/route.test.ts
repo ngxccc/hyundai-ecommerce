@@ -165,4 +165,20 @@ describe("Markdown Converter API", () => {
       global.fetch = originalFetch;
     }
   });
+
+  it("should block SSRF attempts with invalid or external paths", async () => {
+    const evilUrls = [
+      "http://localhost:3000/api/markdown-converter?path=http://169.254.169.254/latest/meta-data",
+      "http://localhost:3000/api/markdown-converter?path=https://evil.com/leak",
+      "http://localhost:3000/api/markdown-converter?path=//evil.com/test",
+      "http://localhost:3000/api/markdown-converter?path=\\\\evil.com\\test",
+      "http://localhost:3000/api/markdown-converter?path=javascript:alert(1)",
+    ];
+
+    for (const url of evilUrls) {
+      const req = new NextRequest(url);
+      const response = await GET(req);
+      expect(response.status).toBeGreaterThanOrEqual(400);
+    }
+  });
 });
