@@ -133,22 +133,31 @@ export async function GET(request: NextRequest) {
     request.headers.get("x-markdown-path") ??
     request.nextUrl.searchParams.get("path");
 
-  if (!rawPath) {
-    return new NextResponse("Missing path parameter", { status: 400 });
+  if (
+    !rawPath ||
+    typeof rawPath !== "string" ||
+    !rawPath.startsWith("/") ||
+    rawPath.startsWith("//") ||
+    rawPath.includes("://") ||
+    !/^\/[a-zA-Z0-9_.~!$&'()*+,;=:@/-]*(\?[a-zA-Z0-9_.~!$&'()*+,;=:@/?-]*)?$/.test(rawPath)
+  ) {
+    return new NextResponse("Invalid path parameter: must be a relative path", {
+      status: 400,
+    });
   }
 
   const origin = request.nextUrl.origin;
-  let parsedUrl: URL;
+  const targetUrl = new URL(origin);
   try {
-    parsedUrl = new URL(rawPath, origin);
+    const parsed = new URL(rawPath, origin);
+    if (parsed.origin !== origin) {
+      return new NextResponse("Forbidden: origin mismatch", { status: 403 });
+    }
+    targetUrl.pathname = parsed.pathname;
+    targetUrl.search = parsed.search;
   } catch {
     return new NextResponse("Invalid path parameter", { status: 400 });
   }
-
-  // Pin base URL strictly to request origin and set pathname/search safely
-  const targetUrl = new URL(origin);
-  targetUrl.pathname = parsedUrl.pathname;
-  targetUrl.search = parsedUrl.search;
 
   const targetPath = targetUrl.pathname + targetUrl.search;
   const cacheKey = `${origin}:${targetPath}`;
