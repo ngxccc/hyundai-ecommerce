@@ -129,32 +129,28 @@ function extractMainHTML(html: string): string {
 }
 
 export async function GET(request: NextRequest) {
-  const targetPath =
+  const rawPath =
     request.headers.get("x-markdown-path") ??
     request.nextUrl.searchParams.get("path");
 
-  if (!targetPath) {
+  if (!rawPath) {
     return new NextResponse("Missing path parameter", { status: 400 });
   }
 
-  // Defend against SSRF: targetPath must be a relative path on the same origin
-  if (
-    !targetPath.startsWith("/") ||
-    targetPath.startsWith("//") ||
-    targetPath.includes("\\") ||
-    /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(targetPath)
-  ) {
-    return new NextResponse("Invalid path parameter: must be a relative path", { status: 400 });
-  }
-
   const origin = request.nextUrl.origin;
-  const targetUrl = new URL(targetPath, origin);
-
-  // Strictly enforce same-origin
-  if (targetUrl.origin !== origin || (targetUrl.protocol !== "http:" && targetUrl.protocol !== "https:")) {
-    return new NextResponse("Forbidden: target origin mismatch", { status: 403 });
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(rawPath, origin);
+  } catch {
+    return new NextResponse("Invalid path parameter", { status: 400 });
   }
 
+  // Pin base URL strictly to request origin and set pathname/search safely
+  const targetUrl = new URL(origin);
+  targetUrl.pathname = parsedUrl.pathname;
+  targetUrl.search = parsedUrl.search;
+
+  const targetPath = targetUrl.pathname + targetUrl.search;
   const cacheKey = `${origin}:${targetPath}`;
   const now = Date.now();
 

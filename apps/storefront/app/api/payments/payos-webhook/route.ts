@@ -1,46 +1,49 @@
+import crypto from "crypto";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { paymentService } from "@nhatnang/database/services";
 import { env } from "@/env";
 import {
-  verifyPayOSSignature,
+  generatePayOSSignature,
   type PayOSWebhookBody,
   PAYOS_SUCCESS_CODE,
 } from "@nhatnang/shared";
 import { NextResponse } from "next/server";
-
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as PayOSWebhookBody;
-    if (
-      !body ||
-      typeof body !== "object" ||
-      !body.data ||
-      typeof body.data !== "object" ||
-      typeof body.signature !== "string" ||
-      !body.signature.trim()
-    ) {
+    const rawBody: unknown = await request.json();
+    if (!rawBody || typeof rawBody !== "object") {
       return NextResponse.json(
         { success: false, error: "errors.missingRequiredFields" },
         { status: HTTP_STATUS.BAD_REQUEST },
       );
     }
 
-    const { code, data, signature } = body;
+    const { code, data, signature } = rawBody as PayOSWebhookBody;
+    if (!data || typeof data !== "object" || typeof signature !== "string" || !signature) {
+      return NextResponse.json(
+        { success: false, error: "errors.missingRequiredFields" },
+        { status: HTTP_STATUS.BAD_REQUEST },
+      );
+    }
 
-    // 1. Prevent payment spoofing by verifying signature
-    const isValid = verifyPayOSSignature(
+    // 1. Prevent payment spoofing via constant-time HMAC verification
+    const expectedSignature = generatePayOSSignature(
       data,
-      signature,
       env.PAYOS_CHECKSUM_KEY,
     );
-    if (!isValid) {
+    const signatureBuffer = Buffer.from(signature, "utf-8");
+    const expectedBuffer = Buffer.from(expectedSignature, "utf-8");
+
+    if (
+      signatureBuffer.length !== expectedBuffer.length ||
+      !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
+    ) {
       console.warn("[PayOS Webhook] Invalid webhook signature detected");
       return NextResponse.json(
         { success: false, error: "errors.invalidSignature" },
         { status: HTTP_STATUS.BAD_REQUEST },
       );
     }
-
     // 2. Process payment state atomically in database
     const isSuccess =
       code === PAYOS_SUCCESS_CODE || data.code === PAYOS_SUCCESS_CODE;
@@ -64,7 +67,8 @@ export async function POST(request: Request) {
 
       if (!updated) {
         console.warn(
-          `[PayOS Webhook] Order code ${orderCodeStr} already processed or not found in order payments or debt repayments`,
+          "[PayOS Webhook] Order code already processed or not found in order payments or debt repayments",
+          { orderCode: Number(data.orderCode) || 0 },
         );
       }
     }
