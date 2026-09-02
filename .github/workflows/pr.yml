@@ -9,6 +9,9 @@ on:
       - ".gitignore"
       - "LICENSE"
 
+permissions:
+  contents: read
+
 jobs:
   integration:
     name: Code Quality & Dry-run Build
