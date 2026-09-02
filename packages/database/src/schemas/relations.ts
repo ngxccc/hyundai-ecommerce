@@ -228,7 +228,6 @@ export const schemaRelations = defineRelations(
       user: r.one.users({
         from: r.quotes.userId,
         to: r.users.id,
-        optional: false,
       }),
       items: r.many.quoteItems(),
       messages: r.many.quoteMessages(),
@@ -247,7 +246,6 @@ export const schemaRelations = defineRelations(
       product: r.one.products({
         from: r.quoteItems.productId,
         to: r.products.id,
-        optional: false,
       }),
     },
 

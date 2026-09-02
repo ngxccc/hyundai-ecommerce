@@ -13,7 +13,7 @@ import {
   type TNewQuoteItem,
   type TNewQuoteMessage,
 } from "../../schemas";
-
+import type { CreateAdminQuoteDTO } from "../../dtos/quote.dto";
 export class DbQuotesService implements QuotesService {
   constructor(protected readonly db: IDatabase) {}
 
@@ -22,7 +22,32 @@ export class DbQuotesService implements QuotesService {
    */
   async createQuote(data: TNewQuote, items: Omit<TNewQuoteItem, "quoteId">[]) {
     return await this.db.transaction(async (tx) => {
-      const [newQuote] = await tx.insert(quotes).values(data).returning();
+      const [newQuote] = await tx
+        .insert(quotes)
+        .values(data)
+        .returning({
+          id: quotes.id,
+          quoteNumber: quotes.quoteNumber,
+          userId: quotes.userId,
+          customerName: quotes.customerName,
+          customerPhone: quotes.customerPhone,
+          customerEmail: quotes.customerEmail,
+          companyName: quotes.companyName,
+          taxId: quotes.taxId,
+          shippingAddress: quotes.shippingAddress,
+          status: quotes.status,
+          subtotalPrice: quotes.subtotalPrice,
+          vatRate: quotes.vatRate,
+          vatAmount: quotes.vatAmount,
+          totalQuotedPrice: quotes.totalQuotedPrice,
+          commercialTerms: quotes.commercialTerms,
+          expirationDate: quotes.expirationDate,
+          note: quotes.note,
+          orderId: quotes.orderId,
+          createdByAdminId: quotes.createdByAdminId,
+          createdAt: quotes.createdAt,
+          updatedAt: quotes.updatedAt,
+        });
       if (!newQuote) {
         throw new Error("errors.createQuoteFailed");
       }
@@ -40,9 +65,134 @@ export class DbQuotesService implements QuotesService {
   }
 
   /**
+   * Create an admin-generated B2B quote with server-calculated financials inside an atomic transaction
+   *
+   * @param dto Admin quote creation payload containing customer credentials, items, and commercial terms
+   * @returns The persisted quote record
+   */
+  async createAdminQuote(dto: CreateAdminQuoteDTO): Promise<TQuote> {
+    if (!dto.items || dto.items.length === 0) {
+      throw new Error("errors.emptyQuoteItems");
+    }
+
+    // Generate unique corporate quote identifier with date partition
+    const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const quoteNumber = `QT-${todayStr}-${randomSuffix}`;
+
+    // Deterministically compute line item metrics server-side to prevent client tampering
+    let subtotal = 0;
+    const computedItems = dto.items.map((item) => {
+      const unitPriceNum = Number(item.unitPrice);
+      const discountPercentNum = Number(item.discountPercent ?? 0);
+      const finalUnitPriceNum = unitPriceNum * (1 - discountPercentNum / 100);
+      const lineTotalNum = finalUnitPriceNum * item.quantity;
+
+      subtotal += lineTotalNum;
+
+      return {
+        productId: item.productId ?? null,
+        isCustomItem: item.isCustomItem ?? !item.productId,
+        itemName: item.itemName,
+        itemModel: item.itemModel ?? null,
+        itemSpecs: item.itemSpecs ?? null,
+        quantity: item.quantity,
+        unitPrice: unitPriceNum.toFixed(2),
+        discountPercent: discountPercentNum.toFixed(2),
+        finalUnitPrice: finalUnitPriceNum.toFixed(2),
+        totalPrice: lineTotalNum.toFixed(2),
+        requestedPrice: unitPriceNum.toFixed(2),
+        agreedPrice: finalUnitPriceNum.toFixed(2),
+      };
+    });
+
+    const vatRate = dto.vatRate ?? 10;
+    const vatAmount = subtotal * (vatRate / 100);
+    const totalQuotedPrice = subtotal + vatAmount;
+
+    // Derive expiration date from commercial validity window if not explicitly provided
+    let expirationDate = dto.expirationDate;
+    if (!expirationDate && dto.commercialTerms?.validityDays) {
+      expirationDate = new Date(
+        Date.now() + dto.commercialTerms.validityDays * 24 * 60 * 60 * 1000,
+      );
+    }
+
+    return await this.db.transaction(async (tx) => {
+      const [newQuote] = await tx
+        .insert(quotes)
+        .values({
+          quoteNumber,
+          userId: dto.userId ?? null,
+          customerName: dto.customerName,
+          customerPhone: dto.customerPhone,
+          customerEmail: dto.customerEmail ?? null,
+          companyName: dto.companyName ?? null,
+          taxId: dto.taxId ?? null,
+          shippingAddress: dto.shippingAddress ?? null,
+          status: "approved",
+          subtotalPrice: subtotal.toFixed(2),
+          vatRate,
+          vatAmount: vatAmount.toFixed(2),
+          totalQuotedPrice: totalQuotedPrice.toFixed(2),
+          commercialTerms: dto.commercialTerms ?? null,
+          expirationDate: expirationDate ?? null,
+          note: dto.note ?? null,
+          createdByAdminId: dto.createdByAdminId ?? null,
+        })
+        .returning({
+          id: quotes.id,
+          quoteNumber: quotes.quoteNumber,
+          userId: quotes.userId,
+          customerName: quotes.customerName,
+          customerPhone: quotes.customerPhone,
+          customerEmail: quotes.customerEmail,
+          companyName: quotes.companyName,
+          taxId: quotes.taxId,
+          shippingAddress: quotes.shippingAddress,
+          status: quotes.status,
+          subtotalPrice: quotes.subtotalPrice,
+          vatRate: quotes.vatRate,
+          vatAmount: quotes.vatAmount,
+          totalQuotedPrice: quotes.totalQuotedPrice,
+          commercialTerms: quotes.commercialTerms,
+          expirationDate: quotes.expirationDate,
+          note: quotes.note,
+          orderId: quotes.orderId,
+          createdByAdminId: quotes.createdByAdminId,
+          createdAt: quotes.createdAt,
+          updatedAt: quotes.updatedAt,
+        });
+
+      if (!newQuote) {
+        throw new Error("errors.createQuoteFailed");
+      }
+
+      await tx.insert(quoteItems).values(
+        computedItems.map((item) => ({
+          ...item,
+          quoteId: newQuote.id,
+        })),
+      );
+
+      return newQuote;
+    });
+  }
+
+  /**
    * Fetch complex quote details including associated dealer, items with product info, and negotiation chat logs
    */
   async getComplexQuote(quoteId: string) {
+    if (
+      !quoteId ||
+      typeof quoteId !== "string" ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        quoteId,
+      )
+    ) {
+      return undefined;
+    }
+
     return await this.db.query.quotes.findFirst({
       where: {
         id: quoteId,
@@ -67,12 +217,13 @@ export class DbQuotesService implements QuotesService {
    * List quotes with optional filters by user ID (dealer) or quote status
    */
   async listQuotes(filters?: { userId?: string; status?: TQuote["status"] }) {
-    const whereConditions = filters?.userId || filters?.status
-      ? {
-          ...(filters.userId ? { userId: { eq: filters.userId } } : {}),
-          ...(filters.status ? { status: { eq: filters.status } } : {}),
-        }
-      : undefined;
+    const whereConditions =
+      filters?.userId || filters?.status
+        ? {
+            ...(filters.userId ? { userId: { eq: filters.userId } } : {}),
+            ...(filters.status ? { status: { eq: filters.status } } : {}),
+          }
+        : undefined;
 
     return await this.db.query.quotes.findMany({
       ...(whereConditions ? { where: whereConditions } : {}),
@@ -96,7 +247,29 @@ export class DbQuotesService implements QuotesService {
       .update(quotes)
       .set({ status, updatedAt: new Date() })
       .where(eq(quotes.id, id))
-      .returning();
+      .returning({
+        id: quotes.id,
+        quoteNumber: quotes.quoteNumber,
+        userId: quotes.userId,
+        customerName: quotes.customerName,
+        customerPhone: quotes.customerPhone,
+        customerEmail: quotes.customerEmail,
+        companyName: quotes.companyName,
+        taxId: quotes.taxId,
+        shippingAddress: quotes.shippingAddress,
+        status: quotes.status,
+        subtotalPrice: quotes.subtotalPrice,
+        vatRate: quotes.vatRate,
+        vatAmount: quotes.vatAmount,
+        totalQuotedPrice: quotes.totalQuotedPrice,
+        commercialTerms: quotes.commercialTerms,
+        expirationDate: quotes.expirationDate,
+        note: quotes.note,
+        orderId: quotes.orderId,
+        createdByAdminId: quotes.createdByAdminId,
+        createdAt: quotes.createdAt,
+        updatedAt: quotes.updatedAt,
+      });
     return updated;
   }
 
@@ -107,7 +280,14 @@ export class DbQuotesService implements QuotesService {
     const [message] = await this.db
       .insert(quoteMessages)
       .values(data)
-      .returning();
+      .returning({
+        id: quoteMessages.id,
+        quoteId: quoteMessages.quoteId,
+        senderId: quoteMessages.senderId,
+        message: quoteMessages.message,
+        createdAt: quoteMessages.createdAt,
+        updatedAt: quoteMessages.updatedAt,
+      });
     return message;
   }
 
@@ -119,7 +299,24 @@ export class DbQuotesService implements QuotesService {
       .update(quoteItems)
       .set({ agreedPrice, updatedAt: new Date() })
       .where(eq(quoteItems.id, itemId))
-      .returning();
+      .returning({
+        id: quoteItems.id,
+        quoteId: quoteItems.quoteId,
+        productId: quoteItems.productId,
+        isCustomItem: quoteItems.isCustomItem,
+        itemName: quoteItems.itemName,
+        itemModel: quoteItems.itemModel,
+        itemSpecs: quoteItems.itemSpecs,
+        quantity: quoteItems.quantity,
+        unitPrice: quoteItems.unitPrice,
+        discountPercent: quoteItems.discountPercent,
+        finalUnitPrice: quoteItems.finalUnitPrice,
+        totalPrice: quoteItems.totalPrice,
+        requestedPrice: quoteItems.requestedPrice,
+        agreedPrice: quoteItems.agreedPrice,
+        createdAt: quoteItems.createdAt,
+        updatedAt: quoteItems.updatedAt,
+      });
     return updated;
   }
 
@@ -152,42 +349,68 @@ export class DbQuotesService implements QuotesService {
       if (quote.status === "rejected" || quote.status === "expired") {
         throw new Error("errors.quoteNotEditableOrConvertible");
       }
+      // 2. Validate registered customer requirement for Order conversion
+      if (!quote.userId) {
+        throw new Error(
+          "errors.guestQuoteRequiresRegisteredUserToConvertOrder",
+        );
+      }
 
-      // 2. Map items and compute total price
+      // 3. Map items and compute total price
       let totalAmountDecimal = 0;
-      const orderItemsToInsert = [];
+      const orderItemsToInsert: {
+        productId: string;
+        productName: string;
+        productSku: string;
+        quantity: number;
+        unitPrice: string;
+      }[] = [];
 
       for (const item of quote.items) {
-        // If agreedPrice is set, use it; otherwise fallback to requestedPrice
-        const finalPrice = item.agreedPrice ?? item.requestedPrice;
+        const finalPrice =
+          item.agreedPrice ??
+          item.finalUnitPrice ??
+          item.requestedPrice ??
+          item.unitPrice ??
+          "0.00";
         const subtotal = parseFloat(finalPrice) * item.quantity;
         totalAmountDecimal += subtotal;
 
-        orderItemsToInsert.push({
-          productId: item.productId,
-          productName: item.product.nameVi,
-          productSku: item.product.slug,
-          quantity: item.quantity,
-          unitPrice: finalPrice,
-        });
+        const productName =
+          item.itemName ?? item.product?.nameVi ?? "Custom Line Item";
+        const productSku =
+          item.itemModel ?? item.product?.slug ?? "custom-item-sku";
+
+        // Only link catalog products with valid UUID to order items table
+        if (item.productId) {
+          orderItemsToInsert.push({
+            productId: item.productId,
+            productName,
+            productSku,
+            quantity: item.quantity,
+            unitPrice: finalPrice,
+          });
+        }
       }
 
-      // 3. Create the Order
+      // 4. Create the Order
       const [newOrder] = await tx
         .insert(orders)
         .values({
           userId: quote.userId,
           status: "PENDING",
           shippingFee: "0.00",
-          shippingAddress: QUOTE_CONSTANTS.DEFAULT_SHIPPING_ADDRESS,
+          shippingAddress:
+            quote.shippingAddress ?? QUOTE_CONSTANTS.DEFAULT_SHIPPING_ADDRESS,
           totalAmount: totalAmountDecimal.toFixed(2),
         })
-        .returning();
+        .returning({
+          id: orders.id,
+        });
 
       if (!newOrder) {
         throw new Error("errors.createOrderFailed");
       }
-
       // 4. Create Order Items linking to the new Order ID
       const finalOrderItems = orderItemsToInsert.map((item) => ({
         ...item,
