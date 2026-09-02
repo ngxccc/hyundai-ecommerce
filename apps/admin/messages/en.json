@@ -975,7 +975,95 @@
       "noResults": "No products found",
       "noResultsHint": "Please verify your search query or model number.",
       "emptyPrompt": "Type at least 1 character to search generator catalog",
-      "productAddedToast": "Added \"{name}\" to quote draft"
+      "productAddedToast": "Added {name} to quote draft"
+    },
+    "composer": {
+      "pageTitle": "Create New Quote - Hyundai Nhat Nang",
+      "headerTitle": "Create New Quote",
+      "headerDescription": "Compose formal corporate quotes, configure line item discounts and commercial terms.",
+      "breadcrumbNew": "New Quote",
+      "customer": {
+        "title": "Customer & Company Information",
+        "description": "Enter customer recipient or company credentials for official quote generation.",
+        "nameLabel": "Customer Full Name",
+        "namePlaceholder": "e.g. John Doe",
+        "phoneLabel": "Contact Phone Number",
+        "phonePlaceholder": "e.g. 0987654321",
+        "emailLabel": "Email Address",
+        "emailPlaceholder": "e.g. contact@alphacorp.com",
+        "companyLabel": "Company / Organization Name",
+        "companyPlaceholder": "e.g. Alpha Construction JSC",
+        "taxIdLabel": "Tax Identification Number",
+        "taxIdPlaceholder": "e.g. 0101234567",
+        "addressLabel": "Shipping / Site Address",
+        "addressPlaceholder": "e.g. 123 ABC Street, Hanoi"
+      },
+      "items": {
+        "title": "Line Items & Products",
+        "description": "Add generator models from stock or auxiliary items (ATS panels, cabling, labor).",
+        "addCustomItem": "Add Custom Item",
+        "searchCatalog": "Search Generator Catalog",
+        "customTag": "Custom",
+        "emptyTitle": "No items added to quote yet",
+        "emptyDescription": "Click 'Search Generator Catalog' to pick warehouse products or 'Add Custom Item' for auxiliary accessories.",
+        "colItem": "Product & Specifications",
+        "colQty": "Quantity",
+        "colUnitPrice": "Unit Price (VND)",
+        "colDiscount": "Discount",
+        "colFinalPrice": "Final Unit Price",
+        "colTotal": "Total Amount",
+        "customModal": {
+          "title": "Add Custom Line Item",
+          "description": "Add auxiliary items, freight charges, or installation services.",
+          "nameLabel": "Item / Service Name",
+          "namePlaceholder": "e.g. Hyundai ATS 100A Automatic Transfer Switch",
+          "modelLabel": "Model / Code",
+          "specsLabel": "Specifications Summary",
+          "qtyLabel": "Quantity",
+          "priceLabel": "Unit Price",
+          "cancel": "Cancel",
+          "confirm": "Add to Quote"
+        }
+      },
+      "terms": {
+        "title": "Commercial Terms & Warranty",
+        "description": "Set quote validity duration, payment schedule, delivery, and warranty policies.",
+        "validityLabel": "Quote Validity",
+        "daysUnit": "days",
+        "vatLabel": "VAT Tax Rate",
+        "paymentLabel": "Payment Schedule",
+        "paymentPlaceholder": "e.g. 30% deposit upon contract, 70% prior to dispatch...",
+        "warrantyLabel": "Warranty Policy",
+        "warrantyPlaceholder": "e.g. 12 months or 1000 operating hours whichever comes first...",
+        "deliveryTimeLabel": "Delivery Timeframe",
+        "deliveryTimePlaceholder": "e.g. 3 - 5 business days",
+        "deliveryLocationLabel": "Delivery Location",
+        "deliveryLocationPlaceholder": "e.g. Delivered to buyer site",
+        "notesLabel": "Additional Commercial Notes",
+        "notesPlaceholder": "Enter technical specifications, load bank testing conditions..."
+      },
+      "summary": {
+        "title": "Financial Summary",
+        "totalItems": "Line Items",
+        "lineItemsUnit": "items",
+        "unitsCount": "units",
+        "subtotal": "Subtotal (Excl. Tax)",
+        "vat": "VAT Tax Amount",
+        "grandTotal": "TOTAL QUOTE AMOUNT",
+        "vatInclusiveNotice": "(VAT inclusive)",
+        "submitButton": "Create & Save Quote",
+        "submitting": "Creating formal quote...",
+        "resetDraftButton": "Clear Quote Draft",
+        "confirmResetDraft": "Are you sure you want to clear the entire quote draft?"
+      },
+      "errors": {
+        "emptyItems": "Please add at least 1 product or line item to the quote",
+        "nameRequired": "Customer name is required",
+        "phoneRequired": "Customer phone number is required",
+        "formIncomplete": "Please fill in all mandatory fields",
+        "genericFailure": "Failed to create quote. Please check your inputs."
+      },
+      "successToast": "Quote created successfully! Code: {quoteNumber}"
     }
   }
 }

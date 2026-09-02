@@ -42,12 +42,12 @@ export const quotes = snakeCase.table(
     vatAmount: numeric({ precision: 15, scale: 2 }).default("0.00"),
     totalQuotedPrice: numeric({ precision: 15, scale: 2 }),
     commercialTerms: jsonb().$type<{
-      validityDays?: number;
-      paymentSchedule?: string;
-      warrantyTerms?: string;
-      deliveryTime?: string;
-      deliveryLocation?: string;
-    }>(),
+      validityDays?: number | null | undefined;
+      paymentSchedule?: string | null | undefined;
+      warrantyTerms?: string | null | undefined;
+      deliveryTime?: string | null | undefined;
+      deliveryLocation?: string | null | undefined;
+    } | null>(),
     expirationDate: timestamp({ withTimezone: true, mode: "date" }),
     note: text(),
     orderId: uuid().references(() => orders.id, { onDelete: "set null" }),
