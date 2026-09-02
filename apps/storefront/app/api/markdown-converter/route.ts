@@ -133,13 +133,14 @@ export async function GET(request: NextRequest) {
     request.headers.get("x-markdown-path") ??
     request.nextUrl.searchParams.get("path");
 
+  // Strict SSRF path sanitization: only allow standard internal relative paths
   if (
     !rawPath ||
     typeof rawPath !== "string" ||
     !rawPath.startsWith("/") ||
     rawPath.startsWith("//") ||
-    rawPath.includes("://") ||
-    !/^\/[a-zA-Z0-9_.~!$&'()*+,;=:@/-]*(\?[a-zA-Z0-9_.~!$&'()*+,;=:@/?-]*)?$/.test(rawPath)
+    rawPath.includes("\\") ||
+    !/^\/[a-zA-Z0-9_\-./]+(\?[a-zA-Z0-9_=&%.-]*)?$/.test(rawPath)
   ) {
     return new NextResponse("Invalid path parameter: must be a relative path", {
       status: 400,
