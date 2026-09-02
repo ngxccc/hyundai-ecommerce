@@ -8,3 +8,4 @@ export * from "./quote-line-items-table";
 export * from "./commercial-terms-editor";
 export * from "./quote-financial-summary";
 export * from "./quote-composer";
+export * from "./quote-print-document";

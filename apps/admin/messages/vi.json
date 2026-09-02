@@ -1070,5 +1070,34 @@
       },
       "successToast": "Khởi tạo báo giá thành công! Mã: {quoteNumber}"
     }
+    ,
+    "printDocument": {
+      "pageTitle": "Bản in Báo giá Doanh nghiệp",
+      "backToQuote": "Quay lại Báo giá",
+      "printButton": "In / Lưu PDF",
+      "quoteTitle": "BẢNG BÁO GIÁ THIẾT BỊ MÁY PHÁT ĐIỆN & DỊCH VỤ KỸ THUẬT",
+      "quoteNo": "Số báo giá",
+      "issueDate": "Ngày phát hành",
+      "validity": "Hiệu lực báo giá",
+      "customerSectionTitle": "Thông tin Khách hàng / Đơn vị tiếp nhận",
+      "customerName": "Người nhận",
+      "customerPhone": "Số điện thoại",
+      "companyName": "Đơn vị / Công ty",
+      "customerEmail": "Email",
+      "taxId": "Mã số thuế",
+      "deliveryAddress": "Địa điểm giao hàng",
+      "pricingTableTitle": "DANH MỤC THIẾT BỊ & CHI TIẾT BÁO GIÁ",
+      "colDescription": "Tên Thiết Bị & Quy Cách Kỹ Thuật",
+      "colUnit": "ĐVT",
+      "colQty": "SL",
+      "colUnitPrice": "Đơn Giá (VNĐ)",
+      "colDiscount": "CK",
+      "colTotal": "Thành Tiền (VNĐ)",
+      "subtotal": "Tổng cộng tiền hàng trước thuế",
+      "vat": "Thuế giá trị gia tăng (VAT)",
+      "grandTotal": "TỔNG CỘNG TIỀN THANH TOÁN",
+      "amountInWords": "Số tiền viết bằng chữ",
+      "commercialTermsTitle": "ĐIỀU KHOẢN THƯƠNG MẠI & DỊCH VỤ KỸ THUẬT"
+    }
   }
 }

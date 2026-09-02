@@ -100,3 +100,105 @@ export function formatShippingAddress(addressStr: string | null | undefined): st
     return addressStr;
   }
 }
+
+const VIETNAMESE_DIGITS = [
+  "không",
+  "một",
+  "hai",
+  "ba",
+  "bốn",
+  "năm",
+  "sáu",
+  "bảy",
+  "tám",
+  "chín",
+];
+
+const SCALE_UNITS = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ"];
+
+function readThreeDigits(triplet: number, readZeroHundreds: boolean): string {
+  const hundreds = Math.floor(triplet / 100);
+  const tens = Math.floor((triplet % 100) / 10);
+  const ones = triplet % 10;
+  const result: string[] = [];
+
+  if (hundreds > 0 || readZeroHundreds) {
+    result.push(`${VIETNAMESE_DIGITS[hundreds]} trăm`);
+  }
+
+  if (tens > 1) {
+    result.push(`${VIETNAMESE_DIGITS[tens]} mươi`);
+    if (ones === 1) {
+      result.push("mốt");
+    } else if (ones === 4) {
+      result.push("tư");
+    } else if (ones === 5) {
+      result.push("lăm");
+    } else if (ones > 0) {
+      result.push(VIETNAMESE_DIGITS[ones]!);
+    }
+  } else if (tens === 1) {
+    result.push("mười");
+    if (ones === 1) {
+      result.push("một");
+    } else if (ones === 5) {
+      result.push("lăm");
+    } else if (ones > 0) {
+      result.push(VIETNAMESE_DIGITS[ones]!);
+    }
+  } else if (tens === 0 && ones > 0) {
+    if (hundreds > 0 || readZeroHundreds) {
+      result.push("lẻ");
+    }
+    result.push(VIETNAMESE_DIGITS[ones]!);
+  }
+
+  return result.join(" ");
+}
+
+/**
+ * Converts a VND numeric amount to standard Vietnamese words for contracts and quotes.
+ * E.g., 55000000 -> "Năm mươi lăm triệu đồng chẵn."
+ *
+ * @param amount - Number or numeric string
+ */
+export function numberToVietnameseWords(amount: number | string): string {
+  const num =
+    typeof amount === "string"
+      ? Math.round(parseFloat(amount) || 0)
+      : Math.round(amount || 0);
+
+  if (num === 0) {
+    return "Không đồng chẵn.";
+  }
+
+  if (num < 0) {
+    return `Âm ${numberToVietnameseWords(Math.abs(num)).toLowerCase()}`;
+  }
+
+  const triplets: number[] = [];
+  let temp = num;
+  while (temp > 0) {
+    triplets.push(temp % 1000);
+    temp = Math.floor(temp / 1000);
+  }
+
+  const words: string[] = [];
+  for (let i = triplets.length - 1; i >= 0; i--) {
+    const triplet = triplets[i]!;
+    if (triplet > 0) {
+      const readZeroHundreds = i < triplets.length - 1;
+      const tripletText = readThreeDigits(triplet, readZeroHundreds);
+      const unit = SCALE_UNITS[i] ?? "";
+      if (tripletText) {
+        words.push(unit ? `${tripletText} ${unit}` : tripletText);
+      }
+    }
+  }
+
+  const rawSentence = words.join(" ").trim();
+  if (!rawSentence) return "Không đồng chẵn.";
+
+  const formatted = rawSentence.charAt(0).toUpperCase() + rawSentence.slice(1);
+  return `${formatted} đồng chẵn.`;
+}

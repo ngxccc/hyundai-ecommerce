@@ -17,6 +17,7 @@ import {
   Play,
   CheckCircle2,
   ExternalLink,
+  Printer,
 } from "lucide-react";
 import type { ComplexQuote } from "@nhatnang/database/services";
 import {
@@ -121,10 +122,16 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
 
         {/* Action Controls */}
         <div className="flex flex-wrap gap-3">
+          <Button asChild variant="outline" className="gap-2 shadow-xs">
+            <Link href={`/quotes/${quote.id}/export`}>
+              <Printer className="h-4 w-4" />
+              In / Xuất PDF
+            </Link>
+          </Button>
+
           {quote.status === "pending_review" && (
             <>
               <Button
-                variant="outline"
                 onClick={() => handleStatusChange("rejected")}
                 disabled={isPending}
                 className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/30 dark:hover:bg-red-900/10"

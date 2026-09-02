@@ -1,42 +1,38 @@
-/* eslint-disable @typescript-eslint/unbound-method */
-import { expect, test, describe, vi, beforeEach, type Mock } from "bun:test";
-import "@nhatnang/shared/testing/action-mocks";
+import { expect, test, describe, beforeEach } from "bun:test";
 import {
-  approveAndConvertToOrderAction,
-  updateQuoteItemPriceAction,
-  sendQuoteMessageAction,
-  updateQuoteStatusAction,
-  createAdminQuoteAction,
-} from "./quote.actions";
-import { quotesService, type ComplexQuote } from "@nhatnang/database/services";
-import {
-  type TQuote,
-  type TQuoteItem,
-  type TQuoteMessage,
-} from "@nhatnang/database/schemas";
+  mockQuotesApproveAndConvertToOrder,
+  mockQuotesGetComplexQuote,
+  mockQuotesUpdateQuoteItemPrice,
+  mockQuotesAddQuoteMessage,
+  mockQuotesUpdateQuoteStatus,
+  mockQuotesCreateAdminQuote,
+} from "@nhatnang/shared/testing/action-mocks";
+import type { TQuote } from "@nhatnang/database/schemas";
 import { revalidatePath } from "next/cache";
 
 describe("quote.actions", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    mockQuotesApproveAndConvertToOrder.mockClear();
+    mockQuotesGetComplexQuote.mockClear();
+    mockQuotesUpdateQuoteItemPrice.mockClear();
+    mockQuotesAddQuoteMessage.mockClear();
+    mockQuotesUpdateQuoteStatus.mockClear();
+    mockQuotesCreateAdminQuote.mockClear();
   });
 
   describe("approveAndConvertToOrderAction", () => {
     test("should successfully convert quote to order", async () => {
+      const { approveAndConvertToOrderAction } = await import("./quote.actions");
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
       const mockResult = { orderId: "order-1" };
 
-      (
-        quotesService.approveAndConvertToOrder as Mock<
-          typeof quotesService.approveAndConvertToOrder
-        >
-      ).mockResolvedValueOnce(mockResult);
+      mockQuotesApproveAndConvertToOrder.mockResolvedValueOnce(mockResult);
 
       const res = await approveAndConvertToOrderAction(mockQuoteId);
 
       expect(res.success).toBe(true);
       expect(res.data).toEqual(mockResult);
-      expect(quotesService.approveAndConvertToOrder).toHaveBeenCalledWith(
+      expect(mockQuotesApproveAndConvertToOrder).toHaveBeenCalledWith(
         mockQuoteId,
         "admin-1",
       );
@@ -44,6 +40,7 @@ describe("quote.actions", () => {
     });
 
     test("should return error if quoteId is invalid", async () => {
+      const { approveAndConvertToOrderAction } = await import("./quote.actions");
       const res = await approveAndConvertToOrderAction("invalid-uuid");
       expect(res.success).toBe(false);
       expect(res.error).toBe("validationError");
@@ -52,6 +49,7 @@ describe("quote.actions", () => {
 
   describe("updateQuoteItemPriceAction", () => {
     test("should successfully update price and transition status to negotiating", async () => {
+      const { updateQuoteItemPriceAction } = await import("./quote.actions");
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
       const mockItemId = "00000000-0000-4000-8000-000000000002";
       const mockPrice = "120000.00";
@@ -62,23 +60,22 @@ describe("quote.actions", () => {
         items: [
           {
             id: mockItemId,
-            product: {
-              name: "Product Test",
-            },
+            unitPrice: "100000.00",
+            quantity: 2,
+            discountPercent: "0",
           },
         ],
       };
 
-      (
-        quotesService.getComplexQuote as Mock<
-          typeof quotesService.getComplexQuote
-        >
-      ).mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
-      (
-        quotesService.updateQuoteItemPrice as Mock<
-          typeof quotesService.updateQuoteItemPrice
-        >
-      ).mockResolvedValueOnce({} as unknown as TQuoteItem);
+      mockQuotesGetComplexQuote.mockResolvedValueOnce(mockQuote);
+      mockQuotesUpdateQuoteItemPrice.mockResolvedValueOnce({
+        id: mockItemId,
+      });
+      mockQuotesUpdateQuoteStatus.mockResolvedValueOnce({
+        id: mockQuoteId,
+        status: "negotiating",
+      });
+      mockQuotesAddQuoteMessage.mockResolvedValueOnce({});
 
       const res = await updateQuoteItemPriceAction(
         mockQuoteId,
@@ -87,37 +84,36 @@ describe("quote.actions", () => {
       );
 
       expect(res.success).toBe(true);
-      expect(quotesService.updateQuoteItemPrice).toHaveBeenCalledWith(
+      expect(mockQuotesUpdateQuoteItemPrice).toHaveBeenCalledWith(
         mockItemId,
         mockPrice,
       );
-      expect(quotesService.updateQuoteStatus).toHaveBeenCalledWith(
+      expect(mockQuotesUpdateQuoteStatus).toHaveBeenCalledWith(
         mockQuoteId,
         "negotiating",
       );
-      expect(quotesService.addQuoteMessage).toHaveBeenCalled();
+      expect(mockQuotesAddQuoteMessage).toHaveBeenCalled();
+      expect(revalidatePath).toHaveBeenCalled();
     });
 
     test("should fail if quote is already approved", async () => {
+      const { updateQuoteItemPriceAction } = await import("./quote.actions");
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
       const mockItemId = "00000000-0000-4000-8000-000000000002";
+      const mockPrice = "120000.00";
 
       const mockQuote = {
         id: mockQuoteId,
         status: "approved",
-        items: [],
+        items: [{ id: mockItemId }],
       };
 
-      (
-        quotesService.getComplexQuote as Mock<
-          typeof quotesService.getComplexQuote
-        >
-      ).mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
+      mockQuotesGetComplexQuote.mockResolvedValueOnce(mockQuote);
 
       const res = await updateQuoteItemPriceAction(
         mockQuoteId,
         mockItemId,
-        "100.00",
+        mockPrice,
       );
 
       expect(res.success).toBe(false);
@@ -127,154 +123,160 @@ describe("quote.actions", () => {
 
   describe("sendQuoteMessageAction", () => {
     test("should successfully post message", async () => {
+      const { sendQuoteMessageAction } = await import("./quote.actions");
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
-      const mockMessage = "Hello dealer";
+      const mockMessage = "Hello from dealer";
 
       const mockQuote = {
         id: mockQuoteId,
         status: "negotiating",
-        items: [],
       };
 
-      (
-        quotesService.getComplexQuote as Mock<
-          typeof quotesService.getComplexQuote
-        >
-      ).mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
-      (
-        quotesService.addQuoteMessage as Mock<
-          typeof quotesService.addQuoteMessage
-        >
-      ).mockResolvedValueOnce({} as unknown as TQuoteMessage);
+      mockQuotesGetComplexQuote.mockResolvedValueOnce(mockQuote);
+      mockQuotesAddQuoteMessage.mockResolvedValueOnce({
+        id: "msg-1",
+        quoteId: mockQuoteId,
+        message: mockMessage,
+      });
 
       const res = await sendQuoteMessageAction(mockQuoteId, mockMessage);
 
       expect(res.success).toBe(true);
-      expect(quotesService.addQuoteMessage).toHaveBeenCalledWith({
+      expect(mockQuotesAddQuoteMessage).toHaveBeenCalledWith({
         quoteId: mockQuoteId,
         senderId: "admin-1",
         message: mockMessage,
       });
+      expect(revalidatePath).toHaveBeenCalled();
     });
   });
 
   describe("updateQuoteStatusAction", () => {
     test("should update status successfully and log timeline message", async () => {
+      const { updateQuoteStatusAction } = await import("./quote.actions");
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
+      const newStatus = "rejected";
 
       const mockQuote = {
         id: mockQuoteId,
-        status: "negotiating",
-        items: [],
+        status: "pending_review",
       };
 
-      (
-        quotesService.getComplexQuote as Mock<
-          typeof quotesService.getComplexQuote
-        >
-      ).mockResolvedValueOnce(mockQuote as unknown as ComplexQuote);
-      (
-        quotesService.updateQuoteStatus as Mock<
-          typeof quotesService.updateQuoteStatus
-        >
-      ).mockResolvedValueOnce({} as unknown as TQuote);
+      mockQuotesGetComplexQuote.mockResolvedValueOnce(mockQuote);
+      mockQuotesUpdateQuoteStatus.mockResolvedValueOnce({
+        id: mockQuoteId,
+        status: newStatus,
+      });
+      mockQuotesAddQuoteMessage.mockResolvedValueOnce({});
 
-      const res = await updateQuoteStatusAction(mockQuoteId, "rejected");
+      const res = await updateQuoteStatusAction(mockQuoteId, newStatus);
 
       expect(res.success).toBe(true);
-      expect(quotesService.updateQuoteStatus).toHaveBeenCalledWith(
+      expect(mockQuotesUpdateQuoteStatus).toHaveBeenCalledWith(
         mockQuoteId,
-        "rejected",
+        newStatus,
       );
-      expect(quotesService.addQuoteMessage).toHaveBeenCalled();
+      expect(mockQuotesAddQuoteMessage).toHaveBeenCalled();
+      expect(revalidatePath).toHaveBeenCalled();
     });
   });
 
   describe("createAdminQuoteAction", () => {
     describe("when input payload is valid", () => {
       test("should call quotesService.createAdminQuote and return created quote", async () => {
-        const mockCreatedQuote: TQuote = {
-          id: "019dee3c-0163-777a-825a-a4732f2ecce9",
-          quoteNumber: "QT-20260902-001",
+        const { createAdminQuoteAction } = await import("./quote.actions");
+        const validPayload = {
           userId: null,
-          customerName: "Nguyen Van A",
-          customerPhone: "0987654321",
-          customerEmail: "anguyen@example.com",
-          companyName: "Alpha Construction JSC",
-          taxId: "0101234567",
-          shippingAddress: "123 Hanoi Street",
-          status: "approved",
-          subtotalPrice: "70000000.00",
-          vatRate: 10,
-          vatAmount: "7000000.00",
-          totalQuotedPrice: "77000000.00",
-          commercialTerms: {
-            validityDays: 15,
-            paymentSchedule: "30% deposit, 70% before delivery",
-            warrantyTerms: "12 months",
-            deliveryTime: "3-5 days",
-            deliveryLocation: "Hanoi",
-          },
-          expirationDate: new Date("2026-09-17T00:00:00.000Z"),
-          note: null,
-          orderId: null,
-          createdByAdminId: "admin-1",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        (
-          quotesService.createAdminQuote as Mock<
-            typeof quotesService.createAdminQuote
-          >
-        ).mockResolvedValueOnce(mockCreatedQuote);
-
-        const res = await createAdminQuoteAction({
-          customerName: "Nguyen Van A",
-          customerPhone: "0987654321",
-          customerEmail: "anguyen@example.com",
-          companyName: "Alpha Construction JSC",
-          taxId: "0101234567",
-          shippingAddress: "123 Hanoi Street",
+          customerName: "Nguyễn Văn Test",
+          customerPhone: "0901234567",
+          customerEmail: "test@example.com",
+          companyName: "Công ty Cổ phần Alpha",
+          taxId: "0312345678",
+          shippingAddress: "123 Đường Số 1, Q.1, TP.HCM",
           vatRate: 10,
           commercialTerms: {
             validityDays: 15,
-            paymentSchedule: "30% deposit, 70% before delivery",
-            warrantyTerms: "12 months",
-            deliveryTime: "3-5 days",
-            deliveryLocation: "Hanoi",
+            paymentSchedule: "Tạm ứng 30%, thanh toán 70%",
+            warrantyTerms: "12 tháng chính hãng",
+            deliveryTime: "3 ngày làm việc",
+            deliveryLocation: "Tại kho bên mua",
           },
+          note: "Giao hàng giờ hành chính",
           items: [
             {
               productId: "00000000-0000-4000-8000-000000000001",
               isCustomItem: false,
-              itemName: "Hyundai Generator 10kVA",
+              itemName: "Máy phát điện Hyundai DHY12500SE",
               itemModel: "DHY12500SE",
-              itemSpecs: "10kVA, 1 Phase",
+              itemSpecs: "10kVA, 1 Pha, Diesel",
               quantity: 1,
-              unitPrice: 70000000,
+              unitPrice: 55000000,
               discountPercent: 0,
             },
           ],
-        });
+        };
+
+        const mockCreatedQuote: TQuote = {
+          id: "00000000-0000-4000-8000-000000000099",
+          quoteNumber: "QT-20260902-001",
+          userId: null,
+          customerName: "Nguyễn Văn Test",
+          customerPhone: "0901234567",
+          customerEmail: "test@example.com",
+          companyName: "Công ty Cổ phần Alpha",
+          taxId: "0312345678",
+          shippingAddress: "123 Đường Số 1, Q.1, TP.HCM",
+          status: "approved",
+          subtotalPrice: "55000000.00",
+          vatRate: 10,
+          vatAmount: "5500000.00",
+          totalQuotedPrice: "60500000.00",
+          commercialTerms: {
+            validityDays: 15,
+            paymentSchedule: "Tạm ứng 30%, thanh toán 70%",
+            warrantyTerms: "12 tháng chính hãng",
+            deliveryTime: "3 ngày làm việc",
+            deliveryLocation: "Tại kho bên mua",
+          },
+          expirationDate: new Date("2026-09-17T00:00:00Z"),
+          note: "Giao hàng giờ hành chính",
+          orderId: null,
+          createdByAdminId: "admin-1",
+          createdAt: new Date("2026-09-02T00:00:00Z"),
+          updatedAt: new Date("2026-09-02T00:00:00Z"),
+        };
+
+        mockQuotesCreateAdminQuote.mockResolvedValueOnce(mockCreatedQuote);
+
+        const res = await createAdminQuoteAction(validPayload);
 
         expect(res.success).toBe(true);
-        expect(res.data).toEqual(mockCreatedQuote);
-        expect(quotesService.createAdminQuote).toHaveBeenCalled();
+        if (res.success) {
+          expect(res.data.quoteNumber).toBe("QT-20260902-001");
+          expect(res.data.totalQuotedPrice).toBe("60500000.00");
+        }
+        expect(mockQuotesCreateAdminQuote).toHaveBeenCalled();
         expect(revalidatePath).toHaveBeenCalledWith("/quotes");
       });
     });
 
     describe("when input payload is missing required customer fields", () => {
       test("should return validation error without calling quote service", async () => {
-        const res = await createAdminQuoteAction({
+        const { createAdminQuoteAction } = await import("./quote.actions");
+        const invalidPayload = {
           customerName: "",
-          customerPhone: "invalid-phone",
+          customerPhone: "invalid",
           items: [],
-        });
+        };
+
+        const res = await createAdminQuoteAction(invalidPayload);
 
         expect(res.success).toBe(false);
-        expect(quotesService.createAdminQuote).not.toHaveBeenCalled();
+        if (!res.success) {
+          expect(res.error).toBe("validationError");
+          expect(res.fieldErrors).toBeDefined();
+        }
+        expect(mockQuotesCreateAdminQuote).not.toHaveBeenCalled();
       });
     });
   });

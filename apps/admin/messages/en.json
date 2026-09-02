@@ -1065,5 +1065,34 @@
       },
       "successToast": "Quote created successfully! Code: {quoteNumber}"
     }
+    ,
+    "printDocument": {
+      "pageTitle": "Corporate Quote Print Document",
+      "backToQuote": "Back to Quote",
+      "printButton": "Print / Save PDF",
+      "quoteTitle": "GENERATOR EQUIPMENT & TECHNICAL SERVICES QUOTATION",
+      "quoteNo": "Quote No",
+      "issueDate": "Issue Date",
+      "validity": "Quote Validity",
+      "customerSectionTitle": "Customer & Receiving Entity Information",
+      "customerName": "Attention",
+      "customerPhone": "Phone",
+      "companyName": "Company / Organization",
+      "customerEmail": "Email",
+      "taxId": "Tax ID",
+      "deliveryAddress": "Delivery Location",
+      "pricingTableTitle": "EQUIPMENT BREAKDOWN & PRICING DETAILS",
+      "colDescription": "Equipment Description & Specifications",
+      "colUnit": "Unit",
+      "colQty": "Qty",
+      "colUnitPrice": "Unit Price (VND)",
+      "colDiscount": "Disc.",
+      "colTotal": "Total (VND)",
+      "subtotal": "Subtotal (Excl. VAT)",
+      "vat": "Value Added Tax (VAT)",
+      "grandTotal": "TOTAL QUOTED AMOUNT",
+      "amountInWords": "Amount in words",
+      "commercialTermsTitle": "COMMERCIAL TERMS & TECHNICAL WARRANTY"
+    }
   }
 }
