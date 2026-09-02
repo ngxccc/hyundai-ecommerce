@@ -132,8 +132,9 @@ function extractMainHTML(html: string): string {
 
 export async function GET(request: NextRequest) {
   const rawPath =
-    request.headers.get("x-markdown-path") ??
-    request.nextUrl.searchParams.get("path");
+    request.headers?.get?.("x-markdown-path") ??
+    request.nextUrl?.searchParams?.get?.("path") ??
+    null;
 
   // Strict SSRF path sanitization: only allow standard internal relative paths
   if (
