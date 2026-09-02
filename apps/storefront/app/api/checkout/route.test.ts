@@ -127,8 +127,9 @@ describe("POST /api/checkout", () => {
     expect(json.success).toBe(true);
     expect(json.data.orderId).toBe("order-123");
     const isMock = json.data.checkoutUrl.includes("/checkout/mock-payment");
+    const isPay = json.data.checkoutUrl.includes("/checkout/pay");
     const isReal = json.data.checkoutUrl.includes("payos.vn");
-    expect(isMock || isReal).toBe(true);
+    expect(isMock || isPay || isReal).toBe(true);
     expect(mockOrderCreateOrderWithItems).toHaveBeenCalled();
     expect(mockOrderCreatePayment).toHaveBeenCalled();
     expect(mockOrderCreatePaymentTransaction).toHaveBeenCalled();

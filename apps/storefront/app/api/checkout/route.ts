@@ -116,8 +116,6 @@ export async function POST(request: Request) {
 
     if (paymentMethod === "PAYOS") {
       orderCode = generatePayOSOrderCode();
-      checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/mock-payment?orderCode=${orderCode}`;
-
       const isMockPayment =
         env.FORCE_MOCK_PAYMENT === "true" ||
         (env.FORCE_MOCK_PAYMENT !== "false" &&
