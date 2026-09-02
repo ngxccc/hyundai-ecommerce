@@ -52,14 +52,28 @@ export default async function AdminQuotesPage({
   const quotes = await quotesService.listQuotes(status ? { status } : undefined);
 
   // In-memory search filtering
-  const filteredQuotes = search
-    ? quotes.filter(
-        (q) =>
-          q.id.toLowerCase().includes(search.toLowerCase()) ||
-          q.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
-          q.user?.email?.toLowerCase().includes(search.toLowerCase()) ||
-          q.user?.companyName?.toLowerCase().includes(search.toLowerCase()),
-      )
+  const searchLower = search?.toLowerCase();
+  const filteredQuotes = searchLower
+    ? quotes.filter((q) => {
+        const idMatch = q.id.toLowerCase().includes(searchLower);
+        const quoteNoMatch = q.quoteNumber?.toLowerCase().includes(searchLower) ?? false;
+        const customerMatch = q.customerName?.toLowerCase().includes(searchLower) ?? false;
+        const emailMatch = q.customerEmail?.toLowerCase().includes(searchLower) ?? false;
+        const companyMatch = q.companyName?.toLowerCase().includes(searchLower) ?? false;
+        const userNameMatch = q.user?.name?.toLowerCase().includes(searchLower) ?? false;
+        const userEmailMatch = q.user?.email?.toLowerCase().includes(searchLower) ?? false;
+        const userCompanyMatch = q.user?.companyName?.toLowerCase().includes(searchLower) ?? false;
+        return (
+          idMatch ||
+          quoteNoMatch ||
+          customerMatch ||
+          emailMatch ||
+          companyMatch ||
+          userNameMatch ||
+          userEmailMatch ||
+          userCompanyMatch
+        );
+      })
     : quotes;
 
   return (
