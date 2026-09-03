@@ -52,7 +52,7 @@ jobs:
         uses: ./.github/setup-environment
 
       - name: Database Migrations
-        run: bun run db:migrate stg
+        run: bun run db:migrate test_backend
 
       - name: Unit Tests
         run: bun run test:ci

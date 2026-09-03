@@ -158,10 +158,10 @@ Strictly validated on boot via Zod schema (`src/env.ts`):
 ```bash
 # Development & Build
 bun run dev              # Start dev server with watch mode (Development)
-bun run dev:stg          # Start dev server with watch mode (Staging)
+bun run dev:test         # Start dev server with watch mode (Testing)
 bun run build            # Compile TypeScript to dist/
 bun run start            # Run production build
-bun run start:stg        # Run production build with Staging secrets
+bun run start:test       # Run production build with Testing secrets
 bun run start:debug      # Start with debug inspector
 
 # Quality & Verification

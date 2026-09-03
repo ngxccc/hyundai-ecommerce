@@ -18,9 +18,10 @@ const robustUrlSchema = z.preprocess((val) => {
 
 export const env = createEnv({
   server: {
-    PORT: z.string().transform(Number).default(3000),
+    PORT: z.coerce.number().default(4000),
     DOMAIN_NAME: robustUrlSchema.catch("http://localhost:3000"),
     FRONTEND_URL: robustUrlSchema.catch("http://localhost:3000"),
+    ADMIN_URL: robustUrlSchema.catch("http://localhost:3001"),
     NODE_ENV: z
       .preprocess(
         (val) => {
@@ -43,15 +44,18 @@ export const env = createEnv({
     // Database configuration
     DB_URL: robustUrlSchema.optional().catch(undefined),
     DB_HOST: z.string().default("localhost"),
-    DB_PORT: z.string().transform(Number).default(5432),
+    DB_PORT: z.coerce.number().default(5432),
     DB_USERNAME: z.string().default("postgres"),
     DB_PASSWORD: z.string().default("postgrespassword"),
     DB_DATABASE: z.string().default("hyundai_ecommerce"),
-
+    DB_LOGGING: z
+      .string()
+      .transform((val) => val === "true" || val === "1")
+      .default(true),
     // Redis configuration
     REDIS_URL: robustUrlSchema.optional().catch(undefined),
     REDIS_HOST: z.string().default("localhost"),
-    REDIS_PORT: z.string().transform(Number).default(6379),
+    REDIS_PORT: z.coerce.number().default(6379),
 
     // Resend configuration
     RESEND_API_KEY: z.string().default("re_dummy_key_for_testing"),
@@ -82,8 +86,12 @@ export const env = createEnv({
       .string()
       .default("http://localhost:3000,http://localhost:3001"),
 
-    // Shows configuration
-    SHOW_CREATION_MIN_LEAD_MINUTES: z.coerce.number().default(10),
+    // Cron & Automation configuration
+    CRON_SECRET: z.string().optional().catch(undefined),
+
+    // Telegram Notifications configuration
+    TELEGRAM_BOT_TOKEN: z.string().optional().catch(undefined),
+    TELEGRAM_ADMIN_CHAT_ID: z.string().optional().catch(undefined),
 
     // Load Testing configuration
     VUS: z.coerce.number().default(500),
@@ -98,13 +106,15 @@ export const env = createEnv({
     PORT: process.env["PORT"],
     DOMAIN_NAME: process.env["DOMAIN_NAME"],
     FRONTEND_URL: process.env["FRONTEND_URL"],
-    NODE_ENV: process.env.NODE_ENV,
+    ADMIN_URL: process.env["ADMIN_URL"],
+    NODE_ENV: process.env["APP_ENV"] ?? process.env.NODE_ENV,
     DB_URL: process.env["DB_URL"],
     DB_HOST: process.env["DB_HOST"],
     DB_PORT: process.env["DB_PORT"],
     DB_USERNAME: process.env["DB_USERNAME"],
     DB_PASSWORD: process.env["DB_PASSWORD"],
     DB_DATABASE: process.env["DB_DATABASE"],
+    DB_LOGGING: process.env["DB_LOGGING"],
     REDIS_URL: process.env["REDIS_URL"],
     REDIS_HOST: process.env["REDIS_HOST"],
     REDIS_PORT: process.env["REDIS_PORT"],
@@ -123,8 +133,9 @@ export const env = createEnv({
     VAT_RATE: process.env["VAT_RATE"],
     DEPOSIT_RATE: process.env["DEPOSIT_RATE"],
     CORS_ORIGINS: process.env["CORS_ORIGINS"],
-    SHOW_CREATION_MIN_LEAD_MINUTES:
-      process.env["SHOW_CREATION_MIN_LEAD_MINUTES"],
+    CRON_SECRET: process.env["CRON_SECRET"],
+    TELEGRAM_BOT_TOKEN: process.env["TELEGRAM_BOT_TOKEN"],
+    TELEGRAM_ADMIN_CHAT_ID: process.env["TELEGRAM_ADMIN_CHAT_ID"],
     VUS: process.env["VUS"],
     TARGET_URL: process.env["TARGET_URL"],
     SENTRY_DSN: process.env["SENTRY_DSN"],

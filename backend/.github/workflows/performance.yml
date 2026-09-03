@@ -63,7 +63,7 @@ jobs:
         uses: grafana/setup-k6-action@v1
 
       - name: Run Database Migrations
-        run: doppler run --preserve-env="true" -c stg -- bun drizzle-kit migrate --config drizzle.config.ts
+        run: doppler run --preserve-env="true" -c test_backend -- bun drizzle-kit migrate --config drizzle.config.ts
 
       - name: Build Application
         run: bun run build
@@ -77,7 +77,7 @@ jobs:
         run: bun run test:load:seed
       - name: Start Application in Background
         run: |
-          doppler run --preserve-env="true" -c stg -- bun dist/main.js &
+          doppler run --preserve-env="true" -c test_backend -- bun dist/main.js &
           APP_PID=$!
           echo "APP_PID=$APP_PID" >> $GITHUB_ENV
           ready=false

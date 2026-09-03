@@ -2,10 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "🧪 Debug Test Current File (Doppler STG)",
+      "name": "🧪 Debug Test Current File (Doppler TEST)",
       "type": "node-terminal",
       "request": "launch",
-      "command": "doppler run -c stg -- bun test ${file}",
+      "command": "doppler run -c test_backend -- bun test ${file}",
       "cwd": "${workspaceFolder}"
     },
     {
