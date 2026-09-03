@@ -7,11 +7,11 @@ import { authService, userService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
 import {
   registerSchema,
-  type TRegisterForm,
+  type RegisterForm,
 } from "@nhatnang/database/validators";
 import { validateSchema } from "@/shared/lib/validation";
 
-export async function registerAction(data: TRegisterForm) {
+export async function registerAction(data: RegisterForm) {
   const reqHeaders = await headers();
   const ip = reqHeaders.get("x-forwarded-for") ?? "127.0.0.1";
   // 1. Rate limiting check

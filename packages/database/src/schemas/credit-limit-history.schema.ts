@@ -15,5 +15,5 @@ export const creditLimitHistory = snakeCase.table("credit_limit_history", {
   reason: text(),
 });
 
-export type TCreditLimitHistory = typeof creditLimitHistory.$inferSelect;
-export type TNewCreditLimitHistory = typeof creditLimitHistory.$inferInsert;
+export type CreditLimitHistory = typeof creditLimitHistory.$inferSelect;
+export type NewCreditLimitHistory = typeof creditLimitHistory.$inferInsert;

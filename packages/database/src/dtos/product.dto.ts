@@ -1,13 +1,13 @@
-import { type TProduct } from "../schemas/product.schema";
+import { type Product } from "../schemas/product.schema";
 
 export type ProductDTO = Omit<
-  TProduct,
+  Product,
   "totalSalesCache" | "createdAt" | "updatedAt" | "deletedAt"
 >;
 
-export type ProductAdminDTO = Omit<TProduct, "deletedAt">;
+export type ProductAdminDTO = Omit<Product, "deletedAt">;
 
-export function mapProductToDTO(product: TProduct): ProductDTO {
+export function mapProductToDTO(product: Product): ProductDTO {
   return {
     id: product.id,
     nameVi: product.nameVi,
@@ -27,7 +27,7 @@ export function mapProductToDTO(product: TProduct): ProductDTO {
   };
 }
 
-export function mapProductToAdminDTO(product: TProduct): ProductAdminDTO {
+export function mapProductToAdminDTO(product: Product): ProductAdminDTO {
   return {
     ...mapProductToDTO(product),
     totalSalesCache: product.totalSalesCache,

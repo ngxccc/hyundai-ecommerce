@@ -11,5 +11,5 @@ export const brands = snakeCase.table("brand", {
   isActive: boolean().default(true).notNull(),
 });
 
-export type TBrand = typeof brands.$inferSelect;
-export type TNewBrand = typeof brands.$inferInsert;
+export type Brand = typeof brands.$inferSelect;
+export type NewBrand = typeof brands.$inferInsert;

@@ -1,11 +1,11 @@
-import type { CategoryService, TCategoryWithChildren } from "../interfaces";
+import type { CategoryService, CategoryWithChildren } from "../interfaces";
 import { type CategoryDTO } from "../../dtos";
 import { categories } from "../../schemas";
 import { type IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
 import type {
-  TCreateCategoryInput,
-  TUpdateCategoryInput,
+  CreateCategoryInput,
+  UpdateCategoryInput,
 } from "../../validators";
 import { handleServiceError } from "../../utils";
 
@@ -51,7 +51,7 @@ export class DbCategoryService implements CategoryService {
     return category;
   }
 
-  async create(input: TCreateCategoryInput): Promise<CategoryDTO> {
+  async create(input: CreateCategoryInput): Promise<CategoryDTO> {
     try {
       const [newCategory] = await this.db
         .insert(categories)
@@ -76,7 +76,7 @@ export class DbCategoryService implements CategoryService {
     }
   }
 
-  async update({ id, ...data }: TUpdateCategoryInput): Promise<CategoryDTO> {
+  async update({ id, ...data }: UpdateCategoryInput): Promise<CategoryDTO> {
     try {
       const [updatedCategory] = await this.db
         .update(categories)
@@ -115,11 +115,11 @@ export class DbCategoryService implements CategoryService {
    * Structures all flat categories into a hierarchical tree format in O(N) time complexity.
    * Maps parent-child relationships using an in-memory Map structure for fast lookup.
    */
-  async getCategoryTree(): Promise<TCategoryWithChildren[]> {
+  async getCategoryTree(): Promise<CategoryWithChildren[]> {
     const allCategories = await this.getAll();
     // Map to quickly reference categories by their ID in O(1) time
-    const categoryMap = new Map<string, TCategoryWithChildren>();
-    const roots: TCategoryWithChildren[] = [];
+    const categoryMap = new Map<string, CategoryWithChildren>();
+    const roots: CategoryWithChildren[] = [];
 
     // Initialize the mapping registry with empty children arrays
     for (const cat of allCategories) {

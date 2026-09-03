@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { useTranslations } from "next-intl";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import {
   createWarehouseAction,
   updateWarehouseAction,
@@ -29,7 +29,7 @@ import {
 } from "@nhatnang/ui/components/ui/card";
 import type { WarehouseDTO } from "@nhatnang/database/dtos";
 import {
-  type TCreateWarehouse,
+  type CreateWarehouseInput,
   createWarehouseSchema,
 } from "@nhatnang/database/validators";
 import { Save, Loader2, X, Info } from "lucide-react";
@@ -47,7 +47,7 @@ export const WarehouseForm = ({
   const [isPending, startTransition] = useTransition();
   const isEditing = !!initialData;
 
-  const form = useForm<TCreateWarehouse>({
+  const form = useForm<CreateWarehouseInput>({
     resolver: translatedZodResolver(createWarehouseSchema, t),
     defaultValues: {
       nameVi: initialData?.nameVi ?? "",
@@ -59,7 +59,7 @@ export const WarehouseForm = ({
     },
   });
 
-  const onSubmit = (data: TCreateWarehouse) => {
+  const onSubmit = (data: CreateWarehouseInput) => {
     startTransition(async () => {
       const result = isEditing
         ? await updateWarehouseAction(initialData.id, {

@@ -4,13 +4,13 @@ import { getCachedSession } from "@/shared/lib/session";
 import { userService } from "@nhatnang/database/services";
 import {
   updateProfileSchema,
-  type TUpdateProfileForm,
+  type UpdateProfileForm,
 } from "@nhatnang/database/validators";
 import { validateSchema } from "@/shared/lib/validation";
 import { getTranslations } from "next-intl/server";
 import { revalidateTag } from "next/cache";
 
-export const updateProfileAction = async (data: TUpdateProfileForm) => {
+export const updateProfileAction = async (data: UpdateProfileForm) => {
   const [session, t] = await Promise.all([
     getCachedSession(),
     getTranslations("errors"),

@@ -24,10 +24,10 @@ import {
 } from "@nhatnang/ui/components/ui/select";
 import { NumberWithUnitField } from "../number-with-unit-field";
 import { toInputValue } from "@nhatnang/shared/lib/utils";
-import type { TCreateProductInput } from "@nhatnang/database/validators";
+import type { CreateProductInput } from "@nhatnang/database/validators";
 
 interface SpecsProps {
-  form: UseFormReturn<TCreateProductInput>;
+  form: UseFormReturn<CreateProductInput>;
 }
 
 export const ElectricalSpecs = ({ form }: SpecsProps) => {
@@ -49,7 +49,7 @@ export const ElectricalSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput, "specs.model">;
+              field: ControllerRenderProps<CreateProductInput, "specs.model">;
             }) => (
               <FormItem>
                 <FormLabel>{t("fields.model")} *</FormLabel>
@@ -70,7 +70,7 @@ export const ElectricalSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput, "specs.power">;
+              field: ControllerRenderProps<CreateProductInput, "specs.power">;
             }) => (
               <NumberWithUnitField
                 label={t("fields.power") + " *"}
@@ -91,7 +91,7 @@ export const ElectricalSpecs = ({ form }: SpecsProps) => {
               field,
             }: {
               field: ControllerRenderProps<
-                TCreateProductInput,
+                CreateProductInput,
                 "specs.voltage"
               >;
             }) => (
@@ -113,7 +113,7 @@ export const ElectricalSpecs = ({ form }: SpecsProps) => {
               field,
             }: {
               field: ControllerRenderProps<
-                TCreateProductInput,
+                CreateProductInput,
                 "specs.frequency"
               >;
             }) => (
@@ -131,7 +131,7 @@ export const ElectricalSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput>;
+              field: ControllerRenderProps<CreateProductInput>;
             }) => (
               <FormItem>
                 <FormLabel>{t("fields.phase")}</FormLabel>
@@ -166,7 +166,7 @@ export const ElectricalSpecs = ({ form }: SpecsProps) => {
               field,
             }: {
               field: ControllerRenderProps<
-                TCreateProductInput,
+                CreateProductInput,
                 "specs.ratedCurrent"
               >;
             }) => (
@@ -185,7 +185,7 @@ export const ElectricalSpecs = ({ form }: SpecsProps) => {
               field,
             }: {
               field: ControllerRenderProps<
-                TCreateProductInput,
+                CreateProductInput,
                 "specs.powerFactor"
               >;
             }) => (
@@ -204,7 +204,7 @@ export const ElectricalSpecs = ({ form }: SpecsProps) => {
               field,
             }: {
               field: ControllerRenderProps<
-                TCreateProductInput,
+                CreateProductInput,
                 "specs.warranty"
               >;
             }) => (

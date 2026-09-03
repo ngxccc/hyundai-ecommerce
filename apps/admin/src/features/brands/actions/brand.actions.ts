@@ -5,8 +5,8 @@ import { brandService } from "@nhatnang/database/services";
 import {
   createBrandSchema,
   updateBrandSchema,
-  type TCreateBrandInput,
-  type TUpdateBrandInput,
+  type CreateBrandInput,
+  type UpdateBrandInput,
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
@@ -26,7 +26,7 @@ export const createBrandAction = async (formData: FormData) => {
 
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
-    const data = JSON.parse(payloadStr as string) as TCreateBrandInput;
+    const data = JSON.parse(payloadStr as string) as CreateBrandInput;
     const parsed = await createBrandSchema.safeParseAsync(data);
 
     if (!parsed.success) {
@@ -109,7 +109,7 @@ export async function updateBrandAction(id: string, formData: FormData) {
 
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
-    const data = JSON.parse(payloadStr as string) as TUpdateBrandInput;
+    const data = JSON.parse(payloadStr as string) as UpdateBrandInput;
     const parsed = await updateBrandSchema.safeParseAsync({ ...data, id });
     if (!parsed.success) {
       const t = await getTranslations("errors");

@@ -40,7 +40,7 @@ export const debtRepayments = snakeCase.table("debt_repayment", {
   verifiedBy: uuid().references(() => users.id, { onDelete: "set null" }),
 });
 
-export type TPayment = typeof payments.$inferSelect;
-export type TNewPayment = typeof payments.$inferInsert;
-export type TDebtRepayment = typeof debtRepayments.$inferSelect;
-export type TNewDebtRepayment = typeof debtRepayments.$inferInsert;
+export type Payment = typeof payments.$inferSelect;
+export type NewPayment = typeof payments.$inferInsert;
+export type DebtRepayment = typeof debtRepayments.$inferSelect;
+export type NewDebtRepayment = typeof debtRepayments.$inferInsert;

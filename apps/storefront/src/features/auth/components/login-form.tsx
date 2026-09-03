@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import { type TLoginForm, loginSchema } from "@nhatnang/database/validators";
+import { type LoginForm, loginSchema } from "@nhatnang/database/validators";
 import { loginAction } from "../actions/login.action";
 import { Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
@@ -40,7 +40,7 @@ export function LoginForm() {
   const t = useTranslations("Login");
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<TLoginForm>({
+  const form = useForm<LoginForm>({
     resolver: translatedZodResolver(loginSchema, t),
     defaultValues: {
       email: "",
@@ -48,7 +48,7 @@ export function LoginForm() {
     },
   });
 
-  const onSubmit = (data: TLoginForm) => {
+  const onSubmit = (data: LoginForm) => {
     startTransition(async () => {
       try {
         const result = await loginAction(data);
@@ -56,7 +56,7 @@ export function LoginForm() {
         if (!result.success) {
           if ("fieldErrors" in result && result.fieldErrors) {
             Object.entries(result.fieldErrors).forEach(([key, messages]) => {
-              const safeKey = key as keyof TLoginForm;
+              const safeKey = key as keyof LoginForm;
               const errorCode = messages[0];
               const errorMessage = errorCode
                 ? t(errorCode as never)

@@ -14,18 +14,18 @@ import {
   type QuoteListItem,
 } from "./quotes.service";
 import {
-  type TQuote,
-  type TQuoteItem,
-  type TQuoteMessage,
-  type TUser,
-  type TProduct,
+  type Quote,
+  type QuoteItem,
+  type QuoteMessage,
+  type User,
+  type Product,
 } from "../../schemas";
 import type { IDatabase } from "../../client";
 
 const quotesService = new DbQuotesService(mockDb as unknown as IDatabase);
 
 // Mock entities representing stable database instances
-const mockUser: TUser = {
+const mockUser: User = {
   id: "user-1",
   name: "Dealer Test",
   email: "dealer@test.com",
@@ -46,7 +46,7 @@ const mockUser: TUser = {
   deletedAt: null,
 };
 
-const mockProduct: TProduct = {
+const mockProduct: Product = {
   id: "prod-1",
   nameVi: "Generator 100kW",
   nameEn: null,
@@ -76,7 +76,7 @@ describe("QuotesService", () => {
   describe("createQuote()", () => {
     describe("when inserting quote with line items", () => {
       test("should insert quote and items inside a transaction", async () => {
-        const mockQuote: TQuote = {
+        const mockQuote: Quote = {
           id: "quote-1",
           quoteNumber: "QT-20260902-001",
           userId: "user-1",
@@ -119,7 +119,7 @@ describe("QuotesService", () => {
   describe("createAdminQuote()", () => {
     describe("when calculating financial totals for catalog and custom items", () => {
       test("should calculate financial totals (subtotal, VAT, total) and insert quote + items inside a transaction", async () => {
-        const mockAdminQuote: TQuote = {
+        const mockAdminQuote: Quote = {
           id: "quote-admin-1",
           quoteNumber: "QT-20260902-001",
           userId: "user-1",
@@ -199,7 +199,7 @@ describe("QuotesService", () => {
 
     describe("when creating a quote for walk-in or guest customers", () => {
       test("should support walk-in/guest customers without registered userId", async () => {
-        const mockGuestQuote: TQuote = {
+        const mockGuestQuote: Quote = {
           id: "quote-guest-1",
           quoteNumber: "QT-20260902-002",
           userId: null,
@@ -400,7 +400,7 @@ describe("QuotesService", () => {
   describe("updateQuoteStatus()", () => {
     describe("when updating quote status", () => {
       test("should update and return the quote", async () => {
-        const mockQuote: TQuote = {
+        const mockQuote: Quote = {
           id: "quote-1",
           quoteNumber: "QT-20260902-001",
           userId: "user-1",
@@ -439,7 +439,7 @@ describe("QuotesService", () => {
   describe("addQuoteMessage()", () => {
     describe("when adding timeline message", () => {
       test("should insert and return a timeline message", async () => {
-        const mockMsg: TQuoteMessage = {
+        const mockMsg: QuoteMessage = {
           id: "msg-1",
           quoteId: "quote-1",
           senderId: "user-1",
@@ -464,7 +464,7 @@ describe("QuotesService", () => {
   describe("updateQuoteItemPrice()", () => {
     describe("when updating agreed item price", () => {
       test("should update agreed price of the item", async () => {
-        const mockItem: TQuoteItem = {
+        const mockItem: QuoteItem = {
           id: "item-1",
           quoteId: "quote-1",
           productId: "prod-1",

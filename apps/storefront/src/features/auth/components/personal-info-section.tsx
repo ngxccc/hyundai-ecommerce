@@ -3,12 +3,12 @@
 import { useTranslations } from "next-intl";
 import { Input } from "@nhatnang/ui/components/ui/input";
 import { Field, FieldLabel, FieldError } from "@nhatnang/ui/components/ui/field";
-import type { TRegisterForm } from "@nhatnang/database/validators";
+import type { RegisterForm } from "@nhatnang/database/validators";
 import type { AuthFormSectionProps } from "../types/auth-form.types";
 
 export const PersonalInfoSection = ({
   form,
-}: AuthFormSectionProps<TRegisterForm>) => {
+}: AuthFormSectionProps<RegisterForm>) => {
   const t = useTranslations("Register");
 
   return (

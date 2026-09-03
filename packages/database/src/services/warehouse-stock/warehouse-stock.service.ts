@@ -1,16 +1,16 @@
 import { eq, sql } from "drizzle-orm";
 import type { IDatabase } from "../../client";
-import { warehouseStocks } from "../../schemas/warehouse-stock.schema";
+import { warehouseStocks, type WarehouseStock } from "../../schemas/warehouse-stock.schema";
 import { products } from "../../schemas/product.schema";
 import type { WarehouseStockService } from "../interfaces";
-import type { TUpdateWarehouseStockInput } from "../../validators";
+import type { UpdateWarehouseStockInput } from "../../validators";
 
 export class DbWarehouseStockService implements WarehouseStockService {
   constructor(protected readonly db: IDatabase) {}
 
   async setStock(
-    stockData: TUpdateWarehouseStockInput,
-  ): Promise<typeof warehouseStocks.$inferSelect> {
+    stockData: UpdateWarehouseStockInput,
+  ): Promise<WarehouseStock> {
     try {
       const [record] = await this.db
         .insert(warehouseStocks)

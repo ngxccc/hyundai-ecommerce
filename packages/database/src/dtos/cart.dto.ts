@@ -1,4 +1,4 @@
-import { type TCartItem, type TProduct } from "../schemas";
+import { type CartItem, type Product } from "../schemas";
 
 export const CART_ITEM_COLUMNS = {
   id: true,
@@ -17,11 +17,11 @@ export const CART_ITEM_PRODUCT_COLUMNS = {
 } as const;
 
 export type CartItemMinimal = {
-  [K in keyof typeof CART_ITEM_COLUMNS]: TCartItem[K];
+  [K in keyof typeof CART_ITEM_COLUMNS]: CartItem[K];
 };
 
 export type CartItemProductMinimal = {
-  [K in keyof typeof CART_ITEM_PRODUCT_COLUMNS]: TProduct[K];
+  [K in keyof typeof CART_ITEM_PRODUCT_COLUMNS]: Product[K];
 };
 
 export type CartItemDTO = CartItemMinimal & {

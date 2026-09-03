@@ -11,7 +11,7 @@ import {
 } from "../../tests/utils/db-mock";
 import { DbCartService } from "./cart.service";
 import type { IDatabase } from "../../client";
-import type { TCart, TCartItem } from "../../schemas";
+import type { Cart, CartItem } from "../../schemas";
 import type { CartItemDTO } from "../../dtos";
 
 const cartService = new DbCartService(mockDb as unknown as IDatabase);
@@ -23,7 +23,7 @@ describe("CartService", () => {
 
   describe("getOrCreateCart()", () => {
     test("should return existing cart for authenticated user", async () => {
-      const mockCart = { id: "cart-1", userId: "user-1" } as TCart;
+      const mockCart = { id: "cart-1", userId: "user-1" } as Cart;
       mockSelectResolvedValue.mockResolvedValueOnce([mockCart]);
 
       const result = await cartService.getOrCreateCart("user-1");
@@ -34,7 +34,7 @@ describe("CartService", () => {
 
     test("should create and return new cart if none exists for authenticated user", async () => {
       mockSelectResolvedValue.mockResolvedValueOnce([]);
-      const mockCart = { id: "cart-1", userId: "user-1" } as TCart;
+      const mockCart = { id: "cart-1", userId: "user-1" } as Cart;
       mockReturning.mockResolvedValueOnce([mockCart]);
 
       const result = await cartService.getOrCreateCart("user-1");
@@ -47,7 +47,7 @@ describe("CartService", () => {
 
   describe("getCartById()", () => {
     test("should return cart if it exists", async () => {
-      const mockCart = { id: "cart-1", userId: "user-1" } as TCart;
+      const mockCart = { id: "cart-1", userId: "user-1" } as Cart;
       mockSelectResolvedValue.mockResolvedValueOnce([mockCart]);
 
       const result = await cartService.getCartById("cart-1");
@@ -163,7 +163,7 @@ describe("CartService", () => {
         id: "item-new",
         productId: "prod-1",
         quantity: 2,
-      } as TCartItem;
+      } as CartItem;
       mockReturning.mockResolvedValueOnce([mockCartItem]);
 
       const result = await cartService.addToCart("cart-1", "prod-1", 2);
@@ -225,7 +225,7 @@ describe("CartService", () => {
         id: "item-1",
         productId: "prod-1",
         quantity: 5,
-      } as TCartItem;
+      } as CartItem;
       mockReturning.mockResolvedValueOnce([mockCartItem]);
 
       const result = await cartService.updateCartItemQuantity(
@@ -252,7 +252,7 @@ describe("CartService", () => {
       const userCart = {
         id: "cart-user",
         userId: "user-1",
-      } as TCart;
+      } as Cart;
       mockSelectResolvedValue
         .mockResolvedValueOnce([userCart]) // User cart check (inside getOrCreateCart)
         .mockResolvedValueOnce([
@@ -286,7 +286,7 @@ describe("CartService", () => {
       const userCart = {
         id: "cart-user",
         userId: "user-1",
-      } as TCart;
+      } as Cart;
       mockSelectResolvedValue
         .mockResolvedValueOnce([userCart]) // User cart check (inside getOrCreateCart)
         .mockResolvedValueOnce([

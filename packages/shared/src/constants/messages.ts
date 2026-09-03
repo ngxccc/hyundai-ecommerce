@@ -13,4 +13,4 @@ export const MESSAGES = {
   BETTER_AUTH_URL_IS_INVALID: "BETTER_AUTH_URL must be a valid URL format.",
 } as const;
 
-export type TMessage = keyof typeof MESSAGES;
+export type Message = keyof typeof MESSAGES;

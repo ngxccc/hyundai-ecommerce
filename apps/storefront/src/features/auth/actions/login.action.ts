@@ -4,10 +4,10 @@ import { headers } from "next/headers";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import { authService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
-import { loginSchema, type TLoginForm } from "@nhatnang/database/validators";
+import { loginSchema, type LoginForm } from "@nhatnang/database/validators";
 import { validateSchema } from "@/shared/lib/validation";
 
-export const loginAction = async (data: TLoginForm) => {
+export const loginAction = async (data: LoginForm) => {
   const reqHeaders = await headers();
   const ip = reqHeaders.get("x-forwarded-for") ?? "127.0.0.1";
 

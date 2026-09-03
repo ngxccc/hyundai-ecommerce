@@ -1,27 +1,27 @@
 import { expect, test, describe, mock, beforeEach } from "bun:test";
 import type { Mock } from "bun:test";
 import "@nhatnang/shared/testing/action-mocks";
-import type { TOrder, TShippingBid } from "@nhatnang/database/schemas";
+import type { Order, ShippingBid } from "@nhatnang/database/schemas";
 import type { OrderService, PaymentService, SelectWinningBidResult } from "@nhatnang/database/services";
 import type {
-  selectShippingBidAction as TSelectShippingBidAction,
-  addShippingBidAction as TAddShippingBidAction,
-  approveDealerOrderAction as TApproveDealerOrderAction,
-  verifyCashPaymentAction as TVerifyCashPaymentAction,
-  approveOrderCancellationAction as TApproveOrderCancellationAction,
+  selectShippingBidAction as SelectShippingBidActionFn,
+  addShippingBidAction as AddShippingBidActionFn,
+  approveDealerOrderAction as ApproveDealerOrderActionFn,
+  verifyCashPaymentAction as VerifyCashPaymentActionFn,
+  approveOrderCancellationAction as ApproveOrderCancellationActionFn,
 } from "./order.actions";
-import type { revalidatePath as TRevalidatePath } from "next/cache";
+import type { revalidatePath as RevalidatePathFn } from "next/cache";
 
 describe("order.actions", () => {
   let selectWinningBidMock: Mock<OrderService["selectWinningBid"]>;
-  let selectShippingBidAction: typeof TSelectShippingBidAction;
-  let addShippingBidAction: typeof TAddShippingBidAction;
-  let approveDealerOrderAction: typeof TApproveDealerOrderAction;
-  let verifyCashPaymentAction: typeof TVerifyCashPaymentAction;
-  let approveOrderCancellationAction: typeof TApproveOrderCancellationAction;
+  let selectShippingBidAction: typeof SelectShippingBidActionFn;
+  let addShippingBidAction: typeof AddShippingBidActionFn;
+  let approveDealerOrderAction: typeof ApproveDealerOrderActionFn;
+  let verifyCashPaymentAction: typeof VerifyCashPaymentActionFn;
+  let approveOrderCancellationAction: typeof ApproveOrderCancellationActionFn;
   let orderService: OrderService;
   let paymentService: PaymentService;
-  let revalidatePath: typeof TRevalidatePath;
+  let revalidatePath: typeof RevalidatePathFn;
 
   beforeEach(async () => {
     // Static import cannot work here because Bun's async mock.module must run before importing these modules.
@@ -66,11 +66,11 @@ describe("order.actions", () => {
       const mockOrder = {
         id: validOrderId,
         shippingFee: "150000",
-      } as unknown as TOrder;
+      } as unknown as Order;
       const mockBid = {
         id: validBidId,
         quotedPrice: "150000",
-      } as unknown as TShippingBid;
+      } as unknown as ShippingBid;
 
       selectWinningBidMock.mockResolvedValueOnce({
         updatedOrder: mockOrder,
@@ -128,7 +128,7 @@ describe("order.actions", () => {
         id: "123e4567-e89b-12d3-a456-426614174001",
         quotedPrice: "150000",
         vendorName: "Grab",
-      } as unknown as TShippingBid;
+      } as unknown as ShippingBid;
 
       const createShippingBidMock = mock().mockResolvedValueOnce(mockBid);
       (
@@ -154,7 +154,7 @@ describe("order.actions", () => {
   describe("approveDealerOrderAction", () => {
     test("calls orderService.approveDealerOrder and returns success", async () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
-      const mockOrder = { id: validOrderId } as unknown as TOrder;
+      const mockOrder = { id: validOrderId } as unknown as Order;
 
       const approveDealerOrderMock = mock().mockResolvedValueOnce(mockOrder);
       (
@@ -177,7 +177,7 @@ describe("order.actions", () => {
   describe("verifyCashPaymentAction", () => {
     test("calls paymentService.verifyCashPayment and returns success", async () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
-      const mockOrder = { id: validOrderId } as unknown as TOrder;
+      const mockOrder = { id: validOrderId } as unknown as Order;
 
       const verifyCashPaymentMock = mock().mockResolvedValueOnce(mockOrder);
       (
@@ -203,7 +203,7 @@ describe("order.actions", () => {
   describe("approveOrderCancellationAction", () => {
     test("calls orderService.approveOrderCancellation and returns success", async () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
-      const mockOrder = { id: validOrderId } as unknown as TOrder;
+      const mockOrder = { id: validOrderId } as unknown as Order;
 
       const approveOrderCancellationMock =
         mock().mockResolvedValueOnce(mockOrder);

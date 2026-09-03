@@ -9,7 +9,7 @@ import {
 } from "../../tests/utils/db-mock";
 import { DbAddressService } from "./address.service";
 import type { IDatabase } from "../../client";
-import type { TUserAddress } from "../../schemas";
+import type { UserAddress } from "../../schemas";
 
 const addressService = new DbAddressService(mockDb as unknown as IDatabase);
 
@@ -33,7 +33,7 @@ describe("AddressService", () => {
           receiverName: "User 2",
           isDefault: false,
         },
-      ] as TUserAddress[];
+      ] as UserAddress[];
 
       mockFindMany.mockResolvedValueOnce(mockAddresses);
 
@@ -57,7 +57,7 @@ describe("AddressService", () => {
         district: "District 1",
         city: "HCM",
         isDefault: true,
-      } as TUserAddress;
+      } as UserAddress;
 
       mockReturning.mockResolvedValueOnce([mockNewAddress]); // insert returns the new address
 
@@ -90,7 +90,7 @@ describe("AddressService", () => {
         userId: "user-1",
         receiverName: "User 2",
         isDefault: true,
-      } as TUserAddress;
+      } as UserAddress;
 
       mockReturning.mockResolvedValueOnce([mockNewAddress]);
 

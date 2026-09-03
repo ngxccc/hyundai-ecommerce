@@ -1,39 +1,39 @@
 import type {
-  TNewQuote,
-  TNewQuoteItem,
-  TQuoteItem,
-  TNewQuoteMessage,
-  TQuoteMessage,
-  TQuote,
+  NewQuote,
+  NewQuoteItem,
+  QuoteItem,
+  NewQuoteMessage,
+  QuoteMessage,
+  Quote,
 } from "../../schemas";
 import type { CreateAdminQuoteDTO } from "../../dtos/quote.dto";
 import type { ComplexQuote, QuoteListItem } from "./quotes.service";
 
 export interface QuotesService {
   createQuote(
-    data: TNewQuote,
-    items: Omit<TNewQuoteItem, "quoteId">[],
-  ): Promise<TQuote>;
-  createAdminQuote(dto: CreateAdminQuoteDTO): Promise<TQuote>;
+    data: NewQuote,
+    items: Omit<NewQuoteItem, "quoteId">[],
+  ): Promise<Quote>;
+  createAdminQuote(dto: CreateAdminQuoteDTO): Promise<Quote>;
   getComplexQuote(quoteId: string): Promise<ComplexQuote | undefined>;
   listQuotes(filters?: {
     userId?: string;
-    status?: TQuote["status"];
+    status?: Quote["status"];
   }): Promise<QuoteListItem[]>;
   updateQuoteStatus(
     id: string,
-    status: TQuote["status"],
-  ): Promise<TQuote | undefined>;
-  addQuoteMessage(data: TNewQuoteMessage): Promise<TQuoteMessage | undefined>;
+    status: Quote["status"],
+  ): Promise<Quote | undefined>;
+  addQuoteMessage(data: NewQuoteMessage): Promise<QuoteMessage | undefined>;
   sendAdminNegotiationMessage(params: {
     quoteId: string;
     adminUserId: string;
     message: string;
-  }): Promise<TQuoteMessage>;
+  }): Promise<QuoteMessage>;
   updateQuoteItemPrice(
     itemId: string,
     agreedPrice: string,
-  ): Promise<TQuoteItem | undefined>;
+  ): Promise<QuoteItem | undefined>;
   approveAndConvertToOrder(
     quoteId: string,
     adminUserId: string,

@@ -8,11 +8,11 @@ import {
   quoteMessages,
   orders,
   orderItems,
-  type TQuote,
-  type TNewQuote,
-  type TNewQuoteItem,
-  type TQuoteMessage,
-  type TNewQuoteMessage,
+  type Quote,
+  type NewQuote,
+  type NewQuoteItem,
+  type QuoteMessage,
+  type NewQuoteMessage,
 } from "../../schemas";
 import type { CreateAdminQuoteDTO } from "../../dtos/quote.dto";
 export class DbQuotesService implements QuotesService {
@@ -21,7 +21,7 @@ export class DbQuotesService implements QuotesService {
   /**
    * Create a new quote along with negotiating items inside a single database transaction
    */
-  async createQuote(data: TNewQuote, items: Omit<TNewQuoteItem, "quoteId">[]) {
+  async createQuote(data: NewQuote, items: Omit<NewQuoteItem, "quoteId">[]) {
     return await this.db.transaction(async (tx) => {
       const [newQuote] = await tx
         .insert(quotes)
@@ -57,7 +57,7 @@ export class DbQuotesService implements QuotesService {
         const itemsToInsert = items.map((item) => ({
           ...item,
           quoteId: newQuote.id,
-        })) as TNewQuoteItem[];
+        })) as NewQuoteItem[];
         await tx.insert(quoteItems).values(itemsToInsert);
       }
 
@@ -71,7 +71,7 @@ export class DbQuotesService implements QuotesService {
    * @param dto Admin quote creation payload containing customer credentials, items, and commercial terms
    * @returns The persisted quote record
    */
-  async createAdminQuote(dto: CreateAdminQuoteDTO): Promise<TQuote> {
+  async createAdminQuote(dto: CreateAdminQuoteDTO): Promise<Quote> {
     if (!dto.items || dto.items.length === 0) {
       throw new Error("errors.emptyQuoteItems");
     }
@@ -217,7 +217,7 @@ export class DbQuotesService implements QuotesService {
   /**
    * List quotes with optional filters by user ID (dealer) or quote status
    */
-  async listQuotes(filters?: { userId?: string; status?: TQuote["status"] }) {
+  async listQuotes(filters?: { userId?: string; status?: Quote["status"] }) {
     const whereConditions =
       filters?.userId || filters?.status
         ? {
@@ -243,7 +243,7 @@ export class DbQuotesService implements QuotesService {
   /**
    * Update the status of a quote
    */
-  async updateQuoteStatus(id: string, status: TQuote["status"]) {
+  async updateQuoteStatus(id: string, status: Quote["status"]) {
     const [updated] = await this.db
       .update(quotes)
       .set({ status, updatedAt: new Date() })
@@ -277,7 +277,7 @@ export class DbQuotesService implements QuotesService {
   /**
    * Add a new negotiation chat message or activity log
    */
-  async addQuoteMessage(data: TNewQuoteMessage) {
+  async addQuoteMessage(data: NewQuoteMessage) {
     const [message] = await this.db
       .insert(quoteMessages)
       .values(data)
@@ -300,7 +300,7 @@ export class DbQuotesService implements QuotesService {
     quoteId: string;
     adminUserId: string;
     message: string;
-  }): Promise<TQuoteMessage> {
+  }): Promise<QuoteMessage> {
     if (
       !params.quoteId ||
       typeof params.quoteId !== "string" ||

@@ -9,7 +9,7 @@ import {
   mockFindMany,
 } from "../../tests/utils/db-mock";
 import { DbDealerTierService } from "./dealer-tier.service";
-import { type TDealerTier } from "../../schemas";
+import { type DealerTier } from "../../schemas";
 import type { IDatabase } from "../../client";
 
 const dealerTierService = new DbDealerTierService(mockDb as unknown as IDatabase);
@@ -20,7 +20,7 @@ describe("DealerTierService", () => {
   });
 
   test("create() should insert and return the created dealer tier", async () => {
-    const mockTier: TDealerTier = {
+    const mockTier: DealerTier = {
       id: "tier-1",
       nameVi: "Gold Partner",
       nameEn: null,
@@ -43,7 +43,7 @@ describe("DealerTierService", () => {
   });
 
   test("update() should update and return the dealer tier", async () => {
-    const mockTier: TDealerTier = {
+    const mockTier: DealerTier = {
       id: "tier-1",
       nameVi: "Gold Partner V2",
       nameEn: null,
@@ -65,7 +65,7 @@ describe("DealerTierService", () => {
   });
 
   test("getAll() should return a list of all dealer tiers", async () => {
-    const mockTiers: TDealerTier[] = [
+    const mockTiers: DealerTier[] = [
       {
         id: "tier-1",
         nameVi: "Bronze Partner",
@@ -94,7 +94,7 @@ describe("DealerTierService", () => {
   });
 
   test("getById() should return a single dealer tier by id", async () => {
-    const mockTier: TDealerTier = {
+    const mockTier: DealerTier = {
       id: "tier-1",
       nameVi: "Gold Partner",
       nameEn: null,

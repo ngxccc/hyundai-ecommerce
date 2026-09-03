@@ -1,10 +1,10 @@
 import type {
-  TOrder,
-  TNewShippingBid,
+  Order,
+  NewShippingBid,
   PaymentTransactionType,
   PaymentMethod,
   ApprovalStatus,
-  TOutboxEvent,
+  OutboxEvent,
   OutboxEventStatus,
 } from "../../schemas";
 import type { CreateOrderDTO, CreateOrderItemDTO } from "../../dtos";
@@ -12,9 +12,9 @@ import type { CreateOrderDTO, CreateOrderItemDTO } from "../../dtos";
 export interface ComplexOrder {
   id: string;
   userId: string;
-  status: TOrder["status"];
-  paymentStatus: TOrder["paymentStatus"];
-  paymentMethod: TOrder["paymentMethod"];
+  status: Order["status"];
+  paymentStatus: Order["paymentStatus"];
+  paymentMethod: Order["paymentMethod"];
   shippingFee: string | null;
   shippingAddress: string;
   totalAmount: string;
@@ -74,8 +74,8 @@ export interface MonthlyRevenue {
 export interface OrderStatusDetails {
   id: string;
   userId: string;
-  status: TOrder["status"];
-  paymentStatus: TOrder["paymentStatus"];
+  status: Order["status"];
+  paymentStatus: Order["paymentStatus"];
 }
 
 export interface SelectWinningBidResult {
@@ -84,7 +84,7 @@ export interface SelectWinningBidResult {
 }
 
 export interface OrderQueryService {
-  listOrders(filters?: { status?: TOrder["status"] }): Promise<ComplexOrder[]>;
+  listOrders(filters?: { status?: Order["status"] }): Promise<ComplexOrder[]>;
   listUserOrders(userId: string): Promise<ComplexOrder[]>;
   listUserOrdersPaginated(
     userId: string,
@@ -138,9 +138,9 @@ export interface OrderService {
   ): Promise<{ id: string }>;
   updateOrderStatus(
     id: string,
-    status: TOrder["status"],
+    status: Order["status"],
   ): Promise<{ id: string } | undefined>;
-  createShippingBid(data: TNewShippingBid): Promise<{ id: string } | undefined>;
+  createShippingBid(data: NewShippingBid): Promise<{ id: string } | undefined>;
   selectWinningBid(
     orderId: string,
     bidId: string,
@@ -171,7 +171,7 @@ export interface OrderService {
   fetchPendingOutboxEvents(
     limit: number,
   ): Promise<
-    Pick<TOutboxEvent, "id" | "eventType" | "payload" | "retryCount">[]
+    Pick<OutboxEvent, "id" | "eventType" | "payload" | "retryCount">[]
   >;
   updateOutboxEventStatus(
     id: string,

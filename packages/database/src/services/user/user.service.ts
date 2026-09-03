@@ -2,7 +2,7 @@ import type { UserService } from "../interfaces";
 import { type UserProfileDTO, type UserB2BProfileDTO } from "../../dtos";
 import { and, or, eq, ne, gte, sql } from "drizzle-orm";
 import { type IDatabase } from "../../client";
-import { users, type TUser } from "../../schemas/auth.schema";
+import { users, type User } from "../../schemas/auth.schema";
 
 export class DbUserService implements UserService {
   constructor(protected readonly db: IDatabase) {}
@@ -41,6 +41,7 @@ export class DbUserService implements UserService {
         email: users.email,
         phone: users.phone,
         role: users.role,
+        parentId: users.parentId,
         companyName: users.companyName,
         taxId: users.taxId,
         businessType: users.businessType,
@@ -48,7 +49,6 @@ export class DbUserService implements UserService {
         creditLimit: users.creditLimit,
         currentDebt: users.currentDebt,
         dealerTierId: users.dealerTierId,
-        parentId: users.parentId,
       })
       .from(users)
       .where(eq(users.id, id))
@@ -100,7 +100,7 @@ export class DbUserService implements UserService {
    */
   async update(
     id: string,
-    data: Partial<TUser>,
+    data: Partial<User>,
   ): Promise<{ id: string } | undefined> {
     const [updated] = await this.db
       .update(users)
@@ -116,9 +116,9 @@ export class DbUserService implements UserService {
    * List users filtered by role or business type along with their associated dealer tier details
    */
   async list(filters?: {
-    role?: TUser["role"];
-    businessType?: TUser["businessType"];
-  }): Promise<TUser[]> {
+    role?: User["role"];
+    businessType?: User["businessType"];
+  }): Promise<User[]> {
     const whereConditions =
       filters?.role || filters?.businessType
         ? {

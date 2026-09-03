@@ -15,9 +15,9 @@ import {
   payments,
   paymentTransactions,
   shippingBids,
-  type TOrder,
-  type TOutboxEvent,
-  type TNewShippingBid,
+  type Order,
+  type OutboxEvent,
+  type NewShippingBid,
   type OrderStatus,
   type PaymentTransactionType,
   type PaymentMethod,
@@ -122,7 +122,7 @@ export class DbOrderService implements OrderService {
         .where(eq(orders.id, id))
         .returning({ id: orders.id });
 
-      const isSoldStatus = (s: TOrder["status"]) =>
+      const isSoldStatus = (s: Order["status"]) =>
         s === "PROCESSING" || s === "SHIPPED" || s === "DELIVERED";
       // trước đó đã bán hay chưa?
       const wasSold = isSoldStatus(oldStatus);
@@ -158,7 +158,7 @@ export class DbOrderService implements OrderService {
   }
 
   async createShippingBid(
-    data: TNewShippingBid,
+    data: NewShippingBid,
   ): Promise<{ id: string } | undefined> {
     const [bid] = await this.db.insert(shippingBids).values(data).returning({
       id: shippingBids.id,
@@ -746,7 +746,7 @@ export class DbOrderService implements OrderService {
   async fetchPendingOutboxEvents(
     limit: number,
   ): Promise<
-    Pick<TOutboxEvent, "id" | "eventType" | "payload" | "retryCount">[]
+    Pick<OutboxEvent, "id" | "eventType" | "payload" | "retryCount">[]
   > {
     return await this.db.transaction(async (tx) => {
       const events = await tx
@@ -779,7 +779,7 @@ export class DbOrderService implements OrderService {
     error?: string,
   ): Promise<void> {
     await this.db.transaction(async (tx) => {
-      const updates: Partial<TOutboxEvent> = { status };
+      const updates: Partial<OutboxEvent> = { status };
       if (status === "PROCESSED") {
         updates.processedAt = new Date();
       } else if (status === "FAILED" || status === "PENDING") {

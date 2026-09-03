@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { orderService, paymentService } from "@nhatnang/database/services";
-import { type TOrder } from "@nhatnang/database/schemas";
+import { type Order } from "@nhatnang/database/schemas";
 import { AuthError } from "@nhatnang/core";
 import {
   requireAuth,
@@ -16,11 +16,11 @@ import {
   selectShippingBidSchema,
   addShippingBidSchema,
 } from "@nhatnang/database/validators";
-import type { TAddShippingBidInput } from "@nhatnang/database/validators";
+import type { AddShippingBidInput } from "@nhatnang/database/validators";
 
 export const updateOrderStatusAction = async (
   orderId: string,
-  status: TOrder["status"],
+  status: Order["status"],
 ) => {
   const t = await getTranslations("errors");
   try {
@@ -123,7 +123,7 @@ export const selectShippingBidAction = async (
   }
 };
 
-export const addShippingBidAction = async (data: TAddShippingBidInput) => {
+export const addShippingBidAction = async (data: AddShippingBidInput) => {
   const tErrors = await getTranslations("errors");
   const tAdminOrders = await getTranslations("AdminOrders");
 

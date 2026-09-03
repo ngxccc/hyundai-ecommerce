@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { quotesService } from "@nhatnang/database/services";
-import { type TQuote } from "@nhatnang/database/schemas";
+import { type Quote } from "@nhatnang/database/schemas";
 import { AuthError } from "@nhatnang/core";
 import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
@@ -225,7 +225,7 @@ export const sendQuoteMessageAction = async (
 
 export const updateQuoteStatusAction = async (
   quoteId: string,
-  status: TQuote["status"],
+  status: Quote["status"],
 ) => {
   const t = await getTranslations("errors");
   try {

@@ -5,8 +5,8 @@ import { productService } from "@nhatnang/database/services";
 import {
   createProductSchema,
   updateProductSchema,
-  type TCreateProductInput,
-  type TUpdateProductInput,
+  type CreateProductInput,
+  type UpdateProductInput,
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
@@ -26,7 +26,7 @@ export const createProductAction = async (formData: FormData) => {
 
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
-    const data = JSON.parse(payloadStr as string) as TCreateProductInput;
+    const data = JSON.parse(payloadStr as string) as CreateProductInput;
 
     const parsed = await createProductSchema.safeParseAsync(data);
     if (!parsed.success) {
@@ -101,7 +101,7 @@ export async function updateProductAction(id: string, formData: FormData) {
 
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
-    const data = JSON.parse(payloadStr as string) as TUpdateProductInput;
+    const data = JSON.parse(payloadStr as string) as UpdateProductInput;
 
     const parsed = await updateProductSchema.safeParseAsync(data);
     if (!parsed.success) {

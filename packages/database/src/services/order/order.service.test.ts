@@ -13,7 +13,7 @@ import { DbOrderService } from "./order.service";
 import { DbOrderQueryService } from "./order-query.service";
 import type { ComplexOrder } from "./order.interface";
 import type { IDatabase } from "../../client";
-import type { TOrder } from "../../schemas";
+import type { Order } from "../../schemas";
 import type { CreateOrderDTO, CreateOrderItemDTO } from "../../dtos";
 import { type PostgresError, POSTGRES_ERROR_CODES } from "../../utils";
 
@@ -35,7 +35,7 @@ describe("OrderService", () => {
       status: "PENDING",
     } as unknown as CreateOrderDTO);
     expect(mockInsert).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockOrder as unknown as TOrder);
+    expect(result).toEqual(mockOrder as unknown as Order);
   });
 
   test("updateOrderStatus() should update and return order without changing sales cache when status transition is neutral", async () => {
@@ -47,7 +47,7 @@ describe("OrderService", () => {
     const result = await orderService.updateOrderStatus("order-1", "PENDING");
 
     expect(mockUpdate).toHaveBeenCalledTimes(1);
-    expect(result).toEqual(mockOrder as unknown as TOrder);
+    expect(result).toEqual(mockOrder as unknown as Order);
   });
 
   test("updateOrderStatus() should update order and increment sales cache when transition goes from PENDING to PROCESSING", async () => {
@@ -67,7 +67,7 @@ describe("OrderService", () => {
     );
 
     expect(mockUpdate).toHaveBeenCalledTimes(2);
-    expect(result).toEqual(mockUpdatedOrder as unknown as TOrder);
+    expect(result).toEqual(mockUpdatedOrder as unknown as Order);
   });
 
   test("getComplexOrder() should return nested order", async () => {

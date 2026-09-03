@@ -1,7 +1,7 @@
-import { type TUser } from "../schemas/auth.schema";
+import { type User } from "../schemas/auth.schema";
 
 export type UserProfileDTO = Omit<
-  TUser,
+  User,
   | "emailVerified"
   | "image"
   | "dealerTierId"
@@ -13,12 +13,12 @@ export type UserProfileDTO = Omit<
 >;
 
 export type UserDTO = Omit<
-  TUser,
+  User,
   "emailVerified" | "image" | "createdAt" | "updatedAt" | "deletedAt"
 >;
 
 export type UserB2BProfileDTO = Omit<
-  TUser,
+  User,
   | "password"
   | "emailVerified"
   | "image"

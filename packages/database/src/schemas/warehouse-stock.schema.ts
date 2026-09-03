@@ -22,5 +22,5 @@ export const warehouseStocks = snakeCase.table(
   ],
 );
 
-export type TWarehouseStock = typeof warehouseStocks.$inferSelect;
-export type TNewWarehouseStock = typeof warehouseStocks.$inferInsert;
+export type WarehouseStock = typeof warehouseStocks.$inferSelect;
+export type NewWarehouseStock = typeof warehouseStocks.$inferInsert;

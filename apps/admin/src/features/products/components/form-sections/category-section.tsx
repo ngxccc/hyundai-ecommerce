@@ -22,10 +22,10 @@ import {
   SelectValue,
 } from "@nhatnang/ui/components/ui/select";
 import type { CategoryDTO, BrandDTO } from "@nhatnang/database/dtos";
-import type { TCreateProductInput } from "@nhatnang/database/validators";
+import type { CreateProductInput } from "@nhatnang/database/validators";
 
 interface ProductCategorySectionProps {
-  form: UseFormReturn<TCreateProductInput>;
+  form: UseFormReturn<CreateProductInput>;
   categories: CategoryDTO[];
   brands: BrandDTO[];
 }
@@ -52,7 +52,7 @@ export const ProductCategorySection = ({
           render={({
             field,
           }: {
-            field: ControllerRenderProps<TCreateProductInput, "categoryId">;
+            field: ControllerRenderProps<CreateProductInput, "categoryId">;
           }) => (
             <FormItem>
               <FormLabel>{t("fields.category")}</FormLabel>
@@ -90,7 +90,7 @@ export const ProductCategorySection = ({
           render={({
             field,
           }: {
-            field: ControllerRenderProps<TCreateProductInput, "brandId">;
+            field: ControllerRenderProps<CreateProductInput, "brandId">;
           }) => (
             <FormItem>
               <FormLabel>{t("fields.brand")}</FormLabel>

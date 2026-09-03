@@ -1,6 +1,4 @@
-import type { productService } from "@nhatnang/database/services";
+import type { ProductDTO } from "@nhatnang/database/dtos";
 
-export type TProductGridList = NonNullable<
-  Awaited<ReturnType<typeof productService.getAll>>["data"]
->;
-export type TProductGridItem = TProductGridList[number];
+export type ProductGridList = ProductDTO[];
+export type ProductGridItem = ProductDTO;

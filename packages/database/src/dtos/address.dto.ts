@@ -1,7 +1,7 @@
-import { type TUserAddress } from "../schemas/user-address.schema";
+import { type UserAddress } from "../schemas/user-address.schema";
 
 export type AddressDTO = Omit<
-  TUserAddress,
+  UserAddress,
   "userId" | "createdAt" | "updatedAt" | "deletedAt"
 >;
 
@@ -12,7 +12,7 @@ export type CreateAddressDTO = Omit<AddressDTO, "id" | "isDefault"> & {
 
 export type UpdateAddressDTO = Partial<Omit<AddressDTO, "id">>;
 
-export function mapAddressToDTO(address: TUserAddress): AddressDTO {
+export function mapAddressToDTO(address: UserAddress): AddressDTO {
   return {
     id: address.id,
     receiverName: address.receiverName,

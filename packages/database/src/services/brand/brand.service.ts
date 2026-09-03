@@ -3,7 +3,7 @@ import { type BrandDTO } from "../../dtos";
 import { brands } from "../../schemas/brand.schema";
 import { type IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
-import type { TCreateBrandInput, TUpdateBrandInput } from "../../validators";
+import type { CreateBrandInput, UpdateBrandInput } from "../../validators";
 import { handleServiceError } from "../../utils";
 
 export class DbBrandService implements BrandService {
@@ -44,7 +44,7 @@ export class DbBrandService implements BrandService {
     return brand;
   }
 
-  async create(input: TCreateBrandInput): Promise<BrandDTO> {
+  async create(input: CreateBrandInput): Promise<BrandDTO> {
     try {
       const [newBrand] = await this.db.insert(brands).values(input).returning({
         id: brands.id,
@@ -64,7 +64,7 @@ export class DbBrandService implements BrandService {
     }
   }
 
-  async update({ id, ...data }: TUpdateBrandInput): Promise<BrandDTO> {
+  async update({ id, ...data }: UpdateBrandInput): Promise<BrandDTO> {
     try {
       const [updatedBrand] = await this.db
         .update(brands)

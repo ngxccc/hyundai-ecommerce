@@ -19,7 +19,7 @@ import type {
   BrandDTO,
 } from "@nhatnang/database/dtos";
 import {
-  type TCreateProductInput,
+  type CreateProductInput,
   createProductSchema,
 } from "@nhatnang/database/validators";
 import { isCloudinaryUrl } from "@/shared/utils";
@@ -66,9 +66,9 @@ export const ProductForm = ({
     categoryId: null,
     isQuoteOnly: false,
     specs: {},
-  } satisfies TCreateProductInput;
+  } satisfies CreateProductInput;
 
-  const form = useForm<TCreateProductInput>({
+  const form = useForm<CreateProductInput>({
     resolver: translatedZodResolver(createProductSchema, t),
     defaultValues: {
       nameVi: initialData?.nameVi ?? "",
@@ -89,11 +89,11 @@ export const ProductForm = ({
     },
   });
 
-  const onSubmit = (data: TCreateProductInput) => {
+  const onSubmit = (data: CreateProductInput) => {
     startTransition(async () => {
       const existingImageUrls: string[] = [];
       const imagesToUpload: (File | string)[] = [];
-
+  
       for (const item of images) {
         if (item instanceof File) {
           imagesToUpload.push(item);
@@ -106,29 +106,29 @@ export const ProductForm = ({
           existingImageUrls.push(item);
         }
       }
-
+  
       const payload = {
         ...data,
         price: data.price ? data.price.replace(/\./g, "") : "",
         images: existingImageUrls.filter((image) => image.trim().length > 0),
         isQuoteOnly: data.isQuoteOnly ?? false,
       };
-
+  
       const finalFormData = new FormData();
       finalFormData.append("payload", JSON.stringify(payload));
       for (const item of imagesToUpload) {
         finalFormData.append("images", item);
       }
-
+  
       const result = isEditing
         ? await updateProductAction(initialData.id, finalFormData)
         : await createProductAction(finalFormData);
-
+  
       if (result.success) {
         toast.success(
           isEditing ? t("messages.successUpdate") : t("messages.successCreate"),
         );
-
+  
         if (!isEditing) {
           form.reset(emptyFormValues);
           setImages([]);
@@ -138,7 +138,7 @@ export const ProductForm = ({
           Object.entries(result.fieldErrors).forEach(([field, errors]) => {
             const message = errors?.[0];
             if (message) {
-              form.setError(field as keyof TCreateProductInput, {
+              form.setError(field as keyof CreateProductInput, {
                 type: "server",
                 message,
               });

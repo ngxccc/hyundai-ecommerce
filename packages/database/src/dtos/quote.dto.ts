@@ -1,4 +1,4 @@
-import type { TQuote, TQuoteItem, TQuoteMessage } from "../schemas/quotes.schema";
+import type { Quote, QuoteItem, QuoteMessage } from "../schemas/quotes.schema";
 
 export interface AdminQuoteItemInputDTO {
   productId?: string | null | undefined;
@@ -32,6 +32,6 @@ export interface CreateAdminQuoteDTO {
   createdByAdminId?: string | null | undefined;
   items: AdminQuoteItemInputDTO[];
 }
-export type QuoteDTO = TQuote;
-export type QuoteItemDTO = TQuoteItem;
-export type QuoteMessageDTO = TQuoteMessage;
+export type QuoteDTO = Quote;
+export type QuoteItemDTO = QuoteItem;
+export type QuoteMessageDTO = QuoteMessage;

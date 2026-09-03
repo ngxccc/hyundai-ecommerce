@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { revalidateTag } from "next/cache";
 import {
   createEmployeeSchema,
-  type TCreateEmployeeForm,
+  type CreateEmployeeForm,
 } from "@nhatnang/database/validators";
 import { validateSchema } from "@/shared/lib/validation";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
@@ -30,7 +30,7 @@ export async function listEmployeesAction() {
   }
 }
 
-export async function createEmployeeAction(data: TCreateEmployeeForm) {
+export async function createEmployeeAction(data: CreateEmployeeForm) {
   const [session, t] = await Promise.all([
     getCachedSession(),
     getTranslations("errors"),

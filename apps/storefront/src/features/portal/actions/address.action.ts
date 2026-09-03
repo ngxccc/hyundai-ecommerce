@@ -2,12 +2,12 @@
 
 import { getCachedSession } from "@/shared/lib/session";
 import { addressService } from "@nhatnang/database/services";
-import { addressSchema, type TAddressForm } from "@nhatnang/database/validators";
+import { addressSchema, type AddressForm } from "@nhatnang/database/validators";
 import { validateSchema } from "@/shared/lib/validation";
 import { getTranslations } from "next-intl/server";
 import { revalidateTag } from "next/cache";
 
-export const addAddressAction = async (data: TAddressForm) => {
+export const addAddressAction = async (data: AddressForm) => {
   const [session, t] = await Promise.all([
     getCachedSession(),
     getTranslations("errors"),
@@ -40,7 +40,7 @@ export const addAddressAction = async (data: TAddressForm) => {
   }
 };
 
-export const updateAddressAction = async (id: string, data: TAddressForm) => {
+export const updateAddressAction = async (id: string, data: AddressForm) => {
   const [session, t] = await Promise.all([
     getCachedSession(),
     getTranslations("errors"),

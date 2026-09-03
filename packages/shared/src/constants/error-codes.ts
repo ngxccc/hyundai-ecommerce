@@ -13,5 +13,5 @@ export const SYSTEM_ERROR_CODES = {
   RATE_LIMIT_EXCEEDED: "RATE_LIMIT_EXCEEDED",
 } as const;
 
-export type TAuthErrorCode = keyof typeof AUTH_ERROR_CODES;
-export type TSystemErrorCode = keyof typeof SYSTEM_ERROR_CODES;
+export type AuthErrorCode = keyof typeof AUTH_ERROR_CODES;
+export type SystemErrorCode = keyof typeof SYSTEM_ERROR_CODES;

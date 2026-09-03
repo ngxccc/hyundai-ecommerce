@@ -4,8 +4,8 @@ import type {
   CategoryDTO,
   ProductDTO,
 } from "@nhatnang/database/dtos";
-import type { TProductSpecs } from "@nhatnang/database/validators";
-import type { TCategoryWithChildren } from "@nhatnang/database/services";
+import type { ProductSpecs } from "@nhatnang/database/validators";
+import type { CategoryWithChildren } from "@nhatnang/database/services";
 import type { Locale } from "next-intl";
 
 export interface StorefrontProduct {
@@ -18,7 +18,7 @@ export interface StorefrontProduct {
   images: string[];
   brandId: string | null;
   categoryId: string | null;
-  specs: TProductSpecs | null;
+  specs: ProductSpecs | null;
   totalStockCache: number;
   isQuoteOnly: boolean;
 }
@@ -99,7 +99,7 @@ export function mapCategoryToStorefront(
 }
 
 export function mapCategoryTreeToStorefront(
-  node: TCategoryWithChildren,
+  node: CategoryWithChildren,
   locale: Locale,
 ): StorefrontCategoryWithChildren {
   return {

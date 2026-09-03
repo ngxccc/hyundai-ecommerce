@@ -1,4 +1,4 @@
-import type { TCreateEmployeeForm } from "../../validators";
+import type { CreateEmployeeForm } from "../../validators";
 
 export interface LoginOptions {
   headers?: HeadersInit;
@@ -9,17 +9,17 @@ export interface RegisterOptions {
   callbackURL?: string;
 }
 
-export interface AuthService<TLoginForm = unknown, TRegisterForm = unknown> {
+export interface AuthService<TLogin = unknown, TRegister = unknown> {
   loginEmail(
-    data: TLoginForm,
+    data: TLogin,
     options?: LoginOptions,
   ): Promise<{ userId: string }>;
   register(
-    data: TRegisterForm,
+    data: TRegister,
     options?: RegisterOptions,
   ): Promise<{ userId: string }>;
   createEmployee(
-    data: TCreateEmployeeForm,
+    data: CreateEmployeeForm,
     ownerId: string,
   ): Promise<{ userId: string }>;
 }

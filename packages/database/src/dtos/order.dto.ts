@@ -1,21 +1,21 @@
 import type {
-  TOrder,
-  TOrderItem,
-  TPayment,
+  Order,
+  OrderItem,
+  Payment,
 } from "../schemas";
 
 export type CreateOrderDTO = Pick<
-  TOrder,
+  Order,
   "userId" | "shippingAddress" | "shippingFee" | "totalAmount" | "paymentMethod"
 > &
-  Partial<Pick<TOrder, "paymentStatus" | "status" | "approvalStatus">> & {
+  Partial<Pick<Order, "paymentStatus" | "status" | "approvalStatus">> & {
     orderCode?: string;
   };
 
 export type CreateOrderItemDTO = Pick<
-  TOrderItem,
+  OrderItem,
   "productId" | "productName" | "productSku" | "quantity" | "unitPrice"
 >;
 
-export type CreatePaymentDTO = Pick<TPayment, "orderId" | "amount" | "method"> &
-  Partial<Pick<TPayment, "status" | "rawPayload">>;
+export type CreatePaymentDTO = Pick<Payment, "orderId" | "amount" | "method"> &
+  Partial<Pick<Payment, "status" | "rawPayload">>;

@@ -10,7 +10,7 @@ import {
 } from "../../tests/utils/db-mock";
 import { mapProductToDTO } from "../../dtos";
 import { DbProductService } from "./product.service";
-import type { TProduct } from "../../schemas";
+import type { Product } from "../../schemas";
 import type { IDatabase } from "../../client";
 
 const productService = new DbProductService(mockDb as unknown as IDatabase);
@@ -157,7 +157,7 @@ describe("ProductService", () => {
           createdAt: new Date(),
           categories: null,
         },
-      ] as unknown as TProduct[];
+      ] as unknown as Product[];
       mockSelectResolvedValue.mockResolvedValueOnce(mockProducts);
 
       const result = await productService.getAll(10, { sort: "priceAsc" });
@@ -176,7 +176,7 @@ describe("ProductService", () => {
           createdAt: new Date(),
           categories: null,
         },
-      ] as unknown as TProduct[];
+      ] as unknown as Product[];
       mockSelectResolvedValue.mockResolvedValueOnce(mockProducts);
 
       const result = await productService.getAll(10, {

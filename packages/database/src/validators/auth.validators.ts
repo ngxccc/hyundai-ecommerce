@@ -124,6 +124,6 @@ export const createEmployeeSchema = z
     }
   });
 
-export type TLoginForm = z.infer<typeof loginSchema>;
-export type TRegisterForm = z.infer<typeof registerSchema>;
-export type TCreateEmployeeForm = z.infer<typeof createEmployeeSchema>;
+export type LoginForm = z.infer<typeof loginSchema>;
+export type RegisterForm = z.infer<typeof registerSchema>;
+export type CreateEmployeeForm = z.infer<typeof createEmployeeSchema>;

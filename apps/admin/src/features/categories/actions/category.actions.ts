@@ -5,8 +5,8 @@ import { categoryService } from "@nhatnang/database/services";
 import {
   createCategorySchema,
   updateCategorySchema,
-  type TCreateCategoryInput,
-  type TUpdateCategoryInput,
+  type CreateCategoryInput,
+  type UpdateCategoryInput,
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
@@ -26,7 +26,7 @@ export const createCategoryAction = async (formData: FormData) => {
 
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
-    const data = JSON.parse(payloadStr as string) as TCreateCategoryInput;
+    const data = JSON.parse(payloadStr as string) as CreateCategoryInput;
     const parsed = await createCategorySchema.safeParseAsync(data);
 
     if (!parsed.success) {
@@ -109,7 +109,7 @@ export async function updateCategoryAction(id: string, formData: FormData) {
 
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
-    const data = JSON.parse(payloadStr as string) as TUpdateCategoryInput;
+    const data = JSON.parse(payloadStr as string) as UpdateCategoryInput;
 
     const parsed = await updateCategorySchema.safeParseAsync({ ...data, id });
 

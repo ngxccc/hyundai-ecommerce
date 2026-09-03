@@ -1,6 +1,6 @@
 import type {
-  TPayment,
-  TNewPaymentTransaction,
+  Payment,
+  NewPaymentTransaction,
   PaymentTransactionStatus,
 } from "../../schemas";
 import type {
@@ -26,7 +26,7 @@ export interface PaymentService {
   ): Promise<{ id: string } | undefined>;
   createPayment(data: CreatePaymentDTO): Promise<{ id: string }>;
   createPaymentTransaction(
-    data: TNewPaymentTransaction,
+    data: NewPaymentTransaction,
   ): Promise<{ id: string }>;
   getPaymentTransactionByReferenceCode(
     referenceCode: string,
@@ -41,7 +41,7 @@ export interface PaymentService {
   ): Promise<boolean>;
   updatePayment(
     id: string,
-    data: Partial<TPayment>,
+    data: Partial<Payment>,
   ): Promise<{ id: string } | undefined>;
   getPendingPayOSTransactionByOrderId(
     orderId: string,

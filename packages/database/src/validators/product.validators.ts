@@ -69,6 +69,6 @@ export const createProductSchema = z
 
 export const updateProductSchema = createProductSchema.partial().strict();
 
-export type TProductSpecs = z.infer<typeof productSpecsSchema>;
-export type TCreateProductInput = z.infer<typeof createProductSchema>;
-export type TUpdateProductInput = z.infer<typeof updateProductSchema>;
+export type ProductSpecs = z.infer<typeof productSpecsSchema>;
+export type CreateProductInput = z.infer<typeof createProductSchema>;
+export type UpdateProductInput = z.infer<typeof updateProductSchema>;

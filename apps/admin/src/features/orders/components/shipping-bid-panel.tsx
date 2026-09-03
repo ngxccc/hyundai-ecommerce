@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { translatedZodResolver } from "@/shared/lib/validation-resolver";
-import { type TAddShippingBidInput, addShippingBidSchema } from "@nhatnang/database/validators";
+import { type AddShippingBidInput, addShippingBidSchema } from "@nhatnang/database/validators";
 import type { ComplexOrder } from "@nhatnang/database/services";
 import { selectShippingBidAction, addShippingBidAction } from "../actions";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
@@ -46,7 +46,7 @@ export const ShippingBidPanel = ({ order }: ShippingBidPanelProps) => {
   const t = useTranslations("AdminOrders");
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<TAddShippingBidInput>({
+  const form = useForm<AddShippingBidInput>({
     resolver: translatedZodResolver(addShippingBidSchema, t),
     defaultValues: {
       orderId: order.id,
@@ -56,7 +56,7 @@ export const ShippingBidPanel = ({ order }: ShippingBidPanelProps) => {
     },
   });
 
-  const onSubmit = (data: TAddShippingBidInput) => {
+  const onSubmit = (data: AddShippingBidInput) => {
     startTransition(async () => {
       const result = await addShippingBidAction(data);
       if (result.success) {

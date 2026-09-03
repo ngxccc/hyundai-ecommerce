@@ -10,13 +10,13 @@ import {
   SelectValue,
 } from "@nhatnang/ui/components/ui/select";
 import { Field, FieldLabel, FieldError } from "@nhatnang/ui/components/ui/field";
-import type { TRegisterForm } from "@nhatnang/database/validators";
+import type { RegisterForm } from "@nhatnang/database/validators";
 import { useTranslations } from "next-intl";
 import type { AuthFormSectionProps } from "../types/auth-form.types";
 
 export const BusinessInfoSection = ({
   form,
-}: AuthFormSectionProps<TRegisterForm>) => {
+}: AuthFormSectionProps<RegisterForm>) => {
   const t = useTranslations("Register");
   const businessType = useWatch({
     control: form.control,

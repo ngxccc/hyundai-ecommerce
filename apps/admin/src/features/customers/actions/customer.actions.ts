@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { dealerTierService, userService } from "@nhatnang/database/services";
 import {
   createDealerTierSchema,
-  type TCreateDealerTierInput,
+  type CreateDealerTierInput,
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
@@ -21,7 +21,7 @@ export const createDealerTierAction = async (formData: FormData) => {
 
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
-    const data = JSON.parse(payloadStr as string) as TCreateDealerTierInput;
+    const data = JSON.parse(payloadStr as string) as CreateDealerTierInput;
     const parsed = await createDealerTierSchema.safeParseAsync(data);
     if (!parsed.success) {
       const t = await getTranslations("errors");

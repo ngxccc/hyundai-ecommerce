@@ -15,7 +15,7 @@ import { Button } from "@nhatnang/ui/components/ui/button";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { numberToVietnameseWords } from "@nhatnang/shared";
 import type { ComplexQuote } from "@nhatnang/database/services";
-import type { TProductSpecs } from "@nhatnang/database/validators";
+import type { ProductSpecs } from "@nhatnang/database/validators";
 
 export interface QuotePrintDocumentProps {
   quote: ComplexQuote;
@@ -55,7 +55,7 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
 
   // Filter items with detailed technical specifications for Appendix (Phụ lục Kỹ thuật)
   const generatorItems = quote.items.filter((item) => {
-    const specs = item.product?.specs as TProductSpecs | undefined;
+    const specs = item.product?.specs as ProductSpecs | undefined;
     const hasSpecs = specs ? Object.keys(specs).length > 0 : false;
     const hasItemSpecs = Boolean(item.itemSpecs);
     return hasSpecs || hasItemSpecs || !item.isCustomItem;

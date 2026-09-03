@@ -2,7 +2,7 @@ import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { OrderList } from "@/features/orders/components";
 import { orderQueryService } from "@nhatnang/database/services";
-import { orderStatusEnum, type TOrder } from "@nhatnang/database/schemas";
+import { orderStatusEnum, type Order } from "@nhatnang/database/schemas";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -47,7 +47,7 @@ export default async function AdminOrdersPage({
   const status =
     statusParam &&
     (orderStatusEnum.enumValues as readonly string[]).includes(statusParam)
-      ? (statusParam as TOrder["status"])
+      ? (statusParam as Order["status"])
       : undefined;
 
   // Fetch filtered orders

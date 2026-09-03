@@ -9,7 +9,7 @@ import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { useIsClient } from "@/shared/hooks/useIsClient";
 import {
   createEmployeeSchema,
-  type TCreateEmployeeForm,
+  type CreateEmployeeForm,
 } from "@nhatnang/database/validators";
 import { createEmployeeAction } from "../actions/employee.action";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -34,7 +34,7 @@ export function EmployeesView({ initialEmployees }: EmployeesViewProps) {
   const [isLoading, setIsLoading] = useState(false);
   const isClient = useIsClient();
 
-  const form = useForm<TCreateEmployeeForm>({
+  const form = useForm<CreateEmployeeForm>({
     resolver: translatedZodResolver(createEmployeeSchema, t),
     defaultValues: {
       name: "",
@@ -45,7 +45,7 @@ export function EmployeesView({ initialEmployees }: EmployeesViewProps) {
     },
   });
 
-  const onSubmit: SubmitHandler<TCreateEmployeeForm> = async (data) => {
+  const onSubmit: SubmitHandler<CreateEmployeeForm> = async (data) => {
     setIsLoading(true);
     try {
       const result = await createEmployeeAction(data);
@@ -57,7 +57,7 @@ export function EmployeesView({ initialEmployees }: EmployeesViewProps) {
       } else {
         if ("fieldErrors" in result && result.fieldErrors) {
           Object.entries(result.fieldErrors).forEach(([key, messages]) => {
-            form.setError(key as keyof TCreateEmployeeForm, {
+            form.setError(key as keyof CreateEmployeeForm, {
               type: "manual",
               message: messages[0] ?? "",
             });

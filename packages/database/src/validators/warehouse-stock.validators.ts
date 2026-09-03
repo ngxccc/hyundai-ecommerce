@@ -9,6 +9,6 @@ export const updateWarehouseStockSchema = z
   })
   .strict();
 
-export type TUpdateWarehouseStockInput = z.infer<
+export type UpdateWarehouseStockInput = z.infer<
   typeof updateWarehouseStockSchema
 >;

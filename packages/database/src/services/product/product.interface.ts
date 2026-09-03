@@ -1,4 +1,4 @@
-import type { TNewProduct } from "../../schemas";
+import type { NewProduct } from "../../schemas";
 import type { ProductDTO } from "../../dtos";
 
 export interface TopSellingProduct {
@@ -10,8 +10,8 @@ export interface TopSellingProduct {
   image: string | null;
 }
 
-export type TUpdateProductData = Partial<{
-  [K in keyof TNewProduct]: TNewProduct[K] | undefined;
+export type UpdateProductData = Partial<{
+  [K in keyof NewProduct]: NewProduct[K] | undefined;
 }>;
 
 export interface GetAllOptions {
@@ -59,8 +59,8 @@ export interface LocalItem {
 }
 
 export interface ProductService {
-  create(data: TNewProduct): Promise<ProductDTO>;
-  update(id: string, data: TUpdateProductData): Promise<ProductDTO>;
+  create(data: NewProduct): Promise<ProductDTO>;
+  update(id: string, data: UpdateProductData): Promise<ProductDTO>;
   delete(id: string): Promise<boolean>;
   getById(id: string): Promise<ProductDTO>;
   getAll(

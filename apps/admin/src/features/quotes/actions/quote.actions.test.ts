@@ -9,7 +9,7 @@ import {
   mockQuotesCreateAdminQuote,
   mockRevalidatePath,
 } from "@nhatnang/shared/testing/action-mocks";
-import type { TQuote } from "@nhatnang/database/schemas";
+import type { Quote } from "@nhatnang/database/schemas";
 
 describe("quote.actions", () => {
   beforeEach(() => {
@@ -215,7 +215,7 @@ describe("quote.actions", () => {
           ],
         };
 
-        const mockCreatedQuote: TQuote = {
+        const mockCreatedQuote: Quote = {
           id: "00000000-0000-4000-8000-000000000099",
           quoteNumber: "QT-20260902-001",
           userId: null,

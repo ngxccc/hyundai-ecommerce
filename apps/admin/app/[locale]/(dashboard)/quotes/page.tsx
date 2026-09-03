@@ -2,7 +2,7 @@ import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { QuoteList } from "@/features/quotes/components";
 import { quotesService } from "@nhatnang/database/services";
-import { quoteStatusEnum, type TQuote } from "@nhatnang/database/schemas";
+import { quoteStatusEnum, type Quote } from "@nhatnang/database/schemas";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -46,7 +46,7 @@ export default async function AdminQuotesPage({
   const status =
     statusParam &&
     (quoteStatusEnum.enumValues as readonly string[]).includes(statusParam)
-      ? (statusParam as TQuote["status"])
+      ? (statusParam as Quote["status"])
       : undefined;
 
   const quotes = await quotesService.listQuotes(status ? { status } : undefined);

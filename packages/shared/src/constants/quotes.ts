@@ -3,4 +3,4 @@ export const QUOTE_CONSTANTS = {
   SYSTEM_MESSAGE_APPROVED_PREFIX: "[SYSTEM] Báo giá đã được phê duyệt và chuyển đổi thành Đơn hàng #",
 } as const;
 
-export type TQuoteConstant = keyof typeof QUOTE_CONSTANTS;
+export type QuoteConstant = keyof typeof QUOTE_CONSTANTS;

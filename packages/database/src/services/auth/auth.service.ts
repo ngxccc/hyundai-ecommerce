@@ -2,21 +2,21 @@ import type { IDatabase } from "../../client";
 import type { AuthService, LoginOptions, RegisterOptions } from "../interfaces";
 import {
   AUTH_ERROR_CODES,
-  type TAuthErrorCode,
-  type TSystemErrorCode,
+  type AuthErrorCode,
+  type SystemErrorCode,
 } from "@nhatnang/shared/constants";
 import { type APIError, auth, isAPIError } from "../../auth";
 import { eq } from "drizzle-orm";
 import { users } from "../../schemas/auth.schema";
 import type {
-  TLoginForm,
-  TRegisterForm,
-  TCreateEmployeeForm,
+  LoginForm,
+  RegisterForm,
+  CreateEmployeeForm,
 } from "../../validators/auth.validators";
 
 const mapLoginAuthErrorCode = (
   error: APIError,
-): TAuthErrorCode | TSystemErrorCode => {
+): AuthErrorCode | SystemErrorCode => {
   const errorCode = error.body?.code;
 
   if (errorCode === AUTH_ERROR_CODES.ACCOUNT_LOCKED) {
@@ -30,14 +30,14 @@ const mapLoginAuthErrorCode = (
   return "INVALID_CREDENTIALS";
 };
 
-export class DbAuthService implements AuthService<TLoginForm, TRegisterForm> {
+export class DbAuthService implements AuthService<LoginForm, RegisterForm> {
   constructor(
     protected readonly db: IDatabase,
     protected readonly betterAuth = auth,
   ) {}
 
   async loginEmail(
-    data: TLoginForm,
+    data: LoginForm,
     options?: LoginOptions,
   ): Promise<{ userId: string }> {
     const { email, password } = data;
@@ -68,7 +68,7 @@ export class DbAuthService implements AuthService<TLoginForm, TRegisterForm> {
   }
 
   async register(
-    data: TRegisterForm,
+    data: RegisterForm,
     options?: RegisterOptions,
   ): Promise<{ userId: string }> {
     try {
@@ -116,7 +116,7 @@ export class DbAuthService implements AuthService<TLoginForm, TRegisterForm> {
   }
 
   async createEmployee(
-    data: TCreateEmployeeForm,
+    data: CreateEmployeeForm,
     ownerId: string,
   ): Promise<{ userId: string }> {
     try {

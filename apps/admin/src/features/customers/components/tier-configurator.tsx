@@ -32,15 +32,15 @@ import {
 } from "@nhatnang/ui/components/ui/card";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { createDealerTierAction } from "../actions/customer.actions";
-import { type TDealerTier } from "@nhatnang/database/schemas";
+import { type DealerTier } from "@nhatnang/database/schemas";
 import {
-  type TCreateDealerTierInput,
+  type CreateDealerTierInput,
   createDealerTierSchema,
 } from "@nhatnang/database/validators";
 interface TierConfiguratorProps {
-  dealerTiers: TDealerTier[];
+  dealerTiers: DealerTier[];
 }
 
 export const TierConfigurator = ({ dealerTiers }: TierConfiguratorProps) => {
@@ -48,7 +48,7 @@ export const TierConfigurator = ({ dealerTiers }: TierConfiguratorProps) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<TCreateDealerTierInput>({
+  const form = useForm<CreateDealerTierInput>({
     resolver: translatedZodResolver(createDealerTierSchema, t),
     defaultValues: {
       nameVi: "",
@@ -58,7 +58,7 @@ export const TierConfigurator = ({ dealerTiers }: TierConfiguratorProps) => {
     },
   });
 
-  const onSubmit = (data: TCreateDealerTierInput) => {
+  const onSubmit = (data: CreateDealerTierInput) => {
     startTransition(async () => {
       const payload = {
         nameVi: data.nameVi,

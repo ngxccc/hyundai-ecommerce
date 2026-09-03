@@ -1,10 +1,10 @@
 "use client";
 
 import { ProductCard } from "./product-card";
-import type { TProductGridList } from "../product-form-types";
+import type { ProductGridList } from "../product-form-types";
 
 interface ProductGridProps {
-  products: TProductGridList;
+  products: ProductGridList;
 }
 
 export const ProductGrid = ({ products }: ProductGridProps) => {

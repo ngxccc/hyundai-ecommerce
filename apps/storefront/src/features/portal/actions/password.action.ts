@@ -5,12 +5,12 @@ import { getCachedSession } from "@/shared/lib/session";
 import { auth } from "@nhatnang/database/auth";
 import {
   changePasswordSchema,
-  type TChangePasswordForm,
+  type ChangePasswordForm,
 } from "@nhatnang/database/validators";
 import { validateSchema } from "@/shared/lib/validation";
 import { getTranslations } from "next-intl/server";
 
-export const changePasswordAction = async (data: TChangePasswordForm) => {
+export const changePasswordAction = async (data: ChangePasswordForm) => {
   const reqHeaders = await headers();
   const [session, t] = await Promise.all([
     getCachedSession(),

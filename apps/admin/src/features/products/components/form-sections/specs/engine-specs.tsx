@@ -24,10 +24,10 @@ import {
 } from "@nhatnang/ui/components/ui/select";
 import { NumberWithUnitField } from "../number-with-unit-field";
 import { toInputValue } from "@nhatnang/shared/lib/utils";
-import type { TCreateProductInput } from "@nhatnang/database/validators";
+import type { CreateProductInput } from "@nhatnang/database/validators";
 
 interface SpecsProps {
-  form: UseFormReturn<TCreateProductInput>;
+  form: UseFormReturn<CreateProductInput>;
 }
 
 export const EngineSpecs = ({ form }: SpecsProps) => {
@@ -49,7 +49,7 @@ export const EngineSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput>;
+              field: ControllerRenderProps<CreateProductInput>;
             }) => (
               <FormItem>
                 <FormLabel>{t("fields.engine")}</FormLabel>
@@ -70,7 +70,7 @@ export const EngineSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput>;
+              field: ControllerRenderProps<CreateProductInput>;
             }) => (
               <FormItem>
                 <FormLabel>{t("fields.engineBrand")}</FormLabel>
@@ -91,7 +91,7 @@ export const EngineSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput>;
+              field: ControllerRenderProps<CreateProductInput>;
             }) => (
               <FormItem>
                 <FormLabel>{t("fields.fuelType")}</FormLabel>
@@ -126,7 +126,7 @@ export const EngineSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput>;
+              field: ControllerRenderProps<CreateProductInput>;
             }) => (
               <FormItem>
                 <FormLabel>{t("fields.coolingSystem")}</FormLabel>
@@ -147,7 +147,7 @@ export const EngineSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput>;
+              field: ControllerRenderProps<CreateProductInput>;
             }) => (
               <FormItem>
                 <FormLabel>{t("fields.startingSystem")}</FormLabel>
@@ -169,7 +169,7 @@ export const EngineSpecs = ({ form }: SpecsProps) => {
               field,
             }: {
               field: ControllerRenderProps<
-                TCreateProductInput,
+                CreateProductInput,
                 "specs.fuelConsumption"
               >;
             }) => (
@@ -188,7 +188,7 @@ export const EngineSpecs = ({ form }: SpecsProps) => {
               field,
             }: {
               field: ControllerRenderProps<
-                TCreateProductInput,
+                CreateProductInput,
                 "specs.fuelTankCapacity"
               >;
             }) => (
@@ -206,7 +206,7 @@ export const EngineSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput>;
+              field: ControllerRenderProps<CreateProductInput>;
             }) => (
               <FormItem>
                 <FormLabel>{t("fields.alternator")}</FormLabel>
@@ -227,7 +227,7 @@ export const EngineSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput>;
+              field: ControllerRenderProps<CreateProductInput>;
             }) => (
               <FormItem>
                 <FormLabel>{t("fields.alternatorBrand")}</FormLabel>

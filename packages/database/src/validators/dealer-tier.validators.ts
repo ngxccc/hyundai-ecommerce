@@ -31,5 +31,5 @@ export const updateDealerTierSchema = createDealerTierSchema
   })
   .strict();
 
-export type TCreateDealerTierInput = z.infer<typeof createDealerTierSchema>;
-export type TUpdateDealerTierInput = z.infer<typeof updateDealerTierSchema>;
+export type CreateDealerTierInput = z.infer<typeof createDealerTierSchema>;
+export type UpdateDealerTierInput = z.infer<typeof updateDealerTierSchema>;

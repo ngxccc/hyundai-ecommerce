@@ -7,8 +7,8 @@ import {
   outboxEvents,
   debtRepayments,
   users,
-  type TPayment,
-  type TNewPaymentTransaction,
+  type Payment,
+  type NewPaymentTransaction,
   type OrderPaymentStatus,
   type PaymentTransactionType,
   type PaymentTransactionStatus,
@@ -106,7 +106,7 @@ export class DbPaymentService implements PaymentService {
   }
 
   async createPaymentTransaction(
-    data: TNewPaymentTransaction,
+    data: NewPaymentTransaction,
   ): Promise<{ id: string }> {
     const [transaction] = await this.db
       .insert(paymentTransactions)
@@ -151,7 +151,7 @@ export class DbPaymentService implements PaymentService {
 
   async updatePayment(
     id: string,
-    data: Partial<TPayment>,
+    data: Partial<Payment>,
   ): Promise<{ id: string } | undefined> {
     const [updated] = await this.db
       .update(payments)

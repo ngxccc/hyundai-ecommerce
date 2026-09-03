@@ -9,7 +9,7 @@ import { useRouter } from "@/i18n/routing";
 import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import {
   changePasswordSchema,
-  type TChangePasswordForm,
+  type ChangePasswordForm,
 } from "@nhatnang/database/validators";
 import { changePasswordAction } from "../actions/password.action";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -27,7 +27,7 @@ export function PasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
   const isClient = useIsClient();
 
-  const form = useForm<TChangePasswordForm>({
+  const form = useForm<ChangePasswordForm>({
     resolver: translatedZodResolver(changePasswordSchema, t),
     defaultValues: {
       currentPassword: "",
@@ -36,7 +36,7 @@ export function PasswordForm() {
     },
   });
 
-  const onSubmit: SubmitHandler<TChangePasswordForm> = async (data) => {
+  const onSubmit: SubmitHandler<ChangePasswordForm> = async (data) => {
     setIsLoading(true);
     try {
       const result = await changePasswordAction(data);
@@ -44,7 +44,7 @@ export function PasswordForm() {
       if (!result.success) {
         if ("fieldErrors" in result && result.fieldErrors) {
           Object.entries(result.fieldErrors).forEach(([key, messages]) => {
-            form.setError(key as keyof TChangePasswordForm, {
+            form.setError(key as keyof ChangePasswordForm, {
               type: "server",
               message: messages[0] ?? "",
             });

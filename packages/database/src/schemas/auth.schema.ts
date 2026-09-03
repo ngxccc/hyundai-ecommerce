@@ -130,8 +130,8 @@ export const verifications = snakeCase.table(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export type TUser = typeof users.$inferSelect;
-export type TNewUser = typeof users.$inferInsert;
-export type TSession = typeof sessions.$inferSelect;
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+export type Session = typeof sessions.$inferSelect;
 
 export type { UserRole, BusinessType };

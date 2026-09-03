@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import {
   Search,
   ShieldAlert,
-  User,
+  User as UserIcon,
   Briefcase,
   Edit2,
   Mail,
@@ -41,20 +41,21 @@ import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Card, CardContent } from "@nhatnang/ui/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@nhatnang/ui/components/ui/tabs";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { updateCustomerTierAction } from "../actions/customer.actions";
-import { type TUser, type TDealerTier } from "@nhatnang/database/schemas";
+import { type User, type DealerTier } from "@nhatnang/database/schemas";
+import type { BusinessType } from "@nhatnang/core";
 
-interface UserWithTier extends TUser {
-  tier?: TDealerTier | null;
+interface UserWithTier extends User {
+  tier?: DealerTier | null;
 }
 
 interface CustomerDirectoryProps {
   initialUsers: UserWithTier[];
-  dealerTiers: TDealerTier[];
+  dealerTiers: DealerTier[];
 }
 
-type TabType = "all" | "DEALER" | "CONTRACTOR" | "DISTRIBUTOR" | "END_USER";
+type TabType = "all" | BusinessType;
 
 export const CustomerDirectory = ({
   initialUsers,
@@ -127,7 +128,7 @@ export const CustomerDirectory = ({
   };
 
   // Business Type Badges
-  const renderBusinessTypeBadge = (type: TUser["businessType"]) => {
+  const renderBusinessTypeBadge = (type: User["businessType"]) => {
     const styles = {
       DEALER: "bg-blue-500/10 text-blue-500 border border-blue-500/20",
       CONTRACTOR:
@@ -152,7 +153,7 @@ export const CustomerDirectory = ({
   };
 
   // Role Badges
-  const renderRoleBadge = (role: TUser["role"]) => {
+  const renderRoleBadge = (role: User["role"]) => {
     if (
       role === "SUPER_ADMIN" ||
       role === "SALES_REPRESENTATIVE" ||
@@ -185,7 +186,7 @@ export const CustomerDirectory = ({
         variant="secondary"
         className="flex w-fit items-center gap-1 text-xs"
       >
-        <User className="h-3 w-3" />
+        <UserIcon className="h-3 w-3" />
         {t("roles.customer")}
       </Badge>
     );

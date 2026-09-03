@@ -5,8 +5,8 @@ import { warehouseService } from "@nhatnang/database/services";
 import {
   createWarehouseSchema,
   updateWarehouseSchema,
-  type TCreateWarehouse,
-  type TUpdateWarehouse,
+  type CreateWarehouseInput,
+  type UpdateWarehouseInput,
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
@@ -14,7 +14,7 @@ import { AuthError } from "@nhatnang/core";
 import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 
-export const createWarehouseAction = async (input: TCreateWarehouse) => {
+export const createWarehouseAction = async (input: CreateWarehouseInput) => {
   try {
     await requireAuth();
     const parsed = await createWarehouseSchema.safeParseAsync(input);
@@ -56,7 +56,7 @@ export const createWarehouseAction = async (input: TCreateWarehouse) => {
 
 export async function updateWarehouseAction(
   id: string,
-  input: TUpdateWarehouse,
+  input: UpdateWarehouseInput,
 ) {
   try {
     await requireAuth();

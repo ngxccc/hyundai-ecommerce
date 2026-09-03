@@ -16,10 +16,10 @@ import {
   FormMessage,
 } from "@nhatnang/ui/components/ui/form";
 import { type JSONContent } from "@nhatnang/core";
-import type { TCreateProductInput } from "@nhatnang/database/validators";
+import type { CreateProductInput } from "@nhatnang/database/validators";
 
 interface ProductDescriptionSectionProps {
-  form: UseFormReturn<TCreateProductInput>;
+  form: UseFormReturn<CreateProductInput>;
 }
 
 export const ProductDescriptionSection = ({

@@ -5,12 +5,12 @@ import { useTranslations } from "next-intl";
 import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Link } from "@/i18n/routing";
 import { Field, FieldLabel, FieldError } from "@nhatnang/ui/components/ui/field";
-import type { TRegisterForm } from "@nhatnang/database/validators";
+import type { RegisterForm } from "@nhatnang/database/validators";
 import type { AuthFormSectionProps } from "../types/auth-form.types";
 
 export const TermsSection = ({
   form,
-}: AuthFormSectionProps<TRegisterForm>) => {
+}: AuthFormSectionProps<RegisterForm>) => {
   const t = useTranslations("Register");
 
   return (

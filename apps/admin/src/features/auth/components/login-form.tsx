@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { useTranslations } from "next-intl";
-import { type TLoginForm, loginSchema } from "@nhatnang/database/validators";
+import { type LoginForm as LoginFormInput, loginSchema } from "@nhatnang/database/validators";
 import { ShieldCheck } from "lucide-react";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Input } from "@nhatnang/ui/components/ui/input";
@@ -33,7 +33,7 @@ export const LoginForm = () => {
   const router = useRouter();
 
 
-  const form = useForm<TLoginForm>({
+  const form = useForm<LoginFormInput>({
     resolver: translatedZodResolver(loginSchema, t),
     defaultValues: {
       email: "",
@@ -41,7 +41,7 @@ export const LoginForm = () => {
     },
   });
 
-  const onSubmit = (data: TLoginForm) => {
+  const onSubmit = (data: LoginFormInput) => {
     startTransition(async () => {
       try {
         const result = await adminLoginAction(data);

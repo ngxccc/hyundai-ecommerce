@@ -12,4 +12,4 @@ export const addressSchema = z.object({
   isDefault: z.boolean().default(false),
 });
 
-export type TAddressForm = z.infer<typeof addressSchema>;
+export type AddressForm = z.infer<typeof addressSchema>;

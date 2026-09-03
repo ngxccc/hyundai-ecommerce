@@ -1,10 +1,10 @@
-import { type TBrand } from "../schemas/brand.schema";
+import { type Brand } from "../schemas/brand.schema";
 
-export type BrandDTO = Omit<TBrand, "createdAt" | "updatedAt" | "deletedAt">;
+export type BrandDTO = Omit<Brand, "createdAt" | "updatedAt" | "deletedAt">;
 
-export type BrandAdminDTO = Omit<TBrand, "deletedAt">;
+export type BrandAdminDTO = Omit<Brand, "deletedAt">;
 
-export function mapBrandToDTO(brand: TBrand): BrandDTO {
+export function mapBrandToDTO(brand: Brand): BrandDTO {
   return {
     id: brand.id,
     name: brand.name,
@@ -16,7 +16,7 @@ export function mapBrandToDTO(brand: TBrand): BrandDTO {
   };
 }
 
-export function mapBrandToAdminDTO(brand: TBrand): BrandAdminDTO {
+export function mapBrandToAdminDTO(brand: Brand): BrandAdminDTO {
   return {
     ...mapBrandToDTO(brand),
     createdAt: brand.createdAt,

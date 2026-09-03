@@ -28,9 +28,10 @@ if (!dbInstance) {
 
 export const db = dbInstance as DatabaseType;
 
-export type TDatabase = typeof db;
-export type TTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
-export type IDatabase = TDatabase | TTransaction;
+export type Database = typeof db;
+export type DatabaseTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
+export type DatabaseInstance = Database | DatabaseTransaction;
+export type IDatabase = DatabaseInstance;
 
 export async function withTransaction(
   callback: Parameters<typeof db.transaction>[0],

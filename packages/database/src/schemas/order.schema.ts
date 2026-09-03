@@ -84,10 +84,10 @@ export const orderItems = snakeCase.table(
   ],
 );
 
-export type TOrder = typeof orders.$inferSelect;
-export type TNewOrder = typeof orders.$inferInsert;
-export type TOrderItem = typeof orderItems.$inferSelect;
-export type TNewOrderItem = typeof orderItems.$inferInsert;
+export type Order = typeof orders.$inferSelect;
+export type NewOrder = typeof orders.$inferInsert;
+export type OrderItem = typeof orderItems.$inferSelect;
+export type NewOrderItem = typeof orderItems.$inferInsert;
 
 export type {
   PaymentMethod,

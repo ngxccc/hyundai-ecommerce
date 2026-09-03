@@ -8,12 +8,12 @@ import {
   mockSelect,
 } from "../../tests/utils/db-mock";
 import { DbUserService } from "./user.service";
-import { type TUser } from "../../schemas";
+import { type User } from "../../schemas";
 import type { IDatabase } from "../../client";
 
 const userService = new DbUserService(mockDb as unknown as IDatabase);
 
-const mockUser: TUser = {
+const mockUser: User = {
   id: "user-123",
   name: "Dealer Test",
   email: "test@test.com",

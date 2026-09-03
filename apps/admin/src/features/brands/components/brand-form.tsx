@@ -29,7 +29,7 @@ import type { BrandDTO } from "@nhatnang/database/dtos";
 import { isCloudinaryUrl } from "@/shared/utils";
 
 import {
-  type TCreateBrandInput,
+  type CreateBrandInput,
   createBrandSchema,
 } from "@nhatnang/database/validators";
 import { Save, Loader2, X, Info } from "lucide-react";
@@ -53,7 +53,7 @@ export const BrandForm = ({
   const [isPending, startTransition] = useTransition();
   const isEditing = !!initialData;
 
-  const form = useForm<TCreateBrandInput>({
+  const form = useForm<CreateBrandInput>({
     resolver: translatedZodResolver(createBrandSchema, t),
     defaultValues: {
       name: initialData?.name ?? "",
@@ -69,7 +69,7 @@ export const BrandForm = ({
     initialData?.logo ? [initialData.logo] : [],
   );
 
-  const onSubmit = (data: TCreateBrandInput) => {
+  const onSubmit = (data: CreateBrandInput) => {
     startTransition(async () => {
       const existingImageUrls: string[] = [];
       const imagesToUpload: (File | string)[] = [];

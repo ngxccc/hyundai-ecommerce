@@ -30,5 +30,5 @@ export const changePasswordSchema = z
     path: ["confirmPassword"],
   });
 
-export type TUpdateProfileForm = z.infer<typeof updateProfileSchema>;
-export type TChangePasswordForm = z.infer<typeof changePasswordSchema>;
+export type UpdateProfileForm = z.infer<typeof updateProfileSchema>;
+export type ChangePasswordForm = z.infer<typeof changePasswordSchema>;

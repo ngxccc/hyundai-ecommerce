@@ -3,7 +3,7 @@ import { type WarehouseDTO } from "../../dtos";
 import { warehouses } from "../../schemas/warehouse.schema";
 import type { IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
-import type { TCreateWarehouse, TUpdateWarehouse } from "../../validators";
+import type { CreateWarehouseInput, UpdateWarehouseInput } from "../../validators";
 import { handleServiceError } from "../../utils";
 
 export class DbWarehouseService implements WarehouseService {
@@ -43,8 +43,7 @@ export class DbWarehouseService implements WarehouseService {
     if (!warehouse) throw new Error("errors.warehouseNotFound");
     return warehouse;
   }
-
-  async create(data: TCreateWarehouse): Promise<WarehouseDTO> {
+  async create(data: CreateWarehouseInput): Promise<WarehouseDTO> {
     try {
       const [newWarehouse] = await this.db
         .insert(warehouses)
@@ -67,7 +66,7 @@ export class DbWarehouseService implements WarehouseService {
     }
   }
 
-  async update({ id, ...data }: TUpdateWarehouse): Promise<WarehouseDTO> {
+  async update({ id, ...data }: UpdateWarehouseInput): Promise<WarehouseDTO> {
     try {
       if (!id) {
         throw new Error("errors.warehouseNotFound");

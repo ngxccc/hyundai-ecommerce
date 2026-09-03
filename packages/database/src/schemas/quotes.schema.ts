@@ -102,11 +102,11 @@ export const quoteMessages = snakeCase.table(
   ],
 );
 
-export type TQuote = typeof quotes.$inferSelect;
-export type TNewQuote = typeof quotes.$inferInsert;
-export type TQuoteItem = typeof quoteItems.$inferSelect;
-export type TNewQuoteItem = typeof quoteItems.$inferInsert;
-export type TQuoteMessage = typeof quoteMessages.$inferSelect;
-export type TNewQuoteMessage = typeof quoteMessages.$inferInsert;
+export type Quote = typeof quotes.$inferSelect;
+export type NewQuote = typeof quotes.$inferInsert;
+export type QuoteItem = typeof quoteItems.$inferSelect;
+export type NewQuoteItem = typeof quoteItems.$inferInsert;
+export type QuoteMessage = typeof quoteMessages.$inferSelect;
+export type NewQuoteMessage = typeof quoteMessages.$inferInsert;
 
 export type { QuoteStatus };

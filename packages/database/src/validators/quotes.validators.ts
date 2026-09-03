@@ -63,12 +63,12 @@ export const createAdminQuoteSchema = z.object({
   items: z.array(adminQuoteItemInputSchema).min(1, "Quote must contain at least 1 item"),
 });
 
-export type TAdminQuoteItemInput = z.infer<typeof adminQuoteItemInputSchema>;
-export type TCreateAdminQuoteInput = z.infer<typeof createAdminQuoteSchema>;
+export type AdminQuoteItemInput = z.infer<typeof adminQuoteItemInputSchema>;
+export type CreateAdminQuoteInput = z.infer<typeof createAdminQuoteSchema>;
 
-export type TQuoteIdInput = z.infer<typeof quoteIdSchema>;
-export type TUpdateQuoteItemPriceInput = z.infer<
+export type QuoteIdInput = z.infer<typeof quoteIdSchema>;
+export type UpdateQuoteItemPriceInput = z.infer<
   typeof updateQuoteItemPriceSchema
 >;
-export type TSendQuoteMessageInput = z.infer<typeof sendQuoteMessageSchema>;
-export type TUpdateQuoteStatusInput = z.infer<typeof updateQuoteStatusSchema>;
+export type SendQuoteMessageInput = z.infer<typeof sendQuoteMessageSchema>;
+export type UpdateQuoteStatusInput = z.infer<typeof updateQuoteStatusSchema>;

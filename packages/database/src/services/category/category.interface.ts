@@ -1,16 +1,16 @@
 import type { CategoryDTO } from "../../dtos";
-import type { TCreateCategoryInput, TUpdateCategoryInput } from "../../validators";
+import type { CreateCategoryInput, UpdateCategoryInput } from "../../validators";
 
-export type TCategoryWithChildren = CategoryDTO & {
-  children?: TCategoryWithChildren[];
+export type CategoryWithChildren = CategoryDTO & {
+  children?: CategoryWithChildren[];
 };
 
 export interface CategoryService {
   getAll(): Promise<CategoryDTO[]>;
   getById(id: string): Promise<CategoryDTO>;
-  create(input: TCreateCategoryInput): Promise<CategoryDTO>;
-  update(input: TUpdateCategoryInput): Promise<CategoryDTO>;
+  create(input: CreateCategoryInput): Promise<CategoryDTO>;
+  update(input: UpdateCategoryInput): Promise<CategoryDTO>;
   delete(id: string): Promise<boolean>;
-  getCategoryTree(): Promise<TCategoryWithChildren[]>;
+  getCategoryTree(): Promise<CategoryWithChildren[]>;
   getCategoryDescendants(parentId: string): Promise<string[]>;
 }

@@ -1,7 +1,7 @@
 import {
   type PaymentTransactionStatus,
   type PaymentTransactionType,
-  type TDebtRepayment,
+  type DebtRepayment,
 } from "../schemas";
 
 export interface PaymentTransactionDetailsDTO {
@@ -14,7 +14,7 @@ export interface PaymentTransactionDetailsDTO {
 }
 
 export type DebtRepaymentDTO = Omit<
-  TDebtRepayment,
+  DebtRepayment,
   "createdAt" | "updatedAt" | "deletedAt"
 >;
 

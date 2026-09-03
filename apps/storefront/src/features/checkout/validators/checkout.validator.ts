@@ -12,4 +12,4 @@ export const checkoutRequestSchema = z.object({
   shippingFee: z.number().optional().default(0),
 });
 
-export type TCheckoutRequestInput = z.infer<typeof checkoutRequestSchema>;
+export type CheckoutRequestInput = z.infer<typeof checkoutRequestSchema>;

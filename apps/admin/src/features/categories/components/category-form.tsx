@@ -39,7 +39,7 @@ import {
 } from "@nhatnang/ui/components/ui/card";
 import type { CategoryDTO } from "@nhatnang/database/dtos";
 import {
-  type TCreateCategoryInput,
+  type CreateCategoryInput,
   createCategorySchema,
 } from "@nhatnang/database/validators";
 import { Save, Loader2, X, Info } from "lucide-react";
@@ -64,7 +64,7 @@ export const CategoryForm = ({
   const [isPending, startTransition] = useTransition();
   const isEditing = !!initialData;
 
-  const form = useForm<TCreateCategoryInput>({
+  const form = useForm<CreateCategoryInput>({
     resolver: translatedZodResolver(createCategorySchema, t),
     defaultValues: {
       nameVi: initialData?.nameVi ?? "",
@@ -82,7 +82,7 @@ export const CategoryForm = ({
     initialData?.image ? [initialData.image] : [],
   );
 
-  const onSubmit = (data: TCreateCategoryInput) => {
+  const onSubmit = (data: CreateCategoryInput) => {
     startTransition(async () => {
       const existingImageUrls: string[] = [];
       const imagesToUpload: (File | string)[] = [];

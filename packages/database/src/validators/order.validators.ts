@@ -28,7 +28,7 @@ export const addShippingBidSchema = z
   })
   .strict();
 
-export type TUpdateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;
-export type TSelectShippingBidInput = z.infer<typeof selectShippingBidSchema>;
-export type TAddShippingBidInput = z.infer<typeof addShippingBidSchema>;
+export type UpdateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;
+export type SelectShippingBidInput = z.infer<typeof selectShippingBidSchema>;
+export type AddShippingBidInput = z.infer<typeof addShippingBidSchema>;
 

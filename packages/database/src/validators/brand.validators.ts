@@ -18,5 +18,5 @@ export const updateBrandSchema = createBrandSchema
   })
   .strict();
 
-export type TCreateBrandInput = z.infer<typeof createBrandSchema>;
-export type TUpdateBrandInput = z.infer<typeof updateBrandSchema>;
+export type CreateBrandInput = z.infer<typeof createBrandSchema>;
+export type UpdateBrandInput = z.infer<typeof updateBrandSchema>;

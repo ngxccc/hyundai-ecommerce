@@ -9,10 +9,10 @@ import {
 } from "@nhatnang/ui/components/ui/card";
 import { FormField } from "@nhatnang/ui/components/ui/form";
 import { NumberWithUnitField } from "../number-with-unit-field";
-import type { TCreateProductInput } from "@nhatnang/database/validators";
+import type { CreateProductInput } from "@nhatnang/database/validators";
 
 interface SpecsProps {
-  form: UseFormReturn<TCreateProductInput>;
+  form: UseFormReturn<CreateProductInput>;
 }
 
 export const DimensionSpecs = ({ form }: SpecsProps) => {
@@ -34,7 +34,7 @@ export const DimensionSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput, "specs.weight">;
+              field: ControllerRenderProps<CreateProductInput, "specs.weight">;
             }) => (
               <NumberWithUnitField
                 label={t("fields.weight")}
@@ -53,7 +53,7 @@ export const DimensionSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput, "specs.length">;
+              field: ControllerRenderProps<CreateProductInput, "specs.length">;
             }) => (
               <NumberWithUnitField
                 label={t("fields.length")}
@@ -72,7 +72,7 @@ export const DimensionSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput, "specs.width">;
+              field: ControllerRenderProps<CreateProductInput, "specs.width">;
             }) => (
               <NumberWithUnitField
                 label={t("fields.width")}
@@ -91,7 +91,7 @@ export const DimensionSpecs = ({ form }: SpecsProps) => {
             render={({
               field,
             }: {
-              field: ControllerRenderProps<TCreateProductInput, "specs.height">;
+              field: ControllerRenderProps<CreateProductInput, "specs.height">;
             }) => (
               <NumberWithUnitField
                 label={t("fields.height")}
@@ -111,7 +111,7 @@ export const DimensionSpecs = ({ form }: SpecsProps) => {
               field,
             }: {
               field: ControllerRenderProps<
-                TCreateProductInput,
+                CreateProductInput,
                 "specs.noiseLevel"
               >;
             }) => (

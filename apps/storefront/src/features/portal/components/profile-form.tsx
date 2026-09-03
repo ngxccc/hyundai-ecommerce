@@ -8,7 +8,7 @@ import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { useIsClient } from "@/shared/hooks/useIsClient";
 import {
   updateProfileSchema,
-  type TUpdateProfileForm,
+  type UpdateProfileForm,
 } from "@nhatnang/database/validators";
 import { updateProfileAction } from "../actions/profile.action";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -30,7 +30,7 @@ import { Separator } from "@nhatnang/ui/components/ui/separator";
 import { businessTypeEnum } from "@nhatnang/database/schemas";
 
 interface ProfileFormProps {
-  defaultValues: TUpdateProfileForm;
+  defaultValues: UpdateProfileForm;
   email: string;
   isDealer: boolean;
 }
@@ -45,12 +45,12 @@ export function ProfileForm({
   const [isLoading, setIsLoading] = useState(false);
   const isClient = useIsClient();
 
-  const form = useForm<TUpdateProfileForm>({
+  const form = useForm<UpdateProfileForm>({
     resolver: translatedZodResolver(updateProfileSchema, t),
     defaultValues,
   });
 
-  const onSubmit: SubmitHandler<TUpdateProfileForm> = async (data) => {
+  const onSubmit: SubmitHandler<UpdateProfileForm> = async (data) => {
     setIsLoading(true);
     try {
       const result = await updateProfileAction(data);
@@ -58,7 +58,7 @@ export function ProfileForm({
       if (!result.success) {
         if ("fieldErrors" in result && result.fieldErrors) {
           Object.entries(result.fieldErrors).forEach(([key, messages]) => {
-            form.setError(key as keyof TUpdateProfileForm, {
+            form.setError(key as keyof UpdateProfileForm, {
               type: "server",
               message: messages[0] ?? "",
             });

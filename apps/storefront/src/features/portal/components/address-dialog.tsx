@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import {
   addressSchema,
-  type TAddressForm,
+  type AddressForm,
 } from "@nhatnang/database/validators";
 import {
   addAddressAction,
@@ -60,7 +60,7 @@ export function AddressDialog({
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const form = useForm<TAddressForm>({
+  const form = useForm<AddressForm>({
     resolver: translatedZodResolver(addressSchema, t),
     defaultValues: {
       receiverName: "",
@@ -97,7 +97,7 @@ export function AddressDialog({
     }
   }, [isOpen, address, form]);
 
-  const onSubmit: SubmitHandler<TAddressForm> = async (data) => {
+  const onSubmit: SubmitHandler<AddressForm> = async (data) => {
     setIsLoading(true);
     try {
       const result = address
@@ -107,7 +107,7 @@ export function AddressDialog({
       if (!result.success) {
         if ("fieldErrors" in result && result.fieldErrors) {
           Object.entries(result.fieldErrors).forEach(([key, messages]) => {
-            form.setError(key as keyof TAddressForm, {
+            form.setError(key as keyof AddressForm, {
               type: "server",
               message: messages[0] ?? "",
             });

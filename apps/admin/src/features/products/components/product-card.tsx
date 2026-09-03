@@ -9,11 +9,11 @@ import Image from "next/image";
 import { CldImage } from "next-cloudinary";
 import { Link, useRouter } from "@/i18n/routing";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
-import type { TProductGridItem } from "../product-form-types";
+import type { ProductGridItem } from "../product-form-types";
 import { DeleteProductButton } from "./delete-product-button";
 import { isCloudinaryUrl } from "@/shared/utils";
 import { useQuoteDraftStore } from "@/features/quotes/stores";
-export const ProductCard = ({ product }: { product: TProductGridItem }) => {
+export const ProductCard = ({ product }: { product: ProductGridItem }) => {
   const t = useTranslations("AdminProducts.card");
   const router = useRouter();
   const addProductToDraft = useQuoteDraftStore((s) => s.addProduct);

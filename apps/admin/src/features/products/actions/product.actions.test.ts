@@ -10,7 +10,7 @@ import {
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import type { ProductService } from "@nhatnang/database/services";
 import type { ProductDTO } from "@nhatnang/database/dtos";
-import type { TCreateProductInput } from "@nhatnang/database/validators";
+import type { CreateProductInput } from "@nhatnang/database/validators";
 import "@nhatnang/shared/testing/action-mocks";
 
 await vi.mock("@/shared/services", () => ({
@@ -90,7 +90,7 @@ describe("product.actions", () => {
       uploadToCloudinary as unknown as Mock<typeof uploadToCloudinary>
     ).mockResolvedValue("https://res.cloudinary.com/test");
 
-    const validData: TCreateProductInput = {
+    const validData: CreateProductInput = {
       nameVi: "Test Product",
       nameEn: null,
       slug: "test-product",

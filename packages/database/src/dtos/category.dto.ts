@@ -1,10 +1,10 @@
-import { type TCategory } from "../schemas/category.schema";
+import { type Category } from "../schemas/category.schema";
 
-export type CategoryDTO = Omit<TCategory, "createdAt" | "updatedAt" | "deletedAt">;
+export type CategoryDTO = Omit<Category, "createdAt" | "updatedAt" | "deletedAt">;
 
-export type CategoryAdminDTO = Omit<TCategory, "deletedAt">;
+export type CategoryAdminDTO = Omit<Category, "deletedAt">;
 
-export function mapCategoryToDTO(category: TCategory): CategoryDTO {
+export function mapCategoryToDTO(category: Category): CategoryDTO {
   return {
     id: category.id,
     nameVi: category.nameVi,
@@ -18,7 +18,7 @@ export function mapCategoryToDTO(category: TCategory): CategoryDTO {
   };
 }
 
-export function mapCategoryToAdminDTO(category: TCategory): CategoryAdminDTO {
+export function mapCategoryToAdminDTO(category: Category): CategoryAdminDTO {
   return {
     ...mapCategoryToDTO(category),
     createdAt: category.createdAt,

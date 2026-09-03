@@ -3,8 +3,8 @@ import { eq } from "drizzle-orm";
 import { type IDatabase } from "../../client";
 import {
   dealerTiers,
-  type TDealerTier,
-  type TNewDealerTier,
+  type DealerTier,
+  type NewDealerTier,
 } from "../../schemas/dealer-tier.schema";
 
 export class DbDealerTierService implements DealerTierService {
@@ -13,7 +13,7 @@ export class DbDealerTierService implements DealerTierService {
   /**
    * Create a new B2B Dealer discount tier
    */
-  async create(data: TNewDealerTier): Promise<TDealerTier> {
+  async create(data: NewDealerTier): Promise<DealerTier> {
     const [newTier] = await this.db
       .insert(dealerTiers)
       .values(data)
@@ -27,7 +27,7 @@ export class DbDealerTierService implements DealerTierService {
   /**
    * Update fields of an existing B2B Dealer Tier
    */
-  async update(id: string, data: Partial<TNewDealerTier>): Promise<TDealerTier | undefined> {
+  async update(id: string, data: Partial<NewDealerTier>): Promise<DealerTier | undefined> {
     const [updated] = await this.db
       .update(dealerTiers)
       .set({ ...data, updatedAt: new Date() })
@@ -39,7 +39,7 @@ export class DbDealerTierService implements DealerTierService {
   /**
    * Fetch all B2B Dealer Tiers ordered by minimum spend threshold
    */
-  async getAll(): Promise<TDealerTier[]> {
+  async getAll(): Promise<DealerTier[]> {
     return await this.db.query.dealerTiers.findMany({
       orderBy: {
         minimumSpend: "asc",
@@ -50,7 +50,7 @@ export class DbDealerTierService implements DealerTierService {
   /**
    * Fetch a single B2B Dealer Tier by ID
    */
-  async getById(id: string): Promise<TDealerTier | undefined> {
+  async getById(id: string): Promise<DealerTier | undefined> {
     return await this.db.query.dealerTiers.findFirst({
       where: {
         id,

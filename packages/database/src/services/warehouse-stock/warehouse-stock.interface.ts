@@ -1,8 +1,8 @@
-import type { TWarehouseStock } from "../../schemas";
-import type { TUpdateWarehouseStockInput } from "../../validators";
+import type { WarehouseStock } from "../../schemas";
+import type { UpdateWarehouseStockInput } from "../../validators";
 
 export interface WarehouseStockService {
-  setStock(stockData: TUpdateWarehouseStockInput): Promise<TWarehouseStock>;
+  setStock(stockData: UpdateWarehouseStockInput): Promise<WarehouseStock>;
   syncTotalStock(productId: string): Promise<void>;
-  getByProductId(productId: string): Promise<TWarehouseStock[]>;
+  getByProductId(productId: string): Promise<WarehouseStock[]>;
 }

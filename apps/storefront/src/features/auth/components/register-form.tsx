@@ -22,7 +22,7 @@ import { Form } from "@nhatnang/ui/components/ui/form";
 import { registerAction } from "../actions/register.action";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
 import {
-  type TRegisterForm,
+  type RegisterForm as RegisterFormType,
   registerSchema,
 } from "@nhatnang/database/validators";
 
@@ -44,7 +44,7 @@ export function RegisterForm() {
     [AUTH_ERROR_CODES.PHONE_ALREADY_EXISTS]: t("validation.phoneAlreadyExists"),
   };
 
-  const form = useForm<TRegisterForm>({
+  const form = useForm<RegisterFormType>({
     resolver: translatedZodResolver(registerSchema, t),
     shouldUnregister: true,
     defaultValues: {
@@ -61,7 +61,7 @@ export function RegisterForm() {
     },
   });
 
-  const onSubmit: SubmitHandler<TRegisterForm> = async (data) => {
+  const onSubmit: SubmitHandler<RegisterFormType> = async (data) => {
     setIsLoading(true);
 
     try {
@@ -70,7 +70,7 @@ export function RegisterForm() {
       if (!result.success) {
         if ("fieldErrors" in result && result.fieldErrors) {
           Object.entries(result.fieldErrors).forEach(([key, messages]) => {
-            const safeKey = key as keyof TRegisterForm;
+            const safeKey = key as keyof RegisterFormType;
             const errorCode = messages[0] ?? "errorMessage";
             const errorMessage = errorMessages[errorCode] ?? t("errorMessage");
 

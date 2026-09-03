@@ -1,4 +1,4 @@
-import type { TUser } from "../../schemas";
+import type { User } from "../../schemas";
 import type { UserProfileDTO, UserB2BProfileDTO } from "../../dtos";
 
 export interface UserService {
@@ -9,11 +9,11 @@ export interface UserService {
     email: string,
     phone: string,
   ): Promise<{ email: string; phone: string | null } | undefined>;
-  update(id: string, data: Partial<TUser>): Promise<{ id: string } | undefined>;
+  update(id: string, data: Partial<User>): Promise<{ id: string } | undefined>;
   list(filters?: {
-    role?: TUser["role"];
-    businessType?: TUser["businessType"];
-  }): Promise<TUser[]>;
+    role?: User["role"];
+    businessType?: User["businessType"];
+  }): Promise<User[]>;
   getNewUsersCount(days: number): Promise<number>;
   getB2BProfile(id: string): Promise<UserB2BProfileDTO | undefined>;
   listEmployees(ownerId: string): Promise<UserProfileDTO[]>;

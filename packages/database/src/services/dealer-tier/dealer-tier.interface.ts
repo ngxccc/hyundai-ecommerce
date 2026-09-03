@@ -1,12 +1,12 @@
-import type { TNewDealerTier, TDealerTier } from "../../schemas";
+import type { NewDealerTier, DealerTier } from "../../schemas";
 
 export interface DealerTierService {
-  create(data: TNewDealerTier): Promise<TDealerTier>;
+  create(data: NewDealerTier): Promise<DealerTier>;
   update(
     id: string,
-    data: Partial<TNewDealerTier>,
-  ): Promise<TDealerTier | undefined>;
-  getAll(): Promise<TDealerTier[]>;
-  getById(id: string): Promise<TDealerTier | undefined>;
+    data: Partial<NewDealerTier>,
+  ): Promise<DealerTier | undefined>;
+  getAll(): Promise<DealerTier[]>;
+  getById(id: string): Promise<DealerTier | undefined>;
   delete(id: string): Promise<boolean>;
 }

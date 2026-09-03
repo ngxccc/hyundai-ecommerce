@@ -1,10 +1,10 @@
-import { type TWarehouse } from "../schemas/warehouse.schema";
+import { type Warehouse } from "../schemas/warehouse.schema";
 
-export type WarehouseDTO = Omit<TWarehouse, "createdAt" | "updatedAt" | "deletedAt">;
+export type WarehouseDTO = Omit<Warehouse, "createdAt" | "updatedAt" | "deletedAt">;
 
-export type WarehouseAdminDTO = Omit<TWarehouse, "deletedAt">;
+export type WarehouseAdminDTO = Omit<Warehouse, "deletedAt">;
 
-export function mapWarehouseToDTO(warehouse: TWarehouse): WarehouseDTO {
+export function mapWarehouseToDTO(warehouse: Warehouse): WarehouseDTO {
   return {
     id: warehouse.id,
     nameVi: warehouse.nameVi,
@@ -17,7 +17,7 @@ export function mapWarehouseToDTO(warehouse: TWarehouse): WarehouseDTO {
 }
 
 export function mapWarehouseToAdminDTO(
-  warehouse: TWarehouse,
+  warehouse: Warehouse,
 ): WarehouseAdminDTO {
   return {
     ...mapWarehouseToDTO(warehouse),

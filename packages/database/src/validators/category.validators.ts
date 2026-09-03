@@ -20,5 +20,5 @@ export const updateCategorySchema = createCategorySchema
   })
   .strict();
 
-export type TCreateCategoryInput = z.infer<typeof createCategorySchema>;
-export type TUpdateCategoryInput = z.infer<typeof updateCategorySchema>;
+export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
+export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;

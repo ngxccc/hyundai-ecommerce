@@ -5,10 +5,10 @@ import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import { authService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
-import { loginSchema, type TLoginForm } from "@nhatnang/database/validators";
+import { loginSchema, type LoginForm } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 
-export const adminLoginAction = async (data: TLoginForm) => {
+export const adminLoginAction = async (data: LoginForm) => {
   const reqHeaders = await headers();
   const ip = reqHeaders.get("x-forwarded-for") ?? "127.0.0.1";
 

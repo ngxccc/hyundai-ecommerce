@@ -1,12 +1,12 @@
 import type {
   ProductService,
-  TUpdateProductData,
+  UpdateProductData,
   TopSellingProduct,
   GetAllOptions,
   ProductFilterMetadata,
 } from "../interfaces";
-import { type ProductDTO } from "../../dtos";
-import { products, type TNewProduct } from "../../schemas/product.schema";
+import type { ProductDTO } from "../../dtos";
+import { products, type NewProduct } from "../../schemas/product.schema";
 import { type IDatabase } from "../../client";
 import {
   and,
@@ -28,7 +28,7 @@ import { orderItems, orders } from "../../schemas";
 export class DbProductService implements ProductService {
   constructor(protected readonly db: IDatabase) {}
 
-  async create(data: TNewProduct): Promise<ProductDTO> {
+  async create(data: NewProduct): Promise<ProductDTO> {
     const [newProduct] = await this.db.insert(products).values(data).returning({
       id: products.id,
       nameVi: products.nameVi,
@@ -45,12 +45,16 @@ export class DbProductService implements ProductService {
       specs: products.specs,
       totalStockCache: products.totalStockCache,
       isQuoteOnly: products.isQuoteOnly,
+      createdAt: products.createdAt,
+      updatedAt: products.updatedAt,
     });
-    if (!newProduct) throw new Error("errors.productNotFound");
-    return newProduct;
+    if (!newProduct) {
+      throw new Error("errors.createProductFailed");
+    }
+    const { createdAt, updatedAt, ...dto } = newProduct;
+    return dto;
   }
-
-  async update(id: string, data: TUpdateProductData): Promise<ProductDTO> {
+  async update(id: string, data: UpdateProductData): Promise<ProductDTO> {
     const [updatedProduct] = await this.db
       .update(products)
       .set(data)
@@ -72,7 +76,9 @@ export class DbProductService implements ProductService {
         totalStockCache: products.totalStockCache,
         isQuoteOnly: products.isQuoteOnly,
       });
-    if (!updatedProduct) throw new Error("errors.productNotFound");
+    if (!updatedProduct) {
+      throw new Error("errors.productNotFound");
+    }
     return updatedProduct;
   }
 

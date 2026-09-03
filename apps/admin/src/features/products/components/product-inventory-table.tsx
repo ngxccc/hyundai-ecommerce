@@ -15,14 +15,14 @@ import {
   TableRow,
 } from "@nhatnang/ui/components/ui/table";
 import { setProductStockAction } from "../actions/inventory.actions";
-import type { TWarehouseStock } from "@nhatnang/database/schemas";
+import type { WarehouseStock } from "@nhatnang/database/schemas";
 import type { WarehouseDTO } from "@nhatnang/database/dtos";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 
 interface ProductInventoryTableProps {
   productId: string;
   warehouses: WarehouseDTO[];
-  warehouseStocks: TWarehouseStock[];
+  warehouseStocks: WarehouseStock[];
 }
 
 export const ProductInventoryTable = ({
