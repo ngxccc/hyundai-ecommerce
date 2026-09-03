@@ -1,22 +1,13 @@
-import { HTTP_STATUS, FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
-import { checkRateLimitWithQueue } from "@nhatnang/shared";
-import { calculateCheckoutTotals } from "@nhatnang/shared/lib/utils";
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
+import {
+  checkRateLimitWithQueue,
+  jsonSuccess,
+  jsonError,
+} from "@nhatnang/shared";
 import { getCachedSession } from "@/shared/lib/session";
-import {
-  cartService,
-  orderService,
-  paymentService,
-} from "@nhatnang/database/services";
-import { env } from "@/env";
-import {
-  createPayOSPaymentLink,
-  generatePayOSOrderCode,
-  PAYOS_SUCCESS_CODE,
-  makePayOSDescription,
-} from "@nhatnang/shared/lib/payos";
-import { NextResponse, connection } from "next/server";
-import type { CreateOrderDTO } from "@nhatnang/database/schemas";
-import { checkoutRequestSchema } from "@/features/checkout/validators";
+import { connection } from "next/server";
+import { checkoutRequestSchema } from "@/features/checkout/validators/checkout.validator";
+import { processCheckout } from "@/features/checkout/services/checkout.service";
 
 export async function POST(request: Request) {
   await connection();
@@ -35,252 +26,52 @@ export async function POST(request: Request) {
     );
 
     if (!rateLimitResult.success) {
-      return NextResponse.json(
-        { success: false, error: "errors.rateLimitExceeded" },
-        { status: HTTP_STATUS.TOO_MANY_REQUESTS },
-      );
+      return jsonError({
+        status: HTTP_STATUS.TOO_MANY_REQUESTS,
+        detail: "errors.rateLimitExceeded",
+        instance: "/api/checkout",
+      });
     }
 
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: "errors.unauthorized" },
-        { status: HTTP_STATUS.UNAUTHORIZED },
-      );
+      return jsonError({
+        status: HTTP_STATUS.UNAUTHORIZED,
+        detail: "errors.unauthorized",
+        instance: "/api/checkout",
+      });
     }
+
     const rawBody: unknown = await request.json().catch(() => null);
     const parsed = checkoutRequestSchema.safeParse(rawBody);
     if (!parsed.success) {
       const firstIssue = parsed.error.issues[0];
-      const errorMessage =
+      const detail =
         firstIssue?.path[0] === "paymentMethod"
           ? "errors.invalidPaymentMethod"
           : firstIssue?.path[0] === "paymentOption"
             ? "errors.invalidPaymentOption"
             : "errors.missingRequiredFields";
-      return NextResponse.json(
-        { success: false, error: errorMessage },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
-    }
-    const { shippingAddress, paymentMethod, paymentOption } = parsed.data;
-
-    // Calculate shipping fee server-side (free shipping by default)
-    const shippingFee = 0;
-
-    // 1. Fetch user cart and calculate server-side subtotal
-    const cart = await cartService.getOrCreateCart(session.user.id);
-    const cartItems = await cartService.getCartItems(cart.id);
-
-    if (cartItems.length === 0) {
-      return NextResponse.json(
-        { success: false, error: "errors.cartEmpty" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail,
+        instance: "/api/checkout",
+      });
     }
 
-    let subtotal = 0;
-    for (const item of cartItems) {
-      if (!item.product) {
-        return NextResponse.json(
-          { success: false, error: "errors.invalidProductInCart" },
-          { status: HTTP_STATUS.BAD_REQUEST },
-        );
-      }
-      subtotal += Number(item.product.price) * item.quantity;
+    const result = await processCheckout(session.user.id, parsed.data);
+
+    if (!result.ok) {
+      return jsonError({
+        status: result.status,
+        detail: result.errorKey,
+        instance: "/api/checkout",
+      });
     }
 
-    const { totalAmount, depositAmount } = calculateCheckoutTotals(
-      subtotal,
-      FINANCIAL_CONSTANTS.VAT_RATE,
-      FINANCIAL_CONSTANTS.DEPOSIT_RATE,
-    );
-    const paymentAmount =
-      paymentOption === "DEPOSIT" ? depositAmount : totalAmount;
-
-    // 3. Handle PayOS payment link creation BEFORE saving order to DB
-    let checkoutUrl = "";
-    let orderCode = 0;
-
-    if (paymentMethod === "PAYOS") {
-      orderCode = generatePayOSOrderCode();
-      const isMockPayment =
-        env.FORCE_MOCK_PAYMENT === "true" ||
-        (env.FORCE_MOCK_PAYMENT !== "false" &&
-          process.env.NODE_ENV !== "production");
-
-      if (
-        !isMockPayment &&
-        env.PAYOS_CLIENT_ID !== "mock_client_id" &&
-        env.PAYOS_API_KEY !== "mock_api_key" &&
-        !env.PAYOS_CLIENT_ID.startsWith("mock")
-      ) {
-        try {
-          const result = await createPayOSPaymentLink({
-            orderCode,
-            amount: Math.round(paymentAmount),
-            description: makePayOSDescription("full", orderCode),
-            cancelUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout/cancel`,
-            returnUrl: `${env.NEXT_PUBLIC_APP_URL}/checkout/success`,
-          });
-
-          if (result?.code === PAYOS_SUCCESS_CODE) {
-            // Register link successfully, but keep checkoutUrl pointing to our success/mock page
-          } else {
-            console.error("PayOS API error:", result);
-            return NextResponse.json(
-              { success: false, error: "errors.payosLinkCreationFailed" },
-              { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-            );
-          }
-        } catch (error) {
-          console.error("Failed to connect to PayOS:", error);
-          return NextResponse.json(
-            { success: false, error: "errors.paymentGatewayConnectionFailed" },
-            { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-          );
-        }
-      }
-    }
-
-    // 4. Create order in DB and clear cart (atomic transaction)
-    const orderData: CreateOrderDTO = {
-      userId: session.user.id,
-      status: "PENDING",
-      shippingFee: String(shippingFee),
-      shippingAddress,
-      totalAmount: String(totalAmount),
-      paymentMethod,
-      paymentStatus: "UNPAID",
-      approvalStatus: "APPROVED",
-    };
-
-    const finalItems = cartItems.map((item) => ({
-      productId: item.productId,
-      productName: item.product!.nameVi,
-      productSku: item.product!.slug,
-      quantity: item.quantity,
-      unitPrice: item.product!.price,
-    }));
-
-    let order;
-    if (paymentMethod === "TRADE_CREDIT") {
-      try {
-        order = await orderService.checkoutWithTradeCredit(
-          session.user.id,
-          orderData,
-          finalItems,
-          cart.id,
-        );
-        checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/success?orderId=${order.id}`;
-      } catch (err) {
-        if (err instanceof Error) {
-          if (err.message === "errors.lockAcquisitionFailed") {
-            return NextResponse.json(
-              { success: false, error: "errors.lockAcquisitionFailed" },
-              { status: HTTP_STATUS.TOO_MANY_REQUESTS },
-            );
-          }
-          if (err.message === "errors.insufficientCreditLimit") {
-            return NextResponse.json(
-              { success: false, error: "errors.insufficientCreditLimit" },
-              { status: HTTP_STATUS.BAD_REQUEST },
-            );
-          }
-          if (err.message === "errors.cartChanged") {
-            return NextResponse.json(
-              { success: false, error: "errors.cartChanged" },
-              { status: HTTP_STATUS.BAD_REQUEST },
-            );
-          }
-          if (err.message === "errors.forbidden") {
-            return NextResponse.json(
-              { success: false, error: "errors.forbidden" },
-              { status: HTTP_STATUS.FORBIDDEN },
-            );
-          }
-        }
-        throw err;
-      }
-    } else {
-      try {
-        order = await orderService.createOrderWithItems(
-          orderData,
-          finalItems,
-          cart.id,
-        );
-      } catch (err) {
-        if (err instanceof Error) {
-          if (err.message === "errors.lockAcquisitionFailed") {
-            return NextResponse.json(
-              { success: false, error: "errors.lockAcquisitionFailed" },
-              { status: HTTP_STATUS.TOO_MANY_REQUESTS },
-            );
-          }
-          if (err.message === "errors.cartChanged") {
-            return NextResponse.json(
-              { success: false, error: "errors.cartChanged" },
-              { status: HTTP_STATUS.BAD_REQUEST },
-            );
-          }
-        }
-        throw err;
-      }
-
-      if (paymentMethod === "PAYOS") {
-        const isMockPayment =
-          env.FORCE_MOCK_PAYMENT === "true" ||
-          (env.FORCE_MOCK_PAYMENT !== "false" &&
-            process.env.NODE_ENV !== "production");
-        await paymentService.createPayment({
-          orderId: order.id,
-          amount: String(totalAmount),
-          method: "PAYOS",
-          status: "PENDING",
-        });
-
-        // Per spec Case 1/2: create pending tx anchor for webhook (orderCode)
-        const txAmount =
-          paymentOption === "DEPOSIT" ? depositAmount : totalAmount;
-        const transactionType =
-          paymentOption === "DEPOSIT" ? "DEPOSIT" : "FULL";
-        await paymentService.createPaymentTransaction({
-          orderId: order.id,
-          amount: String(txAmount),
-          paymentMethod: "PAYOS",
-          transactionType,
-          status: "PENDING",
-          orderCode,
-        });
-
-        // Redirect to success page in production or mock payment page in development
-        checkoutUrl = isMockPayment
-          ? `${env.NEXT_PUBLIC_APP_URL}/checkout/mock-payment?orderCode=${orderCode}`
-          : `${env.NEXT_PUBLIC_APP_URL}/checkout/pay?orderId=${order.id}`;
-      } else {
-        // CASH: payment record represents the full obligation (100% of totalAmount).
-        // transactionId is left null here — it will be populated later by
-        // /api/payments/generate-deposit-link when the user opts to pay the
-        // 20% deposit online via PayOS instead of at the office.
-        await paymentService.createPayment({
-          orderId: order.id,
-          amount: String(totalAmount),
-          method: "CASH",
-          status: "PENDING",
-        });
-        checkoutUrl = `${env.NEXT_PUBLIC_APP_URL}/checkout/success?orderId=${order.id}`;
-      }
-    }
-
-    return NextResponse.json(
-      {
-        success: true,
-        data: {
-          orderId: order.id,
-          checkoutUrl,
-        },
-      },
-      { status: HTTP_STATUS.OK },
-    );
+    return jsonSuccess({
+      orderId: result.orderId,
+      checkoutUrl: result.checkoutUrl,
+    });
   } catch (error) {
     const errObj = error as Record<string, unknown>;
     if (
@@ -291,9 +82,10 @@ export async function POST(request: Request) {
       throw error;
     }
     console.error("Checkout error:", error);
-    return NextResponse.json(
-      { success: false, error: "errors.internalServerError" },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-    );
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: "errors.internalServerError",
+      instance: "/api/checkout",
+    });
   }
 }
