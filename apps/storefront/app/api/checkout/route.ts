@@ -16,7 +16,7 @@ import {
 } from "@nhatnang/shared/lib/payos";
 import { NextResponse, connection } from "next/server";
 import type { CreateOrderDTO } from "@nhatnang/database/dtos";
-import { checkoutRequestSchema } from "@/features/checkout/validators/checkout.validator";
+import { checkoutRequestSchema } from "@/features/checkout/validators";
 
 export async function POST(request: Request) {
   await connection();
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
         { status: HTTP_STATUS.UNAUTHORIZED },
       );
     }
-    const rawBody = await request.json().catch(() => null);
+    const rawBody: unknown = await request.json().catch(() => null);
     const parsed = checkoutRequestSchema.safeParse(rawBody);
     if (!parsed.success) {
       const firstIssue = parsed.error.issues[0];

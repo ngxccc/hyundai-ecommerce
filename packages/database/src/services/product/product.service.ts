@@ -45,14 +45,11 @@ export class DbProductService implements ProductService {
       specs: products.specs,
       totalStockCache: products.totalStockCache,
       isQuoteOnly: products.isQuoteOnly,
-      createdAt: products.createdAt,
-      updatedAt: products.updatedAt,
     });
     if (!newProduct) {
       throw new Error("errors.createProductFailed");
     }
-    const { createdAt, updatedAt, ...dto } = newProduct;
-    return dto;
+    return newProduct;
   }
   async update(id: string, data: UpdateProductData): Promise<ProductDTO> {
     const [updatedProduct] = await this.db

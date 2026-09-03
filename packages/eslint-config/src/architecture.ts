@@ -103,6 +103,7 @@ export default defineConfig([
                 "!@/features/*/stores/**",
                 "!@/features/*/utils/**",
                 "!@/features/*/actions/**",
+                "!@/features/*/validators/**",
               ],
               message:
                 "The App layer is only allowed to import from public barrels or safe deep imports (components, hooks, etc.) of a feature. Importing other internal files is forbidden.",

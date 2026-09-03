@@ -600,7 +600,7 @@ describe("QuotesService", () => {
   describe("sendAdminNegotiationMessage()", () => {
     const validUuid = "11111111-1111-4111-8111-111111111111";
 
-    test("should reject invalid UUID quoteId", async () => {
+    test("should reject invalid UUID quoteId", () => {
       expect(
         quotesService.sendAdminNegotiationMessage({
           quoteId: "invalid-id",
@@ -610,7 +610,7 @@ describe("QuotesService", () => {
       ).rejects.toThrow("errors.quoteNotFound");
     });
 
-    test("should throw error if quote is not found", async () => {
+    test("should throw error if quote is not found", () => {
       // Return empty array for select query
       mockReturning.mockResolvedValueOnce([]);
       expect(
