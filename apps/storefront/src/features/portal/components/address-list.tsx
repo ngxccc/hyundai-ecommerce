@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/routing";
-import { type AddressDTO } from "@nhatnang/database/dtos";
+import { type AddressDTO } from "@nhatnang/database/schemas";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { MapPin, Plus, Check } from "lucide-react";
 import { AddressDialog } from "./address-dialog";

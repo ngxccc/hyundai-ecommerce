@@ -1,4 +1,4 @@
-import type { BrandDTO } from "../../dtos";
+import type { BrandDTO } from "../../schemas";
 import type { CreateBrandInput, UpdateBrandInput } from "../../validators";
 
 export interface BrandService {

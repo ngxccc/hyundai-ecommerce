@@ -1,5 +1,5 @@
 import type { CategoryService, CategoryWithChildren } from "../interfaces";
-import { type CategoryDTO } from "../../dtos";
+import { type CategoryDTO } from "../../schemas";
 import { categories } from "../../schemas";
 import { type IDatabase } from "../../client";
 import { eq } from "drizzle-orm";

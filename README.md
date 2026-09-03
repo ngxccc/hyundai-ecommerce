@@ -89,9 +89,12 @@ Localized fields for text and rich content are separated into specific columns f
 - **English (EN) fields**: Optional and nullable (e.g., `nameEn: text()`), allowing English translations to be filled in incrementally.
 - **Rich Text Fields**: Columns like `descriptionVi` and `descriptionEn` are defined as `jsonb().$type<JSONContent>()` using Tiptap structure.
 
-### DTO Mapping Layer
+### DTO & Validation Architecture
 
-To enforce clean application boundaries, raw database rows are converted into structured Data Transfer Objects (DTOs) via mapping functions located in `packages/database/src/dtos/` (such as `mapProductToDTO`, `mapCategoryToDTO`, `mapBrandToDTO`, and `mapWarehouseToDTO`). These mappings clean and normalize raw database outputs before they travel to services or API boundaries.
+To enforce clean application boundaries without runtime overhead, data transfer is structured across two complementary layers:
+
+- **Input Mutation DTOs**: Validated through Zod schemas in `packages/database/src/validators/` with types strictly inferred via `z.infer` / `z.input`, acting as the Single Source of Truth for Server Actions and API payloads.
+- **Output View DTOs**: Typed projections in `packages/database/src/schemas/` (e.g. `ProductDTO`, `CategoryDTO`) that omit internal/sensitive columns (`deletedAt`), resolved directly via Drizzle query projections without redundant runtime mappers.
 
 ### Vietnamese-as-Fallback Presentation Resolution
 

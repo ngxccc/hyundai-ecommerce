@@ -48,3 +48,9 @@ export const warehouseStocks = snakeCase.table(
 
 export type WarehouseStock = typeof warehouseStocks.$inferSelect;
 export type NewWarehouseStock = typeof warehouseStocks.$inferInsert;
+
+export type WarehouseDTO = Omit<
+  Warehouse,
+  "createdAt" | "updatedAt" | "deletedAt"
+>;
+export type WarehouseAdminDTO = Omit<Warehouse, "deletedAt">;

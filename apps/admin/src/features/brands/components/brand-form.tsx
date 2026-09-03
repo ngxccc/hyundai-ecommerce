@@ -25,7 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@nhatnang/ui/components/ui/card";
-import type { BrandDTO } from "@nhatnang/database/dtos";
+import type { BrandDTO } from "@nhatnang/database/schemas";
 import { isCloudinaryUrl } from "@/shared/utils";
 
 import {
@@ -77,10 +77,7 @@ export const BrandForm = ({
       for (const item of logoImages) {
         if (item instanceof File) {
           imagesToUpload.push(item);
-        } else if (
-          typeof item === "string" &&
-          !isCloudinaryUrl(item)
-        ) {
+        } else if (typeof item === "string" && !isCloudinaryUrl(item)) {
           imagesToUpload.push(item);
         } else {
           existingImageUrls.push(item);

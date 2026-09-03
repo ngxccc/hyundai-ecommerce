@@ -17,7 +17,7 @@ import { Button } from "@nhatnang/ui/components/ui/button";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { toast } from "@nhatnang/ui/components/ui/sonner";
 import { isCloudinaryUrl } from "@/shared/utils";
-import type { ProductDTO } from "@nhatnang/database/dtos";
+import type { ProductDTO } from "@nhatnang/database/schemas";
 import { searchProductsAction } from "@/features/products/actions";
 import { useQuoteDraftStore } from "../stores/quote-draft.store";
 
@@ -101,9 +101,7 @@ export const ProductSearchModal = ({
     const model =
       typeof specs["model"] === "string" ? specs["model"] : product.slug;
     const power =
-      specs["power"] ??
-      specs["standbyPowerKva"] ??
-      specs["primePowerKva"];
+      specs["power"] ?? specs["standbyPowerKva"] ?? specs["primePowerKva"];
     const phase = specs["phase"];
 
     const powerStr =
@@ -128,37 +126,37 @@ export const ProductSearchModal = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-2xl gap-0 p-0 overflow-hidden sm:max-w-2xl">
-        <DialogHeader className="p-4 pb-3 border-b">
-          <DialogTitle className="text-lg font-semibold flex items-center gap-2">
-            <Search className="h-5 w-5 text-primary" />
+      <DialogContent className="max-w-2xl gap-0 overflow-hidden p-0 sm:max-w-2xl">
+        <DialogHeader className="border-b p-4 pb-3">
+          <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
+            <Search className="text-primary h-5 w-5" />
             {translate("searchModal.title")}
           </DialogTitle>
-          <DialogDescription className="text-xs text-muted-foreground">
+          <DialogDescription className="text-muted-foreground text-xs">
             {translate("searchModal.description")}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="p-4 bg-muted/30 border-b">
+        <div className="bg-muted/30 border-b p-4">
           <div className="relative flex items-center">
-            <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
+            <Search className="text-muted-foreground absolute left-3 h-4 w-4" />
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={translate("searchModal.inputPlaceholder")}
-              className="pl-9 pr-9 h-11 bg-background text-sm font-medium focus-visible:ring-primary shadow-xs"
+              className="bg-background focus-visible:ring-primary h-11 pr-9 pl-9 text-sm font-medium shadow-xs"
               autoFocus
             />
             {isSearching && (
-              <Loader2 className="absolute right-3 h-4 w-4 animate-spin text-muted-foreground" />
+              <Loader2 className="text-muted-foreground absolute right-3 h-4 w-4 animate-spin" />
             )}
           </div>
         </div>
 
-        <div className="max-h-[380px] min-h-[160px] overflow-y-auto p-2 divide-y divide-border/60">
+        <div className="divide-border/60 max-h-[380px] min-h-[160px] divide-y overflow-y-auto p-2">
           {isSearching && results.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-muted-foreground gap-2">
-              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            <div className="text-muted-foreground flex flex-col items-center justify-center gap-2 py-12">
+              <Loader2 className="text-primary h-6 w-6 animate-spin" />
               <p className="text-xs">{translate("searchModal.searching")}</p>
             </div>
           ) : results.length > 0 ? (
@@ -171,10 +169,10 @@ export const ProductSearchModal = ({
               return (
                 <div
                   key={product.id}
-                  className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors gap-3 group"
+                  className="hover:bg-muted/50 group flex items-center justify-between gap-3 rounded-lg p-3 transition-colors"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border bg-muted">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="bg-muted relative h-14 w-14 shrink-0 overflow-hidden rounded-md border">
                       {image && isCloudinaryUrl(image) ? (
                         <CldImage
                           src={image}
@@ -192,30 +190,30 @@ export const ProductSearchModal = ({
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                        <div className="text-muted-foreground flex h-full w-full items-center justify-center">
                           <Package className="h-6 w-6 stroke-1" />
                         </div>
                       )}
                     </div>
 
-                    <div className="min-w-0 flex flex-col gap-0.5">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-semibold text-sm text-foreground truncate max-w-xs">
+                    <div className="flex min-w-0 flex-col gap-0.5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-foreground max-w-xs truncate text-sm font-semibold">
                           {product.nameVi}
                         </span>
                         {model && (
                           <Badge
                             variant="outline"
-                            className="text-[10px] font-mono px-1.5 py-0 uppercase bg-background"
+                            className="bg-background px-1.5 py-0 font-mono text-[10px] uppercase"
                           >
                             {model}
                           </Badge>
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <div className="text-muted-foreground flex items-center gap-2 text-xs">
                         {power && (
-                          <span className="flex items-center gap-0.5 text-orange-600 dark:text-orange-400 font-medium">
+                          <span className="flex items-center gap-0.5 font-medium text-orange-600 dark:text-orange-400">
                             <Zap className="h-3 w-3" />
                             {power}
                           </span>
@@ -237,7 +235,7 @@ export const ProductSearchModal = ({
                         </span>
                       </div>
 
-                      <div className="text-sm font-bold text-primary mt-0.5">
+                      <div className="text-primary mt-0.5 text-sm font-bold">
                         {formatPrice(product.price)}
                       </div>
                     </div>
@@ -266,7 +264,7 @@ export const ProductSearchModal = ({
               );
             })
           ) : query.trim() ? (
-            <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-1">
+            <div className="text-muted-foreground flex flex-col items-center justify-center gap-1 py-10">
               <p className="text-sm font-medium">
                 {translate("searchModal.noResults")}
               </p>
@@ -275,9 +273,9 @@ export const ProductSearchModal = ({
               </p>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-10 text-muted-foreground gap-1">
-              <Search className="h-8 w-8 text-muted-foreground/40 stroke-1" />
-              <p className="text-xs mt-1">
+            <div className="text-muted-foreground flex flex-col items-center justify-center gap-1 py-10">
+              <Search className="text-muted-foreground/40 h-8 w-8 stroke-1" />
+              <p className="mt-1 text-xs">
                 {translate("searchModal.emptyPrompt")}
               </p>
             </div>

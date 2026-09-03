@@ -1,6 +1,6 @@
 import { expect, test, describe, beforeEach } from "bun:test";
 import { useQuoteDraftStore } from "./quote-draft.store";
-import type { ProductDTO } from "@nhatnang/database/dtos";
+import type { ProductDTO } from "@nhatnang/database/schemas";
 
 const mockProduct: ProductDTO = {
   id: "prod-100",
@@ -74,7 +74,9 @@ describe("QuoteDraftStore", () => {
         expect(items).toHaveLength(1);
         expect(items[0]!.productId).toBeNull();
         expect(items[0]!.isCustomItem).toBe(true);
-        expect(items[0]!.itemName).toBe("Nhân công lắp đặt & căn chỉnh tận nơi");
+        expect(items[0]!.itemName).toBe(
+          "Nhân công lắp đặt & căn chỉnh tận nơi",
+        );
         expect(items[0]!.unitPrice).toBe(2500000);
         expect(items[0]!.discountPercent).toBe(10);
       });
@@ -133,7 +135,9 @@ describe("QuoteDraftStore", () => {
         useQuoteDraftStore.getState().resetDraft();
 
         expect(useQuoteDraftStore.getState().items).toHaveLength(0);
-        expect(useQuoteDraftStore.getState().customerInfo.customerName).toBe("");
+        expect(useQuoteDraftStore.getState().customerInfo.customerName).toBe(
+          "",
+        );
       });
     });
   });

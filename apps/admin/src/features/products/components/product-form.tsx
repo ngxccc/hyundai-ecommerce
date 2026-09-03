@@ -17,13 +17,12 @@ import type {
   ProductDTO,
   CategoryDTO,
   BrandDTO,
-} from "@nhatnang/database/dtos";
+} from "@nhatnang/database/schemas";
 import {
   type CreateProductInput,
   createProductSchema,
 } from "@nhatnang/database/validators";
 import { isCloudinaryUrl } from "@/shared/utils";
-
 
 import {
   ProductGeneralInfo,
@@ -93,42 +92,39 @@ export const ProductForm = ({
     startTransition(async () => {
       const existingImageUrls: string[] = [];
       const imagesToUpload: (File | string)[] = [];
-  
+
       for (const item of images) {
         if (item instanceof File) {
           imagesToUpload.push(item);
-        } else if (
-          typeof item === "string" &&
-          !isCloudinaryUrl(item)
-        ) {
+        } else if (typeof item === "string" && !isCloudinaryUrl(item)) {
           imagesToUpload.push(item);
         } else {
           existingImageUrls.push(item);
         }
       }
-  
+
       const payload = {
         ...data,
         price: data.price ? data.price.replace(/\./g, "") : "",
         images: existingImageUrls.filter((image) => image.trim().length > 0),
         isQuoteOnly: data.isQuoteOnly ?? false,
       };
-  
+
       const finalFormData = new FormData();
       finalFormData.append("payload", JSON.stringify(payload));
       for (const item of imagesToUpload) {
         finalFormData.append("images", item);
       }
-  
+
       const result = isEditing
         ? await updateProductAction(initialData.id, finalFormData)
         : await createProductAction(finalFormData);
-  
+
       if (result.success) {
         toast.success(
           isEditing ? t("messages.successUpdate") : t("messages.successCreate"),
         );
-  
+
         if (!isEditing) {
           form.reset(emptyFormValues);
           setImages([]);

@@ -15,8 +15,7 @@ import {
   TableRow,
 } from "@nhatnang/ui/components/ui/table";
 import { setProductStockAction } from "../actions/inventory.actions";
-import type { WarehouseStock } from "@nhatnang/database/schemas";
-import type { WarehouseDTO } from "@nhatnang/database/dtos";
+import type { WarehouseStock, WarehouseDTO } from "@nhatnang/database/schemas";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 
 interface ProductInventoryTableProps {

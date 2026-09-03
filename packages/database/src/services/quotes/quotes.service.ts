@@ -14,7 +14,7 @@ import {
   type QuoteMessage,
   type NewQuoteMessage,
 } from "../../schemas";
-import type { CreateAdminQuoteDTO } from "../../dtos/quote.dto";
+import type { CreateAdminQuoteDTO } from "../../validators";
 export class DbQuotesService implements QuotesService {
   constructor(protected readonly db: IDatabase) {}
 
@@ -23,32 +23,29 @@ export class DbQuotesService implements QuotesService {
    */
   async createQuote(data: NewQuote, items: Omit<NewQuoteItem, "quoteId">[]) {
     return await this.db.transaction(async (tx) => {
-      const [newQuote] = await tx
-        .insert(quotes)
-        .values(data)
-        .returning({
-          id: quotes.id,
-          quoteNumber: quotes.quoteNumber,
-          userId: quotes.userId,
-          customerName: quotes.customerName,
-          customerPhone: quotes.customerPhone,
-          customerEmail: quotes.customerEmail,
-          companyName: quotes.companyName,
-          taxId: quotes.taxId,
-          shippingAddress: quotes.shippingAddress,
-          status: quotes.status,
-          subtotalPrice: quotes.subtotalPrice,
-          vatRate: quotes.vatRate,
-          vatAmount: quotes.vatAmount,
-          totalQuotedPrice: quotes.totalQuotedPrice,
-          commercialTerms: quotes.commercialTerms,
-          expirationDate: quotes.expirationDate,
-          note: quotes.note,
-          orderId: quotes.orderId,
-          createdByAdminId: quotes.createdByAdminId,
-          createdAt: quotes.createdAt,
-          updatedAt: quotes.updatedAt,
-        });
+      const [newQuote] = await tx.insert(quotes).values(data).returning({
+        id: quotes.id,
+        quoteNumber: quotes.quoteNumber,
+        userId: quotes.userId,
+        customerName: quotes.customerName,
+        customerPhone: quotes.customerPhone,
+        customerEmail: quotes.customerEmail,
+        companyName: quotes.companyName,
+        taxId: quotes.taxId,
+        shippingAddress: quotes.shippingAddress,
+        status: quotes.status,
+        subtotalPrice: quotes.subtotalPrice,
+        vatRate: quotes.vatRate,
+        vatAmount: quotes.vatAmount,
+        totalQuotedPrice: quotes.totalQuotedPrice,
+        commercialTerms: quotes.commercialTerms,
+        expirationDate: quotes.expirationDate,
+        note: quotes.note,
+        orderId: quotes.orderId,
+        createdByAdminId: quotes.createdByAdminId,
+        createdAt: quotes.createdAt,
+        updatedAt: quotes.updatedAt,
+      });
       if (!newQuote) {
         throw new Error("errors.createQuoteFailed");
       }

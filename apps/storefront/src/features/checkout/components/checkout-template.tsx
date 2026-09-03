@@ -6,7 +6,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import {
   type AddressDTO,
   type UserB2BProfileDTO,
-} from "@nhatnang/database/dtos";
+} from "@nhatnang/database/schemas";
 import { useCart, useCartStore } from "@/features/cart";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { SelectAddressModal } from "./select-address-modal";

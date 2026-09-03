@@ -1,7 +1,7 @@
 "use client";
 
 import { WarehouseCard } from "./warehouse-card";
-import type { WarehouseDTO } from "@nhatnang/database/dtos";
+import type { WarehouseDTO } from "@nhatnang/database/schemas";
 
 interface WarehouseGridProps {
   warehouses: WarehouseDTO[];

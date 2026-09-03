@@ -15,7 +15,7 @@ import {
   makePayOSDescription,
 } from "@nhatnang/shared/lib/payos";
 import { NextResponse, connection } from "next/server";
-import type { CreateOrderDTO } from "@nhatnang/database/dtos";
+import type { CreateOrderDTO } from "@nhatnang/database/schemas";
 import { checkoutRequestSchema } from "@/features/checkout/validators";
 
 export async function POST(request: Request) {

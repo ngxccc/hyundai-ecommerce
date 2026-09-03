@@ -27,7 +27,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@nhatnang/ui/components/ui/card";
-import type { WarehouseDTO } from "@nhatnang/database/dtos";
+import type { WarehouseDTO } from "@nhatnang/database/schemas";
 import {
   type CreateWarehouseInput,
   createWarehouseSchema,

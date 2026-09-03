@@ -1,7 +1,7 @@
 "use client";
 
 import { CategoryCard } from "./category-card";
-import type { CategoryDTO } from "@nhatnang/database/dtos";
+import type { CategoryDTO } from "@nhatnang/database/schemas";
 
 interface CategoryGridProps {
   categories: CategoryDTO[];

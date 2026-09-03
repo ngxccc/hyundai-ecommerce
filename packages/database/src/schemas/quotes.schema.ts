@@ -109,4 +109,8 @@ export type NewQuoteItem = typeof quoteItems.$inferInsert;
 export type QuoteMessage = typeof quoteMessages.$inferSelect;
 export type NewQuoteMessage = typeof quoteMessages.$inferInsert;
 
+export type QuoteDTO = Quote;
+export type QuoteItemDTO = QuoteItem;
+export type QuoteMessageDTO = QuoteMessage;
+
 export type { QuoteStatus };

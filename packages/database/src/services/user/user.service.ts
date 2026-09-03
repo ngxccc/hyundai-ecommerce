@@ -1,5 +1,5 @@
 import type { UserService } from "../interfaces";
-import { type UserProfileDTO, type UserB2BProfileDTO } from "../../dtos";
+import { type UserProfileDTO, type UserB2BProfileDTO } from "../../schemas";
 import { and, or, eq, ne, gte, sql } from "drizzle-orm";
 import { type IDatabase } from "../../client";
 import { users, type User } from "../../schemas/auth.schema";

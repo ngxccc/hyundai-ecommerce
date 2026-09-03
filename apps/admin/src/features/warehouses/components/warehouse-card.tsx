@@ -6,7 +6,7 @@ import { Card } from "@nhatnang/ui/components/ui/card";
 import { Badge } from "@nhatnang/ui/components/ui/badge";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Link } from "@/i18n/routing";
-import type { WarehouseDTO } from "@nhatnang/database/dtos";
+import type { WarehouseDTO } from "@nhatnang/database/schemas";
 
 import { DeleteWarehouseButton } from "./delete-warehouse-button";
 

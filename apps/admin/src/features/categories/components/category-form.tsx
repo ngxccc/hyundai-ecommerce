@@ -37,7 +37,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@nhatnang/ui/components/ui/card";
-import type { CategoryDTO } from "@nhatnang/database/dtos";
+import type { CategoryDTO } from "@nhatnang/database/schemas";
 import {
   type CreateCategoryInput,
   createCategorySchema,
@@ -90,10 +90,7 @@ export const CategoryForm = ({
       for (const item of imageImages) {
         if (item instanceof File) {
           imagesToUpload.push(item);
-        } else if (
-          typeof item === "string" &&
-          !isCloudinaryUrl(item)
-        ) {
+        } else if (typeof item === "string" && !isCloudinaryUrl(item)) {
           imagesToUpload.push(item);
         } else {
           existingImageUrls.push(item);

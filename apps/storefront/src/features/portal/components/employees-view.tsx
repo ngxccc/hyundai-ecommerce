@@ -19,7 +19,7 @@ import {
   FieldLabel,
   FieldError,
 } from "@nhatnang/ui/components/ui/field";
-import { type UserProfileDTO } from "@nhatnang/database/dtos";
+import { type UserProfileDTO } from "@nhatnang/database/schemas";
 import { Plus, X, User, Mail, Phone } from "lucide-react";
 
 interface EmployeesViewProps {

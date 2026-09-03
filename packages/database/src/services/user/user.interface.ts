@@ -1,5 +1,4 @@
-import type { User } from "../../schemas";
-import type { UserProfileDTO, UserB2BProfileDTO } from "../../dtos";
+import type { User, UserProfileDTO, UserB2BProfileDTO } from "../../schemas";
 
 export interface UserService {
   getById(id: string): Promise<UserProfileDTO | undefined>;

@@ -9,7 +9,7 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
-import { type BrandDTO } from "../../dtos";
+import { type BrandDTO } from "../../schemas";
 import { DbBrandService } from "./brand.service";
 import type { IDatabase } from "../../client";
 

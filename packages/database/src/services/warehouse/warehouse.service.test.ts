@@ -8,7 +8,7 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
-import { type WarehouseDTO } from "../../dtos";
+import { type WarehouseDTO } from "../../schemas";
 import { DbWarehouseService } from "./warehouse.service";
 import type { IDatabase } from "../../client";
 

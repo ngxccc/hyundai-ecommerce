@@ -3,7 +3,7 @@ import type {
   BrandDTO,
   CategoryDTO,
   ProductDTO,
-} from "@nhatnang/database/dtos";
+} from "@nhatnang/database/schemas";
 import type { ProductSpecs } from "@nhatnang/database/validators";
 import type { CategoryWithChildren } from "@nhatnang/database/services";
 import type { Locale } from "next-intl";

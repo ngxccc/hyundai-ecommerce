@@ -11,8 +11,7 @@ import {
 } from "../../tests/utils/db-mock";
 import { DbCartService } from "./cart.service";
 import type { IDatabase } from "../../client";
-import type { Cart, CartItem } from "../../schemas";
-import type { CartItemDTO } from "../../dtos";
+import type { Cart, CartItem, CartItemDTO } from "../../schemas";
 
 const cartService = new DbCartService(mockDb as unknown as IDatabase);
 
@@ -64,7 +63,6 @@ describe("CartService", () => {
     });
   });
 
-
   describe("getCartItems()", () => {
     test("should return all items and keep deleted/missing products as null", async () => {
       const mockItems = [
@@ -114,38 +112,38 @@ describe("CartService", () => {
       );
     });
 
-      mockSelectResolvedValue.mockResolvedValueOnce([
+    mockSelectResolvedValue.mockResolvedValueOnce([
+      {
+        id: "prod-1",
+        isQuoteOnly: true,
+        deletedAt: null,
+      },
+    ]);
+
+    expect(cartService.addToCart("cart-1", "prod-1", 2)).rejects.toThrow(
+      "errors.productIsQuoteOnly",
+    );
+
+    mockSelectResolvedValue
+      .mockResolvedValueOnce([
         {
           id: "prod-1",
-          isQuoteOnly: true,
+          isQuoteOnly: false,
           deletedAt: null,
+          totalStockCache: 5,
         },
-      ]);
+      ]) // Product check
+      .mockResolvedValueOnce([
+        {
+          id: "item-1",
+          productId: "prod-1",
+          quantity: 3,
+        },
+      ]); // Existing item check
 
-      expect(cartService.addToCart("cart-1", "prod-1", 2)).rejects.toThrow(
-        "errors.productIsQuoteOnly",
-      );
-
-      mockSelectResolvedValue
-        .mockResolvedValueOnce([
-          {
-            id: "prod-1",
-            isQuoteOnly: false,
-            deletedAt: null,
-            totalStockCache: 5,
-          },
-        ]) // Product check
-        .mockResolvedValueOnce([
-          {
-            id: "item-1",
-            productId: "prod-1",
-            quantity: 3,
-          },
-        ]); // Existing item check
-
-      expect(cartService.addToCart("cart-1", "prod-1", 3)).rejects.toThrow(
-        "errors.insufficientStock",
-      );
+    expect(cartService.addToCart("cart-1", "prod-1", 3)).rejects.toThrow(
+      "errors.insufficientStock",
+    );
 
     test("should insert/update item if valid", async () => {
       mockSelectResolvedValue
@@ -192,18 +190,18 @@ describe("CartService", () => {
       ).rejects.toThrow("errors.productNotFound");
     });
 
-      mockSelectResolvedValue.mockResolvedValueOnce([
-        {
-          id: "prod-1",
-          isQuoteOnly: false,
-          deletedAt: null,
-          totalStockCache: 3,
-        },
-      ]);
+    mockSelectResolvedValue.mockResolvedValueOnce([
+      {
+        id: "prod-1",
+        isQuoteOnly: false,
+        deletedAt: null,
+        totalStockCache: 3,
+      },
+    ]);
 
-      expect(
-        cartService.updateCartItemQuantity("cart-1", "prod-1", 5),
-      ).rejects.toThrow("errors.insufficientStock");
+    expect(
+      cartService.updateCartItemQuantity("cart-1", "prod-1", 5),
+    ).rejects.toThrow("errors.insufficientStock");
 
     test("should update and return item if valid", async () => {
       mockSelectResolvedValue

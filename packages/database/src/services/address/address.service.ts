@@ -6,7 +6,7 @@ import {
   type AddressDTO,
   type CreateAddressDTO,
   type UpdateAddressDTO,
-} from "../../dtos";
+} from "../../schemas";
 import { handleServiceError } from "../../utils";
 
 export class DbAddressService implements AddressService {

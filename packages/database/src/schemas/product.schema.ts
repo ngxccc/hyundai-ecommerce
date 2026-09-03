@@ -63,3 +63,9 @@ export const products = snakeCase.table(
 
 export type Product = typeof products.$inferSelect;
 export type NewProduct = typeof products.$inferInsert;
+
+export type ProductDTO = Omit<
+  Product,
+  "totalSalesCache" | "createdAt" | "updatedAt" | "deletedAt"
+>;
+export type ProductAdminDTO = Omit<Product, "deletedAt">;

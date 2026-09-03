@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, spyOn } from "bun:test";
-import type { UserProfileDTO } from "@nhatnang/database/dtos";
+import type { UserProfileDTO } from "@nhatnang/database/schemas";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
 import { authService, userService } from "@nhatnang/database/services";
 import { mockAuthGetSession } from "@nhatnang/shared/testing/action-mocks";

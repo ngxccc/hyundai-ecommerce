@@ -83,4 +83,27 @@ export const paymentTransactions = snakeCase.table("payment_transaction", {
 export type PaymentTransaction = typeof paymentTransactions.$inferSelect;
 export type NewPaymentTransaction = typeof paymentTransactions.$inferInsert;
 
+export interface PaymentTransactionDetailsDTO {
+  id: string;
+  orderCode: number | null;
+  amount: string;
+  status: PaymentTransactionStatus;
+  transactionType: PaymentTransactionType;
+  createdAt: Date;
+}
+
+export type DebtRepaymentDTO = Omit<
+  DebtRepayment,
+  "createdAt" | "updatedAt" | "deletedAt"
+>;
+
+export type CreateDebtRepaymentDTO = Omit<
+  DebtRepaymentDTO,
+  "id" | "referenceCode" | "verifiedBy"
+>;
+
+export type UpdateDebtRepaymentDTO = Partial<
+  Omit<DebtRepaymentDTO, "id" | "userId">
+>;
+
 export type { PaymentTransactionType, PaymentTransactionStatus };

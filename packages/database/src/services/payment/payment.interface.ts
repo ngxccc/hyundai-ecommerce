@@ -2,14 +2,12 @@ import type {
   Payment,
   NewPaymentTransaction,
   PaymentTransactionStatus,
-} from "../../schemas";
-import type {
   CreatePaymentDTO,
   DebtRepaymentDTO,
   CreateDebtRepaymentDTO,
   UpdateDebtRepaymentDTO,
   PaymentTransactionDetailsDTO,
-} from "../../dtos";
+} from "../../schemas";
 
 export interface PaymentTransactionSummary {
   id: string;

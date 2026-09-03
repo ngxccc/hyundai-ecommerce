@@ -1,4 +1,8 @@
-import type { AddressDTO, CreateAddressDTO, UpdateAddressDTO } from "../../dtos";
+import type {
+  AddressDTO,
+  CreateAddressDTO,
+  UpdateAddressDTO,
+} from "../../schemas";
 
 export interface AddressService {
   getByUserId(userId: string): Promise<AddressDTO[]>;

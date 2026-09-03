@@ -6,7 +6,7 @@ import type {
   QuoteMessage,
   Quote,
 } from "../../schemas";
-import type { CreateAdminQuoteDTO } from "../../dtos/quote.dto";
+import type { CreateAdminQuoteDTO } from "../../validators";
 import type { ComplexQuote, QuoteListItem } from "./quotes.service";
 
 export interface QuotesService {

@@ -9,7 +9,7 @@ import {
 } from "bun:test";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { productService } from "@nhatnang/database/services";
-import type { ProductDTO } from "@nhatnang/database/dtos";
+import type { ProductDTO } from "@nhatnang/database/schemas";
 import type { CreateProductInput } from "@nhatnang/database/validators";
 import {
   createProductAction,

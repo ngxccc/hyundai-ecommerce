@@ -1,9 +1,12 @@
 import type { WarehouseService } from "../interfaces";
-import { type WarehouseDTO } from "../../dtos";
+import { type WarehouseDTO } from "../../schemas";
 import { warehouses } from "../../schemas/warehouse.schema";
 import type { IDatabase } from "../../client";
 import { eq } from "drizzle-orm";
-import type { CreateWarehouseInput, UpdateWarehouseInput } from "../../validators";
+import type {
+  CreateWarehouseInput,
+  UpdateWarehouseInput,
+} from "../../validators";
 import { handleServiceError } from "../../utils";
 
 export class DbWarehouseService implements WarehouseService {

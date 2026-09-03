@@ -12,15 +12,16 @@ import {
   type OrderPaymentStatus,
   type PaymentTransactionType,
   type PaymentTransactionStatus,
+  type CreatePaymentDTO,
+  type DebtRepaymentDTO,
+  type CreateDebtRepaymentDTO,
+  type UpdateDebtRepaymentDTO,
+  type PaymentTransactionDetailsDTO,
 } from "../../schemas";
 import type {
-  CreatePaymentDTO,
-  DebtRepaymentDTO,
-  CreateDebtRepaymentDTO,
-  UpdateDebtRepaymentDTO,
-  PaymentTransactionDetailsDTO,
-} from "../../dtos";
-import type { PaymentService, PaymentTransactionSummary } from "./payment.interface";
+  PaymentService,
+  PaymentTransactionSummary,
+} from "./payment.interface";
 import { getSharedConfig } from "@nhatnang/shared";
 
 export class DbPaymentService implements PaymentService {

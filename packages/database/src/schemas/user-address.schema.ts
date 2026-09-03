@@ -17,3 +17,15 @@ export const userAddresses = snakeCase.table("user_address", {
 
 export type UserAddress = typeof userAddresses.$inferSelect;
 export type NewUserAddress = typeof userAddresses.$inferInsert;
+
+export type AddressDTO = Omit<
+  UserAddress,
+  "userId" | "createdAt" | "updatedAt" | "deletedAt"
+>;
+
+export type CreateAddressDTO = Omit<AddressDTO, "id" | "isDefault"> & {
+  userId: string;
+  isDefault?: boolean;
+};
+
+export type UpdateAddressDTO = Partial<Omit<AddressDTO, "id">>;

@@ -8,10 +8,29 @@ import {
   mockSelectResolvedValue,
   mockSelect,
 } from "../../tests/utils/db-mock";
-import { mapProductToDTO } from "../../dtos";
+import type { ProductDTO, Product } from "../../schemas";
 import { DbProductService } from "./product.service";
-import type { Product } from "../../schemas";
 import type { IDatabase } from "../../client";
+
+function toProductDto(product: Product): ProductDTO {
+  return {
+    id: product.id,
+    nameVi: product.nameVi,
+    nameEn: product.nameEn,
+    slug: product.slug,
+    price: product.price,
+    descriptionVi: product.descriptionVi,
+    descriptionEn: product.descriptionEn,
+    shortDescriptionVi: product.shortDescriptionVi,
+    shortDescriptionEn: product.shortDescriptionEn,
+    images: product.images,
+    brandId: product.brandId,
+    categoryId: product.categoryId,
+    specs: product.specs,
+    totalStockCache: product.totalStockCache,
+    isQuoteOnly: product.isQuoteOnly,
+  };
+}
 
 const productService = new DbProductService(mockDb as unknown as IDatabase);
 
@@ -46,13 +65,13 @@ describe("ProductService", () => {
       updatedAt: new Date(),
       deletedAt: null,
     };
-    mockReturning.mockResolvedValue([mapProductToDTO(mockReturnedDbProduct)]);
+    mockReturning.mockResolvedValue([toProductDto(mockReturnedDbProduct)]);
 
     const result = await productService.create(newProduct);
 
     expect(mockInsert).toHaveBeenCalled();
     expect(mockValues).toHaveBeenCalledWith(newProduct);
-    expect(result).toEqual(mapProductToDTO(mockReturnedDbProduct));
+    expect(result).toEqual(toProductDto(mockReturnedDbProduct));
   });
 
   test("getById() should return a product if found", async () => {
@@ -78,7 +97,7 @@ describe("ProductService", () => {
       deletedAt: null,
     };
 
-    mockFindFirst.mockResolvedValueOnce(mapProductToDTO(mockProduct));
+    mockFindFirst.mockResolvedValueOnce(toProductDto(mockProduct));
 
     const result = await productService.getById("uuid-123");
 
@@ -89,7 +108,7 @@ describe("ProductService", () => {
         where: expect.anything(),
       }),
     );
-    expect(result).toEqual(mapProductToDTO(mockProduct));
+    expect(result).toEqual(toProductDto(mockProduct));
   });
 
   describe("getTopSellingProducts()", () => {
@@ -163,7 +182,7 @@ describe("ProductService", () => {
       const result = await productService.getAll(10, { sort: "priceAsc" });
 
       expect(mockSelect).toHaveBeenCalledTimes(1);
-      expect(result.data).toEqual(mockProducts.map(mapProductToDTO));
+      expect(result.data).toEqual(mockProducts.map(toProductDto));
     });
 
     test("should support categoryIds array filter", async () => {
@@ -184,7 +203,7 @@ describe("ProductService", () => {
       });
 
       expect(mockSelect).toHaveBeenCalledTimes(1);
-      expect(result.data).toEqual(mockProducts.map(mapProductToDTO));
+      expect(result.data).toEqual(mockProducts.map(toProductDto));
     });
   });
 

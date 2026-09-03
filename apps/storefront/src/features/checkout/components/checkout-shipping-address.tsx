@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useFormContext } from "react-hook-form";
-import { type AddressDTO } from "@nhatnang/database/dtos";
+import { type AddressDTO } from "@nhatnang/database/schemas";
 import { Card } from "@nhatnang/ui/components/ui/card";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Input } from "@nhatnang/ui/components/ui/input";

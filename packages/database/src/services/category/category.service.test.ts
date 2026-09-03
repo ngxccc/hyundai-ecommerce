@@ -9,7 +9,7 @@ import {
   mockWhere,
   mockLimit,
 } from "../../tests/utils/db-mock";
-import { type CategoryDTO } from "../../dtos";
+import { type CategoryDTO } from "../../schemas";
 import { DbCategoryService } from "./category.service";
 import type { IDatabase } from "../../client";
 

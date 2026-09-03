@@ -1,5 +1,8 @@
-import type { CategoryDTO } from "../../dtos";
-import type { CreateCategoryInput, UpdateCategoryInput } from "../../validators";
+import type { CategoryDTO } from "../../schemas";
+import type {
+  CreateCategoryInput,
+  UpdateCategoryInput,
+} from "../../validators";
 
 export type CategoryWithChildren = CategoryDTO & {
   children?: CategoryWithChildren[];

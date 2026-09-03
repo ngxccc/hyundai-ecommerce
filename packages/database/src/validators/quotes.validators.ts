@@ -28,13 +28,20 @@ export const adminQuoteItemInputSchema = z.object({
   itemModel: z.string().nullable().optional(),
   itemSpecs: z.string().nullable().optional(),
   quantity: z.number().int().positive("Quantity must be greater than 0"),
-  unitPrice: z.union([z.number().nonnegative(), z.string().regex(/^\d+(\.\d{1,2})?$/)]),
-  discountPercent: z.union([z.number().min(0).max(100), z.string().regex(/^\d+(\.\d{1,2})?$/)]).default(0),
+  unitPrice: z.union([
+    z.number().nonnegative(),
+    z.string().regex(/^\d+(\.\d{1,2})?$/),
+  ]),
+  discountPercent: z
+    .union([z.number().min(0).max(100), z.string().regex(/^\d+(\.\d{1,2})?$/)])
+    .default(0),
 });
 
 export const createAdminQuoteSchema = z.object({
   userId: z.string().uuid().nullable().optional(),
-  customerName: z.string().min(2, "Customer name must have at least 2 characters"),
+  customerName: z
+    .string()
+    .min(2, "Customer name must have at least 2 characters"),
   customerPhone: z.string().regex(/^[0-9+() -]{8,20}$/, "Invalid phone number"),
   customerEmail: z
     .string()
@@ -60,11 +67,17 @@ export const createAdminQuoteSchema = z.object({
   note: z.string().nullable().optional(),
   expirationDate: z.date().nullable().optional(),
   createdByAdminId: z.string().uuid().nullable().optional(),
-  items: z.array(adminQuoteItemInputSchema).min(1, "Quote must contain at least 1 item"),
+  items: z
+    .array(adminQuoteItemInputSchema)
+    .min(1, "Quote must contain at least 1 item"),
 });
 
-export type AdminQuoteItemInput = z.infer<typeof adminQuoteItemInputSchema>;
-export type CreateAdminQuoteInput = z.infer<typeof createAdminQuoteSchema>;
+export type AdminQuoteItemInput = z.input<typeof adminQuoteItemInputSchema>;
+export type AdminQuoteItemOutput = z.output<typeof adminQuoteItemInputSchema>;
+export type CreateAdminQuoteInput = z.input<typeof createAdminQuoteSchema>;
+export type CreateAdminQuoteOutput = z.output<typeof createAdminQuoteSchema>;
+export type CreateAdminQuoteDTO = CreateAdminQuoteInput;
+export type AdminQuoteItemInputDTO = AdminQuoteItemInput;
 
 export type QuoteIdInput = z.infer<typeof quoteIdSchema>;
 export type UpdateQuoteItemPriceInput = z.infer<

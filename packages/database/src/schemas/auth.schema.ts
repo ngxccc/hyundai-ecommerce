@@ -134,4 +134,30 @@ export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Session = typeof sessions.$inferSelect;
 
+export type UserProfileDTO = Omit<
+  User,
+  | "emailVerified"
+  | "image"
+  | "dealerTierId"
+  | "creditLimit"
+  | "currentDebt"
+  | "createdAt"
+  | "updatedAt"
+  | "deletedAt"
+>;
+
+export type UserDTO = Omit<
+  User,
+  "emailVerified" | "image" | "createdAt" | "updatedAt" | "deletedAt"
+>;
+
+export type UserB2BProfileDTO = Omit<
+  User,
+  | "password"
+  | "emailVerified"
+  | "image"
+  | "createdAt"
+  | "updatedAt"
+  | "deletedAt"
+>;
 export type { UserRole, BusinessType };

@@ -23,3 +23,9 @@ export const categories = snakeCase.table("category", {
 
 export type Category = typeof categories.$inferSelect;
 export type NewCategory = typeof categories.$inferInsert;
+
+export type CategoryDTO = Omit<
+  Category,
+  "createdAt" | "updatedAt" | "deletedAt"
+>;
+export type CategoryAdminDTO = Omit<Category, "deletedAt">;

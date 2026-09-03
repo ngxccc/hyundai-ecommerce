@@ -1,5 +1,5 @@
 import type { BrandService } from "../interfaces";
-import { type BrandDTO } from "../../dtos";
+import { type BrandDTO } from "../../schemas";
 import { brands } from "../../schemas/brand.schema";
 import { type IDatabase } from "../../client";
 import { eq } from "drizzle-orm";

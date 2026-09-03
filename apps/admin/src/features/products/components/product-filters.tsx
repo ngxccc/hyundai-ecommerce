@@ -16,7 +16,7 @@ import { Checkbox } from "@nhatnang/ui/components/ui/checkbox";
 import { Input } from "@nhatnang/ui/components/ui/input";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import { Search, X } from "lucide-react";
-import type { CategoryDTO, BrandDTO } from "@nhatnang/database/dtos";
+import type { CategoryDTO, BrandDTO } from "@nhatnang/database/schemas";
 
 interface ProductFiltersProps {
   categories: CategoryDTO[];

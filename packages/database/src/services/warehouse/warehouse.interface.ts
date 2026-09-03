@@ -1,5 +1,8 @@
-import type { WarehouseDTO } from "../../dtos";
-import type { CreateWarehouseInput, UpdateWarehouseInput } from "../../validators";
+import type { WarehouseDTO } from "../../schemas";
+import type {
+  CreateWarehouseInput,
+  UpdateWarehouseInput,
+} from "../../validators";
 
 export interface WarehouseService {
   getAll(): Promise<WarehouseDTO[]>;

@@ -1,5 +1,4 @@
-import type { NewProduct } from "../../schemas";
-import type { ProductDTO } from "../../dtos";
+import type { NewProduct, ProductDTO } from "../../schemas";
 
 export interface TopSellingProduct {
   id: string;

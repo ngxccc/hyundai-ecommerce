@@ -5,10 +5,7 @@ import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { translatedZodResolver } from "@/shared/lib/validation-resolver";
-import {
-  addressSchema,
-  type AddressForm,
-} from "@nhatnang/database/validators";
+import { addressSchema, type AddressForm } from "@nhatnang/database/validators";
 import {
   addAddressAction,
   updateAddressAction,
@@ -39,7 +36,7 @@ import {
   FieldLabel,
   FieldError,
 } from "@nhatnang/ui/components/ui/field";
-import { type AddressDTO } from "@nhatnang/database/dtos";
+import { type AddressDTO } from "@nhatnang/database/schemas";
 
 interface AddressDialogProps {
   isOpen: boolean;

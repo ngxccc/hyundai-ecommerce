@@ -13,3 +13,6 @@ export const brands = snakeCase.table("brand", {
 
 export type Brand = typeof brands.$inferSelect;
 export type NewBrand = typeof brands.$inferInsert;
+
+export type BrandDTO = Omit<Brand, "createdAt" | "updatedAt" | "deletedAt">;
+export type BrandAdminDTO = Omit<Brand, "deletedAt">;

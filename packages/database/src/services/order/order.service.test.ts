@@ -13,12 +13,13 @@ import { DbOrderService } from "./order.service";
 import { DbOrderQueryService } from "./order-query.service";
 import type { ComplexOrder } from "./order.interface";
 import type { IDatabase } from "../../client";
-import type { Order } from "../../schemas";
-import type { CreateOrderDTO, CreateOrderItemDTO } from "../../dtos";
+import type { Order, CreateOrderDTO, CreateOrderItemDTO } from "../../schemas";
 import { type PostgresError, POSTGRES_ERROR_CODES } from "../../utils";
 
 const orderService = new DbOrderService(mockDb as unknown as IDatabase);
-const orderQueryService = new DbOrderQueryService(mockDb as unknown as IDatabase);
+const orderQueryService = new DbOrderQueryService(
+  mockDb as unknown as IDatabase,
+);
 
 describe("OrderService", () => {
   beforeEach(() => {
@@ -230,7 +231,9 @@ describe("OrderService", () => {
 
       mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
       mockSelectResolvedValue.mockResolvedValueOnce([{ id: "cart-1" }]);
-      mockSelectResolvedValue.mockResolvedValueOnce([{ productId: "prod-1", quantity: 1 }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([
+        { productId: "prod-1", quantity: 1 },
+      ]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
 
       const items = [
@@ -261,7 +264,9 @@ describe("OrderService", () => {
 
       mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
       mockSelectResolvedValue.mockResolvedValueOnce([{ id: "cart-1" }]);
-      mockSelectResolvedValue.mockResolvedValueOnce([{ productId: "prod-1", quantity: 1 }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([
+        { productId: "prod-1", quantity: 1 },
+      ]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
       mockReturning.mockResolvedValueOnce([mockOrder]);
 
@@ -302,7 +307,9 @@ describe("OrderService", () => {
 
       mockSelectResolvedValue.mockResolvedValueOnce([mockUser]);
       mockSelectResolvedValue.mockResolvedValueOnce([{ id: "cart-1" }]);
-      mockSelectResolvedValue.mockResolvedValueOnce([{ productId: "prod-1", quantity: 1 }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([
+        { productId: "prod-1", quantity: 1 },
+      ]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockProduct]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockParent]);
       mockReturning.mockResolvedValueOnce([mockOrder]);
@@ -351,7 +358,9 @@ describe("OrderService", () => {
         creditLimit: "100.00",
         currentDebt: "50.00",
       };
-      const mockItems = [{ productId: "prod-1", quantity: 1, unitPrice: "200.00" }];
+      const mockItems = [
+        { productId: "prod-1", quantity: 1, unitPrice: "200.00" },
+      ];
 
       mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
       mockSelectResolvedValue.mockResolvedValueOnce(mockItems);
@@ -376,7 +385,9 @@ describe("OrderService", () => {
         creditLimit: "500.00",
         currentDebt: "50.00",
       };
-      const mockItems = [{ productId: "prod-1", quantity: 1, unitPrice: "200.00" }];
+      const mockItems = [
+        { productId: "prod-1", quantity: 1, unitPrice: "200.00" },
+      ];
       const approvedOrder = { ...mockOrder, approvalStatus: "APPROVED" };
 
       mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
@@ -403,12 +414,16 @@ describe("OrderService", () => {
         creditLimit: "500.00",
         currentDebt: "50.00",
       };
-      const mockItems = [{ productId: "prod-1", quantity: 1, unitPrice: "200.00" }];
+      const mockItems = [
+        { productId: "prod-1", quantity: 1, unitPrice: "200.00" },
+      ];
       const approvedOrder = { ...mockOrder, approvalStatus: "APPROVED" };
 
       mockSelectResolvedValue.mockResolvedValueOnce([mockOrder]);
       mockSelectResolvedValue.mockResolvedValueOnce(mockItems);
-      mockSelectResolvedValue.mockResolvedValueOnce([{ parentId: "user-parent" }]);
+      mockSelectResolvedValue.mockResolvedValueOnce([
+        { parentId: "user-parent" },
+      ]);
       mockSelectResolvedValue.mockResolvedValueOnce([mockParent]);
       mockReturning.mockResolvedValueOnce([{ id: approvedOrder.id }]);
 

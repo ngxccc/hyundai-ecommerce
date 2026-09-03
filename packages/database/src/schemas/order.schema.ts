@@ -19,6 +19,7 @@ import {
   type OrderPaymentStatus,
   type ApprovalStatus,
 } from "@nhatnang/core";
+import type { Payment } from "./payment.schema";
 import { users } from "./auth.schema";
 import { baseEntity } from "./helpers.schema";
 import { products } from "./product.schema";
@@ -110,4 +111,20 @@ export const shippingBids = snakeCase.table(
 
 export type ShippingBid = typeof shippingBids.$inferSelect;
 export type NewShippingBid = typeof shippingBids.$inferInsert;
+
+export type CreateOrderDTO = Pick<
+  Order,
+  "userId" | "shippingAddress" | "shippingFee" | "totalAmount" | "paymentMethod"
+> &
+  Partial<Pick<Order, "paymentStatus" | "status" | "approvalStatus">> & {
+    orderCode?: string;
+  };
+
+export type CreateOrderItemDTO = Pick<
+  OrderItem,
+  "productId" | "productName" | "productSku" | "quantity" | "unitPrice"
+>;
+
+export type CreatePaymentDTO = Pick<Payment, "orderId" | "amount" | "method"> &
+  Partial<Pick<Payment, "status" | "rawPayload">>;
 export type { PaymentMethod, OrderPaymentStatus, OrderStatus, ApprovalStatus };

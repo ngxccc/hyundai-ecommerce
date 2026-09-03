@@ -1,7 +1,7 @@
 "use client";
 
 import { BrandCard } from "./brand-card";
-import type { BrandDTO } from "@nhatnang/database/dtos";
+import type { BrandDTO } from "@nhatnang/database/schemas";
 
 interface BrandGridProps {
   brands: BrandDTO[];

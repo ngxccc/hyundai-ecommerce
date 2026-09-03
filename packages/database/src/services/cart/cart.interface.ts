@@ -1,4 +1,4 @@
-import type { CartItemDTO } from "../../dtos";
+import type { CartItemDTO } from "../../schemas";
 import type { LocalItem } from "../product/product.interface";
 
 export interface CartService {

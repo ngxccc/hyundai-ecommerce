@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@nhatnang/ui/components/ui/select";
-import type { CategoryDTO, BrandDTO } from "@nhatnang/database/dtos";
+import type { CategoryDTO, BrandDTO } from "@nhatnang/database/schemas";
 import type { CreateProductInput } from "@nhatnang/database/validators";
 
 interface ProductCategorySectionProps {

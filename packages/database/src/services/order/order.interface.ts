@@ -6,8 +6,9 @@ import type {
   ApprovalStatus,
   OutboxEvent,
   OutboxEventStatus,
+  CreateOrderDTO,
+  CreateOrderItemDTO,
 } from "../../schemas";
-import type { CreateOrderDTO, CreateOrderItemDTO } from "../../dtos";
 
 export interface ComplexOrder {
   id: string;

@@ -8,7 +8,7 @@ import { Button } from "@nhatnang/ui/components/ui/button";
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
-import type { BrandDTO } from "@nhatnang/database/dtos";
+import type { BrandDTO } from "@nhatnang/database/schemas";
 
 import { isCloudinaryUrl } from "@/shared/utils";
 

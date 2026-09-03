@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { type AddressDTO } from "@nhatnang/database/dtos";
+import { type AddressDTO } from "@nhatnang/database/schemas";
 import { Button } from "@nhatnang/ui/components/ui/button";
 import {
   Dialog,

@@ -6,7 +6,7 @@ import {
   type CartItemDTO,
   CART_ITEM_COLUMNS,
   CART_ITEM_PRODUCT_COLUMNS,
-} from "../../dtos";
+} from "../../schemas";
 
 export class DbCartService implements CartService {
   constructor(protected readonly db: IDatabase) {}

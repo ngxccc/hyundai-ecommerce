@@ -5,7 +5,7 @@ import type {
   GetAllOptions,
   ProductFilterMetadata,
 } from "../interfaces";
-import type { ProductDTO } from "../../dtos";
+import type { ProductDTO } from "../../schemas";
 import { products, type NewProduct } from "../../schemas/product.schema";
 import { type IDatabase } from "../../client";
 import {
