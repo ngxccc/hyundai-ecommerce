@@ -1,6 +1,6 @@
 import { eq, sql } from "drizzle-orm";
 import type { IDatabase } from "../../client";
-import { warehouseStocks, type WarehouseStock } from "../../schemas/warehouse-stock.schema";
+import { warehouseStocks, type WarehouseStock } from "../../schemas";
 import { products } from "../../schemas/product.schema";
 import type { WarehouseStockService } from "../interfaces";
 import type { UpdateWarehouseStockInput } from "../../validators";
@@ -59,7 +59,9 @@ export class DbWarehouseStockService implements WarehouseStockService {
       .where(eq(products.id, productId));
   }
 
-  async getByProductId(productId: string): Promise<typeof warehouseStocks.$inferSelect[]> {
+  async getByProductId(
+    productId: string,
+  ): Promise<(typeof warehouseStocks.$inferSelect)[]> {
     return this.db
       .select()
       .from(warehouseStocks)

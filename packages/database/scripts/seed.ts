@@ -2,12 +2,15 @@ import { db } from "../src/index";
 import { brands } from "../src/schemas/brand.schema";
 import { categories } from "../src/schemas/category.schema";
 import { products } from "../src/schemas/product.schema";
-import { warehouses } from "../src/schemas/warehouse.schema";
-import { warehouseStocks } from "../src/schemas/warehouse-stock.schema";
+import { warehouses, warehouseStocks } from "../src/schemas/warehouse.schema";
 import { dealerTiers } from "../src/schemas";
 import { users } from "../src/schemas/auth.schema";
 import { orders, orderItems } from "../src/schemas/order.schema";
-import { quotes, quoteItems, quoteMessages } from "../src/schemas/quotes.schema";
+import {
+  quotes,
+  quoteItems,
+  quoteMessages,
+} from "../src/schemas/quotes.schema";
 
 async function seed() {
   console.log("🌱 Seeding database...");
@@ -84,7 +87,8 @@ async function seed() {
       slug: "may-phat-dien-cong-nghiep",
       parentId: parentCatId,
       descriptionVi: "Máy phát điện công suất lớn cho nhà máy, công trường",
-      descriptionEn: "High-power generators for factories and construction sites",
+      descriptionEn:
+        "High-power generators for factories and construction sites",
       image: null,
       isActive: true,
     },
@@ -377,7 +381,8 @@ async function seed() {
       userId: user1Id,
       status: "PENDING" as const,
       shippingFee: "150000.00",
-      shippingAddress: "302/105 Phan Huy Ích, Phường 12, Quận Gò Vấp, TP. Hồ Chí Minh",
+      shippingAddress:
+        "302/105 Phan Huy Ích, Phường 12, Quận Gò Vấp, TP. Hồ Chí Minh",
       totalAmount: "46650000.00", // (12,500,000 * 2) + (21,500,000 * 1) + 150,000 = 46,650,000
     },
     {
@@ -385,7 +390,8 @@ async function seed() {
       userId: user2Id,
       status: "PROCESSING" as const,
       shippingFee: "250000.00",
-      shippingAddress: "Số 12, Ngõ 45, Đường Nguyễn Xiển, Quận Thanh Xuân, Hà Nội",
+      shippingAddress:
+        "Số 12, Ngõ 45, Đường Nguyễn Xiển, Quận Thanh Xuân, Hà Nội",
       totalAmount: "29150000.00", // (28,900,000 * 1) + 250,000 = 29,150,000
     },
     {
@@ -492,7 +498,8 @@ async function seed() {
       id: "019de1a0-9999-4000-8000-000000000201",
       quoteId: quote1Id,
       senderId: user1Id,
-      message: "Chào anh chị, nhờ anh chị báo giá tốt giúp em dự án này, em cần gấp trong ngày.",
+      message:
+        "Chào anh chị, nhờ anh chị báo giá tốt giúp em dự án này, em cần gấp trong ngày.",
     })
     .onConflictDoNothing();
 

@@ -1,18 +1,19 @@
 import { defineRelations } from "drizzle-orm";
-import { orders, orderItems } from "./order.schema";
+import { orders, orderItems, shippingBids } from "./order.schema";
 import { accounts, sessions, users } from "./auth.schema";
 import { dealerTiers } from "./dealer-tier.schema";
-import { shippingBids } from "./shipping-bid.schema";
 import { products } from "./product.schema";
-import { warehouses } from "./warehouse.schema";
-import { warehouseStocks } from "./warehouse-stock.schema";
+import { warehouses, warehouseStocks } from "./warehouse.schema";
 import { brands } from "./brand.schema";
 import { categories } from "./category.schema";
 import { userAddresses } from "./user-address.schema";
-import { debtRepayments, payments } from "./payment.schema";
+import {
+  debtRepayments,
+  payments,
+  paymentTransactions,
+} from "./payment.schema";
 import { carts, cartItems } from "./cart.schema";
 import { quotes, quoteItems, quoteMessages } from "./quotes.schema";
-import { paymentTransactions } from "./payment-transaction.schema";
 import { creditLimitHistory } from "./credit-limit-history.schema";
 
 export const schemaRelations = defineRelations(
