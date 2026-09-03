@@ -1,49 +1,40 @@
-import { expect, test, describe, beforeEach } from "bun:test";
+import { expect, test, describe, beforeEach, spyOn } from "bun:test";
+import { mockRevalidatePath } from "@nhatnang/shared/testing/action-mocks";
+import type { Quote, QuoteItem } from "@nhatnang/database/schemas";
+import { quotesService } from "@nhatnang/database/services";
 import {
-  mockQuotesApproveAndConvertToOrder,
-  mockQuotesGetComplexQuote,
-  mockQuotesUpdateQuoteItemPrice,
-  mockQuotesAddQuoteMessage,
-  mockQuotesSendAdminNegotiationMessage,
-  mockQuotesUpdateQuoteStatus,
-  mockQuotesCreateAdminQuote,
-  mockRevalidatePath,
-} from "@nhatnang/shared/testing/action-mocks";
-import type { Quote } from "@nhatnang/database/schemas";
+  approveAndConvertToOrderAction,
+  updateQuoteItemPriceAction,
+  sendQuoteMessageAction,
+  updateQuoteStatusAction,
+  createAdminQuoteAction,
+} from "./quote.actions";
 
 describe("quote.actions", () => {
   beforeEach(() => {
-    mockQuotesApproveAndConvertToOrder.mockClear();
-    mockQuotesGetComplexQuote.mockClear();
-    mockQuotesUpdateQuoteItemPrice.mockClear();
-    mockQuotesAddQuoteMessage.mockClear();
-    mockQuotesSendAdminNegotiationMessage.mockClear();
-    mockQuotesUpdateQuoteStatus.mockClear();
-    mockQuotesCreateAdminQuote.mockClear();
     mockRevalidatePath.mockClear();
   });
 
   describe("approveAndConvertToOrderAction", () => {
     test("should successfully convert quote to order", async () => {
-      const { approveAndConvertToOrderAction } = await import("./quote.actions");
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
       const mockResult = { orderId: "order-1" };
 
-      mockQuotesApproveAndConvertToOrder.mockResolvedValueOnce(mockResult);
+      const spy = spyOn(
+        quotesService,
+        "approveAndConvertToOrder",
+      ).mockResolvedValueOnce(mockResult);
 
       const res = await approveAndConvertToOrderAction(mockQuoteId);
 
       expect(res.success).toBe(true);
       expect(res.data).toEqual(mockResult);
-      expect(mockQuotesApproveAndConvertToOrder).toHaveBeenCalledWith(
-        mockQuoteId,
-        "admin-1",
-      );
+      expect(spy).toHaveBeenCalledWith(mockQuoteId, "admin-1");
       expect(mockRevalidatePath).toHaveBeenCalled();
+      spy.mockRestore();
     });
 
     test("should return error if quoteId is invalid", async () => {
-      const { approveAndConvertToOrderAction } = await import("./quote.actions");
       const res = await approveAndConvertToOrderAction("invalid-uuid");
       expect(res.success).toBe(false);
       expect(res.error).toBe("validationError");
@@ -52,7 +43,6 @@ describe("quote.actions", () => {
 
   describe("updateQuoteItemPriceAction", () => {
     test("should successfully update price and transition status to negotiating", async () => {
-      const { updateQuoteItemPriceAction } = await import("./quote.actions");
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
       const mockItemId = "00000000-0000-4000-8000-000000000002";
       const mockPrice = "120000.00";
@@ -70,16 +60,27 @@ describe("quote.actions", () => {
         ],
       };
 
-      mockQuotesGetComplexQuote.mockResolvedValueOnce(mockQuote);
-      mockQuotesUpdateQuoteItemPrice.mockResolvedValueOnce({
+      const getQuoteSpy = spyOn(
+        quotesService,
+        "getComplexQuote",
+      ).mockResolvedValueOnce(mockQuote as never);
+      const updatePriceSpy = spyOn(
+        quotesService,
+        "updateQuoteItemPrice",
+      ).mockResolvedValueOnce({
         id: mockItemId,
-      });
-      mockQuotesUpdateQuoteStatus.mockResolvedValueOnce({
+      } as unknown as QuoteItem);
+      const updateStatusSpy = spyOn(
+        quotesService,
+        "updateQuoteStatus",
+      ).mockResolvedValueOnce({
         id: mockQuoteId,
         status: "negotiating",
-      });
-      mockQuotesAddQuoteMessage.mockResolvedValueOnce({});
-
+      } as unknown as Quote);
+      const addMessageSpy = spyOn(
+        quotesService,
+        "addQuoteMessage",
+      ).mockResolvedValue({} as never);
       const res = await updateQuoteItemPriceAction(
         mockQuoteId,
         mockItemId,
@@ -87,20 +88,18 @@ describe("quote.actions", () => {
       );
 
       expect(res.success).toBe(true);
-      expect(mockQuotesUpdateQuoteItemPrice).toHaveBeenCalledWith(
-        mockItemId,
-        mockPrice,
-      );
-      expect(mockQuotesUpdateQuoteStatus).toHaveBeenCalledWith(
-        mockQuoteId,
-        "negotiating",
-      );
-      expect(mockQuotesAddQuoteMessage).toHaveBeenCalled();
+      expect(updatePriceSpy).toHaveBeenCalledWith(mockItemId, mockPrice);
+      expect(updateStatusSpy).toHaveBeenCalledWith(mockQuoteId, "negotiating");
+      expect(addMessageSpy).toHaveBeenCalled();
       expect(mockRevalidatePath).toHaveBeenCalled();
+
+      getQuoteSpy.mockRestore();
+      updatePriceSpy.mockRestore();
+      updateStatusSpy.mockRestore();
+      addMessageSpy.mockRestore();
     });
 
     test("should fail if quote is already approved", async () => {
-      const { updateQuoteItemPriceAction } = await import("./quote.actions");
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
       const mockItemId = "00000000-0000-4000-8000-000000000002";
       const mockPrice = "120000.00";
@@ -111,7 +110,10 @@ describe("quote.actions", () => {
         items: [{ id: mockItemId }],
       };
 
-      mockQuotesGetComplexQuote.mockResolvedValueOnce(mockQuote);
+      const getQuoteSpy = spyOn(
+        quotesService,
+        "getComplexQuote",
+      ).mockResolvedValueOnce(mockQuote as never);
 
       const res = await updateQuoteItemPriceAction(
         mockQuoteId,
@@ -121,12 +123,12 @@ describe("quote.actions", () => {
 
       expect(res.success).toBe(false);
       expect(res.error).toBe("quoteNotEditableOrConvertible");
+      getQuoteSpy.mockRestore();
     });
   });
 
   describe("sendQuoteMessageAction", () => {
     test("should successfully post message via sendAdminNegotiationMessage", async () => {
-      const { sendQuoteMessageAction } = await import("./quote.actions");
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
       const mockMessage = "Hello from admin";
 
@@ -136,23 +138,26 @@ describe("quote.actions", () => {
         message: mockMessage,
       };
 
-      mockQuotesSendAdminNegotiationMessage.mockResolvedValueOnce(mockResult);
+      const sendSpy = spyOn(
+        quotesService,
+        "sendAdminNegotiationMessage",
+      ).mockResolvedValueOnce(mockResult as never);
 
       const res = await sendQuoteMessageAction(mockQuoteId, mockMessage);
 
       expect(res.success).toBe(true);
-      expect(mockQuotesSendAdminNegotiationMessage).toHaveBeenCalledWith({
+      expect(sendSpy).toHaveBeenCalledWith({
         quoteId: mockQuoteId,
         adminUserId: "admin-1",
         message: mockMessage,
       });
       expect(mockRevalidatePath).toHaveBeenCalled();
+      sendSpy.mockRestore();
     });
   });
 
   describe("updateQuoteStatusAction", () => {
     test("should update status successfully and log timeline message", async () => {
-      const { updateQuoteStatusAction } = await import("./quote.actions");
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
       const newStatus = "rejected";
 
@@ -161,29 +166,37 @@ describe("quote.actions", () => {
         status: "pending_review",
       };
 
-      mockQuotesGetComplexQuote.mockResolvedValueOnce(mockQuote);
-      mockQuotesUpdateQuoteStatus.mockResolvedValueOnce({
+      const getQuoteSpy = spyOn(
+        quotesService,
+        "getComplexQuote",
+      ).mockResolvedValueOnce(mockQuote as never);
+      const updateStatusSpy = spyOn(
+        quotesService,
+        "updateQuoteStatus",
+      ).mockResolvedValueOnce({
         id: mockQuoteId,
         status: newStatus,
-      });
-      mockQuotesAddQuoteMessage.mockResolvedValueOnce({});
-
+      } as unknown as Quote);
+      const addMessageSpy = spyOn(
+        quotesService,
+        "addQuoteMessage",
+      ).mockResolvedValue({} as never);
       const res = await updateQuoteStatusAction(mockQuoteId, newStatus);
 
       expect(res.success).toBe(true);
-      expect(mockQuotesUpdateQuoteStatus).toHaveBeenCalledWith(
-        mockQuoteId,
-        newStatus,
-      );
-      expect(mockQuotesAddQuoteMessage).toHaveBeenCalled();
+      expect(updateStatusSpy).toHaveBeenCalledWith(mockQuoteId, newStatus);
+      expect(addMessageSpy).toHaveBeenCalled();
       expect(mockRevalidatePath).toHaveBeenCalled();
+
+      getQuoteSpy.mockRestore();
+      updateStatusSpy.mockRestore();
+      addMessageSpy.mockRestore();
     });
   });
 
   describe("createAdminQuoteAction", () => {
     describe("when input payload is valid", () => {
       test("should call quotesService.createAdminQuote and return created quote", async () => {
-        const { createAdminQuoteAction } = await import("./quote.actions");
         const validPayload = {
           userId: null,
           customerName: "Nguyễn Văn Test",
@@ -245,7 +258,10 @@ describe("quote.actions", () => {
           updatedAt: new Date("2026-09-02T00:00:00Z"),
         };
 
-        mockQuotesCreateAdminQuote.mockResolvedValueOnce(mockCreatedQuote);
+        const createSpy = spyOn(
+          quotesService,
+          "createAdminQuote",
+        ).mockResolvedValueOnce(mockCreatedQuote);
 
         const res = await createAdminQuoteAction(validPayload);
 
@@ -254,14 +270,15 @@ describe("quote.actions", () => {
           expect(res.data.quoteNumber).toBe("QT-20260902-001");
           expect(res.data.totalQuotedPrice).toBe("60500000.00");
         }
-        expect(mockQuotesCreateAdminQuote).toHaveBeenCalled();
+        expect(createSpy).toHaveBeenCalled();
         expect(mockRevalidatePath).toHaveBeenCalledWith("/quotes");
+        createSpy.mockRestore();
       });
     });
 
     describe("when input payload is missing required customer fields", () => {
       test("should return validation error without calling quote service", async () => {
-        const { createAdminQuoteAction } = await import("./quote.actions");
+        const createSpy = spyOn(quotesService, "createAdminQuote");
         const invalidPayload = {
           customerName: "",
           customerPhone: "invalid",
@@ -275,7 +292,8 @@ describe("quote.actions", () => {
           expect(res.error).toBe("validationError");
           expect(res.fieldErrors).toBeDefined();
         }
-        expect(mockQuotesCreateAdminQuote).not.toHaveBeenCalled();
+        expect(createSpy).not.toHaveBeenCalled();
+        createSpy.mockRestore();
       });
     });
   });

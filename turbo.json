@@ -43,6 +43,12 @@
       "outputs": [],
       "cache": true
     },
+    "test:integration": {
+      "dependsOn": ["^build"],
+      "env": ["DOPPLER_TOKEN", "DATABASE_URL"],
+      "outputs": [],
+      "cache": false
+    },
     "dev": {
       "persistent": true,
       "cache": false

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "bun:test";
+import { describe, expect, it, vi, beforeEach, spyOn } from "bun:test";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import {
   generatePayOSSignature,
@@ -7,10 +7,8 @@ import {
   makePayOSDescription,
 } from "@nhatnang/shared";
 import { env } from "@/env";
-import { mockConfirmPayOSPayment } from "@nhatnang/shared/testing/action-mocks";
-
-// Static import cannot work here because we must register mock.module first before importing the route handler.
-const { POST } = await import("./route");
+import { paymentService } from "@nhatnang/database/services";
+import { POST } from "./route";
 
 describe("POST /api/payments/payos-webhook", () => {
   const testChecksumKey = "test_payos_checksum_key_12345";
@@ -66,10 +64,12 @@ describe("POST /api/payments/payos-webhook", () => {
   });
 
   it("calls confirmPayOSPayment and returns 200 on successful signature verification", async () => {
+    const confirmSpy = spyOn(
+      paymentService,
+      "confirmPayOSPayment",
+    ).mockResolvedValue(true);
     const checksumKey = env.PAYOS_CHECKSUM_KEY || testChecksumKey;
     const signature = generatePayOSSignature(validData, checksumKey);
-
-    mockConfirmPayOSPayment.mockResolvedValue(true);
 
     const request = new Request("http://localhost/api/payments/payos-webhook", {
       method: "POST",
@@ -90,14 +90,12 @@ describe("POST /api/payments/payos-webhook", () => {
     expect(response.status).toBe(HTTP_STATUS.OK);
     expect(json.success).toBe(true);
     expect(json.message).toBe("Webhook processed successfully");
-    expect(mockConfirmPayOSPayment).toHaveBeenCalledWith(
-      "12345678",
-      20000,
-      "REF-123",
-    );
+    expect(confirmSpy).toHaveBeenCalledWith("12345678", 20000, "REF-123");
+    confirmSpy.mockRestore();
   });
 
   it("does not call confirmPayOSPayment but returns 200 when code is not 00", async () => {
+    const confirmSpy = spyOn(paymentService, "confirmPayOSPayment");
     const checksumKey = env.PAYOS_CHECKSUM_KEY || testChecksumKey;
     const signature = generatePayOSSignature(validData, checksumKey);
 
@@ -120,14 +118,21 @@ describe("POST /api/payments/payos-webhook", () => {
     expect(response.status).toBe(HTTP_STATUS.OK);
     expect(json.success).toBe(true);
     expect(json.message).toBe("Webhook processed successfully");
-    expect(mockConfirmPayOSPayment).not.toHaveBeenCalled();
+    expect(confirmSpy).not.toHaveBeenCalled();
+    confirmSpy.mockRestore();
   });
 
   it("returns 200 even when order is already processed or not found", async () => {
+    const confirmSpy = spyOn(
+      paymentService,
+      "confirmPayOSPayment",
+    ).mockResolvedValue(false);
+    const debtSpy = spyOn(
+      paymentService,
+      "confirmDebtRepayment",
+    ).mockResolvedValue(false);
     const checksumKey = env.PAYOS_CHECKSUM_KEY || testChecksumKey;
     const signature = generatePayOSSignature(validData, checksumKey);
-
-    mockConfirmPayOSPayment.mockResolvedValue(false); // already processed or not found
 
     const request = new Request("http://localhost/api/payments/payos-webhook", {
       method: "POST",
@@ -148,20 +153,18 @@ describe("POST /api/payments/payos-webhook", () => {
     expect(response.status).toBe(HTTP_STATUS.OK);
     expect(json.success).toBe(true);
     expect(json.message).toBe("Webhook processed successfully");
-    expect(mockConfirmPayOSPayment).toHaveBeenCalledWith(
-      "12345678",
-      20000,
-      "REF-123",
-    );
+    expect(confirmSpy).toHaveBeenCalledWith("12345678", 20000, "REF-123");
+    confirmSpy.mockRestore();
+    debtSpy.mockRestore();
   });
 
   it("returns 500 when confirmPayOSPayment throws database error", async () => {
+    const confirmSpy = spyOn(
+      paymentService,
+      "confirmPayOSPayment",
+    ).mockRejectedValue(new Error("Database connection lost"));
     const checksumKey = env.PAYOS_CHECKSUM_KEY || testChecksumKey;
     const signature = generatePayOSSignature(validData, checksumKey);
-
-    mockConfirmPayOSPayment.mockRejectedValue(
-      new Error("Database connection lost"),
-    );
 
     const request = new Request("http://localhost/api/payments/payos-webhook", {
       method: "POST",
@@ -182,5 +185,6 @@ describe("POST /api/payments/payos-webhook", () => {
     expect(response.status).toBe(HTTP_STATUS.INTERNAL_SERVER_ERROR);
     expect(json.success).toBe(false);
     expect(json.error).toBe("errors.internalServerError");
+    confirmSpy.mockRestore();
   });
 });

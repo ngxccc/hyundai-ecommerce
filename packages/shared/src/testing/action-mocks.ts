@@ -79,58 +79,6 @@ await mock.module("next/headers", () => ({
   headers: mock(() => new Map([["x-forwarded-for", "127.0.0.1"]])),
 }));
 
-await mock.module("@nhatnang/database/services", () => ({
-  authService: {
-    loginEmail: mockAuthLoginEmail,
-    register: mockAuthRegister,
-    createEmployee: mockAuthCreateEmployee,
-  },
-  userService: {
-    checkDuplicateUser: mockUserCheckDuplicateUser,
-    listEmployees: mockUserListEmployees,
-  },
-  productService: {
-    create: mockProductCreate,
-    update: mockProductUpdate,
-    delete: mockProductDelete,
-    getById: mockProductGetById,
-    getAll: mockProductGetAll,
-  },
-  quotesService: {
-    approveAndConvertToOrder: mockQuotesApproveAndConvertToOrder,
-    getComplexQuote: mockQuotesGetComplexQuote,
-    updateQuoteItemPrice: mockQuotesUpdateQuoteItemPrice,
-    addQuoteMessage: mockQuotesAddQuoteMessage,
-    sendAdminNegotiationMessage: mockQuotesSendAdminNegotiationMessage,
-    updateQuoteStatus: mockQuotesUpdateQuoteStatus,
-    createAdminQuote: mockQuotesCreateAdminQuote,
-  },
-  cartService: {
-    getOrCreateCart: mockCartGetOrCreateCart,
-    getCartItems: mockCartGetCartItems,
-  },
-  orderService: {
-    updateOrderStatus: mockOrderUpdateOrderStatus,
-    selectWinningBid: mockOrderSelectWinningBid,
-    approveDealerOrder: mockOrderApproveDealerOrder,
-    approveOrderCancellation: mockOrderApproveOrderCancellation,
-    createOrderWithItems: mockOrderCreateOrderWithItems,
-    checkoutWithTradeCredit: mockOrderCheckoutWithTradeCredit,
-    expirePendingOrders: mockOrderExpirePendingOrders,
-    fetchPendingOutboxEvents: mockOrderFetchPendingOutboxEvents,
-    updateOutboxEventStatus: mockOrderUpdateOutboxEventStatus,
-  },
-  paymentService: {
-    verifyCashPayment: mockOrderVerifyCashPayment,
-    createPayment: mockOrderCreatePayment,
-    createPaymentTransaction: mockOrderCreatePaymentTransaction,
-    updatePayment: mockOrderUpdatePayment,
-    confirmPayOSPayment: mockConfirmPayOSPayment,
-    createDebtRepayment: mockPaymentCreateDebtRepayment,
-    confirmDebtRepayment: mockPaymentConfirmDebtRepayment,
-  },
-}));
-
 await mock.module("next/cache", () => ({
   revalidatePath: mockRevalidatePath,
   revalidateTag: mockRevalidateTag,

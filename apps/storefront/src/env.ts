@@ -52,16 +52,18 @@ export const env = createEnv({
     TELEGRAM_BOT_TOKEN: process.env["TELEGRAM_BOT_TOKEN"],
     TELEGRAM_ADMIN_CHAT_ID: process.env["TELEGRAM_ADMIN_CHAT_ID"],
   },
+  skipValidation:
+    !!process.env["SKIP_ENV_VALIDATION"] || process.env.NODE_ENV === "test",
 });
 
 if (typeof window === "undefined") {
   initializeSharedConfig({
-    vatRate: env.VAT_RATE,
-    depositRate: env.DEPOSIT_RATE,
-    payosClientId: env.PAYOS_CLIENT_ID,
-    payosApiKey: env.PAYOS_API_KEY,
-    payosChecksumKey: env.PAYOS_CHECKSUM_KEY,
-    nextPublicAppUrl: env.NEXT_PUBLIC_APP_URL,
+    vatRate: env.VAT_RATE ?? 0.1,
+    depositRate: env.DEPOSIT_RATE ?? 0.2,
+    payosClientId: env.PAYOS_CLIENT_ID ?? "",
+    payosApiKey: env.PAYOS_API_KEY ?? "",
+    payosChecksumKey: env.PAYOS_CHECKSUM_KEY ?? "",
+    nextPublicAppUrl: env.NEXT_PUBLIC_APP_URL ?? "http://127.0.0.1:3000",
     isProduction: env.NODE_ENV === "production",
   });
 } else {

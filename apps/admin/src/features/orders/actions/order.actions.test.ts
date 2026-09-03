@@ -1,68 +1,36 @@
-import { expect, test, describe, mock, beforeEach } from "bun:test";
-import type { Mock } from "bun:test";
-import "@nhatnang/shared/testing/action-mocks";
+import { expect, test, describe, beforeEach, spyOn } from "bun:test";
+import { mockRevalidatePath } from "@nhatnang/shared/testing/action-mocks";
 import type { Order, ShippingBid } from "@nhatnang/database/schemas";
-import type { OrderService, PaymentService, SelectWinningBidResult } from "@nhatnang/database/services";
-import type {
-  selectShippingBidAction as SelectShippingBidActionFn,
-  addShippingBidAction as AddShippingBidActionFn,
-  approveDealerOrderAction as ApproveDealerOrderActionFn,
-  verifyCashPaymentAction as VerifyCashPaymentActionFn,
-  approveOrderCancellationAction as ApproveOrderCancellationActionFn,
+import { orderService, paymentService } from "@nhatnang/database/services";
+import type { SelectWinningBidResult } from "@nhatnang/database/services";
+import {
+  selectShippingBidAction,
+  addShippingBidAction,
+  approveDealerOrderAction,
+  verifyCashPaymentAction,
+  approveOrderCancellationAction,
 } from "./order.actions";
-import type { revalidatePath as RevalidatePathFn } from "next/cache";
 
 describe("order.actions", () => {
-  let selectWinningBidMock: Mock<OrderService["selectWinningBid"]>;
-  let selectShippingBidAction: typeof SelectShippingBidActionFn;
-  let addShippingBidAction: typeof AddShippingBidActionFn;
-  let approveDealerOrderAction: typeof ApproveDealerOrderActionFn;
-  let verifyCashPaymentAction: typeof VerifyCashPaymentActionFn;
-  let approveOrderCancellationAction: typeof ApproveOrderCancellationActionFn;
-  let orderService: OrderService;
-  let paymentService: PaymentService;
-  let revalidatePath: typeof RevalidatePathFn;
-
-  beforeEach(async () => {
-    // Static import cannot work here because Bun's async mock.module must run before importing these modules.
-    const databaseServices = await import("@nhatnang/database/services");
-    const orderActions = await import("./order.actions");
-    const nextCache = await import("next/cache");
-    revalidatePath = nextCache.revalidatePath;
-
-    orderService = databaseServices.orderService;
-    paymentService = databaseServices.paymentService;
-
-    selectShippingBidAction = orderActions.selectShippingBidAction;
-    addShippingBidAction = orderActions.addShippingBidAction;
-    approveDealerOrderAction = orderActions.approveDealerOrderAction;
-    verifyCashPaymentAction = orderActions.verifyCashPaymentAction;
-    approveOrderCancellationAction = orderActions.approveOrderCancellationAction;
-
-    // Cast as Mock is safe here because database services are mocked in the test environment setup.
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    selectWinningBidMock = orderService.selectWinningBid as unknown as Mock<
-      typeof orderService.selectWinningBid
-    >;
-    selectWinningBidMock.mockClear();
-    // Cast as Mock is safe here because revalidatePath is mocked in next/cache mock.
-    (revalidatePath as unknown as Mock<typeof revalidatePath>).mockClear();
+  beforeEach(() => {
+    mockRevalidatePath.mockClear();
   });
 
   describe("selectShippingBidAction", () => {
     test("returns validation error when input is invalid (not uuid)", async () => {
+      const selectSpy = spyOn(orderService, "selectWinningBid");
       const result = await selectShippingBidAction("invalid-id", "invalid-id");
 
       expect(result.success).toBe(false);
       expect(result.success === false && result.error).toBe("validationError");
-      expect(selectWinningBidMock).not.toHaveBeenCalled();
+      expect(selectSpy).not.toHaveBeenCalled();
+      selectSpy.mockRestore();
     });
 
     test("calls orderService.selectWinningBid and returns its result when input is valid", async () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
       const validBidId = "123e4567-e89b-12d3-a456-426614174001";
 
-      // partial mock objects using as unknown as T for test boundary
       const mockOrder = {
         id: validOrderId,
         shippingFee: "150000",
@@ -72,38 +40,40 @@ describe("order.actions", () => {
         quotedPrice: "150000",
       } as unknown as ShippingBid;
 
-      selectWinningBidMock.mockResolvedValueOnce({
+      const selectSpy = spyOn(
+        orderService,
+        "selectWinningBid",
+      ).mockResolvedValueOnce({
         updatedOrder: mockOrder,
         selectedBid: mockBid,
       });
 
       const result = await selectShippingBidAction(validOrderId, validBidId);
 
-      expect(selectWinningBidMock).toHaveBeenCalledTimes(1);
-      expect(selectWinningBidMock).toHaveBeenCalledWith(
-        validOrderId,
-        validBidId,
-      );
+      expect(selectSpy).toHaveBeenCalledTimes(1);
+      expect(selectSpy).toHaveBeenCalledWith(validOrderId, validBidId);
       expect(result.success).toBe(true);
       if (result.success && result.data) {
         expect(result.data.shippingFee).toBe("150000");
         expect(result.data.selectedBid.id).toBe(validBidId);
       }
+      selectSpy.mockRestore();
     });
 
     test("returns orderNotFound when service returns null", async () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
       const validBidId = "123e4567-e89b-12d3-a456-426614174001";
 
-      // Cast as SelectWinningBidResult is safe here because we intentionally simulate a failure result.
-      selectWinningBidMock.mockResolvedValueOnce(
-        undefined as unknown as SelectWinningBidResult,
-      );
+      const selectSpy = spyOn(
+        orderService,
+        "selectWinningBid",
+      ).mockResolvedValueOnce(undefined as unknown as SelectWinningBidResult);
 
       const result = await selectShippingBidAction(validOrderId, validBidId);
 
       expect(result.success).toBe(false);
       expect(result.success === false && result.error).toBe("orderNotFound");
+      selectSpy.mockRestore();
     });
   });
 
@@ -130,12 +100,10 @@ describe("order.actions", () => {
         vendorName: "Grab",
       } as unknown as ShippingBid;
 
-      const createShippingBidMock = mock().mockResolvedValueOnce(mockBid);
-      (
-        orderService as unknown as {
-          createShippingBid: typeof createShippingBidMock;
-        }
-      ).createShippingBid = createShippingBidMock;
+      const createSpy = spyOn(
+        orderService,
+        "createShippingBid",
+      ).mockResolvedValueOnce(mockBid);
 
       const result = await addShippingBidAction({
         orderId: validOrderId,
@@ -143,11 +111,12 @@ describe("order.actions", () => {
         quotedPrice: "150000",
       });
 
-      expect(createShippingBidMock).toHaveBeenCalledTimes(1);
+      expect(createSpy).toHaveBeenCalledTimes(1);
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data!.id).toBe("123e4567-e89b-12d3-a456-426614174001");
       }
+      createSpy.mockRestore();
     });
   });
 
@@ -156,21 +125,20 @@ describe("order.actions", () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
       const mockOrder = { id: validOrderId } as unknown as Order;
 
-      const approveDealerOrderMock = mock().mockResolvedValueOnce(mockOrder);
-      (
-        orderService as unknown as {
-          approveDealerOrder: typeof approveDealerOrderMock;
-        }
-      ).approveDealerOrder = approveDealerOrderMock;
+      const approveSpy = spyOn(
+        orderService,
+        "approveDealerOrder",
+      ).mockResolvedValueOnce(mockOrder);
 
       const result = await approveDealerOrderAction(validOrderId);
 
-      expect(approveDealerOrderMock).toHaveBeenCalledTimes(1);
-      expect(approveDealerOrderMock).toHaveBeenCalledWith(validOrderId);
+      expect(approveSpy).toHaveBeenCalledTimes(1);
+      expect(approveSpy).toHaveBeenCalledWith(validOrderId);
       expect(result.success).toBe(true);
       if (result.success && result.data) {
         expect(result.data.id).toBe(validOrderId);
       }
+      approveSpy.mockRestore();
     });
   });
 
@@ -179,24 +147,20 @@ describe("order.actions", () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
       const mockOrder = { id: validOrderId } as unknown as Order;
 
-      const verifyCashPaymentMock = mock().mockResolvedValueOnce(mockOrder);
-      (
-        paymentService as unknown as {
-          verifyCashPayment: typeof verifyCashPaymentMock;
-        }
-      ).verifyCashPayment = verifyCashPaymentMock;
+      const verifySpy = spyOn(
+        paymentService,
+        "verifyCashPayment",
+      ).mockResolvedValueOnce(mockOrder);
 
       const result = await verifyCashPaymentAction(validOrderId);
 
-      expect(verifyCashPaymentMock).toHaveBeenCalledTimes(1);
-      expect(verifyCashPaymentMock).toHaveBeenCalledWith(
-        validOrderId,
-        "admin-1",
-      );
+      expect(verifySpy).toHaveBeenCalledTimes(1);
+      expect(verifySpy).toHaveBeenCalledWith(validOrderId, "admin-1");
       expect(result.success).toBe(true);
       if (result.success && result.data) {
         expect(result.data.id).toBe(validOrderId);
       }
+      verifySpy.mockRestore();
     });
   });
 
@@ -205,22 +169,20 @@ describe("order.actions", () => {
       const validOrderId = "123e4567-e89b-12d3-a456-426614174000";
       const mockOrder = { id: validOrderId } as unknown as Order;
 
-      const approveOrderCancellationMock =
-        mock().mockResolvedValueOnce(mockOrder);
-      (
-        orderService as unknown as {
-          approveOrderCancellation: typeof approveOrderCancellationMock;
-        }
-      ).approveOrderCancellation = approveOrderCancellationMock;
+      const cancelSpy = spyOn(
+        orderService,
+        "approveOrderCancellation",
+      ).mockResolvedValueOnce(mockOrder);
 
       const result = await approveOrderCancellationAction(validOrderId);
 
-      expect(approveOrderCancellationMock).toHaveBeenCalledTimes(1);
-      expect(approveOrderCancellationMock).toHaveBeenCalledWith(validOrderId);
+      expect(cancelSpy).toHaveBeenCalledTimes(1);
+      expect(cancelSpy).toHaveBeenCalledWith(validOrderId);
       expect(result.success).toBe(true);
       if (result.success && result.data) {
         expect(result.data.id).toBe(validOrderId);
       }
+      cancelSpy.mockRestore();
     });
   });
 });

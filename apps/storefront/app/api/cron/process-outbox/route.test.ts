@@ -1,11 +1,7 @@
-import { describe, expect, it, vi, beforeEach, mock } from "bun:test";
+import { describe, expect, it, vi, beforeEach, mock, spyOn } from "bun:test";
 import type { Mock } from "bun:test";
-import {
-  mockOrderFetchPendingOutboxEvents,
-  mockOrderUpdateOutboxEventStatus,
-  mockResendSend,
-} from "@nhatnang/shared/testing/action-mocks";
-import type { OrderService } from "@nhatnang/database/services";
+import { mockResendSend } from "@nhatnang/shared/testing/action-mocks";
+import { orderService } from "@nhatnang/database/services";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
 
 // Mock database env
@@ -29,7 +25,6 @@ await mock.module("@/env", () => ({
 const mockFetch = mock();
 globalThis.fetch = mockFetch as unknown as typeof fetch;
 
-// Static import cannot work here because Bun's async mock.module must run before importing the route handler.
 const { POST } = await import("./route");
 
 describe("POST /api/cron/process-outbox", () => {
@@ -55,11 +50,9 @@ describe("POST /api/cron/process-outbox", () => {
   });
 
   it("successfully processes outbox events", async () => {
-    // Mock the database service functions
-    (
-      mockOrderFetchPendingOutboxEvents as unknown as Mock<
-        OrderService["fetchPendingOutboxEvents"]
-      >
+    const fetchSpy = spyOn(
+      orderService,
+      "fetchPendingOutboxEvents",
     ).mockResolvedValueOnce([
       {
         id: "event-1",
@@ -79,11 +72,11 @@ describe("POST /api/cron/process-outbox", () => {
       },
     ]);
 
-    (
-      mockOrderUpdateOutboxEventStatus as unknown as Mock<
-        OrderService["updateOutboxEventStatus"]
-      >
+    const updateSpy = spyOn(
+      orderService,
+      "updateOutboxEventStatus",
     ).mockResolvedValue(undefined);
+
     (
       mockResendSend as unknown as Mock<
         (...args: unknown[]) => Promise<unknown>
@@ -91,11 +84,9 @@ describe("POST /api/cron/process-outbox", () => {
     ).mockResolvedValue({ id: "mail-id" });
     mockFetch.mockResolvedValue({ ok: true });
 
-    // Set process.env variables
     process.env["TELEGRAM_BOT_TOKEN"] = "test-bot-token";
     process.env["TELEGRAM_ADMIN_CHAT_ID"] = "test-chat-id";
 
-    // Static import cannot work here because env validation runs at module execution.
     const { env: appEnv } = await import("@/env");
 
     const request = new Request("http://localhost/api/cron/process-outbox", {
@@ -117,7 +108,10 @@ describe("POST /api/cron/process-outbox", () => {
     expect(json.processedCount).toBe(2);
     expect(mockResendSend).toHaveBeenCalledTimes(1);
     expect(mockFetch).toHaveBeenCalledTimes(1);
-    expect(mockOrderFetchPendingOutboxEvents).toHaveBeenCalledWith(10);
-    expect(mockOrderUpdateOutboxEventStatus).toHaveBeenCalledTimes(2);
+    expect(fetchSpy).toHaveBeenCalledWith(10);
+    expect(updateSpy).toHaveBeenCalledTimes(2);
+
+    fetchSpy.mockRestore();
+    updateSpy.mockRestore();
   });
 });

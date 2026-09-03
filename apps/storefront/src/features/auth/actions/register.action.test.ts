@@ -1,40 +1,13 @@
-import { beforeEach, describe, expect, it, type Mock } from "bun:test";
-import type { AuthService, UserService } from "@nhatnang/database/services";
+import { describe, expect, it, spyOn } from "bun:test";
+import { authService, userService } from "@nhatnang/database/services";
 import {
   AUTH_ERROR_CODES,
   SYSTEM_ERROR_CODES,
 } from "@nhatnang/shared/constants";
 import type { ActionResult } from "@nhatnang/shared";
-import type { getTranslations } from "next-intl/server";
+import { registerAction } from "./register.action";
 
-// ---------------------------------------------------------------------------
-// Mocks — system boundaries only
-// ---------------------------------------------------------------------------
-
-import "@nhatnang/shared/testing/action-mocks";
-// Dynamic import AFTER mocks are registered
-const { registerAction } = await import("./register.action");
-
-// ---------------------------------------------------------------------------
-// Result type for the action (validation error branch + authService branch)
-// ---------------------------------------------------------------------------
-
-interface ValidationErrorResult {
-  success: false;
-  code: string;
-  fieldErrors: Record<string, string[] | undefined>;
-}
-
-type ActionSuccessResult = ActionResult<{ userId: string }>;
-
-type RegisterActionResult =
-  | ValidationErrorResult
-  | ActionSuccessResult
-  | ActionResult;
-
-// ---------------------------------------------------------------------------
-// Test data helpers
-// ---------------------------------------------------------------------------
+type RegisterActionResult = Awaited<ReturnType<typeof registerAction>>;
 
 const validEndUser = {
   name: "Nguyen Van A",
@@ -54,251 +27,262 @@ const validDealer = {
   province: "Ho Chi Minh",
 };
 
-// ---------------------------------------------------------------------------
-// Assertion helpers — avoid repeated cast + narrowing boilerplate
-// ---------------------------------------------------------------------------
-
-const assertValidationError = (
-  result: RegisterActionResult,
-): ValidationErrorResult => {
+const assertValidationError = (result: RegisterActionResult) => {
   expect(result.success).toBe(false);
-  const validationResult = result as ValidationErrorResult;
-  expect(validationResult.code).toBe(SYSTEM_ERROR_CODES.VALIDATION_ERROR);
-  return validationResult;
+  if (result.success || !("fieldErrors" in result) || !result.fieldErrors) {
+    throw new Error("Expected validation error with fieldErrors");
+  }
+  expect(result.code).toBe(SYSTEM_ERROR_CODES.VALIDATION_ERROR);
+  return result as {
+    success: false;
+    code: string;
+    fieldErrors: Record<string, string[] | undefined>;
+  };
 };
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
-
 describe("registerAction", () => {
-  let mockRegister: Mock<AuthService["register"]>;
-  let mockCheckDuplicateUser: Mock<UserService["checkDuplicateUser"]>;
-  let mockGetTranslations: Mock<typeof getTranslations>;
-
-  beforeEach(async () => {
-    const { authService, userService } =
-      await import("@nhatnang/database/services");
-    const { getTranslations: nextGetTranslations } =
-      await import("next-intl/server");
-
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    mockRegister = authService.register as Mock<typeof authService.register>;
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    mockCheckDuplicateUser = userService.checkDuplicateUser as Mock<
-      typeof userService.checkDuplicateUser
-    >;
-    mockGetTranslations = nextGetTranslations as Mock<
-      typeof nextGetTranslations
-    >;
-
-    mockRegister.mockReset();
-    mockCheckDuplicateUser.mockReset();
-    mockCheckDuplicateUser.mockResolvedValue(undefined);
-    mockGetTranslations.mockReset();
-    mockGetTranslations.mockResolvedValue(
-      ((key: string) => `translated.${key}`) as unknown as Awaited<
-        ReturnType<typeof getTranslations>
-      >,
-    );
-  });
-
-  // ── Validation: basic fields ────────────────────────────────────────────
+  // ── Validation: Required Fields ──────────────────────────────────────────
 
   it("returns VALIDATION_ERROR when name is too short", async () => {
-    const result = (await registerAction({
-      ...validEndUser,
-      name: "A",
-    })) as RegisterActionResult;
-
-    const validationResult = assertValidationError(result);
-    expect(validationResult.fieldErrors["name"]).toBeDefined();
-    expect(validationResult.fieldErrors["name"]!.length).toBeGreaterThan(0);
-    expect(mockCheckDuplicateUser).not.toHaveBeenCalled();
-    expect(mockRegister).not.toHaveBeenCalled();
+    const registerSpy = spyOn(authService, "register");
+    const result = await registerAction({ ...validEndUser, name: "A" });
+    const { fieldErrors } = assertValidationError(result);
+    expect(fieldErrors["name"]).toBeDefined();
+    expect(registerSpy).not.toHaveBeenCalled();
+    registerSpy.mockRestore();
   });
 
   it("returns VALIDATION_ERROR when email format is invalid", async () => {
-    const result = (await registerAction({
+    const registerSpy = spyOn(authService, "register");
+    const result = await registerAction({
       ...validEndUser,
-      email: "xxx",
-    })) as RegisterActionResult;
-
-    const validationResult = assertValidationError(result);
-    expect(validationResult.fieldErrors["email"]).toBeDefined();
-    expect(mockCheckDuplicateUser).not.toHaveBeenCalled();
+      email: "invalid-email",
+    });
+    const { fieldErrors } = assertValidationError(result);
+    expect(fieldErrors["email"]).toBeDefined();
+    expect(registerSpy).not.toHaveBeenCalled();
+    registerSpy.mockRestore();
   });
 
   it("returns VALIDATION_ERROR when phone has fewer than 10 characters", async () => {
-    const result = (await registerAction({
+    const registerSpy = spyOn(authService, "register");
+    const result = await registerAction({
       ...validEndUser,
-      phone: "0901",
-    })) as RegisterActionResult;
-
-    const validationResult = assertValidationError(result);
-    expect(validationResult.fieldErrors["phone"]).toBeDefined();
+      phone: "123456789",
+    });
+    const { fieldErrors } = assertValidationError(result);
+    expect(fieldErrors["phone"]).toBeDefined();
+    expect(registerSpy).not.toHaveBeenCalled();
+    registerSpy.mockRestore();
   });
 
   it("returns VALIDATION_ERROR when password is shorter than 6 characters", async () => {
-    const result = (await registerAction({
+    const registerSpy = spyOn(authService, "register");
+    const result = await registerAction({
       ...validEndUser,
-      password: "12345",
-      confirmPassword: "12345",
-    })) as RegisterActionResult;
-
-    const validationResult = assertValidationError(result);
-    expect(validationResult.fieldErrors["password"]).toBeDefined();
+      password: "123",
+      confirmPassword: "123",
+    });
+    const { fieldErrors } = assertValidationError(result);
+    expect(fieldErrors["password"]).toBeDefined();
+    expect(registerSpy).not.toHaveBeenCalled();
+    registerSpy.mockRestore();
   });
 
   it("returns VALIDATION_ERROR when confirmPassword does not match password", async () => {
-    const result = (await registerAction({
+    const registerSpy = spyOn(authService, "register");
+    const result = await registerAction({
       ...validEndUser,
-      confirmPassword: "wrong-password",
-    })) as RegisterActionResult;
-
-    const validationResult = assertValidationError(result);
-    expect(validationResult.fieldErrors["confirmPassword"]).toBeDefined();
+      password: "password123",
+      confirmPassword: "differentPassword456",
+    });
+    const { fieldErrors } = assertValidationError(result);
+    expect(fieldErrors["confirmPassword"]).toBeDefined();
+    expect(registerSpy).not.toHaveBeenCalled();
+    registerSpy.mockRestore();
   });
 
   it("returns VALIDATION_ERROR when agreeTerms is false", async () => {
-    const result = (await registerAction({
+    const registerSpy = spyOn(authService, "register");
+    const result = await registerAction({
       ...validEndUser,
       agreeTerms: false,
-    })) as RegisterActionResult;
-
-    const validationResult = assertValidationError(result);
-    expect(validationResult.fieldErrors["agreeTerms"]).toBeDefined();
+    });
+    const { fieldErrors } = assertValidationError(result);
+    expect(fieldErrors["agreeTerms"]).toBeDefined();
+    expect(registerSpy).not.toHaveBeenCalled();
+    registerSpy.mockRestore();
   });
 
-  // ── Validation: business customer conditional fields ────────────────────
+  // ── Validation: Conditional Dealer Fields (superRefine) ──────────────────
 
   it("returns VALIDATION_ERROR when dealer has no companyName", async () => {
-    const result = (await registerAction({
+    const registerSpy = spyOn(authService, "register");
+    const result = await registerAction({
       ...validDealer,
       companyName: undefined,
-    })) as RegisterActionResult;
-
-    const validationResult = assertValidationError(result);
-    expect(validationResult.fieldErrors["companyName"]).toBeDefined();
+    });
+    const { fieldErrors } = assertValidationError(result);
+    expect(fieldErrors["companyName"]).toBeDefined();
+    expect(registerSpy).not.toHaveBeenCalled();
+    registerSpy.mockRestore();
   });
 
   it("returns VALIDATION_ERROR when dealer has no taxId", async () => {
-    const result = (await registerAction({
-      ...validDealer,
-      taxId: undefined,
-    })) as RegisterActionResult;
-
-    const validationResult = assertValidationError(result);
-    expect(validationResult.fieldErrors["taxId"]).toBeDefined();
+    const registerSpy = spyOn(authService, "register");
+    const result = await registerAction({ ...validDealer, taxId: undefined });
+    const { fieldErrors } = assertValidationError(result);
+    expect(fieldErrors["taxId"]).toBeDefined();
+    expect(registerSpy).not.toHaveBeenCalled();
+    registerSpy.mockRestore();
   });
 
   it("returns VALIDATION_ERROR when dealer has no province", async () => {
-    const result = (await registerAction({
+    const registerSpy = spyOn(authService, "register");
+    const result = await registerAction({
       ...validDealer,
       province: undefined,
-    })) as RegisterActionResult;
-
-    const validationResult = assertValidationError(result);
-    expect(validationResult.fieldErrors["province"]).toBeDefined();
+    });
+    const { fieldErrors } = assertValidationError(result);
+    expect(fieldErrors["province"]).toBeDefined();
+    expect(registerSpy).not.toHaveBeenCalled();
+    registerSpy.mockRestore();
   });
 
-  // ── Duplicate user detection ────────────────────────────────────────────
+  // ── Duplicate Checks ────────────────────────────────────────────────────
 
   it("returns EMAIL_ALREADY_EXISTS when email is duplicate", async () => {
-    mockCheckDuplicateUser.mockResolvedValue({
+    const registerSpy = spyOn(authService, "register");
+    const checkDuplicateSpy = spyOn(
+      userService,
+      "checkDuplicateUser",
+    ).mockResolvedValue({
       email: validEndUser.email,
       phone: "0999999999",
     });
 
-    const result = (await registerAction(
-      validEndUser,
-    )) as ValidationErrorResult;
+    const result = await registerAction(validEndUser);
+    const { fieldErrors } = assertValidationError(result);
 
-    expect(result.success).toBe(false);
-    expect(result.fieldErrors["email"]).toContain(
+    expect(fieldErrors["email"]).toContain(
       AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS,
     );
-    expect(result.fieldErrors["phone"]).toBeUndefined();
-    expect(mockRegister).not.toHaveBeenCalled();
+    expect(fieldErrors["phone"]).toBeUndefined();
+    expect(registerSpy).not.toHaveBeenCalled();
+
+    registerSpy.mockRestore();
+    checkDuplicateSpy.mockRestore();
   });
 
   it("returns PHONE_ALREADY_EXISTS when phone is duplicate", async () => {
-    mockCheckDuplicateUser.mockResolvedValue({
+    const registerSpy = spyOn(authService, "register");
+    const checkDuplicateSpy = spyOn(
+      userService,
+      "checkDuplicateUser",
+    ).mockResolvedValue({
       email: "other@example.com",
       phone: validEndUser.phone,
     });
 
-    const result = (await registerAction(
-      validEndUser,
-    )) as ValidationErrorResult;
+    const result = await registerAction(validEndUser);
+    const { fieldErrors } = assertValidationError(result);
 
-    expect(result.success).toBe(false);
-    expect(result.fieldErrors["phone"]).toContain(
+    expect(fieldErrors["phone"]).toContain(
       AUTH_ERROR_CODES.PHONE_ALREADY_EXISTS,
     );
-    expect(result.fieldErrors["email"]).toBeUndefined();
-    expect(mockRegister).not.toHaveBeenCalled();
+    expect(fieldErrors["email"]).toBeUndefined();
+    expect(registerSpy).not.toHaveBeenCalled();
+
+    registerSpy.mockRestore();
+    checkDuplicateSpy.mockRestore();
   });
 
   it("returns both field errors when email and phone are duplicate", async () => {
-    mockCheckDuplicateUser.mockResolvedValue({
+    const registerSpy = spyOn(authService, "register");
+    const checkDuplicateSpy = spyOn(
+      userService,
+      "checkDuplicateUser",
+    ).mockResolvedValue({
       email: validEndUser.email,
       phone: validEndUser.phone,
     });
 
-    const result = (await registerAction(
-      validEndUser,
-    )) as ValidationErrorResult;
+    const result = await registerAction(validEndUser);
+    const { fieldErrors } = assertValidationError(result);
 
-    expect(result.success).toBe(false);
-    expect(result.fieldErrors["email"]).toContain(
+    expect(fieldErrors["email"]).toContain(
       AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS,
     );
-    expect(result.fieldErrors["phone"]).toContain(
+    expect(fieldErrors["phone"]).toContain(
       AUTH_ERROR_CODES.PHONE_ALREADY_EXISTS,
     );
-    expect(mockRegister).not.toHaveBeenCalled();
+    expect(registerSpy).not.toHaveBeenCalled();
+
+    registerSpy.mockRestore();
+    checkDuplicateSpy.mockRestore();
   });
 
   // ── Service delegation ──────────────────────────────────────────────────
 
   it("delegates to authService.register with validated data when no duplicate", async () => {
-    const serviceResult = { userId: "user-new" };
-    mockRegister.mockResolvedValue(serviceResult);
+    const registerSpy = spyOn(authService, "register").mockResolvedValue({
+      userId: "user-new",
+    });
+    const checkDuplicateSpy = spyOn(
+      userService,
+      "checkDuplicateUser",
+    ).mockResolvedValue(undefined);
 
     await registerAction(validEndUser);
 
-    expect(mockCheckDuplicateUser).toHaveBeenCalledWith(
+    expect(checkDuplicateSpy).toHaveBeenCalledWith(
       validEndUser.email,
       validEndUser.phone,
     );
-    expect(mockRegister).toHaveBeenCalledTimes(1);
+    expect(registerSpy).toHaveBeenCalledTimes(1);
 
-    const calledWith = mockRegister.mock.calls[0] as unknown[];
+    const calledWith = registerSpy.mock.calls[0] as unknown[];
     const calledData = calledWith[0] as Record<string, unknown>;
     expect(calledData["email"]).toBe(validEndUser.email);
     expect(calledData["name"]).toBe(validEndUser.name);
     expect(calledData["phone"]).toBe(validEndUser.phone);
     expect(calledData["businessType"]).toBe(validEndUser.businessType);
+
+    registerSpy.mockRestore();
+    checkDuplicateSpy.mockRestore();
   });
 
   it("returns success result from authService", async () => {
-    const serviceResult = { userId: "user-789" };
-    mockRegister.mockResolvedValue(serviceResult);
+    const registerSpy = spyOn(authService, "register").mockResolvedValue({
+      userId: "user-789",
+    });
+    const checkDuplicateSpy = spyOn(
+      userService,
+      "checkDuplicateUser",
+    ).mockResolvedValue(undefined);
 
-    const result = (await registerAction(validEndUser)) as ActionSuccessResult;
+    const result = await registerAction(validEndUser);
 
     expect(result.success).toBe(true);
 
-    if (!result.success) {
+    if (!result.success || !("data" in result)) {
       throw new Error("Expected registerAction to succeed");
     }
 
     expect(result.data.userId).toBe("user-789");
+
+    registerSpy.mockRestore();
+    checkDuplicateSpy.mockRestore();
   });
 
   it("forwards error result from authService", async () => {
-    mockRegister.mockRejectedValue(new Error("errors.INTERNAL_SERVER_ERROR"));
+    const registerSpy = spyOn(authService, "register").mockRejectedValue(
+      new Error("errors.INTERNAL_SERVER_ERROR"),
+    );
+    const checkDuplicateSpy = spyOn(
+      userService,
+      "checkDuplicateUser",
+    ).mockResolvedValue(undefined);
 
     const result = (await registerAction(validEndUser)) as ActionResult;
 
@@ -308,6 +292,9 @@ describe("registerAction", () => {
       throw new Error("Expected registerAction to fail");
     }
 
-    expect(result.error).toBe("translated.INTERNAL_SERVER_ERROR");
+    expect(result.error).toBe("INTERNAL_SERVER_ERROR");
+
+    registerSpy.mockRestore();
+    checkDuplicateSpy.mockRestore();
   });
 });

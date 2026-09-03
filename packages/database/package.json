@@ -34,7 +34,8 @@
     "docs:gen": "bun run scripts/generate-docs.ts",
     "lint": "eslint . --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
-    "test": "doppler run -- bun test src/"
+    "test": "bun test src/ --bail",
+    "test:integration": "doppler run -- bun test test/integration/"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.7.2",

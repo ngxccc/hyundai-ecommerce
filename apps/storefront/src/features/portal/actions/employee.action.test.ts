@@ -1,14 +1,9 @@
-import { beforeEach, describe, expect, it, type Mock } from "bun:test";
+import { beforeEach, describe, expect, it, spyOn } from "bun:test";
 import type { UserProfileDTO } from "@nhatnang/database/dtos";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
-import type { getTranslations } from "next-intl/server";
-
-import {
-  mockAuthCreateEmployee,
-  mockUserListEmployees,
-  mockAuthGetSession,
-  mockUserCheckDuplicateUser,
-} from "@nhatnang/shared/testing/action-mocks";
+import { authService, userService } from "@nhatnang/database/services";
+import { mockAuthGetSession } from "@nhatnang/shared/testing/action-mocks";
+import { listEmployeesAction, createEmployeeAction } from "./employee.action";
 
 interface ActionFailure {
   success: false;
@@ -17,40 +12,21 @@ interface ActionFailure {
   fieldErrors?: Record<string, string[]>;
 }
 
-// Bun module mocks require dynamic imports to resolve correctly at load time
-const { listEmployeesAction, createEmployeeAction } =
-  await import("./employee.action");
-
 describe("employeeAction", () => {
-  let mockGetTranslations: Mock<typeof getTranslations>;
-
-  beforeEach(async () => {
-    const { getTranslations: nextGetTranslations } =
-      await import("next-intl/server");
-    mockGetTranslations = nextGetTranslations as Mock<
-      typeof nextGetTranslations
-    >;
-
+  beforeEach(() => {
     mockAuthGetSession.mockReset();
-    mockAuthCreateEmployee.mockReset();
-    mockUserListEmployees.mockReset();
-    mockUserCheckDuplicateUser.mockReset();
-    mockGetTranslations.mockReset();
-    mockGetTranslations.mockResolvedValue(
-      ((key: string) => `translated.${key}`) as unknown as Awaited<
-        ReturnType<typeof getTranslations>
-      >,
-    );
   });
 
   describe("listEmployeesAction", () => {
     it("returns unauthorized if user is not logged in", async () => {
+      const listEmployeesSpy = spyOn(userService, "listEmployees");
       mockAuthGetSession.mockResolvedValue(null);
 
       const result = await listEmployeesAction();
       expect(result.success).toBe(false);
-      expect(result.error).toBe("translated.unauthorized");
-      expect(mockUserListEmployees).not.toHaveBeenCalled();
+      expect(result.error).toBe("unauthorized");
+      expect(listEmployeesSpy).not.toHaveBeenCalled();
+      listEmployeesSpy.mockRestore();
     });
 
     it("returns unauthorized if user is not DEALER_APPROVER", async () => {
@@ -60,10 +36,11 @@ describe("employeeAction", () => {
 
       const result = await listEmployeesAction();
       expect(result.success).toBe(false);
-      expect(result.error).toBe("translated.unauthorized");
+      expect(result.error).toBe("unauthorized");
     });
 
     it("returns employees list successfully for DEALER_APPROVER", async () => {
+      const listEmployeesSpy = spyOn(userService, "listEmployees");
       mockAuthGetSession.mockResolvedValue({
         user: { id: "user-1", role: "DEALER_APPROVER" },
       });
@@ -81,12 +58,13 @@ describe("employeeAction", () => {
           parentId: "user-1",
         },
       ];
-      mockUserListEmployees.mockResolvedValue(mockEmployees);
+      listEmployeesSpy.mockResolvedValue(mockEmployees);
 
       const result = await listEmployeesAction();
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockEmployees);
-      expect(mockUserListEmployees).toHaveBeenCalledWith("user-1");
+      expect(listEmployeesSpy).toHaveBeenCalledWith("user-1");
+      listEmployeesSpy.mockRestore();
     });
   });
 
@@ -104,7 +82,7 @@ describe("employeeAction", () => {
 
       const result = await createEmployeeAction(validForm);
       expect(result.success).toBe(false);
-      expect(result.error).toBe("translated.unauthorized");
+      expect(result.error).toBe("unauthorized");
     });
 
     it("returns validation error when form is invalid", async () => {
@@ -121,12 +99,16 @@ describe("employeeAction", () => {
     });
 
     it("returns VALIDATION_ERROR when email already exists", async () => {
-      mockAuthGetSession.mockResolvedValue({
-        user: { id: "user-1", role: "DEALER_APPROVER" },
-      });
-      mockUserCheckDuplicateUser.mockResolvedValue({
+      const checkDuplicateSpy = spyOn(
+        userService,
+        "checkDuplicateUser",
+      ).mockResolvedValue({
         email: "new_emp@test.com",
         phone: null,
+      });
+
+      mockAuthGetSession.mockResolvedValue({
+        user: { id: "user-1", role: "DEALER_APPROVER" },
       });
 
       const result = await createEmployeeAction(validForm);
@@ -135,24 +117,34 @@ describe("employeeAction", () => {
       expect((result as ActionFailure).fieldErrors?.["email"]).toContain(
         AUTH_ERROR_CODES.EMAIL_ALREADY_EXISTS,
       );
+      checkDuplicateSpy.mockRestore();
     });
 
     it("creates employee successfully", async () => {
+      const checkDuplicateSpy = spyOn(
+        userService,
+        "checkDuplicateUser",
+      ).mockResolvedValue(undefined);
+      const createEmployeeSpy = spyOn(
+        authService,
+        "createEmployee",
+      ).mockResolvedValue({ userId: "emp-2" });
+
       mockAuthGetSession.mockResolvedValue({
         user: { id: "user-1", role: "DEALER_APPROVER" },
       });
-      mockUserCheckDuplicateUser.mockResolvedValue(undefined);
-      mockAuthCreateEmployee.mockResolvedValue({ userId: "emp-2" });
 
       const result = await createEmployeeAction(validForm);
       expect(result.success).toBe(true);
-      expect(mockAuthCreateEmployee).toHaveBeenCalledWith(
+      expect(createEmployeeSpy).toHaveBeenCalledWith(
         expect.objectContaining({
           name: "New Employee",
           email: "new_emp@test.com",
         }),
         "user-1",
       );
+      checkDuplicateSpy.mockRestore();
+      createEmployeeSpy.mockRestore();
     });
   });
 });

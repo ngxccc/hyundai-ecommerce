@@ -1,12 +1,12 @@
 import { expect, test, describe, beforeAll, afterAll } from "bun:test";
 import { Pool as NeonPool } from "@neondatabase/serverless";
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
-import { env } from "../../env";
-import * as schema from "../../schemas";
-import { DbOrderService } from "./order.service";
-import { orders, products, orderItems, users } from "../../schemas";
+import { env } from "../../src/env";
+import * as schema from "../../src/schemas";
+import { DbOrderService } from "../../src/services/order/order.service";
+import { orders, products, orderItems, users } from "../../src/schemas";
 import { eq } from "drizzle-orm";
-import type { IDatabase } from "../../client";
+import type { IDatabase } from "../../src/client";
 
 describe("OrderService Concurrency (Race Condition) Integration Test", () => {
   let orderService: DbOrderService;
@@ -41,7 +41,6 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
         email: testUserEmail,
         phone: testUserPhone,
         role: "CUSTOMER",
-        businessType: "END_USER",
       })
       .returning();
     if (!user) {
@@ -53,11 +52,11 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
     const [product] = await integrationDb
       .insert(products)
       .values({
-        nameVi: "Test Product Race Condition",
+        nameVi: "Test Product Concurrency",
         slug: testProductSlug,
         price: "100000",
         totalStockCache: 100,
-        totalSalesCache: 0,
+        isQuoteOnly: false,
       })
       .returning();
     if (!product) {
@@ -71,22 +70,24 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
         .insert(orders)
         .values({
           userId: testUserId,
+          totalAmount: "200000",
+          shippingAddress: "Test Address",
+          shippingFee: "0",
           status: "PENDING",
-          shippingFee: "20000",
-          shippingAddress: "Hanoi, Vietnam",
-          totalAmount: "220000",
         })
         .returning();
       if (!order) {
-        throw new Error(`Failed to insert test order ${i}: order is undefined`);
+        throw new Error(
+          `Failed to insert test order index ${i}: order is undefined`,
+        );
       }
       orderIds.push(order.id);
 
       await integrationDb.insert(orderItems).values({
         orderId: order.id,
         productId: testProductId,
-        productName: "Test Product Race Condition",
-        productSku: `TEST-SKU-${i}-${uniqueSuffix}`,
+        productName: "Test Product Concurrency",
+        productSku: `SKU-${uniqueSuffix}`,
         quantity: 2,
         unitPrice: "100000",
       });
@@ -94,42 +95,46 @@ describe("OrderService Concurrency (Race Condition) Integration Test", () => {
   }, 30000);
 
   afterAll(async () => {
-    // Clean up created test data in reverse dependency order
-    for (const orderId of orderIds) {
-      await integrationDb
-        .delete(orderItems)
-        .where(eq(orderItems.orderId, orderId));
-      await integrationDb.delete(orders).where(eq(orders.id, orderId));
-    }
-    if (testProductId) {
-      await integrationDb
-        .delete(products)
-        .where(eq(products.id, testProductId));
-    }
-    if (testUserId) {
-      await integrationDb.delete(users).where(eq(users.id, testUserId));
-    }
-    if (pool) {
-      await pool.end();
+    try {
+      if (integrationDb) {
+        // Cleanup test data in reverse order of foreign keys
+        for (const orderId of orderIds) {
+          await integrationDb
+            .delete(orderItems)
+            .where(eq(orderItems.orderId, orderId));
+          await integrationDb.delete(orders).where(eq(orders.id, orderId));
+        }
+        if (testProductId) {
+          await integrationDb
+            .delete(products)
+            .where(eq(products.id, testProductId));
+        }
+        if (testUserId) {
+          await integrationDb.delete(users).where(eq(users.id, testUserId));
+        }
+      }
+    } finally {
+      if (pool) {
+        await pool.end();
+      }
     }
   }, 30000);
 
   test("Should increment totalSalesCache concurrently without lost updates", async () => {
-    // Trigger 5 concurrent updates (PENDING -> PROCESSING) in parallel
-    await Promise.all(
-      orderIds.map((orderId) =>
-        orderService.updateOrderStatus(orderId, "PROCESSING"),
-      ),
+    // Act: Transition all 5 orders from PENDING -> PROCESSING concurrently
+    const transitions = orderIds.map((orderId) =>
+      orderService.updateOrderStatus(orderId, "PROCESSING"),
     );
 
-    // Fetch product to assert final sales count
-    const updatedProduct = await integrationDb.query.products.findFirst({
-      where: {
-        id: testProductId,
-      },
-    });
+    await Promise.all(transitions);
 
-    // Total sales count should be exactly 5 orders * 2 quantity = 10
+    // Assert: Check the updated product's totalSalesCache
+    const [updatedProduct] = await integrationDb
+      .select({ totalSalesCache: products.totalSalesCache })
+      .from(products)
+      .where(eq(products.id, testProductId));
+
+    // 5 orders * 2 quantity = 10 sales
     expect(updatedProduct?.totalSalesCache).toBe(10);
   }, 30000);
 });

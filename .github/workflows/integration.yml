@@ -28,5 +28,5 @@ jobs:
         working-directory: packages/database
         run: bun run db:migrate
 
-      - name: Run Monorepo Pipeline (Lint, Typecheck, Test, Build)
-        run: bun turbo run lint check-types test build
+      - name: Run Monorepo Pipeline
+        run: bun turbo run lint check-types test test:integration build

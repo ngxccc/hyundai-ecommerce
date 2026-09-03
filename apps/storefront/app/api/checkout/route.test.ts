@@ -1,21 +1,53 @@
-import { describe, expect, it, vi, beforeEach } from "bun:test";
+import {
+  describe,
+  expect,
+  it,
+  vi,
+  beforeEach,
+  afterEach,
+  spyOn,
+  type Mock,
+} from "bun:test";
 import {
   mockAuthGetSession,
-  mockCartGetOrCreateCart,
-  mockCartGetCartItems,
-  mockOrderCreateOrderWithItems,
-  mockOrderCreatePayment,
-  mockOrderCreatePaymentTransaction,
   mockCheckRateLimitWithQueue,
-  mockOrderCheckoutWithTradeCredit,
 } from "@nhatnang/shared/testing/action-mocks";
+import {
+  cartService,
+  orderService,
+  paymentService,
+  type CartService,
+  type OrderService,
+  type PaymentService,
+} from "@nhatnang/database/services";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
+import { POST } from "./route";
 
-// Static import cannot work here because we must register mock.module first before importing the route handler.
-const { POST } = await import("./route");
 describe("POST /api/checkout", () => {
+  let getOrCreateCartSpy: Mock<CartService["getOrCreateCart"]>;
+  let getCartItemsSpy: Mock<CartService["getCartItems"]>;
+  let createOrderSpy: Mock<OrderService["createOrderWithItems"]>;
+  let createPaymentSpy: Mock<PaymentService["createPayment"]>;
+  let createTxSpy: Mock<PaymentService["createPaymentTransaction"]>;
+  let checkoutCreditSpy: Mock<OrderService["checkoutWithTradeCredit"]>;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    getOrCreateCartSpy = spyOn(cartService, "getOrCreateCart");
+    getCartItemsSpy = spyOn(cartService, "getCartItems");
+    createOrderSpy = spyOn(orderService, "createOrderWithItems");
+    createPaymentSpy = spyOn(paymentService, "createPayment");
+    createTxSpy = spyOn(paymentService, "createPaymentTransaction");
+    checkoutCreditSpy = spyOn(orderService, "checkoutWithTradeCredit");
+  });
+
+  afterEach(() => {
+    getOrCreateCartSpy.mockRestore();
+    getCartItemsSpy.mockRestore();
+    createOrderSpy.mockRestore();
+    createPaymentSpy.mockRestore();
+    createTxSpy.mockRestore();
+    checkoutCreditSpy.mockRestore();
   });
 
   const validBody = {
@@ -23,6 +55,16 @@ describe("POST /api/checkout", () => {
     paymentMethod: "PAYOS",
     paymentOption: "DEPOSIT",
     shippingFee: 50000,
+  };
+
+  const mockCartProduct = {
+    id: "prod-1",
+    nameVi: "Generator 2000W",
+    nameEn: null,
+    slug: "generator-2000w",
+    price: "10000000",
+    images: [],
+    totalStockCache: 10,
   };
 
   it("returns 429 when rate limit exceeded", async () => {
@@ -62,7 +104,7 @@ describe("POST /api/checkout", () => {
 
     const request = new Request("http://localhost/api/checkout", {
       method: "POST",
-      body: JSON.stringify({ shippingAddress: "" }),
+      body: JSON.stringify({}),
     });
 
     const response = await POST(request);
@@ -75,8 +117,8 @@ describe("POST /api/checkout", () => {
 
   it("returns 400 when cart is empty", async () => {
     mockAuthGetSession.mockResolvedValue({ user: { id: "user-123" } });
-    mockCartGetOrCreateCart.mockResolvedValue({ id: "cart-123" });
-    mockCartGetCartItems.mockResolvedValue([]);
+    getOrCreateCartSpy.mockResolvedValue({ id: "cart-123" });
+    getCartItemsSpy.mockResolvedValue([]);
 
     const request = new Request("http://localhost/api/checkout", {
       method: "POST",
@@ -93,24 +135,19 @@ describe("POST /api/checkout", () => {
 
   it("creates order and returns mock PayOS checkout URL on success", async () => {
     mockAuthGetSession.mockResolvedValue({ user: { id: "user-123" } });
-    mockCartGetOrCreateCart.mockResolvedValue({ id: "cart-123" });
-    mockCartGetCartItems.mockResolvedValue([
+    getOrCreateCartSpy.mockResolvedValue({ id: "cart-123" });
+    getCartItemsSpy.mockResolvedValue([
       {
         id: "item-1",
         productId: "prod-1",
         quantity: 2,
-        product: {
-          id: "prod-1",
-          nameVi: "Generator 2000W",
-          slug: "generator-2000w",
-          price: "10000000",
-        },
+        product: mockCartProduct,
       },
     ]);
 
-    mockOrderCreateOrderWithItems.mockResolvedValue({ id: "order-123" });
-    mockOrderCreatePayment.mockResolvedValue({ id: "payment-123" });
-    mockOrderCreatePaymentTransaction.mockResolvedValue({ id: "tx-123" });
+    createOrderSpy.mockResolvedValue({ id: "order-123" });
+    createPaymentSpy.mockResolvedValue({ id: "payment-123" });
+    createTxSpy.mockResolvedValue({ id: "tx-123" });
 
     const request = new Request("http://localhost/api/checkout", {
       method: "POST",
@@ -130,9 +167,9 @@ describe("POST /api/checkout", () => {
     const isPay = json.data.checkoutUrl.includes("/checkout/pay");
     const isReal = json.data.checkoutUrl.includes("payos.vn");
     expect(isMock || isPay || isReal).toBe(true);
-    expect(mockOrderCreateOrderWithItems).toHaveBeenCalled();
-    expect(mockOrderCreatePayment).toHaveBeenCalled();
-    expect(mockOrderCreatePaymentTransaction).toHaveBeenCalled();
+    expect(createOrderSpy).toHaveBeenCalled();
+    expect(createPaymentSpy).toHaveBeenCalled();
+    expect(createTxSpy).toHaveBeenCalled();
   });
 
   it("returns 400 when payment method is invalid", async () => {
@@ -142,7 +179,7 @@ describe("POST /api/checkout", () => {
       method: "POST",
       body: JSON.stringify({
         ...validBody,
-        paymentMethod: "STRIPE", // invalid
+        paymentMethod: "STRIPE",
       }),
     });
 
@@ -161,7 +198,7 @@ describe("POST /api/checkout", () => {
       method: "POST",
       body: JSON.stringify({
         ...validBody,
-        paymentOption: "INVALID", // invalid
+        paymentOption: "INVALID",
       }),
     });
 
@@ -175,13 +212,13 @@ describe("POST /api/checkout", () => {
 
   it("returns 400 when cart item has no product", async () => {
     mockAuthGetSession.mockResolvedValue({ user: { id: "user-123" } });
-    mockCartGetOrCreateCart.mockResolvedValue({ id: "cart-123" });
-    mockCartGetCartItems.mockResolvedValue([
+    getOrCreateCartSpy.mockResolvedValue({ id: "cart-123" });
+    getCartItemsSpy.mockResolvedValue([
       {
         id: "item-1",
         productId: "prod-1",
         quantity: 2,
-        product: null, // missing product (e.g. hard deleted)
+        product: null,
       },
     ]);
 
@@ -200,29 +237,25 @@ describe("POST /api/checkout", () => {
 
   it("creates order and returns success redirect URL for CASH on success", async () => {
     mockAuthGetSession.mockResolvedValue({ user: { id: "user-123" } });
-    mockCartGetOrCreateCart.mockResolvedValue({ id: "cart-123" });
-    mockCartGetCartItems.mockResolvedValue([
+    getOrCreateCartSpy.mockResolvedValue({ id: "cart-123" });
+    getCartItemsSpy.mockResolvedValue([
       {
         id: "item-1",
         productId: "prod-1",
         quantity: 2,
-        product: {
-          id: "prod-1",
-          nameVi: "Generator 2000W",
-          slug: "generator-2000w",
-          price: "10000000",
-        },
+        product: mockCartProduct,
       },
     ]);
 
-    mockOrderCreateOrderWithItems.mockResolvedValue({ id: "order-123" });
-    mockOrderCreatePayment.mockResolvedValue({ id: "payment-123" });
+    createOrderSpy.mockResolvedValue({ id: "order-123" });
+    createPaymentSpy.mockResolvedValue({ id: "payment-123" });
 
     const request = new Request("http://localhost/api/checkout", {
       method: "POST",
       body: JSON.stringify({
         ...validBody,
         paymentMethod: "CASH",
+        paymentOption: "FULL",
       }),
     });
 
@@ -238,8 +271,8 @@ describe("POST /api/checkout", () => {
     expect(json.data.checkoutUrl).toContain(
       "/checkout/success?orderId=order-123",
     );
-    expect(mockOrderCreateOrderWithItems).toHaveBeenCalled();
-    expect(mockOrderCreatePayment).toHaveBeenCalledWith({
+    expect(createOrderSpy).toHaveBeenCalled();
+    expect(createPaymentSpy).toHaveBeenCalledWith({
       orderId: "order-123",
       amount: "22000000",
       method: "CASH",
@@ -249,24 +282,17 @@ describe("POST /api/checkout", () => {
 
   it("returns 500 when createOrderWithItems throws database error", async () => {
     mockAuthGetSession.mockResolvedValue({ user: { id: "user-123" } });
-    mockCartGetOrCreateCart.mockResolvedValue({ id: "cart-123" });
-    mockCartGetCartItems.mockResolvedValue([
+    getOrCreateCartSpy.mockResolvedValue({ id: "cart-123" });
+    getCartItemsSpy.mockResolvedValue([
       {
         id: "item-1",
         productId: "prod-1",
         quantity: 2,
-        product: {
-          id: "prod-1",
-          nameVi: "Generator 2000W",
-          slug: "generator-2000w",
-          price: "10000000",
-        },
+        product: mockCartProduct,
       },
     ]);
 
-    mockOrderCreateOrderWithItems.mockRejectedValue(
-      new Error("Database transaction aborted"),
-    );
+    createOrderSpy.mockRejectedValue(new Error("Database transaction aborted"));
 
     const request = new Request("http://localhost/api/checkout", {
       method: "POST",
@@ -283,22 +309,17 @@ describe("POST /api/checkout", () => {
 
   it("returns 429 when Trade Credit checkout user lock acquisition fails", async () => {
     mockAuthGetSession.mockResolvedValue({ user: { id: "user-123" } });
-    mockCartGetOrCreateCart.mockResolvedValue({ id: "cart-123" });
-    mockCartGetCartItems.mockResolvedValue([
+    getOrCreateCartSpy.mockResolvedValue({ id: "cart-123" });
+    getCartItemsSpy.mockResolvedValue([
       {
         id: "item-1",
         productId: "prod-1",
         quantity: 2,
-        product: {
-          id: "prod-1",
-          nameVi: "Generator 2000W",
-          slug: "generator-2000w",
-          price: "10000000",
-        },
+        product: mockCartProduct,
       },
     ]);
 
-    mockOrderCheckoutWithTradeCredit.mockRejectedValue(
+    checkoutCreditSpy.mockRejectedValue(
       new Error("errors.lockAcquisitionFailed"),
     );
 
@@ -320,22 +341,17 @@ describe("POST /api/checkout", () => {
 
   it("returns 400 when Trade Credit checkout user has insufficient credit limit", async () => {
     mockAuthGetSession.mockResolvedValue({ user: { id: "user-123" } });
-    mockCartGetOrCreateCart.mockResolvedValue({ id: "cart-123" });
-    mockCartGetCartItems.mockResolvedValue([
+    getOrCreateCartSpy.mockResolvedValue({ id: "cart-123" });
+    getCartItemsSpy.mockResolvedValue([
       {
         id: "item-1",
         productId: "prod-1",
         quantity: 2,
-        product: {
-          id: "prod-1",
-          nameVi: "Generator 2000W",
-          slug: "generator-2000w",
-          price: "10000000",
-        },
+        product: mockCartProduct,
       },
     ]);
 
-    mockOrderCheckoutWithTradeCredit.mockRejectedValue(
+    checkoutCreditSpy.mockRejectedValue(
       new Error("errors.insufficientCreditLimit"),
     );
 
@@ -357,22 +373,17 @@ describe("POST /api/checkout", () => {
 
   it("creates B2B order successfully with Trade Credit and returns redirect URL", async () => {
     mockAuthGetSession.mockResolvedValue({ user: { id: "user-123" } });
-    mockCartGetOrCreateCart.mockResolvedValue({ id: "cart-123" });
-    mockCartGetCartItems.mockResolvedValue([
+    getOrCreateCartSpy.mockResolvedValue({ id: "cart-123" });
+    getCartItemsSpy.mockResolvedValue([
       {
         id: "item-1",
         productId: "prod-1",
         quantity: 2,
-        product: {
-          id: "prod-1",
-          nameVi: "Generator 2000W",
-          slug: "generator-2000w",
-          price: "10000000",
-        },
+        product: mockCartProduct,
       },
     ]);
 
-    mockOrderCheckoutWithTradeCredit.mockResolvedValue({ id: "order-999" });
+    checkoutCreditSpy.mockResolvedValue({ id: "order-999" });
 
     const request = new Request("http://localhost/api/checkout", {
       method: "POST",
@@ -394,7 +405,7 @@ describe("POST /api/checkout", () => {
     expect(json.data.checkoutUrl).toContain(
       "/checkout/success?orderId=order-999",
     );
-    expect(mockOrderCheckoutWithTradeCredit).toHaveBeenCalledWith(
+    expect(checkoutCreditSpy).toHaveBeenCalledWith(
       "user-123",
       expect.objectContaining({
         userId: "user-123",

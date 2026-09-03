@@ -3,7 +3,9 @@ import { NextRequest } from "next/server";
 import { GET, getBalancedDiv, resolveSuspenseStreaming } from "./route";
 import { env } from "@/env";
 
-const trustedOrigin = new URL(env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").origin;
+const trustedOrigin = new URL(
+  env.NEXT_PUBLIC_APP_URL || "http://127.0.0.1:3000",
+).origin;
 // Mock the global fetch function
 const originalFetch = global.fetch;
 
@@ -88,24 +90,32 @@ describe("Markdown Converter API", () => {
           status: 200,
           statusText: "OK",
           headers: { "Content-Type": "text/html" },
-        })
+        }),
       );
     }) as unknown as typeof fetch;
 
     try {
       // 1. First request (Cache MISS)
-      const req1 = new NextRequest("http://localhost:3000/api/markdown-converter?path=/test-page-cache");
+      const req1 = new NextRequest(
+        "http://localhost:3000/api/markdown-converter?path=/test-page-cache",
+      );
       const response1 = await GET(req1);
       expect(response1.status).toBe(200);
-      expect(response1.headers.get("Content-Type")).toBe("text/markdown; charset=utf-8");
-      expect(response1.headers.get("Cache-Control")).toBe("public, max-age=60, s-maxage=3600, stale-while-revalidate=600");
+      expect(response1.headers.get("Content-Type")).toBe(
+        "text/markdown; charset=utf-8",
+      );
+      expect(response1.headers.get("Cache-Control")).toBe(
+        "public, max-age=60, s-maxage=3600, stale-while-revalidate=600",
+      );
       expect(response1.headers.get("x-cache")).toBe("MISS");
 
       const bodyText1 = await response1.text();
       expect(bodyText1).toContain("# Hello World");
       expect(bodyText1).toContain(`[Products](${trustedOrigin}/products)`);
       // 2. Second request (Cache HIT)
-      const req2 = new NextRequest("http://localhost:3000/api/markdown-converter?path=/test-page-cache");
+      const req2 = new NextRequest(
+        "http://localhost:3000/api/markdown-converter?path=/test-page-cache",
+      );
       const response2 = await GET(req2);
       expect(response2.status).toBe(200);
       expect(response2.headers.get("x-cache")).toBe("HIT");
@@ -147,19 +157,23 @@ describe("Markdown Converter API", () => {
           status: 200,
           statusText: "OK",
           headers: { "Content-Type": "text/html" },
-        })
+        }),
       );
     }) as unknown as typeof fetch;
 
     try {
-      const req = new NextRequest("http://localhost:3000/api/markdown-converter?path=/test-suspense");
+      const req = new NextRequest(
+        "http://localhost:3000/api/markdown-converter?path=/test-suspense",
+      );
       const response = await GET(req);
       expect(response.status).toBe(200);
 
       const bodyText = await response.text();
-      
+
       expect(bodyText).toContain("# Real Products Catalog");
-      expect(bodyText).toContain(`[Hyundai 30CLE](${trustedOrigin}/products/hyundai-30cle)`);
+      expect(bodyText).toContain(
+        `[Hyundai 30CLE](${trustedOrigin}/products/hyundai-30cle)`,
+      );
       expect(bodyText).not.toContain("Fallback 1");
     } finally {
       global.fetch = originalFetch;
