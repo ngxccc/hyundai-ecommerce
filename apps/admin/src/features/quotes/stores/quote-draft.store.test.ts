@@ -23,6 +23,22 @@ const mockProduct: ProductDTO = {
   },
   totalStockCache: 5,
   isQuoteOnly: false,
+  productType: "generator",
+  powerKva: "5.50",
+  powerKw: "5.00",
+  standbyPowerKva: null,
+  standbyPowerKw: null,
+  phase: "1phase",
+  voltage: "230V",
+  frequency: 50,
+  fuelType: "diesel",
+  canopyType: "silent",
+  startMethod: "electric",
+  engineBrand: "Hyundai",
+  alternatorBrand: "Hyundai",
+  upsTopology: null,
+  upsBatteryType: null,
+  specSheet: [],
 };
 
 describe("QuoteDraftStore", () => {

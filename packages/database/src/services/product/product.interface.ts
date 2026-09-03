@@ -22,13 +22,16 @@ export interface GetAllOptions {
   brandIds?: string[] | undefined;
   status?: "active" | "outOfStock" | undefined;
   search?: string | undefined;
+  productType?: string | undefined;
   fuelType?: string | undefined;
   phase?: string | undefined;
-  voltage?: number | undefined;
+  voltage?: number | string | undefined;
   minPower?: number | undefined;
   maxPower?: number | undefined;
   engineBrand?: string | undefined;
   alternatorBrand?: string | undefined;
+  canopyType?: string | undefined;
+  upsTopology?: string | undefined;
   isQuoteOnly?: boolean | undefined;
   sort?: "priceAsc" | "priceDesc" | "newest" | undefined;
 }

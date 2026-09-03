@@ -11,6 +11,12 @@ import {
   quoteItems,
   quoteMessages,
 } from "../src/schemas/quotes.schema";
+import {
+  INDUSTRIAL_DIESEL_GENERATOR_TEMPLATE,
+  GASOLINE_PORTABLE_GENERATOR_TEMPLATE,
+  DIESEL_STANDBY_GENERATOR_TEMPLATE,
+  UPS_ONLINE_TEMPLATE,
+} from "@nhatnang/shared/constants";
 
 async function seed() {
   console.log("🌱 Seeding database...");
@@ -56,6 +62,9 @@ async function seed() {
   const parentCatId = "019de188-6756-735c-8639-3e1d67c3f6c5";
   const childCat1Id = "019de188-6756-735c-8639-42a4f367350b";
   const childCat2Id = "019de188-6756-735c-8639-44cdd56f6e88";
+  const upsParentCatId = "019de188-7777-7000-8000-000000000001";
+  const upsOnlineCatId = "019de188-7777-7000-8000-000000000002";
+  const upsOfflineCatId = "019de188-7777-7000-8000-000000000003";
 
   const categoryData = [
     {
@@ -92,15 +101,47 @@ async function seed() {
       image: null,
       isActive: true,
     },
+    {
+      id: upsParentCatId,
+      nameVi: "Bộ lưu điện (UPS)",
+      nameEn: "Uninterruptible Power Supply (UPS)",
+      slug: "bo-luu-dien-ups",
+      parentId: null,
+      descriptionVi: "Thiết bị lưu điện dự phòng cho server, y tế, viễn thông",
+      descriptionEn: "Backup power supply for servers, medical, and telecom",
+      image: null,
+      isActive: true,
+    },
+    {
+      id: upsOnlineCatId,
+      nameVi: "Bộ lưu điện Online",
+      nameEn: "Online UPS",
+      slug: "bo-luu-dien-online",
+      parentId: upsParentCatId,
+      descriptionVi: "UPS Online chuyển đổi kép sóng sin chuẩn 0ms",
+      descriptionEn: "Online double conversion UPS pure sine wave 0ms",
+      image: null,
+      isActive: true,
+    },
+    {
+      id: upsOfflineCatId,
+      nameVi: "Bộ lưu điện Offline",
+      nameEn: "Offline UPS",
+      slug: "bo-luu-dien-offline",
+      parentId: upsParentCatId,
+      descriptionVi: "UPS Offline cho máy tính văn phòng, camera",
+      descriptionEn: "Offline UPS for office PCs and cameras",
+      image: null,
+      isActive: true,
+    },
   ];
-
   await db.insert(categories).values(categoryData).onConflictDoNothing();
 
   // 3. Seed Products
   const product1Id = "019de188-6799-761e-bb91-7c6ecf6377d8";
   const product2Id = "019de188-6799-761e-bb91-825a77b45568";
   const product3Id = "019de188-6799-761e-bb91-84a024241fd3";
-
+  const product4Id = "019de188-6799-761e-bb91-99a024241fd4";
   const productData = [
     {
       id: product1Id,
@@ -141,6 +182,22 @@ async function seed() {
       images: ["https://cdn.example.com/hyundai-dhy-5000le-1.jpg"],
       brandId: hyundaiId,
       categoryId: childCat1Id,
+      productType: "generator" as const,
+      powerKva: "5.00",
+      powerKw: "4.00",
+      standbyPowerKva: "5.50",
+      standbyPowerKw: "4.40",
+      phase: "1phase" as const,
+      voltage: "230V",
+      frequency: 50,
+      fuelType: "diesel" as const,
+      canopyType: "silent" as const,
+      startMethod: "electric" as const,
+      engineBrand: "Hyundai",
+      alternatorBrand: "Hyundai",
+      upsTopology: null,
+      upsBatteryType: null,
+      specSheet: DIESEL_STANDBY_GENERATOR_TEMPLATE,
       specs: { power: 5, engine: "Diesel 186FA", weight: 95 },
       totalStockCache: 25,
       isQuoteOnly: false,
@@ -184,7 +241,23 @@ async function seed() {
       images: ["https://cdn.example.com/mitsubishi-mge-10000-1.jpg"],
       brandId: mitsubishiId,
       categoryId: childCat2Id,
-      specs: { power: 10, engine: "Mitsubishi S4S", weight: 185 },
+      productType: "generator" as const,
+      powerKva: "60.00",
+      powerKw: "48.00",
+      standbyPowerKva: "66.00",
+      standbyPowerKw: "52.80",
+      phase: "3phase" as const,
+      voltage: "230/400V",
+      frequency: 50,
+      fuelType: "diesel" as const,
+      canopyType: "silent" as const,
+      startMethod: "auto_ats" as const,
+      engineBrand: "Mitsubishi",
+      alternatorBrand: "Stamford",
+      upsTopology: null,
+      upsBatteryType: null,
+      specSheet: INDUSTRIAL_DIESEL_GENERATOR_TEMPLATE,
+      specs: { power: 60, engine: "Mitsubishi S4S", weight: 1130 },
       totalStockCache: 8,
       isQuoteOnly: false,
     },
@@ -227,8 +300,83 @@ async function seed() {
       images: ["https://cdn.example.com/kubota-gl-6500-1.jpg"],
       brandId: kubotaId,
       categoryId: childCat1Id,
+      productType: "generator" as const,
+      powerKva: "6.50",
+      powerKw: "5.50",
+      standbyPowerKva: "7.00",
+      standbyPowerKw: "6.00",
+      phase: "1phase" as const,
+      voltage: "230V",
+      frequency: 50,
+      fuelType: "gasoline" as const,
+      canopyType: "closed_case" as const,
+      startMethod: "electric" as const,
+      engineBrand: "Kubota",
+      alternatorBrand: "Kubota",
+      upsTopology: null,
+      upsBatteryType: null,
+      specSheet: GASOLINE_PORTABLE_GENERATOR_TEMPLATE,
       specs: { power: 6.5, engine: "Kubota Z482", weight: 112 },
       totalStockCache: 12,
+      isQuoteOnly: false,
+    },
+    {
+      id: product4Id,
+      nameVi: "Bộ lưu điện Online 10KVA Hyundai HD-10KS",
+      nameEn: "Hyundai HD-10KS 10kVA Online UPS",
+      slug: "bo-luu-dien-online-10kva-hyundai-hd-10ks",
+      price: "36990000",
+      descriptionVi: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Bộ lưu điện Hyundai 10KVA Online pin ngoài, thời gian trễ mạch 0 giây, giải quyết hiệu quả các sự cố về nguồn điện cho máy chủ CBS, Y tế.",
+              },
+            ],
+          },
+        ],
+      },
+      descriptionEn: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Hyundai 10kVA Online UPS external battery, 0ms transfer time, pure sine wave.",
+              },
+            ],
+          },
+        ],
+      },
+      shortDescriptionVi: "Bộ lưu điện Online 10KVA/9KW, pin ngoài",
+      shortDescriptionEn: "10kVA/9kW Online UPS, external battery",
+      images: ["https://cdn.example.com/hyundai-hd-10ks.jpg"],
+      brandId: hyundaiId,
+      categoryId: upsOnlineCatId,
+      productType: "ups" as const,
+      powerKva: "10.00",
+      powerKw: "9.00",
+      standbyPowerKva: "10.00",
+      standbyPowerKw: "9.00",
+      phase: "1phase" as const,
+      voltage: "220V",
+      frequency: 50,
+      fuelType: null,
+      canopyType: "tower" as const,
+      startMethod: null,
+      engineBrand: null,
+      alternatorBrand: null,
+      upsTopology: "online_double_conversion" as const,
+      upsBatteryType: "external" as const,
+      specSheet: UPS_ONLINE_TEMPLATE,
+      specs: { power: 10, voltage: 220, phase: "1phase" as const },
+      totalStockCache: 15,
       isQuoteOnly: false,
     },
   ];
@@ -287,6 +435,12 @@ async function seed() {
       productId: product3Id,
       stock: 12,
       minStockWarning: 4,
+    },
+    {
+      warehouseId: warehouse1Id,
+      productId: product4Id,
+      stock: 8,
+      minStockWarning: 2,
     },
   ];
 

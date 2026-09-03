@@ -18,61 +18,76 @@ import {
   or,
   gt,
   lt,
-  isNull,
+  gte,
   lte,
-  type SQL,
+  isNull,
+  ilike,
   inArray,
+  type SQL,
 } from "drizzle-orm";
+import type {
+  ProductType,
+  PowerPhase,
+  FuelType,
+  CanopyType,
+  UpsTopology,
+} from "@nhatnang/core";
 import { orderItems, orders } from "../../schemas";
+
+const productDtoColumns = {
+  id: products.id,
+  nameVi: products.nameVi,
+  nameEn: products.nameEn,
+  slug: products.slug,
+  price: products.price,
+  descriptionVi: products.descriptionVi,
+  descriptionEn: products.descriptionEn,
+  shortDescriptionVi: products.shortDescriptionVi,
+  shortDescriptionEn: products.shortDescriptionEn,
+  images: products.images,
+  brandId: products.brandId,
+  categoryId: products.categoryId,
+  productType: products.productType,
+  powerKva: products.powerKva,
+  powerKw: products.powerKw,
+  standbyPowerKva: products.standbyPowerKva,
+  standbyPowerKw: products.standbyPowerKw,
+  phase: products.phase,
+  voltage: products.voltage,
+  frequency: products.frequency,
+  fuelType: products.fuelType,
+  canopyType: products.canopyType,
+  startMethod: products.startMethod,
+  engineBrand: products.engineBrand,
+  alternatorBrand: products.alternatorBrand,
+  upsTopology: products.upsTopology,
+  upsBatteryType: products.upsBatteryType,
+  specSheet: products.specSheet,
+  specs: products.specs,
+  totalStockCache: products.totalStockCache,
+  isQuoteOnly: products.isQuoteOnly,
+};
 
 export class DbProductService implements ProductService {
   constructor(protected readonly db: IDatabase) {}
 
   async create(data: NewProduct): Promise<ProductDTO> {
-    const [newProduct] = await this.db.insert(products).values(data).returning({
-      id: products.id,
-      nameVi: products.nameVi,
-      nameEn: products.nameEn,
-      slug: products.slug,
-      price: products.price,
-      descriptionVi: products.descriptionVi,
-      descriptionEn: products.descriptionEn,
-      shortDescriptionVi: products.shortDescriptionVi,
-      shortDescriptionEn: products.shortDescriptionEn,
-      images: products.images,
-      brandId: products.brandId,
-      categoryId: products.categoryId,
-      specs: products.specs,
-      totalStockCache: products.totalStockCache,
-      isQuoteOnly: products.isQuoteOnly,
-    });
+    const [newProduct] = await this.db
+      .insert(products)
+      .values(data)
+      .returning(productDtoColumns);
     if (!newProduct) {
       throw new Error("errors.createProductFailed");
     }
     return newProduct;
   }
+
   async update(id: string, data: UpdateProductData): Promise<ProductDTO> {
     const [updatedProduct] = await this.db
       .update(products)
       .set(data)
       .where(eq(products.id, id))
-      .returning({
-        id: products.id,
-        nameVi: products.nameVi,
-        nameEn: products.nameEn,
-        slug: products.slug,
-        price: products.price,
-        descriptionVi: products.descriptionVi,
-        descriptionEn: products.descriptionEn,
-        shortDescriptionVi: products.shortDescriptionVi,
-        shortDescriptionEn: products.shortDescriptionEn,
-        images: products.images,
-        brandId: products.brandId,
-        categoryId: products.categoryId,
-        specs: products.specs,
-        totalStockCache: products.totalStockCache,
-        isQuoteOnly: products.isQuoteOnly,
-      });
+      .returning(productDtoColumns);
     if (!updatedProduct) {
       throw new Error("errors.productNotFound");
     }
@@ -89,43 +104,21 @@ export class DbProductService implements ProductService {
   }
 
   async getById(id: string): Promise<ProductDTO> {
-    const product = await this.db.query.products.findFirst({
-      where: {
-        id, // eq products.id == id
-        deletedAt: { isNull: true },
-      },
-      columns: {
-        id: true,
-        nameVi: true,
-        nameEn: true,
-        slug: true,
-        price: true,
-        descriptionVi: true,
-        descriptionEn: true,
-        shortDescriptionVi: true,
-        shortDescriptionEn: true,
-        images: true,
-        brandId: true,
-        categoryId: true,
-        specs: true,
-        totalStockCache: true,
-        isQuoteOnly: true,
-      },
-    });
+    const [product] = await this.db
+      .select(productDtoColumns)
+      .from(products)
+      .where(and(eq(products.id, id), isNull(products.deletedAt)))
+      .limit(1);
+
     if (!product) throw new Error("errors.productNotFound");
     return product;
   }
 
-  /**
-   * Fetches products page based on filters, sorting, and cursor pagination.
-   * Uses limit+1 to check if there is an additional page available.
-   */
   async getAll(limit = 20, options?: GetAllOptions) {
     const sort = options?.sort ?? "newest";
     const isGoingBack = !!options?.before;
     const filters = this.buildGetAllFilters(options);
 
-    // Build dynamic orderBy columns (using direct column references)
     let orderByColumns;
     if (sort === "priceAsc") {
       orderByColumns = isGoingBack
@@ -141,28 +134,11 @@ export class DbProductService implements ProductService {
         : [desc(products.createdAt), desc(products.id)];
     }
 
-    // Use the standard query builder (not the relational one) to support complex
-    // where conditions (inArray, raw SQL for JSONB specs, etc.) without triggering
-    // "Unknown relational filter field" errors from relationsFilterToSQL in Drizzle v1.
     const whereExpr = filters.length > 0 ? and(...filters) : undefined;
 
     const allProducts = await this.db
       .select({
-        id: products.id,
-        nameVi: products.nameVi,
-        nameEn: products.nameEn,
-        slug: products.slug,
-        price: products.price,
-        descriptionVi: products.descriptionVi,
-        descriptionEn: products.descriptionEn,
-        shortDescriptionVi: products.shortDescriptionVi,
-        shortDescriptionEn: products.shortDescriptionEn,
-        images: products.images,
-        brandId: products.brandId,
-        categoryId: products.categoryId,
-        specs: products.specs,
-        totalStockCache: products.totalStockCache,
-        isQuoteOnly: products.isQuoteOnly,
+        ...productDtoColumns,
         createdAt: products.createdAt,
       })
       .from(products)
@@ -207,23 +183,9 @@ export class DbProductService implements ProductService {
       }
     }
 
-    const mappedData = data.map((p) => ({
-      id: p.id,
-      nameVi: p.nameVi,
-      nameEn: p.nameEn,
-      slug: p.slug,
-      price: p.price,
-      descriptionVi: p.descriptionVi,
-      descriptionEn: p.descriptionEn,
-      shortDescriptionVi: p.shortDescriptionVi,
-      shortDescriptionEn: p.shortDescriptionEn,
-      images: p.images,
-      brandId: p.brandId,
-      categoryId: p.categoryId,
-      specs: p.specs,
-      totalStockCache: p.totalStockCache,
-      isQuoteOnly: p.isQuoteOnly,
-    }));
+    const mappedData: ProductDTO[] = data.map(
+      ({ createdAt: _c, ...rest }) => rest,
+    );
 
     return { data: mappedData, hasMore, nextCursor, prevCursor };
   }
@@ -270,13 +232,13 @@ export class DbProductService implements ProductService {
         brandId: products.brandId,
         nameVi: products.nameVi,
         nameEn: products.nameEn,
-        power: this.getNumericSpec("power"),
-        voltage: this.getNumericSpec("voltage"),
-        phase: this.getStringSpec("phase"),
-        model: this.getStringSpec("model"),
-        fuelType: this.getStringSpec("fuelType"),
-        engineBrand: this.getStringSpec("engineBrand"),
-        alternatorBrand: this.getStringSpec("alternatorBrand"),
+        power: products.powerKva,
+        voltage: products.voltage,
+        phase: products.phase,
+        model: sql<string | null>`${products.specs}->>'model'`,
+        fuelType: products.fuelType,
+        engineBrand: products.engineBrand,
+        alternatorBrand: products.alternatorBrand,
       })
       .from(products)
       .where(isNull(products.deletedAt));
@@ -312,23 +274,7 @@ export class DbProductService implements ProductService {
 
   async getActiveProductBySlug(slug: string): Promise<ProductDTO> {
     const [product] = await this.db
-      .select({
-        id: products.id,
-        nameVi: products.nameVi,
-        nameEn: products.nameEn,
-        slug: products.slug,
-        price: products.price,
-        descriptionVi: products.descriptionVi,
-        descriptionEn: products.descriptionEn,
-        shortDescriptionVi: products.shortDescriptionVi,
-        shortDescriptionEn: products.shortDescriptionEn,
-        images: products.images,
-        brandId: products.brandId,
-        categoryId: products.categoryId,
-        specs: products.specs,
-        totalStockCache: products.totalStockCache,
-        isQuoteOnly: products.isQuoteOnly,
-      })
+      .select(productDtoColumns)
       .from(products)
       .where(and(eq(products.slug, slug), isNull(products.deletedAt)))
       .limit(1);
@@ -336,136 +282,135 @@ export class DbProductService implements ProductService {
     return product;
   }
 
-  /**
-   * Dynamically constructs SQL filters for the product catalog query.
-   * Handles cursor-based pagination, category filtering, search, and specification filters.
-   */
   private buildGetAllFilters(options?: GetAllOptions): SQL[] {
-    const sort = options?.sort ?? "newest";
-
-    const rawFilters = [
-      this.buildCursorCondition(sort, options?.after),
-      this.buildCursorCondition(sort, undefined, options?.before),
-      this.buildStatusFilter(options?.status),
-      this.buildCategoryFilter(options?.categoryId, options?.categoryIds),
-      this.buildBrandFilter(options?.brandId, options?.brandIds),
-      this.buildQuoteOnlyFilter(options?.isQuoteOnly),
-      options?.search
-        ? or(
-            this.buildSpecLikeFilter("model", options.search),
-            sql`${products.nameVi} ILIKE ${`%${options.search}%`}`,
-            sql`${products.nameEn} ILIKE ${`%${options.search}%`}`,
-            sql`${products.slug} ILIKE ${`%${options.search}%`}`,
-          )
-        : undefined,
+    const conditions: (SQL | undefined)[] = [
       isNull(products.deletedAt),
-      this.buildSpecCondition("fuelType", options?.fuelType),
-      this.buildSpecCondition("phase", options?.phase),
-      this.buildSpecCondition("voltage", options?.voltage),
-      this.buildMinMaxPower(options?.minPower),
-      this.buildMinMaxPower(undefined, options?.maxPower),
-      this.buildSpecLikeFilter("engineBrand", options?.engineBrand),
-      this.buildSpecLikeFilter("alternatorBrand", options?.alternatorBrand),
+      this.buildCursorCondition(options?.sort, options?.after, options?.before),
     ];
 
-    return rawFilters.filter((f): f is SQL => f !== undefined);
+    if (options?.status === "active") {
+      conditions.push(gt(products.totalStockCache, 0));
+    }
+    if (options?.status === "outOfStock") {
+      conditions.push(lte(products.totalStockCache, 0));
+    }
+
+    if (options?.categoryIds && options.categoryIds.length > 0) {
+      conditions.push(inArray(products.categoryId, options.categoryIds));
+    } else if (options?.categoryId) {
+      conditions.push(eq(products.categoryId, options.categoryId));
+    }
+
+    if (options?.brandIds && options.brandIds.length > 0) {
+      conditions.push(inArray(products.brandId, options.brandIds));
+    } else if (options?.brandId) {
+      conditions.push(eq(products.brandId, options.brandId));
+    }
+
+    if (options?.isQuoteOnly !== undefined) {
+      conditions.push(eq(products.isQuoteOnly, options.isQuoteOnly));
+    }
+
+    if (options?.productType) {
+      conditions.push(
+        eq(products.productType, options.productType as ProductType),
+      );
+    }
+
+    if (options?.fuelType) {
+      conditions.push(eq(products.fuelType, options.fuelType as FuelType));
+    }
+
+    if (options?.phase) {
+      conditions.push(eq(products.phase, options.phase as PowerPhase));
+    }
+
+    if (options?.canopyType) {
+      conditions.push(
+        eq(products.canopyType, options.canopyType as CanopyType),
+      );
+    }
+
+    if (options?.upsTopology) {
+      conditions.push(
+        eq(products.upsTopology, options.upsTopology as UpsTopology),
+      );
+    }
+
+    if (options?.voltage !== undefined && options.voltage !== null) {
+      conditions.push(ilike(products.voltage, `%${options.voltage}%`));
+    }
+
+    if (options?.minPower) {
+      conditions.push(gte(products.powerKva, options.minPower.toString()));
+    }
+
+    if (options?.maxPower) {
+      conditions.push(lte(products.powerKva, options.maxPower.toString()));
+    }
+
+    if (options?.engineBrand) {
+      conditions.push(ilike(products.engineBrand, `%${options.engineBrand}%`));
+    }
+
+    if (options?.alternatorBrand) {
+      conditions.push(
+        ilike(products.alternatorBrand, `%${options.alternatorBrand}%`),
+      );
+    }
+
+    if (options?.search) {
+      const searchPattern = `%${options.search}%`;
+      conditions.push(
+        or(
+          ilike(products.nameVi, searchPattern),
+          ilike(products.nameEn, searchPattern),
+          ilike(products.slug, searchPattern),
+          sql`${products.specs}->>'model' ILIKE ${searchPattern}`,
+        ),
+      );
+    }
+
+    return conditions.filter((c): c is SQL => c !== undefined);
   }
 
   private buildCursorCondition(
     sort: GetAllOptions["sort"],
     after?: string,
     before?: string,
-  ) {
+  ): SQL | undefined {
     const cursor = after ?? before;
     if (!cursor) return undefined;
 
-    if (sort !== "priceAsc" && sort !== "priceDesc")
+    if (sort !== "priceAsc" && sort !== "priceDesc") {
       return after
         ? lt(products.createdAt, new Date(after))
         : gt(products.createdAt, new Date(before!));
+    }
 
-    const [p, id] = cursor.split("_");
-    if (!p || !id) return undefined;
-
-    const priceNum = sql`${products.price}::numeric`;
-    const pNum = sql`${p}::numeric`;
+    const [priceStr, id] = cursor.split("_");
+    if (!priceStr || !id) return undefined;
 
     if (sort === "priceAsc") {
       return after
-        ? sql`${priceNum} > ${pNum} OR ${priceNum} = ${pNum} AND ${products.id} > ${id}`
-        : sql`${priceNum} < ${pNum} OR ${priceNum} = ${pNum} AND ${products.id} < ${id}`;
+        ? or(
+            gt(products.price, priceStr),
+            and(eq(products.price, priceStr), gt(products.id, id)),
+          )
+        : or(
+            lt(products.price, priceStr),
+            and(eq(products.price, priceStr), lt(products.id, id)),
+          );
     } else {
       return after
-        ? sql`${priceNum} < ${pNum} OR ${priceNum} = ${pNum} AND ${products.id} > ${id}`
-        : sql`${priceNum} > ${pNum} OR ${priceNum} = ${pNum} AND ${products.id} < ${id}`;
+        ? or(
+            lt(products.price, priceStr),
+            and(eq(products.price, priceStr), gt(products.id, id)),
+          )
+        : or(
+            gt(products.price, priceStr),
+            and(eq(products.price, priceStr), lt(products.id, id)),
+          );
     }
-  }
-
-  private buildBrandFilter(brandId?: string, brandIds?: string[]) {
-    if (brandIds && brandIds.length > 0)
-      return inArray(products.brandId, brandIds);
-    if (brandId) return eq(products.brandId, brandId);
-    return undefined;
-  }
-
-  private buildCategoryFilter(categoryId?: string, categoryIds?: string[]) {
-    if (categoryIds && categoryIds.length > 0)
-      return inArray(products.categoryId, categoryIds);
-    if (categoryId) return eq(products.categoryId, categoryId);
-    return undefined;
-  }
-
-  private buildSpecCondition(key: string, value?: string | number) {
-    if (value === undefined || value === null) return undefined;
-
-    const column = products.specs;
-
-    if (["voltage"].includes(key))
-      return sql`${this.getNumericSpec(key)} = ${value}`;
-
-    // Các field string thông thường (fuelType, phase, engineBrand, alternatorBrand)
-    return sql`${column}->>${key} = ${value}`;
-  }
-
-  private buildMinMaxPower(minPower?: number, maxPower?: number) {
-    if (!minPower && !maxPower) return undefined;
-
-    const key = "power";
-    if (minPower)
-      return sql`${this.getNumericSpec(key)} >= ${minPower}
-      `;
-    if (maxPower)
-      return sql`${this.getNumericSpec(key)} <= ${maxPower}
-      `;
-  }
-
-  private buildStatusFilter(status?: "active" | "outOfStock") {
-    if (status === "active") return gt(products.totalStockCache, 0);
-    if (status === "outOfStock") return lte(products.totalStockCache, 0);
-    return undefined;
-  }
-
-  private buildQuoteOnlyFilter(isQuoteOnly?: boolean) {
-    if (!isQuoteOnly) return undefined;
-    return eq(products.isQuoteOnly, isQuoteOnly);
-  }
-
-  private buildSpecLikeFilter(key: string, value?: string) {
-    if (!value) return undefined;
-    return sql`${products.specs}->>${key} ILIKE ${`%${value}%`}`;
-  }
-
-  private getNumericSpec(key: string) {
-    return sql`
-      CASE
-        WHEN ${products.specs}->>${key} ~ '^\\s*\\d+(\\.\\d+)?\\s*$'
-          THEN (${products.specs}->>${key})::numeric
-          ELSE NULL
-      END
-    `;
-  }
-
-  private getStringSpec(key: string) {
-    return sql`${products.specs}->>${key}`;
   }
 }

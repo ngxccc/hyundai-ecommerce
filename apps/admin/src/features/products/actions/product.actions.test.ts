@@ -27,6 +27,25 @@ await mock.module("@/shared/services", () => ({
   validateUploadedFile: mock().mockReturnValue({ valid: true }),
 }));
 
+const defaultFacetedFields = {
+  productType: "generator" as const,
+  powerKva: null,
+  powerKw: null,
+  standbyPowerKva: null,
+  standbyPowerKw: null,
+  phase: null,
+  voltage: null,
+  frequency: 50,
+  fuelType: null,
+  canopyType: null,
+  startMethod: null,
+  engineBrand: null,
+  alternatorBrand: null,
+  upsTopology: null,
+  upsBatteryType: null,
+  specSheet: [],
+};
+
 describe("product.actions", () => {
   beforeEach(() => {
     (
@@ -55,6 +74,7 @@ describe("product.actions", () => {
 
   test("createProductAction saves product and triggers background upload", async () => {
     const mockProduct: ProductDTO = {
+      ...defaultFacetedFields,
       id: "prod-1",
       nameVi: "Test Product",
       nameEn: null,
@@ -179,6 +199,7 @@ describe("product.actions", () => {
       test("should query productService.getAll with keyword and return matching products", async () => {
         const mockProducts: ProductDTO[] = [
           {
+            ...defaultFacetedFields,
             id: "prod-1",
             nameVi: "Máy phát điện Hyundai DHY12500SE",
             nameEn: null,

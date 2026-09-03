@@ -68,6 +68,22 @@ describe("quote-excel.service BDD Unit Tests", () => {
           descriptionEn: null,
           shortDescriptionVi: "Máy phát điện công suất 10kVA",
           shortDescriptionEn: null,
+          productType: "generator",
+          powerKva: "10.00",
+          powerKw: "8.00",
+          standbyPowerKva: "11.00",
+          standbyPowerKw: "8.80",
+          phase: "1phase",
+          voltage: "230V",
+          frequency: 50,
+          fuelType: "diesel",
+          canopyType: "silent",
+          startMethod: "electric",
+          engineBrand: "Hyundai",
+          alternatorBrand: "Hyundai",
+          upsTopology: null,
+          upsBatteryType: null,
+          specSheet: [],
           specs: {
             model: "DHY12500SE",
             power: 10,
@@ -131,8 +147,12 @@ describe("quote-excel.service BDD Unit Tests", () => {
       const sheet = workbook.worksheets[0]!;
 
       // Check Company Title
-      expect(sheet.getCell("A1").value).toBe("HYUNDAI POWER PRODUCTS - NHẬT NĂNG");
-      expect(sheet.getCell("A2").value).toBe("CÔNG TY TNHH THIẾT BỊ CÔNG NGHỆ NHẬT NĂNG");
+      expect(sheet.getCell("A1").value).toBe(
+        "HYUNDAI POWER PRODUCTS - NHẬT NĂNG",
+      );
+      expect(sheet.getCell("A2").value).toBe(
+        "CÔNG TY TNHH THIẾT BỊ CÔNG NGHỆ NHẬT NĂNG",
+      );
 
       // Check Customer Info in Meta Rows
       let foundCustomer = false;

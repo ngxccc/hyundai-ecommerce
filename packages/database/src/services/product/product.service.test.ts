@@ -1,7 +1,6 @@
 import { expect, test, describe, vi, beforeEach } from "bun:test";
 import {
   mockDb,
-  mockFindFirst,
   mockInsert,
   mockReturning,
   mockValues,
@@ -12,24 +11,34 @@ import type { ProductDTO, Product } from "../../schemas";
 import { DbProductService } from "./product.service";
 import type { IDatabase } from "../../client";
 
+const defaultFacetedFields = {
+  productType: "generator" as const,
+  powerKva: "5.00",
+  powerKw: "4.00",
+  standbyPowerKva: "5.50",
+  standbyPowerKw: "4.40",
+  phase: "1phase" as const,
+  voltage: "230V",
+  frequency: 50,
+  fuelType: "diesel" as const,
+  canopyType: "silent" as const,
+  startMethod: "electric" as const,
+  engineBrand: "Hyundai",
+  alternatorBrand: "Hyundai",
+  upsTopology: null,
+  upsBatteryType: null,
+  specSheet: [],
+};
+
 function toProductDto(product: Product): ProductDTO {
-  return {
-    id: product.id,
-    nameVi: product.nameVi,
-    nameEn: product.nameEn,
-    slug: product.slug,
-    price: product.price,
-    descriptionVi: product.descriptionVi,
-    descriptionEn: product.descriptionEn,
-    shortDescriptionVi: product.shortDescriptionVi,
-    shortDescriptionEn: product.shortDescriptionEn,
-    images: product.images,
-    brandId: product.brandId,
-    categoryId: product.categoryId,
-    specs: product.specs,
-    totalStockCache: product.totalStockCache,
-    isQuoteOnly: product.isQuoteOnly,
-  };
+  const {
+    totalSalesCache: _s,
+    createdAt: _c,
+    updatedAt: _u,
+    deletedAt: _d,
+    ...dto
+  } = product;
+  return dto;
 }
 
 const productService = new DbProductService(mockDb as unknown as IDatabase);
@@ -41,6 +50,7 @@ describe("ProductService", () => {
 
   test("create() should insert and return the created product", async () => {
     const newProduct = {
+      ...defaultFacetedFields,
       nameVi: "Test Generator",
       nameEn: null,
       slug: "test-generator",
@@ -76,6 +86,7 @@ describe("ProductService", () => {
 
   test("getById() should return a product if found", async () => {
     const mockProduct = {
+      ...defaultFacetedFields,
       id: "uuid-123",
       nameVi: "Test",
       nameEn: null,
@@ -97,18 +108,20 @@ describe("ProductService", () => {
       deletedAt: null,
     };
 
-    mockFindFirst.mockResolvedValueOnce(toProductDto(mockProduct));
+    mockSelectResolvedValue.mockResolvedValueOnce([toProductDto(mockProduct)]);
 
     const result = await productService.getById("uuid-123");
 
-    expect(mockFindFirst).toHaveBeenCalledTimes(1);
-    expect(mockFindFirst).toHaveBeenCalledWith(
-      expect.objectContaining({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        where: expect.anything(),
-      }),
-    );
+    expect(mockSelect).toHaveBeenCalled();
     expect(result).toEqual(toProductDto(mockProduct));
+  });
+
+  test("getById() should throw error when product is not found", () => {
+    mockSelectResolvedValue.mockResolvedValueOnce([]);
+
+    expect(productService.getById("non-existent")).rejects.toThrow(
+      "errors.productNotFound",
+    );
   });
 
   describe("getTopSellingProducts()", () => {
@@ -289,6 +302,7 @@ describe("ProductService", () => {
   describe("getActiveProductBySlug()", () => {
     test("should return product when found by slug", async () => {
       const mockProduct = {
+        ...defaultFacetedFields,
         id: "prod-1",
         nameVi: "Hyundai HY-30CLE",
         nameEn: null,

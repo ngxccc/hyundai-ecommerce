@@ -3,3 +3,4 @@ export * from "./payment.types";
 export * from "./auth.types";
 export * from "./order.types";
 export * from "./quote.types";
+export * from "./product-spec.types";

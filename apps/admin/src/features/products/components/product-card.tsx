@@ -30,23 +30,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
     e.preventDefault();
     e.stopPropagation();
 
-    addProductToDraft({
-      id: product.id,
-      nameVi: product.nameVi,
-      nameEn: null,
-      slug: product.slug,
-      price: product.price,
-      descriptionVi: null,
-      descriptionEn: null,
-      shortDescriptionVi: null,
-      shortDescriptionEn: null,
-      images: product.images ?? [],
-      brandId: null,
-      categoryId: product.categoryId,
-      specs: {},
-      totalStockCache: product.totalStockCache,
-      isQuoteOnly: product.isQuoteOnly,
-    });
+    addProductToDraft(product);
 
     const translate = t as unknown as (
       key: string,
