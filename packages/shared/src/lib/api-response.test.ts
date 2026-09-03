@@ -1,5 +1,10 @@
 import { describe, expect, it } from "bun:test";
-import { apiSuccess, rfc9457ProblemDetails } from "./api-response";
+import {
+  apiSuccess,
+  rfc9457ProblemDetails,
+  jsonSuccess,
+  jsonError,
+} from "./api-response";
 
 describe("API Response Utilities", () => {
   describe("apiSuccess", () => {
@@ -55,6 +60,50 @@ describe("API Response Utilities", () => {
         name: "shippingAddress",
         reason: "Address is required",
       });
+    });
+  });
+
+  describe("jsonSuccess", () => {
+    it("should return a Web Response with status 200 and standard envelope", async () => {
+      const response = jsonSuccess(
+        { id: "prod-1", name: "Hyundai" },
+        { page: 1 },
+      );
+      expect(response.status).toBe(200);
+      const body = (await response.json()) as {
+        success: boolean;
+        status: boolean;
+        data: { id: string; name: string };
+        meta: { page: number };
+      };
+      expect(body.success).toBe(true);
+      expect(body.status).toBe(true);
+      expect(body.data).toEqual({ id: "prod-1", name: "Hyundai" });
+      expect(body.meta).toEqual({ page: 1 });
+    });
+  });
+
+  describe("jsonError", () => {
+    it("should return a Web Response with RFC 9457 problem details and application/problem+json", async () => {
+      const response = jsonError({
+        status: 400,
+        detail: "Invalid quantity",
+        instance: "/api/checkout",
+      });
+      expect(response.status).toBe(400);
+      expect(response.headers.get("Content-Type")).toBe(
+        "application/problem+json",
+      );
+      const body = (await response.json()) as {
+        status: boolean;
+        success: boolean;
+        detail: string;
+        title: string;
+      };
+      expect(body.status).toBe(false);
+      expect(body.success).toBe(false);
+      expect(body.detail).toBe("Invalid quantity");
+      expect(body.title).toBe("Bad Request");
     });
   });
 });

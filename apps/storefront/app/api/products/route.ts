@@ -1,12 +1,12 @@
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
-import { apiSuccess, rfc9457ProblemDetails } from "@nhatnang/shared";
+import { jsonSuccess, jsonError } from "@nhatnang/shared";
 import {
   productService,
   categoryService,
   brandService,
 } from "@/shared/services";
 import type { GetAllOptions } from "@nhatnang/database/services";
-import { connection, NextResponse, type NextRequest } from "next/server";
+import { connection, type NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   await connection();
 
@@ -82,14 +82,7 @@ export async function GET(request: NextRequest) {
       isQuoteOnly,
     });
 
-    return NextResponse.json(
-      {
-        ...apiSuccess(resData),
-        status: true,
-        data: resData,
-      },
-      { status: HTTP_STATUS.OK },
-    );
+    return jsonSuccess(resData);
   } catch (error) {
     const errObj = error as Record<string, unknown>;
     if (
@@ -100,20 +93,11 @@ export async function GET(request: NextRequest) {
       throw error;
     }
     console.error("Error fetching products in API route:", error);
-    return NextResponse.json(
-      {
-        ...rfc9457ProblemDetails({
-          status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-          detail: "Failed to fetch products",
-          instance: "/api/products",
-        }),
-        status: false,
-        data: null,
-      },
-      {
-        status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-        headers: { "Content-Type": "application/problem+json" },
-      },
-    );
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: "Failed to fetch products",
+      instance: "/api/products",
+      fallbackData: null,
+    });
   }
 }
