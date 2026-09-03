@@ -1,4 +1,5 @@
-import { CategoryHeader, CategoryFilters } from "@/features/categories/components";
+import { CategoryHeader } from "@/features/categories/components";
+import { DataTableSearchInput } from "@/shared/components/data-table-search-input";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { CategoryGrid } from "@/features/categories/components/category-grid";
 import { categoryService } from "@nhatnang/database/services";
@@ -61,7 +62,7 @@ export default async function AdminCategoriesPage({
             { label: tNav("categories") },
           ]}
         />
-        <CategoryFilters />
+        <DataTableSearchInput placeholder={tHeader("searchPlaceholder")} />
         <CategoryGrid categories={filteredCategories} allCategories={categories} />
       </div>
     </>

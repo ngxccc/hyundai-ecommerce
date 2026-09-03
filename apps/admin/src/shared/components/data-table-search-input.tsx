@@ -2,14 +2,25 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "@nhatnang/ui/hooks/use-debounce";
-import { useTranslations } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@nhatnang/ui/components/ui/input";
 import { Search } from "lucide-react";
+import { cn } from "@nhatnang/ui/lib/utils";
 
-export const BrandFilters = () => {
-  const t = useTranslations("AdminBrands.header");
+export interface DataTableSearchInputProps {
+  placeholder?: string;
+  paramKey?: string;
+  debounceMs?: number;
+  className?: string;
+}
+
+export const DataTableSearchInput = ({
+  placeholder = "Search...",
+  paramKey = "search",
+  debounceMs = 500,
+  className,
+}: DataTableSearchInputProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -30,22 +41,22 @@ export const BrandFilters = () => {
   );
 
   const [searchTerm, setSearchTerm] = useState(
-    searchParams.get("search") ?? "",
+    searchParams.get(paramKey) ?? "",
   );
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedSearchTerm = useDebounce(searchTerm, debounceMs);
 
   useEffect(() => {
-    const currentSearch = searchParams.get("search") ?? "";
+    const currentSearch = searchParams.get(paramKey) ?? "";
     if (debouncedSearchTerm !== currentSearch) {
-      handleFilterChange("search", debouncedSearchTerm);
+      handleFilterChange(paramKey, debouncedSearchTerm);
     }
-  }, [debouncedSearchTerm, handleFilterChange, searchParams]);
+  }, [debouncedSearchTerm, handleFilterChange, searchParams, paramKey]);
 
   return (
-    <div className="relative flex-1">
+    <div className={cn("relative flex-1", className)}>
       <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
       <Input
-        placeholder={t("searchPlaceholder")}
+        placeholder={placeholder}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="pl-9"

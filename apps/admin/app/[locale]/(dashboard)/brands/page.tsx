@@ -1,4 +1,5 @@
-import { BrandHeader, BrandFilters } from "@/features/brands/components";
+import { BrandHeader } from "@/features/brands/components";
+import { DataTableSearchInput } from "@/shared/components/data-table-search-input";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { BrandGrid } from "@/features/brands/components/brand-grid";
 import { brandService } from "@nhatnang/database/services";
@@ -60,7 +61,7 @@ export default async function AdminBrandsPage({
             { label: tNav("brands") },
           ]}
         />
-        <BrandFilters />
+        <DataTableSearchInput placeholder={tHeader("searchPlaceholder")} />
         <BrandGrid brands={filteredBrands} />
       </div>
     </>
