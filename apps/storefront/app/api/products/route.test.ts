@@ -87,11 +87,13 @@ describe("GET /api/products", () => {
     const request = new NextRequest("http://localhost/api/products");
     const response = await GET(request);
     const json = (await response.json()) as {
+      success: boolean;
       status: boolean;
       data: { data: typeof mockProducts };
     };
 
     expect(response.status).toBe(HTTP_STATUS.OK);
+    expect(json.success).toBe(true);
     expect(json.status).toBe(true);
     expect(json.data.data).toHaveLength(1);
     expect(json.data.data[0]).toEqual(mockProducts[0]);
@@ -102,10 +104,19 @@ describe("GET /api/products", () => {
 
     const request = new NextRequest("http://localhost/api/products");
     const response = await GET(request);
-    const json = (await response.json()) as { status: boolean; data: unknown };
+    const json = (await response.json()) as {
+      status: boolean;
+      title?: string;
+      detail?: string;
+      instance?: string;
+      data: unknown;
+    };
 
     expect(response.status).toBe(HTTP_STATUS.INTERNAL_SERVER_ERROR);
     expect(json.status).toBe(false);
+    expect(json.title).toBe("Internal Server Error");
+    expect(json.detail).toBe("Failed to fetch products");
+    expect(json.instance).toBe("/api/products");
     expect(json.data).toBeNull();
   });
 });

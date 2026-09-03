@@ -1,4 +1,5 @@
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
+import { apiSuccess, rfc9457ProblemDetails } from "@nhatnang/shared";
 import { productService } from "@/shared/services";
 import { NextResponse } from "next/server";
 import type { Locale } from "next-intl";
@@ -10,8 +11,8 @@ export async function GET(request: Request) {
     const metadata = await productService.getFiltersMetadata(locale);
     return NextResponse.json(
       {
+        ...apiSuccess(metadata),
         status: true,
-        data: metadata,
       },
       { status: HTTP_STATUS.OK },
     );
@@ -27,10 +28,18 @@ export async function GET(request: Request) {
     console.error("Error fetching products metadata in API route:", error);
     return NextResponse.json(
       {
+        ...rfc9457ProblemDetails({
+          status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+          detail: "Failed to fetch products metadata",
+          instance: "/api/products/metadata",
+        }),
         status: false,
         data: null,
       },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
+      {
+        status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+        headers: { "Content-Type": "application/problem+json" },
+      },
     );
   }
 }

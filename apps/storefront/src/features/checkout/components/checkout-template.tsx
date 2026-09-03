@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useForm, FormProvider } from "react-hook-form";
-import {
-  type AddressDTO,
-  type UserB2BProfileDTO,
+import type {
+  AddressDTO,
+  UserB2BProfileDTO,
+  PaymentMethod,
+  PaymentTransactionType,
 } from "@nhatnang/database/schemas";
 import { useCart, useCartStore } from "@/features/cart";
 import { Button } from "@nhatnang/ui/components/ui/button";
@@ -18,10 +20,6 @@ import {
   priceFormatter,
 } from "@nhatnang/shared/lib/utils";
 import { ChevronDown, Loader2 } from "lucide-react";
-import type {
-  PaymentMethod,
-  PaymentTransactionType,
-} from "@nhatnang/database/schemas";
 import { CheckoutShippingAddress } from "./checkout-shipping-address";
 import { CheckoutPaymentOption } from "./checkout-payment-option";
 import { CheckoutPaymentMethod } from "./checkout-payment-method";

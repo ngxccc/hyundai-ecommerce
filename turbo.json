@@ -37,6 +37,9 @@
         "packages/eslint-config/**"
       ]
     },
+    "lint:fix": {
+      "cache": false
+    },
     "test": {
       "dependsOn": ["^build"],
       "env": ["DOPPLER_TOKEN"],

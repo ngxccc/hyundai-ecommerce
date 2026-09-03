@@ -24,8 +24,8 @@ import type {
   OrderPaymentStatus,
   OrderStatus,
   PaymentMethod,
+  PaymentTransactionDetailsDTO,
 } from "@nhatnang/database/schemas";
-import type { PaymentTransactionDetailsDTO } from "@nhatnang/database/schemas";
 
 export interface OrderSuccessItem {
   id: string;

@@ -1,9 +1,6 @@
 export * from "./action.types";
 
-export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-}
+export type { ApiResponse } from "../lib/api-response";
 
 export interface PromoCampaign {
   id: string;
