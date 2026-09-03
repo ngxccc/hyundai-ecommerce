@@ -1,6 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
+import { getTranslationError } from "@/shared/lib/utils";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import { authService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
@@ -37,15 +38,8 @@ export const loginAction = async (data: LoginForm) => {
     });
     return { success: true as const, data };
   } catch (error) {
-    const t = await getTranslations("errors");
     console.error("[loginAction]", error);
-
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error - dynamic key
-      return { success: false as const, error: t(key) };
-    }
-
-    return { success: false as const, error: t("loginFailed") };
+    const errorMessage = await getTranslationError(error, "loginFailed");
+    return { success: false as const, error: errorMessage };
   }
 };

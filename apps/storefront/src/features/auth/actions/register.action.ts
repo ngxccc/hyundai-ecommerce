@@ -1,6 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
+import { getTranslationError } from "@/shared/lib/utils";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
 import { AUTH_ERROR_CODES } from "@nhatnang/shared/constants";
 import { authService, userService } from "@nhatnang/database/services";
@@ -62,15 +63,8 @@ export async function registerAction(data: RegisterForm) {
     const responseData = await authService.register(validatedData);
     return { success: true as const, data: responseData };
   } catch (error) {
-    const t = await getTranslations("errors");
     console.error("[registerAction]", error);
-
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error - dynamic key
-      return { success: false as const, error: t(key) };
-    }
-
-    return { success: false as const, error: t("registerFailed") };
+    const errorMessage = await getTranslationError(error, "registerFailed");
+    return { success: false as const, error: errorMessage };
   }
 }

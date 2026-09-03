@@ -7,6 +7,7 @@ import { AuthError } from "@nhatnang/core";
 import {
   requireAuth,
   getAuthErrorMessage,
+  getActionErrorMessage,
   assertFinanceRole,
   assertSalesOrFinanceRole,
 } from "@/shared/lib/action-auth";
@@ -111,11 +112,11 @@ export const selectShippingBidAction = async (
     }
 
     console.error("[selectShippingBidAction]", error);
-    const message: string =
-      error instanceof Error && error.message.startsWith("errors.")
-        ? // @ts-expect-error - dynamic key
-          tAdminOrders(error.message.replace("errors.", ""))
-        : tAdminOrders("shippingBidsSelectWinnerError");
+    const message = getActionErrorMessage(
+      error,
+      (key) => tAdminOrders(key as never),
+      "shippingBidsSelectWinnerError",
+    );
     return {
       success: false,
       error: message,
@@ -172,11 +173,11 @@ export const addShippingBidAction = async (data: AddShippingBidInput) => {
     }
 
     console.error("[addShippingBidAction]", error);
-    const message: string =
-      error instanceof Error && error.message.startsWith("errors.")
-        ? // @ts-expect-error - dynamic key
-          tAdminOrders(error.message.replace("errors.", ""))
-        : tErrors("createShippingBidFailed") || "Failed to add shipping bid";
+    const message = getActionErrorMessage(
+      error,
+      (key) => tAdminOrders(key as never),
+      "createShippingBidFailed",
+    );
     return {
       success: false,
       error: message,

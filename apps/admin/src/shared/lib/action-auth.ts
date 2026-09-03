@@ -1,5 +1,5 @@
 import { getCachedSession } from "./session";
-import { AuthError, type UserRole } from "@nhatnang/core";
+import { AuthError, isDomainError, type UserRole } from "@nhatnang/core";
 
 export const getAuthErrorMessage = (
   error: AuthError,
@@ -8,6 +8,24 @@ export const getAuthErrorMessage = (
   return error.code === "UNAUTHORIZED" || error.message === "UNAUTHORIZED"
     ? t("unauthorized")
     : t("forbidden");
+};
+
+export const getActionErrorMessage = (
+  error: unknown,
+  t: (key: string) => string,
+  fallbackKey = "default",
+): string => {
+  if (error instanceof AuthError) {
+    return getAuthErrorMessage(error, t);
+  }
+  if (isDomainError(error)) {
+    return t(error.translationKey);
+  }
+  if (error instanceof Error && error.message.startsWith("errors.")) {
+    const key = error.message.replace("errors.", "");
+    return t(key);
+  }
+  return t(fallbackKey);
 };
 
 export const requireAuth = async () => {

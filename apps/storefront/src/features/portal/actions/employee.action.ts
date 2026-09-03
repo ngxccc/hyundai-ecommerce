@@ -1,5 +1,7 @@
 "use server";
 
+import { getTranslationError } from "@/shared/lib/utils";
+
 import { getCachedSession } from "@/shared/lib/session";
 import { authService, userService } from "@nhatnang/database/services";
 import { getTranslations } from "next-intl/server";
@@ -76,11 +78,10 @@ export async function createEmployeeAction(data: CreateEmployeeForm) {
     return { success: true as const };
   } catch (error) {
     console.error("[createEmployeeAction]", error);
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error - dynamic key
-      return { success: false as const, error: t(key) };
-    }
-    return { success: false as const, error: t("internalServerError") };
+    const errorMessage = await getTranslationError(
+      error,
+      "internalServerError",
+    );
+    return { success: false as const, error: errorMessage };
   }
 }

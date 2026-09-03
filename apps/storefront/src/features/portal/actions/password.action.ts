@@ -1,6 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
+import { getTranslationError } from "@/shared/lib/utils";
 import { getCachedSession } from "@/shared/lib/session";
 import { auth } from "@nhatnang/database/auth";
 import {
@@ -38,12 +39,10 @@ export const changePasswordAction = async (data: ChangePasswordForm) => {
     return { success: true };
   } catch (error) {
     console.error("[changePasswordAction]", error);
-
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      return { success: false, error: t(key as never) };
-    }
-
-    return { success: false, error: t("passwordChangeFailed") };
+    const errorMessage = await getTranslationError(
+      error,
+      "passwordChangeFailed",
+    );
+    return { success: false, error: errorMessage };
   }
 };

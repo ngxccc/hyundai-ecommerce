@@ -4,7 +4,11 @@ import { revalidatePath } from "next/cache";
 import { quotesService } from "@nhatnang/database/services";
 import { type Quote } from "@nhatnang/database/schemas";
 import { AuthError } from "@nhatnang/core";
-import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
+import {
+  requireAuth,
+  getAuthErrorMessage,
+  getActionErrorMessage,
+} from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import {
   quoteIdSchema,
@@ -202,23 +206,10 @@ export const sendQuoteMessageAction = async (
       data: newMessage,
     };
   } catch (error: unknown) {
-    if (error instanceof AuthError) {
-      return {
-        success: false as const,
-        error: getAuthErrorMessage(error, t),
-      };
-    }
-
     console.error("[sendQuoteMessageAction]", error);
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error dynamic translation key lookup
-      return { success: false as const, error: t(key) || t("default") };
-    }
-
     return {
       success: false as const,
-      error: t("default"),
+      error: getActionErrorMessage(error, (key) => t(key as never), "default"),
     };
   }
 };
@@ -346,20 +337,14 @@ export const createAdminQuoteAction = async (payload: unknown) => {
       data: createdQuote,
     };
   } catch (error: unknown) {
-    if (error instanceof AuthError) {
-      return { success: false as const, error: getAuthErrorMessage(error, t) };
-    }
-
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error dynamic translation key lookup
-      return { success: false as const, error: t(key) };
-    }
-
     console.error("[createAdminQuoteAction]", error);
     return {
       success: false as const,
-      error: t("createQuoteFailed"),
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "createQuoteFailed",
+      ),
     };
   }
 };

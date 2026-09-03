@@ -128,6 +128,20 @@ await mock.module("@/shared/lib/action-auth", () => ({
     error?.code === "UNAUTHORIZED" || error?.message === "UNAUTHORIZED"
       ? t("unauthorized")
       : t("forbidden"),
+  getActionErrorMessage: (
+    error: unknown,
+    t: (key: string) => string,
+    fallbackKey: string,
+  ) => {
+    if (error && typeof error === "object" && "message" in error) {
+      const msg = String((error as { message: unknown }).message);
+      if (msg.startsWith("errors.")) {
+        return t(msg.replace("errors.", ""));
+      }
+      return msg;
+    }
+    return t(fallbackKey);
+  },
 }));
 await mock.module("next-intl/server", () => ({
   getTranslations: mock().mockResolvedValue((key: string) => key),

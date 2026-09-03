@@ -1,3 +1,5 @@
+import { ConflictError, isDomainError } from "@nhatnang/core";
+
 export const POSTGRES_ERROR_CODES = {
   UNIQUE_VIOLATION: "23505",
   FOREIGN_KEY_VIOLATION: "23503",
@@ -15,8 +17,16 @@ export function handleServiceError(
   error: unknown,
   fallbackMessage: string,
 ): never {
+  if (isDomainError(error)) {
+    throw error;
+  }
+
   if (isUniqueConstraintError(error)) {
-    throw new Error("errors.validation.slugExists", { cause: error });
+    throw new ConflictError(
+      "slug",
+      "already exists",
+      "errors.validation.slugExists",
+    );
   }
 
   if (error instanceof Error) {

@@ -10,8 +10,12 @@ import {
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { AuthError } from "@nhatnang/core";
-import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
+import { AuthError, ConflictError } from "@nhatnang/core";
+import {
+  requireAuth,
+  getAuthErrorMessage,
+  getActionErrorMessage,
+} from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
 import {
@@ -83,23 +87,26 @@ export const createBrandAction = async (formData: FormData) => {
 
     console.error("[createBrandAction]", error);
 
-    if (error instanceof Error) {
-      if (error.message === "errors.validation.slugExists") {
-        return {
-          success: false as const,
-          code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-          fieldErrors: { slug: [t("validation.slugExists")] },
-        };
-      }
-
-      if (error.message.startsWith("errors.")) {
-        const key = error.message.replace("errors.", "");
-        // @ts-expect-error - dynamic key
-        return { success: false as const, error: t(key) };
-      }
+    if (
+      (error instanceof ConflictError && error.field === "slug") ||
+      (error instanceof Error &&
+        error.message === "errors.validation.slugExists")
+    ) {
+      return {
+        success: false as const,
+        code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+        fieldErrors: { slug: [t("validation.slugExists")] },
+      };
     }
 
-    return { success: false as const, error: t("createBrandFailed") };
+    return {
+      success: false as const,
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "createBrandFailed",
+      ),
+    };
   }
 };
 
@@ -178,23 +185,26 @@ export async function updateBrandAction(id: string, formData: FormData) {
 
     console.error("[updateBrandAction]", error);
 
-    if (error instanceof Error) {
-      if (error.message === "errors.validation.slugExists") {
-        return {
-          success: false as const,
-          code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-          fieldErrors: { slug: [t("validation.slugExists")] },
-        };
-      }
-
-      if (error.message.startsWith("errors.")) {
-        const key = error.message.replace("errors.", "");
-        // @ts-expect-error - dynamic key
-        return { success: false as const, error: t(key) };
-      }
+    if (
+      (error instanceof ConflictError && error.field === "slug") ||
+      (error instanceof Error &&
+        error.message === "errors.validation.slugExists")
+    ) {
+      return {
+        success: false as const,
+        code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+        fieldErrors: { slug: [t("validation.slugExists")] },
+      };
     }
 
-    return { success: false as const, error: t("updateBrandFailed") };
+    return {
+      success: false as const,
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "updateBrandFailed",
+      ),
+    };
   }
 }
 
@@ -216,12 +226,13 @@ export async function deleteBrandAction(id: string) {
 
     console.error("[deleteBrandAction]", error);
 
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error - dynamic key
-      return { success: false as const, error: t(key) };
-    }
-
-    return { success: false as const, error: t("deleteBrandFailed") };
+    return {
+      success: false as const,
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "deleteBrandFailed",
+      ),
+    };
   }
 }

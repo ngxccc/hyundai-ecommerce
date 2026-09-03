@@ -1,5 +1,7 @@
 "use server";
 
+import { getActionErrorMessage } from "@/shared/lib/action-auth";
+
 import { headers } from "next/headers";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
@@ -49,12 +51,13 @@ export const adminLoginAction = async (data: LoginForm) => {
     const t = await getTranslations("errors");
     console.error("[adminLoginAction]", error);
 
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error - dynamic key
-      return { success: false as const, error: t(key) };
-    }
-
-    return { success: false as const, error: t("loginFailed") };
+    return {
+      success: false as const,
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "loginFailed",
+      ),
+    };
   }
 };

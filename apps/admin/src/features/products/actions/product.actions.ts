@@ -11,7 +11,11 @@ import {
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
 import { AuthError } from "@nhatnang/core";
-import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
+import {
+  requireAuth,
+  getAuthErrorMessage,
+  getActionErrorMessage,
+} from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
 import {
@@ -90,7 +94,11 @@ export const createProductAction = async (formData: FormData) => {
     console.error("[createProductAction]", error);
     return {
       success: false as const,
-      error: t("createProductFailed"),
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "createProductFailed",
+      ),
     };
   }
 };
@@ -176,7 +184,11 @@ export async function updateProductAction(id: string, formData: FormData) {
     console.error("[updateProductAction]", error);
     return {
       success: false as const,
-      error: t("updateProductFailed"),
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "updateProductFailed",
+      ),
     };
   }
 }
@@ -204,7 +216,11 @@ export async function deleteProductAction(id: string) {
     console.error("[deleteProductAction]", error);
     return {
       success: false as const,
-      error: t("deleteProductFailed"),
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "deleteProductFailed",
+      ),
     };
   }
 }
@@ -238,7 +254,11 @@ export async function searchProductsAction(query: string, limit = 10) {
     console.error("[searchProductsAction]", error);
     return {
       success: false as const,
-      error: t("searchProductsFailed" as never),
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "searchProductsFailed",
+      ),
     };
   }
 }

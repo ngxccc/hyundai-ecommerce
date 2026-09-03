@@ -10,8 +10,12 @@ import {
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { AuthError } from "@nhatnang/core";
-import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
+import { AuthError, ConflictError } from "@nhatnang/core";
+import {
+  requireAuth,
+  getAuthErrorMessage,
+  getActionErrorMessage,
+} from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
 import {
@@ -83,23 +87,26 @@ export const createCategoryAction = async (formData: FormData) => {
 
     console.error("[createCategoryAction]", error);
 
-    if (error instanceof Error) {
-      if (error.message === "errors.validation.slugExists") {
-        return {
-          success: false,
-          code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-          fieldErrors: { slug: [t("validation.slugExists")] },
-        };
-      }
-
-      if (error.message.startsWith("errors.")) {
-        const key = error.message.replace("errors.", "");
-        // @ts-expect-error - dynamic key
-        return { success: false, error: t(key) };
-      }
+    if (
+      (error instanceof ConflictError && error.field === "slug") ||
+      (error instanceof Error &&
+        error.message === "errors.validation.slugExists")
+    ) {
+      return {
+        success: false,
+        code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+        fieldErrors: { slug: [t("validation.slugExists")] },
+      };
     }
 
-    return { success: false, error: t("createCategoryFailed") };
+    return {
+      success: false,
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "createCategoryFailed",
+      ),
+    };
   }
 };
 
@@ -179,23 +186,26 @@ export async function updateCategoryAction(id: string, formData: FormData) {
 
     console.error("[updateCategoryAction]", error);
 
-    if (error instanceof Error) {
-      if (error.message === "errors.validation.slugExists") {
-        return {
-          success: false,
-          code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-          fieldErrors: { slug: [t("validation.slugExists")] },
-        };
-      }
-
-      if (error.message.startsWith("errors.")) {
-        const key = error.message.replace("errors.", "");
-        // @ts-expect-error - dynamic key
-        return { success: false, error: t(key) };
-      }
+    if (
+      (error instanceof ConflictError && error.field === "slug") ||
+      (error instanceof Error &&
+        error.message === "errors.validation.slugExists")
+    ) {
+      return {
+        success: false,
+        code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+        fieldErrors: { slug: [t("validation.slugExists")] },
+      };
     }
 
-    return { success: false, error: t("updateCategoryFailed") };
+    return {
+      success: false,
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "updateCategoryFailed",
+      ),
+    };
   }
 }
 
@@ -217,12 +227,13 @@ export async function deleteCategoryAction(id: string) {
 
     console.error("[deleteCategoryAction]", error);
 
-    if (error instanceof Error && error.message.startsWith("errors.")) {
-      const key = error.message.replace("errors.", "");
-      // @ts-expect-error - dynamic key
-      return { success: false, error: t(key) };
-    }
-
-    return { success: false, error: t("deleteCategoryFailed") };
+    return {
+      success: false,
+      error: getActionErrorMessage(
+        error,
+        (key) => t(key as never),
+        "deleteCategoryFailed",
+      ),
+    };
   }
 }
