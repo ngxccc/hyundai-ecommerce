@@ -16,7 +16,7 @@ import {
 } from "@nhatnang/shared/lib/payos";
 import { NextResponse, connection } from "next/server";
 import type { CreateOrderDTO } from "@nhatnang/database/dtos";
-import { checkoutRequestSchema } from "@nhatnang/database/validators";
+import { checkoutRequestSchema } from "@/features/checkout/validators/checkout.validator";
 
 export async function POST(request: Request) {
   await connection();
