@@ -1,0 +1,3 @@
+setup:
+  project: ticket-booking
+  config: dev

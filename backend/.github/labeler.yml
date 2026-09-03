@@ -1,0 +1,80 @@
+# .github/labeler.yml - Automatic PR labeling based on modified file paths (v5 schema)
+"area:auth":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/modules/auth/**/*"
+          - "src/database/schemas/auth.schema.ts"
+          - "test/integration/auth.spec.ts"
+
+"area:booking":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/modules/booking/**/*"
+          - "src/database/schemas/bookings.schema.ts"
+          - "src/database/schemas/payments.schema.ts"
+          - "test/integration/booking.spec.ts"
+
+"area:catalog":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/modules/shows/**/*"
+          - "src/modules/movies/**/*"
+          - "src/modules/cinemas/**/*"
+          - "src/database/schemas/shows.schema.ts"
+          - "src/database/schemas/movies.schema.ts"
+          - "src/database/schemas/cinemas.schema.ts"
+          - "test/integration/shows.spec.ts"
+
+"area:db":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/database/**/*"
+          - "drizzle/**/*"
+          - "drizzle.config.ts"
+
+"area:api":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/common/filters/**/*"
+          - "src/common/pipes/**/*"
+          - "src/common/interceptors/**/*"
+          - "src/common/decorators/**/*"
+          - "test/generated/api-schema.d.ts"
+
+"area:infra":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/modules/mail/**/*"
+          - "src/modules/outbox/**/*"
+          - "src/common/services/redlock.service.ts"
+          - "src/config/**/*"
+          - "docker-compose*.yml"
+          - "Dockerfile*"
+
+"area:ci":
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**/*"
+
+"area:harness":
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".claude/skills/**/*"
+          - ".omp/**/*"
+          - "AGENTS.md"
+          - "CLAUDE.md"
+          - "CONTEXT.md"
+          - "docs/**/*"
+
+"type:test":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "test/**/*"
+          - "**/*.spec.ts"
+          - "**/*.e2e-spec.ts"
+
+"type:docs":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/**/*"
+          - "**/*.md"

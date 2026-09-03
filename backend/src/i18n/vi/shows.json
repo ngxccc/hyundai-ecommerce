@@ -1,0 +1,14 @@
+{
+  "MOVIE_NOT_FOUND": "Không tìm thấy phim",
+  "HALL_NOT_FOUND": "Không tìm thấy phòng chiếu",
+  "NO_SEATS_CONFIGURED": "Phòng chiếu chưa được cấu hình ghế",
+  "SCHEDULE_COLLISION": "Trùng lịch chiếu: Phòng chiếu đã có suất chiếu hoặc đang trong thời gian 15 phút dọn dẹp",
+  "CREATE_SHOW_FAILED": "Không thể tạo suất chiếu",
+  "INVALID_DATE_RANGE": "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu",
+  "MAX_DAYS_EXCEEDED": "Khoảng thời gian không được vượt quá {maxDays} ngày",
+  "MAX_SHOWS_EXCEEDED": "Yêu cầu tạo theo lô không được vượt quá {maxShows} suất chiếu",
+  "PAST_SHOW_SLOT": "Suất chiếu phải bắt đầu sau thời điểm hiện tại ít nhất {minLeadTime} phút",
+  "INTRA_BATCH_COLLISION": "Phát hiện trùng lịch giữa các khung giờ trong danh sách yêu cầu",
+  "DATE_PAST": "Ngày xem phim phải là ngày hôm nay hoặc trong tương lai",
+  "DATE_HORIZON_EXCEEDED": "Ngày xem phim không được vượt quá {maxDays} ngày tới"
+}

@@ -1,0 +1,4 @@
+{
+  "MOVIE_NOT_FOUND": "Movie not found with identifier: {id}",
+  "CINEMA_NOT_FOUND": "Cinema venue not found with identifier: {id}"
+}

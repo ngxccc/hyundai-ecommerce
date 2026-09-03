@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ESNext",
+    "moduleDetection": "force",
+    "strict": true,
+    "allowJs": true,
+    "composite": false,
+    "incremental": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "declarationMap": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "noUnusedParameters": true,
+    "noImplicitOverride": true,
+    "emitDeclarationOnly": false,
+    "allowArbitraryExtensions": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noEmit": false,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": false,
+    "noPropertyAccessFromIndexSignature": true,
+    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "types": ["node", "bun"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"],
+  "include": [
+    "src/**/*",
+    "scripts/**/*",
+    "test/**/*",
+    "drizzle.config.ts",
+    "eslint.config.ts"
+  ]
+}

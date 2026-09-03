@@ -1,0 +1,4 @@
+{
+  "MOVIE_NOT_FOUND": "Không tìm thấy phim với mã định danh: {id}",
+  "CINEMA_NOT_FOUND": "Không tìm thấy rạp chiếu với mã định danh: {id}"
+}

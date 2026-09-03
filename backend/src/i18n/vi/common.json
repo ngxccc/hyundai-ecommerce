@@ -1,0 +1,6 @@
+{
+  "INTERNAL_SERVER_ERROR": "Đã xảy ra lỗi hệ thống. Vui lòng thử lại sau.",
+  "INVALID_INPUT": "Dữ liệu gửi lên không đúng định dạng",
+  "RESOURCE_CONFLICT": "Đã xảy ra xung đột dữ liệu. Vui lòng thử lại yêu cầu.",
+  "GATEWAY_TIMEOUT": "Yêu cầu cơ sở dữ liệu đã hết thời gian chờ. Vui lòng thử lại."
+}

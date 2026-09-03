@@ -1,0 +1,21 @@
+{
+  "isNotEmpty": "{property} is required",
+  "isEmail": "Invalid email address",
+  "isString": "{property} must be a string",
+  "isNumberString": "{property} must be a number string",
+  "isBoolean": "{property} must be a boolean value",
+  "minLength": "{property} must be at least {constraints.0} characters",
+  "maxLength": "{property} must not exceed {constraints.0} characters",
+  "matches": "{property} does not meet complexity requirements",
+  "passwordMustContainUppercase": "{property} must contain at least 1 uppercase letter",
+  "passwordMustContainNumber": "{property} must contain at least 1 number",
+  "passwordMustContainSpecialChar": "{property} must contain at least 1 special character",
+  "phoneNumberInvalid": "Invalid Vietnamese phone number",
+  "passwordsMustMatch": "Passwords do not match",
+  "mustAcceptTerms": "You must accept the terms of service",
+  "isUuid": "{property} must be a valid UUID string",
+  "isInt": "{property} must be an integer",
+  "isPositive": "{property} must be a positive number",
+  "isIn": "{property} must be one of the following values: {constraints.0}",
+  "isDate": "{property} must be a valid date in YYYY-MM-DD format"
+}

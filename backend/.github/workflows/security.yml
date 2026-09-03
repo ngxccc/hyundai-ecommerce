@@ -1,0 +1,77 @@
+name: Security Scan
+
+on:
+  schedule:
+    # Run every Monday at 02:00 UTC
+    - cron: "0 2 * * 1"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
+      - ".vscode/**"
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
+      - ".vscode/**"
+permissions:
+  security-events: write
+  contents: read
+
+jobs:
+  trivy:
+    name: Trivy (Vuln, Config, Secret)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: "fs"
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL,HIGH,MEDIUM"
+          scanners: "vuln,config,secret"
+          ignore-unfixed: true
+          exit-code: "0"
+          cache: true
+          version: v0.71.2
+
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@v4.37.9
+        if: always()
+        with:
+          sarif_file: "trivy-results.sarif"
+          category: "trivy"
+
+  codeql:
+    name: CodeQL Analysis
+    # if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["javascript-typescript"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4.37.9
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended,security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4.37.9
+        with:
+          category: "/language:${{matrix.language}}"

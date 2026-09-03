@@ -1,0 +1,17 @@
+[test]
+preload = ["./test/helpers/global-setup.ts"]
+coverageSkipTestFiles = true
+coveragePathIgnorePatterns = [
+  "**/*.spec.ts",
+  "**/*.test.ts",
+  "**/*.e2e.ts",
+  "**/*.dto.ts",
+  "**/*.routes.ts",
+  "**/*.constants.ts",
+  "src/database/schemas/**",
+  "src/database/database.module.ts",
+  "src/env.ts",
+  "src/main.ts",
+  "test/helpers/**",
+  "test/mocks/**"
+]

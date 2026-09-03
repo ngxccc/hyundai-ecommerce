@@ -1,0 +1,15 @@
+{
+  "SEATS_ALREADY_LOCKED": "Một hoặc nhiều ghế đã chọn đang bị khóa bởi giao dịch khác",
+  "SHOWTIME_NOT_FOUND": "Không tìm thấy suất chiếu",
+  "SEAT_NOT_BELONG_TO_SHOWTIME": "Một hoặc nhiều ghế không thuộc suất chiếu này",
+  "SEATS_NOT_AVAILABLE": "Một hoặc nhiều ghế được yêu cầu không còn trống",
+  "BOOKING_FAILED": "Tạo đơn đặt vé thất bại",
+  "IDEMPOTENCY_KEY_REQUIRED": "Header 'Idempotency-Key' là bắt buộc khi đặt ghế",
+  "BOOKING_NOT_FOUND": "Không tìm thấy đơn đặt vé hoặc đơn đặt vé không thuộc về người dùng",
+  "BOOKING_EXPIRED": "Đơn đặt vé đã hết hạn thanh toán hoặc đã bị hủy",
+  "PAYMENT_AMOUNT_MISMATCH": "Số tiền thanh toán gửi lên không khớp với tổng số tiền của đơn đặt vé",
+  "DUPLICATE_TRANSACTION": "Mã giao dịch thanh toán này đã được ghi nhận trước đó",
+  "RECORD_PAYMENT_FAILED": "Lỗi ghi nhận giao dịch thanh toán",
+  "PAYOS_WEBHOOK_INVALID_SIGNATURE": "Chữ ký webhook PayOS không hợp lệ",
+  "PAYOS_WEBHOOK_STALE_TIMESTAMP": "Thời gian giao dịch webhook PayOS vượt quá ngưỡng 5 phút"
+}

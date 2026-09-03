@@ -1,0 +1,6 @@
+{
+  "INTERNAL_SERVER_ERROR": "An internal server error occurred. Please try again later.",
+  "INVALID_INPUT": "Submitted data format is invalid",
+  "RESOURCE_CONFLICT": "A resource conflict occurred. Please retry your request.",
+  "GATEWAY_TIMEOUT": "The database or downstream service timed out. Please retry."
+}

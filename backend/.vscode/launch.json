@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "🧪 Debug Test Current File (Doppler STG)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "doppler run -c stg -- bun test ${file}",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "🚀 Debug Dev Server (Doppler DEV)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bun run dev",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

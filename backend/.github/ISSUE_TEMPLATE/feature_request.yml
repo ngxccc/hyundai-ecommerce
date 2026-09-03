@@ -1,0 +1,60 @@
+name: "Feature Request"
+description: "Propose a new feature, API capability, or system enhancement"
+title: "feat(<area>): <summary>"
+labels: ["type:feat", "status:triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please consult `docs/standards/` before proposing new APIs or database schemas.
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Summary & Business Goal"
+      description: "What problem does this feature solve? Who is the user?"
+      placeholder: "Describe the high-level intent and user impact..."
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: "Affected Subsystem Area"
+      description: "Select the primary module domain touched by this feature"
+      options:
+        - "area:catalog (Movies, Cinemas, Halls, Shows, Seats)"
+        - "area:booking (Seat Reservation, Payment Confirmation, Outbox)"
+        - "area:auth (Authentication, Tokens, Passwords, RBAC)"
+        - "area:api (Routing, Pipes, Filters, OpenAPI)"
+        - "area:db (Database Schemas, Migrations, Indexes)"
+        - "area:infra (Redis, Redlock, BullMQ, Docker, Logging)"
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: "Acceptance Criteria"
+      description: "List bullet points of observable testable conditions for completion"
+      placeholder: |
+        - [ ] API endpoint `POST /api/v1/...` returns 201 with standard envelope
+        - [ ] Integration test suite covers happy path and conflict cases
+        - [ ] Concurrency protected via locking standards
+    validations:
+      required: true
+  - type: textarea
+    id: invariants
+    attributes:
+      label: "Invariants & Architecture Considerations"
+      description: "Mention any database constraints, locking rules, or ADR references"
+      placeholder: "References ADR-0001, requires SELECT FOR UPDATE or Redlock..."
+    validations:
+      required: false
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: "Dependencies & Execution Order"
+      description: "Specify if this feature is blocked by or blocks other issues"
+      placeholder: |
+        - **Blocked by**: #91 (Catalog Discovery)
+        - **Blocks**: #93 (Seating Chart Matrix)
+    validations:
+      required: false

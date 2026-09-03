@@ -1,0 +1,14 @@
+{
+  "MOVIE_NOT_FOUND": "Movie not found",
+  "HALL_NOT_FOUND": "Hall not found",
+  "NO_SEATS_CONFIGURED": "No seats configured in this hall",
+  "SCHEDULE_COLLISION": "Schedule collision detected: The hall is already occupied during this time or within the 15-minute cleaning buffer",
+  "CREATE_SHOW_FAILED": "Failed to create show",
+  "INVALID_DATE_RANGE": "End date must be greater than or equal to start date",
+  "MAX_DAYS_EXCEEDED": "Date range cannot exceed {maxDays} days",
+  "MAX_SHOWS_EXCEEDED": "Batch request cannot generate more than {maxShows} shows",
+  "PAST_SHOW_SLOT": "Showtime must start at least {minLeadTime} minutes in the future",
+  "INTRA_BATCH_COLLISION": "Schedule collision detected within requested batch slots",
+  "DATE_PAST": "Show date must be today or a future date",
+  "DATE_HORIZON_EXCEEDED": "Show date cannot exceed {maxDays} days in the future"
+}

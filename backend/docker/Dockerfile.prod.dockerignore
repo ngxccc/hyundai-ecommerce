@@ -1,0 +1,35 @@
+# Docker Build Ignore File for Production Build (does NOT ignore dist)
+node_modules/
+
+# Caches and editor files
+.eslintcache
+.prettiercache
+.vscode/
+.idea/
+.DS_Store
+
+# Git and Version Control
+.git/
+.gitignore
+.gitattributes
+.github/
+.husky/
+.lintstagedrc.json
+
+# Test suites
+coverage/
+.nyc_output/
+test/
+
+# Documentation and design
+second-brain/
+process/
+README.md
+AGENTS.md
+CLAUDE.md
+
+# Archives
+*.tar.gz
+*.zip
+*.tgz
+*.tar

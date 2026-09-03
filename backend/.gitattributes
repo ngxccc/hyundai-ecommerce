@@ -1,0 +1,7 @@
+* text=auto eol=lf
+
+# Ignore Agent scripts in GitHub language stats
+.claude/** linguist-vendored linguist-detectable=false
+.agents/** linguist-vendored linguist-detectable=false
+.codex/** linguist-vendored linguist-detectable=false
+.omp/** linguist-vendored linguist-detectable=false

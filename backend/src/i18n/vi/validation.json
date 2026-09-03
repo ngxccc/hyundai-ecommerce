@@ -1,0 +1,21 @@
+{
+  "isNotEmpty": "{property} không được để trống",
+  "isEmail": "Email không đúng định dạng",
+  "isString": "{property} phải là chuỗi ký tự",
+  "isNumberString": "{property} phải là chuỗi chữ số",
+  "isBoolean": "{property} phải là giá trị đúng/sai",
+  "minLength": "{property} phải có ít nhất {constraints.0} ký tự",
+  "maxLength": "{property} không được vượt quá {constraints.0} ký tự",
+  "matches": "{property} không đáp ứng yêu cầu độ phức tạp",
+  "passwordMustContainUppercase": "{property} phải chứa ít nhất 1 chữ cái viết hoa",
+  "passwordMustContainNumber": "{property} phải chứa ít nhất 1 chữ số",
+  "passwordMustContainSpecialChar": "{property} phải chứa ít nhất 1 ký tự đặc biệt",
+  "phoneNumberInvalid": "Số điện thoại không đúng định dạng Việt Nam",
+  "passwordsMustMatch": "Mật khẩu xác nhận không trùng khớp",
+  "mustAcceptTerms": "Bạn phải đồng ý với điều khoản sử dụng",
+  "isUuid": "{property} phải là chuỗi UUID hợp lệ",
+  "isInt": "{property} phải là số nguyên",
+  "isPositive": "{property} phải là số dương",
+  "isIn": "{property} phải là một trong các giá trị: {constraints.0}",
+  "isDate": "{property} phải là ngày hợp lệ theo định dạng YYYY-MM-DD"
+}

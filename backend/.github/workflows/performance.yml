@@ -1,0 +1,113 @@
+name: Performance & Load Testing
+
+on:
+  workflow_dispatch:
+    inputs:
+      vus:
+        description: "Number of concurrent Virtual Users (VUs)"
+        required: false
+        default: "2000"
+        type: string
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  performance:
+    name: K6 Concurrency Stress & Invariant Verification
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_STAGING }}
+      DB_URL: postgresql://postgres:postgrespassword@localhost:5432/ticket_booking?sslmode=disable
+      DATABASE_URL: postgresql://postgres:postgrespassword@localhost:5432/ticket_booking?sslmode=disable
+      REDIS_URL: redis://localhost:6379
+      PORT: "3000"
+      TARGET_URL: "http://127.0.0.1:3000"
+      VUS: ${{ github.event.inputs.vus || '2000' }}
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgrespassword
+          POSTGRES_DB: ticket_booking
+        ports:
+          - 5432:5432
+        options: >-
+          --mount type=tmpfs,destination=/var/lib/postgresql,tmpfs-size=1073741824
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:8-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --mount type=tmpfs,destination=/data,tmpfs-size=536870912
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Environment
+        uses: ./.github/setup-environment
+
+      - name: Setup Grafana k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run Database Migrations
+        run: doppler run --preserve-env="true" -c stg -- bun drizzle-kit migrate --config drizzle.config.ts
+
+      - name: Build Application
+        run: bun run build
+
+      - name: Build k6 Load Test Script
+        run: bun run test:load:build
+
+      - name: Seed Concurrency Test Data
+        env:
+          VUS: ${{ github.event.inputs.vus || '2000' }}
+        run: bun run test:load:seed
+      - name: Start Application in Background
+        run: |
+          doppler run --preserve-env="true" -c stg -- bun dist/main.js &
+          APP_PID=$!
+          echo "APP_PID=$APP_PID" >> $GITHUB_ENV
+          ready=false
+          for i in {1..30}; do
+            if curl -s -f "$TARGET_URL" > /dev/null 2>&1; then
+              echo "NestJS application is healthy and ready on $TARGET_URL!"
+              ready=true
+              break
+            fi
+            echo "Waiting for app readiness... ($i/30)"
+            sleep 1
+          done
+          if [ "$ready" = false ]; then
+            echo "Error: NestJS application failed to become ready within 30 seconds."
+            exit 1
+          fi
+      - name: Execute k6 Concurrency Stress Test
+        env:
+          P95_THRESHOLD: ${{ (github.event.inputs.vus == '2000' || !github.event.inputs.vus) && '3500' || '1500' }}
+          P99_THRESHOLD: ${{ (github.event.inputs.vus == '2000' || !github.event.inputs.vus) && '5000' || '2000' }}
+        run: bun run test:load:run
+
+      - name: Verify Post-Test Invariants & Teardown
+        if: always()
+        run: bun run test:load:verify
+
+      - name: Upload k6 Performance Report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: k6-load-test-summary
+          path: dist/load-test-summary.json
+          if-no-files-found: warn
