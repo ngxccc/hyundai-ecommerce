@@ -46,7 +46,7 @@ export const env = createEnv({
     DB_PORT: z.string().transform(Number).default(5432),
     DB_USERNAME: z.string().default("postgres"),
     DB_PASSWORD: z.string().default("postgrespassword"),
-    DB_DATABASE: z.string().default("ticket_booking"),
+    DB_DATABASE: z.string().default("hyundai_ecommerce"),
 
     // Redis configuration
     REDIS_URL: robustUrlSchema.optional().catch(undefined),
@@ -55,7 +55,7 @@ export const env = createEnv({
 
     // Resend configuration
     RESEND_API_KEY: z.string().default("re_dummy_key_for_testing"),
-    EMAIL_FROM: z.string().default("Ticket Booking <onboarding@resend.dev>"),
+    EMAIL_FROM: z.string().default("Hyundai Nhat Nang <onboarding@resend.dev>"),
 
     // JWT configuration
     JWT_SECRET: z
@@ -68,6 +68,19 @@ export const env = createEnv({
     PAYOS_CLIENT_ID: z.string().default("dummy-client-id"),
     PAYOS_API_KEY: z.string().default("dummy-api-key"),
     PAYOS_CHECKSUM_KEY: z.string().default("dummy-checksum-key"),
+    // Cloudinary configuration
+    CLOUDINARY_CLOUD_NAME: z.string().optional().catch(undefined),
+    CLOUDINARY_API_KEY: z.string().optional().catch(undefined),
+    CLOUDINARY_API_SECRET: z.string().optional().catch(undefined),
+
+    // E-commerce business configuration
+    VAT_RATE: z.coerce.number().default(0.1),
+    DEPOSIT_RATE: z.coerce.number().default(0.2),
+
+    // CORS configuration
+    CORS_ORIGINS: z
+      .string()
+      .default("http://localhost:3000,http://localhost:3001"),
 
     // Shows configuration
     SHOW_CREATION_MIN_LEAD_MINUTES: z.coerce.number().default(10),
@@ -104,6 +117,12 @@ export const env = createEnv({
     PAYOS_CLIENT_ID: process.env["PAYOS_CLIENT_ID"],
     PAYOS_API_KEY: process.env["PAYOS_API_KEY"],
     PAYOS_CHECKSUM_KEY: process.env["PAYOS_CHECKSUM_KEY"],
+    CLOUDINARY_CLOUD_NAME: process.env["CLOUDINARY_CLOUD_NAME"],
+    CLOUDINARY_API_KEY: process.env["CLOUDINARY_API_KEY"],
+    CLOUDINARY_API_SECRET: process.env["CLOUDINARY_API_SECRET"],
+    VAT_RATE: process.env["VAT_RATE"],
+    DEPOSIT_RATE: process.env["DEPOSIT_RATE"],
+    CORS_ORIGINS: process.env["CORS_ORIGINS"],
     SHOW_CREATION_MIN_LEAD_MINUTES:
       process.env["SHOW_CREATION_MIN_LEAD_MINUTES"],
     VUS: process.env["VUS"],
