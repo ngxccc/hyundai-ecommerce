@@ -30,7 +30,6 @@
     "db:seed": "doppler run -c dev -- bun scripts/seed.ts",
     "db:seed:test": "doppler run -c stg -- bun scripts/seed.ts",
     "db:studio": "doppler run -- drizzle-kit studio --config drizzle.config.ts",
-    "docs:gen": "bun run scripts/generate-docs.ts",
     "lint": "eslint . --fix --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
     "test": "bun test src/ --bail",

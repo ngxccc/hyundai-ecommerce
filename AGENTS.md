@@ -54,13 +54,13 @@ MUST read the corresponding standard file under `docs/standards/` before modifyi
 
 - `apps/storefront/` — Next.js 16 Customer Storefront (`app/[locale]/(shop)`, `(portal)`, API Route Handlers, Cron jobs)
 - `apps/admin/` — Next.js 16 Backoffice Admin Portal (Quản lý sản phẩm, danh mục, thương hiệu, kho, đơn hàng, báo giá B2B)
-- `apps/docs/` — Documentation portal
 - `packages/database/` — Drizzle ORM schemas, migrations, DTOs, validators, and pure service singletons (`src/services/`)
 - `packages/shared/` — Shared constants, utilities, PayOS client, and rate limiters
 - `packages/ui/` — Shared React UI components (Tailwind CSS, Radix UI)
 - `packages/eslint-config/` & `packages/typescript-config/` — Monorepo configs
 - `docs/standards/` — Engineering operational standards
 - `docs/adr/` — Architectural Decision Records
+
 ---
 
 ## Working Guidelines & Skill Workflows

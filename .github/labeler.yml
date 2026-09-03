@@ -9,11 +9,6 @@
       - any-glob-to-any-file:
           - "apps/admin/**/*"
 
-"area:docs":
-  - changed-files:
-      - any-glob-to-any-file:
-          - "apps/docs/**/*"
-
 "area:core":
   - changed-files:
       - any-glob-to-any-file:

@@ -64,7 +64,6 @@ The repository is structured as a Turborepo monorepo with separated workspaces t
 
 - **apps/storefront**: The customer-facing e-commerce portal where users browse industrial power systems, manage carts, configure specifications, and request B2B quotes. Built using Next.js 16 and Next-Intl.
 - **apps/admin**: The internal admin dashboard for managing catalog entities (products, categories, brands), adjusting dealer pricing tiers, tracking warehouse stock, and handling B2B quote and deal negotiations.
-- **apps/docs**: Technical documentation website bootstrapped with Fumadocs, providing developers and operators with platform integration details.
 
 ### Shared Packages (packages/)
 

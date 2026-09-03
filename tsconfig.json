@@ -7,7 +7,6 @@
     { "path": "./packages/database" },
     { "path": "./packages/ui" },
     { "path": "./apps/admin" },
-    { "path": "./apps/storefront" },
-    { "path": "./apps/docs" }
+    { "path": "./apps/storefront" }
   ]
 }
