@@ -29,15 +29,6 @@
     },
     "lint": {
       "dependsOn": ["^lint"],
-      "cache": true,
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "eslint.config.*",
-        "**/*.{js,jsx,ts,tsx}",
-        "packages/eslint-config/**"
-      ]
-    },
-    "lint:fix": {
       "cache": false
     },
     "test": {

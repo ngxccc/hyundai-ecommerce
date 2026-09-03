@@ -31,7 +31,7 @@
     "db:seed:test": "doppler run -c stg -- bun scripts/seed.ts",
     "db:studio": "doppler run -- drizzle-kit studio --config drizzle.config.ts",
     "docs:gen": "bun run scripts/generate-docs.ts",
-    "lint": "eslint . --cache --cache-location .eslintcache",
+    "lint": "eslint . --fix --cache --cache-location .eslintcache",
     "lint:fix": "eslint . --fix --cache --cache-location .eslintcache",
     "test": "bun test src/ --bail",
     "test:integration": "doppler run -- bun test test/integration/"
@@ -47,14 +47,14 @@
     "postgres": "^3.4.9",
     "resend": "^6.25.0",
     "uuid": "^14.0.2",
-    "zod": "^4.5.4"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/shared": "workspace:*",
     "@nhatnang/typescript-config": "workspace:*",
-    "@types/bun": "^1",
-    "@types/node": "^26.4.0",
+    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "@types/uuid": "^11.0.0",
     "drizzle-kit": "^1.0.0-rc.5-ab785fc"
   }

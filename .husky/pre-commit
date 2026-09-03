@@ -1,2 +1,2 @@
 #!/bin/sh
-bun run lint:fix && bun run check-types && bunx lint-staged
+bun run lint && bun run check-types && bunx lint-staged

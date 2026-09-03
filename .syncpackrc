@@ -32,6 +32,12 @@
   ],
   "versionGroups": [
     {
+      "dependencyTypes": ["peer"],
+      "dependencies": ["**"],
+      "packages": ["**"],
+      "isIgnored": true
+    },
+    {
       "dependencies": ["next"],
       "packages": ["**"],
       "isIgnored": true
