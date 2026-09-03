@@ -1,56 +1,60 @@
 import {
   boolean,
   index,
+  numeric,
   snakeCase,
   text,
   timestamp,
   uniqueIndex,
   uuid,
   varchar,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
-import { userRoleEnum, userStatusEnum } from "./enums.schema";
-import { baseEntity } from "./helpers.schema";
+import { businessTypeEnum, userRoleEnum, userStatusEnum } from "./enums.schema";
+import { dealerTiers } from "./dealer-tier.schema";
+import { baseEntity, fullEntity } from "./helpers.schema";
 
 export const users = snakeCase.table(
   "users",
   {
-    ...baseEntity,
-    email: varchar({ length: 255 }).notNull(),
+    ...fullEntity,
     fullName: varchar({ length: 255 }).notNull(),
-    phoneNumber: varchar({ length: 20 }),
+    email: varchar({ length: 255 }).notNull(),
+    phoneNumber: varchar({ length: 20 }).notNull(),
     avatarUrl: text(),
+    passwordHash: text().notNull(),
+    role: userRoleEnum().default("CUSTOMER").notNull(),
+    status: userStatusEnum().default("ACTIVE").notNull(),
+    emailVerified: boolean().default(false).notNull(),
 
-    // Local Authentication (Nullable for OAuth users)
-    passwordHash: text(),
+    // B2B & Dealer Hierarchy
+    dealerTierId: uuid().references(() => dealerTiers.id, {
+      onDelete: "set null",
+    }),
+    parentId: uuid().references((): AnyPgColumn => users.id, {
+      onDelete: "set null",
+    }),
+    companyName: text(),
+    taxId: text(),
+    businessType: businessTypeEnum().default("END_USER").notNull(),
+    province: text(),
+    creditLimit: numeric({ precision: 15, scale: 2 }).default("0.00").notNull(),
+    currentDebt: numeric({ precision: 15, scale: 2 }).default("0.00").notNull(),
 
-    // OAuth Providers (Nullable, unique constraints)
-    googleId: varchar({ length: 255 }),
-    facebookId: varchar({ length: 255 }),
-
-    // Authorization & Account Lifecycle
-    role: userRoleEnum().default("user").notNull(),
-    status: userStatusEnum().default("pending_verification").notNull(),
-
+    // Verification & Password Reset
     verificationToken: varchar({ length: 255 }),
     verificationExpiresAt: timestamp({ withTimezone: true, mode: "date" }),
-
     resetPasswordToken: varchar({ length: 255 }),
     resetPasswordExpiresAt: timestamp({ withTimezone: true, mode: "date" }),
   },
   (table) => [
     uniqueIndex("users_email_uidx").on(table.email),
-    uniqueIndex("users_google_id_uidx").on(table.googleId),
-    uniqueIndex("users_facebook_id_uidx").on(table.facebookId),
-    uniqueIndex("users_verification_token_uidx").on(table.verificationToken),
-    index("users_verification_expires_at_idx")
-      .on(table.verificationExpiresAt)
-      .where(sql`${table.status} = 'pending_verification'`),
-    uniqueIndex("users_reset_password_token_uidx").on(table.resetPasswordToken),
-    index("users_reset_password_expires_at_idx")
-      .on(table.resetPasswordExpiresAt)
-      .where(sql`${table.resetPasswordToken} IS NOT NULL`),
-    index("users_phone_number_idx").on(table.phoneNumber),
+    uniqueIndex("users_phone_uidx").on(table.phoneNumber),
+    index("users_dealer_tier_idx").on(table.dealerTierId),
+    index("users_parent_id_idx").on(table.parentId),
+    index("users_role_idx").on(table.role),
+    index("users_status_idx").on(table.status),
+    index("users_created_at_idx").on(table.createdAt),
   ],
 );
 
@@ -72,6 +76,7 @@ export const refreshTokens = snakeCase.table(
     index("refresh_tokens_user_id_idx").on(table.userId),
   ],
 );
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type RefreshToken = typeof refreshTokens.$inferSelect;

@@ -73,7 +73,7 @@ function parseCliArgs() {
  */
 function printHelp(): void {
   console.log(`
-\x1b[1m\x1b[36m=== Ticket Booking Database Seeding Engine ===\x1b[0m
+    \x1b[1m\x1b[36m=== Hyundai E-Commerce Database Seeding Engine ===\x1b[0m
 
 \x1b[1mUSAGE:\x1b[0m
   $ bun run db:seed [options]
@@ -90,8 +90,9 @@ function printHelp(): void {
 \x1b[1mEXAMPLES:\x1b[0m
   $ bun run db:seed
   $ bun run db:seed --scope=reference
-  $ bun run db:seed --scope=genres,seat-types,users
-  $ bun run db:seed --scope=cinemas,movies
+  $ bun run db:seed --scope=dealer-tiers,users
+  $ bun run db:seed --scope=catalog,brands,categories,products
+  $ bun run db:seed --scope=operational,quotes,orders
   $ bun run db:seed --reset
   $ bun run db:seed --clean
 `);
@@ -139,16 +140,17 @@ async function main(): Promise<void> {
       `\n\x1b[1m\x1b[32m[SUCCESS]\x1b[0m Database seeding completed in \x1b[1m${String(summary.durationMs)}ms\x1b[0m:\n`,
     );
     console.table({
-      "Genres (Tier 1)": { Count: summary.genres },
-      "Seat Types (Tier 1)": { Count: summary.seatTypes },
-      "System Users (Tier 1)": { Count: summary.users },
-      "Cinemas (Tier 2)": { Count: summary.cinemas },
-      "Halls (Tier 2)": { Count: summary.halls },
-      "Physical Seats (Tier 2)": { Count: summary.seats },
-      "Movies (Tier 2)": { Count: summary.movies },
-      "Translations (Tier 2)": { Count: summary.movieTranslations },
-      "Shows (Tier 3)": { Count: summary.shows },
-      "Show Seats (Tier 3)": { Count: summary.showSeats },
+      "Dealer Tiers (Tier 1)": { Count: summary.dealerTiers },
+      "System & B2B Users (Tier 1)": { Count: summary.users },
+      "Brands (Tier 2)": { Count: summary.brands },
+      "Categories (Tier 2)": { Count: summary.categories },
+      "Products (Tier 2)": { Count: summary.products },
+      "Warehouses (Tier 2)": { Count: summary.warehouses },
+      "Warehouse Stocks (Tier 2)": { Count: summary.warehouseStocks },
+      "Quotes (Tier 3)": { Count: summary.quotes },
+      "Quote Items (Tier 3)": { Count: summary.quoteItems },
+      "Orders (Tier 3)": { Count: summary.orders },
+      "Order Items (Tier 3)": { Count: summary.orderItems },
     });
   } catch (error) {
     console.error(

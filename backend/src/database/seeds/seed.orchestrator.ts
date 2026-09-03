@@ -9,7 +9,7 @@ import type {
 } from "./types/seed.type";
 import { seedTier1Reference } from "./tiers/tier1-reference.seeder";
 import { seedTier2Catalog } from "./tiers/tier2-catalog.seeder";
-import { seedTier3Schedule } from "./tiers/tier3-schedule.seeder";
+import { seedTier3Operational } from "./tiers/tier3-operational.seeder";
 
 /**
  * Coordinates and executes database seeding across requested scopes and tiers.
@@ -22,16 +22,17 @@ export async function seedDatabase(options: SeedOptions): Promise<SeedSummary> {
   const normalizedScopes = normalizeSeedScopes(options.scope);
 
   const summary: SeedSummary = {
-    genres: 0,
-    seatTypes: 0,
+    dealerTiers: 0,
     users: 0,
-    cinemas: 0,
-    halls: 0,
-    seats: 0,
-    movies: 0,
-    movieTranslations: 0,
-    shows: 0,
-    showSeats: 0,
+    brands: 0,
+    categories: 0,
+    products: 0,
+    warehouses: 0,
+    warehouseStocks: 0,
+    quotes: 0,
+    quoteItems: 0,
+    orders: 0,
+    orderItems: 0,
     durationMs: 0,
     errors: [],
   };
@@ -43,46 +44,48 @@ export async function seedDatabase(options: SeedOptions): Promise<SeedSummary> {
 
     let tier1Result: Tier1SeedResult | undefined;
 
-    if (
-      isScopeActive(
-        normalizedScopes,
-        "reference",
-        "genres",
-        "seat-types",
-        "users",
-      )
-    ) {
+    if (isScopeActive(normalizedScopes, "reference", "dealer-tiers", "users")) {
       tier1Result = await seedTier1Reference(options.db, normalizedScopes);
-      summary.genres = tier1Result.genres.length;
-      summary.seatTypes = tier1Result.seatTypes.length;
+      summary.dealerTiers = tier1Result.dealerTiers.length;
       summary.users = tier1Result.users.length;
     }
 
     let tier2Result: Tier2SeedResult | undefined;
 
-    if (isScopeActive(normalizedScopes, "catalog", "cinemas", "movies")) {
+    if (
+      isScopeActive(
+        normalizedScopes,
+        "catalog",
+        "brands",
+        "categories",
+        "products",
+        "warehouses",
+      )
+    ) {
       tier2Result = await seedTier2Catalog(
         options.db,
         normalizedScopes,
         tier1Result,
       );
-      summary.cinemas = tier2Result.cinemas.length;
-      summary.halls = tier2Result.halls.length;
-      summary.seats = tier2Result.seatsCount;
-      summary.movies = tier2Result.movies.length;
-      summary.movieTranslations = tier2Result.movieTranslationsCount;
+      summary.brands = tier2Result.brands.length;
+      summary.categories = tier2Result.categories.length;
+      summary.products = tier2Result.products.length;
+      summary.warehouses = tier2Result.warehouses.length;
+      summary.warehouseStocks = tier2Result.warehouseStocksCount;
     }
 
     let tier3Result: Tier3SeedResult | undefined;
 
-    if (isScopeActive(normalizedScopes, "schedule", "shows")) {
-      tier3Result = await seedTier3Schedule(
+    if (isScopeActive(normalizedScopes, "operational", "quotes", "orders")) {
+      tier3Result = await seedTier3Operational(
         options.db,
         normalizedScopes,
         tier2Result,
       );
-      summary.shows = tier3Result.shows.length;
-      summary.showSeats = tier3Result.showSeatsCount;
+      summary.quotes = tier3Result.quotes.length;
+      summary.quoteItems = tier3Result.quoteItemsCount;
+      summary.orders = tier3Result.orders.length;
+      summary.orderItems = tier3Result.orderItemsCount;
     }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);

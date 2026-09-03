@@ -14,20 +14,8 @@ let cachedSeedPasswordHash: string | undefined;
  * @returns Salted Scrypt password hash string
  */
 export async function getSeedPasswordHash(): Promise<string> {
-  cachedSeedPasswordHash ??= await hashPassword(DEFAULT_SEED_PASSWORD);
-  return cachedSeedPasswordHash;
+  return (cachedSeedPasswordHash ??= await hashPassword(DEFAULT_SEED_PASSWORD));
 }
-
-/**
- * Standard daily showtime slot times (Asia/Ho_Chi_Minh UTC+7).
- */
-export const STANDARD_SHOW_SLOTS = [
-  "09:30",
-  "13:00",
-  "16:30",
-  "19:45",
-  "22:15",
-] as const;
 
 /**
  * Valid atomic scope arguments supported by the database seeding engine.
@@ -35,24 +23,26 @@ export const STANDARD_SHOW_SLOTS = [
 export const SEED_SCOPES = [
   "all",
   "reference",
-  "catalog",
-  "schedule",
-  "genres",
-  "seat-types",
+  "dealer-tiers",
   "users",
-  "cinemas",
-  "movies",
-  "shows",
+  "catalog",
+  "brands",
+  "categories",
+  "products",
+  "warehouses",
+  "operational",
+  "quotes",
+  "orders",
 ] as const;
 
 export type SeedScope = (typeof SEED_SCOPES)[number];
 
 /**
  * Parses and normalizes single string, comma-separated string, or array of scopes into a unique array of SeedScope.
+ * Throws an explicit Error with descriptive feedback if any unrecognized scope is encountered.
  *
- * @param input - Raw scope parameter from CLI or API
- * @returns Cleaned array of unique, validated SeedScope values
- * @throws Error if an unrecognized scope is encountered
+ * @param input - Raw scope string, comma-delimited string, or array of scope tokens
+ * @returns Deduplicated array of valid SeedScope tokens
  */
 export function normalizeSeedScopes(
   input?: SeedScope | SeedScope[] | (string & {}),
@@ -61,33 +51,37 @@ export function normalizeSeedScopes(
     return ["all"];
   }
 
-  const rawList = Array.isArray(input) ? input : input.split(",");
-  const normalized: SeedScope[] = [];
+  const rawTokens = Array.isArray(input) ? input : String(input).split(",");
 
-  for (const item of rawList) {
-    const trimmed = item.trim();
-    if (!trimmed) continue;
+  const cleaned = rawTokens
+    .map((s) => s.trim().toLowerCase())
+    .filter((s): s is string => s.length > 0);
 
-    if (!SEED_SCOPES.includes(trimmed as SeedScope)) {
-      throw new Error(
-        `Invalid seeding scope: "${trimmed}". Allowed scopes are: ${SEED_SCOPES.join(", ")}`,
-      );
-    }
-
-    if (!normalized.includes(trimmed as SeedScope)) {
-      normalized.push(trimmed as SeedScope);
-    }
+  if (cleaned.length === 0) {
+    return ["all"];
   }
 
-  return normalized.length === 0 ? ["all"] : normalized;
+  const validSet = new Set<string>(SEED_SCOPES);
+  const normalized: SeedScope[] = [];
+
+  for (const token of cleaned) {
+    if (!validSet.has(token)) {
+      throw new Error(
+        `Invalid seed scope "${token}". Valid scopes: ${SEED_SCOPES.join(", ")}`,
+      );
+    }
+    normalized.push(token as SeedScope);
+  }
+
+  return [...new Set(normalized)];
 }
 
 /**
  * Evaluates whether any of the target scopes match the active scope list (handling 'all' wildcard).
  *
- * @param activeScopes - Normalized active scopes
- * @param targets - Scopes required for a specific execution block
- * @returns true if 'all' is present or any target matches activeScopes
+ * @param activeScopes - Normalized list of requested seed scopes
+ * @param targets - Target scopes required to execute a specific tier
+ * @returns True if 'all' is present or at least one target scope is explicitly active
  */
 export function isScopeActive(
   activeScopes: SeedScope[],

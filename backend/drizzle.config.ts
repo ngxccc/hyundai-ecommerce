@@ -13,11 +13,9 @@ export default defineConfig({
         port: Number(process.env["DB_PORT"]) || 5432,
         user: process.env["DB_USERNAME"] ?? "postgres",
         password: process.env["DB_PASSWORD"] ?? "postgrespassword",
-        database: process.env["DB_DATABASE"] ?? "ticket_booking",
+        database: process.env["DB_DATABASE"] ?? "hyundai_ecommerce",
         ssl: false,
       },
-  // cast tên biến ts thành camel
-  // chỉ tác dụng khi pull,
   introspect: {
     casing: "camel",
   },

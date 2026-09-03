@@ -59,11 +59,11 @@ export function createDatabasePool(
 }
 
 /**
- * Creates a typesafe Drizzle ORM client instance with schema relations and JIT compilation enabled.
+ * Instantiates the primary Drizzle ORM client wrapped with query profiling and schema relationships.
  *
- * @param pool - PostgreSQL connection pool client
- * @param logger - Optional Drizzle query logger instance
- * @returns Strongly typed DrizzleDB instance
+ * @param pool - Initialized pg connection pool
+ * @param logger - Optional Drizzle query logger
+ * @returns Drizzle database instance
  */
 export function createDrizzleClient(
   pool: Pool,

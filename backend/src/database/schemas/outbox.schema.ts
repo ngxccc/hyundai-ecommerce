@@ -19,7 +19,7 @@ export const outboxEvents = snakeCase.table(
       .notNull(),
     eventType: varchar({ length: 255 }).notNull(),
     payload: jsonb().notNull(),
-    status: outboxEventStatusEnum().default("pending").notNull(),
+    status: outboxEventStatusEnum().default("PENDING").notNull(),
     processedAt: timestamp({ withTimezone: true, mode: "date" }),
     attempts: integer().default(0).notNull(),
     lastError: text(),
@@ -31,5 +31,6 @@ export const outboxEvents = snakeCase.table(
     ),
   ],
 );
+
 export type OutboxEvent = typeof outboxEvents.$inferSelect;
 export type NewOutboxEvent = typeof outboxEvents.$inferInsert;

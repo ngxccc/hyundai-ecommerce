@@ -65,28 +65,7 @@ async function forceBaseline() {
   }
 
   const sqlFilePath = join(drizzleDir, latestMigrationName, "migration.sql");
-  const customSql = `
-CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;--> statement-breakpoint
-CREATE OR REPLACE FUNCTION public.show_occupied_range(start_t timestamptz, end_t timestamptz)
-RETURNS tstzrange AS $$
-  SELECT tstzrange(start_t, end_t + interval '15 minutes', '[)');
-$$ LANGUAGE sql IMMUTABLE;--> statement-breakpoint
-ALTER TABLE "shows" DROP CONSTRAINT IF EXISTS "no_hall_schedule_overlap";--> statement-breakpoint
-ALTER TABLE "shows" ADD CONSTRAINT "no_hall_schedule_overlap"
-EXCLUDE USING gist (
-  hall_id WITH =,
-  public.show_occupied_range(start_time, end_time) WITH &&
-);
-`;
-  const existingContent = await Bun.file(sqlFilePath).text();
-  const shouldAppend = !existingContent.includes("show_occupied_range");
-  const fullSqlContent = shouldAppend
-    ? existingContent + customSql
-    : existingContent;
-
-  if (shouldAppend) {
-    await Bun.write(sqlFilePath, fullSqlContent);
-  }
+  const fullSqlContent = await Bun.file(sqlFilePath).text();
   const hash = createHash("sha256").update(fullSqlContent).digest("hex");
   const createdAt = Date.now();
 

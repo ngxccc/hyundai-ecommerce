@@ -1,135 +1,168 @@
 import type { DrizzleDB } from "@/database/database.module";
-import { genres, seatTypes, users } from "@/database/schemas";
-import { MASTER_GENRES } from "../data/genres.data";
-import { SEAT_TYPES_DATA } from "../data/seat-types.data";
-import { SEED_USERS_DATA } from "../data/users.data";
+import { dealerTiers, users } from "@/database/schemas";
 import {
   getSeedPasswordHash,
   isScopeActive,
   type SeedScope,
 } from "../constants/seed.constant";
-import type {
-  SeededGenreRef,
-  SeededSeatTypeRef,
-  SeededUserRef,
-  Tier1SeedResult,
-} from "../types/seed.type";
+import type { Tier1SeedResult } from "../types/seed.type";
 
-/**
- * Seeds master movie genres idempotently using selective projection.
- *
- * @param db - Drizzle database client instance
- * @returns List of seeded genre reference entities (id, name)
- */
-export async function seedGenres(db: DrizzleDB): Promise<SeededGenreRef[]> {
-  await db
-    .insert(genres)
-    .values(MASTER_GENRES)
-    .onConflictDoNothing({ target: genres.name });
+export const SILVER_TIER_ID = "019de19f-863e-7b1d-ab3d-4539b4f9b950";
+export const GOLD_TIER_ID = "019de19f-ecc7-71c1-a06c-2377ca8d5a33";
+export const PLATINUM_TIER_ID = "019de1a0-0705-729b-a369-9ccb56fb8a8d";
 
-  return db
-    .select({
-      id: genres.id,
-      name: genres.name,
-    })
-    .from(genres);
-}
+export const ADMIN_USER_ID = "019de1a0-0000-7000-8000-000000000001";
+export const DEALER1_APPROVER_ID = "019de1a0-1234-71bf-8082-ec510823ed3c";
+export const DEALER1_PURCHASER_ID = "019de1a0-1234-71bf-8082-ec510823ed3d";
+export const DEALER2_APPROVER_ID = "019de1a0-5678-71bf-8082-f37ae97f09e4";
+export const CUSTOMER_USER_ID = "019de1a0-9012-735c-8639-3e1d67c3f6c5";
 
-/**
- * Seeds standard seat types and dynamic pricing multipliers idempotently.
- *
- * @param db - Drizzle database client instance
- * @returns List of seeded seat type reference entities (id, name, priceMultiplier)
- */
-export async function seedSeatTypes(
-  db: DrizzleDB,
-): Promise<SeededSeatTypeRef[]> {
-  await db
-    .insert(seatTypes)
-    .values(SEAT_TYPES_DATA)
-    .onConflictDoNothing({ target: seatTypes.name });
-
-  return db
-    .select({
-      id: seatTypes.id,
-      name: seatTypes.name,
-      priceMultiplier: seatTypes.priceMultiplier,
-    })
-    .from(seatTypes);
-}
-
-/**
- * Seeds default verified system users idempotently with memoized Scrypt password hash.
- *
- * @param db - Drizzle database client instance
- * @returns List of seeded user reference entities (id, email, role, fullName)
- */
-export async function seedUsers(db: DrizzleDB): Promise<SeededUserRef[]> {
-  const defaultPasswordHash = await getSeedPasswordHash();
-  const usersToInsert = SEED_USERS_DATA.map((u) => ({
-    email: u.email,
-    fullName: u.fullName,
-    phoneNumber: u.phoneNumber,
-    role: u.role,
-    status: u.status,
-    passwordHash: defaultPasswordHash,
-  }));
-
-  await db
-    .insert(users)
-    .values(usersToInsert)
-    .onConflictDoUpdate({
-      target: users.email,
-      set: {
-        fullName: users.fullName,
-        phoneNumber: users.phoneNumber,
-        role: users.role,
-        status: users.status,
-        passwordHash: defaultPasswordHash,
-      },
-    });
-
-  return db
-    .select({
-      id: users.id,
-      email: users.email,
-      role: users.role,
-      fullName: users.fullName,
-    })
-    .from(users);
-}
-
-/**
- * Coordinates and executes Tier 1 Master Reference seeding across active scopes.
- *
- * @param db - Drizzle database client instance
- * @param scopes - Active normalized seeding scopes
- * @returns Aggregate result containing seeded reference entities
- */
 export async function seedTier1Reference(
   db: DrizzleDB,
-  scopes: SeedScope[] = ["all"],
+  scopes: SeedScope[],
 ): Promise<Tier1SeedResult> {
   const result: Tier1SeedResult = {
-    genres: [],
-    seatTypes: [],
+    dealerTiers: [],
     users: [],
   };
 
-  const shouldSeedGenres = isScopeActive(scopes, "reference", "genres");
-  const shouldSeedSeatTypes = isScopeActive(scopes, "reference", "seat-types");
-  const shouldSeedUsers = isScopeActive(scopes, "reference", "users");
+  // 1. Seed Dealer Tiers
+  if (isScopeActive(scopes, "reference", "dealer-tiers")) {
+    const tierData = [
+      {
+        id: SILVER_TIER_ID,
+        nameVi: "Đại lý Bạc",
+        nameEn: "Silver Dealer",
+        discountPercentage: "5.00",
+        minimumSpend: "50000000.00",
+      },
+      {
+        id: GOLD_TIER_ID,
+        nameVi: "Đại lý Vàng",
+        nameEn: "Gold Dealer",
+        discountPercentage: "10.00",
+        minimumSpend: "200000000.00",
+      },
+      {
+        id: PLATINUM_TIER_ID,
+        nameVi: "Đại lý Bạch Kim",
+        nameEn: "Platinum Dealer",
+        discountPercentage: "15.00",
+        minimumSpend: "1000000000.00",
+      },
+    ];
 
-  if (shouldSeedGenres) {
-    result.genres = await seedGenres(db);
+    await db.insert(dealerTiers).values(tierData).onConflictDoNothing();
+
+    result.dealerTiers = await db
+      .select({
+        id: dealerTiers.id,
+        nameVi: dealerTiers.nameVi,
+        discountPercentage: dealerTiers.discountPercentage,
+      })
+      .from(dealerTiers);
   }
 
-  if (shouldSeedSeatTypes) {
-    result.seatTypes = await seedSeatTypes(db);
-  }
+  // 2. Seed Users
+  if (isScopeActive(scopes, "reference", "users")) {
+    const passwordHash = await getSeedPasswordHash();
 
-  if (shouldSeedUsers) {
-    result.users = await seedUsers(db);
+    const userData = [
+      {
+        id: ADMIN_USER_ID,
+        fullName: "Quản trị viên Hệ thống",
+        email: "admin@hyundai-nhatnang.vn",
+        phoneNumber: "0900000001",
+        passwordHash,
+        role: "ADMIN" as const,
+        status: "ACTIVE" as const,
+        emailVerified: true,
+        businessType: "COMMERCIAL" as const,
+        companyName: "Hyundai Nhật Năng Co., Ltd",
+        province: "Thành phố Hồ Chí Minh",
+        creditLimit: "0.00",
+        currentDebt: "0.00",
+      },
+      {
+        id: DEALER1_APPROVER_ID,
+        fullName: "Nguyễn Văn Hùng (Nhật Năng Partner)",
+        email: "hung.nguyen@nhatnangpartner.vn",
+        phoneNumber: "0912345678",
+        passwordHash,
+        role: "DEALER_APPROVER" as const,
+        status: "ACTIVE" as const,
+        emailVerified: true,
+        dealerTierId: GOLD_TIER_ID,
+        companyName: "Công ty Cổ phần Cơ điện Miền Nam",
+        taxId: "0314567890",
+        businessType: "DEALER" as const,
+        province: "Thành phố Hồ Chí Minh",
+        creditLimit: "500000000.00",
+        currentDebt: "50000000.00",
+      },
+      {
+        id: DEALER1_PURCHASER_ID,
+        fullName: "Trần Văn Nam (Nhân viên Mua hàng)",
+        email: "nhanvien.hung@nhatnangpartner.vn",
+        phoneNumber: "0912345679",
+        passwordHash,
+        role: "DEALER_PURCHASER" as const,
+        status: "ACTIVE" as const,
+        emailVerified: true,
+        dealerTierId: GOLD_TIER_ID,
+        parentId: DEALER1_APPROVER_ID,
+        companyName: "Công ty Cổ phần Cơ điện Miền Nam",
+        taxId: "0314567890",
+        businessType: "DEALER" as const,
+        province: "Thành phố Hồ Chí Minh",
+        creditLimit: "0.00",
+        currentDebt: "0.00",
+      },
+      {
+        id: DEALER2_APPROVER_ID,
+        fullName: "Trần Thanh Sơn",
+        email: "son.tran@vietnamconstruct.com",
+        phoneNumber: "0987654321",
+        passwordHash,
+        role: "DEALER_APPROVER" as const,
+        status: "ACTIVE" as const,
+        emailVerified: true,
+        dealerTierId: SILVER_TIER_ID,
+        companyName: "Tổng Công ty Xây dựng Việt Nam",
+        taxId: "0107894561",
+        businessType: "CONTRACTOR" as const,
+        province: "Hà Nội",
+        creditLimit: "200000000.00",
+        currentDebt: "0.00",
+      },
+      {
+        id: CUSTOMER_USER_ID,
+        fullName: "Lê Minh Tâm",
+        email: "tam.le@gmail.com",
+        phoneNumber: "0909123456",
+        passwordHash,
+        role: "CUSTOMER" as const,
+        status: "ACTIVE" as const,
+        emailVerified: false,
+        businessType: "END_USER" as const,
+        province: "Đà Nẵng",
+        creditLimit: "0.00",
+        currentDebt: "0.00",
+      },
+    ];
+
+    await db.insert(users).values(userData).onConflictDoNothing();
+
+    result.users = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        role: users.role,
+        fullName: users.fullName,
+        dealerTierId: users.dealerTierId,
+        creditLimit: users.creditLimit,
+      })
+      .from(users);
   }
 
   return result;
