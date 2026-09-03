@@ -11,18 +11,13 @@ import {
   varchar,
   index,
 } from "drizzle-orm/pg-core";
+import { QUOTE_STATUSES, type QuoteStatus } from "@nhatnang/core";
 import { users } from "./auth.schema";
 import { products } from "./product.schema";
 import { baseEntity } from "./helpers.schema";
 import { orders } from "./order.schema";
 
-export const quoteStatusEnum = pgEnum("quote_status", [
-  "pending_review",
-  "negotiating",
-  "approved",
-  "rejected",
-  "expired",
-]);
+export const quoteStatusEnum = pgEnum("quote_status", QUOTE_STATUSES);
 
 export const quotes = snakeCase.table(
   "quote",
@@ -113,3 +108,5 @@ export type TQuoteItem = typeof quoteItems.$inferSelect;
 export type TNewQuoteItem = typeof quoteItems.$inferInsert;
 export type TQuoteMessage = typeof quoteMessages.$inferSelect;
 export type TNewQuoteMessage = typeof quoteMessages.$inferInsert;
+
+export type { QuoteStatus };

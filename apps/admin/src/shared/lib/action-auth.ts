@@ -1,6 +1,5 @@
 import { getCachedSession } from "./session";
-import type { UserRole } from "@nhatnang/database/schemas";
-import { AuthError } from "@nhatnang/core";
+import { AuthError, type UserRole } from "@nhatnang/core";
 
 export const getAuthErrorMessage = (
   error: AuthError,

@@ -10,7 +10,7 @@ import {
 } from "@nhatnang/ui/components/ui/tabs";
 import { AlertCircle } from "lucide-react";
 import type { ComplexOrder } from "@nhatnang/database/services";
-import type { UserRole } from "@nhatnang/database/schemas";
+import type { UserRole } from "@nhatnang/core";
 import { OrdersTable } from "./orders-table";
 import { OrdersMobileList } from "./orders-mobile-list";
 import { OrderPagination } from "./order-pagination";

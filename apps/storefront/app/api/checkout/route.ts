@@ -15,10 +15,8 @@ import {
   makePayOSDescription,
 } from "@nhatnang/shared/lib/payos";
 import { NextResponse, connection } from "next/server";
-import type {
-  CreateOrderDTO,
-  CheckoutRequestBody,
-} from "@nhatnang/database/dtos";
+import type { CreateOrderDTO } from "@nhatnang/database/dtos";
+import { checkoutRequestSchema } from "@nhatnang/database/validators";
 
 export async function POST(request: Request) {
   await connection();
@@ -49,36 +47,25 @@ export async function POST(request: Request) {
         { status: HTTP_STATUS.UNAUTHORIZED },
       );
     }
-    const body = (await request.json()) as CheckoutRequestBody;
-    const { shippingAddress, paymentMethod, paymentOption } = body;
+    const rawBody = await request.json().catch(() => null);
+    const parsed = checkoutRequestSchema.safeParse(rawBody);
+    if (!parsed.success) {
+      const firstIssue = parsed.error.issues[0];
+      const errorMessage =
+        firstIssue?.path[0] === "paymentMethod"
+          ? "errors.invalidPaymentMethod"
+          : firstIssue?.path[0] === "paymentOption"
+            ? "errors.invalidPaymentOption"
+            : "errors.missingRequiredFields";
+      return NextResponse.json(
+        { success: false, error: errorMessage },
+        { status: HTTP_STATUS.BAD_REQUEST },
+      );
+    }
+    const { shippingAddress, paymentMethod, paymentOption } = parsed.data;
 
     // Calculate shipping fee server-side (free shipping by default)
     const shippingFee = 0;
-
-    if (!shippingAddress || !paymentMethod || !paymentOption) {
-      return NextResponse.json(
-        { success: false, error: "errors.missingRequiredFields" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
-    }
-
-    if (
-      paymentMethod !== "PAYOS" &&
-      paymentMethod !== "CASH" &&
-      paymentMethod !== "TRADE_CREDIT"
-    ) {
-      return NextResponse.json(
-        { success: false, error: "errors.invalidPaymentMethod" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
-    }
-
-    if (paymentOption !== "DEPOSIT" && paymentOption !== "FULL") {
-      return NextResponse.json(
-        { success: false, error: "errors.invalidPaymentOption" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
-    }
 
     // 1. Fetch user cart and calculate server-side subtotal
     const cart = await cartService.getOrCreateCart(session.user.id);

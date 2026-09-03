@@ -12,7 +12,7 @@ import {
   getStatusDetails,
   getPaymentStatusDetails,
 } from "./order-status-utils";
-import type { UserRole } from "@nhatnang/database/schemas";
+import type { UserRole } from "@nhatnang/core";
 import { ShippingAddressCard } from "./shipping-address-card";
 import { BuyerInfoCard } from "./buyer-info-card";
 import { OrderProgress } from "./order-progress";

@@ -9,25 +9,18 @@ import {
   numeric,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
+import {
+  USER_ROLES,
+  BUSINESS_TYPES,
+  type UserRole,
+  type BusinessType,
+} from "@nhatnang/core";
 import { dealerTiers } from "./dealer-tier.schema";
 import { fullEntity } from "./helpers.schema";
 
-export const userRoleEnum = pgEnum("user_role", [
-  "SUPER_ADMIN",
-  "SALES_REPRESENTATIVE",
-  "ACCOUNTANT",
-  "WAREHOUSE_MANAGER",
-  "DEALER_APPROVER",
-  "DEALER_PURCHASER",
-  "CUSTOMER",
-]);
+export const userRoleEnum = pgEnum("user_role", USER_ROLES);
 
-export const businessTypeEnum = pgEnum("business_type", [
-  "DEALER",
-  "CONTRACTOR",
-  "END_USER",
-  "DISTRIBUTOR",
-]);
+export const businessTypeEnum = pgEnum("business_type", BUSINESS_TYPES);
 
 export const users = snakeCase.table(
   "user",
@@ -141,4 +134,4 @@ export type TUser = typeof users.$inferSelect;
 export type TNewUser = typeof users.$inferInsert;
 export type TSession = typeof sessions.$inferSelect;
 
-export type UserRole = (typeof userRoleEnum.enumValues)[number];
+export type { UserRole, BusinessType };

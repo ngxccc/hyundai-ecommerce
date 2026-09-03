@@ -1,17 +1,8 @@
 import type {
-  PaymentMethod,
-  PaymentTransactionType,
   TOrder,
   TOrderItem,
   TPayment,
 } from "../schemas";
-
-export interface CheckoutRequestBody {
-  shippingAddress: string;
-  paymentMethod: PaymentMethod;
-  paymentOption: PaymentTransactionType;
-  shippingFee?: number;
-}
 
 export type CreateOrderDTO = Pick<
   TOrder,

@@ -16,7 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@nhatnang/ui/components/ui/alert-dialog";
 import type { ComplexOrder } from "@nhatnang/database/services";
-import type { UserRole } from "@nhatnang/database/schemas";
+import type { UserRole } from "@nhatnang/core";
 
 interface B2BApprovalBannerProps {
   order: ComplexOrder;

@@ -7,40 +7,34 @@ import {
   uuid,
   integer,
 } from "drizzle-orm/pg-core";
+import {
+  ORDER_STATUSES,
+  PAYMENT_METHODS,
+  ORDER_PAYMENT_STATUSES,
+  APPROVAL_STATUSES,
+  type OrderStatus,
+  type PaymentMethod,
+  type OrderPaymentStatus,
+  type ApprovalStatus,
+} from "@nhatnang/core";
 import { users } from "./auth.schema";
 import { baseEntity } from "./helpers.schema";
 import { products } from "./product.schema";
 import { sql } from "drizzle-orm";
 
-export const orderStatusEnum = pgEnum("order_status", [
-  "PENDING",
-  "PROCESSING",
-  "SHIPPED",
-  "DELIVERED",
-  "CANCELLED",
-  "REFUNDED",
-  "REFUND_PENDING",
-  "SUSPICIOUS_PAYMENT_HOLD",
-  "CANCELLATION_REQUESTED",
-]);
+export const orderStatusEnum = pgEnum("order_status", ORDER_STATUSES);
 
-export const paymentMethodEnum = pgEnum("payment_method", [
-  "TRADE_CREDIT",
-  "PAYOS",
-  "CASH",
-]);
+export const paymentMethodEnum = pgEnum("payment_method", PAYMENT_METHODS);
 
-export const orderPaymentStatusEnum = pgEnum("order_payment_status", [
-  "UNPAID",
-  "DEPOSIT_PAID",
-  "FULLY_PAID",
-  "PENDING_VERIFICATION",
-]);
+export const orderPaymentStatusEnum = pgEnum(
+  "order_payment_status",
+  ORDER_PAYMENT_STATUSES,
+);
 
-export const approvalStatusEnum = pgEnum("approval_status", [
-  "APPROVED",
-  "PENDING_APPROVAL",
-]);
+export const approvalStatusEnum = pgEnum(
+  "approval_status",
+  APPROVAL_STATUSES,
+);
 
 export const orders = snakeCase.table(
   "order",
@@ -95,8 +89,9 @@ export type TNewOrder = typeof orders.$inferInsert;
 export type TOrderItem = typeof orderItems.$inferSelect;
 export type TNewOrderItem = typeof orderItems.$inferInsert;
 
-export type PaymentMethod = (typeof paymentMethodEnum.enumValues)[number];
-export type OrderPaymentStatus =
-  (typeof orderPaymentStatusEnum.enumValues)[number];
-export type OrderStatus = (typeof orderStatusEnum.enumValues)[number];
-export type ApprovalStatus = (typeof approvalStatusEnum.enumValues)[number];
+export type {
+  PaymentMethod,
+  OrderPaymentStatus,
+  OrderStatus,
+  ApprovalStatus,
+};

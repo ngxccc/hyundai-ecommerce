@@ -15,7 +15,7 @@ import {
 import { CreditCard, Landmark, Check } from "lucide-react";
 import { generateRepaymentLinkAction } from "../actions/repayment.action";
 import { priceFormatter } from "@nhatnang/shared/lib/utils";
-import type { PaymentMethod } from "@nhatnang/database/schemas";
+import type { PaymentMethod } from "@nhatnang/core";
 
 interface DebtRepaymentProps {
   creditLimit: number;

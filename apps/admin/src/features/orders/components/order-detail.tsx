@@ -31,7 +31,7 @@ import {
   verifyCashPaymentAction,
   approveOrderCancellationAction,
 } from "../actions";
-import type { UserRole } from "@nhatnang/database/schemas";
+import type { UserRole } from "@nhatnang/core";
 import {
   Stepper,
   StepperItem,
