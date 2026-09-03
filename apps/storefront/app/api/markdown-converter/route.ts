@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import TurndownService from "turndown";
 import { env } from "@/env";
-
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
 
 interface CacheEntry {
   markdown: string;
@@ -149,7 +149,7 @@ export async function GET(request: NextRequest | Request) {
     !/^\/[a-zA-Z0-9_\-./]+(\?[a-zA-Z0-9_=&%.-]*)?$/.test(rawPath)
   ) {
     return new Response("Invalid path parameter: must be a relative path", {
-      status: 400,
+      status: HTTP_STATUS.BAD_REQUEST,
     });
   }
   // Use trusted application origin from environment configuration
@@ -158,12 +158,16 @@ export async function GET(request: NextRequest | Request) {
   try {
     const parsed = new URL(rawPath, trustedOrigin);
     if (parsed.origin !== targetUrl.origin) {
-      return new Response("Forbidden: origin mismatch", { status: 403 });
+      return new Response("Forbidden: origin mismatch", {
+        status: HTTP_STATUS.FORBIDDEN,
+      });
     }
     targetUrl.pathname = parsed.pathname;
     targetUrl.search = parsed.search;
   } catch {
-    return new Response("Invalid path parameter", { status: 400 });
+    return new Response("Invalid path parameter", {
+      status: HTTP_STATUS.BAD_REQUEST,
+    });
   }
 
   const targetPath = targetUrl.pathname + targetUrl.search;
@@ -215,7 +219,14 @@ export async function GET(request: NextRequest | Request) {
       headingStyle: "atx",
       codeBlockStyle: "fenced",
     });
-    turndownService.remove(["script", "style", "head", "noscript", "template", "iframe"]);
+    turndownService.remove([
+      "script",
+      "style",
+      "head",
+      "noscript",
+      "template",
+      "iframe",
+    ]);
 
     let markdown = turndownService.turndown(mainHtml);
 
@@ -241,7 +252,7 @@ export async function GET(request: NextRequest | Request) {
   } catch (error) {
     console.error("Error converting HTML to Markdown:", error);
     return new Response("Internal Server Error during conversion", {
-      status: 500,
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
     });
   }
 }

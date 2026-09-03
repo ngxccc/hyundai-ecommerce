@@ -1,14 +1,15 @@
 import { newsService } from "@/shared/services";
-import { NextResponse } from "next/server";
-
+import { jsonSuccess, jsonError } from "@nhatnang/shared";
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
 export async function GET() {
   try {
     const data = await newsService.getLatest();
-    return NextResponse.json(
-      { status: true, data },
-      { status: 200 },
-    );
+    return jsonSuccess(data);
   } catch {
-    return NextResponse.json({ status: false, data: [] }, { status: 500 });
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: "Failed to fetch latest news",
+      instance: "/api/news",
+    });
   }
 }

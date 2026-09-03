@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
 export function GET(request: NextRequest) {
   const origin = request.nextUrl.origin;
 
@@ -16,7 +16,7 @@ export function GET(request: NextRequest) {
   };
 
   return NextResponse.json(config, {
-    status: 200,
+    status: HTTP_STATUS.OK,
     headers: {
       "Cache-Control": "public, max-age=86400, stale-while-revalidate=3600",
     },
@@ -25,7 +25,7 @@ export function GET(request: NextRequest) {
 
 export function HEAD() {
   return new NextResponse(null, {
-    status: 200,
+    status: HTTP_STATUS.OK,
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "public, max-age=86400, stale-while-revalidate=3600",

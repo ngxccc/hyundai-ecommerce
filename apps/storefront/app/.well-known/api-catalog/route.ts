@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
 export function GET(request: NextRequest) {
   const origin = request.nextUrl.origin;
 
@@ -31,7 +31,7 @@ export function GET(request: NextRequest) {
   };
 
   return new NextResponse(JSON.stringify(catalog), {
-    status: 200,
+    status: HTTP_STATUS.OK,
     headers: {
       "Content-Type":
         'application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"',
@@ -44,7 +44,7 @@ export function HEAD(request: NextRequest) {
   const origin = request.nextUrl.origin;
 
   return new NextResponse(null, {
-    status: 200,
+    status: HTTP_STATUS.OK,
     headers: {
       "Content-Type":
         'application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"',

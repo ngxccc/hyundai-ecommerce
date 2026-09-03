@@ -1,8 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { jsonError } from "@nhatnang/shared";
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { quotesService } from "@nhatnang/database/services";
 import { requireAuth } from "@/shared/lib/action-auth";
 import { generateQuoteExcelWorkbook } from "@/features/quotes/services/quote-excel.service";
-
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -13,16 +14,17 @@ export async function GET(
 
     const quote = await quotesService.getComplexQuote(id);
     if (!quote) {
-      return NextResponse.json(
-        { success: false, error: "Quote not found" },
-        { status: 404 },
-      );
+      return jsonError({
+        status: HTTP_STATUS.NOT_FOUND,
+        detail: "Quote not found",
+        instance: `/api/quotes/${id}/excel`,
+      });
     }
 
     const excelBuffer = await generateQuoteExcelWorkbook(quote);
     const fileName = `Bao-Gia-Hyundai-${quote.quoteNumber ?? id.slice(0, 8)}.xlsx`;
     return new NextResponse(new Uint8Array(excelBuffer), {
-      status: 200,
+      status: HTTP_STATUS.OK,
       headers: {
         "Content-Type":
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -32,9 +34,10 @@ export async function GET(
     });
   } catch (error) {
     console.error("[QuoteExcelRoute]", error);
-    return NextResponse.json(
-      { success: false, error: "Failed to generate quote excel file" },
-      { status: 500 },
-    );
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: "Failed to generate quote excel file",
+      instance: "/api/quotes/[id]/excel",
+    });
   }
 }

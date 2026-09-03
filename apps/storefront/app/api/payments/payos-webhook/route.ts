@@ -6,24 +6,32 @@ import {
   generatePayOSSignature,
   type PayOSWebhookBody,
   PAYOS_SUCCESS_CODE,
+  jsonSuccess,
+  jsonError,
 } from "@nhatnang/shared";
-import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const rawBody: unknown = await request.json();
     if (!rawBody || typeof rawBody !== "object") {
-      return NextResponse.json(
-        { success: false, error: "errors.missingRequiredFields" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail: "errors.missingRequiredFields",
+        instance: "/api/payments/payos-webhook",
+      });
     }
 
     const { code, data, signature } = rawBody as PayOSWebhookBody;
-    if (!data || typeof data !== "object" || typeof signature !== "string" || !signature) {
-      return NextResponse.json(
-        { success: false, error: "errors.missingRequiredFields" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
+    if (
+      !data ||
+      typeof data !== "object" ||
+      typeof signature !== "string" ||
+      !signature
+    ) {
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail: "errors.missingRequiredFields",
+        instance: "/api/payments/payos-webhook",
+      });
     }
 
     // 1. Prevent payment spoofing via constant-time HMAC verification
@@ -39,10 +47,11 @@ export async function POST(request: Request) {
       !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
     ) {
       console.warn("[PayOS Webhook] Invalid webhook signature detected");
-      return NextResponse.json(
-        { success: false, error: "errors.invalidSignature" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail: "errors.invalidSignature",
+        instance: "/api/payments/payos-webhook",
+      });
     }
     // 2. Process payment state atomically in database
     const isSuccess =
@@ -74,10 +83,7 @@ export async function POST(request: Request) {
     }
 
     // 3. Acknowledge receipt to PayOS
-    return NextResponse.json(
-      { success: true, message: "Webhook processed successfully" },
-      { status: HTTP_STATUS.OK },
-    );
+    return jsonSuccess({ message: "Webhook processed successfully" });
   } catch (error) {
     const errObj = error as Record<string, unknown>;
     if (
@@ -88,9 +94,10 @@ export async function POST(request: Request) {
       throw error;
     }
     console.error("[PayOS Webhook] Error processing payment webhook:", error);
-    return NextResponse.json(
-      { success: false, error: "errors.internalServerError" },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-    );
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: "errors.internalServerError",
+      instance: "/api/payments/payos-webhook",
+    });
   }
 }

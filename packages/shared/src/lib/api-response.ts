@@ -87,8 +87,12 @@ export function jsonSuccess<T, M = unknown>(
   meta?: M,
   init?: ResponseInit,
 ): Response {
+  const isPlainObject =
+    typeof data === "object" && data !== null && !Array.isArray(data);
+
   return Response.json(
     {
+      ...(isPlainObject ? data : {}),
       ...apiSuccess(data, meta),
       status: true,
     },
@@ -120,6 +124,7 @@ export function jsonError(
     ...problem,
     success: false,
     status: false,
+    error: options.detail,
     ...(options.fallbackData !== undefined
       ? { data: options.fallbackData }
       : {}),

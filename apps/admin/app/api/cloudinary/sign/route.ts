@@ -1,9 +1,14 @@
 import { env } from "@/env";
 import { v2 as cloudinary } from "cloudinary";
-import { type NextRequest, NextResponse } from "next/server";
+import { type NextRequest } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { getCachedSession } from "@/shared/lib/session";
-import { checkRateLimitWithQueue } from "@nhatnang/shared";
+import {
+  checkRateLimitWithQueue,
+  jsonSuccess,
+  jsonError,
+} from "@nhatnang/shared";
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
 
 export async function POST(request: NextRequest) {
   const requestedLocale =
@@ -19,18 +24,28 @@ export async function POST(request: NextRequest) {
   try {
     // 1. Session and role check
     const session = await getCachedSession();
-    const allowedRoles = ["SUPER_ADMIN", "SALES_REPRESENTATIVE", "ACCOUNTANT", "WAREHOUSE_MANAGER"];
+    const allowedRoles = [
+      "SUPER_ADMIN",
+      "SALES_REPRESENTATIVE",
+      "ACCOUNTANT",
+      "WAREHOUSE_MANAGER",
+    ];
     if (!session?.user?.role || !allowedRoles.includes(session.user.role)) {
-      return NextResponse.json({ error: t("unauthorized") }, { status: 401 });
+      return jsonError({
+        status: HTTP_STATUS.UNAUTHORIZED,
+        detail: t("unauthorized"),
+        instance: "/api/cloudinary/sign",
+      });
     }
     // 2. Rate limiting check
     const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
     const limitResult = await checkRateLimitWithQueue(`sign:${ip}`, 20, "60 s");
     if (!limitResult.success) {
-      return NextResponse.json(
-        { error: t("rateLimitExceeded" as never) },
-        { status: 429 },
-      );
+      return jsonError({
+        status: HTTP_STATUS.TOO_MANY_REQUESTS,
+        detail: t("rateLimitExceeded" as never),
+        instance: "/api/cloudinary/sign",
+      });
     }
     const body = (await request.json()) as {
       paramsToSign: Record<string, string>;
@@ -42,8 +57,12 @@ export async function POST(request: NextRequest) {
       env.CLOUDINARY_API_SECRET,
     );
 
-    return NextResponse.json({ signature });
+    return jsonSuccess({ signature });
   } catch {
-    return NextResponse.json({ error: t("signFailed") }, { status: 500 });
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: t("signFailed"),
+      instance: "/api/cloudinary/sign",
+    });
   }
 }

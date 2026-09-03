@@ -1,8 +1,12 @@
-import { NextResponse, connection } from "next/server";
+import { connection } from "next/server";
 import { getCachedSession } from "@/shared/lib/session";
 import { headers } from "next/headers";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
-import { checkRateLimitWithQueue } from "@nhatnang/shared";
+import {
+  checkRateLimitWithQueue,
+  jsonSuccess,
+  jsonError,
+} from "@nhatnang/shared";
 import { paymentService, userService } from "@nhatnang/database/services";
 import { env } from "@/env";
 import {
@@ -33,17 +37,19 @@ export async function POST(request: Request) {
     );
 
     if (!rateLimitResult.success) {
-      return NextResponse.json(
-        { success: false, error: "errors.rateLimitExceeded" },
-        { status: HTTP_STATUS.TOO_MANY_REQUESTS },
-      );
+      return jsonError({
+        status: HTTP_STATUS.TOO_MANY_REQUESTS,
+        detail: "errors.rateLimitExceeded",
+        instance: "/api/payments/generate-repayment-link",
+      });
     }
 
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: "errors.unauthorized" },
-        { status: HTTP_STATUS.UNAUTHORIZED },
-      );
+      return jsonError({
+        status: HTTP_STATUS.UNAUTHORIZED,
+        detail: "errors.unauthorized",
+        instance: "/api/payments/generate-repayment-link",
+      });
     }
 
     const reqHeaders = await headers();
@@ -51,18 +57,20 @@ export async function POST(request: Request) {
     const { amount } = body;
 
     if (amount === undefined || amount === null || typeof amount !== "number") {
-      return NextResponse.json(
-        { success: false, error: "errors.missingRequiredFields" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail: "errors.missingRequiredFields",
+        instance: "/api/payments/generate-repayment-link",
+      });
     }
 
     const parsedAmount = parseFloat(String(amount));
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
-      return NextResponse.json(
-        { success: false, error: "errors.invalidAmount" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail: "errors.invalidAmount",
+        instance: "/api/payments/generate-repayment-link",
+      });
     }
 
     // Get B2B profile to verify roles and currentDebt limit
@@ -73,18 +81,20 @@ export async function POST(request: Request) {
         user.role !== "DEALER_APPROVER" &&
         user.role !== "DEALER_PURCHASER")
     ) {
-      return NextResponse.json(
-        { success: false, error: "errors.unauthorized" },
-        { status: HTTP_STATUS.UNAUTHORIZED },
-      );
+      return jsonError({
+        status: HTTP_STATUS.UNAUTHORIZED,
+        detail: "errors.unauthorized",
+        instance: "/api/payments/generate-repayment-link",
+      });
     }
 
     const currentDebt = parseFloat(user.currentDebt || "0");
     if (parsedAmount > currentDebt) {
-      return NextResponse.json(
-        { success: false, error: "errors.invalidAmount" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail: "errors.invalidAmount",
+        instance: "/api/payments/generate-repayment-link",
+      });
     }
 
     const orderCode = generatePayOSOrderCode();
@@ -114,17 +124,19 @@ export async function POST(request: Request) {
           checkoutUrl = result.data.checkoutUrl;
         } else {
           console.error("PayOS API error:", result);
-          return NextResponse.json(
-            { success: false, error: "errors.payosLinkCreationFailed" },
-            { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-          );
+          return jsonError({
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            detail: "errors.payosLinkCreationFailed",
+            instance: "/api/payments/generate-repayment-link",
+          });
         }
       } catch (error) {
         console.error("Failed to connect to PayOS:", error);
-        return NextResponse.json(
-          { success: false, error: "errors.paymentGatewayConnectionFailed" },
-          { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-        );
+        return jsonError({
+          status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+          detail: "errors.paymentGatewayConnectionFailed",
+          instance: "/api/payments/generate-repayment-link",
+        });
       }
     }
 
@@ -137,11 +149,8 @@ export async function POST(request: Request) {
       orderCode,
     });
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        checkoutUrl,
-      },
+    return jsonSuccess({
+      checkoutUrl,
     });
   } catch (error) {
     const errObj = error as Record<string, unknown>;
@@ -153,9 +162,10 @@ export async function POST(request: Request) {
       throw error;
     }
     console.error("[generate-repayment-link error]", error);
-    return NextResponse.json(
-      { success: false, error: "errors.internalServerError" },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-    );
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: "errors.internalServerError",
+      instance: "/api/payments/generate-repayment-link",
+    });
   }
 }

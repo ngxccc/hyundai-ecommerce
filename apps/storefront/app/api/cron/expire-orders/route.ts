@@ -1,4 +1,5 @@
-import { NextResponse, connection } from "next/server";
+import { connection } from "next/server";
+import { jsonSuccess, jsonError } from "@nhatnang/shared";
 import { orderService } from "@nhatnang/database/services";
 import { env } from "@/env";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
@@ -10,17 +11,17 @@ export async function POST(request: Request) {
     const authHeader = request.headers.get("Authorization");
 
     if (!authHeader || authHeader !== `Bearer ${env.CRON_SECRET}`) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: HTTP_STATUS.UNAUTHORIZED },
-      );
+      return jsonError({
+        status: HTTP_STATUS.UNAUTHORIZED,
+        detail: "Unauthorized",
+        instance: "/api/cron/expire-orders",
+      });
     }
 
     // 2. Trigger expiration logic
     const { expiredCount } = await orderService.expirePendingOrders(15);
 
-    return NextResponse.json({
-      success: true,
+    return jsonSuccess({
       message: `Expired ${expiredCount} pending orders.`,
       expiredCount,
     });
@@ -36,9 +37,10 @@ export async function POST(request: Request) {
     }
 
     console.error("[cron:expire-orders error]", error);
-    return NextResponse.json(
-      { success: false, error: "Internal Server Error" },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-    );
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: "Internal Server Error",
+      instance: "/api/cron/expire-orders",
+    });
   }
 }

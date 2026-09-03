@@ -1,5 +1,6 @@
 import { routing } from "@/i18n/routing";
 import { checkRateLimitWithQueue } from "@nhatnang/shared";
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import { getCachedSession } from "@/shared/lib/session";
 import type { Locale } from "next-intl";
 import createMiddleware from "next-intl/middleware";
@@ -25,7 +26,7 @@ export async function proxy(request: NextRequest) {
 
   if (!rateLimit.success) {
     return new NextResponse("Too Many Requests", {
-      status: 429,
+      status: HTTP_STATUS.TOO_MANY_REQUESTS,
       statusText: "Too Many Requests",
     });
   }

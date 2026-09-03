@@ -1,9 +1,13 @@
 import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import {
+  jsonSuccess,
+  jsonError,
+  checkRateLimitWithQueue,
+} from "@nhatnang/shared";
 import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 import { getTranslations } from "next-intl/server";
 import { getCachedSession } from "@/shared/lib/session";
-import { checkRateLimitWithQueue } from "@nhatnang/shared";
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
 import dns from "node:dns/promises";
 import { env } from "@/env";
 
@@ -35,10 +39,11 @@ export async function POST(req: NextRequest) {
       "WAREHOUSE_MANAGER",
     ];
     if (!session?.user?.role || !allowedRoles.includes(session.user.role)) {
-      return NextResponse.json(
-        { error: t("unauthorized" as never) },
-        { status: 401 },
-      );
+      return jsonError({
+        status: HTTP_STATUS.UNAUTHORIZED,
+        detail: t("unauthorized" as never),
+        instance: "/api/cloudinary/upload",
+      });
     }
 
     // 2. Rate limiting check
@@ -50,10 +55,11 @@ export async function POST(req: NextRequest) {
     );
 
     if (!limitResult.success) {
-      return NextResponse.json(
-        { error: t("rateLimitExceeded" as never) },
-        { status: 429 },
-      );
+      return jsonError({
+        status: HTTP_STATUS.TOO_MANY_REQUESTS,
+        detail: t("rateLimitExceeded" as never),
+        instance: "/api/cloudinary/upload",
+      });
     }
 
     const contentType = req.headers.get("content-type") ?? "";
@@ -64,26 +70,29 @@ export async function POST(req: NextRequest) {
       const file = formData.get("file") as File | null;
 
       if (!file) {
-        return NextResponse.json(
-          { error: t("noFileProvided") },
-          { status: 400 },
-        );
+        return jsonError({
+          status: HTTP_STATUS.BAD_REQUEST,
+          detail: t("noFileProvided"),
+          instance: "/api/cloudinary/upload",
+        });
       }
 
       // File size limit validation (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
-        return NextResponse.json(
-          { error: t("fileTooLarge" as never) },
-          { status: 400 },
-        );
+        return jsonError({
+          status: HTTP_STATUS.BAD_REQUEST,
+          detail: t("fileTooLarge" as never),
+          instance: "/api/cloudinary/upload",
+        });
       }
 
       // File MIME-type validation (images only)
       if (!file.type.startsWith("image/")) {
-        return NextResponse.json(
-          { error: t("invalidMimeType" as never) },
-          { status: 400 },
-        );
+        return jsonError({
+          status: HTTP_STATUS.BAD_REQUEST,
+          detail: t("invalidMimeType" as never),
+          instance: "/api/cloudinary/upload",
+        });
       }
 
       const buffer = Buffer.from(await file.arrayBuffer());
@@ -99,7 +108,7 @@ export async function POST(req: NextRequest) {
         .end(buffer);
 
       const result = await promise;
-      return NextResponse.json(result);
+      return jsonSuccess(result);
     }
 
     // Handle external URL upload
@@ -108,10 +117,11 @@ export async function POST(req: NextRequest) {
       const { url } = body;
 
       if (!url) {
-        return NextResponse.json(
-          { error: t("noUrlProvided") },
-          { status: 400 },
-        );
+        return jsonError({
+          status: HTTP_STATUS.BAD_REQUEST,
+          detail: t("noUrlProvided"),
+          instance: "/api/cloudinary/upload",
+        });
       }
 
       // SSRF validation checks
@@ -119,17 +129,19 @@ export async function POST(req: NextRequest) {
       try {
         parsedUrl = new URL(url);
       } catch {
-        return NextResponse.json(
-          { error: t("ssrfDetected" as never) },
-          { status: 400 },
-        );
+        return jsonError({
+          status: HTTP_STATUS.BAD_REQUEST,
+          detail: t("ssrfDetected" as never),
+          instance: "/api/cloudinary/upload",
+        });
       }
 
       if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
-        return NextResponse.json(
-          { error: t("ssrfDetected" as never) },
-          { status: 400 },
-        );
+        return jsonError({
+          status: HTTP_STATUS.BAD_REQUEST,
+          detail: t("ssrfDetected" as never),
+          instance: "/api/cloudinary/upload",
+        });
       }
 
       const hostname = parsedUrl.hostname;
@@ -138,10 +150,11 @@ export async function POST(req: NextRequest) {
         hostname === "127.0.0.1" ||
         hostname === "::1"
       ) {
-        return NextResponse.json(
-          { error: t("ssrfDetected" as never) },
-          { status: 400 },
-        );
+        return jsonError({
+          status: HTTP_STATUS.BAD_REQUEST,
+          detail: t("ssrfDetected" as never),
+          instance: "/api/cloudinary/upload",
+        });
       }
 
       // Resolve DNS to IP to prevent DNS Rebinding / Local IP access
@@ -150,10 +163,11 @@ export async function POST(req: NextRequest) {
         const lookupResult = await dns.lookup(hostname);
         ipAddress = lookupResult.address;
       } catch {
-        return NextResponse.json(
-          { error: t("ssrfDetected" as never) },
-          { status: 400 },
-        );
+        return jsonError({
+          status: HTTP_STATUS.BAD_REQUEST,
+          detail: t("ssrfDetected" as never),
+          instance: "/api/cloudinary/upload",
+        });
       }
 
       if (
@@ -163,20 +177,22 @@ export async function POST(req: NextRequest) {
         ipAddress === "::1" ||
         ipAddress.startsWith("fe80:")
       ) {
-        return NextResponse.json(
-          { error: t("ssrfDetected" as never) },
-          { status: 400 },
-        );
+        return jsonError({
+          status: HTTP_STATUS.BAD_REQUEST,
+          detail: t("ssrfDetected" as never),
+          instance: "/api/cloudinary/upload",
+        });
       }
 
       if (ipAddress.startsWith("172.")) {
         const parts = ipAddress.split(".");
         const secondPart = parseInt(parts[1] ?? "0", 10);
         if (secondPart >= 16 && secondPart <= 31) {
-          return NextResponse.json(
-            { error: t("ssrfDetected" as never) },
-            { status: 400 },
-          );
+          return jsonError({
+            status: HTTP_STATUS.BAD_REQUEST,
+            detail: t("ssrfDetected" as never),
+            instance: "/api/cloudinary/upload",
+          });
         }
       }
 
@@ -184,18 +200,20 @@ export async function POST(req: NextRequest) {
         folder: "products",
       });
 
-      return NextResponse.json(result);
+      return jsonSuccess(result);
     }
 
-    return NextResponse.json(
-      { error: t("unsupportedContentType") },
-      { status: 400 },
-    );
+    return jsonError({
+      status: HTTP_STATUS.BAD_REQUEST,
+      detail: t("unsupportedContentType"),
+      instance: "/api/cloudinary/upload",
+    });
   } catch (error: unknown) {
     console.error("[Cloudinary Upload Error]", error);
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : t("uploadFailed") },
-      { status: 500 },
-    );
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: error instanceof Error ? error.message : t("uploadFailed"),
+      instance: "/api/cloudinary/upload",
+    });
   }
 }

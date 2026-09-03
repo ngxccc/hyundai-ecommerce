@@ -1,8 +1,12 @@
-import { NextResponse, connection } from "next/server";
+import { connection } from "next/server";
 import { getCachedSession } from "@/shared/lib/session";
 import { headers } from "next/headers";
 import { HTTP_STATUS, FINANCIAL_CONSTANTS } from "@nhatnang/shared/constants";
-import { checkRateLimitWithQueue } from "@nhatnang/shared";
+import {
+  checkRateLimitWithQueue,
+  jsonSuccess,
+  jsonError,
+} from "@nhatnang/shared";
 import { env } from "@/env";
 import {
   createPayOSPaymentLink,
@@ -33,59 +37,69 @@ export async function POST(request: Request) {
     );
 
     if (!rateLimitResult.success) {
-      return NextResponse.json(
-        { success: false, error: "errors.rateLimitExceeded" },
-        { status: HTTP_STATUS.TOO_MANY_REQUESTS },
-      );
+      return jsonError({
+        status: HTTP_STATUS.TOO_MANY_REQUESTS,
+        detail: "errors.rateLimitExceeded",
+        instance: "/api/payments/generate-deposit-link",
+      });
     }
 
     if (!session?.user) {
-      return NextResponse.json(
-        { success: false, error: "errors.unauthorized" },
-        { status: HTTP_STATUS.UNAUTHORIZED },
-      );
+      return jsonError({
+        status: HTTP_STATUS.UNAUTHORIZED,
+        detail: "errors.unauthorized",
+        instance: "/api/payments/generate-deposit-link",
+      });
     }
 
     const body = (await request.json()) as GenerateDepositLinkRequestBody;
     const { orderId } = body;
 
     if (!orderId || typeof orderId !== "string") {
-      return NextResponse.json(
-        { success: false, error: "errors.missingRequiredFields" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail: "errors.missingRequiredFields",
+        instance: "/api/payments/generate-deposit-link",
+      });
     }
 
     // 1. Fetch order details from database
-    const order = await orderQueryService.getComplexOrder(orderId, session.user.id);
+    const order = await orderQueryService.getComplexOrder(
+      orderId,
+      session.user.id,
+    );
     if (!order) {
-      return NextResponse.json(
-        { success: false, error: "errors.orderNotFound" },
-        { status: HTTP_STATUS.NOT_FOUND },
-      );
+      return jsonError({
+        status: HTTP_STATUS.NOT_FOUND,
+        detail: "errors.orderNotFound",
+        instance: "/api/payments/generate-deposit-link",
+      });
     }
 
     // 2. IDOR Guard: verify ownership
     if (order.userId !== session.user.id) {
-      return NextResponse.json(
-        { success: false, error: "errors.forbidden" },
-        { status: HTTP_STATUS.FORBIDDEN },
-      );
+      return jsonError({
+        status: HTTP_STATUS.FORBIDDEN,
+        detail: "errors.forbidden",
+        instance: "/api/payments/generate-deposit-link",
+      });
     }
 
     // 3. Status guards: order must be UNPAID and method must be CASH
     if (order.paymentStatus !== "UNPAID") {
-      return NextResponse.json(
-        { success: false, error: "errors.invalidPaymentStatus" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail: "errors.invalidPaymentStatus",
+        instance: "/api/payments/generate-deposit-link",
+      });
     }
 
     if (order.paymentMethod !== "CASH") {
-      return NextResponse.json(
-        { success: false, error: "errors.invalidPaymentMethod" },
-        { status: HTTP_STATUS.BAD_REQUEST },
-      );
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail: "errors.invalidPaymentMethod",
+        instance: "/api/payments/generate-deposit-link",
+      });
     }
 
     // 4. Calculate 20% deposit amount
@@ -125,17 +139,19 @@ export async function POST(request: Request) {
           // Registered successfully, but keep checkoutUrl pointing to our success/mock page
         } else {
           console.error("PayOS API error:", result);
-          return NextResponse.json(
-            { success: false, error: "errors.payosLinkCreationFailed" },
-            { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-          );
+          return jsonError({
+            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+            detail: "errors.payosLinkCreationFailed",
+            instance: "/api/payments/generate-deposit-link",
+          });
         }
       } catch (error) {
         console.error("Failed to connect to PayOS:", error);
-        return NextResponse.json(
-          { success: false, error: "errors.paymentGatewayConnectionFailed" },
-          { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-        );
+        return jsonError({
+          status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+          detail: "errors.paymentGatewayConnectionFailed",
+          instance: "/api/payments/generate-deposit-link",
+        });
       }
     }
 
@@ -148,11 +164,8 @@ export async function POST(request: Request) {
       "PAYOS",
     );
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        checkoutUrl,
-      },
+    return jsonSuccess({
+      checkoutUrl,
     });
   } catch (error) {
     const errObj = error as Record<string, unknown>;
@@ -164,9 +177,10 @@ export async function POST(request: Request) {
       throw error;
     }
     console.error("[generate-deposit-link error]", error);
-    return NextResponse.json(
-      { success: false, error: "errors.internalServerError" },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-    );
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: "errors.internalServerError",
+      instance: "/api/payments/generate-deposit-link",
+    });
   }
 }

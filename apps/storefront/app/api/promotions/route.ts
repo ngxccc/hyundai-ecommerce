@@ -1,24 +1,15 @@
 import { promoService } from "@/shared/services";
-import { NextResponse } from "next/server";
-
+import { jsonSuccess, jsonError } from "@nhatnang/shared";
+import { HTTP_STATUS } from "@nhatnang/shared/constants";
 export async function GET() {
   try {
     const activePromo = await promoService.getPromos();
-
-    return NextResponse.json(
-      {
-        status: true,
-        data: activePromo,
-      },
-      { status: 200 },
-    );
+    return jsonSuccess(activePromo);
   } catch {
-    return NextResponse.json(
-      {
-        status: false,
-        data: null,
-      },
-      { status: 500 },
-    );
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: "Failed to fetch active promotions",
+      instance: "/api/promotions",
+    });
   }
 }
