@@ -10,7 +10,8 @@ import {
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { requireAuth, AuthError } from "@/shared/lib/action-auth";
+import { AuthError } from "@nhatnang/core";
+import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
 import {
@@ -76,8 +77,7 @@ export const createCategoryAction = async (formData: FormData) => {
     if (error instanceof AuthError) {
       return {
         success: false,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 
@@ -173,8 +173,7 @@ export async function updateCategoryAction(id: string, formData: FormData) {
     if (error instanceof AuthError) {
       return {
         success: false,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 
@@ -212,8 +211,7 @@ export async function deleteCategoryAction(id: string) {
     if (error instanceof AuthError) {
       return {
         success: false,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 

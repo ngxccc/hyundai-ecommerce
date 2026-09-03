@@ -25,6 +25,11 @@ export interface QuotesService {
     status: TQuote["status"],
   ): Promise<TQuote | undefined>;
   addQuoteMessage(data: TNewQuoteMessage): Promise<TQuoteMessage | undefined>;
+  sendAdminNegotiationMessage(params: {
+    quoteId: string;
+    adminUserId: string;
+    message: string;
+  }): Promise<TQuoteMessage>;
   updateQuoteItemPrice(
     itemId: string,
     agreedPrice: string,

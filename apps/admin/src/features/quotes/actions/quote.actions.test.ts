@@ -4,11 +4,12 @@ import {
   mockQuotesGetComplexQuote,
   mockQuotesUpdateQuoteItemPrice,
   mockQuotesAddQuoteMessage,
+  mockQuotesSendAdminNegotiationMessage,
   mockQuotesUpdateQuoteStatus,
   mockQuotesCreateAdminQuote,
+  mockRevalidatePath,
 } from "@nhatnang/shared/testing/action-mocks";
 import type { TQuote } from "@nhatnang/database/schemas";
-import { revalidatePath } from "next/cache";
 
 describe("quote.actions", () => {
   beforeEach(() => {
@@ -16,8 +17,10 @@ describe("quote.actions", () => {
     mockQuotesGetComplexQuote.mockClear();
     mockQuotesUpdateQuoteItemPrice.mockClear();
     mockQuotesAddQuoteMessage.mockClear();
+    mockQuotesSendAdminNegotiationMessage.mockClear();
     mockQuotesUpdateQuoteStatus.mockClear();
     mockQuotesCreateAdminQuote.mockClear();
+    mockRevalidatePath.mockClear();
   });
 
   describe("approveAndConvertToOrderAction", () => {
@@ -36,7 +39,7 @@ describe("quote.actions", () => {
         mockQuoteId,
         "admin-1",
       );
-      expect(revalidatePath).toHaveBeenCalled();
+      expect(mockRevalidatePath).toHaveBeenCalled();
     });
 
     test("should return error if quoteId is invalid", async () => {
@@ -93,7 +96,7 @@ describe("quote.actions", () => {
         "negotiating",
       );
       expect(mockQuotesAddQuoteMessage).toHaveBeenCalled();
-      expect(revalidatePath).toHaveBeenCalled();
+      expect(mockRevalidatePath).toHaveBeenCalled();
     });
 
     test("should fail if quote is already approved", async () => {
@@ -122,32 +125,28 @@ describe("quote.actions", () => {
   });
 
   describe("sendQuoteMessageAction", () => {
-    test("should successfully post message", async () => {
+    test("should successfully post message via sendAdminNegotiationMessage", async () => {
       const { sendQuoteMessageAction } = await import("./quote.actions");
       const mockQuoteId = "00000000-0000-4000-8000-000000000001";
-      const mockMessage = "Hello from dealer";
+      const mockMessage = "Hello from admin";
 
-      const mockQuote = {
-        id: mockQuoteId,
-        status: "negotiating",
-      };
-
-      mockQuotesGetComplexQuote.mockResolvedValueOnce(mockQuote);
-      mockQuotesAddQuoteMessage.mockResolvedValueOnce({
+      const mockResult = {
         id: "msg-1",
         quoteId: mockQuoteId,
         message: mockMessage,
-      });
+      };
+
+      mockQuotesSendAdminNegotiationMessage.mockResolvedValueOnce(mockResult);
 
       const res = await sendQuoteMessageAction(mockQuoteId, mockMessage);
 
       expect(res.success).toBe(true);
-      expect(mockQuotesAddQuoteMessage).toHaveBeenCalledWith({
+      expect(mockQuotesSendAdminNegotiationMessage).toHaveBeenCalledWith({
         quoteId: mockQuoteId,
-        senderId: "admin-1",
+        adminUserId: "admin-1",
         message: mockMessage,
       });
-      expect(revalidatePath).toHaveBeenCalled();
+      expect(mockRevalidatePath).toHaveBeenCalled();
     });
   });
 
@@ -177,7 +176,7 @@ describe("quote.actions", () => {
         newStatus,
       );
       expect(mockQuotesAddQuoteMessage).toHaveBeenCalled();
-      expect(revalidatePath).toHaveBeenCalled();
+      expect(mockRevalidatePath).toHaveBeenCalled();
     });
   });
 
@@ -256,7 +255,7 @@ describe("quote.actions", () => {
           expect(res.data.totalQuotedPrice).toBe("60500000.00");
         }
         expect(mockQuotesCreateAdminQuote).toHaveBeenCalled();
-        expect(revalidatePath).toHaveBeenCalledWith("/quotes");
+        expect(mockRevalidatePath).toHaveBeenCalledWith("/quotes");
       });
     });
 

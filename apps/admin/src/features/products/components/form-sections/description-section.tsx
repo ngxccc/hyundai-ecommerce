@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@nhatnang/ui/components/ui/form";
-import { type JSONContent } from "@nhatnang/ui";
+import { type JSONContent } from "@nhatnang/core";
 import type { TCreateProductInput } from "@nhatnang/database/validators";
 
 interface ProductDescriptionSectionProps {

@@ -8,7 +8,8 @@ import {
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { assertFinanceRole, AuthError } from "@/shared/lib/action-auth";
+import { AuthError } from "@nhatnang/core";
+import { assertFinanceRole, getAuthErrorMessage } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 
 /**
@@ -49,8 +50,7 @@ export const createDealerTierAction = async (formData: FormData) => {
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 
@@ -94,8 +94,7 @@ export const updateCustomerTierAction = async (
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 

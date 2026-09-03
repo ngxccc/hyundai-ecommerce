@@ -1,12 +1,15 @@
 import { getCachedSession } from "./session";
 import type { UserRole } from "@nhatnang/database/schemas";
+import { AuthError } from "@nhatnang/core";
 
-export class AuthError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "AuthError";
-  }
-}
+export const getAuthErrorMessage = (
+  error: AuthError,
+  t: (key: "unauthorized" | "forbidden") => string,
+): string => {
+  return error.code === "UNAUTHORIZED" || error.message === "UNAUTHORIZED"
+    ? t("unauthorized")
+    : t("forbidden");
+};
 
 export const requireAuth = async () => {
   const session = await getCachedSession();

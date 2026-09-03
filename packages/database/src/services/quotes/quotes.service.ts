@@ -11,6 +11,7 @@ import {
   type TQuote,
   type TNewQuote,
   type TNewQuoteItem,
+  type TQuoteMessage,
   type TNewQuoteMessage,
 } from "../../schemas";
 import type { CreateAdminQuoteDTO } from "../../dtos/quote.dto";
@@ -289,6 +290,82 @@ export class DbQuotesService implements QuotesService {
         updatedAt: quoteMessages.updatedAt,
       });
     return message;
+  }
+
+  /**
+   * Atomically send an admin negotiation message, transitioning quote status to 'negotiating'
+   * and recording timeline events within a single database transaction.
+   */
+  async sendAdminNegotiationMessage(params: {
+    quoteId: string;
+    adminUserId: string;
+    message: string;
+  }): Promise<TQuoteMessage> {
+    if (
+      !params.quoteId ||
+      typeof params.quoteId !== "string" ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        params.quoteId,
+      )
+    ) {
+      throw new Error("errors.quoteNotFound");
+    }
+
+    return await this.db.transaction(async (tx) => {
+      const [quote] = await tx
+        .select({ id: quotes.id, status: quotes.status })
+        .from(quotes)
+        .where(eq(quotes.id, params.quoteId))
+        .limit(1);
+
+      if (!quote) {
+        throw new Error("errors.quoteNotFound");
+      }
+
+      if (
+        quote.status === "approved" ||
+        quote.status === "rejected" ||
+        quote.status === "expired"
+      ) {
+        throw new Error("errors.quoteNotEditableOrConvertible");
+      }
+
+      const [newMessage] = await tx
+        .insert(quoteMessages)
+        .values({
+          quoteId: params.quoteId,
+          senderId: params.adminUserId,
+          message: params.message,
+        })
+        .returning({
+          id: quoteMessages.id,
+          quoteId: quoteMessages.quoteId,
+          senderId: quoteMessages.senderId,
+          message: quoteMessages.message,
+          createdAt: quoteMessages.createdAt,
+          updatedAt: quoteMessages.updatedAt,
+        });
+
+      if (!newMessage) {
+        throw new Error("errors.createMessageFailed");
+      }
+
+      if (quote.status === "pending_review") {
+        await tx
+          .update(quotes)
+          .set({ status: "negotiating", updatedAt: new Date() })
+          .where(eq(quotes.id, params.quoteId));
+
+        await tx.insert(quoteMessages).values({
+          quoteId: params.quoteId,
+          senderId: params.adminUserId,
+          message:
+            "[SYSTEM] Trạng thái báo giá chuyển sang: Đang thương lượng (negotiating)",
+        });
+      }
+
+      return newMessage;
+    });
   }
 
   /**

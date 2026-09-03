@@ -597,4 +597,29 @@ describe("QuotesService", () => {
       });
     });
   });
+  describe("sendAdminNegotiationMessage()", () => {
+    const validUuid = "11111111-1111-4111-8111-111111111111";
+
+    test("should reject invalid UUID quoteId", async () => {
+      expect(
+        quotesService.sendAdminNegotiationMessage({
+          quoteId: "invalid-id",
+          adminUserId: "admin-1",
+          message: "Hello",
+        }),
+      ).rejects.toThrow("errors.quoteNotFound");
+    });
+
+    test("should throw error if quote is not found", async () => {
+      // Return empty array for select query
+      mockReturning.mockResolvedValueOnce([]);
+      expect(
+        quotesService.sendAdminNegotiationMessage({
+          quoteId: validUuid,
+          adminUserId: "admin-1",
+          message: "Hello",
+        }),
+      ).rejects.toThrow("errors.quoteNotFound");
+    });
+  });
 });

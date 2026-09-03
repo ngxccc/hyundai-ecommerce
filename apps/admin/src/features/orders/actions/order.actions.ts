@@ -3,9 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { orderService, paymentService } from "@nhatnang/database/services";
 import { type TOrder } from "@nhatnang/database/schemas";
+import { AuthError } from "@nhatnang/core";
 import {
   requireAuth,
-  AuthError,
+  getAuthErrorMessage,
   assertFinanceRole,
   assertSalesOrFinanceRole,
 } from "@/shared/lib/action-auth";
@@ -53,8 +54,7 @@ export const updateOrderStatusAction = async (
     if (error instanceof AuthError) {
       return {
         success: false,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 
@@ -106,10 +106,7 @@ export const selectShippingBidAction = async (
     if (error instanceof AuthError) {
       return {
         success: false,
-        error:
-          error.message === "Unauthorized"
-            ? tErrors("unauthorized")
-            : tErrors("forbidden"),
+        error: getAuthErrorMessage(error, tErrors),
       };
     }
 
@@ -170,10 +167,7 @@ export const addShippingBidAction = async (data: TAddShippingBidInput) => {
     if (error instanceof AuthError) {
       return {
         success: false,
-        error:
-          error.message === "Unauthorized"
-            ? tErrors("unauthorized")
-            : tErrors("forbidden"),
+        error: getAuthErrorMessage(error, tErrors),
       };
     }
 
@@ -214,8 +208,7 @@ export const approveDealerOrderAction = async (orderId: string) => {
     if (error instanceof AuthError) {
       return {
         success: false,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 
@@ -254,8 +247,7 @@ export const verifyCashPaymentAction = async (orderId: string) => {
     if (error instanceof AuthError) {
       return {
         success: false,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 
@@ -291,8 +283,7 @@ export const approveOrderCancellationAction = async (orderId: string) => {
     if (error instanceof AuthError) {
       return {
         success: false,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 

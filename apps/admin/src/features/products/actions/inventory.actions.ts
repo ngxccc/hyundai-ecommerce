@@ -3,7 +3,8 @@
 import { warehouseStockService } from "@nhatnang/database/services";
 import { updateWarehouseStockSchema } from "@nhatnang/database/validators";
 import { revalidatePath } from "next/cache";
-import { requireAuth, AuthError } from "@/shared/lib/action-auth";
+import { AuthError } from "@nhatnang/core";
+import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 
@@ -38,9 +39,7 @@ export async function setProductStockAction(data: {
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
-      const message =
-        error.message === "UNAUTHORIZED" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return { success: false as const, error: getAuthErrorMessage(error, t) };
     }
     console.error("[setProductStockAction]", error);
 

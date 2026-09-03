@@ -10,7 +10,8 @@ import {
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { requireAuth, AuthError } from "@/shared/lib/action-auth";
+import { AuthError } from "@nhatnang/core";
+import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
 import {
@@ -84,9 +85,7 @@ export const createProductAction = async (formData: FormData) => {
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return { success: false as const, error: getAuthErrorMessage(error, t) };
     }
     console.error("[createProductAction]", error);
     return {
@@ -172,9 +171,7 @@ export async function updateProductAction(id: string, formData: FormData) {
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return { success: false as const, error: getAuthErrorMessage(error, t) };
     }
     console.error("[updateProductAction]", error);
     return {
@@ -202,9 +199,7 @@ export async function deleteProductAction(id: string) {
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return { success: false as const, error: getAuthErrorMessage(error, t) };
     }
     console.error("[deleteProductAction]", error);
     return {
@@ -238,9 +233,7 @@ export async function searchProductsAction(query: string, limit = 10) {
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return { success: false as const, error: getAuthErrorMessage(error, t) };
     }
     console.error("[searchProductsAction]", error);
     return {

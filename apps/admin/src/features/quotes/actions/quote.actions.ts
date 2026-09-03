@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { quotesService } from "@nhatnang/database/services";
 import { type TQuote } from "@nhatnang/database/schemas";
-import { requireAuth, AuthError } from "@/shared/lib/action-auth";
+import { AuthError } from "@nhatnang/core";
+import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import {
   quoteIdSchema,
@@ -45,8 +46,7 @@ export const approveAndConvertToOrderAction = async (quoteId: string) => {
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 
@@ -159,8 +159,7 @@ export const updateQuoteItemPriceAction = async (
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 
@@ -189,39 +188,11 @@ export const sendQuoteMessageAction = async (
       };
     }
 
-    const quote = await quotesService.getComplexQuote(quoteId);
-    if (!quote) {
-      return {
-        success: false as const,
-        error: t("quoteNotFound"),
-      };
-    }
-
-    if (
-      quote.status === "approved" ||
-      quote.status === "rejected" ||
-      quote.status === "expired"
-    ) {
-      return {
-        success: false as const,
-        error: t("quoteNotEditableOrConvertible"),
-      };
-    }
-
-    const newMessage = await quotesService.addQuoteMessage({
+    const newMessage = await quotesService.sendAdminNegotiationMessage({
       quoteId,
-      senderId: adminUserId,
+      adminUserId,
       message,
     });
-
-    if (quote.status === "pending_review") {
-      await quotesService.updateQuoteStatus(quoteId, "negotiating");
-      await quotesService.addQuoteMessage({
-        quoteId,
-        senderId: adminUserId,
-        message: `[SYSTEM] Trạng thái báo giá chuyển sang: Đang thương lượng (negotiating)`,
-      });
-    }
 
     revalidatePath("/quotes");
     revalidatePath(`/quotes/${quoteId}`);
@@ -234,12 +205,17 @@ export const sendQuoteMessageAction = async (
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 
     console.error("[sendQuoteMessageAction]", error);
+    if (error instanceof Error && error.message.startsWith("errors.")) {
+      const key = error.message.replace("errors.", "");
+      // @ts-expect-error dynamic translation key lookup
+      return { success: false as const, error: t(key) || t("default") };
+    }
+
     return {
       success: false as const,
       error: t("default"),
@@ -326,8 +302,7 @@ export const updateQuoteStatusAction = async (
     if (error instanceof AuthError) {
       return {
         success: false as const,
-        error:
-          error.message === "Unauthorized" ? t("unauthorized") : t("forbidden"),
+        error: getAuthErrorMessage(error, t),
       };
     }
 
@@ -372,9 +347,7 @@ export const createAdminQuoteAction = async (payload: unknown) => {
     };
   } catch (error: unknown) {
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false as const, error: message };
+      return { success: false as const, error: getAuthErrorMessage(error, t) };
     }
 
     if (error instanceof Error && error.message.startsWith("errors.")) {

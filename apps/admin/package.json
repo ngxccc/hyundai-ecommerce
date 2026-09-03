@@ -30,6 +30,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@nhatnang/core": "workspace:*",
     "@nhatnang/database": "workspace:*",
     "@nhatnang/eslint-config": "workspace:*",
     "@nhatnang/shared": "workspace:*",

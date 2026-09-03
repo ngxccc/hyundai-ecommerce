@@ -10,7 +10,8 @@ import {
 } from "@nhatnang/database/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@nhatnang/shared/constants";
-import { requireAuth, AuthError } from "@/shared/lib/action-auth";
+import { AuthError } from "@nhatnang/core";
+import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 
 export const createWarehouseAction = async (input: TCreateWarehouse) => {
@@ -36,9 +37,7 @@ export const createWarehouseAction = async (input: TCreateWarehouse) => {
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false, error: message };
+      return { success: false, error: getAuthErrorMessage(error, t) };
     }
     console.error("[createWarehouseAction]", error);
     let errorMessage = t("createWarehouseFailed");
@@ -82,9 +81,7 @@ export async function updateWarehouseAction(
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false, error: message };
+      return { success: false, error: getAuthErrorMessage(error, t) };
     }
     console.error("[updateWarehouseAction]", error);
     let errorMessage = t("updateWarehouseFailed");
@@ -111,9 +108,7 @@ export async function deleteWarehouseAction(id: string) {
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
-      const message =
-        error.message === "Unauthorized" ? t("unauthorized") : t("forbidden");
-      return { success: false, error: message };
+      return { success: false, error: getAuthErrorMessage(error, t) };
     }
     console.error("[deleteWarehouseAction]", error);
     let errorMessage = t("deleteWarehouseFailed");
