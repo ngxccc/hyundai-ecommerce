@@ -7,9 +7,9 @@
     "declarationMap": false,
     "paths": {
       "@/*": ["./src/*"],
-      "#/*": ["./public/*"],
+      "#/*": ["./public/*"]
     },
-    "types": ["bun", "node"],
+    "types": ["bun", "node"]
   },
   "include": [
     "next-env.d.ts",
@@ -21,7 +21,16 @@
     "app/.well-known/**/*.ts",
     "**/*.mts",
     "**/*.js",
-    "**/*.mjs",
+    "**/*.mjs"
   ],
-  "exclude": ["node_modules"],
+  "exclude": [
+    "node_modules",
+    ".next/cache",
+    ".next/server",
+    ".next/static",
+    ".next/dev",
+    ".next/build",
+    "dist",
+    ".turbo"
+  ]
 }

@@ -7,7 +7,13 @@ import eslintConfigPrettier from "eslint-config-prettier";
 import architecture from "./architecture.ts";
 
 export default defineConfig([
-  globalIgnores(["node_modules/**"]),
+  globalIgnores([
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/dist/**",
+    "**/.turbo/**",
+    "**/.source/**",
+  ]),
 
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.js", "**/*.mjs"],
@@ -70,7 +76,7 @@ export default defineConfig([
           },
         },
       ],
-      "import-x/no-cycle": ["error", { maxDepth: 10, ignoreExternal: true }],
+      "import-x/no-cycle": ["error", { maxDepth: 3, ignoreExternal: true }],
       "import-x/no-unresolved": "error",
     },
   },

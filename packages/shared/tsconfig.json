@@ -1,0 +1,8 @@
+{
+  "extends": "@nhatnang/typescript-config/library",
+  "compilerOptions": {
+    "types": ["bun"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
