@@ -6,19 +6,24 @@ import {
   text,
   uuid,
 } from "drizzle-orm/pg-core";
+import {
+  PAYMENT_TRANSACTION_TYPES,
+  PAYMENT_TRANSACTION_STATUSES,
+  type PaymentTransactionType,
+  type PaymentTransactionStatus,
+} from "@nhatnang/core";
 import { orders, paymentMethodEnum } from "./order.schema";
 import { users } from "./auth.schema";
 import { fullEntity } from "./helpers.schema";
 
-export const paymentTransactionTypeEnum = pgEnum("payment_transaction_type", [
-  "DEPOSIT",
-  "REMAINDER",
-  "FULL",
-]);
+export const paymentTransactionTypeEnum = pgEnum(
+  "payment_transaction_type",
+  PAYMENT_TRANSACTION_TYPES,
+);
 
 export const paymentTransactionStatusEnum = pgEnum(
   "payment_transaction_status",
-  ["PENDING", "SUCCESS", "FAILED"],
+  PAYMENT_TRANSACTION_STATUSES,
 );
 
 export const paymentTransactions = snakeCase.table("payment_transaction", {
@@ -38,7 +43,4 @@ export const paymentTransactions = snakeCase.table("payment_transaction", {
 export type TPaymentTransaction = typeof paymentTransactions.$inferSelect;
 export type TNewPaymentTransaction = typeof paymentTransactions.$inferInsert;
 
-export type PaymentTransactionType =
-  (typeof paymentTransactionTypeEnum.enumValues)[number];
-export type PaymentTransactionStatus =
-  (typeof paymentTransactionStatusEnum.enumValues)[number];
+export type { PaymentTransactionType, PaymentTransactionStatus };

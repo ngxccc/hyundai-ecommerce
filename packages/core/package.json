@@ -1,0 +1,35 @@
+{
+  "name": "@nhatnang/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./errors": {
+      "types": "./src/errors/index.ts",
+      "import": "./src/errors/index.ts",
+      "default": "./src/errors/index.ts"
+    },
+    "./types": {
+      "types": "./src/types/index.ts",
+      "import": "./src/types/index.ts",
+      "default": "./src/types/index.ts"
+    }
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tiptap/core": "^3.30.5"
+  },
+  "devDependencies": {
+    "@nhatnang/eslint-config": "workspace:*",
+    "@nhatnang/typescript-config": "workspace:*",
+    "@types/node": "^26.4.0",
+    "typescript": "^6.0.3"
+  }
+}

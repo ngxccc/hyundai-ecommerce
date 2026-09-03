@@ -1,4 +1,4 @@
-import type { PaymentTransactionType } from "../../../database/src/schemas/payment-transaction.schema";
+import type { PaymentTransactionType } from "@nhatnang/core";
 import { getSharedConfig } from "../config";
 import crypto from "crypto";
 

@@ -2,9 +2,11 @@ import { beforeEach, mock } from "bun:test";
 import * as actualShared from "../index";
 
 export class MockAuthError extends Error {
+  public code: string;
   constructor(message: string) {
     super(message);
     this.name = "AuthError";
+    this.code = message;
   }
 }
 
@@ -27,6 +29,7 @@ export const mockQuotesUpdateQuoteItemPrice = mock();
 export const mockQuotesAddQuoteMessage = mock();
 export const mockQuotesUpdateQuoteStatus = mock();
 export const mockQuotesCreateAdminQuote = mock();
+export const mockQuotesSendAdminNegotiationMessage = mock();
 export const mockCartGetOrCreateCart = mock();
 export const mockCartGetCartItems = mock();
 
@@ -48,10 +51,21 @@ export const mockPaymentConfirmDebtRepayment = mock();
 export const mockOrderFetchPendingOutboxEvents = mock();
 export const mockOrderUpdateOutboxEventStatus = mock();
 export const mockResendSend = mock();
-
 export const mockAuthGetSession = mock();
-export const mockCheckRateLimit = mock();
-export const mockCheckRateLimitWithQueue = mock();
+export const mockCheckRateLimit = mock().mockResolvedValue({
+  success: true,
+  remaining: 5,
+  reset: Date.now() + 60000,
+  pending: Promise.resolve(),
+});
+export const mockCheckRateLimitWithQueue = mock().mockResolvedValue({
+  success: true,
+  remaining: 5,
+  reset: Date.now() + 60000,
+  pending: Promise.resolve(),
+});
+export const mockRevalidatePath = mock();
+export const mockRevalidateTag = mock();
 
 await mock.module("resend", () => ({
   Resend: class {
@@ -87,6 +101,7 @@ await mock.module("@nhatnang/database/services", () => ({
     getComplexQuote: mockQuotesGetComplexQuote,
     updateQuoteItemPrice: mockQuotesUpdateQuoteItemPrice,
     addQuoteMessage: mockQuotesAddQuoteMessage,
+    sendAdminNegotiationMessage: mockQuotesSendAdminNegotiationMessage,
     updateQuoteStatus: mockQuotesUpdateQuoteStatus,
     createAdminQuote: mockQuotesCreateAdminQuote,
   },
@@ -117,8 +132,8 @@ await mock.module("@nhatnang/database/services", () => ({
 }));
 
 await mock.module("next/cache", () => ({
-  revalidatePath: mock(),
-  revalidateTag: mock(),
+  revalidatePath: mockRevalidatePath,
+  revalidateTag: mockRevalidateTag,
   cacheLife: mock(),
   cacheTag: mock(),
   unstable_cache: mock((fn: (...args: unknown[]) => unknown) => fn),
@@ -161,8 +176,11 @@ await mock.module("@/shared/lib/action-auth", () => ({
     },
   }),
   AuthError: MockAuthError,
+  getAuthErrorMessage: (error: any, t: any) =>
+    error?.code === "UNAUTHORIZED" || error?.message === "UNAUTHORIZED"
+      ? t("unauthorized")
+      : t("forbidden"),
 }));
-
 await mock.module("next-intl/server", () => ({
   getTranslations: mock().mockResolvedValue((key: string) => key),
 }));

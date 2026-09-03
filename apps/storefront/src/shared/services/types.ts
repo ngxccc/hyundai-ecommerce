@@ -1,4 +1,4 @@
-import type { JSONContent } from "@nhatnang/ui";
+import type { JSONContent } from "@nhatnang/core";
 import type {
   BrandDTO,
   CategoryDTO,

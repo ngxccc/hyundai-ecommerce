@@ -12,7 +12,7 @@ import {
 import { Field, FieldLabel, FieldError } from "@nhatnang/ui/components/ui/field";
 import type { TRegisterForm } from "@nhatnang/database/validators";
 import { useTranslations } from "next-intl";
-import type { AuthFormSectionProps } from "@nhatnang/shared";
+import type { AuthFormSectionProps } from "../types/auth-form.types";
 
 export const BusinessInfoSection = ({
   form,

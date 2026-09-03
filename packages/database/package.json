@@ -39,7 +39,7 @@
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.7.2",
     "@neondatabase/serverless": "^1.1.0",
-    "@nhatnang/ui": "workspace:*",
+    "@nhatnang/core": "workspace:*",
     "@paralleldrive/cuid2": "^3.3.0",
     "@t3-oss/env-core": "^0.13.11",
     "better-auth": "^1.7.2",
