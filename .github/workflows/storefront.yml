@@ -7,7 +7,9 @@ on:
 permissions:
   contents: read
 
-
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -24,8 +26,10 @@ jobs:
               - "packages/database/**"
               - "packages/eslint-config/**"
               - "packages/shared/**"
-              - "packages/types/**"
+              - "packages/core/**"
+              - "packages/ui/**"
               - "packages/typescript-config/**"
+              - ".github/setup-environment/**"
               - "turbo.json"
               - "bun.lock"
               - "package.json"

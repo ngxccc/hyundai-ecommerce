@@ -1,0 +1,65 @@
+# .github/labeler.yml - Automatic PR labeling based on modified file paths (v5 schema)
+"area:storefront":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "apps/storefront/**/*"
+
+"area:admin":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "apps/admin/**/*"
+
+"area:docs":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "apps/docs/**/*"
+
+"area:core":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/core/**/*"
+
+"area:db":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/database/**/*"
+          - "drizzle/**/*"
+          - "drizzle.config.ts"
+
+"area:shared":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/shared/**/*"
+
+"area:ui":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/ui/**/*"
+
+"area:ci":
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**/*"
+
+"area:harness":
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".claude/skills/**/*"
+          - ".omp/**/*"
+          - "AGENTS.md"
+          - "CLAUDE.md"
+          - "CONTEXT.md"
+          - "docs/**/*"
+
+"type:test":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.test.ts"
+          - "**/*.test.tsx"
+          - "**/*.spec.ts"
+
+"type:docs":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/**/*"
+          - "**/*.md"

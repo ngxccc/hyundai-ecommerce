@@ -7,13 +7,28 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
+      - ".vscode/**"
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
+      - ".vscode/**"
 
 permissions:
   security-events: write
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   trivy:
     name: Trivy (Vuln, Config, Secret)

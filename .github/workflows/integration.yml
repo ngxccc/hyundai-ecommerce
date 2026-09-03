@@ -1,30 +1,26 @@
-name: PR Check (Lint, Test, Build)
+name: Monorepo Quality Gate & Test Suite
 
 on:
-  pull_request:
-    branches: ["main"]
-    types: [opened, synchronize, reopened]
-    paths-ignore:
-      - "**/*.md"
-      - ".gitignore"
-      - "LICENSE"
+  workflow_call:
 
 permissions:
   contents: read
+  checks: write
 
 jobs:
   integration:
-    name: Code Quality & Dry-run Build
+    name: "Build, Lint & Test Pipeline"
     runs-on: ubuntu-latest
     environment: Staging
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_STAGING }}
+      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_STAGING || secrets.DOPPLER_TOKEN }}
 
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v7
+
       - name: Setup Environment
         uses: ./.github/setup-environment
 
@@ -32,6 +28,5 @@ jobs:
         working-directory: packages/database
         run: bun run db:migrate
 
-      - name: Run PR Pipeline (Lint, Test, Build)
+      - name: Run Monorepo Pipeline (Lint, Typecheck, Test, Build)
         run: bun turbo run lint check-types test build
-
