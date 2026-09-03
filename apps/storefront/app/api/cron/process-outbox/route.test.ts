@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach, mock, spyOn } from "bun:test";
 import type { Mock } from "bun:test";
 import { mockResendSend } from "@nhatnang/shared/testing/action-mocks";
-import { orderService } from "@nhatnang/database/services";
+import { outboxService } from "@nhatnang/database/services";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
 
 // Mock database env
@@ -51,8 +51,8 @@ describe("POST /api/cron/process-outbox", () => {
 
   it("successfully processes outbox events", async () => {
     const fetchSpy = spyOn(
-      orderService,
-      "fetchPendingOutboxEvents",
+      outboxService,
+      "fetchPendingEvents",
     ).mockResolvedValueOnce([
       {
         id: "event-1",
@@ -72,10 +72,9 @@ describe("POST /api/cron/process-outbox", () => {
       },
     ]);
 
-    const updateSpy = spyOn(
-      orderService,
-      "updateOutboxEventStatus",
-    ).mockResolvedValue(undefined);
+    const updateSpy = spyOn(outboxService, "updateStatus").mockResolvedValue(
+      undefined,
+    );
 
     (
       mockResendSend as unknown as Mock<

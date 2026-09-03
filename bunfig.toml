@@ -1,2 +1,5 @@
 [test]
-preload = ["./packages/shared/src/testing/action-mocks.ts"]
+preload = [
+  "./packages/shared/src/testing/action-mocks.ts",
+  "./packages/database/src/tests/setup.ts",
+]

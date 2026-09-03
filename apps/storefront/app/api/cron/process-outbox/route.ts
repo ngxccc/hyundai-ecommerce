@@ -1,8 +1,9 @@
-import { NextResponse, connection, after } from "next/server";
-import { orderService } from "@nhatnang/database/services";
+import { connection, after } from "next/server";
+import { outboxService } from "@nhatnang/database/services";
 import { env as dbEnv } from "@nhatnang/database";
 import { env as appEnv } from "@/env";
 import { HTTP_STATUS } from "@nhatnang/shared/constants";
+import { jsonSuccess, jsonError } from "@nhatnang/shared";
 import { resend } from "@nhatnang/database/auth";
 
 export async function POST(request: Request) {
@@ -11,10 +12,11 @@ export async function POST(request: Request) {
     // 1. Authenticate with CRON_SECRET token
     const authHeader = request.headers.get("Authorization");
     if (!authHeader || authHeader !== `Bearer ${appEnv.CRON_SECRET}`) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: HTTP_STATUS.UNAUTHORIZED },
-      );
+      return jsonError({
+        status: HTTP_STATUS.UNAUTHORIZED,
+        detail: "Unauthorized",
+        instance: "/api/cron/process-outbox",
+      });
     }
 
     // 2. Parse dynamic limit parameter (max 50, default 10)
@@ -22,10 +24,9 @@ export async function POST(request: Request) {
     const limit = Math.min(Number(searchParams.get("limit")) || 10, 50);
 
     // Fetch and lock pending outbox events via database service (limit, skip locked)
-    const pendingEvents = await orderService.fetchPendingOutboxEvents(limit);
+    const pendingEvents = await outboxService.fetchPendingEvents(limit);
     if (pendingEvents.length === 0) {
-      return NextResponse.json({
-        success: true,
+      return jsonSuccess({
         message: "No pending outbox events to process.",
         processedCount: 0,
       });
@@ -47,7 +48,8 @@ export async function POST(request: Request) {
                   body: string;
                 };
                 const senderEmail =
-                  dbEnv.EMAIL_FROM || "Hyundai Nhat Nang <onboarding@resend.dev>";
+                  dbEnv.EMAIL_FROM ||
+                  "Hyundai Nhat Nang <onboarding@resend.dev>";
 
                 const mailRes = await resend.emails.send({
                   from: senderEmail,
@@ -57,7 +59,9 @@ export async function POST(request: Request) {
                 });
 
                 if (mailRes.error) {
-                  throw new Error(`Resend error: ${JSON.stringify(mailRes.error)}`);
+                  throw new Error(
+                    `Resend error: ${JSON.stringify(mailRes.error)}`,
+                  );
                 }
                 success = true;
               } else if (event.eventType === "SEND_TELEGRAM_ALERT") {
@@ -109,18 +113,16 @@ export async function POST(request: Request) {
 
             // Update database status via database service
             if (success) {
-              await orderService.updateOutboxEventStatus(event.id, "PROCESSED");
+              await outboxService.updateStatus(event.id, "PROCESSED");
             } else {
               const newRetryCount = event.retryCount + 1;
               const isFailed = newRetryCount >= 3;
               const nextStatus = isFailed ? "FAILED" : "PENDING";
-
-              await orderService.updateOutboxEventStatus(
+              await outboxService.updateStatus(
                 event.id,
                 nextStatus,
                 lastError ?? undefined,
               );
-
               // If failed, trigger Telegram alert to admin channel (Human backstop)
               if (isFailed) {
                 const botToken = appEnv.TELEGRAM_BOT_TOKEN;
@@ -148,23 +150,23 @@ export async function POST(request: Request) {
                 }
               }
             }
-          })
+          }),
         );
       } catch (error) {
         console.error("[process-outbox:after error]", error);
       }
     });
 
-    return NextResponse.json({
-      success: true,
+    return jsonSuccess({
       message: "Outbox processing initiated in the background.",
       processedCount: pendingEvents.length,
     });
   } catch (error) {
     console.error("[cron:process-outbox error]", error);
-    return NextResponse.json(
-      { success: false, error: "Internal Server Error" },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR },
-    );
+    return jsonError({
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      detail: "Internal Server Error",
+      instance: "/api/cron/process-outbox",
+    });
   }
 }

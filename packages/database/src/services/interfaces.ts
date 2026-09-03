@@ -11,3 +11,4 @@ export * from "./quotes/quotes.interface";
 export * from "./dealer-tier/dealer-tier.interface";
 export * from "./cart/cart.interface";
 export * from "./address/address.interface";
+export * from "./outbox/outbox.interface";

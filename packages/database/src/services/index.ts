@@ -14,6 +14,7 @@ export * from "./quotes/quotes.service";
 export * from "./dealer-tier/dealer-tier.service";
 export * from "./cart/cart.service";
 export * from "./address/address.service";
+export * from "./outbox/outbox.service";
 
 // interface
 export * from "./interfaces";

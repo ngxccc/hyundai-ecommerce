@@ -4,8 +4,6 @@ import type {
   PaymentTransactionType,
   PaymentMethod,
   ApprovalStatus,
-  OutboxEvent,
-  OutboxEventStatus,
   CreateOrderDTO,
   CreateOrderItemDTO,
 } from "../../schemas";
@@ -169,14 +167,4 @@ export interface OrderService {
   expirePendingOrders(
     expirationWindowMinutes?: number,
   ): Promise<{ expiredCount: number }>;
-  fetchPendingOutboxEvents(
-    limit: number,
-  ): Promise<
-    Pick<OutboxEvent, "id" | "eventType" | "payload" | "retryCount">[]
-  >;
-  updateOutboxEventStatus(
-    id: string,
-    status: OutboxEventStatus,
-    error?: string,
-  ): Promise<void>;
 }

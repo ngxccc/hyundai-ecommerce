@@ -8,6 +8,7 @@ import {
   mockFindFirst,
   mockFindMany,
   mockSelectResolvedValue,
+  resetDbMocks,
 } from "../../tests/utils/db-mock";
 import { DbOrderService } from "./order.service";
 import { DbOrderQueryService } from "./order-query.service";
@@ -23,6 +24,7 @@ const orderQueryService = new DbOrderQueryService(
 
 describe("OrderService", () => {
   beforeEach(() => {
+    resetDbMocks();
     vi.clearAllMocks();
   });
 
