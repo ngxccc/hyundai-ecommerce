@@ -26,6 +26,7 @@ import { WarehouseModule } from "./modules/warehouse/warehouse.module";
 import { CartModule } from "./modules/cart/cart.module";
 import { QuotesModule } from "./modules/quotes/quotes.module";
 import { OrdersModule } from "./modules/orders/orders.module";
+import { PaymentsModule } from "./modules/payments/payments.module";
 import { AppController } from "./app.controller";
 import { parseRedisOptions } from "./config/redis.config";
 import { ZodValidationPipe } from "./common/pipes/zod-validation.pipe";
@@ -95,6 +96,7 @@ const getRedisOptions = () =>
     CartModule,
     QuotesModule,
     OrdersModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [

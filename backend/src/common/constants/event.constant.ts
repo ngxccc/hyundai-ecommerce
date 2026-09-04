@@ -5,6 +5,8 @@ export const OUTBOX_EVENT_TYPE = {
   ORDER_CREATED: "order.created",
   ORDER_CONFIRMED: "order.confirmed",
   ORDER_CANCELLED: "order.cancelled",
+  PAYMENT_COMPLETED: "payment.completed",
+  DEBT_REPAID: "debt.repaid",
 } as const;
 
 export type OutboxEventType =

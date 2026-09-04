@@ -956,6 +956,91 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/payments/checkout-link": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create PayOS checkout link and VietQR code */
+    post: operations["PaymentsController_createCheckoutLink"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/payments/payos-webhook": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Receive and cryptographically verify PayOS payment webhook */
+    post: operations["PaymentsController_handleWebhook"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/payments/{id}/verify-cash": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Verify offline cash payment (Admin/Accountant) */
+    post: operations["PaymentsController_verifyCashPayment"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/payments/repay-debt": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Repay B2B dealer debt via PayOS gateway or cash */
+    post: operations["PaymentsController_repayDebt"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/payments/order/{orderId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get order payment status and transactions */
+    get: operations["PaymentsController_getOrderPaymentSummary"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2583,6 +2668,244 @@ export interface components {
       page: number;
       /** @example 20 */
       limit: number;
+    };
+    CreateCheckoutLinkDto: {
+      /**
+       * @description Order UUID identifier to create payment link for
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb91
+       */
+      orderId: string;
+      /**
+       * @description Transaction type (FULL_PAYMENT or DEPOSIT percentage)
+       * @example FULL_PAYMENT
+       * @enum {string}
+       */
+      transactionType?:
+        "FULL_PAYMENT" | "DEPOSIT" | "REMAINING" | "DEBT_REPAYMENT";
+      /**
+       * @description URL redirect after customer successfully completes payment
+       * @example https://hyundai-nhatnang.vn/checkout/success
+       */
+      returnUrl?: string;
+      /**
+       * @description URL redirect if customer cancels payment on gateway
+       * @example https://hyundai-nhatnang.vn/checkout/cancel
+       */
+      cancelUrl?: string;
+    };
+    CheckoutLinkResponseDto: {
+      /**
+       * @description PayOS checkout redirect web URL
+       * @example https://pay.payos.vn/web/6c9b3a6e7a2e7b56b74c419b4eb14b9a
+       */
+      checkoutUrl: string;
+      /**
+       * @description VietQR EMV payload or QR code data string
+       * @example 00020101021238540010A00000072701260006970422...
+       */
+      qrCode: string;
+      /**
+       * @description Unique PayOS order code identifier
+       * @example 1725451234567
+       */
+      orderCode: number;
+      /**
+       * @description Payable amount in VND
+       * @example 490000000
+       */
+      amount: number;
+      /**
+       * @description PayOS payment link ID
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb91
+       */
+      paymentLinkId: string;
+    };
+    PayOSWebhookDataClass: {
+      /** @example 1725451234567 */
+      orderCode: number;
+      /** @example 490000000 */
+      amount: number;
+      /** @example ORD-20260904-4821 */
+      description: string;
+      /** @example 123456789 */
+      accountNumber?: string;
+      /** @example FT24248123456789 */
+      reference?: string;
+      /** @example 2026-09-04 15:30:00 */
+      transactionDateTime?: string;
+      /** @example VND */
+      currency?: string;
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
+      paymentLinkId?: string;
+      /** @example 00 */
+      code?: string;
+      /** @example Success */
+      desc?: string;
+    };
+    PayOSWebhookDto: {
+      /**
+       * @description Response status code
+       * @example 00
+       */
+      code: string;
+      /**
+       * @description Response description
+       * @example Success
+       */
+      desc: string;
+      /**
+       * @description Success status flag
+       * @example true
+       */
+      success: boolean;
+      /** @description Transaction data payload */
+      data: components["schemas"]["PayOSWebhookDataClass"];
+      /**
+       * @description HMAC-SHA256 signature calculated with PayOS Checksum Key
+       * @example 6c9b3a6e7a2e7b56b74c419b4eb14b9a...
+       */
+      signature: string;
+    };
+    VerifyCashPaymentDto: {
+      /**
+       * @description Actual cash amount collected by accountant/cashier
+       * @example 490000000
+       */
+      amount: Record<string, never>;
+      /**
+       * @description Optional verification notes or internal receipt code
+       * @example Đã thu đủ tiền mặt tại văn phòng Hà Nội ngày 04/09
+       */
+      note?: string;
+    };
+    PaymentTransactionResponseDto: {
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
+      id: string;
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb92 */
+      orderId: string;
+      /** @example 490000000.00 */
+      amount: string;
+      /**
+       * @example PAYOS
+       * @enum {string}
+       */
+      paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+      /**
+       * @example FULL_PAYMENT
+       * @enum {string}
+       */
+      transactionType:
+        "FULL_PAYMENT" | "DEPOSIT" | "REMAINING" | "DEBT_REPAYMENT";
+      /**
+       * @example PENDING
+       * @enum {string}
+       */
+      status: "PENDING" | "COMPLETED" | "FAILED" | "CANCELLED";
+      /** @example 1725451234567 */
+      orderCode?: number;
+      /** @example REF-123456 */
+      referenceCode?: string;
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb93 */
+      verifiedBy?: string;
+      /**
+       * Format: date-time
+       * @example 2026-09-04T08:00:00.000Z
+       */
+      createdAt: string;
+      /**
+       * Format: date-time
+       * @example 2026-09-04T08:00:00.000Z
+       */
+      updatedAt: string;
+    };
+    OrderPaymentSummaryDto: {
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb92 */
+      orderId: string;
+      /** @example ORD-20260904-4821 */
+      orderNumber?: string;
+      /** @example 490000000.00 */
+      totalAmount: string;
+      /** @example 0.00 */
+      depositAmount?: string;
+      /** @example 0.00 */
+      remainingAmount?: string;
+      /** @example PAYOS */
+      paymentMethod: string;
+      /** @example FULLY_PAID */
+      paymentStatus: string;
+      /** @description List of related payment transactions */
+      transactions: components["schemas"]["PaymentTransactionResponseDto"][];
+    };
+    RepayDebtDto: {
+      /**
+       * @description Target dealer user UUID if processed by Admin/Sales
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb90
+       */
+      userId?: string;
+      /**
+       * @description Debt repayment amount in VND
+       * @example 50000000
+       */
+      amount: Record<string, never>;
+      /**
+       * @description Payment method used for repayment (PAYOS, CASH, BANK_TRANSFER)
+       * @example PAYOS
+       * @enum {string}
+       */
+      paymentMethod?: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+      /**
+       * @description Repayment note or reference
+       * @example Thanh toán công nợ lô máy phát điện tháng 08
+       */
+      note?: string;
+      /**
+       * @description Return URL after online payment completes
+       * @example https://hyundai-nhatnang.vn/portal/debt?repaymentSuccess=true
+       */
+      returnUrl?: string;
+      /**
+       * @description Cancel URL if customer cancels payment
+       * @example https://hyundai-nhatnang.vn/portal/debt?repaymentCancel=true
+       */
+      cancelUrl?: string;
+    };
+    DebtRepaymentResponseDto: {
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
+      id: string;
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
+      userId: string;
+      /** @example 50000000.00 */
+      amount: string;
+      /**
+       * @example PAYOS
+       * @enum {string}
+       */
+      paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+      /**
+       * @example PENDING
+       * @enum {string}
+       */
+      status: "PENDING" | "COMPLETED" | "FAILED";
+      /** @example 1725451234568 */
+      orderCode?: number;
+      /** @example REPAY-REF-789 */
+      referenceCode?: string;
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb93 */
+      verifiedBy?: string;
+      /** @example https://pay.payos.vn/web/6c9b3a6e7a2e7b56b74c419b4eb14b9a */
+      checkoutUrl?: string;
+      /** @example 00020101021238540010A00000072701260006970422... */
+      qrCode?: string;
+      /**
+       * Format: date-time
+       * @example 2026-09-04T08:00:00.000Z
+       */
+      createdAt: string;
+      /**
+       * Format: date-time
+       * @example 2026-09-04T08:00:00.000Z
+       */
+      updatedAt: string;
     };
   };
   responses: never;
@@ -5540,6 +5863,126 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  PaymentsController_createCheckoutLink: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCheckoutLinkDto"];
+      };
+    };
+    responses: {
+      /** @description Checkout link created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CheckoutLinkResponseDto"];
+        };
+      };
+    };
+  };
+  PaymentsController_handleWebhook: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PayOSWebhookDto"];
+      };
+    };
+    responses: {
+      /** @description Webhook processed idempotently */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  PaymentsController_verifyCashPayment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Order UUID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["VerifyCashPaymentDto"];
+      };
+    };
+    responses: {
+      /** @description Cash payment confirmed and order marked fully paid */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderPaymentSummaryDto"];
+        };
+      };
+    };
+  };
+  PaymentsController_repayDebt: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RepayDebtDto"];
+      };
+    };
+    responses: {
+      /** @description Debt repayment processed or online link generated */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DebtRepaymentResponseDto"];
+        };
+      };
+    };
+  };
+  PaymentsController_getOrderPaymentSummary: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Order UUID */
+        orderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Order payment summary retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderPaymentSummaryDto"];
+        };
       };
     };
   };

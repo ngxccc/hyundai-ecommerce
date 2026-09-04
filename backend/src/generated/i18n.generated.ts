@@ -58,6 +58,20 @@ export type I18nTranslations = {
         "ORDER_CANNOT_BE_CANCELLED": string;
         "ORDER_CREATE_FAILED": string;
     };
+    "payments": {
+        "ORDER_NOT_FOUND": string;
+        "PAYMENT_NOT_FOUND": string;
+        "PAYMENT_ALREADY_COMPLETED": string;
+        "INVALID_PAYMENT_SIGNATURE": string;
+        "PAYMENT_AMOUNT_MISMATCH": string;
+        "PAYMENT_LINK_CREATION_FAILED": string;
+        "INVALID_PAYMENT_METHOD": string;
+        "DEALER_NOT_FOUND": string;
+        "DEBT_REPAYMENT_NOT_FOUND": string;
+        "DEBT_ALREADY_REPAID": string;
+        "ORDER_ALREADY_PAID": string;
+        "UNAUTHORIZED_VERIFICATION": string;
+    };
     "quotes": {
         "QUOTE_NOT_FOUND": string;
         "QUOTE_ITEM_NOT_FOUND": string;

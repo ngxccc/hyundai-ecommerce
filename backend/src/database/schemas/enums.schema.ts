@@ -96,11 +96,15 @@ export const paymentStatusEnum = pgEnum("payment_status", [
 ]);
 export type PaymentStatus = (typeof paymentStatusEnum.enumValues)[number];
 
-export const debtRepaymentStatusEnum = pgEnum("debt_repayment_status", [
+export const DEBT_REPAYMENT_STATUSES = [
   "PENDING",
   "COMPLETED",
   "FAILED",
-]);
+] as const;
+export const debtRepaymentStatusEnum = pgEnum(
+  "debt_repayment_status",
+  DEBT_REPAYMENT_STATUSES,
+);
 export type DebtRepaymentStatus =
   (typeof debtRepaymentStatusEnum.enumValues)[number];
 

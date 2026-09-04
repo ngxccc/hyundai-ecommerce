@@ -1,0 +1,14 @@
+{
+  "ORDER_NOT_FOUND": "Order does not exist in the system",
+  "PAYMENT_NOT_FOUND": "Payment transaction not found",
+  "PAYMENT_ALREADY_COMPLETED": "Payment transaction has already been completed",
+  "INVALID_PAYMENT_SIGNATURE": "Invalid or tampered PayOS cryptographic signature",
+  "PAYMENT_AMOUNT_MISMATCH": "Payment amount does not match the required payable amount for this order",
+  "PAYMENT_LINK_CREATION_FAILED": "Failed to create PayOS payment link. Please try again later",
+  "INVALID_PAYMENT_METHOD": "Invalid payment method for this transaction type",
+  "DEALER_NOT_FOUND": "B2B dealer account not found",
+  "DEBT_REPAYMENT_NOT_FOUND": "Debt repayment record not found",
+  "DEBT_ALREADY_REPAID": "Debt repayment has already been processed and credited",
+  "ORDER_ALREADY_PAID": "Order has already been fully paid",
+  "UNAUTHORIZED_VERIFICATION": "You are not authorized to verify this payment transaction"
+}

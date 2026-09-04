@@ -1,0 +1,14 @@
+{
+  "ORDER_NOT_FOUND": "Đơn hàng không tồn tại trên hệ thống",
+  "PAYMENT_NOT_FOUND": "Giao dịch thanh toán không tồn tại",
+  "PAYMENT_ALREADY_COMPLETED": "Giao dịch thanh toán đã được xử lý hoàn tất trước đó",
+  "INVALID_PAYMENT_SIGNATURE": "Chữ ký số xác thực PayOS không hợp lệ hoặc đã bị thay đổi",
+  "PAYMENT_AMOUNT_MISMATCH": "Số tiền thanh toán thực tế không khớp với giá trị cần thanh toán của đơn hàng",
+  "PAYMENT_LINK_CREATION_FAILED": "Không thể khởi tạo liên kết thanh toán PayOS. Vui lòng thử lại sau",
+  "INVALID_PAYMENT_METHOD": "Phương thức thanh toán không hợp lệ cho yêu cầu này",
+  "DEALER_NOT_FOUND": "Không tìm thấy thông tin tài khoản đại lý B2B",
+  "DEBT_REPAYMENT_NOT_FOUND": "Không tìm thấy hồ sơ thanh toán công nợ",
+  "DEBT_ALREADY_REPAID": "Khoản công nợ này đã được thanh toán hoàn tất",
+  "ORDER_ALREADY_PAID": "Đơn hàng đã được thanh toán đầy đủ trước đó",
+  "UNAUTHORIZED_VERIFICATION": "Bạn không có thẩm quyền xác thực giao dịch này"
+}
