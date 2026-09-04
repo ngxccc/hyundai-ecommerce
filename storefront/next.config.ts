@@ -18,9 +18,6 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "img.vietqr.io" },
     ],
   },
-
-  transpilePackages: ["@nhatnang/shared", "@nhatnang/ui"],
-
   cacheComponents: true,
 
   experimental: {
