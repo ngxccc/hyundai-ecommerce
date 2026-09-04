@@ -45,7 +45,7 @@ describe("Dealer Tiers Module Integration", () => {
   let app: INestApplication;
   let db: DrizzleDB;
 
-  const getHttpServer = (): Server => app.getHttpServer() as unknown as Server;
+  const getHttpServer = (): Server => app.getHttpServer() as Server;
 
   beforeAll(async () => {
     setup = await createTestApp();
@@ -93,10 +93,11 @@ describe("Dealer Tiers Module Integration", () => {
         expect(body.success).toBe(true);
         expect(body.data.length).toBe(2);
         // Assert ordering by minimumSpend ascending
-        expect(body.data[0]!.id).toBe(tier1Id);
-        expect(body.data[0]!.nameVi).toBe("Đại lý Bạc");
-        expect(body.data[1]!.id).toBe(tier2Id);
-        expect(body.data[1]!.nameVi).toBe("Đại lý Vàng");
+        const [firstTier, secondTier] = body.data;
+        expect(firstTier?.id).toBe(tier1Id);
+        expect(firstTier?.nameVi).toBe("Đại lý Bạc");
+        expect(secondTier?.id).toBe(tier2Id);
+        expect(secondTier?.nameVi).toBe("Đại lý Vàng");
       });
     });
 

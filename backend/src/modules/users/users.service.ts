@@ -91,11 +91,7 @@ export class UsersService {
       }
     }
 
-    const isB2bOrHasCompany =
-      user.role === "DEALER_APPROVER" ||
-      user.role === "DEALER_PURCHASER" ||
-      Boolean(user.companyName);
-
+    const isB2bOrHasCompany = Boolean(user.companyName);
     const creditLimitNum = Number(user.creditLimit || 0);
     const currentDebtNum = Number(user.currentDebt || 0);
     const availableCreditNum = Math.max(0, creditLimitNum - currentDebtNum);

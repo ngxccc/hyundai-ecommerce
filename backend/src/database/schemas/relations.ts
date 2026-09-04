@@ -15,6 +15,7 @@ import {
   payments,
   paymentTransactions,
 } from "./payments.schema";
+import { leads, leadItems } from "./leads.schema";
 
 export const schemaRelations = defineRelations(
   {
@@ -39,6 +40,8 @@ export const schemaRelations = defineRelations(
     payments,
     debtRepayments,
     paymentTransactions,
+    leads,
+    leadItems,
   },
   (r) => ({
     users: {
@@ -291,6 +294,27 @@ export const schemaRelations = defineRelations(
         from: r.debtRepayments.verifiedBy,
         to: r.users.id,
         alias: "verifiedByDebtRepayment",
+      }),
+    },
+
+    leads: {
+      items: r.many.leadItems(),
+      assignedSales: r.one.users({
+        from: r.leads.assignedSalesId,
+        to: r.users.id,
+      }),
+    },
+
+    leadItems: {
+      lead: r.one.leads({
+        from: r.leadItems.leadId,
+        to: r.leads.id,
+        optional: false,
+      }),
+      product: r.one.products({
+        from: r.leadItems.productId,
+        to: r.products.id,
+        optional: false,
       }),
     },
   }),

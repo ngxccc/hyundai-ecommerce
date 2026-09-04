@@ -68,7 +68,7 @@ describe("Users Module Integration", () => {
       expect(profileBody.success).toBe(true);
       expect(profileBody.data.email).toBe(email);
       expect(profileBody.data.fullName).toBe(user.fullName);
-      expect(profileBody.data.role).toBe("CUSTOMER");
+      expect(profileBody.data.role).toBe("SALES");
       expect(profileBody.data.isVerified).toBe(true);
       expect(profileBody.data.status).toBe("ACTIVE");
     });

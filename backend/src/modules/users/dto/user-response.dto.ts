@@ -71,7 +71,7 @@ export class UserResponseDto {
   avatarUrl!: string | null;
 
   @ApiProperty({
-    example: "DEALER_APPROVER",
+    example: "SALES",
     enum: USER_ROLES,
   })
   role!: UserRole;

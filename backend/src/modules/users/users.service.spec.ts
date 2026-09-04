@@ -28,7 +28,7 @@ describe("UsersService", () => {
           fullName: "Lê Minh Tâm",
           phoneNumber: "0909123456",
           avatarUrl: null,
-          role: "CUSTOMER" as const,
+          role: "SALES" as const,
           status: "ACTIVE" as const,
           emailVerified: true,
           companyName: null,
@@ -51,7 +51,7 @@ describe("UsersService", () => {
           fullName: mockUser.fullName,
           phoneNumber: mockUser.phoneNumber,
           avatarUrl: null,
-          role: "CUSTOMER",
+          role: "SALES",
           status: "ACTIVE",
           isVerified: true,
           dealerCompany: null,
@@ -67,7 +67,7 @@ describe("UsersService", () => {
           fullName: "Nguyễn Văn Hùng",
           phoneNumber: "0912345678",
           avatarUrl: "https://cloudinary.com/avatar.jpg",
-          role: "DEALER_APPROVER" as const,
+          role: "SALES" as const,
           status: "ACTIVE" as const,
           emailVerified: true,
           companyName: "Công ty Cổ phần Cơ điện Miền Nam",
@@ -92,7 +92,7 @@ describe("UsersService", () => {
 
         const result = await service.getProfile(mockDealer.id);
 
-        expect(result.role).toBe("DEALER_APPROVER");
+        expect(result.role).toBe("SALES");
         expect(result.status).toBe("ACTIVE");
         expect(result.dealerCompany).toBeDefined();
         expect(result.dealerCompany?.companyName).toBe(
@@ -118,7 +118,7 @@ describe("UsersService", () => {
           fullName: "New User",
           phoneNumber: "0900000000",
           avatarUrl: null,
-          role: "CUSTOMER" as const,
+          role: "SALES" as const,
           status: "PENDING_VERIFICATION" as const,
           emailVerified: false,
           companyName: null,
@@ -141,14 +141,14 @@ describe("UsersService", () => {
     });
 
     describe("when user account is suspended or inactive", () => {
-      test("should throw ForbiddenException when status is SUSPENDED", async () => {
+      test("should throw ForbiddenException when status is SUSPENDED", () => {
         const mockUser = {
           id: "019fa8bc-8f4d-7000-b366-e691f45cfb92",
           email: "suspended@example.com",
           fullName: "Suspended User",
           phoneNumber: "0900000002",
           avatarUrl: null,
-          role: "CUSTOMER" as const,
+          role: "SALES" as const,
           status: "SUSPENDED" as const,
           emailVerified: true,
           companyName: null,
@@ -168,14 +168,14 @@ describe("UsersService", () => {
         );
       });
 
-      test("should throw ForbiddenException when status is INACTIVE", async () => {
+      test("should throw ForbiddenException when status is INACTIVE", () => {
         const mockUser = {
           id: "019fa8bc-8f4d-7000-b366-e691f45cfb93",
           email: "inactive@example.com",
           fullName: "Inactive User",
           phoneNumber: "0900000003",
           avatarUrl: null,
-          role: "CUSTOMER" as const,
+          role: "SALES" as const,
           status: "INACTIVE" as const,
           emailVerified: true,
           companyName: null,
@@ -197,7 +197,7 @@ describe("UsersService", () => {
     });
 
     describe("when user does not exist in database", () => {
-      test("should throw NotFoundException", async () => {
+      test("should throw NotFoundException", () => {
         mockDb.setSelectResult([]);
 
         expect(service.getProfile("non-existent-id")).rejects.toThrow(

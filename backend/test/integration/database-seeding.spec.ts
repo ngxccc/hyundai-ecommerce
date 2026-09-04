@@ -68,12 +68,13 @@ describe("Database Seeding Engine Integration", () => {
           .orderBy(asc(dealerTiers.minimumSpend));
 
         expect(allTiers.length).toBe(3);
-        expect(allTiers[0]!.nameVi).toBe("Đại lý Bạc");
-        expect(allTiers[0]!.nameEn).toBe("Silver Dealer");
-        expect(allTiers[1]!.nameVi).toBe("Đại lý Vàng");
-        expect(allTiers[1]!.nameEn).toBe("Gold Dealer");
-        expect(allTiers[2]!.nameVi).toBe("Đại lý Bạch Kim");
-        expect(allTiers[2]!.nameEn).toBe("Platinum Dealer");
+        const [tier0, tier1, tier2] = allTiers;
+        expect(tier0?.nameVi).toBe("Đại lý Bạc");
+        expect(tier0?.nameEn).toBe("Silver Dealer");
+        expect(tier1?.nameVi).toBe("Đại lý Vàng");
+        expect(tier1?.nameEn).toBe("Gold Dealer");
+        expect(tier2?.nameVi).toBe("Đại lý Bạch Kim");
+        expect(tier2?.nameEn).toBe("Platinum Dealer");
 
         // Assert users seeded correctly and password hashing is valid Scrypt
         const allUsers = await context.db
@@ -91,13 +92,16 @@ describe("Database Seeding Engine Integration", () => {
           (u) => u.email === "admin@hyundai-nhatnang.vn",
         );
         expect(adminUser).toBeDefined();
-        expect(adminUser!.role).toBe("ADMIN");
-        expect(adminUser!.status).toBe("ACTIVE");
+        if (!adminUser) {
+          throw new Error("adminUser is undefined");
+        }
+        expect(adminUser.role).toBe("ADMIN");
+        expect(adminUser.status).toBe("ACTIVE");
 
         // Verify password hash can be authenticated against default seed password
         const isPasswordValid = await comparePassword(
           DEFAULT_SEED_PASSWORD,
-          adminUser!.passwordHash,
+          adminUser.passwordHash,
         );
         expect(isPasswordValid).toBe(true);
       }, 30000);
@@ -149,7 +153,8 @@ describe("Database Seeding Engine Integration", () => {
         // Assert brands
         const allBrands = await context.db.select().from(brands);
         expect(allBrands.length).toBeGreaterThanOrEqual(1);
-        expect(allBrands[0]!.name).toBe("Hyundai");
+        const firstBrand = allBrands[0];
+        expect(firstBrand?.name).toBe("Hyundai");
 
         // Assert categories hierarchy
         const allCategories = await context.db.select().from(categories);
@@ -202,12 +207,14 @@ describe("Database Seeding Engine Integration", () => {
         // Assert quote exists with valid totals
         const allQuotes = await context.db.select().from(quotes);
         expect(allQuotes.length).toBeGreaterThanOrEqual(1);
-        expect(Number(allQuotes[0]!.subtotalPrice)).toBeGreaterThan(0);
+        const firstQuote = allQuotes[0];
+        expect(Number(firstQuote?.subtotalPrice)).toBeGreaterThan(0);
 
         // Assert order exists with valid totals
         const allOrders = await context.db.select().from(orders);
         expect(allOrders.length).toBeGreaterThanOrEqual(1);
-        expect(Number(allOrders[0]!.totalAmount)).toBeGreaterThan(0);
+        const firstOrder = allOrders[0];
+        expect(Number(firstOrder?.totalAmount)).toBeGreaterThan(0);
       }, 30000);
     });
   });

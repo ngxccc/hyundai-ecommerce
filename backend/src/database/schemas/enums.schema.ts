@@ -1,12 +1,7 @@
 import { pgEnum } from "drizzle-orm/pg-core";
 
 // 1. User & Authentication Enums
-export const USER_ROLES = [
-  "CUSTOMER",
-  "DEALER_APPROVER",
-  "DEALER_PURCHASER",
-  "ADMIN",
-] as const;
+export const USER_ROLES = ["ADMIN", "SALES"] as const;
 export const userRoleEnum = pgEnum("user_role", USER_ROLES);
 export type UserRole = (typeof userRoleEnum.enumValues)[number];
 
@@ -28,6 +23,19 @@ export const BUSINESS_TYPES = [
 ] as const;
 export const businessTypeEnum = pgEnum("business_type", BUSINESS_TYPES);
 export type BusinessType = (typeof businessTypeEnum.enumValues)[number];
+
+// Lead / RFQ Lifecycle Enums
+export const LEAD_STATUSES = [
+  "NEW",
+  "CONTACTING",
+  "SURVEY_SCHEDULED",
+  "QUOTED",
+  "CONVERTED",
+  "REJECTED",
+  "LOST",
+] as const;
+export const leadStatusEnum = pgEnum("lead_status", LEAD_STATUSES);
+export type LeadStatus = (typeof leadStatusEnum.enumValues)[number];
 
 // 2. Order & Checkout Enums
 export const ORDER_STATUSES = [

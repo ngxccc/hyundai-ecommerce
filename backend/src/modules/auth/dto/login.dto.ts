@@ -50,7 +50,7 @@ export class UserInfoDto {
   public fullName!: string;
 
   @ApiProperty({
-    example: "CUSTOMER",
+    example: "SALES",
     enum: USER_ROLES,
   })
   public role!: UserRole;

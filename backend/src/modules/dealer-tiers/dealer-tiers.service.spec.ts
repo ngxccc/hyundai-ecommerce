@@ -64,7 +64,7 @@ describe("DealerTiersService", () => {
     });
 
     describe("when dealer tier does not exist", () => {
-      test("should throw NotFoundException naming the missing identifier", async () => {
+      test("should throw NotFoundException naming the missing identifier", () => {
         mockDb.setSelectResult([]);
 
         expect(service.findById("non-existent")).rejects.toThrow(

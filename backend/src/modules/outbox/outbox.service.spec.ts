@@ -147,7 +147,7 @@ describe("OutboxService", () => {
       expect(mockDb.update).toHaveBeenCalled();
       expect(mockDb.mockUpdateSet).toHaveBeenCalledWith(
         expect.objectContaining({
-          status: "processed",
+          status: "PROCESSED",
         }),
       );
     });
@@ -157,7 +157,7 @@ describe("OutboxService", () => {
         id: "event-unmapped-uuid",
         eventType: "UNMAPPED_UNKNOWN_EVENT",
         payload: { some: "data" },
-        status: "pending",
+        status: "PENDING",
         attempts: 0,
       };
 
@@ -169,7 +169,7 @@ describe("OutboxService", () => {
       expect(mockDb.update).toHaveBeenCalled();
       expect(mockDb.mockUpdateSet).toHaveBeenCalledWith(
         expect.objectContaining({
-          status: "processed",
+          status: "PROCESSED",
         }),
       );
     });
@@ -183,7 +183,7 @@ describe("OutboxService", () => {
           fullName: "Test User",
           token: "token123",
         },
-        status: "pending",
+        status: "PENDING",
         attempts: 0,
       };
 
@@ -197,7 +197,7 @@ describe("OutboxService", () => {
       expect(mockDb.update).toHaveBeenCalled();
       expect(mockDb.mockUpdateSet).toHaveBeenCalledWith(
         expect.objectContaining({
-          status: "pending",
+          status: "PENDING",
           attempts: 1,
           lastError: "Queue error",
         }),
@@ -216,7 +216,7 @@ describe("OutboxService", () => {
         id: "event-timeout-uuid",
         eventType: OUTBOX_EVENT_TYPE.AUTH_VERIFICATION_EMAIL_REQUESTED,
         payload: { email: "timeout@example.com" },
-        status: "pending",
+        status: "PENDING",
         attempts: 0,
       };
 
@@ -230,7 +230,7 @@ describe("OutboxService", () => {
         expect(mockDb.update).toHaveBeenCalled();
         expect(mockDb.mockUpdateSet).toHaveBeenCalledWith(
           expect.objectContaining({
-            status: "pending",
+            status: "PENDING",
             attempts: 1,
             lastError: "BullMQ mailQueue.add timeout after 5s",
           }),
@@ -249,7 +249,7 @@ describe("OutboxService", () => {
           fullName: "Test User",
           token: "token123",
         },
-        status: "pending",
+        status: "PENDING",
         attempts: 2, // Next attempt will be 3 (MAX_OUTBOX_ATTEMPTS)
       };
 
@@ -263,7 +263,7 @@ describe("OutboxService", () => {
       expect(mockDb.update).toHaveBeenCalled();
       expect(mockDb.mockUpdateSet).toHaveBeenCalledWith(
         expect.objectContaining({
-          status: "failed",
+          status: "FAILED",
           attempts: 3,
           lastError: "Queue error",
         }),

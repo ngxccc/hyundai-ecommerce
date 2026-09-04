@@ -287,7 +287,7 @@ describe("AuthService", () => {
           id: "user-uuid",
           email: "test@example.com",
           fullName: "Test User",
-          role: "CUSTOMER",
+          role: "SALES",
           status: "ACTIVE",
           passwordHash,
         },
@@ -304,7 +304,7 @@ describe("AuthService", () => {
         id: "user-uuid",
         email: "test@example.com",
         fullName: "Test User",
-        role: "CUSTOMER",
+        role: "SALES",
         status: "ACTIVE",
       });
       expect(mockDb.insert).toHaveBeenCalled();
@@ -401,7 +401,7 @@ describe("AuthService", () => {
           {
             id: "user-uuid",
             email: "test@example.com",
-            role: "CUSTOMER",
+            role: "SALES",
             status: "ACTIVE",
           },
         ],

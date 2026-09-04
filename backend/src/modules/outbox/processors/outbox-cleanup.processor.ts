@@ -39,7 +39,7 @@ export class OutboxCleanupProcessor extends WorkerHost {
       .delete(outboxEvents)
       .where(
         and(
-          eq(outboxEvents.status, "processed"),
+          eq(outboxEvents.status, "PROCESSED"),
           lte(outboxEvents.createdAt, retentionThreshold),
         ),
       )

@@ -23,7 +23,7 @@ export const users = snakeCase.table(
     phoneNumber: varchar({ length: 20 }).notNull(),
     avatarUrl: text(),
     passwordHash: text().notNull(),
-    role: userRoleEnum().default("CUSTOMER").notNull(),
+    role: userRoleEnum().default("SALES").notNull(),
     status: userStatusEnum().default("ACTIVE").notNull(),
     emailVerified: boolean().default(false).notNull(),
 

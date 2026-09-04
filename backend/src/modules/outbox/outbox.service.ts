@@ -76,7 +76,7 @@ export class OutboxService
             attempts: outboxEvents.attempts,
           })
           .from(outboxEvents)
-          .where(eq(outboxEvents.status, "pending"))
+          .where(eq(outboxEvents.status, "PENDING"))
           .limit(10)
           .for("update", { skipLocked: true });
       });
@@ -96,7 +96,7 @@ export class OutboxService
           await this.db
             .update(outboxEvents)
             .set({
-              status: "processed",
+              status: "PROCESSED",
               processedAt: new Date(),
               attempts: event.attempts + 1,
               lastError: null,
@@ -121,7 +121,7 @@ export class OutboxService
           await this.db
             .update(outboxEvents)
             .set({
-              status: isFailed ? "failed" : "pending",
+              status: isFailed ? "FAILED" : "PENDING",
               processedAt: null,
               attempts: nextAttempts,
               lastError: errorMessage,

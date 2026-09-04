@@ -30,14 +30,14 @@ describe("RolesGuard", () => {
     describe("when no roles are required", () => {
       it("should return true when role metadata is undefined", () => {
         mockReflector.getAllAndOverride.mockReturnValue(undefined);
-        const ctx = createMockContext({ role: "CUSTOMER" });
+        const ctx = createMockContext({ role: "SALES" });
 
         expect(guard.canActivate(ctx)).toBe(true);
       });
 
       it("should return true when role metadata is an empty array", () => {
         mockReflector.getAllAndOverride.mockReturnValue([]);
-        const ctx = createMockContext({ role: "CUSTOMER" });
+        const ctx = createMockContext({ role: "SALES" });
 
         expect(guard.canActivate(ctx)).toBe(true);
       });
@@ -45,10 +45,7 @@ describe("RolesGuard", () => {
 
     describe("when roles are required", () => {
       it("should return true when user has matching role", () => {
-        mockReflector.getAllAndOverride.mockReturnValue([
-          "ADMIN",
-          "DEALER_APPROVER",
-        ]);
+        mockReflector.getAllAndOverride.mockReturnValue(["ADMIN", "SALES"]);
         const ctx = createMockContext({ role: "ADMIN" });
 
         expect(guard.canActivate(ctx)).toBe(true);
@@ -56,7 +53,7 @@ describe("RolesGuard", () => {
 
       it("should throw ForbiddenException when user has different role", () => {
         mockReflector.getAllAndOverride.mockReturnValue(["ADMIN"]);
-        const ctx = createMockContext({ role: "CUSTOMER" });
+        const ctx = createMockContext({ role: "SALES" });
 
         expect(() => guard.canActivate(ctx)).toThrow(ForbiddenException);
       });

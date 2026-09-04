@@ -29,7 +29,7 @@ export async function createAuthenticatedUser(
   overrides: Partial<NewUser> = {},
 ): Promise<AuthenticatedSession> {
   const user = await createUser(db, {
-    role: "CUSTOMER",
+    role: "SALES",
     status: "ACTIVE",
     ...overrides,
   });
