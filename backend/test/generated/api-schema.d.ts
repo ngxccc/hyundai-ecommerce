@@ -2199,6 +2199,83 @@ export interface components {
       /** @description List of guest cart items to merge into authenticated user cart */
       items: components["schemas"]["GuestCartItemDto"][];
     };
+    CreateQuoteItemDto: {
+      /**
+       * @description Catalog product UUID, or null for bespoke custom item
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
+       */
+      productId?: string;
+      /**
+       * @description Whether this is a bespoke line item not in catalog
+       * @default false
+       * @example false
+       */
+      isCustomItem: Record<string, never>;
+      /**
+       * @description Item name or description
+       * @example Máy phát điện Hyundai DHY6000SE
+       */
+      itemName: string;
+      /**
+       * @description Manufacturer model code
+       * @example DHY6000SE
+       */
+      itemModel?: string;
+      /**
+       * @description Technical specifications summary
+       * @example 5.0kVA - 230V / 50Hz - Chống ồn
+       */
+      itemSpecs?: string;
+      /**
+       * @description Requested quantity
+       * @example 2
+       */
+      quantity: number;
+      /**
+       * @description Customer target/requested unit price
+       * @example 25000000.00
+       */
+      requestedPrice?: string;
+    };
+    CreateQuoteDto: {
+      /**
+       * @description Customer or company contact name
+       * @example Công ty Cổ phần Xây dựng Nam Á
+       */
+      customerName: string;
+      /**
+       * @description Customer contact phone number
+       * @example 0901234567
+       */
+      customerPhone: string;
+      /**
+       * @description Customer contact email
+       * @example contact@nama.vn
+       */
+      customerEmail?: string;
+      /**
+       * @description Full registered company name
+       * @example Công ty Cổ phần Xây dựng Nam Á
+       */
+      companyName?: string;
+      /**
+       * @description Corporate enterprise tax ID
+       * @example 0312345678
+       */
+      taxId?: string;
+      /**
+       * @description Project or delivery site destination
+       * @example Số 45 Lê Duẩn, Quận 1, TP. Hồ Chí Minh
+       */
+      shippingAddress?: string;
+      /**
+       * @description Customer special requirements or notes
+       * @example Yêu cầu giao hàng trước ngày 15/10
+       */
+      note?: string;
+      /** @description List of requested quote items */
+      items: components["schemas"]["CreateQuoteItemDto"][];
+    };
     QuoteCommercialTermsDto: {
       /**
        * @default 15
@@ -2382,6 +2459,136 @@ export interface components {
       messages?: components["schemas"]["QuoteMessageResponseDto"][];
       user: components["schemas"]["QuoteUserSummaryDto"] | null;
     };
+    CommercialTermsDto: {
+      /**
+       * @description Quote validity duration in days
+       * @default 15
+       * @example 15
+       */
+      validityDays: Record<string, never>;
+      /**
+       * @description Commercial payment schedule and terms
+       * @example Tạm ứng 30%, thanh toán 70% trước khi giao hàng
+       */
+      paymentSchedule?: string;
+      /**
+       * @description Commercial warranty terms
+       * @example Bảo hành chính hãng Hyundai 24 tháng hoặc 2000 giờ chạy
+       */
+      warrantyTerms?: string;
+      /**
+       * @description Estimated lead time and delivery schedule
+       * @example Trong vòng 03 ngày làm việc kể từ ngày nhận tạm ứng
+       */
+      deliveryTime?: string;
+      /**
+       * @description Delivery destination or handover site
+       * @example Giao tại chân công trình bên mua
+       */
+      deliveryLocation?: string;
+    };
+    AdminQuoteItemInputDto: {
+      /**
+       * @description Catalog product UUID, or null for bespoke custom item
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
+       */
+      productId?: string;
+      /**
+       * @description Whether this is a bespoke line item not in catalog
+       * @default false
+       * @example false
+       */
+      isCustomItem: Record<string, never>;
+      /**
+       * @description Item name or description
+       * @example Máy phát điện Hyundai DHY6000SE
+       */
+      itemName: string;
+      /**
+       * @description Manufacturer model code
+       * @example DHY6000SE
+       */
+      itemModel?: string;
+      /**
+       * @description Technical specifications summary
+       * @example 5.0kVA - 230V / 50Hz - Chống ồn
+       */
+      itemSpecs?: string;
+      /**
+       * @description Item quantity
+       * @example 1
+       */
+      quantity: number;
+      /**
+       * @description Unit price quoted to customer (VND)
+       * @example 28000000
+       */
+      unitPrice: Record<string, never>;
+      /**
+       * @description Line item discount percentage (0 - 100)
+       * @default 0
+       * @example 5
+       */
+      discountPercent: Record<string, never>;
+    };
+    CreateAdminQuoteDto: {
+      /**
+       * @description Dealer or customer UUID if registered account
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb90
+       */
+      userId?: string;
+      /**
+       * @description Customer or enterprise primary contact
+       * @example Công ty TNHH Kỹ Thuật Điện Quang
+       */
+      customerName: string;
+      /**
+       * @description Customer contact phone number
+       * @example 0918123456
+       */
+      customerPhone: string;
+      /**
+       * @description Customer contact email
+       * @example sales@dienquang.com.vn
+       */
+      customerEmail?: string;
+      /**
+       * @description Enterprise registered corporate entity
+       * @example Công ty TNHH Kỹ Thuật Điện Quang
+       */
+      companyName?: string;
+      /**
+       * @description Corporate enterprise tax ID
+       * @example 0309988776
+       */
+      taxId?: string;
+      /**
+       * @description Project handover destination
+       * @example Khu Công Nghiệp Sóng Thần 2, Dĩ An, Bình Dương
+       */
+      shippingAddress?: string;
+      /**
+       * @description VAT percentage rate (e.g. 10 or 8)
+       * @default 10
+       * @example 10
+       */
+      vatRate: Record<string, never>;
+      /** @description Structured commercial, warranty, and delivery terms */
+      commercialTerms?: components["schemas"]["CommercialTermsDto"];
+      /**
+       * @description Internal sales or admin remarks
+       * @example Báo giá áp dụng theo chính sách đại lý cấp 1
+       */
+      note?: string;
+      /**
+       * Format: date-time
+       * @description Explicit quote expiration timestamp
+       * @example 2026-09-30T00:00:00.000Z
+       */
+      expirationDate?: string;
+      /** @description Quotation line items with pricing and discounts */
+      items: components["schemas"]["AdminQuoteItemInputDto"][];
+    };
     PaginatedQuoteResponseDto: {
       items: components["schemas"]["QuoteResponseDto"][];
       /** @example 10 */
@@ -2390,6 +2597,34 @@ export interface components {
       page: number;
       /** @example 20 */
       limit: number;
+    };
+    UpdateQuoteStatusDto: {
+      /**
+       * @description Target quotation workflow status
+       * @example APPROVED
+       * @enum {string}
+       */
+      status:
+        | "DRAFT"
+        | "SUBMITTED"
+        | "NEGOTIATING"
+        | "APPROVED"
+        | "REJECTED"
+        | "EXPIRED";
+    };
+    UpdateQuoteItemPriceDto: {
+      /**
+       * @description Agreed renegotiated unit price for quote line item (VND)
+       * @example 26500000.00
+       */
+      agreedPrice: string;
+    };
+    SendQuoteMessageDto: {
+      /**
+       * @description Negotiation message content
+       * @example Chúng tôi đề xuất chiết khấu thêm 2% nếu quý khách lấy số lượng từ 5 máy trở lên.
+       */
+      message: string;
     };
     ApproveToOrderResponseDto: {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9f */
@@ -5504,11 +5739,22 @@ export interface operations {
   QuotesController_listQuotes: {
     parameters: {
       query?: {
-        search?: string;
-        status?: string;
-        userId?: string;
-        limit?: number;
+        /** @description Pagination page number (1-based) */
         page?: number;
+        /** @description Number of records per page (max 100) */
+        limit?: number;
+        /** @description Filter quotes by customer/dealer user UUID */
+        userId?: string;
+        /** @description Filter quotes by status */
+        status?:
+          | "DRAFT"
+          | "SUBMITTED"
+          | "NEGOTIATING"
+          | "APPROVED"
+          | "REJECTED"
+          | "EXPIRED";
+        /** @description Search keyword matching quoteNumber, customer, or company */
+        search?: string;
       };
       header?: never;
       path?: never;
@@ -5534,7 +5780,11 @@ export interface operations {
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateQuoteDto"];
+      };
+    };
     responses: {
       /** @description Customer RFQ submitted successfully */
       201: {
@@ -5554,7 +5804,11 @@ export interface operations {
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateAdminQuoteDto"];
+      };
+    };
     responses: {
       /** @description B2B quote created successfully */
       201: {
@@ -5600,7 +5854,11 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateQuoteStatusDto"];
+      };
+    };
     responses: {
       /** @description Quote status updated successfully */
       200: {
@@ -5625,7 +5883,11 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateQuoteItemPriceDto"];
+      };
+    };
     responses: {
       /** @description Quote item price adjusted successfully */
       200: {
@@ -5648,7 +5910,11 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SendQuoteMessageDto"];
+      };
+    };
     responses: {
       /** @description Negotiation message recorded successfully */
       201: {

@@ -34,6 +34,7 @@ export interface TestAppSetup {
 export interface CreateTestAppOptions {
   schemaName?: string;
   dbContext?: TestDatabaseContext;
+  configureApp?: (app: INestApplication) => void;
 }
 
 /**
@@ -134,6 +135,9 @@ export async function createTestApp(
 
   const app = moduleFixture.createNestApplication();
   app.useGlobalPipes(new ZodValidationPipe());
+  if (options?.configureApp) {
+    options.configureApp(app);
+  }
   await app.init();
 
   const db = dbContext.db;

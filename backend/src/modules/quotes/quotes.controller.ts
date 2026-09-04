@@ -36,12 +36,12 @@ import {
   PaginatedQuoteResponseDto,
   QuoteMessageResponseDto,
   QuoteResponseDto,
-  type CreateAdminQuoteDto,
-  type CreateQuoteDto,
-  type QuoteQueryDto,
-  type SendQuoteMessageDto,
-  type UpdateQuoteItemPriceDto,
-  type UpdateQuoteStatusDto,
+  CreateAdminQuoteDto,
+  CreateQuoteDto,
+  QuoteQueryDto,
+  SendQuoteMessageDto,
+  UpdateQuoteItemPriceDto,
+  UpdateQuoteStatusDto,
 } from "./dto";
 
 @ApiTags(QUOTE_ROUTES.TAG)
