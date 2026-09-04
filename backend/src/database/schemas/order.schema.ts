@@ -13,6 +13,7 @@ import { sql } from "drizzle-orm";
 import { baseEntity, fullEntity } from "./helpers.schema";
 import { users } from "./auth.schema";
 import { products } from "./product.schema";
+import { leads } from "./leads.schema";
 import {
   approvalStatusEnum,
   orderPaymentStatusEnum,
@@ -25,9 +26,12 @@ export const orders = snakeCase.table(
   {
     ...fullEntity,
     orderNumber: varchar({ length: 32 }),
-    userId: uuid()
-      .notNull()
-      .references(() => users.id, { onDelete: "restrict" }),
+    userId: uuid().references(() => users.id, { onDelete: "set null" }),
+    leadId: uuid().references(() => leads.id, { onDelete: "set null" }),
+    customerName: varchar({ length: 255 }),
+    customerPhone: varchar({ length: 20 }),
+    customerEmail: varchar({ length: 255 }),
+    companyName: varchar({ length: 255 }),
     status: orderStatusEnum().notNull().default("PENDING"),
     shippingFee: numeric({ precision: 15, scale: 2 }).notNull().default("0.00"),
     shippingAddress: text().notNull(),
@@ -38,6 +42,7 @@ export const orders = snakeCase.table(
     paymentStatus: orderPaymentStatusEnum().notNull().default("PENDING"),
     approvalStatus: approvalStatusEnum().notNull().default("APPROVED"),
     approvedBy: uuid().references(() => users.id, { onDelete: "set null" }),
+    note: text(),
   },
   (table) => [
     index("order_user_status_created_idx").on(
@@ -45,6 +50,9 @@ export const orders = snakeCase.table(
       table.status,
       table.createdAt,
     ),
+    index("order_lead_idx").on(table.leadId),
+    index("order_customer_phone_idx").on(table.customerPhone),
+    index("order_order_number_idx").on(table.orderNumber),
     index("order_active_metrics_idx")
       .on(table.createdAt)
       .where(sql`${table.status} != 'CANCELLED'`),

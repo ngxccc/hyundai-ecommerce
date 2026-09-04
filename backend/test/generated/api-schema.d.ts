@@ -837,6 +837,125 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/orders/checkout": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Guest checkout for storefront retail customers */
+    post: operations["OrdersController_checkout"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/orders/admin": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create official B2B order (Admin/Sales) */
+    post: operations["OrdersController_createB2bOrder"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/orders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List orders with filtering and pagination */
+    get: operations["OrdersController_listOrders"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/orders/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get detailed order by ID */
+    get: operations["OrdersController_getOrderById"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/orders/{id}/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update order status along state machine */
+    patch: operations["OrdersController_updateStatus"];
+    trace?: never;
+  };
+  "/orders/{id}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Cancel order and release reserved stock */
+    post: operations["OrdersController_cancelOrder"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/orders/cron/expire": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Auto-expire pending unpaid orders and restock inventory (Cron) */
+    post: operations["OrdersController_expireOrders"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2203,6 +2322,267 @@ export interface components {
         | "APPROVED"
         | "REJECTED"
         | "EXPIRED";
+    };
+    GuestOrderItemInputDto: {
+      /**
+       * @description Product UUID to purchase
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
+       */
+      productId: string;
+      /**
+       * @description Item quantity
+       * @example 1
+       */
+      quantity: number;
+    };
+    CreateGuestOrderDto: {
+      /**
+       * @description Customer full name
+       * @example Nguyễn Văn A
+       */
+      customerName: string;
+      /**
+       * @description Customer Vietnamese contact phone number
+       * @example 0901234567
+       */
+      customerPhone: string;
+      /**
+       * @description Customer email address for notifications
+       * @example nguyenvana@example.com
+       */
+      customerEmail?: string;
+      /**
+       * @description Delivery destination street address
+       * @example Số 123 Đường Nguyễn Trãi, Phường 2, Quận 5, TP. Hồ Chí Minh
+       */
+      shippingAddress: string;
+      /**
+       * @description Checkout payment method
+       * @default PAYOS
+       * @example PAYOS
+       * @enum {string}
+       */
+      paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+      /**
+       * @description Customer delivery notes
+       * @example Giao hàng trong giờ hành chính
+       */
+      note?: string;
+      /** @description Order line items */
+      items: components["schemas"]["GuestOrderItemInputDto"][];
+    };
+    OrderItemProductSummaryDto: {
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
+      id: string;
+      /** @example Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha */
+      nameVi: string;
+      /** @example Hyundai DHY65KSE 60kVA 3 Phase Diesel Generator */
+      nameEn?: string;
+      /** @example may-phat-dien-diesel-hyundai-dhy65kse-60kva-3-pha */
+      slug: string;
+      /** @example 245000000.00 */
+      price: string;
+      /**
+       * @example [
+       *       "https://res.cloudinary.com/hyundai/image.jpg"
+       *     ]
+       */
+      images: string[];
+      /** @example 5 */
+      totalStockCache: number;
+    };
+    OrderItemResponseDto: {
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
+      id: string;
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb92 */
+      orderId: string;
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
+      productId: string;
+      /** @example Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha */
+      productName: string;
+      /** @example DHY65KSE */
+      productSku: string;
+      /** @example 1 */
+      quantity: number;
+      /** @example 245000000.00 */
+      unitPrice: string;
+      product?: components["schemas"]["OrderItemProductSummaryDto"];
+      /**
+       * Format: date-time
+       * @example 2026-09-04T08:00:00.000Z
+       */
+      createdAt: string;
+      /**
+       * Format: date-time
+       * @example 2026-09-04T08:00:00.000Z
+       */
+      updatedAt: string;
+    };
+    OrderUserSummaryDto: {
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
+      id: string;
+      /** @example Nguyễn Văn Đại Lý */
+      fullName: string;
+      /** @example dealer@example.com */
+      email: string;
+      /** @example 0911223344 */
+      phoneNumber: string;
+      /** @example SALES */
+      role: string;
+    };
+    OrderResponseDto: {
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb92 */
+      id: string;
+      /** @example ORD-20260904-4821 */
+      orderNumber?: string;
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
+      userId?: string;
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
+      leadId?: string;
+      /** @example Nguyễn Văn A */
+      customerName?: string;
+      /** @example 0901234567 */
+      customerPhone?: string;
+      /** @example nguyenvana@example.com */
+      customerEmail?: string;
+      /** @example Công ty Cổ phần Xây Dựng Số 1 */
+      companyName?: string;
+      /**
+       * @example PENDING
+       * @enum {string}
+       */
+      status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+      /** @example 500000.00 */
+      shippingFee: string;
+      /** @example Kho số 4, Cảng Tiên Sa, TP. Đà Nẵng */
+      shippingAddress: string;
+      /** @example 245500000.00 */
+      totalAmount: string;
+      /** @example 50000000.00 */
+      depositAmount?: string;
+      /** @example 195500000.00 */
+      remainingAmount?: string;
+      /**
+       * @example PAYOS
+       * @enum {string}
+       */
+      paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+      /**
+       * @example PENDING
+       * @enum {string}
+       */
+      paymentStatus:
+        "PENDING" | "DEPOSIT_PAID" | "FULLY_PAID" | "REFUNDED" | "FAILED";
+      /**
+       * @example APPROVED
+       * @enum {string}
+       */
+      approvalStatus: "PENDING" | "APPROVED" | "REJECTED";
+      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9c */
+      approvedBy?: string;
+      /** @example Giao trong giờ hành chính */
+      note?: string;
+      /**
+       * Format: date-time
+       * @example 2026-09-04T08:00:00.000Z
+       */
+      createdAt: string;
+      /**
+       * Format: date-time
+       * @example 2026-09-04T08:00:00.000Z
+       */
+      updatedAt: string;
+      items: components["schemas"]["OrderItemResponseDto"][];
+      user?: components["schemas"]["OrderUserSummaryDto"];
+    };
+    B2bOrderItemInputDto: {
+      /**
+       * @description Product UUID to purchase
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
+       */
+      productId: string;
+      /**
+       * @description Item quantity
+       * @example 2
+       */
+      quantity: number;
+      /**
+       * @description Custom agreed unit price overriding catalog price
+       * @example 120000000.00
+       */
+      unitPrice?: Record<string, never>;
+    };
+    CreateB2bOrderDto: {
+      /**
+       * @description Linked customer/dealer user UUID if registered
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb90
+       */
+      userId?: string;
+      /**
+       * @description Linked CRM Lead UUID for sales attribution & tracking
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb91
+       */
+      leadId?: string;
+      /**
+       * @description Customer or representative name
+       * @example Nguyễn Văn Đại Lý
+       */
+      customerName: string;
+      /**
+       * @description Contact phone number
+       * @example 0911223344
+       */
+      customerPhone: string;
+      /**
+       * @description Contact email
+       * @example dealer@example.com
+       */
+      customerEmail?: string;
+      /**
+       * @description Corporate company name
+       * @example Công ty Cổ phần Năng Lượng Miền Trung
+       */
+      companyName?: string;
+      /**
+       * @description Shipping destination address
+       * @example Kho số 4, Cảng Tiên Sa, TP. Đà Nẵng
+       */
+      shippingAddress: string;
+      /**
+       * @description B2B Payment method (TRADE_CREDIT, BANK_TRANSFER, CASH)
+       * @default BANK_TRANSFER
+       * @example TRADE_CREDIT
+       * @enum {string}
+       */
+      paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+      /**
+       * @description Freight / shipping fee
+       * @default 0
+       * @example 500000.00
+       */
+      shippingFee: Record<string, never>;
+      /**
+       * @description Initial deposit amount paid
+       * @default 0
+       * @example 50000000.00
+       */
+      depositAmount: Record<string, never>;
+      /**
+       * @description Internal order notes
+       * @example Giao tại công trình kèm biên bản nghiệm thu
+       */
+      note?: string;
+      /** @description Order line items */
+      items: components["schemas"]["B2bOrderItemInputDto"][];
+    };
+    PaginatedOrderResponseDto: {
+      items: components["schemas"]["OrderResponseDto"][];
+      /** @example 10 */
+      total: number;
+      /** @example 1 */
+      page: number;
+      /** @example 20 */
+      limit: number;
     };
   };
   responses: never;
@@ -4994,6 +5374,167 @@ export interface operations {
     requestBody?: never;
     responses: {
       /** @description Excel workbook stream */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  OrdersController_checkout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateGuestOrderDto"];
+      };
+    };
+    responses: {
+      /** @description Order placed successfully with PENDING status */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderResponseDto"];
+        };
+      };
+    };
+  };
+  OrdersController_createB2bOrder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateB2bOrderDto"];
+      };
+    };
+    responses: {
+      /** @description B2B order created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderResponseDto"];
+        };
+      };
+    };
+  };
+  OrdersController_listOrders: {
+    parameters: {
+      query?: {
+        search?: string;
+        paymentStatus?: string;
+        status?: string;
+        limit?: number;
+        page?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Paginated list of orders retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedOrderResponseDto"];
+        };
+      };
+    };
+  };
+  OrdersController_getOrderById: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Order UUID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Order details retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderResponseDto"];
+        };
+      };
+    };
+  };
+  OrdersController_updateStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Order UUID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Order status updated successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderResponseDto"];
+        };
+      };
+    };
+  };
+  OrdersController_cancelOrder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Order UUID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Order cancelled and inventory returned to stock */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OrderResponseDto"];
+        };
+      };
+    };
+  };
+  OrdersController_expireOrders: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Cron execution summary with count of expired orders */
       200: {
         headers: {
           [name: string]: unknown;

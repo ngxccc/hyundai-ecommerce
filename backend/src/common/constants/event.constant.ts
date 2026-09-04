@@ -2,6 +2,9 @@ export const OUTBOX_EVENT_TYPE = {
   AUTH_VERIFICATION_EMAIL_REQUESTED: "auth.verification_email_requested",
   AUTH_RESET_PASSWORD_EMAIL_REQUESTED: "auth.reset_password_email_requested",
   BOOKING_CONFIRMED: "booking.confirmed",
+  ORDER_CREATED: "order.created",
+  ORDER_CONFIRMED: "order.confirmed",
+  ORDER_CANCELLED: "order.cancelled",
 } as const;
 
 export type OutboxEventType =

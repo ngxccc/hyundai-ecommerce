@@ -1,0 +1,10 @@
+{
+  "ORDER_NOT_FOUND": "Order not found",
+  "INSUFFICIENT_STOCK": "Insufficient inventory stock for requested item",
+  "PRODUCT_NOT_FOUND": "Product not found in catalog",
+  "INVALID_STATUS_TRANSITION": "Invalid order status transition",
+  "ORDER_ALREADY_CANCELLED": "Order has already been cancelled",
+  "ORDER_ALREADY_PAID": "Order has already been paid",
+  "ORDER_CANNOT_BE_CANCELLED": "Order cannot be cancelled in its current state",
+  "ORDER_CREATE_FAILED": "Failed to create order, please try again"
+}

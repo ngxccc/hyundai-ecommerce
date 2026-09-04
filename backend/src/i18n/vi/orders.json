@@ -1,0 +1,10 @@
+{
+  "ORDER_NOT_FOUND": "Không tìm thấy đơn hàng",
+  "INSUFFICIENT_STOCK": "Sản phẩm không đủ số lượng tồn kho",
+  "PRODUCT_NOT_FOUND": "Không tìm thấy sản phẩm trong danh mục",
+  "INVALID_STATUS_TRANSITION": "Chuyển đổi trạng thái đơn hàng không hợp lệ",
+  "ORDER_ALREADY_CANCELLED": "Đơn hàng đã bị hủy trước đó",
+  "ORDER_ALREADY_PAID": "Đơn hàng đã được thanh toán",
+  "ORDER_CANNOT_BE_CANCELLED": "Đơn hàng đang giao hoặc đã hoàn thành, không thể hủy",
+  "ORDER_CREATE_FAILED": "Không thể tạo đơn hàng, vui lòng thử lại"
+}

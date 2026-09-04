@@ -176,7 +176,10 @@ export const schemaRelations = defineRelations(
       user: r.one.users({
         from: r.orders.userId,
         to: r.users.id,
-        optional: false,
+      }),
+      lead: r.one.leads({
+        from: r.orders.leadId,
+        to: r.leads.id,
       }),
       payment: r.one.payments({
         from: r.orders.id,
@@ -299,6 +302,7 @@ export const schemaRelations = defineRelations(
 
     leads: {
       items: r.many.leadItems(),
+      orders: r.many.orders(),
       assignedSales: r.one.users({
         from: r.leads.assignedSalesId,
         to: r.users.id,

@@ -48,6 +48,16 @@ export type I18nTranslations = {
         "RESOURCE_CONFLICT": string;
         "GATEWAY_TIMEOUT": string;
     };
+    "orders": {
+        "ORDER_NOT_FOUND": string;
+        "INSUFFICIENT_STOCK": string;
+        "PRODUCT_NOT_FOUND": string;
+        "INVALID_STATUS_TRANSITION": string;
+        "ORDER_ALREADY_CANCELLED": string;
+        "ORDER_ALREADY_PAID": string;
+        "ORDER_CANNOT_BE_CANCELLED": string;
+        "ORDER_CREATE_FAILED": string;
+    };
     "quotes": {
         "QUOTE_NOT_FOUND": string;
         "QUOTE_ITEM_NOT_FOUND": string;
