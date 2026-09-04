@@ -58,6 +58,7 @@ export async function seedTier1Reference(
       .select({
         id: dealerTiers.id,
         nameVi: dealerTiers.nameVi,
+        nameEn: dealerTiers.nameEn,
         discountPercentage: dealerTiers.discountPercentage,
       })
       .from(dealerTiers);

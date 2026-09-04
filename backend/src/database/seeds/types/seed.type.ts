@@ -36,7 +36,7 @@ export interface SeedSummary {
 
 export type SeededDealerTierRef = Pick<
   DealerTier,
-  "id" | "nameVi" | "discountPercentage"
+  "id" | "nameVi" | "nameEn" | "discountPercentage"
 >;
 
 export type SeededUserRef = Pick<

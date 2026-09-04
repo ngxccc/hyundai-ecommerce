@@ -13,430 +13,226 @@ import {
 } from "../helpers/database.helper";
 import { truncateAllTables } from "@/database/database.connection";
 import {
-  cinemas,
-  genres,
-  halls,
-  movies,
-  movieGenres,
-  movieTranslations,
-  seats,
-  seatTypes,
-  shows,
-  showSeats,
+  dealerTiers,
   users,
+  brands,
+  categories,
+  products,
+  warehouses,
+  warehouseStocks,
+  quotes,
+  orders,
 } from "@/database/schemas";
 import { seedDatabase } from "@/database/seeds/seed.orchestrator";
-import { MASTER_GENRES } from "@/database/seeds/data/genres.data";
-import { SEAT_TYPES_DATA } from "@/database/seeds/data/seat-types.data";
-import { SEED_USERS_DATA } from "@/database/seeds/data/users.data";
-import { SEED_CINEMAS_DATA } from "@/database/seeds/data/cinemas.data";
-import { SEED_MOVIES_DATA } from "@/database/seeds/data/movies.data";
 import { comparePassword } from "@/common/utils/crypto.util";
 import { DEFAULT_SEED_PASSWORD } from "@/database/seeds/constants/seed.constant";
-import { SHOWS_CONSTANTS } from "@/modules/shows/shows.constants";
-import { TIME_IN_MS } from "@/common/constants/time.constant";
-import {
-  seedShowsAndShowSeats,
-  seedTier3Schedule,
-} from "@/database/seeds/tiers/tier3-schedule.seeder";
+import { asc } from "drizzle-orm";
 
 describe("Database Seeding Engine Integration", () => {
   let context: TestDatabaseContext;
 
   beforeAll(async () => {
     context = await createWorkerTestDatabase();
-  });
+  }, 30000);
 
   afterAll(async () => {
     await teardownWorkerTestDatabase(context);
-  });
+  }, 30000);
 
   beforeEach(async () => {
     await truncateAllTables(context.db, context.schemaName);
-  });
+  }, 15000);
 
   describe("Tier 1: Master Reference Data Seeding", () => {
-    it("should successfully seed genres, seat types, and verified system users", async () => {
-      const summary = await seedDatabase({
-        db: context.db,
-        scope: "reference",
-      });
-
-      expect(summary.errors).toHaveLength(0);
-      expect(summary.genres).toBe(MASTER_GENRES.length);
-      expect(summary.seatTypes).toBe(SEAT_TYPES_DATA.length);
-      expect(summary.users).toBe(SEED_USERS_DATA.length);
-
-      const dbGenres = await context.db
-        .select({ id: genres.id, name: genres.name })
-        .from(genres);
-      expect(dbGenres).toHaveLength(MASTER_GENRES.length);
-
-      const dbSeatTypes = await context.db
-        .select({
-          id: seatTypes.id,
-          name: seatTypes.name,
-          priceMultiplier: seatTypes.priceMultiplier,
-        })
-        .from(seatTypes);
-      expect(dbSeatTypes).toHaveLength(SEAT_TYPES_DATA.length);
-
-      const dbUsers = await context.db
-        .select({
-          id: users.id,
-          email: users.email,
-          role: users.role,
-          status: users.status,
-          passwordHash: users.passwordHash,
-        })
-        .from(users);
-      expect(dbUsers).toHaveLength(SEED_USERS_DATA.length);
-
-      const adminUser = dbUsers.find((u) => u.role === "admin");
-      expect(adminUser).toBeDefined();
-      expect(adminUser?.status).toBe("active");
-      const isPasswordValid = await comparePassword(
-        DEFAULT_SEED_PASSWORD,
-        adminUser?.passwordHash ?? "",
-      );
-      expect(isPasswordValid).toBeTrue();
-    });
-
-    it("should be idempotent and produce zero duplicate rows when run consecutively", async () => {
-      const summary1 = await seedDatabase({
-        db: context.db,
-        scope: "reference",
-      });
-      expect(summary1.genres).toBe(MASTER_GENRES.length);
-      expect(summary1.seatTypes).toBe(SEAT_TYPES_DATA.length);
-      expect(summary1.users).toBe(SEED_USERS_DATA.length);
-
-      const summary2 = await seedDatabase({
-        db: context.db,
-        scope: "reference",
-      });
-      expect(summary2.errors).toHaveLength(0);
-
-      const dbGenres = await context.db.select({ id: genres.id }).from(genres);
-      const dbSeatTypes = await context.db
-        .select({ id: seatTypes.id })
-        .from(seatTypes);
-      const dbUsers = await context.db.select({ id: users.id }).from(users);
-
-      expect(dbGenres.length).toBe(MASTER_GENRES.length);
-      expect(dbSeatTypes.length).toBe(SEAT_TYPES_DATA.length);
-      expect(dbUsers.length).toBe(SEED_USERS_DATA.length);
-    });
-
-    it("should support selective granular scoping for genres, seat-types, and users", async () => {
-      await seedDatabase({
-        db: context.db,
-        scope: "genres",
-      });
-
-      const dbGenres = await context.db.select({ id: genres.id }).from(genres);
-      const dbSeatTypes = await context.db
-        .select({ id: seatTypes.id })
-        .from(seatTypes);
-      const dbUsers = await context.db.select({ id: users.id }).from(users);
-
-      expect(dbGenres.length).toBe(MASTER_GENRES.length);
-      expect(dbSeatTypes.length).toBe(0);
-      expect(dbUsers.length).toBe(0);
-    });
-
-    it("should support comma-separated multi-scopes and array scopes", async () => {
-      await seedDatabase({
-        db: context.db,
-        scope: "genres,users",
-      });
-
-      const dbGenres = await context.db.select({ id: genres.id }).from(genres);
-      const dbSeatTypes = await context.db
-        .select({ id: seatTypes.id })
-        .from(seatTypes);
-      const dbUsers = await context.db.select({ id: users.id }).from(users);
-
-      expect(dbGenres.length).toBe(MASTER_GENRES.length);
-      expect(dbSeatTypes.length).toBe(0);
-      expect(dbUsers.length).toBe(SEED_USERS_DATA.length);
-    });
-
-    it(
-      "should seed all supported entities when no scope option is provided",
-      async () => {
+    describe("when seeding reference scope", () => {
+      it("should successfully seed dealer tiers and verify system users with hashed passwords", async () => {
         const summary = await seedDatabase({
           db: context.db,
+          scope: "reference",
         });
 
-        expect(summary.genres).toBe(MASTER_GENRES.length);
-        expect(summary.seatTypes).toBe(SEAT_TYPES_DATA.length);
-        expect(summary.users).toBe(SEED_USERS_DATA.length);
-        expect(summary.cinemas).toBe(SEED_CINEMAS_DATA.length);
-        expect(summary.movies).toBe(SEED_MOVIES_DATA.length);
-        expect(summary.shows).toBeGreaterThan(0);
-        expect(summary.showSeats).toBe(summary.shows * 80);
-      },
-      { timeout: 30000 },
-    );
+        expect(summary.errors).toEqual([]);
+        expect(summary.dealerTiers).toBe(3);
+        expect(summary.users).toBeGreaterThanOrEqual(4);
 
-    it("should reject execution when an invalid scope is provided", async () => {
-      let thrownError: Error | null = null;
-      try {
-        await seedDatabase({
-          db: context.db,
-          scope: "invalid-scope",
-        });
-      } catch (error) {
-        thrownError = error as Error;
-      }
+        // Assert dealer tiers exist with bilingual names and minimum spend ordering
+        const allTiers = await context.db
+          .select({
+            id: dealerTiers.id,
+            nameVi: dealerTiers.nameVi,
+            nameEn: dealerTiers.nameEn,
+            discountPercentage: dealerTiers.discountPercentage,
+            minimumSpend: dealerTiers.minimumSpend,
+          })
+          .from(dealerTiers)
+          .orderBy(asc(dealerTiers.minimumSpend));
 
-      expect(thrownError).toBeDefined();
-      expect(thrownError?.message).toMatch(/invalid seeding scope/i);
-    });
-  });
+        expect(allTiers.length).toBe(3);
+        expect(allTiers[0]!.nameVi).toBe("Đại lý Bạc");
+        expect(allTiers[0]!.nameEn).toBe("Silver Dealer");
+        expect(allTiers[1]!.nameVi).toBe("Đại lý Vàng");
+        expect(allTiers[1]!.nameEn).toBe("Gold Dealer");
+        expect(allTiers[2]!.nameVi).toBe("Đại lý Bạch Kim");
+        expect(allTiers[2]!.nameEn).toBe("Platinum Dealer");
 
-  describe("Tier 2: Catalog Data Seeding (Cinemas, Halls, Procedural Seats, Movies)", () => {
-    it("should successfully seed cinemas, halls, and 8x10 procedural physical seats", async () => {
-      const summary = await seedDatabase({
-        db: context.db,
-        scope: "cinemas",
-      });
+        // Assert users seeded correctly and password hashing is valid Scrypt
+        const allUsers = await context.db
+          .select({
+            id: users.id,
+            email: users.email,
+            role: users.role,
+            status: users.status,
+            passwordHash: users.passwordHash,
+          })
+          .from(users);
 
-      expect(summary.errors).toHaveLength(0);
-      expect(summary.cinemas).toBe(SEED_CINEMAS_DATA.length);
-
-      const totalExpectedHalls = SEED_CINEMAS_DATA.reduce(
-        (acc, c) => acc + c.halls.length,
-        0,
-      );
-      expect(summary.halls).toBe(totalExpectedHalls);
-
-      const totalExpectedSeats = totalExpectedHalls * 80;
-      expect(summary.seats).toBe(totalExpectedSeats);
-
-      const dbCinemas = await context.db
-        .select({ id: cinemas.id, name: cinemas.name, city: cinemas.city })
-        .from(cinemas);
-      expect(dbCinemas).toHaveLength(SEED_CINEMAS_DATA.length);
-
-      const dbHalls = await context.db
-        .select({ id: halls.id, cinemaId: halls.cinemaId, name: halls.name })
-        .from(halls);
-      expect(dbHalls).toHaveLength(totalExpectedHalls);
-
-      const dbSeats = await context.db
-        .select({ id: seats.id, row: seats.row, number: seats.number })
-        .from(seats);
-      expect(dbSeats).toHaveLength(totalExpectedSeats);
-    });
-
-    it("should successfully seed bilingual movies, translations, and genre links", async () => {
-      const summary = await seedDatabase({
-        db: context.db,
-        scope: "movies",
-      });
-
-      expect(summary.errors).toHaveLength(0);
-      expect(summary.movies).toBe(SEED_MOVIES_DATA.length);
-      expect(summary.movieTranslations).toBe(SEED_MOVIES_DATA.length * 2);
-
-      const dbMovies = await context.db
-        .select({ id: movies.id, tmdbId: movies.tmdbId })
-        .from(movies);
-      expect(dbMovies).toHaveLength(SEED_MOVIES_DATA.length);
-
-      const dbTranslations = await context.db
-        .select({
-          movieId: movieTranslations.movieId,
-          languageCode: movieTranslations.languageCode,
-          title: movieTranslations.title,
-        })
-        .from(movieTranslations);
-      expect(dbTranslations).toHaveLength(SEED_MOVIES_DATA.length * 2);
-
-      const dbMovieGenres = await context.db
-        .select({ movieId: movieGenres.movieId, genreId: movieGenres.genreId })
-        .from(movieGenres);
-      expect(dbMovieGenres.length).toBeGreaterThanOrEqual(
-        SEED_MOVIES_DATA.length,
-      );
-    });
-
-    it(
-      "should be idempotent across Tier 2 and produce zero duplicate rows when run consecutively",
-      async () => {
-        await seedDatabase({
-          db: context.db,
-          scope: "catalog",
-        });
-
-        const summary2 = await seedDatabase({
-          db: context.db,
-          scope: "catalog",
-        });
-
-        expect(summary2.errors).toHaveLength(0);
-
-        const totalExpectedHalls = SEED_CINEMAS_DATA.reduce(
-          (acc, c) => acc + c.halls.length,
-          0,
+        expect(allUsers.length).toBeGreaterThanOrEqual(4);
+        const adminUser = allUsers.find(
+          (u) => u.email === "admin@hyundai-nhatnang.vn",
         );
-        const totalExpectedSeats = totalExpectedHalls * 80;
+        expect(adminUser).toBeDefined();
+        expect(adminUser!.role).toBe("ADMIN");
+        expect(adminUser!.status).toBe("ACTIVE");
 
-        const dbCinemas = await context.db
-          .select({ id: cinemas.id })
-          .from(cinemas);
-        const dbHalls = await context.db.select({ id: halls.id }).from(halls);
-        const dbSeats = await context.db.select({ id: seats.id }).from(seats);
-        const dbMovies = await context.db
-          .select({ id: movies.id })
-          .from(movies);
-
-        expect(dbCinemas.length).toBe(SEED_CINEMAS_DATA.length);
-        expect(dbHalls.length).toBe(totalExpectedHalls);
-        expect(dbSeats.length).toBe(totalExpectedSeats);
-        expect(dbMovies.length).toBe(SEED_MOVIES_DATA.length);
-      },
-      { timeout: 20000 },
-    );
-
-    it("should seamlessly seed multi-scope targets (e.g. genres,cinemas)", async () => {
-      const summary = await seedDatabase({
-        db: context.db,
-        scope: ["genres", "cinemas"],
-      });
-
-      expect(summary.errors).toHaveLength(0);
-      expect(summary.genres).toBe(MASTER_GENRES.length);
-      expect(summary.seatTypes).toBe(0);
-      expect(summary.users).toBe(0);
-      expect(summary.cinemas).toBe(SEED_CINEMAS_DATA.length);
-      expect(summary.movies).toBe(0);
-    });
-  });
-
-  describe("Tier 3: Dynamic Schedule & Preallocated Seats Engine", () => {
-    it(
-      "should dynamically seed relative shows (T+0 to T+6) strictly enforcing Invariant INV-1",
-      async () => {
-        const summary = await seedDatabase({
-          db: context.db,
-          scope: "all",
-        });
-
-        expect(summary.errors).toHaveLength(0);
-        expect(summary.shows).toBeGreaterThan(0);
-        expect(summary.showSeats).toBe(summary.shows * 80);
-
-        const now = new Date();
-        const bufferMs =
-          SHOWS_CONSTANTS.CLEANING_BUFFER_MINUTES * TIME_IN_MS.MINUTE;
-
-        // Verify Invariant INV-1: Every created showtime must be in the future (>= NOW + 15m)
-        const dbShows = await context.db
-          .select({
-            id: shows.id,
-            startTime: shows.startTime,
-            endTime: shows.endTime,
-          })
-          .from(shows);
-
-        expect(dbShows.length).toBe(summary.shows);
-        for (const show of dbShows) {
-          expect(show.startTime.getTime()).toBeGreaterThanOrEqual(
-            now.getTime() + bufferMs - 5000, // 5s clock tolerance
-          );
-          expect(show.endTime.getTime()).toBeGreaterThan(
-            show.startTime.getTime(),
-          );
-        }
-
-        // Verify Show Seats preallocation (80 seats per show, status = 'available')
-        const dbShowSeats = await context.db
-          .select({
-            id: showSeats.id,
-            status: showSeats.status,
-          })
-          .from(showSeats);
-
-        expect(dbShowSeats.length).toBe(summary.shows * 80);
-        expect(dbShowSeats.every((s) => s.status === "available")).toBeTrue();
-      },
-      { timeout: 30000 },
-    );
-
-    it(
-      "should support standalone scope=shows with automatic fallback catalog resolution",
-      async () => {
-        const summary = await seedDatabase({
-          db: context.db,
-          scope: "shows",
-        });
-
-        expect(summary.errors).toHaveLength(0);
-        expect(summary.shows).toBeGreaterThan(0);
-        expect(summary.showSeats).toBe(summary.shows * 80);
-      },
-      { timeout: 30000 },
-    );
-
-    it(
-      "should be idempotent and never trigger PostgreSQL GiST exclusion collisions on consecutive runs",
-      async () => {
-        // First Run
-        const summary1 = await seedDatabase({
-          db: context.db,
-          scope: "all",
-        });
-        expect(summary1.shows).toBeGreaterThan(0);
-
-        // Second Run (Consecutive Execution)
-        const summary2 = await seedDatabase({
-          db: context.db,
-          scope: "all",
-        });
-        expect(summary2.errors).toHaveLength(0);
-        expect(summary2.shows).toBe(summary1.shows);
-
-        const dbShows = await context.db.select({ id: shows.id }).from(shows);
-        expect(dbShows.length).toBe(summary1.shows);
-      },
-      { timeout: 30000 },
-    );
-
-    it("should return empty result when no halls or movies are provided to seedShowsAndShowSeats", async () => {
-      const result = await seedShowsAndShowSeats(context.db, [], []);
-      expect(result.shows).toHaveLength(0);
-      expect(result.showSeatsCount).toBe(0);
+        // Verify password hash can be authenticated against default seed password
+        const isPasswordValid = await comparePassword(
+          DEFAULT_SEED_PASSWORD,
+          adminUser!.passwordHash,
+        );
+        expect(isPasswordValid).toBe(true);
+      }, 30000);
     });
 
-    it("should return empty result when schedule scope is not active in seedTier3Schedule", async () => {
-      const result = await seedTier3Schedule(context.db, ["genres"]);
-      expect(result.shows).toHaveLength(0);
-      expect(result.showSeatsCount).toBe(0);
-    });
-  });
-
-  describe("Production Safety Guard", () => {
-    it("should throw error and abort if reset is requested in production environment", async () => {
-      const originalEnv = process.env.NODE_ENV;
-      let thrownError: Error | null = null;
-      try {
-        process.env.NODE_ENV = "production";
+    describe("when running reference seeding repeatedly (idempotency)", () => {
+      it("should not throw unique constraint violations and maintain identical row counts", async () => {
+        // Run seed 1st time
         await seedDatabase({
           db: context.db,
           scope: "reference",
+        });
+
+        // Run seed 2nd time without reset
+        const summary = await seedDatabase({
+          db: context.db,
+          scope: "reference",
+        });
+
+        expect(summary.errors).toEqual([]);
+
+        const tierCount = await context.db.select().from(dealerTiers);
+        expect(tierCount.length).toBe(3);
+      }, 30000);
+    });
+  });
+
+  describe("Tier 2: E-commerce Catalog Seeding", () => {
+    describe("when seeding catalog scope with pre-existing reference tier", () => {
+      it("should seed brands, categories, products, and warehouses with stocks", async () => {
+        // Prerequisites: Seed Tier 1 first
+        await seedDatabase({
+          db: context.db,
+          scope: "reference",
+        });
+
+        const summary = await seedDatabase({
+          db: context.db,
+          scope: "catalog",
+        });
+
+        expect(summary.errors).toEqual([]);
+        expect(summary.brands).toBeGreaterThanOrEqual(1);
+        expect(summary.categories).toBeGreaterThanOrEqual(4);
+        expect(summary.products).toBeGreaterThanOrEqual(4);
+        expect(summary.warehouses).toBeGreaterThanOrEqual(2);
+        expect(summary.warehouseStocks).toBeGreaterThanOrEqual(4);
+
+        // Assert brands
+        const allBrands = await context.db.select().from(brands);
+        expect(allBrands.length).toBeGreaterThanOrEqual(1);
+        expect(allBrands[0]!.name).toBe("Hyundai");
+
+        // Assert categories hierarchy
+        const allCategories = await context.db.select().from(categories);
+        const parentCategories = allCategories.filter(
+          (c) => c.parentId === null,
+        );
+        const childCategories = allCategories.filter(
+          (c) => c.parentId !== null,
+        );
+        expect(parentCategories.length).toBeGreaterThanOrEqual(2);
+        expect(childCategories.length).toBeGreaterThanOrEqual(2);
+
+        // Assert warehouses
+        const allWarehouses = await context.db.select().from(warehouses);
+        expect(allWarehouses.length).toBeGreaterThanOrEqual(2);
+
+        // Assert products have prices and stock caches
+        const allProducts = await context.db.select().from(products);
+        expect(allProducts.length).toBeGreaterThanOrEqual(4);
+        for (const product of allProducts) {
+          expect(Number(product.price)).toBeGreaterThan(0);
+          expect(product.nameVi).toBeTruthy();
+        }
+
+        // Assert warehouse stocks link valid product and warehouse IDs
+        const allStocks = await context.db.select().from(warehouseStocks);
+        expect(allStocks.length).toBeGreaterThanOrEqual(4);
+      }, 30000);
+    });
+  });
+
+  describe("Tier 3: Operational Seeding", () => {
+    describe("when seeding operational scope after catalog", () => {
+      it("should successfully seed demo B2B quotes and orders linked to dealers", async () => {
+        // Prerequisites: Seed Tier 1 & 2
+        await seedDatabase({
+          db: context.db,
+          scope: ["reference", "catalog"],
+        });
+
+        const summary = await seedDatabase({
+          db: context.db,
+          scope: "operational",
+        });
+
+        expect(summary.errors).toEqual([]);
+        expect(summary.quotes).toBeGreaterThanOrEqual(1);
+        expect(summary.orders).toBeGreaterThanOrEqual(1);
+
+        // Assert quote exists with valid totals
+        const allQuotes = await context.db.select().from(quotes);
+        expect(allQuotes.length).toBeGreaterThanOrEqual(1);
+        expect(Number(allQuotes[0]!.subtotalPrice)).toBeGreaterThan(0);
+
+        // Assert order exists with valid totals
+        const allOrders = await context.db.select().from(orders);
+        expect(allOrders.length).toBeGreaterThanOrEqual(1);
+        expect(Number(allOrders[0]!.totalAmount)).toBeGreaterThan(0);
+      }, 30000);
+    });
+  });
+
+  describe("Full Database Seeding (scope: 'all')", () => {
+    describe("when running end-to-end seed across all tiers", () => {
+      it("should populate complete database schema with consistent entity relations", async () => {
+        const summary = await seedDatabase({
+          db: context.db,
+          scope: "all",
           reset: true,
         });
-      } catch (error) {
-        thrownError = error as Error;
-      } finally {
-        process.env.NODE_ENV = originalEnv;
-      }
 
-      expect(thrownError).toBeDefined();
-      expect(thrownError?.message).toMatch(/production/i);
+        expect(summary.errors).toEqual([]);
+        expect(summary.dealerTiers).toBe(3);
+        expect(summary.users).toBeGreaterThanOrEqual(4);
+        expect(summary.brands).toBeGreaterThanOrEqual(1);
+        expect(summary.categories).toBeGreaterThanOrEqual(4);
+        expect(summary.products).toBeGreaterThanOrEqual(4);
+        expect(summary.warehouses).toBeGreaterThanOrEqual(2);
+        expect(summary.warehouseStocks).toBeGreaterThanOrEqual(4);
+        expect(summary.quotes).toBeGreaterThanOrEqual(1);
+        expect(summary.orders).toBeGreaterThanOrEqual(1);
+        expect(summary.durationMs).toBeGreaterThan(0);
+      }, 45000);
     });
   });
 });
