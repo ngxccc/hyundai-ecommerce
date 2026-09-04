@@ -30,14 +30,14 @@ describe("RolesGuard", () => {
     describe("when no roles are required", () => {
       it("should return true when role metadata is undefined", () => {
         mockReflector.getAllAndOverride.mockReturnValue(undefined);
-        const ctx = createMockContext({ role: "customer" });
+        const ctx = createMockContext({ role: "CUSTOMER" });
 
         expect(guard.canActivate(ctx)).toBe(true);
       });
 
       it("should return true when role metadata is an empty array", () => {
         mockReflector.getAllAndOverride.mockReturnValue([]);
-        const ctx = createMockContext({ role: "customer" });
+        const ctx = createMockContext({ role: "CUSTOMER" });
 
         expect(guard.canActivate(ctx)).toBe(true);
       });
@@ -45,21 +45,24 @@ describe("RolesGuard", () => {
 
     describe("when roles are required", () => {
       it("should return true when user has matching role", () => {
-        mockReflector.getAllAndOverride.mockReturnValue(["admin", "manager"]);
-        const ctx = createMockContext({ role: "admin" });
+        mockReflector.getAllAndOverride.mockReturnValue([
+          "ADMIN",
+          "DEALER_APPROVER",
+        ]);
+        const ctx = createMockContext({ role: "ADMIN" });
 
         expect(guard.canActivate(ctx)).toBe(true);
       });
 
       it("should throw ForbiddenException when user has different role", () => {
-        mockReflector.getAllAndOverride.mockReturnValue(["admin"]);
-        const ctx = createMockContext({ role: "customer" });
+        mockReflector.getAllAndOverride.mockReturnValue(["ADMIN"]);
+        const ctx = createMockContext({ role: "CUSTOMER" });
 
         expect(() => guard.canActivate(ctx)).toThrow(ForbiddenException);
       });
 
       it("should throw ForbiddenException when user is not present on request", () => {
-        mockReflector.getAllAndOverride.mockReturnValue(["admin"]);
+        mockReflector.getAllAndOverride.mockReturnValue(["ADMIN"]);
         const ctx = createMockContext(undefined);
 
         expect(() => guard.canActivate(ctx)).toThrow(ForbiddenException);

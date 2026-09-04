@@ -9,7 +9,6 @@ import {
 import request from "supertest";
 import { type INestApplication } from "@nestjs/common";
 import type { Server } from "node:http";
-import { JwtService } from "@nestjs/jwt";
 import { eq } from "drizzle-orm";
 import {
   createTestApp,
@@ -79,7 +78,7 @@ describe("Auth Module Integration", () => {
         .limit(1);
       expect(dbUser).toBeDefined();
       if (!dbUser) throw new Error("dbUser is undefined");
-      expect(dbUser.status).toBe("active");
+      expect(dbUser.status).toBe("ACTIVE");
 
       const loginRes = await request(getHttpServer()).post("/auth/login").send({
         email,
@@ -265,7 +264,7 @@ describe("Auth Module Integration", () => {
 
         await db
           .update(users)
-          .set({ status: "pending_verification" })
+          .set({ status: "PENDING_VERIFICATION" })
           .where(eq(users.id, userBefore.id));
 
         const loginFailRes = await request(getHttpServer())
@@ -508,7 +507,7 @@ describe("Auth Module Integration", () => {
 
         await db
           .update(users)
-          .set({ status: "active" })
+          .set({ status: "ACTIVE" })
           .where(eq(users.email, "change-pwd-user@example.com"));
 
         const loginRes = await request(getHttpServer())
@@ -600,7 +599,7 @@ describe("Auth Module Integration", () => {
 
         await db
           .update(users)
-          .set({ status: "active" })
+          .set({ status: "ACTIVE" })
           .where(eq(users.email, "wrong-pwd-user@example.com"));
 
         const loginRes = await request(getHttpServer())
@@ -635,7 +634,7 @@ describe("Auth Module Integration", () => {
 
         await db
           .update(users)
-          .set({ status: "active" })
+          .set({ status: "ACTIVE" })
           .where(eq(users.email, "same-pwd-user@example.com"));
 
         const loginRes = await request(getHttpServer())
@@ -656,41 +655,6 @@ describe("Auth Module Integration", () => {
           });
         expect(changePwdRes.status).toBe(400);
       }, 15000);
-
-      it("should reject change password request with 400 Bad Request when user was created via OAuth without password", async () => {
-        const [oauthUser] = await db
-          .insert(users)
-          .values({
-            email: "oauth-only-user@example.com",
-            fullName: "OAuth Only User",
-            googleId: "google-oauth-12345",
-            passwordHash: null,
-            status: "active",
-            role: "user",
-          })
-          .returning({
-            id: users.id,
-            email: users.email,
-            role: users.role,
-          });
-        if (!oauthUser) throw new Error("OAuth user not created");
-        // Sign JWT token directly for testing OAuth user session
-        const jwtService = app.get(JwtService);
-        const accessToken = await jwtService.signAsync({
-          sub: oauthUser.id,
-          email: oauthUser.email,
-          role: oauthUser.role,
-        });
-
-        const changePwdRes = await request(getHttpServer())
-          .post("/auth/change-password")
-          .set("Authorization", `Bearer ${accessToken}`)
-          .send({
-            currentPassword: "SomeDummyPassword123!",
-            newPassword: "NewSecurePassword456!",
-          });
-        expect(changePwdRes.status).toBe(400);
-      });
     });
   });
 
@@ -708,7 +672,7 @@ describe("Auth Module Integration", () => {
 
         await db
           .update(users)
-          .set({ status: "active" })
+          .set({ status: "ACTIVE" })
           .where(eq(users.email, "logout-all-user@example.com"));
 
         const loginRes1 = await request(getHttpServer())

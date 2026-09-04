@@ -18,12 +18,13 @@ import {
 import { truncateAllTables } from "@/database/database.connection";
 import { createAuthenticatedUser } from "../helpers/auth.helper";
 import type { DrizzleDB } from "@/database/database.module";
+import type { UserResponseDto } from "@/modules/users/dto/user-response.dto";
 import type { components } from "../generated/api-schema";
 
-type UserProfileData = components["schemas"]["UserResponseDto"];
-type GetProfileResponse = components["schemas"]["ApiResponseDto"] & {
-  data: UserProfileData;
-};
+interface GetProfileResponse {
+  success: boolean;
+  data: UserResponseDto;
+}
 type Rfc9457ErrorResponse = components["schemas"]["Rfc9457ErrorResponseDto"];
 
 describe("Users Module Integration", () => {
@@ -67,9 +68,9 @@ describe("Users Module Integration", () => {
       expect(profileBody.success).toBe(true);
       expect(profileBody.data.email).toBe(email);
       expect(profileBody.data.fullName).toBe(user.fullName);
-      expect(profileBody.data.role).toBe("user");
+      expect(profileBody.data.role).toBe("CUSTOMER");
       expect(profileBody.data.isVerified).toBe(true);
-      expect(profileBody.data.status).toBe("active");
+      expect(profileBody.data.status).toBe("ACTIVE");
     });
 
     it("should return 401 Unauthorized in RFC 9457 format when Bearer token is missing", async () => {
@@ -86,7 +87,7 @@ describe("Users Module Integration", () => {
       const { authHeader } = await createAuthenticatedUser(db, jwtService, {
         email: "suspended.user@example.com",
         fullName: "Suspended User",
-        status: "suspended",
+        status: "SUSPENDED",
       });
 
       const profileRes = await request(getHttpServer())

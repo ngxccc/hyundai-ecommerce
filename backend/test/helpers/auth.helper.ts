@@ -29,8 +29,8 @@ export async function createAuthenticatedUser(
   overrides: Partial<NewUser> = {},
 ): Promise<AuthenticatedSession> {
   const user = await createUser(db, {
-    role: "user",
-    status: "active",
+    role: "CUSTOMER",
+    status: "ACTIVE",
     ...overrides,
   });
 
@@ -58,7 +58,7 @@ export async function createAuthenticatedAdmin(
   overrides: Partial<NewUser> = {},
 ): Promise<AuthenticatedSession> {
   return createAuthenticatedUser(db, jwtService, {
-    role: "admin",
+    role: "ADMIN",
     ...overrides,
   });
 }

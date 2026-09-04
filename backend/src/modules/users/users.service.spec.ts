@@ -1,8 +1,8 @@
-import { UsersService } from "./users.service";
-import type { DrizzleDB } from "@/database/database.module";
-import { beforeEach, describe, expect, it } from "bun:test";
+import { beforeEach, describe, expect, test } from "bun:test";
 import { ForbiddenException, NotFoundException } from "@nestjs/common";
 import type { I18nService } from "nestjs-i18n";
+import { UsersService } from "./users.service";
+import type { DrizzleDB } from "@/database/database.module";
 import { createMockDb, createMockI18nService } from "../../../test/mocks";
 
 describe("UsersService", () => {
@@ -19,85 +19,191 @@ describe("UsersService", () => {
     );
   });
 
-  describe("when retrieving user profile", () => {
-    it("should return user profile with isVerified = true when user is active", async () => {
-      const mockUser = {
-        id: "123e4567-e89b-12d3-a456-426614174000",
-        email: "user@example.com",
-        fullName: "Nguyen Van A",
-        role: "user",
-        status: "active",
-      };
+  describe("getProfile()", () => {
+    describe("when user is an active retail customer", () => {
+      test("should return customer profile without dealer company context", async () => {
+        const mockUser = {
+          id: "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
+          email: "customer@example.com",
+          fullName: "Lê Minh Tâm",
+          phoneNumber: "0909123456",
+          avatarUrl: null,
+          role: "CUSTOMER" as const,
+          status: "ACTIVE" as const,
+          emailVerified: true,
+          companyName: null,
+          taxId: null,
+          businessType: null,
+          province: "Đà Nẵng",
+          creditLimit: "0.00",
+          currentDebt: "0.00",
+          parentId: null,
+          dealerTierId: null,
+        };
 
-      mockDb.setSelectResult([mockUser]);
+        mockDb.setSelectResult([mockUser]);
 
-      const result = await service.getProfile(mockUser.id);
+        const result = await service.getProfile(mockUser.id);
 
-      expect(result).toEqual({
-        id: mockUser.id,
-        email: mockUser.email,
-        fullName: mockUser.fullName,
-        role: mockUser.role,
-        isVerified: true,
-        status: "active",
+        expect(result).toEqual({
+          id: mockUser.id,
+          email: mockUser.email,
+          fullName: mockUser.fullName,
+          phoneNumber: mockUser.phoneNumber,
+          avatarUrl: null,
+          role: "CUSTOMER",
+          status: "ACTIVE",
+          isVerified: true,
+          dealerCompany: null,
+        });
       });
     });
 
-    it("should return isVerified = false when user is pending_verification", async () => {
-      const mockUser = {
-        id: "123e4567-e89b-12d3-a456-426614174000",
-        email: "user@example.com",
-        fullName: "Nguyen Van B",
-        role: "user",
-        status: "pending_verification",
-      };
+    describe("when user is a B2B dealer approver with tier and credit limit", () => {
+      test("should return comprehensive dealer company context and available credit calculation", async () => {
+        const mockDealer = {
+          id: "019fa8bc-8f4d-7000-b366-e691f45cfb90",
+          email: "dealer@nhatnangpartner.vn",
+          fullName: "Nguyễn Văn Hùng",
+          phoneNumber: "0912345678",
+          avatarUrl: "https://cloudinary.com/avatar.jpg",
+          role: "DEALER_APPROVER" as const,
+          status: "ACTIVE" as const,
+          emailVerified: true,
+          companyName: "Công ty Cổ phần Cơ điện Miền Nam",
+          taxId: "0314567890",
+          businessType: "DEALER" as const,
+          province: "Thành phố Hồ Chí Minh",
+          creditLimit: "500000000.00",
+          currentDebt: "50000000.00",
+          parentId: null,
+          dealerTierId: "019fa8bc-8f4d-7000-b366-e691f45cfb99",
+        };
 
-      mockDb.setSelectResult([mockUser]);
+        const mockTier = {
+          id: "019fa8bc-8f4d-7000-b366-e691f45cfb99",
+          nameVi: "Đại lý Vàng",
+          nameEn: "Gold Dealer",
+          discountPercentage: "15.00",
+        };
 
-      const result = await service.getProfile(mockUser.id);
+        // First select is users, second select is dealerTiers
+        mockDb.setSelectResultsQueue([[mockDealer], [mockTier]]);
 
-      expect(result.isVerified).toBe(false);
-      expect(result.status).toBe("pending_verification");
+        const result = await service.getProfile(mockDealer.id);
+
+        expect(result.role).toBe("DEALER_APPROVER");
+        expect(result.status).toBe("ACTIVE");
+        expect(result.dealerCompany).toBeDefined();
+        expect(result.dealerCompany?.companyName).toBe(
+          "Công ty Cổ phần Cơ điện Miền Nam",
+        );
+        expect(result.dealerCompany?.creditLimit).toBe("500000000.00");
+        expect(result.dealerCompany?.currentDebt).toBe("50000000.00");
+        expect(result.dealerCompany?.availableCredit).toBe("450000000.00");
+        expect(result.dealerCompany?.tier).toEqual({
+          id: mockTier.id,
+          nameVi: "Đại lý Vàng",
+          nameEn: "Gold Dealer",
+          discountPercentage: "15.00",
+        });
+      });
     });
 
-    it("should throw ForbiddenException when user status is suspended", () => {
-      const mockUser = {
-        id: "123e4567-e89b-12d3-a456-426614174000",
-        email: "user@example.com",
-        fullName: "Nguyen Van C",
-        role: "user",
-        status: "suspended",
-      };
+    describe("when user is pending email verification", () => {
+      test("should return isVerified = false when status is PENDING_VERIFICATION and emailVerified is false", async () => {
+        const mockUser = {
+          id: "019fa8bc-8f4d-7000-b366-e691f45cfb91",
+          email: "unverified@example.com",
+          fullName: "New User",
+          phoneNumber: "0900000000",
+          avatarUrl: null,
+          role: "CUSTOMER" as const,
+          status: "PENDING_VERIFICATION" as const,
+          emailVerified: false,
+          companyName: null,
+          taxId: null,
+          businessType: null,
+          province: null,
+          creditLimit: "0.00",
+          currentDebt: "0.00",
+          parentId: null,
+          dealerTierId: null,
+        };
 
-      mockDb.setSelectResult([mockUser]);
+        mockDb.setSelectResult([mockUser]);
 
-      expect(service.getProfile(mockUser.id)).rejects.toThrow(
-        ForbiddenException,
-      );
+        const result = await service.getProfile(mockUser.id);
+
+        expect(result.isVerified).toBe(false);
+        expect(result.status).toBe("PENDING_VERIFICATION");
+      });
     });
 
-    it("should throw ForbiddenException when user status is inactive", () => {
-      const mockUser = {
-        id: "123e4567-e89b-12d3-a456-426614174000",
-        email: "user@example.com",
-        fullName: "Nguyen Van D",
-        role: "user",
-        status: "inactive",
-      };
+    describe("when user account is suspended or inactive", () => {
+      test("should throw ForbiddenException when status is SUSPENDED", async () => {
+        const mockUser = {
+          id: "019fa8bc-8f4d-7000-b366-e691f45cfb92",
+          email: "suspended@example.com",
+          fullName: "Suspended User",
+          phoneNumber: "0900000002",
+          avatarUrl: null,
+          role: "CUSTOMER" as const,
+          status: "SUSPENDED" as const,
+          emailVerified: true,
+          companyName: null,
+          taxId: null,
+          businessType: null,
+          province: null,
+          creditLimit: "0.00",
+          currentDebt: "0.00",
+          parentId: null,
+          dealerTierId: null,
+        };
 
-      mockDb.setSelectResult([mockUser]);
+        mockDb.setSelectResult([mockUser]);
 
-      expect(service.getProfile(mockUser.id)).rejects.toThrow(
-        ForbiddenException,
-      );
+        expect(service.getProfile(mockUser.id)).rejects.toThrow(
+          ForbiddenException,
+        );
+      });
+
+      test("should throw ForbiddenException when status is INACTIVE", async () => {
+        const mockUser = {
+          id: "019fa8bc-8f4d-7000-b366-e691f45cfb93",
+          email: "inactive@example.com",
+          fullName: "Inactive User",
+          phoneNumber: "0900000003",
+          avatarUrl: null,
+          role: "CUSTOMER" as const,
+          status: "INACTIVE" as const,
+          emailVerified: true,
+          companyName: null,
+          taxId: null,
+          businessType: null,
+          province: null,
+          creditLimit: "0.00",
+          currentDebt: "0.00",
+          parentId: null,
+          dealerTierId: null,
+        };
+
+        mockDb.setSelectResult([mockUser]);
+
+        expect(service.getProfile(mockUser.id)).rejects.toThrow(
+          ForbiddenException,
+        );
+      });
     });
 
-    it("should throw NotFoundException when user does not exist", () => {
-      mockDb.setSelectResult([]);
+    describe("when user does not exist in database", () => {
+      test("should throw NotFoundException", async () => {
+        mockDb.setSelectResult([]);
 
-      expect(service.getProfile("non-existent-id")).rejects.toThrow(
-        NotFoundException,
-      );
+        expect(service.getProfile("non-existent-id")).rejects.toThrow(
+          NotFoundException,
+        );
+      });
     });
   });
 });

@@ -106,7 +106,7 @@ export class AuthService {
     const passwordHash = await hashPassword(dto.password);
     const verificationToken = randomBytes(32).toString("hex");
     const verificationExpiresAt = getExpiryDate("24h");
-    const status = env.NODE_ENV === "test" ? "active" : "pending_verification";
+    const status = env.NODE_ENV === "test" ? "ACTIVE" : "PENDING_VERIFICATION";
 
     try {
       await this.db.transaction(async (tx) => {
@@ -164,7 +164,7 @@ export class AuthService {
     await this.db
       .update(users)
       .set({
-        status: "active",
+        status: "ACTIVE",
         verificationToken: null,
         verificationExpiresAt: null,
       })
@@ -192,7 +192,7 @@ export class AuthService {
         .limit(1);
 
       // WHY: Protect against user enumeration — return silently if user missing or not pending verification.
-      if (user?.status !== "pending_verification") {
+      if (user?.status !== "PENDING_VERIFICATION") {
         return;
       }
 
@@ -248,13 +248,13 @@ export class AuthService {
 
     if (
       !user?.passwordHash ||
-      user.status === "inactive" ||
-      user.status === "suspended"
+      user.status === "INACTIVE" ||
+      user.status === "SUSPENDED"
     ) {
       this.throwException("auth.INVALID_CREDENTIALS");
     }
 
-    if (user.status === "pending_verification") {
+    if (user.status === "PENDING_VERIFICATION") {
       this.throwException("auth.EMAIL_NOT_VERIFIED");
     }
 
@@ -281,6 +281,7 @@ export class AuthService {
         email: user.email,
         fullName: user.fullName,
         role: user.role,
+        status: user.status,
       },
     };
   }
@@ -323,7 +324,7 @@ export class AuthService {
       .where(eq(users.id, deletedToken.userId))
       .limit(1);
 
-    if (user?.status !== "active") {
+    if (user?.status !== "ACTIVE") {
       this.throwException(
         "auth.TOKEN_INVALID_OR_EXPIRED",
         UnauthorizedException,
@@ -391,7 +392,7 @@ export class AuthService {
       .limit(1);
 
     // WHY: Prevention of User Enumeration attacks. Return success generic message without exposing if email exists.
-    if (user?.status !== "active") {
+    if (user?.status !== "ACTIVE") {
       return;
     }
 

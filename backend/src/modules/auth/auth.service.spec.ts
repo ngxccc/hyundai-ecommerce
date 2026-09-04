@@ -142,7 +142,7 @@ describe("AuthService", () => {
       expect(mockDb.update).toHaveBeenCalled();
       expect(mockDb.mockUpdateSet).toHaveBeenCalledWith(
         expect.objectContaining({
-          status: "active",
+          status: "ACTIVE",
           verificationToken: null,
           verificationExpiresAt: null,
         }),
@@ -202,7 +202,7 @@ describe("AuthService", () => {
         {
           id: "unverified-user-id",
           fullName: "Unverified User",
-          status: "pending_verification",
+          status: "PENDING_VERIFICATION",
         },
       ]);
 
@@ -220,7 +220,7 @@ describe("AuthService", () => {
         {
           id: "unverified-user-id",
           fullName: "Unverified User",
-          status: "pending_verification",
+          status: "PENDING_VERIFICATION",
           verificationExpiresAt: recentExpiresAt,
         },
       ]);
@@ -238,7 +238,7 @@ describe("AuthService", () => {
         {
           id: "verified-user-id",
           fullName: "Verified User",
-          status: "active",
+          status: "ACTIVE",
         },
       ]);
 
@@ -255,7 +255,7 @@ describe("AuthService", () => {
         {
           id: "suspended-user-id",
           fullName: "Suspended User",
-          status: "suspended",
+          status: "SUSPENDED",
         },
       ]);
 
@@ -287,8 +287,8 @@ describe("AuthService", () => {
           id: "user-uuid",
           email: "test@example.com",
           fullName: "Test User",
-          role: "user",
-          status: "active",
+          role: "CUSTOMER",
+          status: "ACTIVE",
           passwordHash,
         },
       ]);
@@ -304,7 +304,8 @@ describe("AuthService", () => {
         id: "user-uuid",
         email: "test@example.com",
         fullName: "Test User",
-        role: "user",
+        role: "CUSTOMER",
+        status: "ACTIVE",
       });
       expect(mockDb.insert).toHaveBeenCalled();
     });
@@ -334,7 +335,7 @@ describe("AuthService", () => {
         {
           id: "user-uuid",
           email: "test@example.com",
-          status: "active",
+          status: "ACTIVE",
           passwordHash,
         },
       ]);
@@ -361,7 +362,7 @@ describe("AuthService", () => {
         {
           id: "user-uuid",
           email: "test@example.com",
-          status: "pending_verification",
+          status: "PENDING_VERIFICATION",
           passwordHash,
         },
       ]);
@@ -400,8 +401,8 @@ describe("AuthService", () => {
           {
             id: "user-uuid",
             email: "test@example.com",
-            role: "user",
-            status: "active",
+            role: "CUSTOMER",
+            status: "ACTIVE",
           },
         ],
       ]);
@@ -503,7 +504,7 @@ describe("AuthService", () => {
         {
           id: "user-id",
           fullName: "Test User",
-          status: "pending_verification",
+          status: "PENDING_VERIFICATION",
         },
       ]);
       await service.forgotPassword({
@@ -514,7 +515,7 @@ describe("AuthService", () => {
 
     it("should successfully generate reset token and write to outbox", async () => {
       mockDb.setSelectResult([
-        { id: "user-id", fullName: "Test User", status: "active" },
+        { id: "user-id", fullName: "Test User", status: "ACTIVE" },
       ]);
       await service.forgotPassword({
         email: "active@example.com",

@@ -2,6 +2,12 @@ import { ApiProperty } from "@nestjs/swagger";
 import { z } from "zod";
 import { zEmail } from "@/common/schemas/zod-primitives";
 import { i18nZodMsg } from "@/common/utils/i18n-message.util";
+import {
+  USER_ROLES,
+  USER_STATUSES,
+  type UserRole,
+  type UserStatus,
+} from "@/database/schemas";
 
 /**
  * Zod validation schema for user login authentication requests.
@@ -43,10 +49,18 @@ export class UserInfoDto {
   @ApiProperty({ example: "John Doe" })
   public fullName!: string;
 
-  @ApiProperty({ example: "USER" })
-  public role!: string;
-}
+  @ApiProperty({
+    example: "CUSTOMER",
+    enum: USER_ROLES,
+  })
+  public role!: UserRole;
 
+  @ApiProperty({
+    example: "ACTIVE",
+    enum: USER_STATUSES,
+  })
+  public status!: UserStatus;
+}
 export class LoginResponseDto {
   @ApiProperty({ example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." })
   public accessToken!: string;

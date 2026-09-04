@@ -10,12 +10,12 @@ export async function createUser(
   const [user] = await db
     .insert(users)
     .values({
-      email: `user-${uid}@ticketbooking.com`,
+      email: `user-${uid}@hyundai-nhatnang.vn`,
       fullName: `User Test ${uid}`,
       phoneNumber: "0912345678",
-      role: "user",
-      status: "active",
-      passwordHash: "$scrypt$N=16384,r=8,p=1$mockPasswordHash",
+      role: "CUSTOMER",
+      status: "ACTIVE",
+      passwordHash: "$scrypt$N=128,r=1,p=1$mockPasswordHash",
       ...overrides,
     })
     .returning();
