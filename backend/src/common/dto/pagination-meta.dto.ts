@@ -27,4 +27,32 @@ export class PaginationMetaDto {
     example: 5,
   })
   totalPages!: number;
+
+  @ApiProperty({
+    description: "Indicates if there is a next page available",
+    example: true,
+  })
+  hasNextPage!: boolean;
+
+  @ApiProperty({
+    description: "Indicates if there is a previous page available",
+    example: false,
+  })
+  hasPrevPage!: boolean;
+}
+
+export function buildPaginationMeta(
+  total: number,
+  page: number,
+  limit: number,
+): PaginationMetaDto {
+  const totalPages = Math.ceil(total / limit) || 1;
+  return {
+    page,
+    limit,
+    total,
+    totalPages,
+    hasNextPage: page < totalPages,
+    hasPrevPage: page > 1,
+  };
 }

@@ -1,0 +1,31 @@
+export const CATALOG_ROUTES = {
+  PRODUCTS: {
+    TAG: "Products",
+    PREFIX: "products",
+    FIND_ALL: "",
+    METADATA: "metadata",
+    FIND_BY_ID: ":id",
+    CREATE: "",
+    UPDATE: ":id",
+    DELETE: ":id",
+  },
+  CATEGORIES: {
+    TAG: "Categories",
+    PREFIX: "categories",
+    FIND_ALL: "",
+    TREE: "tree",
+    FIND_BY_ID: ":id",
+    CREATE: "",
+    UPDATE: ":id",
+    DELETE: ":id",
+  },
+  BRANDS: {
+    TAG: "Brands",
+    PREFIX: "brands",
+    FIND_ALL: "",
+    FIND_BY_ID: ":id",
+    CREATE: "",
+    UPDATE: ":id",
+    DELETE: ":id",
+  },
+} as const;

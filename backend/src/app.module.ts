@@ -21,6 +21,7 @@ import { UsersModule } from "./modules/users/users.module";
 import { DealerTiersModule } from "./modules/dealer-tiers/dealer-tiers.module";
 import { OutboxModule } from "./modules/outbox/outbox.module";
 import { LeadsModule } from "./modules/leads/leads.module";
+import { CatalogModule } from "./modules/catalog/catalog.module";
 import { AppController } from "./app.controller";
 import { parseRedisOptions } from "./config/redis.config";
 import { ZodValidationPipe } from "./common/pipes/zod-validation.pipe";
@@ -85,6 +86,7 @@ const getRedisOptions = () =>
     DealerTiersModule,
     OutboxModule,
     LeadsModule,
+    CatalogModule,
   ],
   controllers: [AppController],
   providers: [
