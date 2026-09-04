@@ -1,0 +1,8 @@
+{
+  "QUOTE_NOT_FOUND": "Quote not found",
+  "QUOTE_ITEM_NOT_FOUND": "Quote item not found",
+  "INVALID_STATUS_TRANSITION": "Invalid quote status transition",
+  "QUOTE_CANNOT_BE_MODIFIED": "Cannot adjust item price on an approved, rejected, or expired quote",
+  "QUOTE_NO_USER_ACCOUNT": "Quote has no linked customer user account to create an order",
+  "QUOTE_ALREADY_CONVERTED": "Quote has already been converted to an order"
+}

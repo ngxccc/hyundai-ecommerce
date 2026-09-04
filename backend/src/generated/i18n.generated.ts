@@ -48,6 +48,14 @@ export type I18nTranslations = {
         "RESOURCE_CONFLICT": string;
         "GATEWAY_TIMEOUT": string;
     };
+    "quotes": {
+        "QUOTE_NOT_FOUND": string;
+        "QUOTE_ITEM_NOT_FOUND": string;
+        "INVALID_STATUS_TRANSITION": string;
+        "QUOTE_CANNOT_BE_MODIFIED": string;
+        "QUOTE_NO_USER_ACCOUNT": string;
+        "QUOTE_ALREADY_CONVERTED": string;
+    };
     "shows": {
         "MOVIE_NOT_FOUND": string;
         "HALL_NOT_FOUND": string;

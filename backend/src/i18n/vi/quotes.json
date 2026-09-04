@@ -1,0 +1,8 @@
+{
+  "QUOTE_NOT_FOUND": "Không tìm thấy báo giá",
+  "QUOTE_ITEM_NOT_FOUND": "Không tìm thấy hạng mục báo giá",
+  "INVALID_STATUS_TRANSITION": "Chuyển đổi trạng thái báo giá không hợp lệ",
+  "QUOTE_CANNOT_BE_MODIFIED": "Không thể điều chỉnh đơn giá khi báo giá đã kết thúc hoặc đã được duyệt",
+  "QUOTE_NO_USER_ACCOUNT": "Báo giá này không có tài khoản khách hàng liên kết để tạo đơn hàng",
+  "QUOTE_ALREADY_CONVERTED": "Báo giá này đã được chuyển đổi thành đơn hàng trước đó"
+}
