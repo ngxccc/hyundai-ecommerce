@@ -13,9 +13,23 @@ export function createMockDb() {
   const mockInsertValues = mock(() =>
     Object.assign(Promise.resolve({}), {
       returning: mockInsertReturning,
+      onConflictDoUpdate: mock(() => ({
+        returning: mockInsertReturning,
+      })),
     }),
   );
-  const mockUpdateWhere = mock(() => Promise.resolve({}));
+  const mockUpdateReturning = mock(() => {
+    if (selectResultsQueue.length > 0) {
+      const res = selectResultsQueue.shift();
+      return Promise.resolve(res ?? selectResult);
+    }
+    return Promise.resolve(selectResult);
+  });
+  const mockUpdateWhere = mock(() =>
+    Object.assign(Promise.resolve({}), {
+      returning: mockUpdateReturning,
+    }),
+  );
   const mockUpdateSet = mock(() => ({
     where: mockUpdateWhere,
   }));
