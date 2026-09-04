@@ -3900,27 +3900,13 @@
         "operationId": "OrdersController_listOrders",
         "parameters": [
           {
-            "name": "search",
+            "name": "page",
             "required": false,
             "in": "query",
             "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "paymentStatus",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
+              "default": 1,
+              "example": 1,
+              "type": "number"
             }
           },
           {
@@ -3928,15 +3914,95 @@
             "required": false,
             "in": "query",
             "schema": {
+              "default": 20,
+              "example": 20,
               "type": "number"
             }
           },
           {
-            "name": "page",
+            "name": "status",
             "required": false,
             "in": "query",
             "schema": {
-              "type": "number"
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "PROCESSING",
+                "SHIPPED",
+                "DELIVERED",
+                "CANCELLED"
+              ]
+            }
+          },
+          {
+            "name": "paymentStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "DEPOSIT_PAID",
+                "FULLY_PAID",
+                "REFUNDED",
+                "FAILED"
+              ]
+            }
+          },
+          {
+            "name": "paymentMethod",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91",
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerPhone",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "0901234567",
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "ORD-20260904",
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "example": "2026-09-01T00:00:00.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "example": "2026-09-30T23:59:59.000Z",
+              "type": "string"
             }
           }
         ],
@@ -4010,6 +4076,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderStatusDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Order status updated successfully",
@@ -7541,6 +7617,29 @@
           }
         },
         "required": ["items", "total", "page", "limit"]
+      },
+      "UpdateOrderStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "CONFIRMED",
+            "enum": [
+              "PENDING",
+              "PROCESSING",
+              "SHIPPED",
+              "DELIVERED",
+              "CANCELLED"
+            ],
+            "description": "New order status along the state machine"
+          },
+          "note": {
+            "type": "string",
+            "example": "Đã xác nhận thanh toán chuyển khoản và sẵn sàng đóng gói",
+            "description": "Reason or operational note for status change"
+          }
+        },
+        "required": ["status"]
       },
       "CreateCheckoutLinkDto": {
         "type": "object",

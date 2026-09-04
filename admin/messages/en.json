@@ -1,0 +1,1100 @@
+{
+  "Cloudinary": {
+    "signFailed": "Failed to sign upload request",
+    "noFileProvided": "No file provided",
+    "noUrlProvided": "No URL provided",
+    "unsupportedContentType": "Unsupported content type",
+    "uploadFailed": "Upload failed",
+    "tooManyRequests": "Too many requests. Please try again later.",
+    "rateLimitExceeded": "Rate limit exceeded. Please wait before trying again.",
+    "unauthorized": "Unauthorized access. Admin privileges required.",
+    "invalidFolder": "Invalid folder prefix path traversal risk",
+    "fileTooLarge": "File is too large (maximum 10MB)",
+    "invalidMimeType": "Invalid file type. Only image uploads are allowed.",
+    "ssrfDetected": "Invalid upload source URL detected."
+  },
+  "Editor": {
+    "editor": {
+      "image": {
+        "dialog": {
+          "title": "Insert Image",
+          "tab": {
+            "upload": "Upload",
+            "url": "From URL",
+            "uploadCrop": "Upload & Crop"
+          },
+          "placeholder": "https://...",
+          "button": {
+            "apply": "Apply"
+          }
+        },
+        "tooltip": "Insert Image"
+      },
+      "link": {
+        "dialog": {
+          "inline": "Display inline"
+        }
+      },
+      "imageUpload": {
+        "alt": "Alternative text (Alt)",
+        "uploading": "Uploading...",
+        "cancel": "Cancel",
+        "crop": "Crop"
+      },
+      "upload": {
+        "error": "Error uploading image",
+        "tooLarge": "File is too large",
+        "invalidMime": "Invalid file type"
+      }
+    }
+  },
+  "Login": {
+    "title": "Login to <br></br>Hyundai Nhat Nang System",
+    "description": "Welcome back! Please sign in to manage your orders and products.",
+    "submit": "Login",
+    "submitting": "Authenticating...",
+    "noAccountYet": "Don't have an account yet?",
+    "registerNow": "Register now",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@company.vn",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "********",
+    "forgotPassword": "Forgot password?",
+    "rememberMe": "Remember me",
+    "orLoginWith": "Or sign in with",
+    "social": {
+      "google": "Sign in with Google",
+      "facebook": "Sign in with Facebook"
+    },
+    "successMessage": "Login successful! Redirecting...",
+    "errorMessage": "Login failed. Please try again later.",
+    "validation": {
+      "emailRequired": "Please enter your email",
+      "emailInvalid": "Invalid email address",
+      "passwordRequired": "Please enter your password",
+      "invalidCredentials": "Incorrect email or password",
+      "accountLocked": "Your account has been temporarily locked due to too many failed attempts. Please try again later.",
+      "unverifiedEmail": "Your email has not been verified. Please check your inbox."
+    }
+  },
+  "NotFound": {
+    "status": "Status: Terminal",
+    "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
+    "errorMessage": "Connection to this partition has been lost. The generator data or page you are looking for does not exist on the system.",
+    "actions": {
+      "home": {
+        "tag": "Return to Main",
+        "title": "Back to Home",
+        "description": "Reconnect with the control center and industrial generator catalog.",
+        "button": "Reboot"
+      },
+      "support": {
+        "tag": "Direct Protocol",
+        "title": "Technical Support",
+        "description": "Establish a secure communication channel with our engineering team via Zalo or Hotline.",
+        "button": "Open Connection"
+      }
+    }
+  },
+  "Forbidden": {
+    "status": "403 Forbidden",
+    "errorMessage": "Staff area only. Click here to return to the shopping page.",
+    "button": "Return to Storefront"
+  },
+  "AdminDashboard": {
+    "title": "Hyundai Nhat Nang",
+    "logoutSuccess": "Logged out successfully",
+    "logoutError": "Logout failed",
+    "nav": {
+      "overview": "Overview",
+      "products": "Products",
+      "orders": "Orders",
+      "customers": "Customers",
+      "dealerTiers": "Dealer Tiers",
+      "warehouses": "Warehouses",
+      "categories": "Categories",
+      "brands": "Brands",
+      "quotes": "Quotes"
+    },
+    "header": {
+      "title": "Overview",
+      "description": "Track your business performance.",
+      "searchPlaceholder": "Search...",
+      "createReport": "Create Report"
+    },
+    "metrics": {
+      "totalRevenue": "Total Revenue",
+      "totalOrders": "Total Orders",
+      "totalProducts": "Total Products",
+      "newCustomers": "New Customers"
+    },
+    "chart": {
+      "title": "Monthly Revenue"
+    },
+    "topProducts": {
+      "title": "Top Selling Products",
+      "viewAll": "View All",
+      "sold": "Sold: {count}"
+    },
+    "recentOrders": {
+      "title": "Recent Orders",
+      "filter": "Filter",
+      "export": "Export",
+      "viewAll": "View all orders",
+      "columns": {
+        "orderId": "Order ID",
+        "customer": "Customer",
+        "product": "Product",
+        "date": "Date",
+        "total": "Total",
+        "status": "Status"
+      },
+      "status": {
+        "completed": "Completed",
+        "processing": "Processing",
+        "shipping": "Shipping",
+        "cancelled": "Cancelled"
+      }
+    },
+    "userMenu": {
+      "myAccount": "My Account",
+      "profile": "Profile",
+      "settings": "Settings",
+      "language": "Language",
+      "vietnamese": "Vietnamese",
+      "english": "English",
+      "logout": "Log out",
+      "theme": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    }
+  },
+  "AdminProducts": {
+    "header": {
+      "title": "Products",
+      "description": "Manage your product catalog.",
+      "searchPlaceholder": "Search products...",
+      "addProduct": "Add New Product"
+    },
+    "filters": {
+      "searchPlaceholder": "Search model or name...",
+      "resetFilters": "Reset Filters",
+      "allCategories": "All Categories",
+      "status": "Status",
+      "brand": "Brand",
+      "fuelType": "Fuel Type",
+      "phase": "Phase",
+      "quoteOnly": "Quote Only",
+      "engineBrand": "Engine Brand...",
+      "alternatorBrand": "Alternator Brand...",
+      "minPower": "Min Power (KW)...",
+      "maxPower": "Max Power (KW)...",
+      "voltage": "Voltage (V)...",
+      "allBrands": "All Brands",
+      "allFuels": "All Fuels",
+      "allPhases": "All Phases",
+      "categoryOptions": {
+        "generator": "Generators",
+        "ups": "Power Stations",
+        "industrial": "Industrial Machines"
+      },
+      "brandOptions": {
+        "hyundai": "Hyundai",
+        "mitsubishi": "Mitsubishi",
+        "perkins": "Perkins"
+      },
+      "statusOptions": {
+        "active": "Active",
+        "outOfStock": "Out of Stock"
+      },
+      "fuelOptions": {
+        "diesel": "Diesel",
+        "gasoline": "Gasoline",
+        "gas": "Gas"
+      },
+      "phaseOptions": {
+        "1phase": "1 Phase",
+        "3phase": "3 Phase"
+      }
+    },
+    "card": {
+      "stock": "Stock: {count}",
+      "status": {
+        "active": "In Stock",
+        "outOfStock": "Out of Stock"
+      },
+      "contact": "Contact",
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "inventory": "Inventory",
+        "addToQuote": "Add to Quote",
+        "addedToQuoteSuccess": "Added {name} to quote draft",
+        "viewQuoteDraft": "View Quote"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Product deleted successfully",
+      "deleteError": "Failed to delete product"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete?",
+        "description": "Product \"{productName}\" will be removed. This action cannot be undone.",
+        "cancel": "Cancel",
+        "deleting": "Deleting...",
+        "confirm": "Delete Product"
+      }
+    },
+    "pagination": {
+      "showing": "Showing {start}-{end} of {total} products",
+      "showingCursor": "Showing product list"
+    }
+  },
+  "AdminProductForm": {
+    "title": "Add New Product",
+    "editTitle": "Edit Product",
+    "placeholders": {
+      "model": "e.g., DHY8000SE",
+      "power": "e.g., 6.0",
+      "voltage": "e.g., 230",
+      "frequency": "e.g., 50",
+      "ratedCurrent": "e.g., 26",
+      "powerFactor": "e.g., 1.0",
+      "warranty": "e.g., 12",
+      "engine": "e.g., Hyundai D400",
+      "engineBrand": "e.g., Hyundai",
+      "coolingSystem": "e.g., Air-cooled",
+      "startingSystem": "e.g., Electric Start",
+      "fuelConsumption": "e.g., 1.5",
+      "fuelTankCapacity": "e.g., 15",
+      "alternator": "e.g., Brushed",
+      "alternatorBrand": "e.g., Hyundai",
+      "weight": "e.g., 150",
+      "length": "e.g., 900",
+      "width": "e.g., 520",
+      "height": "e.g., 700",
+      "noiseLevel": "e.g., 72"
+    },
+    "fields": {
+      "name": "Product Name",
+      "namePlaceholder": "Enter product name...",
+      "slug": "URL Slug",
+      "slugPlaceholder": "product-name",
+      "price": "Price",
+      "pricePlaceholder": "15.000.000",
+      "description": "Detailed Description",
+      "shortDescription": "Short Description",
+      "images": "Images (URLs)",
+      "imagesPlaceholder": "https://...",
+      "addImage": "Add Image URL",
+      "removeImage": "Remove",
+      "brand": "Brand",
+      "brandPlaceholder": "Select Brand",
+      "category": "Category",
+      "categoryPlaceholder": "Select Category",
+      "specs": "Technical Specifications",
+      "specKey": "Spec Name",
+      "specValue": "Value",
+      "addSpec": "Add Spec",
+      "removeSpec": "Remove",
+      "specs_general": "General Info",
+      "specs_engine": "Engine & Alternator",
+      "specs_fuel": "Fuel & Cooling",
+      "specs_dimensions": "Dimensions & Weight",
+      "specs_electrical": "Electrical Specs",
+      "model": "Model",
+      "power": "Power",
+      "voltage": "Voltage",
+      "frequency": "Frequency",
+      "phase": "Phase",
+      "engine": "Engine",
+      "engineBrand": "Engine Brand",
+      "alternator": "Alternator",
+      "alternatorBrand": "Alternator Brand",
+      "fuelType": "Fuel Type",
+      "fuelConsumption": "Fuel Consumption",
+      "fuelTankCapacity": "Fuel Tank Capacity",
+      "weight": "Weight",
+      "dimensions": "Dimensions (LxWxH)",
+      "length": "Length",
+      "width": "Width",
+      "height": "Height",
+      "noiseLevel": "Noise Level",
+      "warranty": "Warranty",
+      "ratedCurrent": "Rated Current",
+      "powerFactor": "Power Factor",
+      "startingSystem": "Starting System",
+      "coolingSystem": "Cooling System",
+      "isQuoteOnly": "Quote Only (Hide Buy button)",
+      "selectPhase": "Select Phase",
+      "selectFuel": "Select Fuel Type",
+      "dragDropImage": "Drag and drop images here",
+      "orClickToSelect": "or click to select file",
+      "orEnterUrl": "Or enter image URL",
+      "categoryGroup": "Classification",
+      "noCategoriesFound": "No categories found"
+    },
+    "categoryOptions": {
+      "diesel": "Diesel Generator",
+      "gasoline": "Gasoline Generator",
+      "parts": "Spare Parts"
+    },
+    "fuelOptions": {
+      "diesel": "Diesel",
+      "gasoline": "Gasoline",
+      "gas": "Gas"
+    },
+    "phaseOptions": {
+      "1phase": "1 Phase",
+      "3phase": "3 Phase"
+    },
+    "buttons": {
+      "submit": "Save Product",
+      "submitting": "Saving...",
+      "cancel": "Cancel",
+      "addUrl": "Add URL"
+    },
+    "messages": {
+      "successCreate": "Product created successfully!",
+      "successUpdate": "Product updated successfully!",
+      "error": "An error occurred, please try again."
+    },
+    "validation": {
+      "nameRequired": "Product name is required",
+      "slugRequired": "URL slug is required",
+      "priceRequired": "Price is required",
+      "invalidUrl": "Must be a valid URL",
+      "invalidBrand": "Invalid brand selected",
+      "invalidCategory": "Invalid category selected",
+      "specKeyRequired": "Spec name is required",
+      "specValueRequired": "Spec value is required",
+      "invalidNumber": "Must be a valid number"
+    }
+  },
+  "AdminMetadata": {
+    "titleTemplate": "%s | Admin Portal",
+    "defaultTitle": "Dashboard | Admin Portal",
+    "description": "Hyundai Nhat Nang Admin Portal for managing products, orders, and customers.",
+    "dashboard": "Overview",
+    "products": "Product Management"
+  },
+  "AdminBrandForm": {
+    "title": "Add Brand",
+    "description": "Enter details for the new brand.",
+    "editTitle": "Edit Brand",
+    "editDescription": "Edit brand information.",
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save",
+      "addUrl": "Add URL"
+    },
+    "sections": {
+      "general": "General Information",
+      "media": "Media"
+    },
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "description": "Description",
+      "isActive": "Active",
+      "logo": "Logo URL",
+      "dragDropImage": "Drag and drop image here",
+      "orClickToSelect": "or click to select file",
+      "orEnterUrl": "Or enter image URL directly"
+    },
+    "placeholders": {
+      "name": "e.g. Hyundai",
+      "slug": "e.g. hyundai",
+      "description": "Brand description...",
+      "logo": "https://..."
+    },
+    "messages": {
+      "successCreate": "Brand created successfully",
+      "successUpdate": "Brand updated successfully",
+      "error": "An error occurred",
+      "maxImagesReached": "You can only add 1 image until you remove the current one."
+    },
+    "validation": {
+      "slugExists": "Slug already exists",
+      "nameRequired": "Please enter a brand name",
+      "slugRequired": "Please enter a slug",
+      "invalidUrl": "Invalid URL format"
+    }
+  },
+  "AdminCategoryForm": {
+    "title": "Add Category",
+    "description": "Enter details for the new category.",
+    "editTitle": "Edit Category",
+    "editDescription": "Edit category information.",
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save",
+      "addUrl": "Add URL"
+    },
+    "sections": {
+      "general": "General Information",
+      "media": "Media"
+    },
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "parentId": "Parent Category",
+      "description": "Description",
+      "isActive": "Active",
+      "image": "Image URL",
+      "dragDropImage": "Drag and drop image here",
+      "orClickToSelect": "or click to select file",
+      "orEnterUrl": "Or enter image URL directly"
+    },
+    "placeholders": {
+      "name": "e.g. Generators",
+      "slug": "e.g. generators",
+      "parentId": "Select a category",
+      "description": "Category description...",
+      "image": "https://..."
+    },
+    "labels": {
+      "none": "None (Root)"
+    },
+    "messages": {
+      "successCreate": "Category created successfully",
+      "successUpdate": "Category updated successfully",
+      "error": "An error occurred",
+      "maxImagesReached": "You can only add 1 image until you remove the current one."
+    },
+    "validation": {
+      "slugExists": "Slug already exists",
+      "nameRequired": "Please enter a category name",
+      "slugRequired": "Please enter a slug",
+      "invalidUrl": "Invalid URL format",
+      "invalidParent": "Invalid parent category"
+    }
+  },
+  "AdminBrandTable": {
+    "columns": {
+      "name": "Name",
+      "slug": "Slug",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "empty": "No brands found."
+  },
+  "AdminCategoryTable": {
+    "columns": {
+      "name": "Name",
+      "slug": "Slug",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "empty": "No categories found."
+  },
+  "AdminCategories": {
+    "header": {
+      "searchPlaceholder": "Search categories...",
+      "addCategory": "Add Category",
+      "title": "Categories",
+      "description": "Manage all categories."
+    },
+    "card": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Category deleted successfully",
+      "deleteError": "Failed to delete category"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete?",
+        "description": "Category \"{categoryName}\" will be removed. This action cannot be undone.",
+        "cancel": "Cancel",
+        "deleting": "Deleting...",
+        "confirm": "Delete Category"
+      }
+    }
+  },
+  "AdminBrands": {
+    "header": {
+      "searchPlaceholder": "Search brands...",
+      "addBrand": "Add Brand",
+      "title": "Brands",
+      "description": "Manage all brands."
+    },
+    "card": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Brand deleted successfully",
+      "deleteError": "Failed to delete brand"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete?",
+        "description": "Brand \"{brandName}\" will be removed. This action cannot be undone.",
+        "cancel": "Cancel",
+        "deleting": "Deleting...",
+        "confirm": "Delete Brand"
+      }
+    }
+  },
+  "AdminWarehouses": {
+    "header": {
+      "searchPlaceholder": "Search warehouses...",
+      "addWarehouse": "Add Warehouse",
+      "title": "Warehouses",
+      "description": "Manage warehouse locations."
+    },
+    "card": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Warehouse deleted successfully",
+      "deleteError": "Failed to delete warehouse"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete?",
+        "description": "Warehouse \"{warehouseName}\" will be deactivated.",
+        "cancel": "Cancel",
+        "deleting": "Deleting...",
+        "confirm": "Delete Warehouse"
+      }
+    }
+  },
+  "AdminWarehouseForm": {
+    "title": "Add Warehouse",
+    "description": "Enter details for the new warehouse.",
+    "editTitle": "Edit Warehouse",
+    "editDescription": "Edit warehouse information.",
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save"
+    },
+    "sections": {
+      "general": "General Information"
+    },
+    "fields": {
+      "name": "Warehouse Name",
+      "streetAddress": "Street Address",
+      "district": "District",
+      "city": "City",
+      "isActive": "Active Status"
+    },
+    "placeholders": {
+      "name": "e.g. Main Warehouse",
+      "streetAddress": "e.g. 123 Main St",
+      "district": "e.g. District 1",
+      "city": "e.g. HCM City"
+    },
+    "validation": {
+      "nameRequired": "Warehouse name is required",
+      "streetAddressRequired": "Street address is required",
+      "districtRequired": "District is required",
+      "cityRequired": "City is required"
+    },
+    "messages": {
+      "successCreate": "Warehouse created successfully",
+      "successUpdate": "Warehouse updated successfully",
+      "error": "An error occurred"
+    }
+  },
+  "errors": {
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden: Admin access required",
+    "createBrandFailed": "Failed to create brand",
+    "updateBrandFailed": "Failed to update brand",
+    "deleteBrandFailed": "Failed to delete brand",
+    "createCategoryFailed": "Failed to create category",
+    "updateCategoryFailed": "Failed to update category",
+    "deleteCategoryFailed": "Failed to delete category",
+    "createProductFailed": "Failed to create product. The slug might already be in use.",
+    "updateProductFailed": "Failed to update product. The slug might already be in use.",
+    "deleteProductFailed": "Failed to delete product",
+    "productNotFound": "Product not found or already deleted",
+    "createWarehouseFailed": "Failed to create warehouse",
+    "updateWarehouseFailed": "Failed to update warehouse",
+    "deleteWarehouseFailed": "Failed to delete warehouse",
+    "warehouseNotFound": "Warehouse not found",
+    "updateWarehouseStockFailed": "Failed to update warehouse stock",
+    "default": "An unexpected error occurred",
+    "loginFailed": "Login failed",
+    "INVALID_CREDENTIALS": "Invalid credentials",
+    "EMAIL_NOT_VERIFIED": "Email not verified",
+    "ACCOUNT_LOCKED": "Account locked",
+    "INTERNAL_SERVER_ERROR": "Internal server error",
+    "createDealerTierFailed": "Failed to create dealer discount tier",
+    "updateCustomerFailed": "Failed to update B2B customer configuration",
+    "updateOrderStatusFailed": "Failed to update order status",
+    "validationError": "Validation error",
+    "orderNotFound": "Order not found",
+    "rateLimitExceeded": "Rate limit exceeded. Please wait before trying again.",
+    "createQuoteFailed": "Failed to create quote",
+    "createShippingBidFailed": "Failed to create shipping bid",
+    "approveDealerOrderFailed": "Failed to approve dealer order",
+    "verifyCashPaymentFailed": "Failed to verify cash payment",
+    "approveOrderCancellationFailed": "Failed to approve order cancellation",
+    "quoteNotFound": "Quote not found",
+    "quoteAlreadyApproved": "Quote already approved",
+    "quoteNotEditableOrConvertible": "Quote is not editable or convertible",
+    "createOrderFailed": "Failed to create order",
+    "lockAcquisitionFailed": "Request is being processed, please try again in a moment",
+    "userNotFound": "User not found",
+    "insufficientCreditLimit": "Insufficient credit limit",
+    "createPaymentFailed": "Failed to create payment",
+    "createPaymentTransactionFailed": "Failed to create payment transaction",
+    "paymentTransactionNotFound": "Payment transaction not found",
+    "shippingBidNotFound": "Shipping bid not found",
+    "searchProductsFailed": "Failed to search products",
+    "categoryNotFound": "Category not found",
+    "validation": {
+      "slugExists": "Slug already exists"
+    }
+  },
+  "AdminInventory": {
+    "title": "Inventory Management",
+    "description": "Manage stock for product: {name}",
+    "tableTitle": "Warehouse Stock",
+    "tableDescription": "Set product stock quantities for each warehouse.",
+    "table": {
+      "warehouse": "Warehouse",
+      "status": "Status",
+      "stock": "Stock Quantity",
+      "minStock": "Min Stock Warning",
+      "actions": "Actions"
+    },
+    "status": {
+      "inStock": "In Stock",
+      "lowStock": "Low Stock",
+      "inactive": "Inactive",
+      "outOfStock": "Out of Stock"
+    },
+    "buttons": {
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "empty": "No warehouses found.",
+    "messages": {
+      "successSave": "Stock updated successfully.",
+      "errorSave": "Failed to update stock."
+    },
+    "errors": {
+      "invalidStock": "Invalid stock quantity",
+      "invalidMinStockWarning": "Invalid min stock warning",
+      "updateWarehouseStockFailed": "Failed to update warehouse stock in database"
+    }
+  },
+  "AdminCustomers": {
+    "title": "Customers Directory",
+    "description": "Manage standard and B2B corporate customer portfolios.",
+    "searchPlaceholder": "Search by name, email, or phone...",
+    "tabs": {
+      "all": "All Customers",
+      "dealer": "Dealers",
+      "contractor": "Contractors",
+      "distributor": "Distributors",
+      "end_user": "End Users"
+    },
+    "table": {
+      "name": "Name",
+      "contact": "Contact info",
+      "company": "Company",
+      "type": "Business Type",
+      "tier": "Dealer Tier",
+      "role": "System Role",
+      "actions": "Actions",
+      "discountLabel": "-{percent}% discount"
+    },
+    "actions": {
+      "promote": "Manage B2B status",
+      "edit": "Edit",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel"
+    },
+    "dialog": {
+      "title": "Configure B2B Customer Account",
+      "description": "Promote standard consumers to B2B dealers or modify their corporate pricing tier assignments.",
+      "businessTypeLabel": "Business Type",
+      "dealerTierLabel": "Corporate Discount Tier",
+      "none": "No Discount Tier"
+    },
+    "messages": {
+      "successUpdate": "Customer profile updated successfully.",
+      "errorUpdate": "Failed to update customer parameters."
+    },
+    "roles": {
+      "admin": "Admin",
+      "dealer": "B2B Dealer",
+      "customer": "Customer"
+    },
+    "card": {
+      "assignedTier": "Assigned Pricing Tier"
+    },
+    "empty": "No customers found matching filters."
+  },
+  "AdminDealerTiers": {
+    "title": "Dealer Tiers Configurator",
+    "description": "Set up discount percentages and minimum spend metrics for corporate accounts.",
+    "addTier": "Create New Tier",
+    "table": {
+      "name": "Tier Name",
+      "discount": "Discount (%)",
+      "minSpend": "Minimum Spend",
+      "actions": "Actions"
+    },
+    "form": {
+      "title": "New Discount Tier",
+      "name": "Tier Name",
+      "namePlaceholder": "e.g. Gold Partner",
+      "discount": "Discount Percentage",
+      "discountPlaceholder": "e.g. 15.00",
+      "minSpend": "Minimum Spend",
+      "minSpendPlaceholder": "e.g. 500000000",
+      "submit": "Create Tier",
+      "submitting": "Creating..."
+    },
+    "messages": {
+      "successCreate": "Dealer discount tier created successfully.",
+      "errorCreate": "Failed to create dealer tier."
+    },
+    "validation": {
+      "tierNameRequired": "Tier name is required",
+      "discountPercentageRequired": "Discount percentage is required",
+      "discountPercentageBounds": "Discount percentage must be between 0 and 100",
+      "minimumSpendBounds": "Minimum spend must be a positive number"
+    },
+    "card": {
+      "spendThreshold": "Spend threshold:"
+    },
+    "empty": "No discount tiers configured yet."
+  },
+  "AdminOrders": {
+    "title": "B2B Orders Dashboard",
+    "description": "Manage corporate orders, track delivery milestones, and issue corporate invoice receipts.",
+    "searchPlaceholder": "Search orders by ID or customer...",
+    "statusAll": "All Orders",
+    "statusPending": "Pending",
+    "statusProcessing": "Processing",
+    "statusShipped": "Shipped",
+    "statusDelivered": "Delivered",
+    "statusCancelled": "Cancelled",
+    "statusRefunded": "Refunded",
+    "statusCancellationRequested": "Cancellation Requested",
+    "statusRefundPending": "Refund Pending",
+    "statusSuspiciousPaymentHold": "Suspicious Payment Hold",
+    "btnApproveCancellation": "Approve Cancellation",
+    "btnRejectCancellation": "Reject Cancellation",
+    "btnVerifyCashPayment": "Verify Cash Payment",
+    "cancellationRequestedAlertTitle": "Cancellation Requested",
+    "cancellationRequestedAlertDesc": "The customer has requested to cancel this order. You can approve the cancellation (which will release their Trade Credit limit if applicable) or reject it to continue processing.",
+    "cashPaymentVerificationTitle": "Verify Cash Payment",
+    "cashPaymentVerificationDesc": "For CASH payments, you must verify the customer's cash receipt or bank transfer before marking the order as Fully Paid.",
+    "cashReceiptNoPlaceholder": "Enter cash receipt or transaction number",
+    "revalidateSuccess": "Payment verified successfully",
+    "revalidateError": "Failed to verify payment",
+    "cancellationApproveSuccess": "Order cancellation approved",
+    "cancellationApproveFailed": "Failed to approve order cancellation",
+    "cancellationRejectSuccess": "Order cancellation rejected",
+    "cancellationRejectFailed": "Failed to reject order cancellation",
+    "verifyCashSuccess": "Cash payment verified successfully",
+    "verifyCashFailed": "Failed to verify cash payment",
+    "tableOrderId": "Order ID",
+    "tableCustomer": "Customer",
+    "tableDate": "Date",
+    "tableTotal": "Total Amount",
+    "tableStatus": "Status",
+    "tableActions": "Actions",
+    "viewDetail": "View Detail",
+    "orderDetailTitle": "Order Details",
+    "orderDetailDescription": "Detailed overview, buyer credentials, status timeline stepper, and billing invoice.",
+    "buyerInfo": "Buyer Portfolio",
+    "shippingAddress": "Shipping Address",
+    "orderItems": "Order Items",
+    "itemProduct": "Product",
+    "itemPrice": "Price",
+    "itemQty": "Qty",
+    "itemTotal": "Subtotal",
+    "timelineFulfillment": "Fulfillment Timeline",
+    "timelineStepPending": "Pending",
+    "timelineStepProcessing": "Processing",
+    "timelineStepShipped": "Shipped",
+    "timelineStepDelivered": "Delivered",
+    "timelineStepCancelled": "Cancelled",
+    "timelineStepRefunded": "Refunded",
+    "updateStatusButton": "Update Status",
+    "printInvoice": "Print Invoice",
+    "invoiceTitle": "TAX INVOICE",
+    "invoiceNo": "Invoice No:",
+    "invoiceDate": "Invoice Date:",
+    "invoiceBillTo": "Bill To:",
+    "invoiceDescription": "Description",
+    "invoiceQuantity": "Quantity",
+    "invoiceUnitPrice": "Unit Price",
+    "invoiceAmount": "Amount",
+    "invoiceShippingFee": "Shipping Fee",
+    "invoiceTotalPayment": "Total Payment",
+    "invoiceThankYou": "Thank you for your business!",
+    "statusUpdated": "Order status updated successfully",
+    "statusUpdateError": "Failed to update order status",
+    "noOrders": "No orders found.",
+    "attnPrefix": "Attn:",
+    "taxId": "Tax ID",
+    "phoneLabel": "Phone:",
+    "emailLabel": "Email:",
+    "invoiceTableNo": "No.",
+    "invoiceSubtotal": "Subtotal",
+    "invoiceBuyerSign": "Người mua hàng / Customer",
+    "invoiceBuyerSignDesc": "(Ký, ghi rõ họ tên / Signature)",
+    "invoiceSellerSign": "Người bán hàng / Seller representative",
+    "invoiceSellerSignDesc": "(Ký, đóng dấu / Authorized seal)",
+    "accountOwner": "Account Owner",
+    "corporateEntity": "Corporate Entity",
+    "contactPhone": "Contact Phone",
+    "businessType": "Business Type",
+    "endUser": "end user",
+    "invoiceCardTitle": "Corporate Invoicing",
+    "invoiceCardDescription": "Generate a printable, zero-dependency TAX invoice PDF styled according to Hyundai guidelines.",
+    "unknown": "Unknown",
+    "orderedOn": "Ordered on {date}",
+    "btnCancelOrder": "Cancel Order",
+    "btnMarkProcessing": "Mark as Processing",
+    "btnMarkShipped": "Mark as Shipped",
+    "btnMarkDelivered": "Mark as Delivered",
+    "btnProcessRefund": "Process Refund",
+    "orderFinalizedStatus": "This order was finalized with a state transition to {status}. No further updates are permitted.",
+    "companyBrand": "HYUNDAI NHAT NANG",
+    "companyName": "NHAT NANG TECHNICAL SERVICE TRADING CO., LTD",
+    "companyAddress": "302/105 Phan Huy Ich, Ward 12, Go Vap District, Ho Chi Minh City",
+    "companyTaxId": "0313506307",
+    "companyPhone": "0901.885.319",
+    "shippingBidsTitle": "Logistics & Carrier Bidding",
+    "shippingBidsVendor": "Carrier Vendor",
+    "shippingBidsPrice": "Quoted Price",
+    "shippingBidsNote": "Internal Note",
+    "shippingBidsStatus": "Status",
+    "shippingBidsNoBids": "No bids from carriers yet.",
+    "shippingBidsAddBid": "Add Carrier Bid",
+    "shippingBidsSelectWinner": "Select Winner",
+    "shippingBidsWinning": "Winning Carrier",
+    "shippingBidsAddBidSuccess": "Carrier bid added successfully",
+    "shippingBidsSelectWinnerSuccess": "Shipping fee updated based on winning bid",
+    "shippingBidsSelectWinnerError": "Failed to select winning bid",
+    "shippingBidNotFound": "Bid not found or does not belong to the order",
+    "shippingBidsVendorNameRequired": "Vendor name is required",
+    "shippingBidsQuotedPriceRequired": "Quoted price is required and must be positive",
+    "shippingBidsDescription": "Manage carrier bidding profiles for this order.",
+    "shippingBidsPending": "Pending Approval",
+    "shippingBidsNotePlaceholder": "Additional note (optional)"
+  },
+  "AdminQuotes": {
+    "title": "B2B Quotes detail workspace",
+    "description": "Negotiate custom pricing, chat with B2B dealers, and atomically convert quotes to active orders.",
+    "listTitle": "B2B Quotes",
+    "listDescription": "Manage B2B dealer price quotes, negotiate custom pricing, and convert quotes to orders.",
+    "quoteId": "Quote ID",
+    "buyer": "B2B Dealer",
+    "status": "Status",
+    "created": "Created Date",
+    "pricingCockpit": "Pricing Cockpit",
+    "negotiationChat": "Negotiation Chat",
+    "product": "Product",
+    "quantity": "Quantity",
+    "requestedPrice": "Requested Price",
+    "agreedPrice": "Agreed Price",
+    "action": "Action",
+    "send": "Send",
+    "typeMessage": "Type a message or counter-proposal...",
+    "startNegotiating": "Start Negotiating",
+    "reject": "Reject Quote",
+    "approveAndConvert": "Approve & Convert to Order",
+    "saving": "Saving...",
+    "converting": "Converting...",
+    "backToQuotes": "Back to Quotes",
+    "totalAmount": "Total Negotiated Amount",
+    "retailPrice": "Retail Price",
+    "allStatuses": "All Statuses",
+    "statusPendingReview": "Pending Review",
+    "statusNegotiating": "Negotiating",
+    "statusApproved": "Approved",
+    "statusRejected": "Rejected",
+    "statusExpired": "Expired",
+    "noMessages": "No messages in timeline.",
+    "updatePriceSuccess": "Agreed price updated successfully",
+    "statusChangeSuccess": "Quote status updated successfully",
+    "convertSuccess": "Quote approved and converted to order successfully",
+    "placeholderAgreedPrice": "Enter agreed price",
+    "exportExcel": "Export Excel (.xlsx)",
+    "exportExcelSuccess": "Quote Excel spreadsheet exported successfully!",
+    "exportExcelError": "Failed to export quote Excel file. Please retry.",
+    "timelineSystem": "SYSTEM",
+    "totalRequested": "Total Requested Amount",
+    "timelineChatDescription": "Timeline chat history with negotiation audit trail.",
+    "searchPlaceholder": "Search by Quote ID, B2B Dealer name...",
+    "noQuotesFound": "No B2B quotes found matching filters.",
+    "noCompany": "No Company",
+    "detail": "Detail",
+    "searchModal": {
+      "title": "Search Products for Quote",
+      "description": "Quickly search by generator name, model, power rating, or slug to add line items.",
+      "inputPlaceholder": "Enter model name (e.g. DHY12500SE, HY3200, 10kVA)...",
+      "searching": "Searching products...",
+      "inStock": "{count} in stock",
+      "outOfStock": "Out of Stock / Pre-order",
+      "select": "Select",
+      "added": "Added",
+      "noResults": "No products found",
+      "noResultsHint": "Please verify your search query or model number.",
+      "emptyPrompt": "Type at least 1 character to search generator catalog",
+      "productAddedToast": "Added {name} to quote draft"
+    },
+    "composer": {
+      "pageTitle": "Create New Quote - Hyundai Nhat Nang",
+      "headerTitle": "Create New Quote",
+      "headerDescription": "Compose formal corporate quotes, configure line item discounts and commercial terms.",
+      "breadcrumbNew": "New Quote",
+      "customer": {
+        "title": "Customer & Company Information",
+        "description": "Enter customer recipient or company credentials for official quote generation.",
+        "nameLabel": "Customer Full Name",
+        "namePlaceholder": "e.g. John Doe",
+        "phoneLabel": "Contact Phone Number",
+        "phonePlaceholder": "e.g. 0987654321",
+        "emailLabel": "Email Address",
+        "emailPlaceholder": "e.g. contact@alphacorp.com",
+        "companyLabel": "Company / Organization Name",
+        "companyPlaceholder": "e.g. Alpha Construction JSC",
+        "taxIdLabel": "Tax Identification Number",
+        "taxIdPlaceholder": "e.g. 0101234567",
+        "addressLabel": "Shipping / Site Address",
+        "addressPlaceholder": "e.g. 123 ABC Street, Hanoi"
+      },
+      "items": {
+        "title": "Line Items & Products",
+        "description": "Add generator models from stock or auxiliary items (ATS panels, cabling, labor).",
+        "addCustomItem": "Add Custom Item",
+        "searchCatalog": "Search Generator Catalog",
+        "customTag": "Custom",
+        "emptyTitle": "No items added to quote yet",
+        "emptyDescription": "Click 'Search Generator Catalog' to pick warehouse products or 'Add Custom Item' for auxiliary accessories.",
+        "colItem": "Product & Specifications",
+        "colQty": "Quantity",
+        "colUnitPrice": "Unit Price (VND)",
+        "colDiscount": "Discount",
+        "colFinalPrice": "Final Unit Price",
+        "colTotal": "Total Amount",
+        "customModal": {
+          "title": "Add Custom Line Item",
+          "description": "Add auxiliary items, freight charges, or installation services.",
+          "nameLabel": "Item / Service Name",
+          "namePlaceholder": "e.g. Hyundai ATS 100A Automatic Transfer Switch",
+          "modelLabel": "Model / Code",
+          "specsLabel": "Specifications Summary",
+          "qtyLabel": "Quantity",
+          "priceLabel": "Unit Price",
+          "cancel": "Cancel",
+          "confirm": "Add to Quote"
+        }
+      },
+      "terms": {
+        "title": "Commercial Terms & Warranty",
+        "description": "Set quote validity duration, payment schedule, delivery, and warranty policies.",
+        "validityLabel": "Quote Validity",
+        "daysUnit": "days",
+        "vatLabel": "VAT Tax Rate",
+        "paymentLabel": "Payment Schedule",
+        "paymentPlaceholder": "e.g. 30% deposit upon contract, 70% prior to dispatch...",
+        "warrantyLabel": "Warranty Policy",
+        "warrantyPlaceholder": "e.g. 12 months or 1000 operating hours whichever comes first...",
+        "deliveryTimeLabel": "Delivery Timeframe",
+        "deliveryTimePlaceholder": "e.g. 3 - 5 business days",
+        "deliveryLocationLabel": "Delivery Location",
+        "deliveryLocationPlaceholder": "e.g. Delivered to buyer site",
+        "notesLabel": "Additional Commercial Notes",
+        "notesPlaceholder": "Enter technical specifications, load bank testing conditions..."
+      },
+      "summary": {
+        "title": "Financial Summary",
+        "totalItems": "Line Items",
+        "lineItemsUnit": "items",
+        "unitsCount": "units",
+        "subtotal": "Subtotal (Excl. Tax)",
+        "vat": "VAT Tax Amount",
+        "grandTotal": "TOTAL QUOTE AMOUNT",
+        "vatInclusiveNotice": "(VAT inclusive)",
+        "submitButton": "Create & Save Quote",
+        "submitting": "Creating formal quote...",
+        "resetDraftButton": "Clear Quote Draft",
+        "confirmResetDraft": "Are you sure you want to clear the entire quote draft?"
+      },
+      "errors": {
+        "emptyItems": "Please add at least 1 product or line item to the quote",
+        "nameRequired": "Customer name is required",
+        "phoneRequired": "Customer phone number is required",
+        "formIncomplete": "Please fill in all mandatory fields",
+        "genericFailure": "Failed to create quote. Please check your inputs."
+      },
+      "successToast": "Quote created successfully! Code: {quoteNumber}"
+    },
+    "printDocument": {
+      "pageTitle": "Corporate Quote Print Document",
+      "backToQuote": "Back to Quote",
+      "printButton": "Print / Save PDF",
+      "quoteTitle": "GENERATOR EQUIPMENT & TECHNICAL SERVICES QUOTATION",
+      "quoteNo": "Quote No",
+      "issueDate": "Issue Date",
+      "validity": "Quote Validity",
+      "customerSectionTitle": "Customer & Receiving Entity Information",
+      "customerName": "Attention",
+      "customerPhone": "Phone",
+      "companyName": "Company / Organization",
+      "customerEmail": "Email",
+      "taxId": "Tax ID",
+      "deliveryAddress": "Delivery Location",
+      "pricingTableTitle": "EQUIPMENT BREAKDOWN & PRICING DETAILS",
+      "colDescription": "Equipment Description & Specifications",
+      "colUnit": "Unit",
+      "colQty": "Qty",
+      "colUnitPrice": "Unit Price (VND)",
+      "colDiscount": "Disc.",
+      "colTotal": "Total (VND)",
+      "subtotal": "Subtotal (Excl. VAT)",
+      "vat": "Value Added Tax (VAT)",
+      "grandTotal": "TOTAL QUOTED AMOUNT",
+      "amountInWords": "Amount in words",
+      "commercialTermsTitle": "COMMERCIAL TERMS & TECHNICAL WARRANTY"
+    }
+  }
+}

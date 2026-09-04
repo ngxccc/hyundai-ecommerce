@@ -2904,6 +2904,19 @@ export interface components {
       /** @example 20 */
       limit: number;
     };
+    UpdateOrderStatusDto: {
+      /**
+       * @description New order status along the state machine
+       * @example CONFIRMED
+       * @enum {string}
+       */
+      status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+      /**
+       * @description Reason or operational note for status change
+       * @example Đã xác nhận thanh toán chuyển khoản và sẵn sàng đóng gói
+       */
+      note?: string;
+    };
     CreateCheckoutLinkDto: {
       /**
        * @description Order UUID identifier to create payment link for
@@ -6022,11 +6035,18 @@ export interface operations {
   OrdersController_listOrders: {
     parameters: {
       query?: {
-        search?: string;
-        paymentStatus?: string;
-        status?: string;
-        limit?: number;
         page?: number;
+        limit?: number;
+        status?:
+          "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+        paymentStatus?:
+          "PENDING" | "DEPOSIT_PAID" | "FULLY_PAID" | "REFUNDED" | "FAILED";
+        paymentMethod?: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+        userId?: string;
+        customerPhone?: string;
+        search?: string;
+        startDate?: string;
+        endDate?: string;
       };
       header?: never;
       path?: never;
@@ -6078,7 +6098,11 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateOrderStatusDto"];
+      };
+    };
     responses: {
       /** @description Order status updated successfully */
       200: {

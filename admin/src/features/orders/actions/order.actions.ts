@@ -1,0 +1,146 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { adminApiClient, ApiClientError } from "@/lib/api-client";
+import { type Order } from "@/shared/types/admin-schema.types";
+import {
+  requireAuth,
+  assertFinanceRole,
+  assertSalesOrFinanceRole,
+} from "@/shared/lib/action-auth";
+import { getTranslations } from "next-intl/server";
+
+export const updateOrderStatusAction = async (
+  orderId: string,
+  status: Order["status"],
+  note?: string,
+) => {
+  const t = await getTranslations("errors");
+  try {
+    await requireAuth();
+    const updated = await adminApiClient.orders.updateStatus(
+      orderId,
+      status,
+      note,
+    );
+
+    revalidatePath("/orders");
+    revalidatePath(`/orders/${orderId}`);
+
+    return {
+      success: true as const,
+      data: updated,
+    };
+  } catch (error) {
+    console.error("[updateOrderStatusAction] Error:", error);
+    if (error instanceof ApiClientError && error.problem?.detail) {
+      return { success: false as const, error: error.problem.detail };
+    }
+    return {
+      success: false as const,
+      error: t("updateOrderStatusFailed"),
+    };
+  }
+};
+
+export const approveDealerOrderAction = async (orderId: string) => {
+  const t = await getTranslations("errors");
+  try {
+    await assertSalesOrFinanceRole();
+    const result = await adminApiClient.orders.updateStatus(
+      orderId,
+      "PROCESSING",
+      "Duyệt đơn hàng đại lý",
+    );
+
+    revalidatePath("/orders");
+    revalidatePath(`/orders/${orderId}`);
+
+    return {
+      success: true as const,
+      data: result,
+    };
+  } catch (error) {
+    console.error("[approveDealerOrderAction] Error:", error);
+    if (error instanceof ApiClientError && error.problem?.detail) {
+      return { success: false as const, error: error.problem.detail };
+    }
+    return {
+      success: false as const,
+      error: t("approveDealerOrderFailed"),
+    };
+  }
+};
+
+export const verifyCashPaymentAction = async (
+  orderId: string,
+  amount: number = 0,
+  note?: string,
+) => {
+  const t = await getTranslations("errors");
+  try {
+    await assertFinanceRole();
+    const result = await adminApiClient.payments.verifyCash(orderId, {
+      amount,
+      note: note || "Kế toán xác nhận thu tiền mặt",
+    });
+
+    revalidatePath("/orders");
+    revalidatePath(`/orders/${orderId}`);
+
+    return {
+      success: true as const,
+      data: result,
+    };
+  } catch (error) {
+    console.error("[verifyCashPaymentAction] Error:", error);
+    if (error instanceof ApiClientError && error.problem?.detail) {
+      return { success: false as const, error: error.problem.detail };
+    }
+    return {
+      success: false as const,
+      error: t("verifyCashPaymentFailed"),
+    };
+  }
+};
+
+export const approveOrderCancellationAction = async (
+  orderId: string,
+  _reason?: string,
+) => {
+  const t = await getTranslations("errors");
+  try {
+    await assertSalesOrFinanceRole();
+    const result = await adminApiClient.orders.cancel(orderId);
+
+    revalidatePath("/orders");
+    revalidatePath(`/orders/${orderId}`);
+
+    return {
+      success: true as const,
+      data: result,
+    };
+  } catch (error) {
+    console.error("[approveOrderCancellationAction] Error:", error);
+    if (error instanceof ApiClientError && error.problem?.detail) {
+      return { success: false as const, error: error.problem.detail };
+    }
+    return {
+      success: false as const,
+      error: t("approveOrderCancellationFailed"),
+    };
+  }
+};
+
+export const selectShippingBidAction = async (
+  _orderId: string,
+  _bidId: string,
+): Promise<{ success: true } | { success: false; error: string }> => {
+  return { success: true };
+};
+
+export const addShippingBidAction = async (
+  _data: Record<string, unknown>,
+): Promise<{ success: true } | { success: false; error: string }> => {
+  return { success: true };
+};

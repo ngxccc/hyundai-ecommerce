@@ -31,8 +31,8 @@ import {
   CreateGuestOrderDto,
   OrderResponseDto,
   PaginatedOrderResponseDto,
-  type OrderQueryDto,
-  type UpdateOrderStatusDto,
+  OrderQueryDto,
+  UpdateOrderStatusDto,
 } from "./dto";
 
 @ApiTags(ORDER_ROUTES.TAG)

@@ -1,0 +1,495 @@
+"use client";
+
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { Package, Plus, Trash2, Search, Wrench, Sparkles } from "lucide-react";
+import Image from "next/image";
+import { CldImage } from "next-cloudinary";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { isCloudinaryUrl } from "@/shared/utils";
+import { ProductSearchModal } from "./product-search-modal";
+import {
+  useQuoteDraftStore,
+  type AdminQuoteDraftItem,
+} from "../stores/quote-draft.store";
+
+export const QuoteLineItemsTable = () => {
+  const t = useTranslations("AdminQuotes");
+  const translate = t as unknown as (
+    key: string,
+    params?: Record<string, unknown>,
+  ) => string;
+
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isCustomItemModalOpen, setIsCustomItemModalOpen] = useState(false);
+
+  // Custom Item Form State
+  const [customName, setCustomName] = useState("");
+  const [customModel, setCustomModel] = useState("");
+  const [customSpecs, setCustomSpecs] = useState("");
+  const [customPrice, setCustomPrice] = useState("0");
+  const [customQuantity, setCustomQuantity] = useState("1");
+  const [customDiscount, setCustomDiscount] = useState("0");
+
+  const items = useQuoteDraftStore((state) => state.items);
+  const updateItem = useQuoteDraftStore((state) => state.updateItem);
+  const removeItem = useQuoteDraftStore((state) => state.removeItem);
+  const addCustomItem = useQuoteDraftStore((state) => state.addCustomItem);
+
+  const formatVND = (num: number) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(num);
+  };
+
+  const handleAddCustomItem = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customName.trim()) return;
+
+    addCustomItem({
+      itemName: customName.trim(),
+      itemModel: customModel.trim() || null,
+      itemSpecs: customSpecs.trim() || null,
+      unitPrice: parseFloat(customPrice) || 0,
+      quantity: Math.max(1, parseInt(customQuantity, 10) || 1),
+      discountPercent: Math.min(
+        100,
+        Math.max(0, parseFloat(customDiscount) || 0),
+      ),
+    });
+
+    // Reset form
+    setCustomName("");
+    setCustomModel("");
+    setCustomSpecs("");
+    setCustomPrice("0");
+    setCustomQuantity("1");
+    setCustomDiscount("0");
+    setIsCustomItemModalOpen(false);
+  };
+
+  const calculateLineMetrics = (item: AdminQuoteDraftItem) => {
+    const finalUnit = item.unitPrice * (1 - item.discountPercent / 100);
+    const lineTotal = finalUnit * item.quantity;
+    return { finalUnit, lineTotal };
+  };
+
+  return (
+    <>
+      <Card className="border-border border shadow-xs">
+        <CardHeader className="bg-muted/20 flex flex-row flex-wrap items-center justify-between gap-4 border-b p-4 pb-3">
+          <div>
+            <CardTitle className="flex items-center gap-2 text-base font-semibold">
+              <Package className="text-primary h-4 w-4" />
+              {translate("composer.items.title")}
+              <Badge variant="secondary" className="px-1.5 font-mono text-xs">
+                {items.length}
+              </Badge>
+            </CardTitle>
+            <CardDescription className="text-xs">
+              {translate("composer.items.description")}
+            </CardDescription>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsCustomItemModalOpen(true)}
+              className="h-8 gap-1.5 text-xs font-medium"
+            >
+              <Wrench className="h-3.5 w-3.5" />
+              {translate("composer.items.addCustomItem")}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => setIsSearchModalOpen(true)}
+              className="h-8 gap-1.5 text-xs font-medium shadow-xs"
+            >
+              <Search className="h-3.5 w-3.5" />
+              {translate("composer.items.searchCatalog")}
+            </Button>
+          </div>
+        </CardHeader>
+
+        <CardContent className="overflow-x-auto p-0">
+          {items.length === 0 ? (
+            <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
+              <div className="bg-muted/60 mb-3 flex h-12 w-12 items-center justify-center rounded-full">
+                <Package className="text-muted-foreground h-6 w-6 stroke-1" />
+              </div>
+              <h4 className="text-sm font-semibold">
+                {translate("composer.items.emptyTitle")}
+              </h4>
+              <p className="text-muted-foreground mt-1 mb-4 max-w-sm text-xs">
+                {translate("composer.items.emptyDescription")}
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => setIsSearchModalOpen(true)}
+                  className="gap-1.5 text-xs"
+                >
+                  <Search className="h-3.5 w-3.5" />
+                  {translate("composer.items.searchCatalog")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsCustomItemModalOpen(true)}
+                  className="gap-1.5 text-xs"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  {translate("composer.items.addCustomItem")}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader className="bg-muted/40 text-[11px] tracking-wider uppercase">
+                <TableRow>
+                  <TableHead className="w-10 text-center">#</TableHead>
+                  <TableHead className="min-w-[240px]">
+                    {translate("composer.items.colItem")}
+                  </TableHead>
+                  <TableHead className="w-20 text-center">
+                    {translate("composer.items.colQty")}
+                  </TableHead>
+                  <TableHead className="w-32 text-right">
+                    {translate("composer.items.colUnitPrice")}
+                  </TableHead>
+                  <TableHead className="w-24 text-center">
+                    {translate("composer.items.colDiscount")}
+                  </TableHead>
+                  <TableHead className="w-32 text-right">
+                    {translate("composer.items.colFinalPrice")}
+                  </TableHead>
+                  <TableHead className="w-36 text-right">
+                    {translate("composer.items.colTotal")}
+                  </TableHead>
+                  <TableHead className="w-12 text-center"></TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody className="text-xs">
+                {items.map((item, index) => {
+                  const { finalUnit, lineTotal } = calculateLineMetrics(item);
+
+                  return (
+                    <TableRow key={item.id} className="hover:bg-muted/30">
+                      <TableCell className="text-muted-foreground text-center font-mono">
+                        {index + 1}
+                      </TableCell>
+
+                      <TableCell>
+                        <div className="flex items-start gap-2.5">
+                          <div className="bg-muted relative h-10 w-10 shrink-0 overflow-hidden rounded-md border">
+                            {item.image && isCloudinaryUrl(item.image) ? (
+                              <CldImage
+                                src={item.image}
+                                alt={item.itemName}
+                                width={40}
+                                height={40}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : item.image ? (
+                              <Image
+                                src={item.image}
+                                alt={item.itemName}
+                                width={40}
+                                height={40}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <div className="text-muted-foreground flex h-full w-full items-center justify-center">
+                                {item.isCustomItem ? (
+                                  <Sparkles className="h-4 w-4" />
+                                ) : (
+                                  <Package className="h-4 w-4" />
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex min-w-0 flex-col">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <span className="text-foreground max-w-xs truncate font-semibold">
+                                {item.itemName}
+                              </span>
+                              {item.isCustomItem ? (
+                                <Badge
+                                  variant="secondary"
+                                  className="h-4 bg-amber-100 px-1 py-0 text-[9px] text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+                                >
+                                  {translate("composer.items.customTag")}
+                                </Badge>
+                              ) : item.itemModel ? (
+                                <Badge
+                                  variant="outline"
+                                  className="h-4 px-1 py-0 font-mono text-[9px]"
+                                >
+                                  {item.itemModel}
+                                </Badge>
+                              ) : null}
+                            </div>
+                            {item.itemSpecs && (
+                              <span className="text-muted-foreground mt-0.5 max-w-sm truncate text-[11px]">
+                                {item.itemSpecs}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+
+                      {/* Quantity Input */}
+                      <TableCell className="text-center">
+                        <Input
+                          type="number"
+                          min="1"
+                          value={item.quantity}
+                          onChange={(e) =>
+                            updateItem(item.id, {
+                              quantity: Math.max(
+                                1,
+                                parseInt(e.target.value, 10) || 1,
+                              ),
+                            })
+                          }
+                          className="mx-auto h-8 w-16 text-center text-xs font-medium"
+                        />
+                      </TableCell>
+
+                      {/* Unit Price Input */}
+                      <TableCell className="text-right">
+                        <Input
+                          type="number"
+                          min="0"
+                          step="10000"
+                          value={item.unitPrice}
+                          onChange={(e) =>
+                            updateItem(item.id, {
+                              unitPrice: Math.max(
+                                0,
+                                parseFloat(e.target.value) || 0,
+                              ),
+                            })
+                          }
+                          className="ml-auto h-8 w-28 text-right text-xs font-medium"
+                        />
+                      </TableCell>
+
+                      {/* Discount % Input */}
+                      <TableCell className="text-center">
+                        <div className="relative inline-flex items-center">
+                          <Input
+                            type="number"
+                            min="0"
+                            max="100"
+                            value={item.discountPercent}
+                            onChange={(e) =>
+                              updateItem(item.id, {
+                                discountPercent: Math.min(
+                                  100,
+                                  Math.max(0, parseFloat(e.target.value) || 0),
+                                ),
+                              })
+                            }
+                            className="h-8 w-16 pr-5 text-right text-xs font-medium"
+                          />
+                          <span className="text-muted-foreground pointer-events-none absolute right-2 text-[10px]">
+                            %
+                          </span>
+                        </div>
+                      </TableCell>
+
+                      {/* Final Unit Price */}
+                      <TableCell className="text-muted-foreground text-right font-medium">
+                        {formatVND(finalUnit)}
+                      </TableCell>
+
+                      {/* Total Line Amount */}
+                      <TableCell className="text-foreground text-right font-bold">
+                        {formatVND(lineTotal)}
+                      </TableCell>
+
+                      {/* Delete Action */}
+                      <TableCell className="text-center">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeItem(item.id)}
+                          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-7 w-7 transition-colors"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Product Search Catalog Modal */}
+      <ProductSearchModal
+        open={isSearchModalOpen}
+        onOpenChange={setIsSearchModalOpen}
+      />
+
+      {/* Ad-hoc Custom Item Creation Modal */}
+      <Dialog
+        open={isCustomItemModalOpen}
+        onOpenChange={setIsCustomItemModalOpen}
+      >
+        <DialogContent className="max-w-md">
+          <form onSubmit={handleAddCustomItem}>
+            <DialogHeader className="border-b pb-3">
+              <DialogTitle className="flex items-center gap-2 text-base font-semibold">
+                <Wrench className="text-primary h-4 w-4" />
+                {translate("composer.items.customModal.title")}
+              </DialogTitle>
+              <DialogDescription className="text-xs">
+                {translate("composer.items.customModal.description")}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-3 py-4 text-xs">
+              <div className="space-y-1">
+                <Label htmlFor="customName" className="text-xs font-semibold">
+                  {translate("composer.items.customModal.nameLabel")}{" "}
+                  <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="customName"
+                  value={customName}
+                  onChange={(e) => setCustomName(e.target.value)}
+                  placeholder={translate(
+                    "composer.items.customModal.namePlaceholder",
+                  )}
+                  className="h-8 text-xs"
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <Label
+                    htmlFor="customModel"
+                    className="text-xs font-semibold"
+                  >
+                    {translate("composer.items.customModal.modelLabel")}
+                  </Label>
+                  <Input
+                    id="customModel"
+                    value={customModel}
+                    onChange={(e) => setCustomModel(e.target.value)}
+                    placeholder="VD: ATS-100A"
+                    className="h-8 font-mono text-xs"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label
+                    htmlFor="customSpecs"
+                    className="text-xs font-semibold"
+                  >
+                    {translate("composer.items.customModal.specsLabel")}
+                  </Label>
+                  <Input
+                    id="customSpecs"
+                    value={customSpecs}
+                    onChange={(e) => setCustomSpecs(e.target.value)}
+                    placeholder="VD: 100A, 3 Pha"
+                    className="h-8 text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 pt-1">
+                <div className="col-span-1 space-y-1">
+                  <Label htmlFor="customQty" className="text-xs font-semibold">
+                    {translate("composer.items.customModal.qtyLabel")}
+                  </Label>
+                  <Input
+                    id="customQty"
+                    type="number"
+                    min="1"
+                    value={customQuantity}
+                    onChange={(e) => setCustomQuantity(e.target.value)}
+                    className="h-8 text-center text-xs"
+                  />
+                </div>
+
+                <div className="col-span-2 space-y-1">
+                  <Label
+                    htmlFor="customPrice"
+                    className="text-xs font-semibold"
+                  >
+                    {translate("composer.items.customModal.priceLabel")} (VND)
+                  </Label>
+                  <Input
+                    id="customPrice"
+                    type="number"
+                    min="0"
+                    step="10000"
+                    value={customPrice}
+                    onChange={(e) => setCustomPrice(e.target.value)}
+                    className="h-8 text-right text-xs font-medium"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="flex justify-end gap-2 border-t pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsCustomItemModalOpen(false)}
+                className="h-8 text-xs"
+              >
+                {translate("composer.items.customModal.cancel")}
+              </Button>
+              <Button type="submit" size="sm" className="h-8 text-xs">
+                {translate("composer.items.customModal.confirm")}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
