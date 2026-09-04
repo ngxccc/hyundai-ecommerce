@@ -77,6 +77,11 @@ await mock.module("resend", () => ({
 
 await mock.module("next/headers", () => ({
   headers: mock(() => new Map([["x-forwarded-for", "127.0.0.1"]])),
+  cookies: mock(() => ({
+    get: mock(() => undefined),
+    set: mock(),
+    delete: mock(),
+  })),
 }));
 
 await mock.module("next/cache", () => ({
