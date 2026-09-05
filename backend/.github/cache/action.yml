@@ -1,0 +1,30 @@
+name: Centralized Cache
+description: Wrapper for actions/cache@v6 to centralize version management
+
+inputs:
+  path:
+    description: "A list of files, directories, and wildcard patterns to cache and restore"
+    required: true
+  key:
+    description: "An explicit key for a cache"
+    required: true
+  restore-keys:
+    description: "An ordered list of keys to use for restoring stale cache if no cache hit occurred for key"
+    required: false
+    default: ""
+
+outputs:
+  cache-hit:
+    description: "A boolean value to indicate an exact match was found for the primary key"
+    value: ${{ steps.run-cache.outputs.cache-hit }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Cache
+      id: run-cache
+      uses: actions/cache@v6
+      with:
+        path: ${{ inputs.path }}
+        key: ${{ inputs.key }}
+        restore-keys: ${{ inputs.restore-keys }}

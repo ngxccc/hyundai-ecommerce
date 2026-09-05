@@ -1,0 +1,81 @@
+name: Code Quality, Build & Integration Tests
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  integration:
+    name: "Build, Lint & Test Suite"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+    environment: staging
+    env:
+      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_STAGING }}
+      DB_URL: postgresql://postgres:postgrespassword@localhost:5432/hyundai_ecommerce?sslmode=disable
+      DATABASE_URL: postgresql://postgres:postgrespassword@localhost:5432/hyundai_ecommerce?sslmode=disable
+      REDIS_URL: redis://localhost:6379
+
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgrespassword
+          POSTGRES_DB: hyundai_ecommerce
+        ports:
+          - 5432:5432
+        options: >-
+          --mount type=tmpfs,destination=/var/lib/postgresql,tmpfs-size=1073741824
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:8-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --mount type=tmpfs,destination=/data,tmpfs-size=536870912
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Environment
+        uses: ./.github/setup-environment
+
+      - name: Database Migrations
+        run: bun run db:migrate test
+
+      - name: Unit Tests
+        run: bun run test:ci
+
+      - name: Publish Unit Test Results
+        uses: mikepenz/action-junit-report@v6
+        if: always()
+        with:
+          report_paths: "coverage/junit.xml"
+          check_name: "Backend Unit Test Suite Results"
+          detailed_summary: true
+          annotate_only: true
+          require_tests: true
+
+      - name: E2E Tests
+        run: bun run test:e2e
+
+      - name: Linting
+        run: bun run lint
+
+      - name: Type-Checking
+        run: bun run check-types
+
+      - name: Build Application
+        run: bun run build

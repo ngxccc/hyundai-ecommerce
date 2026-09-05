@@ -1,0 +1,66 @@
+name: CD
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "src/**"
+      - "!src/database/seeds/**"
+      - "drizzle/**"
+      - "package.json"
+      - "bun.lock"
+      - "tsconfig.json"
+      - "nest-cli.json"
+      - ".github/workflows/deploy.yml"
+      - ".github/workflows/integration.yml"
+      - ".github/setup-environment/**"
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration:
+    name: "Pre-Deploy Verification"
+    permissions:
+      contents: read
+      checks: write
+    uses: ./.github/workflows/integration.yml
+    secrets: inherit
+
+  deploy:
+    name: Release to Render
+    needs: integration
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Environment
+        uses: ./.github/setup-environment
+
+      - name: Migrate Production Database
+        run: |
+          if [ -n "$DOPPLER_TOKEN" ]; then
+            bun run db:migrate prd
+          else
+            echo "Notice: DOPPLER_TOKEN is not set. Skipping automated migration."
+          fi
+
+      - name: Trigger Render Deploy Hook
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -n "$RENDER_DEPLOY_HOOK_URL" ]; then
+            curl -f -s -S -X POST "$RENDER_DEPLOY_HOOK_URL"
+            echo "Render deploy hook triggered successfully."
+          else
+            echo "Notice: RENDER_DEPLOY_HOOK_URL is not set. Render will auto-deploy via GitHub push integration if enabled."
+          fi
