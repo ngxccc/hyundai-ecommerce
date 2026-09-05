@@ -21,7 +21,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/sonner";
 import { Loader2, DollarSign } from "lucide-react";
-import type { ComplexQuote } from "@/shared/types/admin-schema.types";
+import { QUOTE_STATUS } from "@/shared/constants";
+import type { AdminQuote } from "@/lib/api-client";
 import { updateQuoteItemPriceAction } from "../actions";
 import {
   formatNumberInput,
@@ -31,7 +32,7 @@ import {
 } from "@/shared/lib/utils";
 
 interface QuotePricingCockpitProps {
-  quote: ComplexQuote;
+  quote: AdminQuote;
 }
 
 export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
@@ -42,7 +43,7 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
   // Local state for the inputs to allow typing freely
   const [inputValues, setInputValues] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
-    for (const item of quote.items ?? []) {
+    for (const item of quote.items) {
       initial[item.id] = item.agreedPrice
         ? formatNumberInput(toIntegerString(item.agreedPrice))
         : "";
@@ -51,9 +52,9 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
   });
 
   const isFinalized =
-    quote.status === "approved" ||
-    quote.status === "rejected" ||
-    quote.status === "expired";
+    quote.status === QUOTE_STATUS.APPROVED ||
+    quote.status === QUOTE_STATUS.REJECTED ||
+    quote.status === QUOTE_STATUS.EXPIRED;
 
   const handleInputChange = (itemId: string, val: string) => {
     setInputValues((prev) => ({
@@ -121,15 +122,16 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
   let totalRequestedAmount = 0;
   let totalNegotiatedAmount = 0;
 
-  for (const item of quote.items ?? []) {
-    const reqPrice = parseFloat(item.requestedPrice ?? item.unitPrice);
+  for (const item of quote.items) {
+    const reqPrice = parseFloat(item.requestedPrice ?? item.unitPrice ?? "0");
     totalRequestedAmount += reqPrice * item.quantity;
 
     const finalPrice = parseFloat(
       item.agreedPrice ??
         item.finalUnitPrice ??
         item.requestedPrice ??
-        item.unitPrice,
+        item.unitPrice ??
+        "0",
     );
     totalNegotiatedAmount += finalPrice * item.quantity;
   }
@@ -160,7 +162,7 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {(quote.items ?? []).map((item) => (
+              {quote.items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="max-w-50 truncate font-medium">
                     {item.itemName}
@@ -186,7 +188,9 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
                         <Input
                           type="text"
                           disabled={isPending}
-                          placeholder={item.requestedPrice ?? item.unitPrice}
+                          placeholder={
+                            item.requestedPrice ?? item.unitPrice ?? ""
+                          }
                           value={inputValues[item.id] ?? ""}
                           onChange={(e) =>
                             handleInputChange(item.id, e.target.value)

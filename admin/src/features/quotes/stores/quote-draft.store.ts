@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { ProductDTO } from "@/shared/types/admin-schema.types";
+import type { AdminProduct } from "@/lib/api-client";
 
 export interface AdminQuoteDraftItem {
   id: string; // Client-side unique row identifier
@@ -34,14 +34,13 @@ export interface AdminQuoteCommercialTerms {
   deliveryLocation: string | null;
   note: string | null;
 }
-
-interface QuoteDraftState {
+export interface AdminQuoteDraftState {
   items: AdminQuoteDraftItem[];
   customerInfo: AdminQuoteCustomerInfo;
   commercialTerms: AdminQuoteCommercialTerms;
 
   // Actions for item management
-  addProduct: (product: ProductDTO, quantity?: number) => void;
+  addProduct: (product: AdminProduct, quantity?: number) => void;
   addCustomItem: (item: {
     itemName: string;
     itemModel?: string | null;
@@ -80,7 +79,7 @@ const defaultCommercialTerms: AdminQuoteCommercialTerms = {
   note: null,
 };
 
-export const useQuoteDraftStore = create<QuoteDraftState>()(
+export const useQuoteDraftStore = create<AdminQuoteDraftState>()(
   persist(
     (set) => ({
       items: [],
@@ -104,10 +103,11 @@ export const useQuoteDraftStore = create<QuoteDraftState>()(
           }
 
           // Extract generator specifications for quote display
-          const specsRecord = product.specs ?? {};
+          const specsRecord = product.specs as Record<string, unknown>;
           const model =
             typeof specsRecord.model === "string" ? specsRecord.model : null;
           const power =
+            specsRecord.powerKva ??
             specsRecord.power ??
             specsRecord.standbyPowerKva ??
             specsRecord.primePowerKva;
@@ -116,7 +116,7 @@ export const useQuoteDraftStore = create<QuoteDraftState>()(
 
           const powerStr =
             typeof power === "number" || typeof power === "string"
-              ? `${power}kVA`
+              ? `${String(power)}kVA`
               : null;
           const phaseStr =
             typeof phase === "string"

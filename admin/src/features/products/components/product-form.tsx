@@ -13,11 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { formatNumberInput } from "@/shared/lib/utils";
-import type {
-  ProductDTO,
-  CategoryDTO,
-  BrandDTO,
-} from "@/shared/types/admin-schema.types";
+import type { AdminProduct, AdminCategory, AdminBrand } from "@/lib/api-client";
 import {
   type CreateProductInput,
   createProductSchema,
@@ -38,9 +34,9 @@ export const ProductForm = ({
   brands,
   breadcrumbs,
 }: {
-  initialData?: ProductDTO;
-  categories: CategoryDTO[];
-  brands: BrandDTO[];
+  initialData?: AdminProduct;
+  categories: AdminCategory[];
+  brands: AdminBrand[];
   breadcrumbs?: React.ReactNode;
 }) => {
   const t = useTranslations("AdminProductForm");

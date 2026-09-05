@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { CategoryDTO } from "@/shared/types/admin-schema.types";
+import type { AdminCategory } from "@/lib/api-client";
 import {
   type CreateCategoryInput,
   createCategorySchema,
@@ -45,11 +45,11 @@ import {
 
 export const CategoryForm = ({
   initialData,
-  categories,
+  categories = [],
   breadcrumbs,
 }: {
-  initialData?: CategoryDTO;
-  categories: CategoryDTO[];
+  initialData?: AdminCategory | null;
+  categories?: AdminCategory[];
   breadcrumbs?: ReactNode;
 }) => {
   const t = useTranslations("AdminCategoryForm");

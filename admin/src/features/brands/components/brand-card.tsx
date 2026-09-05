@@ -8,13 +8,13 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
-import type { BrandDTO } from "@/shared/types/admin-schema.types";
+import type { AdminBrand } from "@/lib/api-client";
 
 import { isCloudinaryUrl } from "@/shared/utils";
 
 import { DeleteBrandButton } from "./delete-brand-button";
 
-export const BrandCard = ({ brand }: { brand: BrandDTO }) => {
+export const BrandCard = ({ brand }: { brand: AdminBrand }) => {
   const t = useTranslations("AdminBrands.card");
 
   const status = brand.isActive ? "active" : "inactive";

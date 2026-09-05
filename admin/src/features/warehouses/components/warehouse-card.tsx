@@ -6,11 +6,11 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import type { WarehouseDTO } from "@/shared/types/admin-schema.types";
+import type { AdminWarehouse } from "@/lib/api-client";
 
 import { DeleteWarehouseButton } from "./delete-warehouse-button";
 
-export const WarehouseCard = ({ warehouse }: { warehouse: WarehouseDTO }) => {
+export const WarehouseCard = ({ warehouse }: { warehouse: AdminWarehouse }) => {
   const t = useTranslations("AdminWarehouses.card");
 
   const status = warehouse.isActive ? "active" : "inactive";

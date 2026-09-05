@@ -179,7 +179,7 @@ export const sendQuoteMessageSchema = z.object({
 export const createAdminQuoteSchema = z.object({
   customerName: z.string().min(1),
   customerPhone: z.string().min(1),
-  customerEmail: z.string().email().optional().nullable(),
+  customerEmail: z.email().optional().nullable(),
   companyName: z.string().optional().nullable(),
   taxId: z.string().optional().nullable(),
   shippingAddress: z.string().optional().nullable(),

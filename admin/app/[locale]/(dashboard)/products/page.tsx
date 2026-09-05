@@ -3,8 +3,7 @@ import { ProductGrid } from "@/features/products/components/product-grid";
 import { ProductPagination } from "@/features/products/components/product-pagination";
 import { ProductHeader } from "@/features/products/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
-import { adminApiClient } from "@/lib/api-client";
-import type { ProductDTO } from "@/shared/types/admin-schema.types";
+import { adminApiClient, type AdminProduct } from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -86,7 +85,7 @@ export default async function AdminProductsPage({
     adminApiClient.brands.list(),
   ]);
 
-  const products: ProductDTO[] =
+  const products: AdminProduct[] =
     "items" in productsRes
       ? productsRes.items
       : Array.isArray(productsRes)

@@ -3,8 +3,7 @@ import {
   CustomerDirectory,
 } from "@/features/customers/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
-import { adminApiClient } from "@/lib/api-client";
-import type { User } from "@/shared/types/admin-schema.types";
+import { adminApiClient, type AdminUser } from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -31,8 +30,7 @@ export default async function AdminCustomersPage() {
   const tNav = await getTranslations("AdminDashboard.nav");
   const tCustomers = await getTranslations("AdminCustomers");
 
-  // Fetch users directory and dealer tiers server-side
-  const users: User[] = [];
+  const users: AdminUser[] = [];
   const dealerTiers = await adminApiClient.dealerTiers.list();
 
   return (

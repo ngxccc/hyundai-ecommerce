@@ -18,12 +18,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, Eye } from "lucide-react";
-import { quoteStatusEnum } from "@/shared/types/admin-schema.types";
-import type { QuoteListItem } from "@/shared/types/admin-schema.types";
+import { quoteStatusEnum } from "@/shared/constants";
+import type { AdminQuote } from "@/lib/api-client";
 import { formatCurrency } from "@/shared/lib/utils";
 
 interface QuoteListProps {
-  quotes: QuoteListItem[];
+  quotes: AdminQuote[];
 }
 
 export const QuoteList = ({ quotes }: QuoteListProps) => {
@@ -104,14 +104,15 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
       minute: "2-digit",
     });
 
-  const calculateTotal = (quote: QuoteListItem) => {
+  const calculateTotal = (quote: AdminQuote) => {
     let total = 0;
-    for (const line of quote.items ?? []) {
+    for (const line of quote.items) {
       const price = parseFloat(
         line.agreedPrice ??
           line.finalUnitPrice ??
           line.requestedPrice ??
-          line.unitPrice,
+          line.unitPrice ??
+          "0",
       );
       total += price * line.quantity;
     }
@@ -187,12 +188,10 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
                     <TableCell>
                       <div className="flex flex-col">
                         <span className="text-sm font-medium">
-                          {quote.user?.name ?? quote.customerName}
+                          {quote.user?.fullName ?? quote.customerName}
                         </span>
                         <span className="text-muted-foreground text-xs">
-                          {quote.user?.companyName ??
-                            quote.companyName ??
-                            t("noCompany")}
+                          {quote.companyName ?? t("noCompany")}
                         </span>
                       </div>
                     </TableCell>
@@ -240,12 +239,10 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
                 <div className="flex flex-col gap-1">
                   <div className="flex flex-col">
                     <span className="text-sm font-bold">
-                      {quote.user?.name ?? quote.customerName}
+                      {quote.user?.fullName ?? quote.customerName}
                     </span>
                     <span className="text-muted-foreground text-xs">
-                      {quote.user?.companyName ??
-                        quote.companyName ??
-                        t("noCompany")}
+                      {quote.companyName ?? t("noCompany")}
                     </span>
                   </div>
                   <span className="text-muted-foreground mt-1 text-xs">

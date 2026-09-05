@@ -1,11 +1,11 @@
 "use client";
 
 import { CategoryCard } from "./category-card";
-import type { CategoryDTO } from "@/shared/types/admin-schema.types";
+import type { AdminCategory } from "@/lib/api-client";
 
 interface CategoryGridProps {
-  categories: CategoryDTO[];
-  allCategories?: CategoryDTO[];
+  categories: AdminCategory[];
+  allCategories?: AdminCategory[];
 }
 
 export const CategoryGrid = ({

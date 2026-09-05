@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
-import type { CategoryDTO } from "@/shared/types/admin-schema.types";
+import type { AdminCategory } from "@/lib/api-client";
 
 import { isCloudinaryUrl } from "@/shared/utils";
 
@@ -18,7 +18,7 @@ export const CategoryCard = ({
   category,
   parentName,
 }: {
-  category: CategoryDTO;
+  category: AdminCategory;
   parentName?: string | undefined;
 }) => {
   const t = useTranslations("AdminCategories.card");

@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
-import type { TopSellingProduct } from "@/shared/types/admin-schema.types";
+import type { TopSellingProduct } from "../types";
 
 interface TopProductsProps {
   products: TopSellingProduct[];

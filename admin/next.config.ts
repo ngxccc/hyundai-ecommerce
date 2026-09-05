@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(import.meta.dirname, ".."),
   },
+  compiler: {
+    removeConsole:
+      process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "res.cloudinary.com" },

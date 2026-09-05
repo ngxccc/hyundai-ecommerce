@@ -2,10 +2,7 @@ import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { QuoteList } from "@/features/quotes/components";
 import { adminApiClient } from "@/lib/api-client";
-import {
-  quoteStatusEnum,
-  type QuoteListItem,
-} from "@/shared/types/admin-schema.types";
+import { quoteStatusEnum, type AdminQuote } from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -55,7 +52,7 @@ export default async function AdminQuotesPage({
   const quotesRes = await adminApiClient.quotes.list(
     status ? { status } : undefined,
   );
-  const quotes: QuoteListItem[] =
+  const quotes: AdminQuote[] =
     "items" in quotesRes
       ? quotesRes.items
       : Array.isArray(quotesRes)
@@ -67,20 +64,18 @@ export default async function AdminQuotesPage({
   const filteredQuotes = searchLower
     ? quotes.filter((q) => {
         const idMatch = q.id.toLowerCase().includes(searchLower);
-        const quoteNoMatch = q.quoteNumber.toLowerCase().includes(searchLower);
-        const customerMatch = q.customerName
-          .toLowerCase()
-          .includes(searchLower);
+        const quoteNoMatch =
+          q.quoteNumber?.toLowerCase().includes(searchLower) ?? false;
+        const customerMatch =
+          q.customerName?.toLowerCase().includes(searchLower) ?? false;
         const emailMatch =
           q.customerEmail?.toLowerCase().includes(searchLower) ?? false;
         const companyMatch =
           q.companyName?.toLowerCase().includes(searchLower) ?? false;
         const userNameMatch =
-          q.user?.name?.toLowerCase().includes(searchLower) ?? false;
+          q.user?.fullName.toLowerCase().includes(searchLower) ?? false;
         const userEmailMatch =
           q.user?.email.toLowerCase().includes(searchLower) ?? false;
-        const userCompanyMatch =
-          q.user?.companyName?.toLowerCase().includes(searchLower) ?? false;
         return (
           idMatch ||
           quoteNoMatch ||
@@ -88,8 +83,7 @@ export default async function AdminQuotesPage({
           emailMatch ||
           companyMatch ||
           userNameMatch ||
-          userEmailMatch ||
-          userCompanyMatch
+          userEmailMatch
         );
       })
     : quotes;

@@ -1,4 +1,4 @@
-import type { ProductDTO } from "@/shared/types/admin-schema.types";
+import type { AdminProduct } from "@/lib/api-client";
 
-export type ProductGridList = ProductDTO[];
-export type ProductGridItem = ProductDTO;
+export type ProductGridList = AdminProduct[];
+export type ProductGridItem = AdminProduct;

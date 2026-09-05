@@ -15,16 +15,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { setProductStockAction } from "../actions/inventory.actions";
-import type {
-  WarehouseStockDTO,
-  WarehouseDTO,
-} from "@/shared/types/admin-schema.types";
+import type { AdminWarehouseStock, AdminWarehouse } from "@/lib/api-client";
 import { Badge } from "@/components/ui/badge";
 
 interface ProductInventoryTableProps {
   productId: string;
-  warehouses: WarehouseDTO[];
-  warehouseStocks: WarehouseStockDTO[];
+  warehouses: AdminWarehouse[];
+  warehouseStocks: AdminWarehouseStock[];
 }
 
 export const ProductInventoryTable = ({
@@ -64,14 +61,8 @@ export const ProductInventoryTable = ({
                 key={warehouse.id}
                 warehouse={warehouse}
                 productId={productId}
-                initialStock={
-                  currentStock?.stock ?? currentStock?.quantity ?? 0
-                }
-                initialMinStock={
-                  currentStock?.minStockWarning ??
-                  currentStock?.lowStockThreshold ??
-                  2
-                }
+                initialStock={currentStock?.stock ?? 0}
+                initialMinStock={currentStock?.minStockWarning ?? 2}
               />
             );
           })}
@@ -95,7 +86,7 @@ const InventoryRow = ({
   initialStock,
   initialMinStock,
 }: {
-  warehouse: WarehouseDTO;
+  warehouse: AdminWarehouse;
   productId: string;
   initialStock: number;
   initialMinStock: number;

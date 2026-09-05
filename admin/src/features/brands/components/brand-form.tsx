@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { BrandDTO } from "@/shared/types/admin-schema.types";
+import type { AdminBrand } from "@/lib/api-client";
 import { isCloudinaryUrl } from "@/shared/utils";
 
 import { type CreateBrandInput, createBrandSchema } from "@/shared/validators";
@@ -35,7 +35,7 @@ export const BrandForm = ({
   initialData,
   breadcrumbs,
 }: {
-  initialData?: BrandDTO;
+  initialData?: AdminBrand | null;
   breadcrumbs?: ReactNode;
 }) => {
   const t = useTranslations("AdminBrandForm");

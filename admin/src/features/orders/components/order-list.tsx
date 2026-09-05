@@ -18,11 +18,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, Eye } from "lucide-react";
-import type { ComplexOrder } from "@/shared/types/admin-schema.types";
-import { orderStatusEnum } from "@/shared/types/admin-schema.types";
+import { orderStatusEnum } from "@/shared/constants";
+import type { AdminOrder } from "@/lib/api-client";
 
 interface OrderListProps {
-  orders: ComplexOrder[];
+  orders: AdminOrder[];
 }
 
 export const OrderList = ({ orders }: OrderListProps) => {
@@ -202,7 +202,9 @@ export const OrderList = ({ orders }: OrderListProps) => {
                     <TableCell>
                       <div className="flex flex-col">
                         <span className="text-sm font-medium">
-                          {order.user?.name ?? t("unknown")}
+                          {order.customerName ??
+                            order.user?.fullName ??
+                            t("unknown")}
                         </span>
                         <span className="text-muted-foreground text-xs">
                           {order.user?.email ?? ""}
@@ -253,7 +255,9 @@ export const OrderList = ({ orders }: OrderListProps) => {
                 <div className="flex flex-col gap-1">
                   <div className="flex flex-col">
                     <span className="text-sm font-bold">
-                      {order.user?.name ?? t("unknown")}
+                      {order.customerName ??
+                        order.user?.fullName ??
+                        t("unknown")}
                     </span>
                     <span className="text-muted-foreground text-xs">
                       {order.user?.email ?? ""}

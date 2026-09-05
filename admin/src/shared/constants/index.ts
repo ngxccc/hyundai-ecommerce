@@ -1,4 +1,5 @@
 export * from "./products";
+export * from "./status";
 
 export const ENVIRONMENT_MODES = {
   DEVELOPMENT: "development",
@@ -26,4 +27,3 @@ export const HTTP_STATUS = {
 export const SYSTEM_ERROR_CODES = {
   VALIDATION_ERROR: "VALIDATION_ERROR",
 } as const;
-export { numberToVietnameseWords } from "@/shared/lib/utils";

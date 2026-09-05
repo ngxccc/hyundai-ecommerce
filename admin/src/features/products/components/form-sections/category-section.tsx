@@ -16,13 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { CategoryDTO, BrandDTO } from "@/shared/types/admin-schema.types";
+import type { AdminCategory, AdminBrand } from "@/lib/api-client";
 import type { CreateProductInput } from "@/shared/validators";
 
 interface ProductCategorySectionProps {
   form: UseFormReturn<CreateProductInput>;
-  categories: CategoryDTO[];
-  brands: BrandDTO[];
+  categories: AdminCategory[];
+  brands: AdminBrand[];
 }
 
 export const ProductCategorySection = ({

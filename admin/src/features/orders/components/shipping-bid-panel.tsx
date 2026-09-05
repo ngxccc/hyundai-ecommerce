@@ -8,7 +8,16 @@ import {
   type AddShippingBidInput,
   addShippingBidSchema,
 } from "@/shared/validators";
-import type { ComplexOrder } from "@/shared/types/admin-schema.types";
+import type { AdminOrder } from "@/lib/api-client";
+
+export interface ShippingBid {
+  id: string;
+  orderId?: string;
+  vendorName: string;
+  quotedPrice: string;
+  isSelected: boolean;
+  internalNote?: string | null;
+}
 import { selectShippingBidAction, addShippingBidAction } from "../actions";
 import { toast } from "@/components/ui/sonner";
 import {
@@ -42,12 +51,13 @@ import { Truck, Plus, CheckCircle2 } from "lucide-react";
 import { formatNumberInput } from "@/shared/lib/utils";
 
 interface ShippingBidPanelProps {
-  order: ComplexOrder;
+  order: AdminOrder;
 }
 
 export const ShippingBidPanel = ({ order }: ShippingBidPanelProps) => {
   const t = useTranslations("AdminOrders");
   const [isPending, startTransition] = useTransition();
+  const bids = (order as { bids?: ShippingBid[] }).bids;
 
   const form = useForm<AddShippingBidInput>({
     resolver: translatedZodResolver(addShippingBidSchema, t),
@@ -104,7 +114,7 @@ export const ShippingBidPanel = ({ order }: ShippingBidPanelProps) => {
         <CardDescription>{t("shippingBidsDescription")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {order.bids && order.bids.length > 0 ? (
+        {bids && bids.length > 0 ? (
           <div className="mb-2 rounded-md border">
             <Table>
               <TableHeader className="bg-muted/50">
@@ -119,7 +129,7 @@ export const ShippingBidPanel = ({ order }: ShippingBidPanelProps) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {order.bids.map((bid) => (
+                {bids.map((bid: ShippingBid) => (
                   <TableRow key={bid.id}>
                     <TableCell className="font-medium">
                       {bid.vendorName}

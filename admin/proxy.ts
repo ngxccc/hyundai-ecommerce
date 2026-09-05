@@ -1,7 +1,7 @@
 import { routing } from "@/i18n/routing";
 import { checkRateLimitWithQueue } from "@/shared/lib/rate-limiter";
 import { HTTP_STATUS } from "@/shared/constants";
-import { getCachedSession } from "@/shared/lib/session";
+import { parseSessionFromCookieStore } from "@/shared/lib/session";
 import type { Locale } from "next-intl";
 import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
@@ -11,7 +11,13 @@ const handleI18nRouting = createMiddleware(routing);
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/_next/")) {
+  if (
+    pathname.startsWith("/_next/") ||
+    pathname.startsWith("/fonts/") ||
+    /\.(?:ttf|otf|woff|woff2|eot|svg|png|jpg|jpeg|gif|webp|ico)$/i.test(
+      pathname,
+    )
+  ) {
     return NextResponse.next();
   }
 
@@ -63,18 +69,8 @@ export async function proxy(request: NextRequest) {
     return applySecurityHeaders(NextResponse.redirect(url));
   };
 
-  let user = null;
-  try {
-    const session = await getCachedSession();
-
-    if (session?.user) {
-      user = session.user;
-    }
-  } catch (error) {
-    // HACK: Swallow network exceptions to prevent Edge runtime crashes.
-    // Fallback to unauthenticated state.
-    console.error("Middleware Auth Error:", error);
-  }
+  const session = parseSessionFromCookieStore(request.cookies);
+  const user = session?.user ?? null;
 
   const allowedRoles = ["ADMIN", "SALES"];
   const isAdmin = user && allowedRoles.includes(user.role);
@@ -94,6 +90,6 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/(vi|en)/:path*",
-    "/((?!api|_next|favicon.ico|sitemap.xml|robots.txt|manifest.json|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|_next|fonts|favicon.ico|sitemap.xml|robots.txt|manifest.json|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ttf|otf|woff|woff2|eot)$).*)",
   ],
 };

@@ -1,10 +1,10 @@
 "use client";
 
 import { WarehouseCard } from "./warehouse-card";
-import type { WarehouseDTO } from "@/shared/types/admin-schema.types";
+import type { AdminWarehouse } from "@/lib/api-client";
 
 interface WarehouseGridProps {
-  warehouses: WarehouseDTO[];
+  warehouses: AdminWarehouse[];
 }
 
 export const WarehouseGrid = ({ warehouses }: WarehouseGridProps) => {

@@ -21,14 +21,15 @@ import {
   FileSpreadsheet,
   Loader2,
 } from "lucide-react";
-import type { ComplexQuote } from "@/shared/types/admin-schema.types";
+import { QUOTE_STATUS } from "@/shared/constants";
+import type { AdminQuote } from "@/lib/api-client";
 import {
   updateQuoteStatusAction,
   approveAndConvertToOrderAction,
 } from "../actions";
 
 interface QuoteHeaderProps {
-  quote: ComplexQuote;
+  quote: AdminQuote;
 }
 
 export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
@@ -46,7 +47,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `Bao-Gia-Hyundai-${quote.quoteNumber || quote.id.slice(0, 8)}.xlsx`;
+      a.download = `Bao-Gia-Hyundai-${quote.quoteNumber ?? quote.id.slice(0, 8)}.xlsx`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -66,14 +67,19 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
   };
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
+      case QUOTE_STATUS.SUBMITTED:
       case "pending_review":
         return "bg-yellow-100 text-yellow-700 border-transparent dark:bg-yellow-900/30 dark:text-yellow-400";
+      case QUOTE_STATUS.NEGOTIATING:
       case "negotiating":
         return "bg-blue-100 text-blue-700 border-transparent dark:bg-blue-900/30 dark:text-blue-400";
+      case QUOTE_STATUS.APPROVED:
       case "approved":
         return "bg-green-100 text-green-700 border-transparent dark:bg-green-900/30 dark:text-green-400";
+      case QUOTE_STATUS.REJECTED:
       case "rejected":
         return "bg-red-100 text-red-700 border-transparent dark:bg-red-900/30 dark:text-red-400";
+      case QUOTE_STATUS.EXPIRED:
       case "expired":
         return "bg-gray-100 text-gray-700 border-transparent dark:bg-gray-900/30 dark:text-gray-400";
       default:
@@ -83,14 +89,19 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
+      case QUOTE_STATUS.SUBMITTED:
       case "pending_review":
         return t("statusPendingReview");
+      case QUOTE_STATUS.NEGOTIATING:
       case "negotiating":
         return t("statusNegotiating");
+      case QUOTE_STATUS.APPROVED:
       case "approved":
         return t("statusApproved");
+      case QUOTE_STATUS.REJECTED:
       case "rejected":
         return t("statusRejected");
+      case QUOTE_STATUS.EXPIRED:
       case "expired":
         return t("statusExpired");
       default:
@@ -99,7 +110,13 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
   };
 
   const handleStatusChange = (
-    newStatus: "negotiating" | "rejected" | "expired",
+    newStatus:
+      | "NEGOTIATING"
+      | "REJECTED"
+      | "EXPIRED"
+      | "negotiating"
+      | "rejected"
+      | "expired",
   ) => {
     startTransition(async () => {
       const res = await updateQuoteStatusAction(quote.id, newStatus);
@@ -173,10 +190,10 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
             Xuất Excel (.xlsx)
           </Button>
 
-          {quote.status === "pending_review" && (
+          {quote.status === QUOTE_STATUS.SUBMITTED && (
             <>
               <Button
-                onClick={() => handleStatusChange("rejected")}
+                onClick={() => handleStatusChange(QUOTE_STATUS.REJECTED)}
                 disabled={isPending}
                 className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/30 dark:hover:bg-red-900/10"
               >
@@ -184,7 +201,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
                 {t("reject")}
               </Button>
               <Button
-                onClick={() => handleStatusChange("negotiating")}
+                onClick={() => handleStatusChange(QUOTE_STATUS.NEGOTIATING)}
                 disabled={isPending}
               >
                 <Play className="mr-2 h-4 w-4" />
@@ -193,11 +210,11 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
             </>
           )}
 
-          {quote.status === "negotiating" && (
+          {quote.status === QUOTE_STATUS.NEGOTIATING && (
             <>
               <Button
                 variant="outline"
-                onClick={() => handleStatusChange("rejected")}
+                onClick={() => handleStatusChange(QUOTE_STATUS.REJECTED)}
                 disabled={isPending}
                 className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/30 dark:hover:bg-red-900/10"
               >
@@ -215,7 +232,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
             </>
           )}
 
-          {quote.status === "approved" && quote.orderId && (
+          {quote.status === QUOTE_STATUS.APPROVED && quote.orderId && (
             <Button asChild variant="outline">
               <Link href={`/orders/${quote.orderId}`}>
                 <ExternalLink className="mr-2 h-4 w-4" />
@@ -236,7 +253,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
                 {t("buyer")}
               </p>
               <p className="text-foreground text-sm font-semibold">
-                {quote.user?.name ?? quote.customerName}
+                {quote.user?.fullName ?? quote.customerName}
               </p>
             </div>
           </div>
@@ -248,7 +265,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
                 {t("buyer")} (B2B Entity)
               </p>
               <p className="text-foreground text-sm font-semibold">
-                {quote.user?.companyName ?? quote.companyName ?? "N/A"}
+                {quote.companyName ?? "N/A"}
               </p>
             </div>
           </div>
@@ -272,7 +289,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
                 {t("buyer")} Location
               </p>
               <p className="text-foreground text-sm font-semibold">
-                {quote.user?.province ?? quote.shippingAddress ?? "N/A"}
+                {quote.shippingAddress ?? "N/A"}
               </p>
             </div>
           </div>

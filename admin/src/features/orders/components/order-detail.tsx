@@ -25,12 +25,8 @@ import {
   Undo2,
   CheckCircle2,
 } from "lucide-react";
-import type { ComplexOrder } from "@/shared/types/admin-schema.types";
-import {
-  updateOrderStatusAction,
-  verifyCashPaymentAction,
-  approveOrderCancellationAction,
-} from "../actions";
+import type { AdminOrder } from "@/lib/api-client";
+import { updateOrderStatusAction, verifyCashPaymentAction } from "../actions";
 import type { UserRole } from "@/shared/lib/action-auth";
 import {
   Stepper,
@@ -44,7 +40,7 @@ import {
 import { ShippingBidPanel } from "./shipping-bid-panel";
 
 interface OrderDetailProps {
-  order: ComplexOrder;
+  order: AdminOrder;
   currentUser?:
     | {
         id: string;
@@ -156,82 +152,13 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
 
   // Timeline Steps setup
   const steps = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED"];
-  const currentStepIndex = steps.indexOf(
-    order.status === "CANCELLATION_REQUESTED"
-      ? "PROCESSING"
-      : order.status === "SUSPICIOUS_PAYMENT_HOLD"
-        ? "PENDING"
-        : order.status,
-  );
+  const currentStepIndex = steps.indexOf(order.status);
   const isEndState =
-    order.status === "CANCELLED" ||
-    order.status === "REFUNDED" ||
-    order.status === "REFUND_PENDING";
-
+    order.status === "CANCELLED" || order.paymentStatus === "REFUNDED";
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
       {/* Left side (Timeline Stepper & Items list) */}
       <div className="flex flex-col gap-6 lg:col-span-2">
-        {/* Cancellation Request Banner */}
-        {order.status === "CANCELLATION_REQUESTED" && (
-          <Card className="flex flex-col gap-4 border border-red-200 bg-red-50/50 p-5 dark:border-red-900/30 dark:bg-red-950/10">
-            <div className="flex items-start gap-3">
-              <XCircle className="h-6 w-6 shrink-0 text-red-600 dark:text-red-400" />
-              <div className="flex flex-col gap-1">
-                <h4 className="text-base font-bold text-red-900 dark:text-red-400">
-                  {t("cancellationRequestedAlertTitle")}
-                </h4>
-                <p className="text-sm text-red-700 dark:text-red-300">
-                  {t("cancellationRequestedAlertDesc")}
-                </p>
-              </div>
-            </div>
-            {currentUser && ["ADMIN", "SALES"].includes(currentUser.role) && (
-              <div className="flex flex-wrap gap-3">
-                <Button
-                  size="sm"
-                  disabled={isPending}
-                  onClick={() => {
-                    startTransition(async () => {
-                      const res = await approveOrderCancellationAction(
-                        order.id,
-                      );
-                      if (res.success) {
-                        toast.success(t("cancellationApproveSuccess"));
-                      } else {
-                        toast.error(res.error);
-                      }
-                    });
-                  }}
-                  className="bg-red-600 text-white hover:bg-red-700"
-                >
-                  {t("btnApproveCancellation")}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={isPending}
-                  onClick={() => {
-                    startTransition(async () => {
-                      const res = await updateOrderStatusAction(
-                        order.id,
-                        "PROCESSING",
-                      );
-                      if (res.success) {
-                        toast.success(t("cancellationRejectSuccess"));
-                      } else {
-                        toast.error(res.error);
-                      }
-                    });
-                  }}
-                  className="border-red-200 text-red-700 hover:bg-red-50 dark:border-red-900"
-                >
-                  {t("btnRejectCancellation")}
-                </Button>
-              </div>
-            )}
-          </Card>
-        )}
         {/* Stepper Card */}
         <Card className="border-border bg-card flex flex-col gap-6 border p-4 shadow-sm">
           <div className="border-border flex items-center justify-between border-b pb-4">
@@ -299,9 +226,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
               className={`flex items-center gap-3 rounded-lg border p-4 ${
                 order.status === "CANCELLED"
                   ? "border-red-500/30 bg-red-50/10 text-red-600 dark:text-red-400"
-                  : order.status === "REFUND_PENDING"
-                    ? "border-amber-500/30 bg-amber-50/10 text-amber-600 dark:text-amber-400"
-                    : "border-gray-500/30 bg-gray-50/10 text-gray-600 dark:text-gray-400"
+                  : "border-gray-500/30 bg-gray-50/10 text-gray-600 dark:text-gray-400"
               }`}
             >
               <XCircle className="h-6 w-6 shrink-0" />
@@ -401,7 +326,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
                 variant="outline"
                 size="sm"
                 disabled={isPending}
-                onClick={() => handleStatusUpdate("REFUNDED")}
+                onClick={() => handleStatusUpdate("CANCELLED")}
                 className="gap-1.5 border-red-500/30 text-red-600 hover:bg-red-50/15 dark:text-red-400"
               >
                 <Undo2 className="h-4 w-4" />
@@ -435,15 +360,11 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {(order.items ?? []).map((item) => {
+                {order.items.map((item) => {
                   const unitPrice = parseFloat(item.unitPrice);
                   const subtotal = unitPrice * item.quantity;
-                  const productName =
-                    item.productName ?? item.product?.nameVi ?? "Sản phẩm";
-                  const productSku =
-                    item.productSku ??
-                    item.product?.slug ??
-                    item.productId.slice(0, 8);
+                  const productName = item.productName;
+                  const productSku = item.productSku;
                   return (
                     <TableRow key={item.id}>
                       <TableCell className="max-w-75">
@@ -477,7 +398,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
                     {t("invoiceShippingFee")}
                   </TableCell>
                   <TableCell className="text-right text-sm font-semibold">
-                    {formatCurrency(order.shippingFee ?? "0")}
+                    {formatCurrency(order.shippingFee)}
                   </TableCell>
                 </TableRow>
                 <TableRow className="bg-muted/20 hover:bg-muted/20 border-border border-t font-bold">
@@ -543,46 +464,41 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
                 {t("accountOwner")}
               </span>
               <span className="text-foreground mt-0.5 text-base font-semibold">
-                {order.user?.name ?? t("unknown")}
+                {order.customerName ?? order.user?.fullName ?? t("unknown")}
               </span>
               <span className="text-muted-foreground font-mono text-xs">
-                {order.user?.email ?? ""}
+                {order.customerEmail ?? order.user?.email ?? ""}
               </span>
             </div>
 
-            {order.user?.companyName && (
+            {order.companyName && (
               <div className="border-border/50 flex flex-col border-t pt-3">
                 <span className="text-muted-foreground text-xxs font-semibold tracking-wider uppercase">
                   {t("corporateEntity")}
                 </span>
                 <span className="text-primary mt-0.5 font-bold">
-                  {order.user.companyName}
+                  {order.companyName}
                 </span>
-                {order.user.taxId && (
-                  <span className="text-muted-foreground mt-0.5 text-xs">
-                    {t("taxId")}: {order.user.taxId}
-                  </span>
-                )}
               </div>
             )}
 
-            <div className="border-border/50 flex flex-col border-t pt-3">
-              <span className="text-muted-foreground text-xxs font-semibold tracking-wider uppercase">
-                {t("contactPhone")}
-              </span>
-              <span className="mt-0.5 font-mono text-sm">
-                {order.user?.phone ?? ""}
-              </span>
-            </div>
+            {(order.customerPhone ?? order.user?.phoneNumber) && (
+              <div className="border-border/50 flex flex-col border-t pt-3">
+                <span className="text-muted-foreground text-xxs font-semibold tracking-wider uppercase">
+                  {t("contactPhone")}
+                </span>
+                <span className="mt-0.5 font-mono text-sm">
+                  {order.customerPhone ?? order.user?.phoneNumber}
+                </span>
+              </div>
+            )}
 
             <div className="border-border/50 flex flex-col border-t pt-3">
               <span className="text-muted-foreground text-xxs font-semibold tracking-wider uppercase">
                 {t("businessType")}
               </span>
               <Badge className="bg-secondary text-secondary-foreground mt-1 w-fit border-transparent text-xs capitalize">
-                {order.user?.businessType
-                  ? String(order.user.businessType).replace("_", " ")
-                  : t("endUser")}
+                {order.user?.role ?? t("endUser")}
               </Badge>
             </div>
           </div>

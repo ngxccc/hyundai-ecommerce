@@ -14,10 +14,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import type { ComplexOrder } from "@/shared/types/admin-schema.types";
+import type { AdminOrder } from "@/lib/api-client";
 
 interface RecentOrdersTableProps {
-  orders: ComplexOrder[];
+  orders: AdminOrder[];
 }
 
 const statusMap: Record<string, string> = {
@@ -90,16 +90,15 @@ export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
         </TableHeader>
         <TableBody>
           {orders.map((order) => {
-            const customerName = order.user?.name ?? "Customer";
+            const customerName =
+              order.user?.fullName ?? order.customerName ?? "Customer";
             const initial = customerName.charAt(0).toUpperCase();
-            const items = order.items ?? [];
+            const items = order.items;
             let productText = "No Product";
             if (items.length > 0) {
               const firstItem = items[0];
               const productName =
-                firstItem.product?.nameVi ??
-                firstItem.productName ??
-                "Sản phẩm";
+                firstItem.product?.nameVi ?? firstItem.productName;
               productText =
                 items.length > 1
                   ? `${productName} + ${items.length - 1}`

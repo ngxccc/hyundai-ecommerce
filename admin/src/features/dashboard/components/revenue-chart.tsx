@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import type { MonthlyRevenue } from "@/shared/types/admin-schema.types";
+import type { MonthlyRevenue } from "../types";
 
 interface RevenueChartProps {
   data: MonthlyRevenue[];

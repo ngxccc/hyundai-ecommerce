@@ -3,9 +3,12 @@
  * Automatically injects Admin JWT Bearer tokens from Next.js server cookies.
  */
 
-import { cookies } from "next/headers";
+import createClient, { type Middleware } from "openapi-fetch";
 import { env } from "@/env";
+import type { paths, components } from "@/types/api-schema";
 
+export type ApiPaths = paths;
+export type ApiSchemas = components["schemas"];
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -38,6 +41,38 @@ export interface ApiProblemDetails {
   }[];
 }
 
+export type AdminProduct = ApiSchemas["ProductResponseDto"];
+export type AdminCategory = ApiSchemas["CategoryResponseDto"];
+export type AdminBrand = ApiSchemas["BrandResponseDto"];
+export type AdminWarehouse = ApiSchemas["WarehouseResponseDto"];
+export type AdminWarehouseStock = ApiSchemas["WarehouseStockResponseDto"];
+export type AdminOrder = ApiSchemas["OrderResponseDto"];
+export type AdminOrderItem = ApiSchemas["OrderItemResponseDto"];
+export type AdminQuote = ApiSchemas["QuoteResponseDto"];
+export type AdminQuoteItem = ApiSchemas["QuoteItemResponseDto"];
+export type AdminQuoteMessage = ApiSchemas["QuoteMessageResponseDto"];
+export type AdminUser = ApiSchemas["UserResponseDto"];
+export type AdminDealerTier = ApiSchemas["DealerTierResponseDto"];
+export type CommercialTerms = ApiSchemas["CommercialTermsDto"];
+export type QuoteCommercialTerms = ApiSchemas["QuoteCommercialTermsDto"];
+export {
+  QUOTE_STATUS,
+  ORDER_STATUS,
+  orderStatusEnum,
+  quoteStatusEnum,
+  type QuoteStatus,
+  type OrderStatus,
+} from "@/shared/constants";
+
+export type BusinessType = NonNullable<
+  NonNullable<ApiSchemas["UserResponseDto"]["dealerCompany"]>["businessType"]
+>;
+
+export interface RequestOptions extends RequestInit {
+  token?: string;
+  skipAuth?: boolean;
+}
+
 export class ApiClientError extends Error {
   public readonly status: number;
   public readonly problem?: ApiProblemDetails;
@@ -50,12 +85,10 @@ export class ApiClientError extends Error {
   }
 }
 
-export interface RequestOptions extends RequestInit {
-  token?: string;
-  skipAuth?: boolean;
-}
-
 const getBaseUrl = (): string => {
+  if (typeof window !== "undefined") {
+    return "";
+  }
   const url = env.BACKEND_API_URL;
   const trimmed = url.trim().replace(/^["'\\]+|["'\\]+$/g, "");
   if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
@@ -63,6 +96,39 @@ const getBaseUrl = (): string => {
   }
   return trimmed;
 };
+
+const authMiddleware: Middleware = {
+  async onRequest({ request }) {
+    if (typeof window !== "undefined") {
+      throw new ApiClientError(
+        "Direct API client cannot be executed in the browser. Use Next.js Server Actions.",
+        500,
+      );
+    }
+    if (!request.headers.has("Authorization")) {
+      try {
+        const { cookies } = await import("next/headers");
+        const cookieStore = await cookies();
+        const token =
+          cookieStore.get("adminAccessToken")?.value ??
+          cookieStore.get("accessToken")?.value;
+        if (token) {
+          request.headers.set("Authorization", `Bearer ${token}`);
+        }
+      } catch {
+        // Cookies not accessible in non-request contexts
+      }
+    }
+    return request;
+  },
+};
+
+/**
+ * Type-safe OpenAPI Fetch Client for Hyundai E-Commerce Backend.
+ * Generates full autocomplete for URLs, parameters, and response schemas.
+ */
+export const api = createClient<paths>({ baseUrl: getBaseUrl() });
+api.use(authMiddleware);
 
 export function safeId(id: string): string {
   const trimmed = id.trim();
@@ -76,6 +142,13 @@ export async function adminApiFetch<T>(
   endpoint: string,
   options: RequestOptions = {},
 ): Promise<T> {
+  if (typeof window !== "undefined") {
+    throw new ApiClientError(
+      "adminApiFetch cannot be called on the client. Use Server Actions instead.",
+      500,
+    );
+  }
+
   if (
     endpoint.includes("://") ||
     endpoint.startsWith("//") ||
@@ -101,9 +174,13 @@ export async function adminApiFetch<T>(
     Accept: "application/json",
     ...(options.headers as Record<string, string>),
   };
-
-  if (!options.skipAuth && !headers.Authorization) {
+  if (
+    !options.skipAuth &&
+    !headers.Authorization &&
+    typeof window === "undefined"
+  ) {
     try {
+      const { cookies } = await import("next/headers");
       const cookieStore = await cookies();
       const token =
         options.token ??
@@ -158,219 +235,6 @@ export async function adminApiFetch<T>(
     return body.data;
   }
   return body;
-}
-
-export interface AdminProduct {
-  id: string;
-  nameVi: string;
-  nameEn: string | null;
-  slug: string;
-  price: string;
-  descriptionVi: Record<string, unknown> | null;
-  descriptionEn: Record<string, unknown> | null;
-  shortDescriptionVi: string | null;
-  shortDescriptionEn: string | null;
-  images: string[];
-  brandId: string | null;
-  categoryId: string | null;
-  specs: Record<string, unknown> | null;
-  totalStockCache: number;
-  isQuoteOnly: boolean;
-  isPublished: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface AdminCategory {
-  id: string;
-  nameVi: string;
-  nameEn: string | null;
-  slug: string;
-  descriptionVi: string | null;
-  descriptionEn: string | null;
-  icon: string | null;
-  image: string | null;
-  parentId: string | null;
-  sortOrder: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface AdminBrand {
-  id: string;
-  name: string;
-  slug: string;
-  logo: string | null;
-  descriptionVi: string | null;
-  descriptionEn: string | null;
-  website: string | null;
-  sortOrder: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface AdminWarehouse {
-  id: string;
-  nameVi: string;
-  nameEn: string | null;
-  streetAddress: string;
-  district: string;
-  city: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-export interface AdminWarehouseStock {
-  id: string;
-  warehouseId: string;
-  productId: string;
-  quantity: number;
-  lowStockThreshold: number | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ShippingBid {
-  id: string;
-  orderId?: string;
-  vendorName: string;
-  quotedPrice: string;
-  isSelected: boolean;
-  internalNote?: string | null;
-}
-
-export interface AdminOrderItem {
-  id: string;
-  orderId: string;
-  productId: string;
-  productName?: string;
-  productSku?: string;
-  quantity: number;
-  unitPrice: string;
-  totalPrice: string;
-  product?: AdminProduct;
-}
-
-export interface AdminOrder {
-  id: string;
-  orderNumber: string;
-  userId: string | null;
-  customerName: string | null;
-  customerPhone: string | null;
-  customerEmail: string | null;
-  shippingAddress: string;
-  shippingFee?: string | null;
-  totalAmount: string;
-  depositAmount: string;
-  remainingAmount: string;
-  paymentMethod: string;
-  paymentStatus: string;
-  status: string;
-  note: string | null;
-  createdAt: string;
-  updatedAt: string;
-  items?: AdminOrderItem[];
-  bids?: ShippingBid[];
-  user?: AdminUser | null;
-}
-export interface AdminQuoteItem {
-  id: string;
-  quoteId: string;
-  productId: string | null;
-  itemName: string;
-  itemModel: string | null;
-  itemSpecs: string | null;
-  quantity: number;
-  unitPrice: string;
-  discountPercent: string;
-  finalPrice: string;
-  agreedPrice?: string | null;
-  requestedPrice?: string | null;
-  finalUnitPrice?: string | null;
-  product?: AdminProduct | null;
-  isCustomItem?: boolean;
-}
-
-export interface CommercialTerms {
-  validityDays?: number;
-  deliveryTime?: string;
-  deliveryLocation?: string;
-  paymentSchedule?: string;
-  warrantyTerms?: string;
-}
-
-export interface AdminQuoteMessage {
-  id: string;
-  quoteId: string;
-  senderId: string;
-  senderRole: string;
-  message: string;
-  createdAt: string;
-  sender?: {
-    name?: string;
-    fullName?: string;
-  };
-}
-
-export interface AdminQuote {
-  id: string;
-  quoteNumber: string;
-  userId: string | null;
-  customerName: string;
-  customerPhone: string;
-  customerEmail: string | null;
-  companyName: string | null;
-  taxId: string | null;
-  shippingAddress: string | null;
-  province?: string | null;
-  orderId?: string | null;
-  subtotalPrice?: string | null;
-  vatRate?: number | null;
-  vatAmount?: string | null;
-  totalAmount: string;
-  totalQuotedPrice?: string | null;
-  expirationDate?: string | null;
-  commercialTerms?: CommercialTerms | null;
-  status: string;
-  note: string | null;
-  createdAt: string;
-  updatedAt: string;
-  items?: AdminQuoteItem[];
-  messages?: AdminQuoteMessage[];
-  timeline?: AdminQuoteMessage[];
-}
-
-export interface AdminUser {
-  id: string;
-  email: string;
-  fullName: string;
-  name?: string;
-  phoneNumber: string;
-  phone?: string | null;
-  role: string;
-  status: string;
-  companyName?: string | null;
-  taxId?: string | null;
-  province?: string | null;
-  businessType?: "DEALER" | "CONTRACTOR" | "END_USER" | "DISTRIBUTOR";
-  dealerCompany?: {
-    companyName: string;
-    taxId: string;
-    businessAddress: string;
-    creditLimit: string;
-    currentDebt: string;
-  } | null;
-}
-export interface AdminDealerTier {
-  id: string;
-  name: string;
-  minSpend: string;
-  discountPercent: number;
-  description: string | null;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export const adminApiClient = {

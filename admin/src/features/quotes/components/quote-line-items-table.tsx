@@ -69,7 +69,7 @@ export const QuoteLineItemsTable = () => {
     }).format(num);
   };
 
-  const handleAddCustomItem = (e: React.FormEvent) => {
+  const handleAddCustomItem = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!customName.trim()) return;
 

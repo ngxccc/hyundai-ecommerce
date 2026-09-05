@@ -12,10 +12,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { ComplexOrder } from "@/shared/types/admin-schema.types";
+import type { AdminOrder } from "@/lib/api-client";
 
 interface InvoiceClientProps {
-  order: ComplexOrder;
+  order: AdminOrder;
 }
 
 export const InvoiceClient = ({ order }: InvoiceClientProps) => {
@@ -39,7 +39,7 @@ export const InvoiceClient = ({ order }: InvoiceClientProps) => {
   };
 
   const getSubtotal = () => {
-    return (order.items ?? []).reduce((acc, item) => {
+    return order.items.reduce((acc, item) => {
       const price = parseFloat(item.unitPrice);
       return acc + price * item.quantity;
     }, 0);
@@ -143,24 +143,29 @@ export const InvoiceClient = ({ order }: InvoiceClientProps) => {
             </h3>
             <div className="flex flex-col gap-1 text-sm font-semibold text-slate-900 dark:text-slate-100 print:text-black">
               <span className="text-base font-extrabold">
-                {order.user?.companyName ?? order.user?.name ?? t("unknown")}
+                {order.companyName ??
+                  order.customerName ??
+                  order.user?.fullName ??
+                  t("unknown")}
               </span>
-              {order.user?.companyName && order.user.name && (
-                <span className="text-xs text-slate-600 dark:text-slate-400 print:text-slate-600">
-                  {t("attnPrefix")} {order.user.name}
-                </span>
-              )}
-              {order.user?.taxId && (
+              {order.companyName &&
+                (order.customerName ?? order.user?.fullName) && (
+                  <span className="text-xs text-slate-600 dark:text-slate-400 print:text-slate-600">
+                    {t("attnPrefix")}{" "}
+                    {order.customerName ?? order.user?.fullName}
+                  </span>
+                )}
+              {(order.customerPhone ?? order.user?.phoneNumber) && (
                 <span className="font-mono text-xs text-slate-600 dark:text-slate-400 print:text-slate-600">
-                  {t("taxId")}: {order.user.taxId}
+                  {t("phoneLabel")}{" "}
+                  {order.customerPhone ?? order.user?.phoneNumber}
                 </span>
               )}
-              <span className="font-mono text-xs text-slate-600 dark:text-slate-400 print:text-slate-600">
-                {t("phoneLabel")} {order.user?.phone ?? ""}
-              </span>
-              <span className="font-mono text-xs text-slate-600 dark:text-slate-400 print:text-slate-600">
-                {t("emailLabel")} {order.user?.email ?? ""}
-              </span>
+              {(order.customerEmail ?? order.user?.email) && (
+                <span className="font-mono text-xs text-slate-600 dark:text-slate-400 print:text-slate-600">
+                  {t("emailLabel")} {order.customerEmail ?? order.user?.email}
+                </span>
+              )}
             </div>
           </div>
 
@@ -197,7 +202,7 @@ export const InvoiceClient = ({ order }: InvoiceClientProps) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {(order.items ?? []).map((item, idx) => {
+              {order.items.map((item, idx) => {
                 const price = parseFloat(item.unitPrice);
                 const subtotal = price * item.quantity;
                 return (
@@ -211,15 +216,10 @@ export const InvoiceClient = ({ order }: InvoiceClientProps) => {
                     <TableCell>
                       <div className="flex flex-col">
                         <span className="text-xs font-semibold text-slate-900 dark:text-slate-100 print:text-black">
-                          {item.productName ??
-                            item.product?.nameVi ??
-                            "Sản phẩm"}
+                          {item.productName}
                         </span>
                         <span className="text-xxs font-mono text-slate-500 print:text-slate-500">
-                          SKU:{" "}
-                          {item.productSku ??
-                            item.product?.slug ??
-                            item.productId.slice(0, 8)}
+                          SKU: {item.productSku}
                         </span>
                       </div>
                     </TableCell>
@@ -258,7 +258,7 @@ export const InvoiceClient = ({ order }: InvoiceClientProps) => {
                   {t("invoiceShippingFee")}
                 </TableCell>
                 <TableCell className="text-right text-xs font-semibold">
-                  {formatCurrency(order.shippingFee ?? "0")}
+                  {formatCurrency(order.shippingFee)}
                 </TableCell>
               </TableRow>
 

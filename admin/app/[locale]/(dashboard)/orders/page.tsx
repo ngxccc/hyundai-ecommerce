@@ -1,8 +1,11 @@
 import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { OrderList } from "@/features/orders/components";
-import { adminApiClient } from "@/lib/api-client";
-import { orderStatusEnum, type Order } from "@/shared/types/admin-schema.types";
+import {
+  adminApiClient,
+  orderStatusEnum,
+  type AdminOrder,
+} from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -54,7 +57,7 @@ export default async function AdminOrdersPage({
   const ordersRes = await adminApiClient.orders.list(
     status ? { status } : undefined,
   );
-  const orders: Order[] =
+  const orders: AdminOrder[] =
     "items" in ordersRes
       ? ordersRes.items
       : Array.isArray(ordersRes)
@@ -66,11 +69,15 @@ export default async function AdminOrdersPage({
     ? orders.filter(
         (o) =>
           o.id.toLowerCase().includes(search.toLowerCase()) ||
-          (o.user?.name?.toLowerCase().includes(search.toLowerCase()) ??
+          (o.orderNumber?.toLowerCase().includes(search.toLowerCase()) ??
+            false) ||
+          (o.customerName?.toLowerCase().includes(search.toLowerCase()) ??
+            false) ||
+          (o.user?.fullName.toLowerCase().includes(search.toLowerCase()) ??
             false) ||
           (o.user?.email.toLowerCase().includes(search.toLowerCase()) ??
             false) ||
-          (o.user?.companyName?.toLowerCase().includes(search.toLowerCase()) ??
+          (o.companyName?.toLowerCase().includes(search.toLowerCase()) ??
             false),
       )
     : orders;

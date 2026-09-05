@@ -13,12 +13,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import type { User, DealerTierDTO } from "@/shared/types/admin-schema.types";
+import type { AdminUser, AdminDealerTier } from "@/lib/api-client";
 import { Search, UserCheck, Building } from "lucide-react";
 
 interface CustomerDirectoryProps {
-  initialUsers: User[];
-  dealerTiers?: DealerTierDTO[];
+  initialUsers: AdminUser[];
+  dealerTiers?: AdminDealerTier[];
 }
 
 export const CustomerDirectory = ({ initialUsers }: CustomerDirectoryProps) => {

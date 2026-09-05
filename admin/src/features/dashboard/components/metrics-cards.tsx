@@ -11,7 +11,7 @@ import {
   Minus,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import type { DashboardMetrics } from "@/shared/types/admin-schema.types";
+import type { DashboardMetrics } from "../types";
 
 interface MetricsCardsProps {
   metrics: DashboardMetrics;

@@ -5,11 +5,7 @@ import { META_THEME_COLORS } from "@/shared/config/site";
 import { routing } from "@/i18n/routing";
 import { NextIntlClientProvider, type Locale } from "next-intl";
 import { notFound } from "next/navigation";
-import {
-  getMessages,
-  getTranslations,
-  setRequestLocale,
-} from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Toaster } from "@/components/ui/sonner";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ThemeProvider } from "@/shared/components/theme-provider";
@@ -64,8 +60,6 @@ export default async function RootLayout({
   if (!routing.locales.includes(locale)) {
     notFound();
   }
-
-  setRequestLocale(locale);
 
   const messages = await getMessages();
 

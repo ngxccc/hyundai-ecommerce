@@ -1,10 +1,10 @@
 "use client";
 
 import { BrandCard } from "./brand-card";
-import type { BrandDTO } from "@/shared/types/admin-schema.types";
+import type { AdminBrand } from "@/lib/api-client";
 
 interface BrandGridProps {
-  brands: BrandDTO[];
+  brands: AdminBrand[];
 }
 
 export const BrandGrid = ({ brands }: BrandGridProps) => {

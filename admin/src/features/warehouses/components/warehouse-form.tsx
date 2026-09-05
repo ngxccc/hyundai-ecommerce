@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { WarehouseDTO } from "@/shared/types/admin-schema.types";
+import type { AdminWarehouse } from "@/lib/api-client";
 import {
   type CreateWarehouseInput,
   createWarehouseSchema,
@@ -33,7 +33,7 @@ export const WarehouseForm = ({
   initialData,
   breadcrumbs,
 }: {
-  initialData?: WarehouseDTO;
+  initialData?: AdminWarehouse;
   breadcrumbs?: ReactNode;
 }) => {
   const t = useTranslations("AdminWarehouseForm");

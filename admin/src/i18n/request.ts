@@ -8,18 +8,14 @@ const isValidLocale = (locale: unknown): locale is Locale => {
   );
 };
 
-export default getRequestConfig(async ({ requestLocale }) => {
-  const requestedLocale = await requestLocale;
-
-  // Fallback an toàn nếu có thằng hack URL
-  const locale = isValidLocale(requestedLocale)
-    ? requestedLocale
-    : routing.defaultLocale;
+export default getRequestConfig(async ({ locale }) => {
+  // Fallback an toàn nếu có request không hợp lệ
+  const resolvedLocale = isValidLocale(locale) ? locale : routing.defaultLocale;
 
   return {
-    locale,
+    locale: resolvedLocale,
     messages: (
-      (await import(`../../messages/${locale}.json`)) as {
+      (await import(`../../messages/${resolvedLocale}.json`)) as {
         default: Record<string, string>;
       }
     ).default,

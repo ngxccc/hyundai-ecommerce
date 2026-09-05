@@ -17,14 +17,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/sonner";
 import { isCloudinaryUrl } from "@/shared/utils";
-import type { ProductDTO } from "@/shared/types/admin-schema.types";
+import type { AdminProduct } from "@/lib/api-client";
 import { searchProductsAction } from "@/features/products/actions";
 import { useQuoteDraftStore } from "../stores/quote-draft.store";
 
 export interface ProductSearchModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSelectProduct?: (product: ProductDTO) => void;
+  onSelectProduct?: (product: AdminProduct) => void;
   trigger?: ReactNode;
 }
 
@@ -39,7 +39,7 @@ export const ProductSearchModal = ({
     params?: Record<string, unknown>,
   ) => string;
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<ProductDTO[]>([]);
+  const [results, setResults] = useState<AdminProduct[]>([]);
   const [isSearching, startSearchTransition] = useTransition();
   const [recentlyAddedId, setRecentlyAddedId] = useState<string | null>(null);
 
@@ -74,7 +74,7 @@ export const ProductSearchModal = ({
     return () => clearTimeout(timer);
   }, [query, open]);
 
-  const handleSelect = (product: ProductDTO) => {
+  const handleSelect = (product: AdminProduct) => {
     if (onSelectProduct) {
       onSelectProduct(product);
     } else {
@@ -96,15 +96,19 @@ export const ProductSearchModal = ({
     }).format(num);
   };
 
-  const extractModelAndPower = (product: ProductDTO) => {
-    const specs = product.specs ?? {};
+  const extractModelAndPower = (product: AdminProduct) => {
+    const specs = product.specs as Record<string, unknown>;
     const model = typeof specs.model === "string" ? specs.model : product.slug;
-    const power = specs.power ?? specs.standbyPowerKva ?? specs.primePowerKva;
+    const power =
+      specs.powerKva ??
+      specs.power ??
+      specs.standbyPowerKva ??
+      specs.primePowerKva;
     const phase = specs.phase;
 
     const powerStr =
       typeof power === "number" || typeof power === "string"
-        ? `${power}kVA`
+        ? `${String(power)}kVA`
         : null;
     const phaseStr =
       typeof phase === "string"

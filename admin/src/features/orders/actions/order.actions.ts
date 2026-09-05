@@ -1,8 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { adminApiClient, ApiClientError } from "@/lib/api-client";
-import { type Order } from "@/shared/types/admin-schema.types";
+import {
+  adminApiClient,
+  ApiClientError,
+  type AdminOrder,
+} from "@/lib/api-client";
 import { isValidIdentifier } from "@/shared/validators";
 import {
   requireAuth,
@@ -13,7 +16,7 @@ import { getTranslations } from "next-intl/server";
 
 export const updateOrderStatusAction = async (
   orderId: string,
-  status: Order["status"],
+  status: AdminOrder["status"],
   note?: string,
 ) => {
   const t = await getTranslations("errors");

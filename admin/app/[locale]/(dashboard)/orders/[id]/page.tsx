@@ -6,8 +6,7 @@ import { adminApiClient } from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { type Locale } from "next-intl";
-import type { UserRole } from "@/shared/types/admin-schema.types";
-
+import type { UserRole } from "@/shared/lib/action-auth";
 export async function generateMetadata({
   params,
 }: {

@@ -6,8 +6,7 @@ import { RecentOrdersTable } from "@/features/dashboard/components/recent-orders
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
-import { adminApiClient } from "@/lib/api-client";
-import type { Order } from "@/shared/types/admin-schema.types";
+import { adminApiClient, type AdminOrder } from "@/lib/api-client";
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -44,7 +43,7 @@ export const AdminDashboard = async () => {
     adminApiClient.orders.list(),
   ]);
 
-  const ordersList: Order[] =
+  const ordersList: AdminOrder[] =
     "items" in allOrders
       ? allOrders.items
       : Array.isArray(allOrders)
