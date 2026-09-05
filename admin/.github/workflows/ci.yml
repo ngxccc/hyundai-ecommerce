@@ -1,0 +1,42 @@
+name: Admin CI
+
+on:
+  pull_request:
+    branches: ["main"]
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
+      - ".vscode/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: "Admin Quality Gate"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Environment
+        uses: ./.github/setup-environment
+
+      - name: Type-Check
+        run: bun run check-types
+
+      - name: Lint Code
+        run: bun run lint
+
+      - name: Run Test Suite
+        run: bun run test
+
+      - name: Production Build
+        run: bun run build
