@@ -189,11 +189,18 @@ export class ProductsService {
       productFilters.byBrandId(query.brandId),
       productFilters.byCategoryId(query.categoryId),
       productFilters.byPriceRange(query.priceMin, query.priceMax),
-      productFilters.byPowerRange(query.powerKvaMin, query.powerKvaMax),
+      productFilters.byPowerRange(
+        query.powerKvaMin ?? query.minPower,
+        query.powerKvaMax ?? query.maxPower,
+      ),
       productFilters.byVoltage(query.voltage),
       productFilters.byPhase(query.phase),
       productFilters.byFuelType(query.fuelType),
       productFilters.byCanopyType(query.canopyType),
+      productFilters.byEngineBrand(query.engineBrand),
+      productFilters.byAlternatorBrand(query.alternatorBrand),
+      productFilters.byStatus(query.status),
+      productFilters.byQuoteOnly(query.isQuoteOnly),
     );
 
     let orderByClause = desc(products.createdAt);

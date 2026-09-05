@@ -117,4 +117,58 @@ export const productFilters = {
    */
   byCanopyType: (canopyType?: CanopyType | null): SQL | undefined =>
     canopyType ? eq(products.canopyType, canopyType) : undefined,
+
+  /**
+   * Filters products by engine brand string.
+   */
+  byEngineBrand: (engineBrand?: string | null): SQL | undefined =>
+    engineBrand?.trim()
+      ? ilike(
+          products.engineBrand,
+          `%${escapeLikePattern(engineBrand.trim())}%`,
+        )
+      : undefined,
+
+  /**
+   * Filters products by alternator brand string.
+   */
+  byAlternatorBrand: (alternatorBrand?: string | null): SQL | undefined =>
+    alternatorBrand?.trim()
+      ? ilike(
+          products.alternatorBrand,
+          `%${escapeLikePattern(alternatorBrand.trim())}%`,
+        )
+      : undefined,
+
+  /**
+   * Filters products by inventory stock status.
+   */
+  byStatus: (status?: string | null): SQL | undefined => {
+    if (status === "outOfStock") {
+      return lte(products.totalStockCache, 0);
+    }
+    if (status === "active" || status === "ACTIVE") {
+      return and(
+        eq(products.isActive, true),
+        sql`${products.totalStockCache} > 0`,
+      );
+    }
+    if (status === "INACTIVE") {
+      return eq(products.isActive, false);
+    }
+    return undefined;
+  },
+
+  /**
+   * Filters products flagged for quote-only (price is 0 or 0.00).
+   */
+  byQuoteOnly: (isQuoteOnly?: boolean | null): SQL | undefined => {
+    if (isQuoteOnly === true) {
+      return lte(products.price, "0");
+    }
+    if (isQuoteOnly === false) {
+      return sql`cast(${products.price} as numeric) > 0`;
+    }
+    return undefined;
+  },
 };
