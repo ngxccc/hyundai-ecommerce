@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import type { AdminUser, AdminDealerTier } from "@/lib/api-client";
+import type { AdminUser, AdminDealerTier } from "@/types/api";
 import { Search, UserCheck, Building } from "lucide-react";
 
 interface CustomerDirectoryProps {

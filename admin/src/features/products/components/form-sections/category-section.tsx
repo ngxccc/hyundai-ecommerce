@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { AdminCategory, AdminBrand } from "@/lib/api-client";
+import type { AdminCategory, AdminBrand } from "@/types/api";
 import type { CreateProductInput } from "@/shared/validators";
 
 interface ProductCategorySectionProps {

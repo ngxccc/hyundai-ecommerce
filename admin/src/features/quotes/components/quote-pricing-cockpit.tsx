@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/sonner";
 import { Loader2, DollarSign } from "lucide-react";
 import { QUOTE_STATUS } from "@/shared/constants";
-import type { AdminQuote } from "@/lib/api-client";
+import type { AdminQuote } from "@/types/api";
 import { updateQuoteItemPriceAction } from "../actions";
 import {
   formatNumberInput,

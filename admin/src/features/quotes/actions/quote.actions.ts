@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { adminApiClient, ApiClientError } from "@/lib/api-client";
+import { api, ApiClientError } from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
 import { isValidIdentifier } from "@/shared/validators";
 
@@ -11,11 +11,17 @@ export async function approveAndConvertToOrderAction(quoteId: string) {
     return { success: false as const, error: t("default") };
   }
   try {
-    const data = await adminApiClient.quotes.approveToOrder(quoteId);
+    const { data } = await api.POST("/quotes/{id}/approve-to-order", {
+      params: { path: { id: quoteId } },
+    });
+    const res = data?.data;
+    if (!res) {
+      throw new ApiClientError(t("quoteNotEditableOrConvertible"), 400);
+    }
     revalidatePath("/quotes");
     revalidatePath(`/quotes/${quoteId}`);
     revalidatePath("/orders");
-    return { success: true as const, data };
+    return { success: true as const, data: res };
   } catch (error) {
     console.error("[approveAndConvertToOrderAction] Error:", error);
     if (error instanceof ApiClientError && error.problem?.detail) {
@@ -34,10 +40,17 @@ export async function updateQuoteStatusAction(quoteId: string, status: string) {
     return { success: false as const, error: t("default") };
   }
   try {
-    const data = await adminApiClient.quotes.updateStatus(quoteId, status);
+    const { data } = await api.PATCH("/quotes/{id}/status", {
+      params: { path: { id: quoteId } },
+      body: { status: status as never },
+    });
+    const res = data?.data;
+    if (!res) {
+      throw new ApiClientError(t("default"), 400);
+    }
     revalidatePath("/quotes");
     revalidatePath(`/quotes/${quoteId}`);
-    return { success: true as const, data };
+    return { success: true as const, data: res };
   } catch (error) {
     console.error("[updateQuoteStatusAction] Error:", error);
     if (error instanceof ApiClientError && error.problem?.detail) {
@@ -60,13 +73,16 @@ export async function updateQuoteItemPriceAction(
     return { success: false as const, error: t("default") };
   }
   try {
-    const data = await adminApiClient.quotes.updateItemPrice(
-      quoteId,
-      itemId,
-      agreedPrice,
-    );
+    const { data } = await api.PUT("/quotes/{id}/items/{itemId}/price", {
+      params: { path: { id: quoteId, itemId } },
+      body: { agreedPrice },
+    });
+    const res = data?.data;
+    if (!res) {
+      throw new ApiClientError(t("default"), 400);
+    }
     revalidatePath(`/quotes/${quoteId}`);
-    return { success: true as const, data };
+    return { success: true as const, data: res };
   } catch (error) {
     console.error("[updateQuoteItemPriceAction] Error:", error);
     if (error instanceof ApiClientError && error.problem?.detail) {
@@ -88,9 +104,16 @@ export async function sendAdminNegotiationMessageAction(
     return { success: false as const, error: t("default") };
   }
   try {
-    const data = await adminApiClient.quotes.sendMessage(quoteId, message);
+    const { data } = await api.POST("/quotes/{id}/messages", {
+      params: { path: { id: quoteId } },
+      body: { message },
+    });
+    const res = data?.data;
+    if (!res) {
+      throw new ApiClientError(t("default"), 400);
+    }
     revalidatePath(`/quotes/${quoteId}`);
-    return { success: true as const, data };
+    return { success: true as const, data: res };
   } catch (error) {
     console.error("[sendAdminNegotiationMessageAction] Error:", error);
     if (error instanceof ApiClientError && error.problem?.detail) {
@@ -106,9 +129,15 @@ export async function sendAdminNegotiationMessageAction(
 export async function createAdminQuoteAction(dto: Record<string, unknown>) {
   const t = await getTranslations("errors");
   try {
-    const data = await adminApiClient.quotes.createAdminQuote(dto);
+    const { data } = await api.POST("/quotes/admin", {
+      body: dto as never,
+    });
+    const res = data?.data;
+    if (!res) {
+      throw new ApiClientError(t("createQuoteFailed"), 400);
+    }
     revalidatePath("/quotes");
-    return { success: true as const, data };
+    return { success: true as const, data: res };
   } catch (error) {
     console.error("[createAdminQuoteAction] Error:", error);
     if (error instanceof ApiClientError && error.problem?.detail) {

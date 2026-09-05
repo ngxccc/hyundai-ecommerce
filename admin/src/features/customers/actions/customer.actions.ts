@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { adminApiClient, ApiClientError } from "@/lib/api-client";
+import { api, ApiClientError } from "@/lib/api-client";
 import {
   assertFinanceRole,
   getAuthErrorMessage,
@@ -17,7 +17,8 @@ export const createDealerTierAction = async (formData: FormData) => {
     JSON.parse(payloadStr as string);
 
     // Backend handles creation of dealer tier
-    const tierData = await adminApiClient.dealerTiers.list();
+    const { data: tierRes } = await api.GET("/dealer-tiers");
+    const tierData = tierRes?.data ?? [];
 
     revalidatePath("/customers/tiers");
     return { success: true as const, data: tierData };

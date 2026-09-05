@@ -3,10 +3,12 @@ import {
   CustomerDirectory,
 } from "@/features/customers/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
-import { adminApiClient, type AdminUser } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
+import type { AdminUser } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
+import type { Metadata } from "next";
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -16,7 +18,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "AdminCustomers" });
@@ -31,7 +33,8 @@ export default async function AdminCustomersPage() {
   const tCustomers = await getTranslations("AdminCustomers");
 
   const users: AdminUser[] = [];
-  const dealerTiers = await adminApiClient.dealerTiers.list();
+  const { data: tierRes } = await api.GET("/dealer-tiers");
+  const dealerTiers = tierRes?.data ?? [];
 
   return (
     <>

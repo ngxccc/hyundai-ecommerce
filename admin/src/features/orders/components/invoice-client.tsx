@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { AdminOrder } from "@/lib/api-client";
+import type { AdminOrder } from "@/types/api";
 
 interface InvoiceClientProps {
   order: AdminOrder;

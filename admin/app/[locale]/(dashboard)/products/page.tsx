@@ -3,7 +3,8 @@ import { ProductGrid } from "@/features/products/components/product-grid";
 import { ProductPagination } from "@/features/products/components/product-pagination";
 import { ProductHeader } from "@/features/products/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
-import { adminApiClient, type AdminProduct } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
+import type { AdminProduct } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -67,7 +68,8 @@ export default async function AdminProductsPage({
     brandId,
     fuelType,
     phase,
-    voltage: voltage !== undefined && !isNaN(voltage) ? voltage : undefined,
+    voltage:
+      voltage !== undefined && !isNaN(voltage) ? String(voltage) : undefined,
     minPower: minPower !== undefined && !isNaN(minPower) ? minPower : undefined,
     maxPower: maxPower !== undefined && !isNaN(maxPower) ? maxPower : undefined,
     engineBrand,
@@ -77,28 +79,21 @@ export default async function AdminProductsPage({
     isQuoteOnly: isQuoteOnly ? true : undefined,
   };
 
-  const [t, tNav, productsRes, categories, brands] = await Promise.all([
+  const [t, tNav, productsRes, categoriesRes, brandsRes] = await Promise.all([
     getTranslations("AdminProducts.header"),
     getTranslations("AdminDashboard.nav"),
-    adminApiClient.products.list({ limit: 20, ...options }),
-    adminApiClient.categories.list(),
-    adminApiClient.brands.list(),
+    api.GET("/products", {
+      params: { query: { limit: 20, ...options } as never },
+    }),
+    api.GET("/categories"),
+    api.GET("/brands"),
   ]);
+  const categories = categoriesRes.data?.data ?? [];
+  const brands = brandsRes.data?.data ?? [];
 
-  const products: AdminProduct[] =
-    "items" in productsRes
-      ? productsRes.items
-      : Array.isArray(productsRes)
-        ? productsRes
-        : [];
-  const pagination =
-    "pagination" in productsRes ? productsRes.pagination : undefined;
-  const nextCursor = pagination?.hasNext
-    ? String(pagination.page + 1)
-    : undefined;
-  const prevCursor = pagination?.hasPrev
-    ? String(pagination.page - 1)
-    : undefined;
+  const products: AdminProduct[] = productsRes.data?.data ?? [];
+  const nextCursor = undefined;
+  const prevCursor = undefined;
 
   return (
     <>

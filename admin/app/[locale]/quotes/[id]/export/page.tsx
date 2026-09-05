@@ -1,15 +1,16 @@
 import { QuotePrintDocument } from "@/features/quotes/components";
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import { requireAuth } from "@/shared/lib/action-auth";
 import { notFound } from "next/navigation";
 import { type Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; id: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale: rawLocale, id } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "AdminQuotes" });
@@ -29,7 +30,10 @@ export default async function AdminQuoteExportPage({
   const { id } = await params;
   await requireAuth();
 
-  const quote = await adminApiClient.quotes.getById(id);
+  const { data: res } = await api.GET("/quotes/{id}", {
+    params: { path: { id } },
+  });
+  const quote = res?.data;
   if (!quote) {
     notFound();
   }

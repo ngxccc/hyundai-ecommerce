@@ -1,7 +1,7 @@
 "use client";
 
 import { BrandCard } from "./brand-card";
-import type { AdminBrand } from "@/lib/api-client";
+import type { AdminBrand } from "@/types/api";
 
 interface BrandGridProps {
   brands: AdminBrand[];

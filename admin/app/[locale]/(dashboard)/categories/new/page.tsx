@@ -1,10 +1,11 @@
 import { CategoryHeader } from "@/features/categories/components";
 import { CategoryForm } from "@/features/categories/components/category-form";
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import type { Metadata } from "next";
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -14,7 +15,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({
@@ -31,7 +32,8 @@ export default async function AdminNewCategoryPage() {
   const tNav = await getTranslations("AdminDashboard.nav");
   const tForm = await getTranslations("AdminCategoryForm");
 
-  const categories = await adminApiClient.categories.list();
+  const { data: res } = await api.GET("/categories");
+  const categories = res?.data ?? [];
 
   return (
     <>

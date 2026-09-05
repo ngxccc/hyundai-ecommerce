@@ -1,7 +1,7 @@
 "use client";
 
 import { CategoryCard } from "./category-card";
-import type { AdminCategory } from "@/lib/api-client";
+import type { AdminCategory } from "@/types/api";
 
 interface CategoryGridProps {
   categories: AdminCategory[];

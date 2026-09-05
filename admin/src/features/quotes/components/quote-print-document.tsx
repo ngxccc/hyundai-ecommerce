@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { AdminQuote } from "@/lib/api-client";
+import type { AdminQuote } from "@/types/api";
 import { QuotePdfDocument } from "./quote-pdf-document";
 
 // Dynamically import PDFViewer with SSR disabled to prevent canvas/font SSR issues

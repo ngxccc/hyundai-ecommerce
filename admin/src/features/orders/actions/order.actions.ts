@@ -1,11 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import {
-  adminApiClient,
-  ApiClientError,
-  type AdminOrder,
-} from "@/lib/api-client";
+import { api, ApiClientError } from "@/lib/api-client";
+import type { AdminOrder } from "@/types/api";
 import { isValidIdentifier } from "@/shared/validators";
 import {
   requireAuth,
@@ -25,11 +22,10 @@ export const updateOrderStatusAction = async (
   }
   try {
     await requireAuth();
-    const updated = await adminApiClient.orders.updateStatus(
-      orderId,
-      status,
-      note,
-    );
+    const { data: updated } = await api.PATCH("/orders/{id}/status", {
+      params: { path: { id: orderId } },
+      body: { status, note },
+    });
 
     revalidatePath("/orders");
     revalidatePath(`/orders/${orderId}`);
@@ -57,11 +53,10 @@ export const approveDealerOrderAction = async (orderId: string) => {
   }
   try {
     await assertSalesOrFinanceRole();
-    const result = await adminApiClient.orders.updateStatus(
-      orderId,
-      "PROCESSING",
-      "Duyệt đơn hàng đại lý",
-    );
+    const { data: result } = await api.PATCH("/orders/{id}/status", {
+      params: { path: { id: orderId } },
+      body: { status: "PROCESSING", note: "Duyệt đơn hàng đại lý" },
+    });
 
     revalidatePath("/orders");
     revalidatePath(`/orders/${orderId}`);
@@ -93,9 +88,12 @@ export const verifyCashPaymentAction = async (
   }
   try {
     await assertFinanceRole();
-    const result = await adminApiClient.payments.verifyCash(orderId, {
-      amount,
-      note: note ?? "Kế toán xác nhận thu tiền mặt",
+    const { data: result } = await api.POST("/payments/{id}/verify-cash", {
+      params: { path: { id: orderId } },
+      body: {
+        amount: amount as never,
+        note: note ?? "Kế toán xác nhận thu tiền mặt",
+      },
     });
 
     revalidatePath("/orders");
@@ -127,7 +125,9 @@ export const approveOrderCancellationAction = async (
   }
   try {
     await assertSalesOrFinanceRole();
-    const result = await adminApiClient.orders.cancel(orderId);
+    const { data: result } = await api.POST("/orders/{id}/cancel", {
+      params: { path: { id: orderId } },
+    });
 
     revalidatePath("/orders");
     revalidatePath(`/orders/${orderId}`);

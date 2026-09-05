@@ -1,11 +1,13 @@
 import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { QuoteList } from "@/features/quotes/components";
-import { adminApiClient } from "@/lib/api-client";
-import { quoteStatusEnum, type AdminQuote } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
+import { quoteStatusEnum } from "@/shared/constants";
+import type { AdminQuote } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
+import type { Metadata } from "next";
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -15,7 +17,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "AdminQuotes" });
@@ -49,15 +51,12 @@ export default async function AdminQuotesPage({
       ? statusParam
       : undefined;
 
-  const quotesRes = await adminApiClient.quotes.list(
-    status ? { status } : undefined,
-  );
-  const quotes: AdminQuote[] =
-    "items" in quotesRes
-      ? quotesRes.items
-      : Array.isArray(quotesRes)
-        ? quotesRes
-        : [];
+  const { data: quotesRes } = await api.GET("/quotes", {
+    params: {
+      query: status ? { status: status as never } : undefined,
+    },
+  });
+  const quotes: AdminQuote[] = quotesRes?.data?.items ?? [];
 
   // In-memory search filtering
   const searchLower = search?.toLowerCase();

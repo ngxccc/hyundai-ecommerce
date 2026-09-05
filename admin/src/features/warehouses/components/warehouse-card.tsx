@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import type { AdminWarehouse } from "@/lib/api-client";
+import type { AdminWarehouse } from "@/types/api";
 
 import { DeleteWarehouseButton } from "./delete-warehouse-button";
 

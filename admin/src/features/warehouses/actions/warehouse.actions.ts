@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { adminApiClient, ApiClientError } from "@/lib/api-client";
+import { api, ApiClientError } from "@/lib/api-client";
 import {
   createWarehouseSchema,
   updateWarehouseSchema,
@@ -44,7 +44,9 @@ export const createWarehouseAction = async (input: CreateWarehouseInput) => {
       isActive: validatedData.isActive,
     };
 
-    const data = await adminApiClient.warehouses.create(payload);
+    const { data } = await api.POST("/warehouses", {
+      body: payload as never,
+    });
 
     revalidatePath("/warehouses");
     return { success: true as const, data };
@@ -98,7 +100,10 @@ export async function updateWarehouseAction(
     if (validatedData.isActive !== undefined)
       updatePayload.isActive = validatedData.isActive;
 
-    const data = await adminApiClient.warehouses.update(id, updatePayload);
+    const { data } = await api.PUT("/warehouses/{id}", {
+      params: { path: { id } },
+      body: updatePayload as never,
+    });
     revalidatePath("/warehouses");
     revalidatePath(`/warehouses/${id}`);
     return { success: true as const, data };
@@ -124,7 +129,9 @@ export async function deleteWarehouseAction(id: string) {
   }
   try {
     await requireAuth();
-    await adminApiClient.warehouses.delete(id);
+    await api.DELETE("/warehouses/{id}", {
+      params: { path: { id } },
+    });
     revalidatePath("/warehouses");
     return { success: true as const };
   } catch (error) {

@@ -2,16 +2,18 @@ import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { OrderDetail } from "@/features/orders/components";
 import { getCachedSession } from "@/shared/lib/session";
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { type Locale } from "next-intl";
 import type { UserRole } from "@/shared/lib/action-auth";
+import type { Metadata } from "next";
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; id: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale: rawLocale, id } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "AdminOrders" });
@@ -30,10 +32,12 @@ export default async function AdminOrderDetailPage({
   const tNav = await getTranslations("AdminDashboard.nav");
   const tHeader = await getTranslations("AdminOrders");
 
-  const [order, session] = await Promise.all([
-    adminApiClient.orders.getById(id),
+  const [orderRes, session] = await Promise.all([
+    api.GET("/orders/{id}", { params: { path: { id } } }),
     getCachedSession(),
   ]);
+  const order = orderRes.data?.data;
+
   if (!order) {
     notFound();
   }

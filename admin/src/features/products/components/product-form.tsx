@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { formatNumberInput } from "@/shared/lib/utils";
-import type { AdminProduct, AdminCategory, AdminBrand } from "@/lib/api-client";
+import type { AdminProduct, AdminCategory, AdminBrand } from "@/types/api";
 import {
   type CreateProductInput,
   createProductSchema,

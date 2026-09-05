@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import {
   createCategorySchema,
   updateCategorySchema,
@@ -54,7 +54,18 @@ export const createCategoryAction = async (formData: FormData) => {
       }
     }
 
-    const categoryData = await adminApiClient.categories.create(validatedData);
+    const { data: createRes, error: createError } = await api.POST(
+      "/categories",
+      {
+        body: validatedData as never,
+      },
+    );
+    if (createError || !createRes.data) {
+      const errorMsg =
+        createError && "detail" in createError ? createError.detail : undefined;
+      throw new Error(errorMsg ?? "Failed to create category");
+    }
+    const categoryData = createRes.data;
 
     // Background Image Upload
     if (categoryData.id && imageFile) {
@@ -62,8 +73,9 @@ export const createCategoryAction = async (formData: FormData) => {
         try {
           const url = await uploadToCloudinary(imageFile, "categories");
           if (url) {
-            await adminApiClient.categories.update(categoryData.id, {
-              image: url,
+            await api.PUT("/categories/{id}", {
+              params: { path: { id: categoryData.id } },
+              body: { image: url },
             });
           }
         } catch (e) {
@@ -127,10 +139,19 @@ export async function updateCategoryAction(id: string, formData: FormData) {
       }
     }
 
-    const updatedCategory = await adminApiClient.categories.update(
-      id,
-      validatedData,
+    const { data: updateRes, error: updateError } = await api.PUT(
+      "/categories/{id}",
+      {
+        params: { path: { id } },
+        body: validatedData as never,
+      },
     );
+    if (updateError || !updateRes.data) {
+      const errorMsg =
+        updateError && "detail" in updateError ? updateError.detail : undefined;
+      throw new Error(errorMsg ?? "Failed to update category");
+    }
+    const updatedCategory = updateRes.data;
 
     // Background Image Upload
     if (imageFile) {
@@ -138,7 +159,10 @@ export async function updateCategoryAction(id: string, formData: FormData) {
         try {
           const url = await uploadToCloudinary(imageFile, "categories");
           if (url) {
-            await adminApiClient.categories.update(id, { image: url });
+            await api.PUT("/categories/{id}", {
+              params: { path: { id } },
+              body: { image: url },
+            });
           }
         } catch (e) {
           console.error("[Background Category Update Upload Failed]", e);
@@ -171,7 +195,14 @@ export async function deleteCategoryAction(id: string) {
   }
   try {
     await requireAuth();
-    const success = await adminApiClient.categories.delete(id);
+    const { error: deleteError } = await api.DELETE("/categories/{id}", {
+      params: { path: { id } },
+    });
+    if (deleteError) {
+      const errorMsg = "detail" in deleteError ? deleteError.detail : undefined;
+      throw new Error(errorMsg ?? "Failed to delete category");
+    }
+    const success = true;
     revalidatePath("/categories");
     return { success: true, data: success };
   } catch (error) {

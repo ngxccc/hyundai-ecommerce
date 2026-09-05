@@ -1,7 +1,7 @@
 "use client";
 
 import { WarehouseCard } from "./warehouse-card";
-import type { AdminWarehouse } from "@/lib/api-client";
+import type { AdminWarehouse } from "@/types/api";
 
 interface WarehouseGridProps {
   warehouses: AdminWarehouse[];

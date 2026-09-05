@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import {
   createProductSchema,
   updateProductSchema,
@@ -58,7 +58,18 @@ export const createProductAction = async (formData: FormData) => {
       }
     }
 
-    const newProduct = await adminApiClient.products.create(validatedData);
+    const { data: createRes, error: createError } = await api.POST(
+      "/products",
+      {
+        body: validatedData as never,
+      },
+    );
+    if (createError || !createRes.data) {
+      const errorMsg =
+        createError && "detail" in createError ? createError.detail : undefined;
+      throw new Error(errorMsg ?? "Failed to create product");
+    }
+    const newProduct = createRes.data;
 
     // Background Image Upload
     if (newProduct.id) {
@@ -71,8 +82,11 @@ export const createProductAction = async (formData: FormData) => {
               if (url) uploadedUrls.push(url);
             }
             if (uploadedUrls.length > 0) {
-              await adminApiClient.products.update(newProduct.id, {
-                images: [...validatedData.images, ...uploadedUrls],
+              await api.PUT("/products/{id}", {
+                params: { path: { id: newProduct.id } },
+                body: {
+                  images: [...validatedData.images, ...uploadedUrls],
+                } as never,
               });
             }
           } catch (e) {
@@ -129,7 +143,10 @@ export async function updateProductAction(id: string, formData: FormData) {
 
     const validatedData = parsed.data;
 
-    const existingProduct = await adminApiClient.products.getById(id);
+    const { data: getRes } = await api.GET("/products/{id}", {
+      params: { path: { id } },
+    });
+    const existingProduct = getRes?.data;
     const existingImages = existingProduct ? existingProduct.images : [];
     const imagesToDelete = existingImages.filter(
       (url) => !validatedData.images?.includes(url),
@@ -147,10 +164,19 @@ export async function updateProductAction(id: string, formData: FormData) {
       }
     }
 
-    const updatedProduct = await adminApiClient.products.update(
-      id,
-      validatedData,
+    const { data: updateRes, error: updateError } = await api.PUT(
+      "/products/{id}",
+      {
+        params: { path: { id } },
+        body: validatedData as never,
+      },
     );
+    if (updateError || !updateRes.data) {
+      const errorMsg =
+        updateError && "detail" in updateError ? updateError.detail : undefined;
+      throw new Error(errorMsg ?? "Failed to update product");
+    }
+    const updatedProduct = updateRes.data;
 
     // Background Tasks: Image Upload & Cleanup
     if (rawImages.length > 0 || imagesToDelete.length > 0) {
@@ -167,8 +193,11 @@ export async function updateProductAction(id: string, formData: FormData) {
             if (url) uploadedUrls.push(url);
           }
           if (uploadedUrls.length > 0) {
-            await adminApiClient.products.update(id, {
-              images: [...(validatedData.images ?? []), ...uploadedUrls],
+            await api.PUT("/products/{id}", {
+              params: { path: { id } },
+              body: {
+                images: [...(validatedData.images ?? []), ...uploadedUrls],
+              } as never,
             });
           }
         } catch (e) {
@@ -206,16 +235,17 @@ export async function deleteProductAction(id: string) {
   }
   try {
     await requireAuth();
-    const success = await adminApiClient.products.delete(id);
-
     const t = await getTranslations("errors");
-    if (!success) {
+    const { error: deleteError } = await api.DELETE("/products/{id}", {
+      params: { path: { id } },
+    });
+    if (deleteError) {
       return {
         success: false as const,
         error: t("productNotFound"),
       };
     }
-
+    const success = true;
     revalidatePath("/products");
     return { success: true, data: success };
   } catch (error) {
@@ -251,11 +281,15 @@ export async function searchProductsAction(query: string, limit = 10) {
       return { success: true as const, data: [] };
     }
 
-    const res = await adminApiClient.products.list({
-      search: cleanQuery,
-      limit,
+    const { data: listRes } = await api.GET("/products", {
+      params: {
+        query: {
+          search: cleanQuery,
+          limit,
+        },
+      },
     });
-    const data = "items" in res ? res.items : Array.isArray(res) ? res : [];
+    const data = listRes?.data ?? [];
 
     return { success: true as const, data };
   } catch (error) {

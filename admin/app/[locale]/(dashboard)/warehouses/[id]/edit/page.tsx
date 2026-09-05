@@ -4,9 +4,10 @@ import {
   WarehouseForm,
   WarehouseHeader,
 } from "@/features/warehouses/components";
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
+import type { Metadata } from "next";
 
 export const generateStaticParams = () => {
   return []; // SSR for edit pages
@@ -16,7 +17,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "AdminWarehouseForm" });
@@ -33,7 +34,10 @@ export default async function EditWarehousePage({
 }) {
   const { id } = await params;
 
-  const warehouse = await adminApiClient.warehouses.getById(id);
+  const { data: res } = await api.GET("/warehouses/{id}", {
+    params: { path: { id } },
+  });
+  const warehouse = res?.data;
   if (!warehouse) {
     notFound();
   }

@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/sonner";
 import { isCloudinaryUrl } from "@/shared/utils";
-import type { AdminProduct } from "@/lib/api-client";
+import type { AdminProduct } from "@/types/api";
 import { searchProductsAction } from "@/features/products/actions";
 import { useQuoteDraftStore } from "../stores/quote-draft.store";
 

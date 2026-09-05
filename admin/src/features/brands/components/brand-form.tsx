@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { AdminBrand } from "@/lib/api-client";
+import type { AdminBrand } from "@/types/api";
 import { isCloudinaryUrl } from "@/shared/utils";
 
 import { type CreateBrandInput, createBrandSchema } from "@/shared/validators";

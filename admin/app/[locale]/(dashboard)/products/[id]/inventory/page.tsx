@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import { notFound } from "next/navigation";
 import { ProductHeader } from "@/features/products/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
@@ -19,13 +19,19 @@ export default async function ProductInventoryPage({
 }) {
   const { id } = await params;
 
-  const [product, t, tNav, warehouses, warehouseStocks] = await Promise.all([
-    adminApiClient.products.getById(id),
-    getTranslations("AdminInventory"),
-    getTranslations("AdminDashboard.nav"),
-    adminApiClient.warehouses.list(), // Needs getAll or similar in warehouseService
-    adminApiClient.warehouses.getProductStock(id),
-  ]);
+  const [productRes, t, tNav, warehousesRes, warehouseStocksRes] =
+    await Promise.all([
+      api.GET("/products/{id}", { params: { path: { id } } }),
+      getTranslations("AdminInventory"),
+      getTranslations("AdminDashboard.nav"),
+      api.GET("/warehouses"),
+      api.GET("/warehouses/stock/product/{productId}", {
+        params: { path: { productId: id } },
+      }),
+    ]);
+  const product = productRes.data?.data;
+  const warehouses = warehousesRes.data?.data ?? [];
+  const warehouseStocks = warehouseStocksRes.data?.data ?? [];
 
   if (!product) {
     notFound();

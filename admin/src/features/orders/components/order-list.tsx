@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, Eye } from "lucide-react";
 import { orderStatusEnum } from "@/shared/constants";
-import type { AdminOrder } from "@/lib/api-client";
+import type { AdminOrder } from "@/types/api";
 
 interface OrderListProps {
   orders: AdminOrder[];

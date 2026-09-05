@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { AdminProduct } from "@/lib/api-client";
+import type { AdminProduct } from "@/types/api";
 
 export interface AdminQuoteDraftItem {
   id: string; // Client-side unique row identifier

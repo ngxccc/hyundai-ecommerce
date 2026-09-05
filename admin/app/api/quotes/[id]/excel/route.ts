@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { HTTP_STATUS } from "@/shared/constants";
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import { requireAuth } from "@/shared/lib/action-auth";
 
 export async function GET(
@@ -11,25 +11,27 @@ export async function GET(
     await requireAuth();
     const { id } = await params;
 
-    const backendRes = await adminApiClient.quotes.exportExcel(id);
-    if (!backendRes.ok) {
+    const { response } = await api.GET("/quotes/{id}/export-excel", {
+      params: { path: { id } },
+      parseAs: "arrayBuffer",
+    });
+    if (!response.ok) {
       return NextResponse.json(
         {
           success: false,
           error: {
-            status: backendRes.status,
+            status: response.status,
             detail: "Quote Excel export failed",
           },
         },
-        { status: backendRes.status },
+        { status: response.status },
       );
     }
 
-    const buffer = await backendRes.arrayBuffer();
+    const buffer = await response.arrayBuffer();
     const disposition =
-      backendRes.headers.get("content-disposition") ??
+      response.headers.get("content-disposition") ??
       `attachment; filename="Bao-Gia-Hyundai-${id.slice(0, 8)}.xlsx"`;
-
     return new NextResponse(buffer, {
       status: HTTP_STATUS.OK,
       headers: {

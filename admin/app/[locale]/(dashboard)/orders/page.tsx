@@ -1,14 +1,13 @@
 import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { OrderList } from "@/features/orders/components";
-import {
-  adminApiClient,
-  orderStatusEnum,
-  type AdminOrder,
-} from "@/lib/api-client";
+import { api } from "@/lib/api-client";
+import { orderStatusEnum } from "@/shared/constants";
+import type { AdminOrder } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
+import type { Metadata } from "next";
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -18,7 +17,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "AdminDashboard.nav" });
@@ -54,15 +53,12 @@ export default async function AdminOrdersPage({
       : undefined;
 
   // Fetch filtered orders
-  const ordersRes = await adminApiClient.orders.list(
-    status ? { status } : undefined,
-  );
-  const orders: AdminOrder[] =
-    "items" in ordersRes
-      ? ordersRes.items
-      : Array.isArray(ordersRes)
-        ? ordersRes
-        : [];
+  const { data: ordersRes } = await api.GET("/orders", {
+    params: {
+      query: status ? { status: status as never } : undefined,
+    },
+  });
+  const orders: AdminOrder[] = ordersRes?.data?.items ?? [];
 
   // In-memory search filtering (ID, user name, email, company)
   const filteredOrders = search

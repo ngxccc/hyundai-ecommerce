@@ -3,10 +3,12 @@ import {
   WarehouseGrid,
 } from "@/features/warehouses/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
+import type { AdminWarehouse } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
+import type { Metadata } from "next";
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -16,7 +18,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "AdminDashboard.nav" });
@@ -33,7 +35,8 @@ export default async function AdminWarehousesPage({
 }) {
   const tNav = await getTranslations("AdminDashboard.nav");
   const tHeader = await getTranslations("AdminWarehouses.header");
-  const warehouses = await adminApiClient.warehouses.list();
+  const { data: res } = await api.GET("/warehouses");
+  const warehouses: AdminWarehouse[] = res?.data ?? [];
 
   const resolvedSearchParams = await searchParams;
   const search =

@@ -2,7 +2,7 @@
 
 import { cookies, headers } from "next/headers";
 import { checkRateLimitWithQueue } from "@/shared/lib/rate-limiter";
-import { adminApiClient, ApiClientError } from "@/lib/api-client";
+import { api, ApiClientError } from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
 import { adminLoginSchema, type AdminLoginForm } from "@/shared/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
@@ -41,18 +41,26 @@ export const adminLoginAction = async (data: AdminLoginForm) => {
   }
 
   try {
-    const res = await adminApiClient.auth.login(parsed.data);
-    const cookieStore = await cookies();
-
-    cookieStore.set("adminAccessToken", res.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 900,
+    const { data: res, error } = await api.POST("/auth/login", {
+      body: parsed.data,
     });
 
-    cookieStore.set("adminRefreshToken", res.refreshToken, {
+    if (error || !res.data) {
+      const errorDetail =
+        error && typeof error === "object" && "detail" in error
+          ? (error as { detail?: string }).detail
+          : undefined;
+      return {
+        success: false as const,
+        error:
+          errorDetail ?? "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.",
+      };
+    }
+
+    const loginData = res.data;
+    const cookieStore = await cookies();
+
+    cookieStore.set("adminAccessToken", loginData.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -60,14 +68,22 @@ export const adminLoginAction = async (data: AdminLoginForm) => {
       maxAge: 604800,
     });
 
+    cookieStore.set("adminRefreshToken", loginData.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 2592000,
+    });
+
     cookieStore.set(
       "adminUser",
       encodeURIComponent(
         JSON.stringify({
-          id: res.user.id,
-          email: res.user.email,
-          name: res.user.fullName,
-          role: res.user.role,
+          id: loginData.user.id,
+          email: loginData.user.email,
+          fullName: loginData.user.fullName,
+          role: loginData.user.role,
         }),
       ),
       {
@@ -79,7 +95,7 @@ export const adminLoginAction = async (data: AdminLoginForm) => {
       },
     );
 
-    return { success: true as const, data: res };
+    return { success: true as const, data: loginData };
   } catch (error) {
     const t = await getTranslations("errors");
     console.error("[adminLoginAction]", error);

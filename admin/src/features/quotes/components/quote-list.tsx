@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, Eye } from "lucide-react";
 import { quoteStatusEnum } from "@/shared/constants";
-import type { AdminQuote } from "@/lib/api-client";
+import type { AdminQuote } from "@/types/api";
 import { formatCurrency } from "@/shared/lib/utils";
 
 interface QuoteListProps {

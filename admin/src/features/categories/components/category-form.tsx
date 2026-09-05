@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { AdminCategory } from "@/lib/api-client";
+import type { AdminCategory } from "@/types/api";
 import {
   type CreateCategoryInput,
   createCategorySchema,

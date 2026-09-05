@@ -25,7 +25,7 @@ import {
   Undo2,
   CheckCircle2,
 } from "lucide-react";
-import type { AdminOrder } from "@/lib/api-client";
+import type { AdminOrder } from "@/types/api";
 import { updateOrderStatusAction, verifyCashPaymentAction } from "../actions";
 import type { UserRole } from "@/shared/lib/action-auth";
 import {

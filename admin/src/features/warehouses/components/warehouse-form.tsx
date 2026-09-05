@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { AdminWarehouse } from "@/lib/api-client";
+import type { AdminWarehouse } from "@/types/api";
 import {
   type CreateWarehouseInput,
   createWarehouseSchema,

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import {
   createBrandSchema,
   updateBrandSchema,
@@ -53,7 +53,15 @@ export const createBrandAction = async (formData: FormData) => {
       }
     }
 
-    const brandData = await adminApiClient.brands.create(validatedData);
+    const { data: createRes, error: createError } = await api.POST("/brands", {
+      body: validatedData as never,
+    });
+    if (createError || !createRes.data) {
+      const errorMsg =
+        createError && "detail" in createError ? createError.detail : undefined;
+      throw new Error(errorMsg ?? "Failed to create brand");
+    }
+    const brandData = createRes.data;
 
     // Background Image Upload
     if (brandData.id && logoFile) {
@@ -61,7 +69,10 @@ export const createBrandAction = async (formData: FormData) => {
         try {
           const url = await uploadToCloudinary(logoFile, "brands");
           if (url) {
-            await adminApiClient.brands.update(brandData.id, { logo: url });
+            await api.PUT("/brands/{id}", {
+              params: { path: { id: brandData.id } },
+              body: { logo: url },
+            });
           }
         } catch (e) {
           console.error("[Background Brand Logo Upload Failed]", e);
@@ -124,7 +135,19 @@ export async function updateBrandAction(id: string, formData: FormData) {
       }
     }
 
-    const updatedBrand = await adminApiClient.brands.update(id, validatedData);
+    const { data: updateRes, error: updateError } = await api.PUT(
+      "/brands/{id}",
+      {
+        params: { path: { id } },
+        body: validatedData as never,
+      },
+    );
+    if (updateError || !updateRes.data) {
+      const errorMsg =
+        updateError && "detail" in updateError ? updateError.detail : undefined;
+      throw new Error(errorMsg ?? "Failed to update brand");
+    }
+    const updatedBrand = updateRes.data;
 
     // Background Tasks: Image Upload
     if (logoFile) {
@@ -132,7 +155,10 @@ export async function updateBrandAction(id: string, formData: FormData) {
         try {
           const url = await uploadToCloudinary(logoFile, "brands");
           if (url) {
-            await adminApiClient.brands.update(id, { logo: url });
+            await api.PUT("/brands/{id}", {
+              params: { path: { id } },
+              body: { logo: url },
+            });
           }
         } catch (e) {
           console.error("[Background Brand Update Upload Failed]", e);
@@ -165,7 +191,14 @@ export async function deleteBrandAction(id: string) {
   }
   try {
     await requireAuth();
-    const success = await adminApiClient.brands.delete(id);
+    const { error: deleteError } = await api.DELETE("/brands/{id}", {
+      params: { path: { id } },
+    });
+    if (deleteError) {
+      const errorMsg = "detail" in deleteError ? deleteError.detail : undefined;
+      throw new Error(errorMsg ?? "Failed to delete brand");
+    }
+    const success = true;
     revalidatePath("/brands");
     return { success: true as const, data: success };
   } catch (error) {

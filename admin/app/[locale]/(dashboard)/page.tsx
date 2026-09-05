@@ -6,7 +6,9 @@ import { RecentOrdersTable } from "@/features/dashboard/components/recent-orders
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
-import { adminApiClient, type AdminOrder } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
+import type { AdminOrder } from "@/types/api";
+import type { Metadata } from "next";
 
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
@@ -16,7 +18,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "AdminMetadata" });
@@ -40,15 +42,10 @@ export const AdminDashboard = async () => {
     }),
     Promise.resolve([]),
     Promise.resolve([]),
-    adminApiClient.orders.list(),
+    api.GET("/orders", { params: { query: { limit: 5 } } }),
   ]);
 
-  const ordersList: AdminOrder[] =
-    "items" in allOrders
-      ? allOrders.items
-      : Array.isArray(allOrders)
-        ? allOrders
-        : [];
+  const ordersList: AdminOrder[] = allOrders.data?.data?.items ?? [];
   const recentOrders = ordersList.slice(0, 5);
 
   return (

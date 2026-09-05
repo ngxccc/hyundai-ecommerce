@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
-import type { AdminCategory } from "@/lib/api-client";
+import type { AdminCategory } from "@/types/api";
 
 import { isCloudinaryUrl } from "@/shared/utils";
 

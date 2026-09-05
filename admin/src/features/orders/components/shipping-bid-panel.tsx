@@ -8,7 +8,7 @@ import {
   type AddShippingBidInput,
   addShippingBidSchema,
 } from "@/shared/validators";
-import type { AdminOrder } from "@/lib/api-client";
+import type { AdminOrder } from "@/types/api";
 
 export interface ShippingBid {
   id: string;

@@ -2,15 +2,17 @@ import { getTranslations } from "next-intl/server";
 import { ProductForm } from "@/features/products/components/product-form";
 import { ProductHeader } from "@/features/products/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 
 export default async function CreateProductPage() {
-  const [t, tNav, categories, brands] = await Promise.all([
+  const [t, tNav, categoriesRes, brandsRes] = await Promise.all([
     getTranslations("AdminProductForm"),
     getTranslations("AdminDashboard.nav"),
-    adminApiClient.categories.list(),
-    adminApiClient.brands.list(),
+    api.GET("/categories"),
+    api.GET("/brands"),
   ]);
+  const categories = categoriesRes.data?.data ?? [];
+  const brands = brandsRes.data?.data ?? [];
 
   return (
     <>

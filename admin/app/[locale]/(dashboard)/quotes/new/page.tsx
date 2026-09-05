@@ -4,12 +4,13 @@ import { QuoteComposer } from "@/features/quotes/components";
 import { requireAuth } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
+import type { Metadata } from "next";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "AdminQuotes" });

@@ -2,7 +2,7 @@ import { LoginForm } from "@/features/auth/components/login-form";
 import { routing } from "@/i18n/routing";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
-
+import type { Metadata } from "next";
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
 };
@@ -11,16 +11,14 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: Locale }>;
-}) {
+}): Promise<Metadata> {
   const resolvedParams = await params;
   const t = await getTranslations({
     locale: resolvedParams.locale,
     namespace: "Login",
   });
   return {
-    title: t.rich("title", {
-      br: () => "",
-    }),
+    title: t("title").replace(/<br\s*\/?>/gi, " "),
   };
 }
 

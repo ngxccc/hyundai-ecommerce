@@ -4,7 +4,7 @@ import { ShieldAlert } from "lucide-react";
 import { env } from "@/env";
 import type { Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
-
+import type { Metadata } from "next";
 export const generateStaticParams = () => {
   return routing.locales.map((locale) => ({ locale }));
 };
@@ -13,7 +13,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: Locale }>;
-}) {
+}): Promise<Metadata> {
   const resolvedParams = await params;
   const t = await getTranslations({
     locale: resolvedParams.locale,

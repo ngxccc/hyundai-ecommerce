@@ -22,7 +22,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { QUOTE_STATUS } from "@/shared/constants";
-import type { AdminQuote } from "@/lib/api-client";
+import type { AdminQuote } from "@/types/api";
 import {
   updateQuoteStatusAction,
   approveAndConvertToOrderAction,

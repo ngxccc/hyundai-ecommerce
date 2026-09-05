@@ -1,6 +1,6 @@
 "use server";
 
-import { adminApiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import { updateWarehouseStockSchema } from "@/shared/validators";
 import { revalidatePath } from "next/cache";
 import { AuthError } from "@/shared/lib/action-auth";
@@ -30,14 +30,14 @@ export async function setProductStockAction(data: {
 
     const validatedData = parsed.data;
 
-    const result = await adminApiClient.warehouses.updateStock(
-      validatedData.warehouseId,
-      {
+    const { data: result } = await api.PUT("/warehouses/{id}/stock", {
+      params: { path: { id: validatedData.warehouseId } },
+      body: {
         productId: validatedData.productId,
         stock: validatedData.stock ?? 0,
         minStockWarning: validatedData.minStockWarning ?? 2,
       },
-    );
+    });
 
     revalidatePath(`/products`);
     revalidatePath(`/products/${data.productId}/inventory`);

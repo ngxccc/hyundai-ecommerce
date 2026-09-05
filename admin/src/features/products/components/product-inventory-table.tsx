@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { setProductStockAction } from "../actions/inventory.actions";
-import type { AdminWarehouseStock, AdminWarehouse } from "@/lib/api-client";
+import type { AdminWarehouseStock, AdminWarehouse } from "@/types/api";
 import { Badge } from "@/components/ui/badge";
 
 interface ProductInventoryTableProps {
