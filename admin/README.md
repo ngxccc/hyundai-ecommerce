@@ -1,77 +1,134 @@
-# Hyundai Nhật Năng - Admin Portal
+<div align="center">
 
-The administrative dashboard for the Hyundai Ecommerce project, designed to manage products, orders, customers, and overall business operations.
+# Hyundai E-Commerce Admin Portal
 
-## Tech Stack
+### Enterprise Backoffice Management System for Industrial Power Equipment & B2B Quotations
 
-This application is built with a modern, high-performance web stack:
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Next.js](https://img.shields.io/badge/Next.js-16.1-000000?logo=next.js&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![Bun](https://img.shields.io/badge/Bun-1.4-000000?logo=bun&logoColor=white)](https://bun.sh)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+[![Radix UI](https://img.shields.io/badge/Radix_UI-Components-161618?logo=radix-ui&logoColor=white)](https://www.radix-ui.com)
+[![next-intl](https://img.shields.io/badge/next--intl-i18n-38A169)](https://next-intl-docs.vercel.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-- **Framework**: [Next.js](https://nextjs.org/) (App Router)
-- **Language**: TypeScript
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Internationalization (i18n)**: [next-intl](https://next-intl-docs.vercel.app/)
-- **Package Manager**: [Bun](https://bun.sh/)
+</div>
 
-## Monorepo Context
+---
 
-This application is part of a larger Turborepo monorepo. It relies on shared packages located in the `packages/` directory for database schemas, ESLint configurations, and TypeScript configurations.
+## Architectural Highlights
 
-## Folder Structure
+- **Server-First Next.js 16 Architecture**: Leverages React Server Components (RSC), Next.js Server Actions, and granular streaming boundaries (`Suspense`) for ultra-fast dashboard initialization.
+- **Contract-Driven API Integration**: Direct zero-overhead API communication powered by `openapi-fetch` (`api.METHOD`) with compile-time DTO schemas in `src/types/api.ts` synchronized directly from the backend OpenAPI contract.
+- **B2B Industrial Quotation Management**: Full-featured quote negotiation suite supporting live margin adjustments, approval workflows, DIN/ISO-compliant B2B print documents, and Excel quote exports (`exceljs`).
+- **Catalog & Inventory Operations**: Multi-tiered product management with specification matrices, multi-image Cloudinary media galleries, quote-only flags, and multi-warehouse stock adjustments.
+- **Strict Server-Only API Boundaries**: All mutations and sensitive API calls execute exclusively through Server Actions and Server Components; no client credentials or raw tokens leak to the browser bundle.
+- **Type-Safe Dynamic Metadata & i18n**: Type-checked internationalization (`vi` & `en`) via `next-intl` with automated message key compilation and dynamic metadata generation (`Promise<Metadata>`) across all dashboard routes.
+- **Strict Zod Environment Validation**: Runtime configuration verified during boot via `@t3-oss/env-nextjs` to catch missing or malformed variables immediately.
 
-The application follows a feature-based folder structure inside the `src/` directory to keep code modular and maintainable:
+---
+
+## System Architecture
 
 ```text
-apps/admin/
-├── app/                  # Next.js App Router (Layouts, Pages, Metadata)
-│   └── [locale]/         # i18n dynamic route segment for all pages
-├── messages/             # Translation files (vi.json, en.json)
+admin/
+├── app/                  # Next.js App Router (Layouts, Pages & Metadata)
+│   └── [locale]/         # Dynamic locale segment (vi / en)
+│       ├── (auth)/       # Authentication views (Login, Session verify)
+│       └── (dashboard)/  # Protected backoffice routes
+│           ├── products/ # Product catalog management
+│           ├── quotes/   # B2B quotation negotiation & print view
+│           ├── orders/   # Order processing & invoice generation
+│           ├── stock/    # Inventory & warehouse batch tracking
+│           └── ...
+├── messages/             # i18n translation dictionaries (vi.json, en.json)
 ├── src/
-│   ├── features/         # Feature-based modules (e.g., dashboard, products)
-│   │   ├── dashboard/    # Components and logic specific to the Dashboard
-│   │   └── products/     # Components and logic specific to Products management
-│   ├── i18n/             # i18n routing and configuration setup
-│   └── shared/           # Shared components, hooks, config, and utilities
-│       ├── components/ui/# shadcn/ui components
-│       ├── lib/          # Utility functions (e.g., cn wrapper)
-│       └── styles/       # Global CSS (Tailwind)
+│   ├── features/         # Feature-sliced modules (components, actions, schemas)
+│   ├── lib/              # API client (`api` via openapi-fetch), utilities
+│   ├── types/            # DTO type definitions (`api.ts`, `api-schema.d.ts`)
+│   ├── shared/           # Reusable UI components, hooks, and services
+│   └── env.ts            # T3 Env validation schema
+├── docs/                 # Engineering standards & operational guides
+└── .github/              # Standalone Polyrepo-Ready CI/CD workflows
 ```
 
-## Getting Started
+---
 
-Since this is a workspace in a monorepo, you can start the development server from the root of the project using Turborepo filters:
+## Quickstart
+
+### Prerequisites
+
+- **Bun** `v1.4+`
+- **Backend API Service** running at `http://localhost:3000` (or staging backend)
+- **Doppler CLI** (Optional, for managing environment secrets)
+
+### Setup & Run
 
 ```bash
-# Run only the admin app
-bun --filter=admin run dev
+# 1. Install dependencies
+bun install
 
-# Or run all apps in the monorepo
+# 2. Synchronize OpenAPI DTO types from Backend
+bun run types:pull
+
+# 3. Generate i18n type definitions
+bun run typegen:i18n
+
+# 4. Start development server (Port 3002)
 bun run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) (or whichever port is assigned) with your browser to see the result.
+Open [http://localhost:3002](http://localhost:3002) in your browser.
 
-## Key Architecture Rules
+---
 
-- **Feature-Driven Architecture**: Business logic and components are grouped by feature in `src/features/` rather than by file type.
-- **Server Components by Default**: Next.js App Router favors Server Components. Use `"use client"` only at the leaf nodes (for interactivity and client-side hooks).
-- **Hardcoded Text is Forbidden**: All visible text MUST be translated using `next-intl`. Use `useTranslations("Namespace")` for client components and `getTranslations()` for server components and metadata.
-- **UI Components**: Always use or build upon `shadcn/ui` components located in `src/shared/components/ui`. Avoid writing raw HTML tags (`<button>`, `<select>`, etc.) for standard UI elements.
+## Environment Configuration
 
-## Internationalization (i18n)
+Validated at startup via `@t3-oss/env-nextjs` (`src/env.ts`):
 
-The application fully supports multiple languages (currently Vietnamese `vi` and English `en`).
+| Variable                            | Scope  | Required | Default                 | Purpose                                            |
+| :---------------------------------- | :----: | :------: | :---------------------- | :------------------------------------------------- |
+| `PORT`                              | Server |    No    | `3002`                  | Local dev server port                              |
+| `NODE_ENV`                          | Server |    No    | `development`           | Runtime mode (`development`, `production`, `test`) |
+| `BACKEND_API_URL`                   | Server |    No    | `http://127.0.0.1:3000` | Target URL for backend REST API calls              |
+| `CLOUDINARY_API_KEY`                | Server | **Yes**  | _None_                  | Cloudinary credentials for media upload            |
+| `CLOUDINARY_API_SECRET`             | Server | **Yes**  | _None_                  | Cloudinary signing secret                          |
+| `NEXT_PUBLIC_APP_URL`               | Client |    No    | `http://localhost:3002` | Canonical URL of the Admin Portal                  |
+| `NEXT_PUBLIC_STOREFRONT_URL`        | Client |    No    | `http://localhost:3001` | URL of the Customer Storefront                     |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Client | **Yes**  | _None_                  | Cloudinary cloud bucket name                       |
 
-- Translation JSONs are located in `/messages`.
-- Routes are wrapped in the `[locale]` dynamic segment.
-- Metadata is dynamically generated per-page using `next-intl/server` `getTranslations`.
-- For client-side navigation, use the custom `Link` component from `@/i18n/routing` instead of `next/link` to automatically handle locale prefixes.
+---
 
-## Deployment
-
-The application is optimized to be deployed on Vercel as a Next.js App. Run the build command from the root using Turbo:
+## Available Scripts
 
 ```bash
-bun run build
+# Development & Build
+bun run dev              # Start dev server on port 3002 with Doppler
+bun run build            # Compile production Next.js build
+bun run start            # Launch compiled production server
+
+# Quality & Verification
+bun run check-types      # Validate TypeScript types (tsc --noEmit)
+bun run lint             # Run ESLint with auto-fix and caching
+bun run test             # Execute unit test suites (bun test)
+
+# Contract & Code Generation
+bun run types:pull       # Pull and generate api-schema.d.ts from backend
+bun run typegen:i18n     # Generate type declarations for next-intl messages
 ```
+
+---
+
+## Architecture & Engineering Standards
+
+- **Architecture Principles**: Deep module design & component boundaries in [`docs/standards/code-architecture-and-design-principles.md`](docs/standards/code-architecture-and-design-principles.md).
+- **Testing Standards**: Test isolation and fixtures in [`docs/standards/testing-and-fixtures.md`](docs/standards/testing-and-fixtures.md).
+- **Security & Tokens**: Safe token storage and sanitization in [`docs/standards/security-and-cryptography.md`](docs/standards/security-and-cryptography.md).
+- **Git Flow & PR Matrix**: Conventional commits and review in [`docs/standards/git-flow-and-pr-matrix.md`](docs/standards/git-flow-and-pr-matrix.md).
+
+---
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for details.
