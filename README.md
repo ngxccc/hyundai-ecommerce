@@ -1,142 +1,125 @@
-# Hyundai Ecommerce
+<div align="center">
 
-## B2B Industrial Equipment E-Commerce Platform
+# Hyundai E-Commerce Platform
 
-A modern, enterprise-grade B2B e-commerce platform specializing in heavy machinery, industrial power generators (Hyundai, Cummins, Perkins, etc.), and emergency power systems. Built with complex Request for Quotation (RFQ) negotiation, multi-warehouse stock management, and high-concurrency order settlement.
+### Enterprise B2B & B2C Industrial Power Equipment & Quotation Negotiation System
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![NestJS](https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com)
-[![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
-[![Bun](https://img.shields.io/badge/Bun-000000?logo=bun&logoColor=white)](https://bun.sh)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B67F?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org)
-[![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)](https://redis.io)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![NestJS](https://img.shields.io/badge/NestJS-11.2-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com)
+[![Next.js](https://img.shields.io/badge/Next.js-16.1-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![Bun](https://img.shields.io/badge/Bun-1.4-000000?logo=bun&logoColor=white)](https://bun.sh)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-316192?logo=postgresql&logoColor=white)](https://www.postgresql.org)
+[![Redis](https://img.shields.io/badge/Redis-8.0-DC382D?logo=redis&logoColor=white)](https://redis.io)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.3-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Scalar API Docs](https://img.shields.io/badge/Scalar_UI-OpenAPI_3.1-00B4D8)](https://scalar.com)
+[![Sentry](https://img.shields.io/badge/Sentry-Observability-362D59?logo=sentry&logoColor=white)](https://sentry.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+</div>
 
 ---
 
-## Live Services & Endpoints
+## Overview
 
-- **Customer Storefront**: [https://hyundainhatnang.ngxc.io.vn](https://hyundainhatnang.ngxc.io.vn)
-- **Backoffice Admin Portal**: [https://admin.hyundainhatnang.ngxc.io.vn](https://admin.hyundainhatnang.ngxc.io.vn)
-- **REST API & Interactive Docs**: [https://api.hyundainhatnang.ngxc.io.vn/api/docs](https://api.hyundainhatnang.ngxc.io.vn/api/docs) (Scalar UI)
+**Hyundai E-Commerce** is a modern, enterprise-grade industrial machinery e-commerce and B2B Request for Quotation (RFQ) platform. Built specifically for high-value power equipment (three-phase diesel generators, agricultural machinery, industrial water pumps, and emergency backup power solutions), the system features dynamic multi-tier quotation workflows, warehouse batch stock tracking, PayOS payment integration, and high-concurrency order settlement.
+
+---
+
+## Live Services & Port Matrix
+
+| Service                 | Technology              | Local Port | Production URL                                                                    | Description                                              |
+| :---------------------- | :---------------------- | :--------: | :-------------------------------------------------------------------------------- | :------------------------------------------------------- |
+| **REST API Server**     | NestJS 11 + Drizzle ORM |  `:3000`   | [api.hyundainhatnang.ngxc.io.vn](https://api.hyundainhatnang.ngxc.io.vn/api/docs) | Core backend, database queries, and OpenAPI contract     |
+| **Customer Storefront** | Next.js 16 (App Router) |  `:3001`   | [hyundainhatnang.ngxc.io.vn](https://hyundainhatnang.ngxc.io.vn)                  | Customer catalog, quote submission, and shopping cart    |
+| **Admin Portal**        | Next.js 16 (App Router) |  `:3002`   | [admin.hyundainhatnang.ngxc.io.vn](https://admin.hyundainhatnang.ngxc.io.vn)      | Backoffice dashboard, quote approvals, orders, inventory |
 
 ---
 
 ## Architecture Overview
 
-The repository adopts a **Decoupled Standalone Multi-Application Architecture**. All applications reside at the root level as independent projects with their own dependencies, configuration files, and build pipelines:
+The repository adopts a **Decoupled Standalone Multi-Application Architecture (Polyrepo-Ready)**. Each package operates independently with its own configuration, dependencies, test runner, and localized `.github/` workflows:
 
 ```text
 .
-├── backend/            # Standalone NestJS REST API Server
-│   ├── src/modules/    # Domain modules (auth, catalog, quotes, orders, payments, warehouse, etc.)
-│   ├── openapi.json    # OpenAPI 3.1.0 Contract Specification
-│   └── package.json    # NestJS dependencies & test runner
+├── backend/            # NestJS 11 REST API Service
+│   ├── src/modules/    # Domain modules (catalog, quotes, orders, warehouse, etc.)
+│   ├── openapi.json    # OpenAPI 3.1.0 Contract Specification (Single Source of Truth)
+│   ├── docs/standards/ # 11 Full Operational Engineering Standards
+│   └── .github/        # Independent CI/CD (Postgres/Redis services, Render release)
 │
-├── storefront/         # Standalone Next.js 16 Customer & B2B RFQ Portal
-│   ├── app/            # App Router (i18n, products, quote submission)
-│   ├── src/lib/        # Typed REST API client communicating with backend
-│   └── package.json    # Storefront dependencies
+├── admin/              # Next.js 16 Backoffice Admin Dashboard
+│   ├── app/[locale]/   # App Router (Dashboard, Products, Quotes, Orders, Stock)
+│   ├── src/lib/        # Zero-overhead typed client (`api` via openapi-fetch)
+│   ├── docs/standards/ # Frontend Engineering Standards
+│   └── .github/        # Independent CI/CD (Vercel deploy)
 │
-├── admin/              # Standalone Next.js 16 Backoffice Admin Dashboard
-│   ├── app/            # App Router (products, warehouses, quotes, orders, finance)
-│   ├── src/lib/        # Authenticated REST API client with Cookie JWT Bearer injection
-│   └── package.json    # Admin dependencies
+├── storefront/         # Next.js 16 Customer Storefront & B2B RFQ Portal
+│   ├── app/[locale]/   # App Router (Shop, Products, B2B Quote Submission, Cart)
+│   ├── src/lib/        # Typed API client with compile-time DTO schemas
+│   ├── docs/standards/ # Frontend Engineering Standards
+│   └── .github/        # Independent CI/CD (Vercel deploy)
 │
-├── docker-compose.yml  # Local infrastructure (PostgreSQL 18 & Redis 8)
-├── package.json        # Root coordination scripts
-└── .syncpackrc         # Single source of truth package.json formatting
+├── docs/standards/     # Central Engineering Standards Reference
+├── docker-compose.yml  # Local PostgreSQL 18 & Redis 8 infrastructure
+├── package.json        # Root coordination & verification scripts
+└── .github/workflows/  # Thin Monorepo CI/CD orchestrators with path filtering
 ```
 
-### Key Architectural Decisions
+### Architectural Pillars
 
-1. **Standalone Applications over Monorepo Workspaces**:
-   - Eliminates cross-package dependency cycles and workspace caching overhead.
-   - Drastically reduces Neovim/VSCode TSServer memory usage (<250MB) and ensures instant editor responsiveness.
-2. **Backend Delegation**:
-   - Frontend applications (`storefront`, `admin`) are thin consumers of backend REST API endpoints.
-   - Database operations (Drizzle ORM, migrations, ACID transactions, Redlock distributed locking) are encapsulated exclusively within `backend/`.
-3. **OpenAPI as Single Source of Truth**:
-   - Backend exposes OpenAPI 3.1 schema at `/openapi.json` and interactive documentation with Scalar at `/api/docs`.
-4. **B2B RFQ Negotiation Engine**:
-   - Industrial generators and heavy equipment are sold via multi-round quote negotiations rather than direct retail cart checkout.
-   - Supports live negotiation messaging, agreed price adjustments, and one-click approval to commercial orders.
-
----
-
-## Tech Stack
-
-- **Backend Service**:
-  - NestJS 11 + Fastify adapter
-  - Drizzle ORM + PostgreSQL 18
-  - Redis 8 + Redlock distributed locking
-  - OpenAPI 3.1.0 + Scalar API Reference
-- **Frontend Applications**:
-  - Next.js 16 (React 19, Server Components, Server Actions)
-  - Tailwind CSS v4 + Radix UI components
-  - Next-Intl (Vietnamese primary, English secondary)
-  - Zustand (Client-side quote state management)
-- **Infrastructure & Tooling**:
-  - Runtime: Bun v1.3+
-  - Local Database & Cache: Docker Compose (PostgreSQL 18-alpine, Redis 8-alpine)
-  - Formatting & Linting: ESLint v9 (flat config), Prettier with Tailwind plugin, Syncpack
+1. **Decoupled Standalone Applications**:
+   - Zero workspace cyclic dependencies or compile-time coupling.
+   - Ultra-fast LSP / TSServer response times (<200MB memory footprint).
+   - Effortless zero-rework separation into 3 independent Git repositories whenever desired.
+2. **Backend Delegation & Pure Single Source of Truth**:
+   - Frontend applications (`admin`, `storefront`) act as pure API consumers without database dependencies.
+   - Database operations (PostgreSQL, Drizzle ORM, ACID transactions, Redis Redlock) live strictly inside `backend/`.
+3. **Contract-Driven API (OpenAPI 3.1 & Scalar)**:
+   - Backend exports `backend/openapi.json` and serves live interactive docs at `/api/docs`.
+   - Dual-mode type synchronization: offline `bun run types:sync` at root, or standalone `bun run types:pull` in each frontend.
+4. **B2B Industrial Quotation Engine**:
+   - High-value industrial machinery is sold via quote negotiation (`REQUESTED` → `REVIEWING` → `APPROVED` → `REJECTED` → `EXPIRED`).
+   - DIN/ISO-compliant B2B commercial print documents and Excel export (`exceljs`).
 
 ---
 
-## Getting Started
+## Quickstart
 
 ### Prerequisites
 
-- **Bun**: v1.3.6 or later (`curl -fsSL https://bun.sh/install | bash`)
-- **Docker & Docker Compose**: For local PostgreSQL and Redis
+- **Bun** `v1.4+` (`curl -fsSL https://bun.sh/install | bash`)
+- **Docker & Docker Compose** (PostgreSQL 18, Redis 8)
+- **Doppler CLI** (Optional, for production secrets management)
 
-### 1. Start Local Infrastructure
-
-Start PostgreSQL and Redis containers in the background:
+### 1. Launch Local Infrastructure
 
 ```bash
-# Using root script
+# Start PostgreSQL 18 and Redis 8 containers
 bun run docker:up
-
-# Or via docker compose directly
-docker compose up -d
 ```
 
 ### 2. Install Dependencies
 
-Install dependencies across all applications:
-
 ```bash
-# Root utilities
-bun install
-
-# Backend API
-cd backend && bun install && cd ..
-
-# Storefront App
-cd storefront && bun install && cd ..
-
-# Admin App
-cd admin && bun install && cd ..
+# Install dependencies across all packages in one command
+bun run install:all
 ```
 
-### 3. Database Migration & Seed
-
-Initialize schemas and seed data for the backend:
+### 3. Initialize Database & Seed Fixtures
 
 ```bash
 cd backend
-bun run db:migrate
-bun run db:seed
+bun run db:migrate dev
+bun run db:seed dev
 cd ..
 ```
 
-### 4. Launch Development Servers
+### 4. Run Development Servers
 
-Run applications independently using convenience root scripts:
+Run services simultaneously in separate terminals:
 
 ```bash
-# Terminal 1: Backend REST API (http://localhost:3000 | Docs: http://localhost:3000/api/docs)
+# Terminal 1: Backend API (http://localhost:3000 | Docs: http://localhost:3000/api/docs)
 bun run dev:backend
 
 # Terminal 2: Customer Storefront (http://localhost:3001)
@@ -148,20 +131,64 @@ bun run dev:admin
 
 ---
 
+## Contract-Driven Type Synchronization
+
+When backend APIs, DTOs, or routes are modified:
+
+```bash
+# Option A: Monorepo Mode (Offline, generates openapi.json and syncs types across packages)
+bun run types:sync
+
+# Option B: Polyrepo Mode (Run inside admin or storefront to pull schema from running API)
+cd admin && bun run types:pull
+cd storefront && bun run types:pull
+```
+
+---
+
 ## Root Orchestration Scripts
 
-The root `package.json` provides scripts to manage all 3 applications:
+The root `package.json` provides scripts to coordinate all 3 applications:
 
-| Command                    | Description                                                      |
-| :------------------------- | :--------------------------------------------------------------- |
-| `bun run dev:backend`      | Starts the NestJS backend in hot-reload development mode         |
-| `bun run dev:storefront`   | Starts the Next.js storefront portal                             |
-| `bun run dev:admin`        | Starts the Next.js admin dashboard                               |
-| `bun run check-types`      | Executes TypeScript typecheck (`tsc --noEmit`) across all 3 apps |
-| `bun run lint`             | Runs strict ESLint checks across all 3 apps                      |
-| `bun run test`             | Executes unit test suites in storefront and admin                |
-| `bun run test:backend`     | Executes backend unit and integration test suites                |
-| `bun run format:pkg`       | Formats and alphabetizes all `package.json` files using Syncpack |
-| `bun run format:pkg:check` | Verifies `package.json` formatting compliance (CI gate)          |
-| `bun run docker:up`        | Starts local PostgreSQL and Redis containers                     |
-| `bun run docker:down`      | Stops local containers                                           |
+| Script                   | Purpose                                                            |
+| :----------------------- | :----------------------------------------------------------------- |
+| `bun run dev:backend`    | Starts the NestJS API server with live watch mode (Port 3000)      |
+| `bun run dev:storefront` | Starts the Customer Storefront dev server (Port 3001)              |
+| `bun run dev:admin`      | Starts the Backoffice Admin dev server (Port 3002)                 |
+| `bun run check-types`    | Typechecks all 3 applications in sequence (`tsc --noEmit`)         |
+| `bun run lint`           | Runs strict ESLint analysis across all 3 applications              |
+| `bun run test`           | Executes unit and integration tests across all packages            |
+| `bun run test:backend`   | Runs NestJS backend unit tests                                     |
+| `bun run types:sync`     | Generates `openapi.json` and updates TypeScript schema definitions |
+| `bun run format:pkg`     | Formats and alphabetizes all `package.json` files via Syncpack     |
+| `bun run docker:up`      | Starts local PostgreSQL 18 and Redis 8 Docker containers           |
+| `bun run docker:down`    | Stops and tears down local Docker containers                       |
+
+---
+
+## CI/CD & Deployment Architecture
+
+- **Quality Gate (`.github/workflows/ci.yml`)**: Triggered on pull requests to `main`. Runs typecheck, linting, tests, and production build across all packages. Automatically ignores documentation files (`**/*.md`, `docs/**`).
+- **Continuous Deployment (CD)**:
+  - **Backend (`.github/workflows/backend.yml`)**: Monitored via `paths-filter`. Deploys database migrations via Doppler and triggers Render production webhook.
+  - **Admin & Storefront (`admin.yml`, `storefront.yml`)**: Monitored via `paths-filter`. Compiles and releases prebuilt production artifacts to Vercel.
+  - **Zero-Noise Documentation Filtering**: All CD deploy pipelines strictly exclude markdown and documentation changes (`paths-ignore` & `!**/*.md`), preventing unintended deployments on doc edits.
+
+---
+
+## Architecture & Engineering Standards
+
+Operational standards are maintained in [`docs/standards/`](docs/standards/) and localized within each package's `docs/standards/`:
+
+- **Database & Migrations**: Schema rules & Drizzle practices in [`docs/standards/database-and-migrations.md`](docs/standards/database-and-migrations.md).
+- **Concurrency & Locking**: Pessimistic locks & Redlock in [`docs/standards/concurrency-and-locking.md`](docs/standards/concurrency-and-locking.md).
+- **API Design & Errors**: REST conventions & RFC 9457 errors in [`docs/standards/api-design-and-error-handling.md`](docs/standards/api-design-and-error-handling.md).
+- **Architecture Principles**: Module depth & DRY/AHA balance in [`docs/standards/code-architecture-and-design-principles.md`](docs/standards/code-architecture-and-design-principles.md).
+- **Testing & Fixtures**: Isolation and test fixtures in [`docs/standards/testing-and-fixtures.md`](docs/standards/testing-and-fixtures.md).
+- **Git Flow & PR Matrix**: Conventional Commits & code reviews in [`docs/standards/git-flow-and-pr-matrix.md`](docs/standards/git-flow-and-pr-matrix.md).
+
+---
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for details.

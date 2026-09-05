@@ -3,6 +3,11 @@ name: Admin App CD
 on:
   push:
     branches: ["main"]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
   workflow_dispatch:
 
 permissions:
@@ -25,6 +30,8 @@ jobs:
           filters: |
             admin:
               - "admin/**"
+              - "!admin/**/*.md"
+              - "!admin/docs/**"
               - ".github/workflows/admin.yml"
 
   deploy:

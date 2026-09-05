@@ -3,6 +3,11 @@ name: Backend App CD
 on:
   push:
     branches: ["main"]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
   workflow_dispatch:
 
 permissions:
@@ -25,6 +30,8 @@ jobs:
           filters: |
             backend:
               - "backend/**"
+              - "!backend/**/*.md"
+              - "!backend/docs/**"
               - ".github/workflows/backend.yml"
 
   deploy:

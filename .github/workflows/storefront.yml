@@ -3,6 +3,11 @@ name: Storefront App CD
 on:
   push:
     branches: ["main"]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
   workflow_dispatch:
 
 permissions:
@@ -25,6 +30,8 @@ jobs:
           filters: |
             storefront:
               - "storefront/**"
+              - "!storefront/**/*.md"
+              - "!storefront/docs/**"
               - ".github/workflows/storefront.yml"
 
   deploy:
