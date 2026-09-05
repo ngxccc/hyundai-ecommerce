@@ -132,14 +132,14 @@ export const approveOrderCancellationAction = async (
   }
 };
 
-export const selectShippingBidAction = (
+export const selectShippingBidAction = async (
   _orderId: string,
   _bidId: string,
 ): Promise<{ success: true } | { success: false; error: string }> => {
   return Promise.resolve({ success: true });
 };
 
-export const addShippingBidAction = (
+export const addShippingBidAction = async (
   _data: Record<string, unknown>,
 ): Promise<{ success: true } | { success: false; error: string }> => {
   return Promise.resolve({ success: true });

@@ -49,7 +49,7 @@ export async function CatalogTemplate({
     });
     const queryString = nextParams.toString();
     const targetSlug = Array.isArray(categoryQuery)
-      ? categoryQuery[0]!
+      ? categoryQuery[0]
       : categoryQuery;
     redirect({
       href: `/products/category/${targetSlug}${queryString ? `?${queryString}` : ""}`,

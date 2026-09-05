@@ -138,7 +138,7 @@ export function HeaderQuote() {
                   className="h-9 w-full rounded-md text-xs font-bold tracking-wider uppercase"
                 >
                   <Link href="/quote">
-                    {t("viewQuoteList", { count: totalCount })}
+                    {t("viewQuoteList", { count: totalCount.toString() })}
                   </Link>
                 </Button>
               </div>

@@ -12,6 +12,8 @@ export default defineConfig([
     "**/.turbo/**",
     "**/public/**",
     "src/components/ui/**",
+    "postcss.config.mjs",
+    "next.config.ts",
   ]),
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.mjs"],

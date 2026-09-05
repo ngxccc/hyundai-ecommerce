@@ -97,20 +97,20 @@ describe("computeFacets() TDD Engine", () => {
     });
 
     // All categories with products should be enabled
-    expect(result.categories["generator"]).toBe(true);
+    expect(result.categories.generator).toBe(true);
     expect(result.categories["diesel-generator"]).toBe(true);
     expect(result.categories["gas-generator"]).toBe(true);
-    expect(result.categories["pump"]).toBe(true);
+    expect(result.categories.pump).toBe(true);
 
     // All brands with products should be enabled
-    expect(result.brands["hyundai"]).toBe(true);
-    expect(result.brands["honda"]).toBe(true);
-    expect(result.brands["koala"]).toBe(true);
+    expect(result.brands.hyundai).toBe(true);
+    expect(result.brands.honda).toBe(true);
+    expect(result.brands.koala).toBe(true);
 
     // All specs with products should be enabled
-    expect(result.fuelTypes["diesel"]).toBe(true);
-    expect(result.fuelTypes["gas"]).toBe(true);
-    expect(result.fuelTypes["gasoline"]).toBe(true);
+    expect(result.fuelTypes.diesel).toBe(true);
+    expect(result.fuelTypes.gas).toBe(true);
+    expect(result.fuelTypes.gasoline).toBe(true);
 
     expect(result.phases["1phase"]).toBe(true);
     expect(result.phases["3phase"]).toBe(true);
@@ -147,9 +147,9 @@ describe("computeFacets() TDD Engine", () => {
     });
 
     // Products in diesel-generator and gas-generator are child of generator
-    expect(resultGen.brands["hyundai"]).toBe(true); // p1, p3 are generator
-    expect(resultGen.brands["honda"]).toBe(true); // p2 is generator
-    expect(resultGen.brands["koala"]).toBe(false); // p4 is pump (not generator)
+    expect(resultGen.brands.hyundai).toBe(true); // p1, p3 are generator
+    expect(resultGen.brands.honda).toBe(true); // p2 is generator
+    expect(resultGen.brands.koala).toBe(false); // p4 is pump (not generator)
 
     // 2. Filter by child category "gas-generator"
     const resultGas = computeFacets({
@@ -159,8 +159,8 @@ describe("computeFacets() TDD Engine", () => {
       activeFilters: { ...emptyFilters, categorySlug: "gas-generator" },
     });
 
-    expect(resultGas.brands["honda"]).toBe(true); // Honda has gas generator (p2)
-    expect(resultGas.brands["hyundai"]).toBe(false); // Hyundai only has diesel
+    expect(resultGas.brands.honda).toBe(true); // Honda has gas generator (p2)
+    expect(resultGas.brands.hyundai).toBe(false); // Hyundai only has diesel
   });
 
   it("should handle brand filter without disabling other brands (intra-category exemption)", () => {
@@ -173,14 +173,14 @@ describe("computeFacets() TDD Engine", () => {
 
     // Selecting Hyundai should NOT disable Honda or Koala checkboxes
     // (so the user can check multiple brands)
-    expect(result.brands["hyundai"]).toBe(true);
-    expect(result.brands["honda"]).toBe(true);
-    expect(result.brands["koala"]).toBe(true);
+    expect(result.brands.hyundai).toBe(true);
+    expect(result.brands.honda).toBe(true);
+    expect(result.brands.koala).toBe(true);
 
     // But it SHOULD filter spec options based on Hyundai products (p1, p3)
-    expect(result.fuelTypes["diesel"]).toBe(true);
-    expect(result.fuelTypes["gasoline"]).toBe(false); // Hyundai doesn't have gasoline
-    expect(result.fuelTypes["gas"]).toBe(false); // Hyundai doesn't have gas
+    expect(result.fuelTypes.diesel).toBe(true);
+    expect(result.fuelTypes.gasoline).toBe(false); // Hyundai doesn't have gasoline
+    expect(result.fuelTypes.gas).toBe(false); // Hyundai doesn't have gas
   });
 
   it("should cross-filter specification dimensions correctly", () => {
@@ -197,9 +197,9 @@ describe("computeFacets() TDD Engine", () => {
     expect(result.phases["3phase"]).toBe(true);
 
     // Brand "honda" (gas) and "koala" (gasoline) should be disabled
-    expect(result.brands["hyundai"]).toBe(true);
-    expect(result.brands["honda"]).toBe(false);
-    expect(result.brands["koala"]).toBe(false);
+    expect(result.brands.hyundai).toBe(true);
+    expect(result.brands.honda).toBe(false);
+    expect(result.brands.koala).toBe(false);
   });
 
   it("should support text search query (q) case-insensitive matching", () => {
@@ -211,9 +211,9 @@ describe("computeFacets() TDD Engine", () => {
     });
 
     // Only p3 contains "heavy" (in name)
-    expect(result.brands["hyundai"]).toBe(true); // p3 is hyundai
-    expect(result.brands["honda"]).toBe(false);
-    expect(result.brands["koala"]).toBe(false);
+    expect(result.brands.hyundai).toBe(true); // p3 is hyundai
+    expect(result.brands.honda).toBe(false);
+    expect(result.brands.koala).toBe(false);
 
     expect(result.phases["3phase"]).toBe(true);
     expect(result.phases["1phase"]).toBe(false); // p3 is 3phase
@@ -229,9 +229,9 @@ describe("computeFacets() TDD Engine", () => {
     });
 
     // Only p3 (50kW) fits
-    expect(result.brands["hyundai"]).toBe(true);
-    expect(result.brands["honda"]).toBe(false);
-    expect(result.brands["koala"]).toBe(false);
+    expect(result.brands.hyundai).toBe(true);
+    expect(result.brands.honda).toBe(false);
+    expect(result.brands.koala).toBe(false);
     expect(result.phases["3phase"]).toBe(true);
     expect(result.phases["1phase"]).toBe(false);
   });
@@ -253,14 +253,14 @@ describe("computeFacets() TDD Engine", () => {
     });
 
     // "honda" is checked, so it must stay enabled
-    expect(result.brands["honda"]).toBe(true);
+    expect(result.brands.honda).toBe(true);
     // "diesel" is checked, so it must stay enabled
-    expect(result.fuelTypes["diesel"]).toBe(true);
+    expect(result.fuelTypes.diesel).toBe(true);
 
     // Other brands (hyundai) or fuel types (gas) are computed normally
     // For "hyundai": active filter is fuelType=diesel. Hyundai has diesel products, so enabled.
-    expect(result.brands["hyundai"]).toBe(true);
+    expect(result.brands.hyundai).toBe(true);
     // For "gas": active filter is brand=honda. Honda has gas products, so enabled.
-    expect(result.fuelTypes["gas"]).toBe(true);
+    expect(result.fuelTypes.gas).toBe(true);
   });
 });

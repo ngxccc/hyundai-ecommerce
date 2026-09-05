@@ -44,9 +44,9 @@ export function ImageWithSkeleton({
       <Image
         src={src}
         alt={alt}
-        width={width!}
-        height={height!}
-        fill={fill!}
+        width={width}
+        height={height}
+        fill={fill}
         sizes={sizes}
         className={cn(
           "transition-opacity duration-300",

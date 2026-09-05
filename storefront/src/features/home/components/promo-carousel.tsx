@@ -54,17 +54,16 @@ export function PromoCarousel({ promos }: { promos: PromoCampaign[] }) {
     >
       <CarouselContent>
         {promos.map((promo) => {
-          const theme =
-            THEME_STYLES[promo.themeColor] ?? THEME_STYLES["primary"];
+          const theme = THEME_STYLES[promo.themeColor] ?? THEME_STYLES.primary;
 
           return (
             <CarouselItem key={promo.id}>
               <div
-                className={`relative flex flex-col items-center justify-between overflow-hidden rounded-2xl bg-linear-to-r p-8 md:flex-row md:p-12 ${theme?.bg}`}
+                className={`relative flex flex-col items-center justify-between overflow-hidden rounded-2xl bg-linear-to-r p-8 md:flex-row md:p-12 ${theme.bg}`}
               >
                 {/* Background blob */}
                 <div
-                  className={`pointer-events-none absolute top-0 right-0 -mt-32 -mr-32 h-64 w-64 rounded-full blur-3xl ${theme?.decoration}`}
+                  className={`pointer-events-none absolute top-0 right-0 -mt-32 -mr-32 h-64 w-64 rounded-full blur-3xl ${theme.decoration}`}
                   aria-hidden="true"
                 />
 
@@ -72,7 +71,7 @@ export function PromoCarousel({ promos }: { promos: PromoCampaign[] }) {
                 <div className="relative z-10 text-center md:text-left">
                   <Badge
                     variant="outline"
-                    className={`mb-4 border-current px-4 py-1 text-sm uppercase ${theme?.text}`}
+                    className={`mb-4 border-current px-4 py-1 text-sm uppercase ${theme.text}`}
                   >
                     {promo.badge}
                   </Badge>
@@ -82,7 +81,7 @@ export function PromoCarousel({ promos }: { promos: PromoCampaign[] }) {
                     {promo.subtitle}
                   </h2>
                   <p
-                    className={`max-w-md font-sans text-base opacity-90 md:text-lg ${theme?.text}`}
+                    className={`max-w-md font-sans text-base opacity-90 md:text-lg ${theme.text}`}
                   >
                     {promo.description}
                   </p>

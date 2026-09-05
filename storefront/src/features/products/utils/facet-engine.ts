@@ -45,10 +45,9 @@ export function computeFacets(params: ComputeFacetsParams): FacetStatus {
     const matchBrand = matchesBrands(p, selectedBrandIds);
     const matchFuel =
       activeFilters.fuelType === null ||
-      p.specs?.["fuelType"] === activeFilters.fuelType;
+      p.specs?.fuelType === activeFilters.fuelType;
     const matchPhase =
-      activeFilters.phase === null ||
-      p.specs?.["phase"] === activeFilters.phase;
+      activeFilters.phase === null || p.specs?.phase === activeFilters.phase;
     const matchBaseSpecs = matchesSpecsBase(p, activeFilters);
     const matchSearchQuery = matchesSearch(p, activeFilters.q);
 
@@ -93,8 +92,7 @@ export function computeFacets(params: ComputeFacetsParams): FacetStatus {
       return;
     }
     result.fuelTypes[f] = matchStates.some(
-      (m) =>
-        m.product.specs?.["fuelType"] === f && isMatchExcept(m, "fuelType"),
+      (m) => m.product.specs?.fuelType === f && isMatchExcept(m, "fuelType"),
     );
   });
 
@@ -104,7 +102,7 @@ export function computeFacets(params: ComputeFacetsParams): FacetStatus {
       return;
     }
     result.phases[ph] = matchStates.some(
-      (m) => m.product.specs?.["phase"] === ph && isMatchExcept(m, "phase"),
+      (m) => m.product.specs?.phase === ph && isMatchExcept(m, "phase"),
     );
   });
 
@@ -172,7 +170,7 @@ function matchesSpecsBase(
 
   const minPower = activeFilters.minPower;
   const maxPower = activeFilters.maxPower;
-  const powerVal = typeof specs["power"] === "number" ? specs["power"] : null;
+  const powerVal = typeof specs.power === "number" ? specs.power : null;
 
   if (minPower !== null && (powerVal === null || powerVal < minPower)) {
     return false;
@@ -181,15 +179,14 @@ function matchesSpecsBase(
     return false;
   }
 
-  const voltageVal =
-    typeof specs["voltage"] === "number" ? specs["voltage"] : null;
+  const voltageVal = typeof specs.voltage === "number" ? specs.voltage : null;
   if (activeFilters.voltage !== null && voltageVal !== activeFilters.voltage) {
     return false;
   }
 
   if (activeFilters.engineBrand) {
     const engineBrandVal =
-      typeof specs["engineBrand"] === "string" ? specs["engineBrand"] : "";
+      typeof specs.engineBrand === "string" ? specs.engineBrand : "";
     const pEngine = engineBrandVal.toLowerCase();
     const filterEngine = activeFilters.engineBrand.toLowerCase();
     if (!pEngine.includes(filterEngine)) return false;
@@ -197,9 +194,7 @@ function matchesSpecsBase(
 
   if (activeFilters.alternatorBrand) {
     const alternatorBrandVal =
-      typeof specs["alternatorBrand"] === "string"
-        ? specs["alternatorBrand"]
-        : "";
+      typeof specs.alternatorBrand === "string" ? specs.alternatorBrand : "";
     const pAlt = alternatorBrandVal.toLowerCase();
     const filterAlt = activeFilters.alternatorBrand.toLowerCase();
     if (!pAlt.includes(filterAlt)) return false;
@@ -216,7 +211,7 @@ function matchesSearch(
   const searchLower = q.toLowerCase();
   const nameMatch = product.name.toLowerCase().includes(searchLower);
   const modelVal =
-    typeof product.specs?.["model"] === "string" ? product.specs["model"] : "";
+    typeof product.specs?.model === "string" ? product.specs.model : "";
   const modelMatch = modelVal.toLowerCase().includes(searchLower);
   return nameMatch || modelMatch;
 }
