@@ -3,8 +3,12 @@
  * Replaces direct in-process database queries with HTTP fetch and Next.js ISR/cache tags.
  */
 
+import createClient from "openapi-fetch";
 import { env } from "@/env";
+import type { paths, components } from "@/types/api-schema";
 
+export type ApiPaths = paths;
+export type ApiSchemas = components["schemas"];
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -213,13 +217,21 @@ export interface RequestOptions extends RequestInit {
 }
 
 const getBaseUrl = (): string => {
-  const url = env.BACKEND_API_URL;
+  const url =
+    (env as Record<string, string | undefined>).BACKEND_API_URL ??
+    "http://localhost:3000";
   const trimmed = url.trim().replace(/^["'\\]+|["'\\]+$/g, "");
   if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
     return `https://${trimmed}`;
   }
   return trimmed;
 };
+
+/**
+ * Type-safe OpenAPI Fetch Client for Storefront.
+ * Generates full autocomplete for URLs, parameters, and response schemas.
+ */
+export const api = createClient<paths>({ baseUrl: getBaseUrl() });
 
 /**
  * Low-level HTTP fetch wrapper handling authorization headers, response parsing, and error normalization.
