@@ -1,153 +1,85 @@
 # Hyundai Ecommerce
 
-## B2B E-commerce Platform for Industrial Equipment
+## B2B Industrial Equipment E-Commerce Platform
 
-A modern, high-performance B2B e-commerce system specialized in heavy machinery and industrial power generators (Hyundai, Mitsubishi, Kubota, etc.), built with a focus on complex quote negotiation, multi-warehouse logistics, and enterprise-grade architecture.
+A modern, enterprise-grade B2B e-commerce platform specializing in heavy machinery, industrial power generators (Hyundai, Cummins, Perkins, etc.), and emergency power systems. Built with complex Request for Quotation (RFQ) negotiation, multi-warehouse stock management, and high-concurrency order settlement.
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![NestJS](https://img.shields.io/badge/NestJS-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com)
 [![Next.js](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![Bun](https://img.shields.io/badge/Bun-000000?logo=bun&logoColor=white)](https://bun.sh)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B67F?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Drizzle ORM](https://img.shields.io/badge/Drizzle-FF6B00?logo=drizzle&logoColor=white)](https://orm.drizzle.team)
-[![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org)
+[![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)](https://redis.io)
 
 ---
 
-## Live Sites
+## Live Services & Endpoints
 
-- **Main Storefront**: [https://hyundainhatnang.ngxc.io.vn](https://hyundainhatnang.ngxc.io.vn)
-- **Admin Dashboard**: [https://admin.hyundainhatnang.ngxc.io.vn](https://admin.hyundainhatnang.ngxc.io.vn)
-- **Technical Documentation**: [https://docs.hyundainhatnang.ngxc.io.vn](https://docs.hyundainhatnang.ngxc.io.vn)
+- **Customer Storefront**: [https://hyundainhatnang.ngxc.io.vn](https://hyundainhatnang.ngxc.io.vn)
+- **Backoffice Admin Portal**: [https://admin.hyundainhatnang.ngxc.io.vn](https://admin.hyundainhatnang.ngxc.io.vn)
+- **REST API & Interactive Docs**: [https://api.hyundainhatnang.ngxc.io.vn/api/docs](https://api.hyundainhatnang.ngxc.io.vn/api/docs) (Scalar UI)
 
 ---
 
-## Key Features
+## Architecture Overview
 
-- Advanced product filtering on technical specifications (JSONB)
-- Full B2B quote negotiation workflow (Request -> Review -> Final Price -> Payment)
-- Multi-warehouse inventory with real-time stock management
-- Dealer tier-based automatic pricing
-- Secure guest + user cart with concurrency control
-- Auto-generated technical documentation (Fumadocs)
-- End-to-end type safety from database to frontend
-- Internationalization (i18n): Fully localized in English and Vietnamese using Next-Intl
-- Admin Panel: Secure dashboard for managing products, quotes, categories, and users
+The repository adopts a **Decoupled Standalone Multi-Application Architecture**. All applications reside at the root level as independent projects with their own dependencies, configuration files, and build pipelines:
+
+```text
+.
+├── backend/            # Standalone NestJS REST API Server
+│   ├── src/modules/    # Domain modules (auth, catalog, quotes, orders, payments, warehouse, etc.)
+│   ├── openapi.json    # OpenAPI 3.1.0 Contract Specification
+│   └── package.json    # NestJS dependencies & test runner
+│
+├── storefront/         # Standalone Next.js 16 Customer & B2B RFQ Portal
+│   ├── app/            # App Router (i18n, products, quote submission)
+│   ├── src/lib/        # Typed REST API client communicating with backend
+│   └── package.json    # Storefront dependencies
+│
+├── admin/              # Standalone Next.js 16 Backoffice Admin Dashboard
+│   ├── app/            # App Router (products, warehouses, quotes, orders, finance)
+│   ├── src/lib/        # Authenticated REST API client with Cookie JWT Bearer injection
+│   └── package.json    # Admin dependencies
+│
+├── docker-compose.yml  # Local infrastructure (PostgreSQL 18 & Redis 8)
+├── package.json        # Root coordination scripts
+└── .syncpackrc         # Single source of truth package.json formatting
+```
+
+### Key Architectural Decisions
+
+1. **Standalone Applications over Monorepo Workspaces**:
+   - Eliminates cross-package dependency cycles and workspace caching overhead.
+   - Drastically reduces Neovim/VSCode TSServer memory usage (<250MB) and ensures instant editor responsiveness.
+2. **Backend Delegation**:
+   - Frontend applications (`storefront`, `admin`) are thin consumers of backend REST API endpoints.
+   - Database operations (Drizzle ORM, migrations, ACID transactions, Redlock distributed locking) are encapsulated exclusively within `backend/`.
+3. **OpenAPI as Single Source of Truth**:
+   - Backend exposes OpenAPI 3.1 schema at `/openapi.json` and interactive documentation with Scalar at `/api/docs`.
+4. **B2B RFQ Negotiation Engine**:
+   - Industrial generators and heavy equipment are sold via multi-round quote negotiations rather than direct retail cart checkout.
+   - Supports live negotiation messaging, agreed price adjustments, and one-click approval to commercial orders.
 
 ---
 
 ## Tech Stack
 
-The application uses the following technologies:
-
-- **Framework**: Next.js 16.2.6 (App Router + React Server Components) & React 19
-- **Runtime**: Bun (v1.3.6)
-- **Monorepo Orchestration**: Turborepo (v2.9.16)
-- **Database ORM**: Drizzle ORM (v1.0.0-rc.3) targeting Neon Serverless PostgreSQL
-- **Authentication**: Better Auth (v1.6.11)
-- **Validation**: Zod (v4.4.3)
-- **Testing**: Bun Test (`bun:test`)
-- **Internationalization**: Next-Intl (Vietnamese & English)
-- **Documentation**: Fumadocs
-- **UI Components**: shadcn/ui (v4.8.3) + Tailwind CSS v4, Lucide React icons, next-themes
-- **State Management**: Zustand
-- **Secrets Management**: Doppler
-- **Background Jobs**: Inngest
-- **Caching & Rate Limiting**: Upstash Redis + Upstash Ratelimit
-
----
-
-## Monorepo Architecture
-
-The repository is structured as a Turborepo monorepo with separated workspaces to keep the codebase modular, decoupled, and maintainable.
-
-### Applications (apps/)
-
-- **apps/storefront**: The customer-facing e-commerce portal where users browse industrial power systems, manage carts, configure specifications, and request B2B quotes. Built using Next.js 16 and Next-Intl.
-- **apps/admin**: The internal admin dashboard for managing catalog entities (products, categories, brands), adjusting dealer pricing tiers, tracking warehouse stock, and handling B2B quote and deal negotiations.
-
-### Shared Packages (packages/)
-
-- **packages/database**: The central source of truth for the database layer. It contains Drizzle schemas, migrations, seed scripts, service logic implementing the Fat Service pattern (constructor dependency injection), database validation schemas, and database-to-application DTO mappings.
-- **packages/ui**: A shared UI component package containing common shadcn/ui components configured for Tailwind CSS v4, custom utility hooks (e.g., debouncing), file utilities, and the rich text editor.
-- **packages/types**: Houses shared TypeScript interfaces and types, such as standard API responses, authentication helper types, and action result unions (`TActionResult`).
-- **packages/shared**: Contains shared constants (HTTP codes, quote status strings, system error codes), shared mock systems for testing, and helper utilities like the rate-limiter wrapper using Upstash Redis.
-- **packages/typescript-config**: Centralized TypeScript configuration files (`base.json`, `library.json`, `next.json`) reused across workspaces.
-- **packages/eslint-config**: Shared ESLint configuration configurations for codebase consistency.
-
----
-
-## Bilingual Database & Presentation DTO Layer
-
-To support seamless Vietnamese (VI) and English (EN) localization, the platform is designed with localized fields at the database schema level and dynamic fallback resolution at the presentation/DTO mapping level.
-
-### Database Schema Structure
-
-Localized fields for text and rich content are separated into specific columns for each language. For example, in `packages/database/src/schemas/product.schema.ts` (and similarly for categories, brands, and warehouses):
-
-- **Vietnamese (VI) fields**: Marked as `notNull()` (e.g., `nameVi: text().notNull()`) to establish the required baseline for all content entries.
-- **English (EN) fields**: Optional and nullable (e.g., `nameEn: text()`), allowing English translations to be filled in incrementally.
-- **Rich Text Fields**: Columns like `descriptionVi` and `descriptionEn` are defined as `jsonb().$type<JSONContent>()` using Tiptap structure.
-
-### DTO & Validation Architecture
-
-To enforce clean application boundaries without runtime overhead, data transfer is structured across two complementary layers:
-
-- **Input Mutation DTOs**: Validated through Zod schemas in `packages/database/src/validators/` with types strictly inferred via `z.infer` / `z.input`, acting as the Single Source of Truth for Server Actions and API payloads.
-- **Output View DTOs**: Typed projections in `packages/database/src/schemas/` (e.g. `ProductDTO`, `CategoryDTO`) that omit internal/sensitive columns (`deletedAt`), resolved directly via Drizzle query projections without redundant runtime mappers.
-
-### Vietnamese-as-Fallback Presentation Resolution
-
-When rendering data inside the user-facing storefront or administrative dashboard, localized fields are resolved dynamically based on the active session locale. In `apps/storefront/src/shared/services/types.ts`:
-
-```typescript
-export function mapProductToStorefront(
-  dto: TProductDTO,
-  locale: Locale,
-): StorefrontProduct {
-  return {
-    id: dto.id,
-    name: locale === "en" && dto.nameEn ? dto.nameEn : dto.nameVi,
-    description:
-      locale === "en" && dto.descriptionEn
-        ? dto.descriptionEn
-        : dto.descriptionVi,
-    shortDescription:
-      locale === "en" && dto.shortDescriptionEn
-        ? dto.shortDescriptionEn
-        : dto.shortDescriptionVi,
-    // ...other fields
-  };
-}
-```
-
-#### Fallback Rules
-
-1. If the current locale is `"en"` and the English translation column (e.g., `nameEn`) is populated and non-empty, the English translation is displayed.
-2. If the current locale is `"vi"`, or if the English field is null, undefined, or empty, the platform dynamically falls back to the Vietnamese value (e.g., `nameVi`). This configuration ensures that the UI never displays blank content for untranslated fields.
-
----
-
-## Rich Text Editor Specifications
-
-The platform provides a custom Tiptap-based Rich Text Editor (`RichTextEditor`) implemented within `packages/ui` at `src/editor/index.tsx`.
-
-### Editor Features
-
-- **Core Extensions**: Built using `@tiptap/react` and configured with `StarterKit` (handling lists, marks, headings, and configured with `openOnClick: false` for links).
-- **Custom Image Support**: Integrates custom Image components, image bubble menu overlays, and an image cropper (`react-image-crop`) to allow on-the-fly resizing, cropping, and uploading of visual assets.
-- **UI & Styling**: Outfitted with a custom top toolbar, an optional toggle for formatting guide characters (`showInvisibles`), and styled using custom Prose typography classes (`prose dark:prose-invert prose-sm sm:prose-base`).
-- **Data Contract**: Communicates updates back to form state via a structured `JSONContent` format from `@tiptap/core`.
-
-### Re-Export and Type Definition
-
-To prevent direct package dependencies on editor internals outside the UI package, the underlying `JSONContent` type is re-exported at the main entry point:
-
-```typescript
-// packages/ui/src/index.ts
-export { type JSONContent } from "@tiptap/core";
-```
-
-Within database schemas or validator structures, this type is used directly to define rich content columns (e.g., `descriptionVi: jsonb().$type<JSONContent>()`).
+- **Backend Service**:
+  - NestJS 11 + Fastify adapter
+  - Drizzle ORM + PostgreSQL 18
+  - Redis 8 + Redlock distributed locking
+  - OpenAPI 3.1.0 + Scalar API Reference
+- **Frontend Applications**:
+  - Next.js 16 (React 19, Server Components, Server Actions)
+  - Tailwind CSS v4 + Radix UI components
+  - Next-Intl (Vietnamese primary, English secondary)
+  - Zustand (Client-side quote state management)
+- **Infrastructure & Tooling**:
+  - Runtime: Bun v1.3+
+  - Local Database & Cache: Docker Compose (PostgreSQL 18-alpine, Redis 8-alpine)
+  - Formatting & Linting: ESLint v9 (flat config), Prettier with Tailwind plugin, Syncpack
 
 ---
 
@@ -155,72 +87,81 @@ Within database schemas or validator structures, this type is used directly to d
 
 ### Prerequisites
 
-- **Bun**: v1.3.6 or later
-- **Doppler CLI**: Used to manage and inject secrets/environment variables during development and build tasks.
+- **Bun**: v1.3.6 or later (`curl -fsSL https://bun.sh/install | bash`)
+- **Docker & Docker Compose**: For local PostgreSQL and Redis
 
-### Local Development Setup
+### 1. Start Local Infrastructure
 
-1. **Authenticate Doppler** and connect the CLI to the project configurations:
-
-   ```bash
-   doppler login
-   doppler setup
-   ```
-
-2. **Install monorepo dependencies**:
-
-   ```bash
-   bun install
-   ```
-
-3. **Database Setup**:
-   Generate database schemas, apply migrations, and populate seeds inside the development database:
-
-   ```bash
-   # Generate migrations based on schemas
-   bun run db:generate
-
-   # Apply pending migrations to database
-   bun run db:push
-
-   # Seed the database with initial categories, products, and admin users
-   bun --filter=@nhatnang/database run db:seed
-   ```
-
-4. **Launch development servers**:
+Start PostgreSQL and Redis containers in the background:
 
 ```bash
-   # Run all apps simultaneously with Doppler injected environment variables
-   bun run dev
+# Using root script
+bun run docker:up
+
+# Or via docker compose directly
+docker compose up -d
 ```
 
-To run individual applications independently, use Turborepo filters:
+### 2. Install Dependencies
+
+Install dependencies across all applications:
 
 ```bash
-# Run the customer storefront app
+# Root utilities
+bun install
+
+# Backend API
+cd backend && bun install && cd ..
+
+# Storefront App
+cd storefront && bun install && cd ..
+
+# Admin App
+cd admin && bun install && cd ..
+```
+
+### 3. Database Migration & Seed
+
+Initialize schemas and seed data for the backend:
+
+```bash
+cd backend
+bun run db:migrate
+bun run db:seed
+cd ..
+```
+
+### 4. Launch Development Servers
+
+Run applications independently using convenience root scripts:
+
+```bash
+# Terminal 1: Backend REST API (http://localhost:3000 | Docs: http://localhost:3000/api/docs)
+bun run dev:backend
+
+# Terminal 2: Customer Storefront (http://localhost:3001)
 bun run dev:storefront
 
-# Run the admin dashboard app
-doppler run -- turbo run dev --filter=admin
-
-# Run the documentation site
-doppler run -- turbo run dev --filter=docs
+# Terminal 3: Backoffice Admin Portal (http://localhost:3002)
+bun run dev:admin
 ```
 
 ---
 
-## Monorepo Scripts
+## Root Orchestration Scripts
 
-The following scripts are exposed at the workspace root `package.json`:
+The root `package.json` provides scripts to manage all 3 applications:
 
-- `bun run dev`: Runs all development servers concurrently using Doppler secrets.
-- `bun run dev:storefront`: Focuses development only on the customer-facing storefront app.
-- `bun run build`: Compiles all monorepo applications and packages for production.
-- `bun run check-types`: Runs TypeScript validation checks (`tsc --noEmit`) across all applications and shared packages.
-- `bun run lint`: Analyzes codebase quality and formatting standards via ESLint.
-- `bun run test`: Executes the test suites across all workspaces using the Turborepo test pipeline.
-- `bun run clean`: Cleans compiler caches and outputs (deletes local `.next`, `.turbo`, and `node_modules` folders).
-- `bun run clean:hard`: Cleans all workspaces deeply, drops lockfiles, and triggers a fresh `bun install`.
-- `bun run deps:lint`: Checks for package dependency inconsistencies across different monorepo workspaces via syncpack.
-- `bun run deps:fix`: Standardizes and fixes dependency mismatches across workspaces.
-- `bun run format:pkg`: Sorts and formats all workspace `package.json` files for clean organization.
+| Command                    | Description                                                      |
+| :------------------------- | :--------------------------------------------------------------- |
+| `bun run dev:backend`      | Starts the NestJS backend in hot-reload development mode         |
+| `bun run dev:storefront`   | Starts the Next.js storefront portal                             |
+| `bun run dev:admin`        | Starts the Next.js admin dashboard                               |
+| `bun run check-types`      | Executes TypeScript typecheck (`tsc --noEmit`) across all 3 apps |
+| `bun run lint`             | Runs strict ESLint checks across all 3 apps                      |
+| `bun run test`             | Executes unit test suites in storefront and admin                |
+| `bun run test:backend`     | Executes backend unit and integration test suites                |
+| `bun run format:pkg`       | Formats and alphabetizes all `package.json` files using Syncpack |
+| `bun run format:pkg:check` | Verifies `package.json` formatting compliance (CI gate)          |
+| `bun run docker:up`        | Starts local PostgreSQL and Redis containers                     |
+| `bun run docker:down`      | Stops local containers                                           |

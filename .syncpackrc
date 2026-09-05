@@ -1,6 +1,6 @@
 {
+  "source": ["package.json", "*/package.json"],
   "indent": "  ",
-
   "sortFirst": [
     "name",
     "version",
@@ -9,43 +9,15 @@
     "type",
     "exports",
     "packageManager",
-    "workspaces",
     "scripts",
     "dependencies",
     "devDependencies",
     "peerDependencies"
   ],
-
   "sortAz": [
     "scripts",
     "dependencies",
     "devDependencies",
     "peerDependencies"
-  ],
-
-  "semverGroups": [
-    {
-      "range": "^",
-      "dependencies": ["**"],
-      "packages": ["**"]
-    }
-  ],
-  "versionGroups": [
-    {
-      "dependencyTypes": ["peer"],
-      "dependencies": ["**"],
-      "packages": ["**"],
-      "isIgnored": true
-    },
-    {
-      "dependencies": ["next"],
-      "packages": ["**"],
-      "isIgnored": true
-    },
-    {
-      "dependencies": ["@nhatnang/**"],
-      "packages": ["**"],
-      "isIgnored": true
-    }
   ]
 }

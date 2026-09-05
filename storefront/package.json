@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "doppler run -- next dev",
     "build": "doppler run -- next build",
-    "start": "doppler run -- next start",
     "check-types": "tsc --noEmit",
+    "dev": "doppler run -- next dev",
     "lint": "eslint . --fix --cache --cache-location .eslintcache",
+    "start": "doppler run -- next start",
     "test": "bun test src/ app/"
   },
   "dependencies": {

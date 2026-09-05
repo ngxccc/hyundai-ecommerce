@@ -5,29 +5,32 @@
   "type": "module",
   "packageManager": "bun@1.4",
   "scripts": {
-    "dev:backend": "cd backend && bun run start:dev",
-    "dev:storefront": "cd storefront && bun run dev",
-    "dev:admin": "cd admin && bun run dev",
     "check-types": "bun run check-types:backend && bun run check-types:storefront && bun run check-types:admin",
+    "check-types:admin": "cd admin && bun run check-types",
     "check-types:backend": "cd backend && bun run check-types",
     "check-types:storefront": "cd storefront && bun run check-types",
-    "check-types:admin": "cd admin && bun run check-types",
+    "dev:admin": "cd admin && bun run dev",
+    "dev:backend": "cd backend && bun run start:dev",
+    "dev:storefront": "cd storefront && bun run dev",
+    "docker:down": "docker compose down",
+    "docker:up": "docker compose up -d",
+    "format:pkg": "syncpack format",
+    "format:pkg:check": "syncpack format --check",
     "lint": "bun run lint:backend && bun run lint:storefront && bun run lint:admin",
+    "lint:admin": "cd admin && bun run lint",
     "lint:backend": "cd backend && bun run lint",
     "lint:storefront": "cd storefront && bun run lint",
-    "lint:admin": "cd admin && bun run lint",
+    "prepare": "husky",
     "test": "bun run test:storefront && bun run test:admin",
-    "test:storefront": "cd storefront && bun run test",
     "test:admin": "cd admin && bun run test",
     "test:backend": "cd backend && bun run test",
-    "docker:up": "docker compose up -d",
-    "docker:down": "docker compose down",
-    "prepare": "husky"
+    "test:storefront": "cd storefront && bun run test"
   },
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^17.4.1",
     "prettier": "^3.9.6",
-    "prettier-plugin-tailwindcss": "^0.8.1"
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "syncpack": "^15.3.3"
   }
 }
