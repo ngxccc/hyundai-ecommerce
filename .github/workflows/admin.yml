@@ -3,12 +3,22 @@ name: Admin App CD
 on:
   push:
     branches: ["main"]
-    paths-ignore:
-      - "**/*.md"
-      - "docs/**"
-      - ".gitignore"
-      - "LICENSE"
+    paths:
+      - "admin/app/**"
+      - "admin/src/**"
+      - "admin/messages/**"
+      - "admin/public/**"
+      - "admin/package.json"
+      - "admin/bun.lock"
+      - "admin/next.config.*"
+      - "admin/tsconfig.json"
   workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason for manual deployment"
+        required: false
+        default: "Manual trigger via GitHub Actions"
+        type: string
 
 permissions:
   contents: read
@@ -18,25 +28,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      admin: ${{ steps.filter.outputs.admin }}
-    steps:
-      - uses: actions/checkout@v7
-      - uses: dorny/paths-filter@v4
-        id: filter
-        with:
-          filters: |
-            admin:
-              - "admin/**"
-              - "!admin/**/*.md"
-              - "!admin/docs/**"
-              - ".github/workflows/admin.yml"
-
   deploy:
-    needs: changes
-    if: ${{ needs.changes.outputs.admin == 'true' }}
     name: Release to Vercel
     runs-on: ubuntu-latest
     environment: Production

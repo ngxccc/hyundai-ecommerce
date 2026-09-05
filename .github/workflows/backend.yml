@@ -3,12 +3,21 @@ name: Backend App CD
 on:
   push:
     branches: ["main"]
-    paths-ignore:
-      - "**/*.md"
-      - "docs/**"
-      - ".gitignore"
-      - "LICENSE"
+    paths:
+      - "backend/src/**"
+      - "!backend/src/database/seeds/**"
+      - "backend/drizzle/**"
+      - "backend/package.json"
+      - "backend/bun.lock"
+      - "backend/tsconfig.json"
+      - "backend/nest-cli.json"
   workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason for manual deployment"
+        required: false
+        default: "Manual trigger via GitHub Actions"
+        type: string
 
 permissions:
   contents: read
@@ -18,25 +27,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-    steps:
-      - uses: actions/checkout@v7
-      - uses: dorny/paths-filter@v4
-        id: filter
-        with:
-          filters: |
-            backend:
-              - "backend/**"
-              - "!backend/**/*.md"
-              - "!backend/docs/**"
-              - ".github/workflows/backend.yml"
-
   deploy:
-    needs: changes
-    if: ${{ needs.changes.outputs.backend == 'true' }}
     name: Build, Verify & Release to Render
     runs-on: ubuntu-latest
     environment: Production

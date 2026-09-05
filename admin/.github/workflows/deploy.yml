@@ -3,12 +3,22 @@ name: Admin CD
 on:
   push:
     branches: ["main"]
-    paths-ignore:
-      - "**/*.md"
-      - "docs/**"
-      - ".gitignore"
-      - "LICENSE"
+    paths:
+      - "app/**"
+      - "src/**"
+      - "messages/**"
+      - "public/**"
+      - "package.json"
+      - "bun.lock"
+      - "next.config.*"
+      - "tsconfig.json"
   workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason for manual deployment"
+        required: false
+        default: "Manual trigger via GitHub Actions"
+        type: string
 
 permissions:
   contents: read

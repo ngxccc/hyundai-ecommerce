@@ -11,9 +11,13 @@ on:
       - "bun.lock"
       - "tsconfig.json"
       - "nest-cli.json"
-      - ".github/workflows/deploy.yml"
-      - ".github/workflows/integration.yml"
-      - ".github/setup-environment/**"
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason for manual deployment"
+        required: false
+        default: "Manual trigger via GitHub Actions"
+        type: string
 
 permissions:
   contents: read
