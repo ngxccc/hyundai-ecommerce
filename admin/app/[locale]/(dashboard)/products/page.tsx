@@ -32,37 +32,30 @@ export default async function AdminProductsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const after =
-    typeof params["after"] === "string" ? params["after"] : undefined;
-  const before =
-    typeof params["before"] === "string" ? params["before"] : undefined;
+  const after = typeof params.after === "string" ? params.after : undefined;
+  const before = typeof params.before === "string" ? params.before : undefined;
   const categoryId =
-    typeof params["categoryId"] === "string" ? params["categoryId"] : undefined;
+    typeof params.categoryId === "string" ? params.categoryId : undefined;
   const brandId =
-    typeof params["brandId"] === "string" ? params["brandId"] : undefined;
+    typeof params.brandId === "string" ? params.brandId : undefined;
   const fuelType =
-    typeof params["fuelType"] === "string" ? params["fuelType"] : undefined;
-  const phase =
-    typeof params["phase"] === "string" ? params["phase"] : undefined;
-  const status =
-    typeof params["status"] === "string" ? params["status"] : undefined;
-  const isQuoteOnly = params["isQuoteOnly"] === "true";
-  const search =
-    typeof params["search"] === "string" ? params["search"] : undefined;
+    typeof params.fuelType === "string" ? params.fuelType : undefined;
+  const phase = typeof params.phase === "string" ? params.phase : undefined;
+  const status = typeof params.status === "string" ? params.status : undefined;
+  const isQuoteOnly = params.isQuoteOnly === "true";
+  const search = typeof params.search === "string" ? params.search : undefined;
   const engineBrand =
-    typeof params["engineBrand"] === "string"
-      ? params["engineBrand"]
-      : undefined;
+    typeof params.engineBrand === "string" ? params.engineBrand : undefined;
   const alternatorBrand =
-    typeof params["alternatorBrand"] === "string"
-      ? params["alternatorBrand"]
+    typeof params.alternatorBrand === "string"
+      ? params.alternatorBrand
       : undefined;
   const voltageStr =
-    typeof params["voltage"] === "string" ? params["voltage"] : undefined;
+    typeof params.voltage === "string" ? params.voltage : undefined;
   const minPowerStr =
-    typeof params["minPower"] === "string" ? params["minPower"] : undefined;
+    typeof params.minPower === "string" ? params.minPower : undefined;
   const maxPowerStr =
-    typeof params["maxPower"] === "string" ? params["maxPower"] : undefined;
+    typeof params.maxPower === "string" ? params.maxPower : undefined;
 
   const voltage = voltageStr ? Number(voltageStr) : undefined;
   const minPower = minPowerStr ? Number(minPowerStr) : undefined;

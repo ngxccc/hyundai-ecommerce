@@ -39,8 +39,8 @@ export function formatValidationErrors(
       issue.code === ("invalid_string" as "invalid_type")
     ) {
       const formatVal =
-        (issue as unknown as Record<string, unknown>)["format"] ??
-        (issue as unknown as Record<string, unknown>)["validation"];
+        (issue as unknown as Record<string, unknown>).format ??
+        (issue as unknown as Record<string, unknown>).validation;
       if (formatVal === "url") {
         message = t("validation.invalidUrl");
       } else if (formatVal === "uuid") {

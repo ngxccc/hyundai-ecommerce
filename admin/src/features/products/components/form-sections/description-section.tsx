@@ -20,7 +20,6 @@ export const ProductDescriptionSection = ({
   form,
 }: ProductDescriptionSectionProps) => {
   const t = useTranslations("AdminProductForm");
-  const tEditor = useTranslations("Editor");
 
   const initialDescriptionVi = form.getValues(
     "descriptionVi",

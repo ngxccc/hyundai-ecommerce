@@ -90,7 +90,7 @@ export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
         </TableHeader>
         <TableBody>
           {orders.map((order) => {
-            const customerName = order.user?.name || "Customer";
+            const customerName = order.user?.name ?? "Customer";
             const initial = customerName.charAt(0).toUpperCase();
             const items = order.items ?? [];
             const firstItem = items[0];
@@ -107,7 +107,7 @@ export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
             const uiStatus = (statusMap[order.status] ?? "processing") as
               "completed" | "processing" | "shipping" | "cancelled";
             const badgeClass =
-              statusClassMap[order.status] ?? statusClassMap["PENDING"];
+              statusClassMap[order.status] ?? statusClassMap.PENDING;
 
             return (
               <TableRow key={order.id}>

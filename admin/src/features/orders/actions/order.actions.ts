@@ -74,7 +74,7 @@ export const approveDealerOrderAction = async (orderId: string) => {
 
 export const verifyCashPaymentAction = async (
   orderId: string,
-  amount: number = 0,
+  amount = 0,
   note?: string,
 ) => {
   const t = await getTranslations("errors");
@@ -82,7 +82,7 @@ export const verifyCashPaymentAction = async (
     await assertFinanceRole();
     const result = await adminApiClient.payments.verifyCash(orderId, {
       amount,
-      note: note || "Kế toán xác nhận thu tiền mặt",
+      note: note ?? "Kế toán xác nhận thu tiền mặt",
     });
 
     revalidatePath("/orders");
@@ -132,15 +132,15 @@ export const approveOrderCancellationAction = async (
   }
 };
 
-export const selectShippingBidAction = async (
+export const selectShippingBidAction = (
   _orderId: string,
   _bidId: string,
 ): Promise<{ success: true } | { success: false; error: string }> => {
-  return { success: true };
+  return Promise.resolve({ success: true });
 };
 
-export const addShippingBidAction = async (
+export const addShippingBidAction = (
   _data: Record<string, unknown>,
 ): Promise<{ success: true } | { success: false; error: string }> => {
-  return { success: true };
+  return Promise.resolve({ success: true });
 };

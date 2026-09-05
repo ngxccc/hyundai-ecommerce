@@ -547,10 +547,10 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
                 {t("accountOwner")}
               </span>
               <span className="text-foreground mt-0.5 text-base font-semibold">
-                {order.user?.name || t("unknown")}
+                {order.user?.name ?? t("unknown")}
               </span>
               <span className="text-muted-foreground font-mono text-xs">
-                {order.user?.email || ""}
+                {order.user?.email ?? ""}
               </span>
             </div>
 
@@ -575,7 +575,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
                 {t("contactPhone")}
               </span>
               <span className="mt-0.5 font-mono text-sm">
-                {order.user?.phone || ""}
+                {order.user?.phone ?? ""}
               </span>
             </div>
 

@@ -36,14 +36,24 @@ export function parseNumberInput(value: string | undefined | null): string {
 
 export function toInputValue(value: unknown): string {
   if (value === undefined || value === null) return "";
-  return String(value);
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  ) {
+    return String(value);
+  }
+  return "";
 }
 
 export function toIntegerString(value: unknown): string {
   if (value === undefined || value === null) return "0";
-  const num =
-    typeof value === "number" ? Math.round(value) : parseInt(String(value), 10);
-  return isNaN(num) ? "0" : String(num);
+  if (typeof value === "number") return Math.round(value).toString();
+  if (typeof value === "string") {
+    const num = parseInt(value, 10);
+    return isNaN(num) ? "0" : String(num);
+  }
+  return "0";
 }
 
 export function formatShippingAddress(
@@ -51,13 +61,14 @@ export function formatShippingAddress(
 ): string {
   if (!addressStr) return "";
   try {
-    const parsed = JSON.parse(addressStr);
+    const parsed: unknown = JSON.parse(addressStr);
     if (typeof parsed === "object" && parsed !== null) {
+      const record = parsed as Record<string, string | undefined>;
       const parts = [
-        parsed.addressLine1 || parsed.streetAddress || parsed.address,
-        parsed.ward,
-        parsed.district,
-        parsed.city || parsed.province,
+        record.addressLine1 ?? record.streetAddress ?? record.address,
+        record.ward,
+        record.district,
+        record.city ?? record.province,
       ].filter(Boolean);
       return parts.join(", ");
     }
@@ -101,7 +112,7 @@ function readThreeDigits(triplet: number, readZeroHundreds: boolean): string {
     } else if (ones === 5) {
       result.push("lăm");
     } else if (ones > 0) {
-      result.push(VIETNAMESE_DIGITS[ones]!);
+      result.push(VIETNAMESE_DIGITS[ones]);
     }
   } else if (tens === 1) {
     result.push("mười");
@@ -110,13 +121,13 @@ function readThreeDigits(triplet: number, readZeroHundreds: boolean): string {
     } else if (ones === 5) {
       result.push("lăm");
     } else if (ones > 0) {
-      result.push(VIETNAMESE_DIGITS[ones]!);
+      result.push(VIETNAMESE_DIGITS[ones]);
     }
   } else if (tens === 0 && ones > 0) {
     if (hundreds > 0 || readZeroHundreds) {
       result.push("lẻ");
     }
-    result.push(VIETNAMESE_DIGITS[ones]!);
+    result.push(VIETNAMESE_DIGITS[ones]);
   }
 
   return result.join(" ");
@@ -145,7 +156,7 @@ export function numberToVietnameseWords(amount: number | string): string {
 
   const words: string[] = [];
   for (let i = triplets.length - 1; i >= 0; i--) {
-    const triplet = triplets[i]!;
+    const triplet = triplets[i];
     if (triplet > 0) {
       const readZeroHundreds = i < triplets.length - 1;
       const tripletText = readThreeDigits(triplet, readZeroHundreds);

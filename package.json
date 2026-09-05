@@ -3,74 +3,31 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "packageManager": "bun@1.3.6",
-  "workspaces": [
-    "packages/*"
-  ],
+  "packageManager": "bun@1.4",
   "scripts": {
-    "build": "doppler run -- turbo run build",
-    "check-types": "turbo run check-types",
-    "clean": "bunx rimraf '**/node_modules' '**/.next' '**/.turbo'",
-    "clean:hard": "bunx rimraf '**/node_modules' '**/.next' '**/.turbo' 'bun.lock' && bun install",
-    "deps:fix": "syncpack fix",
-    "deps:lint": "syncpack list",
-    "dev": "doppler run -- turbo run dev",
+    "dev:backend": "cd backend && bun run start:dev",
     "dev:storefront": "cd storefront && bun run dev",
     "dev:admin": "cd admin && bun run dev",
-    "format:pkg:check": "syncpack format --check",
-    "lint": "turbo run lint",
-    "lint:fix": "turbo run lint:fix",
-    "prepare": "husky",
-    "test": "turbo run test",
-    "test:integration": "turbo run test:integration",
-    "verify": "turbo run lint check-types test --force"
+    "check-types": "bun run check-types:backend && bun run check-types:storefront && bun run check-types:admin",
+    "check-types:backend": "cd backend && bun run check-types",
+    "check-types:storefront": "cd storefront && bun run check-types",
+    "check-types:admin": "cd admin && bun run check-types",
+    "lint": "bun run lint:backend && bun run lint:storefront && bun run lint:admin",
+    "lint:backend": "cd backend && bun run lint",
+    "lint:storefront": "cd storefront && bun run lint",
+    "lint:admin": "cd admin && bun run lint",
+    "test": "bun run test:storefront && bun run test:admin",
+    "test:storefront": "cd storefront && bun run test",
+    "test:admin": "cd admin && bun run test",
+    "test:backend": "cd backend && bun run test",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "@types/bun": "catalog:",
-    "@types/node": "catalog:",
-    "eslint": "^9.39.5",
     "husky": "^9.1.7",
     "lint-staged": "^17.4.1",
     "prettier": "^3.9.6",
-    "prettier-plugin-tailwindcss": "^0.8.1",
-    "syncpack": "^15.3.3",
-    "turbo": "^2.10.12",
-    "typescript": "catalog:"
-  },
-  "catalog": {
-    "@hookform/resolvers": "^5.9.1",
-    "@t3-oss/env-nextjs": "^0.13.11",
-    "@tailwindcss/postcss": "^4.3.3",
-    "@types/bun": "^1",
-    "@types/node": "^26.0.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "embla-carousel-react": "^8.6.0",
-    "lucide-react": "^1.37.0",
-    "next-intl": "^4.14.1",
-    "next-themes": "^0.4.6",
-    "radix-ui": "^1.6.7",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-hook-form": "^7.87.0",
-    "sonner": "^2.0.8",
-    "tailwind-merge": "^3.6.0",
-    "tailwindcss": "^4.3.1",
-    "tw-animate-css": "^1.4.0",
-    "typescript": "^6.0.3",
-    "zod": "^4.5.4",
-    "zustand": "^5.0.15"
-  },
-  "overrides": {
-    "esbuild": "^0.28.1",
-    "browserslist": "^4.28.8",
-    "minimatch@<10": {
-      "brace-expansion": "^1.1.18"
-    },
-    "minimatch@>=10": {
-      "brace-expansion": "^5.0.9"
-    }
+    "prettier-plugin-tailwindcss": "^0.8.1"
   }
 }

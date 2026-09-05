@@ -63,7 +63,7 @@ export const WarehouseForm = ({
             toast.success(t("messages.successUpdate"));
             router.push("/warehouses");
           } else {
-            toast.error(res.error || t("messages.error"));
+            toast.error(res.error ?? t("messages.error"));
           }
         } else {
           const res = await createWarehouseAction(data);
@@ -71,7 +71,7 @@ export const WarehouseForm = ({
             toast.success(t("messages.successCreate"));
             router.push("/warehouses");
           } else {
-            toast.error(res.error || t("messages.error"));
+            toast.error(res.error ?? t("messages.error"));
           }
         }
       } catch (e) {

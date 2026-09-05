@@ -156,10 +156,10 @@ export const InvoiceClient = ({ order }: InvoiceClientProps) => {
                 </span>
               )}
               <span className="font-mono text-xs text-slate-600 dark:text-slate-400 print:text-slate-600">
-                {t("phoneLabel")} {order.user?.phone || ""}
+                {t("phoneLabel")} {order.user?.phone ?? ""}
               </span>
               <span className="font-mono text-xs text-slate-600 dark:text-slate-400 print:text-slate-600">
-                {t("emailLabel")} {order.user?.email || ""}
+                {t("emailLabel")} {order.user?.email ?? ""}
               </span>
             </div>
           </div>

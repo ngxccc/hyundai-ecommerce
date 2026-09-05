@@ -18,10 +18,10 @@ export const getCachedSession = cache(
     try {
       const cookieStore = await cookies();
       const token =
-        cookieStore.get("adminAccessToken")?.value ||
+        cookieStore.get("adminAccessToken")?.value ??
         cookieStore.get("accessToken")?.value;
       const userCookie =
-        cookieStore.get("adminUser")?.value || cookieStore.get("user")?.value;
+        cookieStore.get("adminUser")?.value ?? cookieStore.get("user")?.value;
 
       if (!token || !userCookie) {
         return null;

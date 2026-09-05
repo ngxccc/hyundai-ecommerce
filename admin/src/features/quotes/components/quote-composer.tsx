@@ -38,10 +38,10 @@ export const QuoteComposer = () => {
 
     const fieldErrors: Record<string, string> = {};
     if (!customerInfo.customerName.trim()) {
-      fieldErrors["customerName"] = translate("composer.errors.nameRequired");
+      fieldErrors.customerName = translate("composer.errors.nameRequired");
     }
     if (!customerInfo.customerPhone.trim()) {
-      fieldErrors["customerPhone"] = translate("composer.errors.phoneRequired");
+      fieldErrors.customerPhone = translate("composer.errors.phoneRequired");
     }
 
     if (Object.keys(fieldErrors).length > 0) {

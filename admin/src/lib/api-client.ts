@@ -132,8 +132,8 @@ export interface AdminProduct {
   nameEn: string | null;
   slug: string;
   price: string;
-  descriptionVi: unknown | null;
-  descriptionEn: unknown | null;
+  descriptionVi: Record<string, unknown> | null;
+  descriptionEn: Record<string, unknown> | null;
   shortDescriptionVi: string | null;
   shortDescriptionEn: string | null;
   images: string[];

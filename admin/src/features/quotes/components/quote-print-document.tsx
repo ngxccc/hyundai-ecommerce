@@ -495,97 +495,92 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
 
             <div className="space-y-8">
               {generatorItems.map((item, idx) => {
-                const specs = (item.product?.specs ?? {}) as Record<
-                  string,
-                  unknown
-                >;
+                const specs = item.product?.specs ?? {};
                 const model =
-                  typeof specs["model"] === "string"
-                    ? specs["model"]
+                  typeof specs.model === "string"
+                    ? specs.model
                     : (item.itemModel ?? item.product?.slug);
                 const rawPower =
-                  specs["power"] ??
-                  specs["standbyPowerKva"] ??
-                  specs["primePowerKva"];
+                  specs.power ?? specs.standbyPowerKva ?? specs.primePowerKva;
                 const power =
                   typeof rawPower === "number" || typeof rawPower === "string"
                     ? String(rawPower)
                     : null;
                 const voltage =
-                  typeof specs["voltage"] === "number" ||
-                  typeof specs["voltage"] === "string"
-                    ? String(specs["voltage"])
+                  typeof specs.voltage === "number" ||
+                  typeof specs.voltage === "string"
+                    ? String(specs.voltage)
                     : "220";
                 const frequency =
-                  typeof specs["frequency"] === "number" ||
-                  typeof specs["frequency"] === "string"
-                    ? String(specs["frequency"])
+                  typeof specs.frequency === "number" ||
+                  typeof specs.frequency === "string"
+                    ? String(specs.frequency)
                     : "50";
                 const phase =
-                  specs["phase"] === "3phase"
+                  specs.phase === "3phase"
                     ? "3 Pha 4 Dây, 230/400V"
                     : "1 Pha 2 Dây, 220/230V";
                 const powerFactor =
-                  typeof specs["powerFactor"] === "number" ||
-                  typeof specs["powerFactor"] === "string"
-                    ? String(specs["powerFactor"])
+                  typeof specs.powerFactor === "number" ||
+                  typeof specs.powerFactor === "string"
+                    ? String(specs.powerFactor)
                     : "0.8";
                 const engineBrand =
-                  typeof specs["engineBrand"] === "string"
-                    ? specs["engineBrand"]
+                  typeof specs.engineBrand === "string"
+                    ? specs.engineBrand
                     : "Hyundai Engine";
                 const engine =
-                  typeof specs["engine"] === "string"
-                    ? specs["engine"]
+                  typeof specs.engine === "string"
+                    ? specs.engine
                     : "Động cơ Diesel 4 thì chính hãng";
                 const alternatorBrand =
-                  typeof specs["alternatorBrand"] === "string"
-                    ? specs["alternatorBrand"]
+                  typeof specs.alternatorBrand === "string"
+                    ? specs.alternatorBrand
                     : "Hyundai / Stamford";
                 const alternator =
-                  typeof specs["alternator"] === "string"
-                    ? specs["alternator"]
+                  typeof specs.alternator === "string"
+                    ? specs.alternator
                     : "Không chổi than, kích từ tự động AVR";
                 const fuelType =
-                  specs["fuelType"] === "gasoline" ? "Xăng" : "Dầu Diesel";
+                  specs.fuelType === "gasoline" ? "Xăng" : "Dầu Diesel";
                 const fuelConsumption =
-                  typeof specs["fuelConsumption"] === "number" ||
-                  typeof specs["fuelConsumption"] === "string"
-                    ? `${String(specs["fuelConsumption"])} L/h`
+                  typeof specs.fuelConsumption === "number" ||
+                  typeof specs.fuelConsumption === "string"
+                    ? `${String(specs.fuelConsumption)} L/h`
                     : "Tiêu chuẩn tối ưu";
                 const fuelTank =
-                  typeof specs["fuelTankCapacity"] === "number" ||
-                  typeof specs["fuelTankCapacity"] === "string"
-                    ? `${String(specs["fuelTankCapacity"])} Lít`
+                  typeof specs.fuelTankCapacity === "number" ||
+                  typeof specs.fuelTankCapacity === "string"
+                    ? `${String(specs.fuelTankCapacity)} Lít`
                     : "Dung tích lớn";
                 const noiseLevel =
-                  typeof specs["noiseLevel"] === "number" ||
-                  typeof specs["noiseLevel"] === "string"
-                    ? `${String(specs["noiseLevel"])} dB(A) @ 7m`
+                  typeof specs.noiseLevel === "number" ||
+                  typeof specs.noiseLevel === "string"
+                    ? `${String(specs.noiseLevel)} dB(A) @ 7m`
                     : "≤ 70 dB(A) @ 7m";
                 const len =
-                  typeof specs["length"] === "number" ||
-                  typeof specs["length"] === "string"
-                    ? String(specs["length"])
+                  typeof specs.length === "number" ||
+                  typeof specs.length === "string"
+                    ? String(specs.length)
                     : null;
                 const wid =
-                  typeof specs["width"] === "number" ||
-                  typeof specs["width"] === "string"
-                    ? String(specs["width"])
+                  typeof specs.width === "number" ||
+                  typeof specs.width === "string"
+                    ? String(specs.width)
                     : null;
                 const hei =
-                  typeof specs["height"] === "number" ||
-                  typeof specs["height"] === "string"
-                    ? String(specs["height"])
+                  typeof specs.height === "number" ||
+                  typeof specs.height === "string"
+                    ? String(specs.height)
                     : null;
                 const dimensions =
                   len && wid && hei
                     ? `${len} x ${wid} x ${hei} mm`
                     : "Kích thước nhỏ gọn đồng bộ";
                 const weight =
-                  typeof specs["weight"] === "number" ||
-                  typeof specs["weight"] === "string"
-                    ? `${String(specs["weight"])} kg`
+                  typeof specs.weight === "number" ||
+                  typeof specs.weight === "string"
+                    ? `${String(specs.weight)} kg`
                     : "---";
                 return (
                   <div

@@ -27,7 +27,7 @@ export async function GET(
 
     const buffer = await backendRes.arrayBuffer();
     const disposition =
-      backendRes.headers.get("content-disposition") ||
+      backendRes.headers.get("content-disposition") ??
       `attachment; filename="Bao-Gia-Hyundai-${id.slice(0, 8)}.xlsx"`;
 
     return new NextResponse(buffer, {

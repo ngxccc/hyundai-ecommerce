@@ -23,20 +23,20 @@ export const env = createEnv({
   },
 
   runtimeEnv: {
-    NEXT_PUBLIC_APP_URL: process.env["NEXT_PUBLIC_APP_URL"],
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME:
-      process.env["NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME"],
+      process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
     NODE_ENV: process.env.NODE_ENV,
-    CLOUDINARY_API_SECRET: process.env["CLOUDINARY_API_SECRET"],
-    CLOUDINARY_API_KEY: process.env["CLOUDINARY_API_KEY"],
-    UPSTASH_REDIS_REST_URL: process.env["UPSTASH_REDIS_REST_URL"],
-    UPSTASH_REDIS_REST_TOKEN: process.env["UPSTASH_REDIS_REST_TOKEN"],
-    BACKEND_API_URL: process.env["BACKEND_API_URL"],
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+    UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
+    BACKEND_API_URL: process.env.BACKEND_API_URL,
   },
 
   emptyStringAsUndefined: true,
   skipValidation:
-    !!process.env["SKIP_ENV_VALIDATION"] || process.env.NODE_ENV === "test",
+    !!process.env.SKIP_ENV_VALIDATION || process.env.NODE_ENV === "test",
 
   onValidationError: (issues) => {
     console.error(MESSAGES.DOTENV_FILE_CONFIG_INVALID);

@@ -36,8 +36,8 @@ export default async function AdminCategoriesPage({
 
   const resolvedSearchParams = await searchParams;
   const search =
-    typeof resolvedSearchParams["search"] === "string"
-      ? resolvedSearchParams["search"]
+    typeof resolvedSearchParams.search === "string"
+      ? resolvedSearchParams.search
       : undefined;
 
   const filteredCategories = search

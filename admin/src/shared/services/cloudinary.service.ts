@@ -106,10 +106,10 @@ export const deleteFromCloudinary = async (
       }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const result = await cloudinary.uploader.destroy(publicId);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return result.result === "ok";
+    const res = (await cloudinary.uploader.destroy(publicId)) as {
+      result?: string;
+    };
+    return res.result === "ok";
   } catch (error) {
     console.error("[Cloudinary Service Delete Error]", error);
     return false;

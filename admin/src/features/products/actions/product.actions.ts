@@ -164,7 +164,7 @@ export async function updateProductAction(id: string, formData: FormData) {
           }
           if (uploadedUrls.length > 0) {
             await adminApiClient.products.update(id, {
-              images: [...(validatedData.images || []), ...uploadedUrls],
+              images: [...(validatedData.images ?? []), ...uploadedUrls],
             });
           }
         } catch (e) {

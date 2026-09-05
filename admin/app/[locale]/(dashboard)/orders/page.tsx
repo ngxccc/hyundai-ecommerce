@@ -35,35 +35,43 @@ export default async function AdminOrdersPage({
 
   const resolvedSearchParams = await searchParams;
   const search =
-    typeof resolvedSearchParams["search"] === "string"
-      ? resolvedSearchParams["search"]
+    typeof resolvedSearchParams.search === "string"
+      ? resolvedSearchParams.search
       : undefined;
   const statusParam =
-    typeof resolvedSearchParams["status"] === "string"
-      ? resolvedSearchParams["status"]
+    typeof resolvedSearchParams.status === "string"
+      ? resolvedSearchParams.status
       : undefined;
 
   // Validate status parameter
   const status =
     statusParam &&
     (orderStatusEnum.enumValues as readonly string[]).includes(statusParam)
-      ? (statusParam as Order["status"])
+      ? statusParam
       : undefined;
 
   // Fetch filtered orders
   const ordersRes = await adminApiClient.orders.list(
     status ? { status } : undefined,
   );
-  const orders = (ordersRes.items || ordersRes || []) as Order[];
+  const orders: Order[] =
+    "items" in ordersRes
+      ? ordersRes.items
+      : Array.isArray(ordersRes)
+        ? ordersRes
+        : [];
 
   // In-memory search filtering (ID, user name, email, company)
   const filteredOrders = search
     ? orders.filter(
         (o) =>
           o.id.toLowerCase().includes(search.toLowerCase()) ||
-          o.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
-          o.user?.email?.toLowerCase().includes(search.toLowerCase()) ||
-          o.user?.companyName?.toLowerCase().includes(search.toLowerCase()),
+          (o.user?.name?.toLowerCase().includes(search.toLowerCase()) ??
+            false) ||
+          (o.user?.email?.toLowerCase().includes(search.toLowerCase()) ??
+            false) ||
+          (o.user?.companyName?.toLowerCase().includes(search.toLowerCase()) ??
+            false),
       )
     : orders;
 

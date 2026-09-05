@@ -32,7 +32,7 @@ export const createWarehouseAction = async (input: CreateWarehouseInput) => {
     }
 
     const validatedData = parsed.data;
-    const nameVi = validatedData.nameVi || validatedData.name || "";
+    const nameVi = validatedData.nameVi ?? validatedData.name ?? "";
 
     const payload = {
       nameVi,
@@ -81,7 +81,7 @@ export async function updateWarehouseAction(
     const validatedData = parsed.data;
     const updatePayload: Record<string, unknown> = {};
 
-    const nameVi = validatedData.nameVi || validatedData.name;
+    const nameVi = validatedData.nameVi ?? validatedData.name;
     if (nameVi !== undefined) updatePayload.nameVi = nameVi;
     if (validatedData.nameEn !== undefined)
       updatePayload.nameEn = validatedData.nameEn;

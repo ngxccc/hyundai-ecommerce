@@ -95,7 +95,7 @@ export const useQuoteDraftStore = create<QuoteDraftState>()(
 
           if (existingIndex > -1) {
             const updatedItems = [...state.items];
-            const existingItem = updatedItems[existingIndex]!;
+            const existingItem = updatedItems[existingIndex];
             updatedItems[existingIndex] = {
               ...existingItem,
               quantity: existingItem.quantity + quantity,
@@ -104,17 +104,15 @@ export const useQuoteDraftStore = create<QuoteDraftState>()(
           }
 
           // Extract generator specifications for quote display
-          const specsRecord = (product.specs ?? {}) as Record<string, unknown>;
+          const specsRecord = product.specs ?? {};
           const model =
-            typeof specsRecord["model"] === "string"
-              ? specsRecord["model"]
-              : null;
+            typeof specsRecord.model === "string" ? specsRecord.model : null;
           const power =
-            specsRecord["power"] ??
-            specsRecord["standbyPowerKva"] ??
-            specsRecord["primePowerKva"];
-          const phase = specsRecord["phase"];
-          const fuelType = specsRecord["fuelType"];
+            specsRecord.power ??
+            specsRecord.standbyPowerKva ??
+            specsRecord.primePowerKva;
+          const phase = specsRecord.phase;
+          const fuelType = specsRecord.fuelType;
 
           const powerStr =
             typeof power === "number" || typeof power === "string"

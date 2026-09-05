@@ -61,12 +61,12 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
                 setCustomerInfo({ customerName: e.target.value })
               }
               placeholder={translate("composer.customer.namePlaceholder")}
-              className={`h-9 pl-8 text-sm ${errors["customerName"] ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              className={`h-9 pl-8 text-sm ${errors.customerName ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
           </div>
-          {errors["customerName"] && (
+          {errors.customerName && (
             <p className="text-destructive text-[11px] font-medium">
-              {errors["customerName"]}
+              {errors.customerName}
             </p>
           )}
         </div>
@@ -89,12 +89,12 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
                 setCustomerInfo({ customerPhone: e.target.value })
               }
               placeholder={translate("composer.customer.phonePlaceholder")}
-              className={`h-9 pl-8 text-sm ${errors["customerPhone"] ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              className={`h-9 pl-8 text-sm ${errors.customerPhone ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
           </div>
-          {errors["customerPhone"] && (
+          {errors.customerPhone && (
             <p className="text-destructive text-[11px] font-medium">
-              {errors["customerPhone"]}
+              {errors.customerPhone}
             </p>
           )}
         </div>
@@ -114,12 +114,12 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
                 setCustomerInfo({ customerEmail: e.target.value || null })
               }
               placeholder={translate("composer.customer.emailPlaceholder")}
-              className={`h-9 pl-8 text-sm ${errors["customerEmail"] ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              className={`h-9 pl-8 text-sm ${errors.customerEmail ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
           </div>
-          {errors["customerEmail"] && (
+          {errors.customerEmail && (
             <p className="text-destructive text-[11px] font-medium">
-              {errors["customerEmail"]}
+              {errors.customerEmail}
             </p>
           )}
         </div>

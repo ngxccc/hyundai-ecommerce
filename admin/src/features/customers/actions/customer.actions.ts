@@ -37,12 +37,12 @@ export const createDealerTierAction = async (formData: FormData) => {
   }
 };
 
-export const updateCustomerTierAction = async (
+export const updateCustomerTierAction = (
   _userId: string,
   _payload: {
     dealerTierId: string | null;
     businessType: "DEALER" | "CONTRACTOR" | "END_USER" | "DISTRIBUTOR";
   },
 ) => {
-  return { success: true as const };
+  return Promise.resolve({ success: true as const });
 };

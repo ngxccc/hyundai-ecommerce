@@ -3,8 +3,8 @@
  */
 export function checkRateLimitWithQueue(
   _key: string,
-  _limit: number = 100,
-  _window: string = "60 s",
+  _limit = 100,
+  _window = "60 s",
 ): Promise<{ success: boolean }> {
   return Promise.resolve({ success: true });
 }

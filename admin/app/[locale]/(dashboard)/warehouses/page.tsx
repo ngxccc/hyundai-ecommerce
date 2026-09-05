@@ -37,8 +37,8 @@ export default async function AdminWarehousesPage({
 
   const resolvedSearchParams = await searchParams;
   const search =
-    typeof resolvedSearchParams["search"] === "string"
-      ? resolvedSearchParams["search"]
+    typeof resolvedSearchParams.search === "string"
+      ? resolvedSearchParams.search
       : undefined;
 
   const filteredWarehouses = search

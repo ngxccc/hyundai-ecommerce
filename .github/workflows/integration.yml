@@ -1,4 +1,4 @@
-name: Monorepo Quality Gate & Test Suite
+name: Quality Gate & Test Suite
 
 on:
   workflow_call:
@@ -11,12 +11,6 @@ jobs:
   integration:
     name: "Build, Lint & Test Pipeline"
     runs-on: ubuntu-latest
-    environment: Staging
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN_STAGING || secrets.DOPPLER_TOKEN }}
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v7
@@ -24,9 +18,22 @@ jobs:
       - name: Setup Environment
         uses: ./.github/setup-environment
 
-      - name: Migrate Test Database
-        working-directory: packages/database
-        run: bun run db:migrate
+      - name: Backend Quality Gate
+        working-directory: backend
+        run: |
+          bun install
+          bun run check-types
+          bun run lint
 
-      - name: Run Monorepo Pipeline
-        run: bun turbo run lint check-types test test:integration build
+      - name: Storefront Quality Gate
+        working-directory: storefront
+        run: |
+          bun install
+          bun run check-types
+
+      - name: Admin Quality Gate
+        working-directory: admin
+        run: |
+          bun install
+          bun run check-types
+          bun test

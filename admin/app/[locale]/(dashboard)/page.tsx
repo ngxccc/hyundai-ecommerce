@@ -28,8 +28,6 @@ export async function generateMetadata({
 }
 
 export const AdminDashboard = async () => {
-  const currentYear = new Date().getFullYear();
-
   // Fetch data in parallel
   const [metrics, monthlyRevenue, topProducts, allOrders] = await Promise.all([
     Promise.resolve({

@@ -97,12 +97,10 @@ export const ProductSearchModal = ({
   };
 
   const extractModelAndPower = (product: ProductDTO) => {
-    const specs = (product.specs ?? {}) as Record<string, unknown>;
-    const model =
-      typeof specs["model"] === "string" ? specs["model"] : product.slug;
-    const power =
-      specs["power"] ?? specs["standbyPowerKva"] ?? specs["primePowerKva"];
-    const phase = specs["phase"];
+    const specs = product.specs ?? {};
+    const model = typeof specs.model === "string" ? specs.model : product.slug;
+    const power = specs.power ?? specs.standbyPowerKva ?? specs.primePowerKva;
+    const phase = specs.phase;
 
     const powerStr =
       typeof power === "number" || typeof power === "string"

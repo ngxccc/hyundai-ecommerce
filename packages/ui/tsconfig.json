@@ -1,9 +1,0 @@
-{
-  "extends": "@nhatnang/typescript-config/next",
-  "compilerOptions": {
-    "paths": {
-      "@nhatnang/ui/*": ["./src/*"]
-    }
-  },
-  "include": ["src"]
-}

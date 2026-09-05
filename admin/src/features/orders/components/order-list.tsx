@@ -202,10 +202,10 @@ export const OrderList = ({ orders }: OrderListProps) => {
                     <TableCell>
                       <div className="flex flex-col">
                         <span className="text-sm font-medium">
-                          {order.user?.name || t("unknown")}
+                          {order.user?.name ?? t("unknown")}
                         </span>
                         <span className="text-muted-foreground text-xs">
-                          {order.user?.email || ""}
+                          {order.user?.email ?? ""}
                         </span>
                       </div>
                     </TableCell>
@@ -253,10 +253,10 @@ export const OrderList = ({ orders }: OrderListProps) => {
                 <div className="flex flex-col gap-1">
                   <div className="flex flex-col">
                     <span className="text-sm font-bold">
-                      {order.user?.name || t("unknown")}
+                      {order.user?.name ?? t("unknown")}
                     </span>
                     <span className="text-muted-foreground text-xs">
-                      {order.user?.email || ""}
+                      {order.user?.email ?? ""}
                     </span>
                   </div>
                   <span className="text-muted-foreground mt-1 text-xs">

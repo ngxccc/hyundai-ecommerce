@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, test, expect, vi, beforeEach, type Mock } from "bun:test";
 import {
   getPublicIdFromUrl,

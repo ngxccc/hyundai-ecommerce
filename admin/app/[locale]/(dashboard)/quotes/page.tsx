@@ -4,7 +4,6 @@ import { QuoteList } from "@/features/quotes/components";
 import { adminApiClient } from "@/lib/api-client";
 import {
   quoteStatusEnum,
-  type Quote,
   type QuoteListItem,
 } from "@/shared/types/admin-schema.types";
 import { getTranslations } from "next-intl/server";
@@ -39,18 +38,18 @@ export default async function AdminQuotesPage({
 
   const resolvedSearchParams = await searchParams;
   const search =
-    typeof resolvedSearchParams["search"] === "string"
-      ? resolvedSearchParams["search"]
+    typeof resolvedSearchParams.search === "string"
+      ? resolvedSearchParams.search
       : undefined;
   const statusParam =
-    typeof resolvedSearchParams["status"] === "string"
-      ? resolvedSearchParams["status"]
+    typeof resolvedSearchParams.status === "string"
+      ? resolvedSearchParams.status
       : undefined;
 
   const status =
     statusParam &&
     (quoteStatusEnum.enumValues as readonly string[]).includes(statusParam)
-      ? (statusParam as Quote["status"])
+      ? statusParam
       : undefined;
 
   const quotesRes = await adminApiClient.quotes.list(
