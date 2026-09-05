@@ -217,6 +217,9 @@ export interface RequestOptions extends RequestInit {
 }
 
 const getBaseUrl = (): string => {
+  if (typeof window !== "undefined") {
+    return "";
+  }
   const url =
     (env as Record<string, string | undefined>).BACKEND_API_URL ??
     "http://localhost:3000";
@@ -240,6 +243,12 @@ export async function apiFetch<T>(
   endpoint: string,
   options: RequestOptions = {},
 ): Promise<T> {
+  if (typeof window !== "undefined") {
+    throw new ApiClientError(
+      "apiFetch cannot be called on the client. Use Server Actions instead.",
+      500,
+    );
+  }
   const baseUrl = getBaseUrl();
   const base = new URL(baseUrl);
   const cleanPath = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;

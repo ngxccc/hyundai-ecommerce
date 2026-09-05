@@ -33,9 +33,11 @@ export async function proxy(request: NextRequest) {
     // Bypass API routes, static assets, and Next.js internal files
     const isApi = pathname.startsWith("/api/");
     const isNextInternal = pathname.startsWith("/_next/");
-    const isStaticAsset = /\.(png|jpg|jpeg|gif|svg|ico|css|js|json)$/i.test(
-      pathname,
-    );
+    const isStaticAsset =
+      pathname.startsWith("/fonts/") ||
+      /\.(png|jpg|jpeg|gif|svg|ico|css|js|json|ttf|otf|woff|woff2|eot)$/i.test(
+        pathname,
+      );
 
     if (!isApi && !isNextInternal && !isStaticAsset) {
       const url = request.nextUrl.clone();
@@ -97,6 +99,6 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/(vi|en)/:path*",
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|llms.txt|manifest.json|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api|_next/static|_next/image|fonts|favicon.ico|sitemap.xml|robots.txt|llms.txt|manifest.json|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ttf|otf|woff|woff2|eot)$).*)",
   ],
 };
