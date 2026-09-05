@@ -19,17 +19,23 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: z
       .url(MESSAGES.NEXT_URL_IS_INVALID)
       .default("http://localhost:3002"),
+    NEXT_PUBLIC_STOREFRONT_URL: z
+      .url(MESSAGES.NEXT_URL_IS_INVALID)
+      .default("http://localhost:3001"),
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string().min(1).default("dummy-cloud"),
   },
 
   runtimeEnv: {
     NEXT_PUBLIC_APP_URL:
+      process.env.NEXT_PUBLIC_ADMIN_URL ??
       process.env.NEXT_PUBLIC_APP_URL ??
       (process.env.VERCEL_PROJECT_PRODUCTION_URL
         ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
         : process.env.VERCEL_URL
           ? `https://${process.env.VERCEL_URL}`
           : undefined),
+    NEXT_PUBLIC_STOREFRONT_URL:
+      process.env.NEXT_PUBLIC_STOREFRONT_URL ?? "http://localhost:3001",
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME:
       process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
     NODE_ENV: process.env.NODE_ENV,

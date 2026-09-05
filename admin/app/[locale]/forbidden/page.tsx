@@ -32,7 +32,7 @@ const ForbiddenPage = async ({
     locale: resolvedParams.locale,
     namespace: "Forbidden",
   });
-  const storefrontUrl = env.NEXT_PUBLIC_APP_URL;
+  const storefrontUrl = env.NEXT_PUBLIC_STOREFRONT_URL;
 
   return (
     <div className="bg-background flex min-h-screen flex-col items-center justify-center p-4 text-center">
