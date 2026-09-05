@@ -15,7 +15,6 @@ import {
 } from "@/features/home/components/skeletons/home-skeletons";
 import type { Locale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-
 export default async function Home({
   params,
 }: {
@@ -26,7 +25,9 @@ export default async function Home({
   setRequestLocale(locale);
   return (
     <>
-      <HeroSection />
+      <Suspense fallback={<div className="min-h-[80vh]" />}>
+        <HeroSection />
+      </Suspense>
       <Suspense fallback={<CategoriesSectionSkeleton />}>
         <CategoriesSection />
       </Suspense>
@@ -39,7 +40,9 @@ export default async function Home({
       <Suspense fallback={<NewsSectionSkeleton />}>
         <NewsSection />
       </Suspense>
-      <TrustSignalsSection />
+      <Suspense fallback={<div className="h-32" />}>
+        <TrustSignalsSection />
+      </Suspense>
     </>
   );
 }

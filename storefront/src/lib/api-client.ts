@@ -276,9 +276,14 @@ export async function apiFetch<T>(
   const body = (await response.json()) as ApiResponse<T> | T;
   // If wrapped in our standard ApiResponse envelope, unwrap data
   if (body && typeof body === "object" && "success" in body && "data" in body) {
+    if ("meta" in body && body.meta && typeof body.meta === "object") {
+      return {
+        items: body.data,
+        pagination: body.meta,
+      } as unknown as T;
+    }
     return body.data;
   }
-
   return body;
 }
 

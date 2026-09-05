@@ -11,17 +11,25 @@ export const env = createEnv({
         ENVIRONMENT_MODES.TEST,
       ])
       .default(ENVIRONMENT_MODES.DEVELOPMENT),
-    CLOUDINARY_API_SECRET: z.string().min(1),
-    CLOUDINARY_API_KEY: z.string().min(1),
+    CLOUDINARY_API_SECRET: z.string().min(1).default("dummy-secret"),
+    CLOUDINARY_API_KEY: z.string().min(1).default("dummy-key"),
     BACKEND_API_URL: z.url().default("http://127.0.0.1:3000"),
   },
   client: {
-    NEXT_PUBLIC_APP_URL: z.url(MESSAGES.NEXT_URL_IS_INVALID),
-    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string().min(1),
+    NEXT_PUBLIC_APP_URL: z
+      .url(MESSAGES.NEXT_URL_IS_INVALID)
+      .default("http://localhost:3002"),
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string().min(1).default("dummy-cloud"),
   },
 
   runtimeEnv: {
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_APP_URL:
+      process.env.NEXT_PUBLIC_APP_URL ??
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : undefined),
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME:
       process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
     NODE_ENV: process.env.NODE_ENV,

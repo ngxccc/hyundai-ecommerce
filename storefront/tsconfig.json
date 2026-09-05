@@ -31,7 +31,9 @@
     "**/*.tsx",
     "app/**/*",
     "src/**/*",
-    "app/.well-known/**/*"
+    "app/.well-known/**/*",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": ["node_modules", ".next", "src/components/ui"]
 }

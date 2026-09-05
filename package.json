@@ -10,7 +10,7 @@
     "check-types:backend": "cd backend && bun run check-types",
     "check-types:storefront": "cd storefront && bun run check-types",
     "dev:admin": "cd admin && bun run dev",
-    "dev:backend": "cd backend && bun run start:dev",
+    "dev:backend": "cd backend && bun run dev",
     "dev:storefront": "cd storefront && bun run dev",
     "docker:down": "docker compose down",
     "docker:up": "docker compose up -d",

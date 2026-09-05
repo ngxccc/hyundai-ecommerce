@@ -1,3 +1,5 @@
+"use client";
+
 import { BadgeCheck, Handshake, UsersRound } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

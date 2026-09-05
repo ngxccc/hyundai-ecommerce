@@ -9,6 +9,9 @@ export const brandService = {
     cacheLife("hours");
     try {
       const brands = await apiClient.catalog.getBrands();
+      if (!Array.isArray(brands)) {
+        return [];
+      }
       return brands.map((b) => mapBrandToStorefront(b, locale));
     } catch (error) {
       console.error("Failed to fetch brands from backend:", error);

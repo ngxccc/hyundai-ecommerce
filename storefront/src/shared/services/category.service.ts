@@ -14,6 +14,9 @@ export const categoryService = {
     cacheLife("hours");
     try {
       const categories = await apiClient.catalog.getCategories();
+      if (!Array.isArray(categories)) {
+        return [];
+      }
       return categories.map((c) => mapCategoryToStorefront(c, locale));
     } catch (error) {
       console.error("Failed to fetch categories from backend:", error);
@@ -28,6 +31,9 @@ export const categoryService = {
     cacheLife("hours");
     try {
       const tree = await apiClient.catalog.getCategoryTree();
+      if (!Array.isArray(tree)) {
+        return [];
+      }
       return tree.map((node) => mapCategoryTreeToStorefront(node, locale));
     } catch (error) {
       console.error("Failed to fetch category tree from backend:", error);

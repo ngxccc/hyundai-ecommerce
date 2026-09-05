@@ -31,7 +31,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/**/*",
-    "src/**/*"
+    "src/**/*",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": ["node_modules", ".next", "src/components/ui"]
 }

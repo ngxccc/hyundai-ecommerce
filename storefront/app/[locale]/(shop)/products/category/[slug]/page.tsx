@@ -38,6 +38,9 @@ export async function generateMetadata({
 // Statically pre-render all category landing pages
 export async function generateStaticParams() {
   const categories = await categoryService.getCategories("vi");
+  if (categories.length === 0) {
+    return [{ slug: "may-phat-dien" }];
+  }
   return categories.map((cat) => ({
     slug: cat.slug,
   }));

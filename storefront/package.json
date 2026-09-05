@@ -6,9 +6,9 @@
   "scripts": {
     "build": "next build",
     "check-types": "tsc --noEmit",
-    "dev": "doppler run -- next dev",
+    "dev": "doppler run -- next dev -p 3001",
     "lint": "eslint . --fix --cache --cache-location .eslintcache",
-    "start": "doppler run -- next start",
+    "start": "doppler run -- next start -p 3001",
     "test": "bun test src/ app/"
   },
   "dependencies": {

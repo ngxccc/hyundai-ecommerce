@@ -143,9 +143,14 @@ export async function adminApiFetch<T>(
 
   const body = (await response.json()) as ApiResponse<T> | T;
   if (body && typeof body === "object" && "success" in body && "data" in body) {
+    if ("meta" in body && body.meta && typeof body.meta === "object") {
+      return {
+        items: body.data,
+        pagination: body.meta,
+      } as unknown as T;
+    }
     return body.data;
   }
-
   return body;
 }
 

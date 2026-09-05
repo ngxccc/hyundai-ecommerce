@@ -94,7 +94,6 @@ export async function generateMetadata({
     alternates: { canonical: "./" },
   };
 }
-
 export default async function RootLayout({
   children,
   params,

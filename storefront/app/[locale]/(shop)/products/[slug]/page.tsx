@@ -31,14 +31,10 @@ const formatSpecs = (specs: StorefrontProduct["specs"]): string[] => {
   }
   return specsArray;
 };
-
 export async function generateStaticParams(): Promise<ProductPageParams[]> {
   const slugs = await productService.getStaticProductSlugs();
 
-  if (slugs.length === 0 && process.env.CI) {
-    console.warn(
-      "CI Environment: DB empty, generating fallback slug to test layout",
-    );
+  if (slugs.length === 0) {
     return routing.locales.flatMap((locale) => [
       { locale, slug: "fallback-test-product" },
     ]);
