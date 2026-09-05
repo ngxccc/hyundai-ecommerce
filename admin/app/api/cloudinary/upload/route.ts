@@ -29,12 +29,7 @@ export async function POST(req: NextRequest) {
   try {
     // 1. Session and role check
     const session = await getCachedSession();
-    const allowedRoles = [
-      "SUPER_ADMIN",
-      "SALES_REPRESENTATIVE",
-      "ACCOUNTANT",
-      "WAREHOUSE_MANAGER",
-    ];
+    const allowedRoles = ["ADMIN", "SALES"];
     if (!session?.user.role || !allowedRoles.includes(session.user.role)) {
       return jsonError({
         status: HTTP_STATUS.UNAUTHORIZED,

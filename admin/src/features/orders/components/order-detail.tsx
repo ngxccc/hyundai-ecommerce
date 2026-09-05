@@ -186,53 +186,50 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
                 </p>
               </div>
             </div>
-            {currentUser &&
-              ["SUPER_ADMIN", "SALES_REPRESENTATIVE", "ACCOUNTANT"].includes(
-                currentUser.role,
-              ) && (
-                <div className="flex flex-wrap gap-3">
-                  <Button
-                    size="sm"
-                    disabled={isPending}
-                    onClick={() => {
-                      startTransition(async () => {
-                        const res = await approveOrderCancellationAction(
-                          order.id,
-                        );
-                        if (res.success) {
-                          toast.success(t("cancellationApproveSuccess"));
-                        } else {
-                          toast.error(res.error);
-                        }
-                      });
-                    }}
-                    className="bg-red-600 text-white hover:bg-red-700"
-                  >
-                    {t("btnApproveCancellation")}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={isPending}
-                    onClick={() => {
-                      startTransition(async () => {
-                        const res = await updateOrderStatusAction(
-                          order.id,
-                          "PROCESSING",
-                        );
-                        if (res.success) {
-                          toast.success(t("cancellationRejectSuccess"));
-                        } else {
-                          toast.error(res.error);
-                        }
-                      });
-                    }}
-                    className="border-red-200 text-red-700 hover:bg-red-50 dark:border-red-900"
-                  >
-                    {t("btnRejectCancellation")}
-                  </Button>
-                </div>
-              )}
+            {currentUser && ["ADMIN", "SALES"].includes(currentUser.role) && (
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  size="sm"
+                  disabled={isPending}
+                  onClick={() => {
+                    startTransition(async () => {
+                      const res = await approveOrderCancellationAction(
+                        order.id,
+                      );
+                      if (res.success) {
+                        toast.success(t("cancellationApproveSuccess"));
+                      } else {
+                        toast.error(res.error);
+                      }
+                    });
+                  }}
+                  className="bg-red-600 text-white hover:bg-red-700"
+                >
+                  {t("btnApproveCancellation")}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={isPending}
+                  onClick={() => {
+                    startTransition(async () => {
+                      const res = await updateOrderStatusAction(
+                        order.id,
+                        "PROCESSING",
+                      );
+                      if (res.success) {
+                        toast.success(t("cancellationRejectSuccess"));
+                      } else {
+                        toast.error(res.error);
+                      }
+                    });
+                  }}
+                  className="border-red-200 text-red-700 hover:bg-red-50 dark:border-red-900"
+                >
+                  {t("btnRejectCancellation")}
+                </Button>
+              </div>
+            )}
           </Card>
         )}
         {/* Stepper Card */}
@@ -513,25 +510,24 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
                   {t("cashPaymentVerificationDesc")}
                 </p>
               </div>
-              {currentUser &&
-                ["SUPER_ADMIN", "ACCOUNTANT"].includes(currentUser.role) && (
-                  <Button
-                    disabled={isPending}
-                    onClick={() => {
-                      startTransition(async () => {
-                        const res = await verifyCashPaymentAction(order.id);
-                        if (res.success) {
-                          toast.success(t("verifyCashSuccess"));
-                        } else {
-                          toast.error(res.error);
-                        }
-                      });
-                    }}
-                    className="w-full bg-amber-600 text-white hover:bg-amber-700"
-                  >
-                    {t("btnVerifyCashPayment")}
-                  </Button>
-                )}
+              {currentUser?.role === "ADMIN" && (
+                <Button
+                  disabled={isPending}
+                  onClick={() => {
+                    startTransition(async () => {
+                      const res = await verifyCashPaymentAction(order.id);
+                      if (res.success) {
+                        toast.success(t("verifyCashSuccess"));
+                      } else {
+                        toast.error(res.error);
+                      }
+                    });
+                  }}
+                  className="w-full bg-amber-600 text-white hover:bg-amber-700"
+                >
+                  {t("btnVerifyCashPayment")}
+                </Button>
+              )}
             </Card>
           )}
         {/* Buyer Portfolio Card */}

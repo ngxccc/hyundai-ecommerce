@@ -1,12 +1,7 @@
 import { getCachedSession } from "./session";
 
-export type UserRole =
-  | "SUPER_ADMIN"
-  | "SALES_REPRESENTATIVE"
-  | "ACCOUNTANT"
-  | "WAREHOUSE_MANAGER"
-  | "DEALER"
-  | "CUSTOMER";
+export const USER_ROLES = ["ADMIN", "SALES"] as const;
+export type UserRole = (typeof USER_ROLES)[number];
 
 export type JSONContent = Record<string, unknown>;
 export class AuthError extends Error {
@@ -60,12 +55,7 @@ export const requireAuth = async () => {
     throw new AuthError("UNAUTHORIZED");
   }
 
-  const allowedRoles = [
-    "SUPER_ADMIN",
-    "SALES_REPRESENTATIVE",
-    "ACCOUNTANT",
-    "WAREHOUSE_MANAGER",
-  ];
+  const allowedRoles = ["ADMIN", "SALES"];
   if (!allowedRoles.includes(session.user.role)) {
     throw new AuthError("FORBIDDEN");
   }
@@ -87,11 +77,8 @@ export const assertRole = async (allowedRoles: UserRole[]) => {
   return session;
 };
 
-export const assertFinanceRole = () =>
-  assertRole(["SUPER_ADMIN", "ACCOUNTANT"]);
+export const assertFinanceRole = () => assertRole(["ADMIN"]);
 
-export const assertSalesOrFinanceRole = () =>
-  assertRole(["SUPER_ADMIN", "SALES_REPRESENTATIVE", "ACCOUNTANT"]);
+export const assertSalesOrFinanceRole = () => assertRole(["ADMIN", "SALES"]);
 
-export const assertWarehouseRole = () =>
-  assertRole(["SUPER_ADMIN", "WAREHOUSE_MANAGER"]);
+export const assertWarehouseRole = () => assertRole(["ADMIN"]);

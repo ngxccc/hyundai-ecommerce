@@ -76,12 +76,7 @@ export async function proxy(request: NextRequest) {
     console.error("Middleware Auth Error:", error);
   }
 
-  const allowedRoles = [
-    "SUPER_ADMIN",
-    "SALES_REPRESENTATIVE",
-    "ACCOUNTANT",
-    "WAREHOUSE_MANAGER",
-  ];
+  const allowedRoles = ["ADMIN", "SALES"];
   const isAdmin = user && allowedRoles.includes(user.role);
 
   if (user) {

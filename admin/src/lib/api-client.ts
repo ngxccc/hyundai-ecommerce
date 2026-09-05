@@ -117,7 +117,7 @@ export async function adminApiFetch<T>(
   });
 
   const contentType = response.headers.get("content-type");
-  const isJson = contentType?.includes("application/json");
+  const isJson = contentType?.includes("json");
 
   if (!response.ok) {
     let errorDetails: ApiProblemDetails | undefined;
