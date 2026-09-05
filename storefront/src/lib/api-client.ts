@@ -3,6 +3,8 @@
  * Replaces direct in-process database queries with HTTP fetch and Next.js ISR/cache tags.
  */
 
+import { env } from "@/env";
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -211,11 +213,12 @@ export interface RequestOptions extends RequestInit {
 }
 
 const getBaseUrl = (): string => {
-  return (
-    process.env.BACKEND_API_URL ??
-    process.env.NEXT_PUBLIC_BACKEND_API_URL ??
-    "http://127.0.0.1:3000"
-  );
+  const url = env.BACKEND_API_URL;
+  const trimmed = url.trim().replace(/^["'\\]+|["'\\]+$/g, "");
+  if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+    return `https://${trimmed}`;
+  }
+  return trimmed;
 };
 
 /**

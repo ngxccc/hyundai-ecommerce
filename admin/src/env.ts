@@ -1,6 +1,19 @@
 import { ENVIRONMENT_MODES, MESSAGES } from "@/shared/constants";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
+const zUrl = (defaultVal: string, errorMsg?: string) =>
+  z.preprocess(
+    (val) => {
+      if (!val || typeof val !== "string") return defaultVal;
+      const trimmed = val.trim().replace(/^["'\\]+|["'\\]+$/g, "");
+      if (!trimmed) return defaultVal;
+      if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+        return `https://${trimmed}`;
+      }
+      return trimmed;
+    },
+    errorMsg ? z.url(errorMsg) : z.url(),
+  );
 
 export const env = createEnv({
   server: {
@@ -13,15 +26,17 @@ export const env = createEnv({
       .default(ENVIRONMENT_MODES.DEVELOPMENT),
     CLOUDINARY_API_SECRET: z.string().min(1).default("dummy-secret"),
     CLOUDINARY_API_KEY: z.string().min(1).default("dummy-key"),
-    BACKEND_API_URL: z.url().default("http://127.0.0.1:3000"),
+    BACKEND_API_URL: zUrl("http://127.0.0.1:3000"),
   },
   client: {
-    NEXT_PUBLIC_APP_URL: z
-      .url(MESSAGES.NEXT_URL_IS_INVALID)
-      .default("http://localhost:3002"),
-    NEXT_PUBLIC_STOREFRONT_URL: z
-      .url(MESSAGES.NEXT_URL_IS_INVALID)
-      .default("http://localhost:3001"),
+    NEXT_PUBLIC_APP_URL: zUrl(
+      "http://localhost:3002",
+      MESSAGES.NEXT_URL_IS_INVALID,
+    ),
+    NEXT_PUBLIC_STOREFRONT_URL: zUrl(
+      "http://localhost:3001",
+      MESSAGES.NEXT_URL_IS_INVALID,
+    ),
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string().min(1).default("dummy-cloud"),
   },
 

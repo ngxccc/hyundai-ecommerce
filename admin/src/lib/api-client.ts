@@ -4,6 +4,7 @@
  */
 
 import { cookies } from "next/headers";
+import { env } from "@/env";
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -55,7 +56,12 @@ export interface RequestOptions extends RequestInit {
 }
 
 const getBaseUrl = (): string => {
-  return process.env.BACKEND_API_URL ?? "http://127.0.0.1:3000";
+  const url = env.BACKEND_API_URL;
+  const trimmed = url.trim().replace(/^["'\\]+|["'\\]+$/g, "");
+  if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+    return `https://${trimmed}`;
+  }
+  return trimmed;
 };
 
 export function safeId(id: string): string {

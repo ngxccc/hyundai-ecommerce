@@ -57,7 +57,9 @@ describe("QuotesController", () => {
     ),
     findById: mock((_id: string) => Promise.resolve(mockQuote)),
     updateStatus: mock((_id: string, _status: string) =>
-      Promise.resolve({ ...mockQuote, status: "SUBMITTED" as const }),
+      Promise.resolve(
+        Object.assign({}, mockQuote, { status: "SUBMITTED" as const }),
+      ),
     ),
     updateItemPrice: mock(
       (_quoteId: string, _itemId: string, _agreedPrice: string) =>
