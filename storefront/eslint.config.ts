@@ -51,7 +51,7 @@ export default defineConfig([
           },
         },
       ],
-      "@typescript-eslint/no-deprecated": "warn",
+      "@typescript-eslint/no-deprecated": "error",
       "@typescript-eslint/no-unnecessary-condition": "error",
       "@typescript-eslint/no-empty-object-type": "error",
     },

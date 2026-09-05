@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { siteConfig } from "@/shared/config/site";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { CatalogTemplate } from "@/features/products/components/catalog-template";
 import { CatalogTemplateSkeleton } from "@/features/products/components/skeletons/catalog-template-skeleton";
@@ -13,7 +13,6 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  setRequestLocale(locale as Locale);
   const t = await getTranslations("Catalog");
   const localePrefix = locale === "vi" ? "" : `/${locale}`;
 
@@ -30,7 +29,6 @@ export default async function CatalogPage({
   searchParams,
 }: CatalogPageProps<{ locale: string }>) {
   const { locale } = await params;
-  setRequestLocale(locale as Locale);
 
   return (
     <Suspense fallback={<CatalogTemplateSkeleton />}>

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { ProductDetailsSkeleton } from "@/features/products/components/skeletons/product-details-skeleton";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import type { StorefrontProduct } from "@/shared/services/types";
 import { routing } from "@/i18n/routing";
 import { priceFormatter } from "@/shared/lib/utils";
@@ -57,7 +57,6 @@ export async function generateMetadata({
   params: Promise<ProductPageParams>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  setRequestLocale(locale as Locale);
   const product = await productService.getProductBySlug(locale as Locale, slug);
 
   if (!product) {
@@ -108,7 +107,6 @@ async function ProductDetailsPageContent({
   params: Promise<ProductPageParams>;
 }) {
   const { locale, slug } = await params;
-  setRequestLocale(locale as Locale);
   const product = await productService.getProductBySlug(locale as Locale, slug);
   const t = await getTranslations("ProductDetails");
 

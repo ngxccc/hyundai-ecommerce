@@ -5,11 +5,7 @@ import "@/shared/styles/globals.css";
 import { META_THEME_COLORS, siteConfig } from "@/shared/config/site";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
-import {
-  getMessages,
-  getTranslations,
-  setRequestLocale,
-} from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { NextIntlClientProvider, type Locale } from "next-intl";
 import { Header } from "@/features/home/components";
 import { Analytics } from "@vercel/analytics/next";
@@ -116,8 +112,6 @@ export default async function RootLayout({
     notFound();
   }
 
-  setRequestLocale(locale);
-
   return (
     <html
       lang={locale}
@@ -142,8 +136,7 @@ async function LocalizedLayoutContent({
   locale: Locale;
   children: React.ReactNode;
 }) {
-  setRequestLocale(locale);
-  const messages = await getMessages();
+  const messages = await getMessages({ locale });
 
   return (
     <NextIntlClientProvider messages={messages}>

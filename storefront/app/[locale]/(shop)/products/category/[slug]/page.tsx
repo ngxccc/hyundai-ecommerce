@@ -6,7 +6,6 @@ import { CatalogTemplateSkeleton } from "@/features/products/components/skeleton
 import type { CatalogPageProps } from "@/features/products/types/catalog";
 import { categoryService } from "@/shared/services";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "next-intl";
 
 export async function generateMetadata({
@@ -15,7 +14,6 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  setRequestLocale(locale as Locale);
   const categoriesList = await categoryService.getCategories(
     locale as "vi" | "en",
   );
@@ -51,7 +49,6 @@ export default async function CategoryCatalogPage({
   searchParams,
 }: CatalogPageProps<{ locale: string; slug: string }>) {
   const { locale, slug } = await params;
-  setRequestLocale(locale as Locale);
 
   // Verify that target category exists, otherwise throw 404
   const categoriesList = await categoryService.getCategories(

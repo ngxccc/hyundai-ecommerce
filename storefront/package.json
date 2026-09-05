@@ -6,6 +6,7 @@
   "scripts": {
     "build": "next build",
     "check-types": "tsc --noEmit",
+    "typegen:i18n": "bun -e 'import fn from \"./node_modules/next-intl/dist/esm/development/plugin/declaration/createMessagesDeclaration.js\"; fn([\"./messages/vi.json\"]);'",
     "dev": "doppler run -- next dev -p 3001",
     "lint": "eslint . --fix --cache --cache-location .eslintcache",
     "start": "doppler run -- next start -p 3001",
