@@ -21,6 +21,10 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  ApiOkResponseGeneric,
+  ApiCreatedResponseGeneric,
+} from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
 import type { Response } from "express";
 import { CurrentUser } from "@/common/decorators/current-user.decorator";
@@ -62,11 +66,7 @@ export class QuotesController {
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: "Submit customer Request For Quotation (RFQ)" })
-  @ApiResponse({
-    status: 201,
-    description: "Customer RFQ submitted successfully",
-    type: QuoteResponseDto,
-  })
+  @ApiCreatedResponseGeneric(QuoteResponseDto)
   async submitRfq(@Body() dto: CreateQuoteDto) {
     const quote = await this.quotesService.createRfq(dto);
     return apiSuccess(quote);
@@ -85,11 +85,7 @@ export class QuotesController {
   @Roles("ADMIN")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create official B2B quotation (Admin only)" })
-  @ApiResponse({
-    status: 201,
-    description: "B2B quote created successfully",
-    type: QuoteResponseDto,
-  })
+  @ApiCreatedResponseGeneric(QuoteResponseDto)
   async createAdminQuote(
     @Body() dto: CreateAdminQuoteDto,
     @CurrentUser("sub") adminUserId: string,
@@ -113,11 +109,7 @@ export class QuotesController {
   @ApiQuery({ name: "userId", required: false, type: String })
   @ApiQuery({ name: "status", required: false, type: String })
   @ApiQuery({ name: "search", required: false, type: String })
-  @ApiResponse({
-    status: 200,
-    description: "Paginated list of quotes retrieved successfully",
-    type: PaginatedQuoteResponseDto,
-  })
+  @ApiOkResponseGeneric(PaginatedQuoteResponseDto)
   async listQuotes(@Query() query: QuoteQueryDto) {
     const result = await this.quotesService.findAll(query);
     return apiSuccess(result);
@@ -134,11 +126,7 @@ export class QuotesController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get detailed quote by ID" })
   @ApiParam({ name: "id", description: "Quote UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Quote details retrieved successfully",
-    type: QuoteResponseDto,
-  })
+  @ApiOkResponseGeneric(QuoteResponseDto)
   async getQuoteById(@Param("id") id: string) {
     const quote = await this.quotesService.findById(id);
     return apiSuccess(quote);
@@ -159,11 +147,7 @@ export class QuotesController {
     summary: "Update quote status along the state machine (Admin only)",
   })
   @ApiParam({ name: "id", description: "Quote UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Quote status updated successfully",
-    type: QuoteResponseDto,
-  })
+  @ApiOkResponseGeneric(QuoteResponseDto)
   async updateStatus(
     @Param("id") id: string,
     @Body() dto: UpdateQuoteStatusDto,
@@ -189,11 +173,7 @@ export class QuotesController {
   })
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiParam({ name: "itemId", description: "Quote item UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Quote item price adjusted successfully",
-    type: QuoteResponseDto,
-  })
+  @ApiOkResponseGeneric(QuoteResponseDto)
   async updateItemPrice(
     @Param("id") quoteId: string,
     @Param("itemId") itemId: string,
@@ -221,11 +201,7 @@ export class QuotesController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Post a message to quote negotiation timeline" })
   @ApiParam({ name: "id", description: "Quote UUID" })
-  @ApiResponse({
-    status: 201,
-    description: "Negotiation message recorded successfully",
-    type: QuoteMessageResponseDto,
-  })
+  @ApiCreatedResponseGeneric(QuoteMessageResponseDto)
   async sendMessage(
     @Param("id") quoteId: string,
     @CurrentUser("sub") senderId: string,
@@ -255,11 +231,7 @@ export class QuotesController {
     summary: "Approve quote and convert to order (Admin only)",
   })
   @ApiParam({ name: "id", description: "Quote UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Quote approved and converted to order successfully",
-    type: ApproveToOrderResponseDto,
-  })
+  @ApiOkResponseGeneric(ApproveToOrderResponseDto)
   async approveToOrder(
     @Param("id") quoteId: string,
     @CurrentUser("sub") adminUserId: string,

@@ -1,5 +1,5 @@
 export const CART_ROUTES = {
-  TAG: "Cart",
+  TAG: "cart",
   ROOT: "cart",
   ITEMS: "items",
   ITEM_BY_ID: "items/:id",

@@ -16,9 +16,12 @@ import {
   ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  ApiOkResponseGeneric,
+  ApiCreatedResponseGeneric,
+} from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
 import { Roles } from "@/common/decorators/roles.decorator";
 import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
@@ -47,11 +50,7 @@ export class WarehouseController {
     type: Boolean,
     description: "Whether to include deactivated warehouses",
   })
-  @ApiResponse({
-    status: 200,
-    description: "List of warehouses retrieved successfully",
-    type: [WarehouseResponseDto],
-  })
+  @ApiOkResponseGeneric(WarehouseResponseDto, { isArray: true })
   async getAll(@Query("includeInactive") includeInactive?: string) {
     const shouldInclude = includeInactive === "true";
     const data = await this.warehouseService.findAll(shouldInclude);
@@ -63,11 +62,7 @@ export class WarehouseController {
     summary: "Get stock distribution across all warehouses for a product",
   })
   @ApiParam({ name: "productId", description: "Product UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Product warehouse stock distribution",
-    type: [WarehouseStockResponseDto],
-  })
+  @ApiOkResponseGeneric(WarehouseStockResponseDto, { isArray: true })
   async getProductStocks(@Param("productId") productId: string) {
     const data = await this.warehouseService.getProductStocks(productId);
     return apiSuccess(data);
@@ -78,11 +73,7 @@ export class WarehouseController {
     summary: "Get all product inventory stocks located in a warehouse",
   })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Warehouse stock inventory",
-    type: [WarehouseStockResponseDto],
-  })
+  @ApiOkResponseGeneric(WarehouseStockResponseDto, { isArray: true })
   async getWarehouseStocks(@Param("id") id: string) {
     const data = await this.warehouseService.getWarehouseStocks(id);
     return apiSuccess(data);
@@ -91,11 +82,7 @@ export class WarehouseController {
   @Get(WAREHOUSE_ROUTES.BY_ID)
   @ApiOperation({ summary: "Get warehouse details by UUID" })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Warehouse details",
-    type: WarehouseResponseDto,
-  })
+  @ApiOkResponseGeneric(WarehouseResponseDto)
   async getById(@Param("id") id: string) {
     const data = await this.warehouseService.findById(id);
     return apiSuccess(data);
@@ -107,11 +94,7 @@ export class WarehouseController {
   @Roles("ADMIN")
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Create a new physical warehouse (Admin Only)" })
-  @ApiResponse({
-    status: 201,
-    description: "Warehouse created successfully",
-    type: WarehouseResponseDto,
-  })
+  @ApiCreatedResponseGeneric(WarehouseResponseDto)
   async create(@Body() dto: CreateWarehouseDto) {
     const data = await this.warehouseService.create(dto);
     return apiSuccess(data);
@@ -127,11 +110,7 @@ export class WarehouseController {
       "Update product stock in a warehouse and atomically sync totalStockCache (Admin Only)",
   })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Warehouse stock updated and totalStockCache synchronized",
-    type: WarehouseStockResponseDto,
-  })
+  @ApiOkResponseGeneric(WarehouseStockResponseDto)
   async updateStock(@Param("id") id: string, @Body() dto: UpdateStockDto) {
     const data = await this.warehouseService.updateStock(id, dto);
     return apiSuccess(data);
@@ -144,11 +123,7 @@ export class WarehouseController {
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Update warehouse details (Admin Only)" })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Warehouse updated successfully",
-    type: WarehouseResponseDto,
-  })
+  @ApiOkResponseGeneric(WarehouseResponseDto)
   async update(@Param("id") id: string, @Body() dto: UpdateWarehouseDto) {
     const data = await this.warehouseService.update(id, dto);
     return apiSuccess(data);
@@ -161,10 +136,7 @@ export class WarehouseController {
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Deactivate warehouse (Admin Only)" })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Warehouse deactivated successfully",
-  })
+  @ApiOkResponseGeneric()
   async delete(@Param("id") id: string) {
     await this.warehouseService.delete(id);
     return apiSuccess(null);

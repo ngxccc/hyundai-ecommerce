@@ -1266,7 +1266,7 @@
           }
         },
         "summary": "Submit Request for Quote (Storefront RFQ)",
-        "tags": ["Leads (Storefront RFQ)"]
+        "tags": ["leads"]
       },
       "get": {
         "description": "Returns all leads and quote requests ordered by latest submission date.",
@@ -1304,7 +1304,7 @@
           }
         ],
         "summary": "List all leads (CMS Admin & Sales)",
-        "tags": ["Leads (Storefront RFQ)"]
+        "tags": ["leads"]
       }
     },
     "/leads/{id}": {
@@ -1369,7 +1369,7 @@
           }
         ],
         "summary": "Get lead by ID (CMS Admin & Sales)",
-        "tags": ["Leads (Storefront RFQ)"]
+        "tags": ["leads"]
       }
     },
     "/leads/{id}/status": {
@@ -1468,7 +1468,7 @@
           }
         ],
         "summary": "Update lead status (CMS Admin & Sales)",
-        "tags": ["Leads (Storefront RFQ)"]
+        "tags": ["leads"]
       }
     },
     "/leads/{id}/assign": {
@@ -1533,7 +1533,7 @@
           }
         ],
         "summary": "Assign sales representative to lead (Admin only)",
-        "tags": ["Leads (Storefront RFQ)"]
+        "tags": ["leads"]
       }
     },
     "/categories": {
@@ -1587,7 +1587,7 @@
           }
         },
         "summary": "List all categories",
-        "tags": ["Categories"]
+        "tags": ["categories"]
       },
       "post": {
         "description": "Creates a new category in the catalog.",
@@ -1675,7 +1675,7 @@
           }
         ],
         "summary": "Create category (Admin only)",
-        "tags": ["Categories"]
+        "tags": ["categories"]
       }
     },
     "/categories/tree": {
@@ -1729,7 +1729,7 @@
           }
         },
         "summary": "Get category tree",
-        "tags": ["Categories"]
+        "tags": ["categories"]
       }
     },
     "/categories/{id}": {
@@ -1808,7 +1808,7 @@
           }
         },
         "summary": "Get category by ID",
-        "tags": ["Categories"]
+        "tags": ["categories"]
       },
       "put": {
         "description": "Updates an existing category by UUID.",
@@ -1924,7 +1924,7 @@
           }
         ],
         "summary": "Update category (Admin only)",
-        "tags": ["Categories"]
+        "tags": ["categories"]
       },
       "delete": {
         "description": "Deletes an existing category by UUID.",
@@ -1987,7 +1987,7 @@
           }
         ],
         "summary": "Delete category (Admin only)",
-        "tags": ["Categories"]
+        "tags": ["categories"]
       }
     },
     "/brands": {
@@ -2041,7 +2041,7 @@
           }
         },
         "summary": "List all brands",
-        "tags": ["Brands"]
+        "tags": ["brands"]
       },
       "post": {
         "description": "Creates a new brand in the catalog.",
@@ -2129,7 +2129,7 @@
           }
         ],
         "summary": "Create brand (Admin only)",
-        "tags": ["Brands"]
+        "tags": ["brands"]
       }
     },
     "/brands/{id}": {
@@ -2208,7 +2208,7 @@
           }
         },
         "summary": "Get brand by ID",
-        "tags": ["Brands"]
+        "tags": ["brands"]
       },
       "put": {
         "description": "Updates an existing brand by UUID.",
@@ -2324,7 +2324,7 @@
           }
         ],
         "summary": "Update brand (Admin only)",
-        "tags": ["Brands"]
+        "tags": ["brands"]
       },
       "delete": {
         "description": "Deletes an existing brand by UUID.",
@@ -2387,7 +2387,7 @@
           }
         ],
         "summary": "Delete brand (Admin only)",
-        "tags": ["Brands"]
+        "tags": ["brands"]
       }
     },
     "/products": {
@@ -2609,7 +2609,7 @@
                 "schema": {
                   "allOf": [
                     {
-                      "$ref": "#/components/schemas/ApiResponseDto"
+                      "$ref": "#/components/schemas/PaginatedApiResponseDto"
                     },
                     {
                       "properties": {
@@ -2618,6 +2618,9 @@
                           "items": {
                             "$ref": "#/components/schemas/ProductResponseDto"
                           }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/PaginationMetaDto"
                         }
                       }
                     }
@@ -2647,7 +2650,7 @@
           }
         },
         "summary": "List products with hybrid faceted search and pagination",
-        "tags": ["Products"]
+        "tags": ["products"]
       },
       "post": {
         "description": "Creates a new product with technical specifications and images.",
@@ -2735,7 +2738,7 @@
           }
         ],
         "summary": "Create product (Admin only)",
-        "tags": ["Products"]
+        "tags": ["products"]
       }
     },
     "/products/metadata": {
@@ -2786,7 +2789,7 @@
           }
         },
         "summary": "Get faceted filter metadata",
-        "tags": ["Products"]
+        "tags": ["products"]
       }
     },
     "/products/{id}": {
@@ -2865,7 +2868,7 @@
           }
         },
         "summary": "Get product by ID or slug",
-        "tags": ["Products"]
+        "tags": ["products"]
       },
       "put": {
         "description": "Updates an existing product by UUID.",
@@ -2981,7 +2984,7 @@
           }
         ],
         "summary": "Update product (Admin only)",
-        "tags": ["Products"]
+        "tags": ["products"]
       },
       "delete": {
         "description": "Soft deletes an existing product by UUID.",
@@ -3044,7 +3047,7 @@
           }
         ],
         "summary": "Delete product (Admin only)",
-        "tags": ["Products"]
+        "tags": ["products"]
       }
     },
     "/warehouses": {
@@ -3063,21 +3066,32 @@
         ],
         "responses": {
           "200": {
-            "description": "List of warehouses retrieved successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WarehouseResponseDto"
-                  }
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/WarehouseResponseDto"
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
           }
         },
         "summary": "List all physical warehouses",
-        "tags": ["Warehouses"]
+        "tags": ["warehouses"]
       },
       "post": {
         "operationId": "WarehouseController_create",
@@ -3094,11 +3108,22 @@
         },
         "responses": {
           "201": {
-            "description": "Warehouse created successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WarehouseResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/WarehouseResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3110,7 +3135,7 @@
           }
         ],
         "summary": "Create a new physical warehouse (Admin Only)",
-        "tags": ["Warehouses"]
+        "tags": ["warehouses"]
       }
     },
     "/warehouses/stock/product/{productId}": {
@@ -3129,21 +3154,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Product warehouse stock distribution",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WarehouseStockResponseDto"
-                  }
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/WarehouseStockResponseDto"
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
           }
         },
         "summary": "Get stock distribution across all warehouses for a product",
-        "tags": ["Warehouses"]
+        "tags": ["warehouses"]
       }
     },
     "/warehouses/{id}/stock": {
@@ -3162,21 +3198,32 @@
         ],
         "responses": {
           "200": {
-            "description": "Warehouse stock inventory",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/WarehouseStockResponseDto"
-                  }
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/WarehouseStockResponseDto"
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
           }
         },
         "summary": "Get all product inventory stocks located in a warehouse",
-        "tags": ["Warehouses"]
+        "tags": ["warehouses"]
       },
       "put": {
         "operationId": "WarehouseController_updateStock",
@@ -3203,11 +3250,22 @@
         },
         "responses": {
           "200": {
-            "description": "Warehouse stock updated and totalStockCache synchronized",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WarehouseStockResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/WarehouseStockResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3219,7 +3277,7 @@
           }
         ],
         "summary": "Update product stock in a warehouse and atomically sync totalStockCache (Admin Only)",
-        "tags": ["Warehouses"]
+        "tags": ["warehouses"]
       }
     },
     "/warehouses/{id}": {
@@ -3238,18 +3296,29 @@
         ],
         "responses": {
           "200": {
-            "description": "Warehouse details",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WarehouseResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/WarehouseResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
           }
         },
         "summary": "Get warehouse details by UUID",
-        "tags": ["Warehouses"]
+        "tags": ["warehouses"]
       },
       "put": {
         "operationId": "WarehouseController_update",
@@ -3276,11 +3345,22 @@
         },
         "responses": {
           "200": {
-            "description": "Warehouse updated successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WarehouseResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/WarehouseResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3292,7 +3372,7 @@
           }
         ],
         "summary": "Update warehouse details (Admin Only)",
-        "tags": ["Warehouses"]
+        "tags": ["warehouses"]
       },
       "delete": {
         "operationId": "WarehouseController_delete",
@@ -3309,7 +3389,26 @@
         ],
         "responses": {
           "200": {
-            "description": "Warehouse deactivated successfully"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": ["object", "null"],
+                          "default": null
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
           }
         },
         "security": [
@@ -3318,7 +3417,7 @@
           }
         ],
         "summary": "Deactivate warehouse (Admin Only)",
-        "tags": ["Warehouses"]
+        "tags": ["warehouses"]
       }
     },
     "/cart": {
@@ -3327,11 +3426,22 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "User cart retrieved successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CartResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CartResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3343,7 +3453,7 @@
           }
         ],
         "summary": "Get current authenticated user shopping cart",
-        "tags": ["Cart"]
+        "tags": ["cart"]
       }
     },
     "/cart/items": {
@@ -3362,11 +3472,22 @@
         },
         "responses": {
           "201": {
-            "description": "Item added to cart successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CartResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CartResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3378,7 +3499,7 @@
           }
         ],
         "summary": "Add item to cart or increment quantity",
-        "tags": ["Cart"]
+        "tags": ["cart"]
       }
     },
     "/cart/items/{id}": {
@@ -3407,11 +3528,22 @@
         },
         "responses": {
           "200": {
-            "description": "Cart item quantity updated",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CartResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CartResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3423,7 +3555,7 @@
           }
         ],
         "summary": "Update quantity of a cart item",
-        "tags": ["Cart"]
+        "tags": ["cart"]
       },
       "delete": {
         "operationId": "CartController_removeItem",
@@ -3440,11 +3572,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Cart item removed successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CartResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CartResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3456,7 +3599,7 @@
           }
         ],
         "summary": "Remove item from cart",
-        "tags": ["Cart"]
+        "tags": ["cart"]
       }
     },
     "/cart/merge": {
@@ -3475,11 +3618,22 @@
         },
         "responses": {
           "200": {
-            "description": "Guest cart merged successfully with clamped quantities",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CartResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CartResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3491,7 +3645,7 @@
           }
         ],
         "summary": "Merge guest cart items into authenticated user cart with inventory stock clamping",
-        "tags": ["Cart"]
+        "tags": ["cart"]
       }
     },
     "/quotes": {
@@ -3510,18 +3664,29 @@
         },
         "responses": {
           "201": {
-            "description": "Customer RFQ submitted successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuoteResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/QuoteResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
           }
         },
         "summary": "Submit customer Request For Quotation (RFQ)",
-        "tags": ["Quotes"]
+        "tags": ["quotes"]
       },
       "get": {
         "operationId": "QuotesController_listQuotes",
@@ -3589,11 +3754,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Paginated list of quotes retrieved successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedQuoteResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/PaginatedQuoteResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3605,7 +3781,7 @@
           }
         ],
         "summary": "List quotes with filtering and pagination",
-        "tags": ["Quotes"]
+        "tags": ["quotes"]
       }
     },
     "/quotes/admin": {
@@ -3624,11 +3800,22 @@
         },
         "responses": {
           "201": {
-            "description": "B2B quote created successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuoteResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/QuoteResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3640,7 +3827,7 @@
           }
         ],
         "summary": "Create official B2B quotation (Admin only)",
-        "tags": ["Quotes"]
+        "tags": ["quotes"]
       }
     },
     "/quotes/{id}": {
@@ -3659,11 +3846,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Quote details retrieved successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuoteResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/QuoteResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3675,7 +3873,7 @@
           }
         ],
         "summary": "Get detailed quote by ID",
-        "tags": ["Quotes"]
+        "tags": ["quotes"]
       }
     },
     "/quotes/{id}/status": {
@@ -3704,11 +3902,22 @@
         },
         "responses": {
           "200": {
-            "description": "Quote status updated successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuoteResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/QuoteResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3720,7 +3929,7 @@
           }
         ],
         "summary": "Update quote status along the state machine (Admin only)",
-        "tags": ["Quotes"]
+        "tags": ["quotes"]
       }
     },
     "/quotes/{id}/items/{itemId}/price": {
@@ -3758,11 +3967,22 @@
         },
         "responses": {
           "200": {
-            "description": "Quote item price adjusted successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuoteResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/QuoteResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3774,7 +3994,7 @@
           }
         ],
         "summary": "Update negotiated price for a quote line item (Admin only)",
-        "tags": ["Quotes"]
+        "tags": ["quotes"]
       }
     },
     "/quotes/{id}/messages": {
@@ -3803,11 +4023,22 @@
         },
         "responses": {
           "201": {
-            "description": "Negotiation message recorded successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuoteMessageResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/QuoteMessageResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3819,7 +4050,7 @@
           }
         ],
         "summary": "Post a message to quote negotiation timeline",
-        "tags": ["Quotes"]
+        "tags": ["quotes"]
       }
     },
     "/quotes/{id}/approve-to-order": {
@@ -3838,11 +4069,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Quote approved and converted to order successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApproveToOrderResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ApproveToOrderResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3854,7 +4096,7 @@
           }
         ],
         "summary": "Approve quote and convert to order (Admin only)",
-        "tags": ["Quotes"]
+        "tags": ["quotes"]
       }
     },
     "/quotes/{id}/export-excel": {
@@ -3882,7 +4124,7 @@
           }
         ],
         "summary": "Download B2B quote Excel (.xlsx) spreadsheet",
-        "tags": ["Quotes"]
+        "tags": ["quotes"]
       }
     },
     "/orders/checkout": {
@@ -3901,18 +4143,29 @@
         },
         "responses": {
           "201": {
-            "description": "Order placed successfully with PENDING status",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OrderResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
           }
         },
         "summary": "Guest checkout for storefront retail customers",
-        "tags": ["Orders"]
+        "tags": ["orders"]
       }
     },
     "/orders/admin": {
@@ -3931,11 +4184,22 @@
         },
         "responses": {
           "201": {
-            "description": "B2B order created successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OrderResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -3947,7 +4211,7 @@
           }
         ],
         "summary": "Create official B2B order (Admin/Sales)",
-        "tags": ["Orders"]
+        "tags": ["orders"]
       }
     },
     "/orders": {
@@ -4063,11 +4327,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Paginated list of orders retrieved successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedOrderResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/PaginatedOrderResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -4079,7 +4354,7 @@
           }
         ],
         "summary": "List orders with filtering and pagination",
-        "tags": ["Orders"]
+        "tags": ["orders"]
       }
     },
     "/orders/{id}": {
@@ -4098,11 +4373,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Order details retrieved successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OrderResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -4114,7 +4400,7 @@
           }
         ],
         "summary": "Get detailed order by ID",
-        "tags": ["Orders"]
+        "tags": ["orders"]
       }
     },
     "/orders/{id}/status": {
@@ -4143,11 +4429,22 @@
         },
         "responses": {
           "200": {
-            "description": "Order status updated successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OrderResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -4159,7 +4456,7 @@
           }
         ],
         "summary": "Update order status along state machine",
-        "tags": ["Orders"]
+        "tags": ["orders"]
       }
     },
     "/orders/{id}/cancel": {
@@ -4178,18 +4475,29 @@
         ],
         "responses": {
           "200": {
-            "description": "Order cancelled and inventory returned to stock",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OrderResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
           }
         },
         "summary": "Cancel order and release reserved stock",
-        "tags": ["Orders"]
+        "tags": ["orders"]
       }
     },
     "/orders/cron/expire": {
@@ -4198,11 +4506,30 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Cron execution summary with count of expired orders"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": ["object", "null"],
+                          "default": null
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
           }
         },
         "summary": "Auto-expire pending unpaid orders and restock inventory (Cron)",
-        "tags": ["Orders"]
+        "tags": ["orders"]
       }
     },
     "/payments/checkout-link": {
@@ -4221,11 +4548,22 @@
         },
         "responses": {
           "201": {
-            "description": "Checkout link created successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CheckoutLinkResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CheckoutLinkResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -4251,7 +4589,26 @@
         },
         "responses": {
           "200": {
-            "description": "Webhook processed idempotently"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": ["object", "null"],
+                          "default": null
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
           }
         },
         "summary": "Receive and cryptographically verify PayOS payment webhook",
@@ -4284,11 +4641,22 @@
         },
         "responses": {
           "200": {
-            "description": "Cash payment confirmed and order marked fully paid",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderPaymentSummaryDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OrderPaymentSummaryDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -4319,11 +4687,22 @@
         },
         "responses": {
           "201": {
-            "description": "Debt repayment processed or online link generated",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DebtRepaymentResponseDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/DebtRepaymentResponseDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -4354,11 +4733,22 @@
         ],
         "responses": {
           "200": {
-            "description": "Order payment summary retrieved successfully",
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderPaymentSummaryDto"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OrderPaymentSummaryDto"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -4398,11 +4788,19 @@
       "description": "CRM lead intake, sales assignment, and conversion tracking"
     },
     {
-      "name": "catalog",
-      "description": "Vehicle and generator catalog, faceted search, category hierarchy, and specs"
+      "name": "products",
+      "description": "Commercial vehicle and generator catalog, faceted search, and specs"
     },
     {
-      "name": "warehouse",
+      "name": "categories",
+      "description": "Category taxonomy, hierarchy, and navigation"
+    },
+    {
+      "name": "brands",
+      "description": "Brand manufacturers and partner catalogs"
+    },
+    {
+      "name": "warehouses",
       "description": "Warehouse stock levels, low-stock alerts, and multi-location inventory"
     },
     {
@@ -5388,6 +5786,62 @@
             "example": true
           }
         }
+      },
+      "PaginationMetaDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "description": "Current page index (1-based)",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of records per page",
+            "example": 20
+          },
+          "total": {
+            "type": "number",
+            "description": "Total number of matching records",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total number of calculated pages",
+            "example": 5
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Indicates if there is a next page available",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Indicates if there is a previous page available",
+            "example": false
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage"
+        ]
+      },
+      "PaginatedApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": ["success", "meta"]
       },
       "ProductResponseDto": {
         "type": "object",
@@ -6484,97 +6938,6 @@
         },
         "required": ["items"]
       },
-      "CreateQuoteItemDto": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-            "description": "Catalog product UUID, or null for bespoke custom item"
-          },
-          "isCustomItem": {
-            "type": "object",
-            "example": false,
-            "default": false,
-            "description": "Whether this is a bespoke line item not in catalog"
-          },
-          "itemName": {
-            "type": "string",
-            "example": "Máy phát điện Hyundai DHY6000SE",
-            "description": "Item name or description"
-          },
-          "itemModel": {
-            "type": "string",
-            "example": "DHY6000SE",
-            "description": "Manufacturer model code"
-          },
-          "itemSpecs": {
-            "type": "string",
-            "example": "5.0kVA - 230V / 50Hz - Chống ồn",
-            "description": "Technical specifications summary"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 2,
-            "minimum": 1,
-            "description": "Requested quantity"
-          },
-          "requestedPrice": {
-            "type": "string",
-            "example": "25000000.00",
-            "description": "Customer target/requested unit price"
-          }
-        },
-        "required": ["itemName", "quantity"]
-      },
-      "CreateQuoteDto": {
-        "type": "object",
-        "properties": {
-          "customerName": {
-            "type": "string",
-            "example": "Công ty Cổ phần Xây dựng Nam Á",
-            "description": "Customer or company contact name"
-          },
-          "customerPhone": {
-            "type": "string",
-            "example": "0901234567",
-            "description": "Customer contact phone number"
-          },
-          "customerEmail": {
-            "type": "string",
-            "example": "contact@nama.vn",
-            "description": "Customer contact email"
-          },
-          "companyName": {
-            "type": "string",
-            "example": "Công ty Cổ phần Xây dựng Nam Á",
-            "description": "Full registered company name"
-          },
-          "taxId": {
-            "type": "string",
-            "example": "0312345678",
-            "description": "Corporate enterprise tax ID"
-          },
-          "shippingAddress": {
-            "type": "string",
-            "example": "Số 45 Lê Duẩn, Quận 1, TP. Hồ Chí Minh",
-            "description": "Project or delivery site destination"
-          },
-          "note": {
-            "type": "string",
-            "example": "Yêu cầu giao hàng trước ngày 15/10",
-            "description": "Customer special requirements or notes"
-          },
-          "items": {
-            "description": "List of requested quote items",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateQuoteItemDto"
-            }
-          }
-        },
-        "required": ["customerName", "customerPhone", "items"]
-      },
       "QuoteCommercialTermsDto": {
         "type": "object",
         "properties": {
@@ -6998,6 +7361,97 @@
           "user"
         ]
       },
+      "CreateQuoteItemDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
+            "description": "Catalog product UUID, or null for bespoke custom item"
+          },
+          "isCustomItem": {
+            "type": "object",
+            "example": false,
+            "default": false,
+            "description": "Whether this is a bespoke line item not in catalog"
+          },
+          "itemName": {
+            "type": "string",
+            "example": "Máy phát điện Hyundai DHY6000SE",
+            "description": "Item name or description"
+          },
+          "itemModel": {
+            "type": "string",
+            "example": "DHY6000SE",
+            "description": "Manufacturer model code"
+          },
+          "itemSpecs": {
+            "type": "string",
+            "example": "5.0kVA - 230V / 50Hz - Chống ồn",
+            "description": "Technical specifications summary"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 2,
+            "minimum": 1,
+            "description": "Requested quantity"
+          },
+          "requestedPrice": {
+            "type": "string",
+            "example": "25000000.00",
+            "description": "Customer target/requested unit price"
+          }
+        },
+        "required": ["itemName", "quantity"]
+      },
+      "CreateQuoteDto": {
+        "type": "object",
+        "properties": {
+          "customerName": {
+            "type": "string",
+            "example": "Công ty Cổ phần Xây dựng Nam Á",
+            "description": "Customer or company contact name"
+          },
+          "customerPhone": {
+            "type": "string",
+            "example": "0901234567",
+            "description": "Customer contact phone number"
+          },
+          "customerEmail": {
+            "type": "string",
+            "example": "contact@nama.vn",
+            "description": "Customer contact email"
+          },
+          "companyName": {
+            "type": "string",
+            "example": "Công ty Cổ phần Xây dựng Nam Á",
+            "description": "Full registered company name"
+          },
+          "taxId": {
+            "type": "string",
+            "example": "0312345678",
+            "description": "Corporate enterprise tax ID"
+          },
+          "shippingAddress": {
+            "type": "string",
+            "example": "Số 45 Lê Duẩn, Quận 1, TP. Hồ Chí Minh",
+            "description": "Project or delivery site destination"
+          },
+          "note": {
+            "type": "string",
+            "example": "Yêu cầu giao hàng trước ngày 15/10",
+            "description": "Customer special requirements or notes"
+          },
+          "items": {
+            "description": "List of requested quote items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateQuoteItemDto"
+            }
+          }
+        },
+        "required": ["customerName", "customerPhone", "items"]
+      },
       "CommercialTermsDto": {
         "type": "object",
         "properties": {
@@ -7241,73 +7695,6 @@
           }
         },
         "required": ["orderId", "quoteId", "status"]
-      },
-      "GuestOrderItemInputDto": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-            "description": "Product UUID to purchase"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 1,
-            "description": "Item quantity",
-            "minimum": 1
-          }
-        },
-        "required": ["productId", "quantity"]
-      },
-      "CreateGuestOrderDto": {
-        "type": "object",
-        "properties": {
-          "customerName": {
-            "type": "string",
-            "example": "Nguyễn Văn A",
-            "description": "Customer full name"
-          },
-          "customerPhone": {
-            "type": "string",
-            "example": "0901234567",
-            "description": "Customer Vietnamese contact phone number"
-          },
-          "customerEmail": {
-            "type": "string",
-            "example": "nguyenvana@example.com",
-            "description": "Customer email address for notifications"
-          },
-          "shippingAddress": {
-            "type": "string",
-            "example": "Số 123 Đường Nguyễn Trãi, Phường 2, Quận 5, TP. Hồ Chí Minh",
-            "description": "Delivery destination street address"
-          },
-          "paymentMethod": {
-            "type": "string",
-            "example": "PAYOS",
-            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"],
-            "default": "PAYOS",
-            "description": "Checkout payment method"
-          },
-          "note": {
-            "type": "string",
-            "example": "Giao hàng trong giờ hành chính",
-            "description": "Customer delivery notes"
-          },
-          "items": {
-            "description": "Order line items",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GuestOrderItemInputDto"
-            }
-          }
-        },
-        "required": [
-          "customerName",
-          "customerPhone",
-          "shippingAddress",
-          "items"
-        ]
       },
       "OrderItemProductSummaryDto": {
         "type": "object",
@@ -7565,6 +7952,73 @@
           "items"
         ]
       },
+      "GuestOrderItemInputDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
+            "description": "Product UUID to purchase"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 1,
+            "description": "Item quantity",
+            "minimum": 1
+          }
+        },
+        "required": ["productId", "quantity"]
+      },
+      "CreateGuestOrderDto": {
+        "type": "object",
+        "properties": {
+          "customerName": {
+            "type": "string",
+            "example": "Nguyễn Văn A",
+            "description": "Customer full name"
+          },
+          "customerPhone": {
+            "type": "string",
+            "example": "0901234567",
+            "description": "Customer Vietnamese contact phone number"
+          },
+          "customerEmail": {
+            "type": "string",
+            "example": "nguyenvana@example.com",
+            "description": "Customer email address for notifications"
+          },
+          "shippingAddress": {
+            "type": "string",
+            "example": "Số 123 Đường Nguyễn Trãi, Phường 2, Quận 5, TP. Hồ Chí Minh",
+            "description": "Delivery destination street address"
+          },
+          "paymentMethod": {
+            "type": "string",
+            "example": "PAYOS",
+            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"],
+            "default": "PAYOS",
+            "description": "Checkout payment method"
+          },
+          "note": {
+            "type": "string",
+            "example": "Giao hàng trong giờ hành chính",
+            "description": "Customer delivery notes"
+          },
+          "items": {
+            "description": "Order line items",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestOrderItemInputDto"
+            }
+          }
+        },
+        "required": [
+          "customerName",
+          "customerPhone",
+          "shippingAddress",
+          "items"
+        ]
+      },
       "B2bOrderItemInputDto": {
         "type": "object",
         "properties": {
@@ -7711,33 +8165,6 @@
         },
         "required": ["status"]
       },
-      "CreateCheckoutLinkDto": {
-        "type": "object",
-        "properties": {
-          "orderId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91",
-            "description": "Order UUID identifier to create payment link for"
-          },
-          "transactionType": {
-            "type": "string",
-            "example": "FULL_PAYMENT",
-            "enum": ["FULL_PAYMENT", "DEPOSIT", "REMAINING", "DEBT_REPAYMENT"],
-            "description": "Transaction type (FULL_PAYMENT or DEPOSIT percentage)"
-          },
-          "returnUrl": {
-            "type": "string",
-            "example": "https://hyundai-nhatnang.vn/checkout/success",
-            "description": "URL redirect after customer successfully completes payment"
-          },
-          "cancelUrl": {
-            "type": "string",
-            "example": "https://hyundai-nhatnang.vn/checkout/cancel",
-            "description": "URL redirect if customer cancels payment on gateway"
-          }
-        },
-        "required": ["orderId"]
-      },
       "CheckoutLinkResponseDto": {
         "type": "object",
         "properties": {
@@ -7774,6 +8201,33 @@
           "amount",
           "paymentLinkId"
         ]
+      },
+      "CreateCheckoutLinkDto": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91",
+            "description": "Order UUID identifier to create payment link for"
+          },
+          "transactionType": {
+            "type": "string",
+            "example": "FULL_PAYMENT",
+            "enum": ["FULL_PAYMENT", "DEPOSIT", "REMAINING", "DEBT_REPAYMENT"],
+            "description": "Transaction type (FULL_PAYMENT or DEPOSIT percentage)"
+          },
+          "returnUrl": {
+            "type": "string",
+            "example": "https://hyundai-nhatnang.vn/checkout/success",
+            "description": "URL redirect after customer successfully completes payment"
+          },
+          "cancelUrl": {
+            "type": "string",
+            "example": "https://hyundai-nhatnang.vn/checkout/cancel",
+            "description": "URL redirect if customer cancels payment on gateway"
+          }
+        },
+        "required": ["orderId"]
       },
       "PayOSWebhookDataClass": {
         "type": "object",
@@ -7854,22 +8308,6 @@
           }
         },
         "required": ["code", "desc", "success", "data", "signature"]
-      },
-      "VerifyCashPaymentDto": {
-        "type": "object",
-        "properties": {
-          "amount": {
-            "type": "object",
-            "example": 490000000,
-            "description": "Actual cash amount collected by accountant/cashier"
-          },
-          "note": {
-            "type": "string",
-            "example": "Đã thu đủ tiền mặt tại văn phòng Hà Nội ngày 04/09",
-            "description": "Optional verification notes or internal receipt code"
-          }
-        },
-        "required": ["amount"]
       },
       "PaymentTransactionResponseDto": {
         "type": "object",
@@ -7982,39 +8420,18 @@
           "transactions"
         ]
       },
-      "RepayDebtDto": {
+      "VerifyCashPaymentDto": {
         "type": "object",
         "properties": {
-          "userId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90",
-            "description": "Target dealer user UUID if processed by Admin/Sales"
-          },
           "amount": {
             "type": "object",
-            "example": 50000000,
-            "description": "Debt repayment amount in VND"
-          },
-          "paymentMethod": {
-            "type": "string",
-            "example": "PAYOS",
-            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"],
-            "description": "Payment method used for repayment (PAYOS, CASH, BANK_TRANSFER)"
+            "example": 490000000,
+            "description": "Actual cash amount collected by accountant/cashier"
           },
           "note": {
             "type": "string",
-            "example": "Thanh toán công nợ lô máy phát điện tháng 08",
-            "description": "Repayment note or reference"
-          },
-          "returnUrl": {
-            "type": "string",
-            "example": "https://hyundai-nhatnang.vn/portal/debt?repaymentSuccess=true",
-            "description": "Return URL after online payment completes"
-          },
-          "cancelUrl": {
-            "type": "string",
-            "example": "https://hyundai-nhatnang.vn/portal/debt?repaymentCancel=true",
-            "description": "Cancel URL if customer cancels payment"
+            "example": "Đã thu đủ tiền mặt tại văn phòng Hà Nội ngày 04/09",
+            "description": "Optional verification notes or internal receipt code"
           }
         },
         "required": ["amount"]
@@ -8084,6 +8501,43 @@
           "createdAt",
           "updatedAt"
         ]
+      },
+      "RepayDebtDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90",
+            "description": "Target dealer user UUID if processed by Admin/Sales"
+          },
+          "amount": {
+            "type": "object",
+            "example": 50000000,
+            "description": "Debt repayment amount in VND"
+          },
+          "paymentMethod": {
+            "type": "string",
+            "example": "PAYOS",
+            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"],
+            "description": "Payment method used for repayment (PAYOS, CASH, BANK_TRANSFER)"
+          },
+          "note": {
+            "type": "string",
+            "example": "Thanh toán công nợ lô máy phát điện tháng 08",
+            "description": "Repayment note or reference"
+          },
+          "returnUrl": {
+            "type": "string",
+            "example": "https://hyundai-nhatnang.vn/portal/debt?repaymentSuccess=true",
+            "description": "Return URL after online payment completes"
+          },
+          "cancelUrl": {
+            "type": "string",
+            "example": "https://hyundai-nhatnang.vn/portal/debt?repaymentCancel=true",
+            "description": "Cancel URL if customer cancels payment"
+          }
+        },
+        "required": ["amount"]
       }
     }
   }

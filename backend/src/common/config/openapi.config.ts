@@ -32,11 +32,13 @@ export function createOpenApiDocument(app: INestApplication): OpenAPIObject {
       "CRM lead intake, sales assignment, and conversion tracking",
     )
     .addTag(
-      "catalog",
-      "Vehicle and generator catalog, faceted search, category hierarchy, and specs",
+      "products",
+      "Commercial vehicle and generator catalog, faceted search, and specs",
     )
+    .addTag("categories", "Category taxonomy, hierarchy, and navigation")
+    .addTag("brands", "Brand manufacturers and partner catalogs")
     .addTag(
-      "warehouse",
+      "warehouses",
       "Warehouse stock levels, low-stock alerts, and multi-location inventory",
     )
     .addTag(

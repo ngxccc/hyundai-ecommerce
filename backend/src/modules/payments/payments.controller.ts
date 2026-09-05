@@ -12,9 +12,12 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiParam,
-  ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  ApiOkResponseGeneric,
+  ApiCreatedResponseGeneric,
+} from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
 import { CurrentUser } from "@/common/decorators/current-user.decorator";
 import { Roles } from "@/common/decorators/roles.decorator";
@@ -48,11 +51,7 @@ export class PaymentsController {
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: "Create PayOS checkout link and VietQR code" })
-  @ApiResponse({
-    status: 201,
-    description: "Checkout link created successfully",
-    type: CheckoutLinkResponseDto,
-  })
+  @ApiCreatedResponseGeneric(CheckoutLinkResponseDto)
   async createCheckoutLink(@Body() dto: CreateCheckoutLinkDto) {
     const result = await this.paymentsService.createCheckoutLink(dto);
     return apiSuccess(result);
@@ -69,10 +68,7 @@ export class PaymentsController {
   @ApiOperation({
     summary: "Receive and cryptographically verify PayOS payment webhook",
   })
-  @ApiResponse({
-    status: 200,
-    description: "Webhook processed idempotently",
-  })
+  @ApiOkResponseGeneric()
   async handleWebhook(@Body() dto: PayOSWebhookDto) {
     const result = await this.paymentsService.handlePayOSWebhook(dto);
     return apiSuccess(result);
@@ -93,11 +89,7 @@ export class PaymentsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Verify offline cash payment (Admin/Accountant)" })
   @ApiParam({ name: "id", description: "Order UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Cash payment confirmed and order marked fully paid",
-    type: OrderPaymentSummaryDto,
-  })
+  @ApiOkResponseGeneric(OrderPaymentSummaryDto)
   async verifyCashPayment(
     @Param("id") id: string,
     @Body() dto: VerifyCashPaymentDto,
@@ -125,11 +117,7 @@ export class PaymentsController {
   @ApiOperation({
     summary: "Repay B2B dealer debt via PayOS gateway or cash",
   })
-  @ApiResponse({
-    status: 201,
-    description: "Debt repayment processed or online link generated",
-    type: DebtRepaymentResponseDto,
-  })
+  @ApiCreatedResponseGeneric(DebtRepaymentResponseDto)
   async repayDebt(
     @Body() dto: RepayDebtDto,
     @CurrentUser("sub") currentUserId: string,
@@ -149,11 +137,7 @@ export class PaymentsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get order payment status and transactions" })
   @ApiParam({ name: "orderId", description: "Order UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Order payment summary retrieved successfully",
-    type: OrderPaymentSummaryDto,
-  })
+  @ApiOkResponseGeneric(OrderPaymentSummaryDto)
   async getOrderPaymentSummary(@Param("orderId") orderId: string) {
     const result = await this.paymentsService.getOrderPaymentSummary(orderId);
     return apiSuccess(result);

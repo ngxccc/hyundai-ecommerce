@@ -1,5 +1,5 @@
 export const LEADS_ROUTES = {
-  TAG: "Leads (Storefront RFQ)",
+  TAG: "leads",
   PREFIX: "leads",
   SUBMIT_RFQ: "",
   FIND_ALL: "",

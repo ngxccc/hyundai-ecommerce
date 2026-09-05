@@ -1,5 +1,5 @@
 export const QUOTE_ROUTES = {
-  TAG: "Quotes",
+  TAG: "quotes",
   ROOT: "quotes",
   ADMIN: "admin",
   BY_ID: ":id",

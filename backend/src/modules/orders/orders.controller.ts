@@ -15,12 +15,15 @@ import {
   ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
-import { CurrentUser } from "@/common/decorators/current-user.decorator";
-import { Roles } from "@/common/decorators/roles.decorator";
+import {
+  ApiOkResponseGeneric,
+  ApiCreatedResponseGeneric,
+  CurrentUser,
+  Roles,
+} from "@/common/decorators";
 import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
 import { RolesGuard } from "@/common/guards/roles.guard";
 import { apiSuccess } from "@/common/utils/api-response.util";
@@ -50,11 +53,7 @@ export class OrdersController {
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: "Guest checkout for storefront retail customers" })
-  @ApiResponse({
-    status: 201,
-    description: "Order placed successfully with PENDING status",
-    type: OrderResponseDto,
-  })
+  @ApiCreatedResponseGeneric(OrderResponseDto)
   async checkout(@Body() dto: CreateGuestOrderDto) {
     const order = await this.ordersService.createGuestOrder(dto);
     return apiSuccess(order);
@@ -73,11 +72,7 @@ export class OrdersController {
   @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create official B2B order (Admin/Sales)" })
-  @ApiResponse({
-    status: 201,
-    description: "B2B order created successfully",
-    type: OrderResponseDto,
-  })
+  @ApiCreatedResponseGeneric(OrderResponseDto)
   async createB2bOrder(
     @Body() dto: CreateB2bOrderDto,
     @CurrentUser("sub") adminUserId: string,
@@ -102,11 +97,7 @@ export class OrdersController {
   @ApiQuery({ name: "status", required: false, type: String })
   @ApiQuery({ name: "paymentStatus", required: false, type: String })
   @ApiQuery({ name: "search", required: false, type: String })
-  @ApiResponse({
-    status: 200,
-    description: "Paginated list of orders retrieved successfully",
-    type: PaginatedOrderResponseDto,
-  })
+  @ApiOkResponseGeneric(PaginatedOrderResponseDto)
   async listOrders(@Query() query: OrderQueryDto) {
     const result = await this.ordersService.findAll(query);
     return apiSuccess(result);
@@ -123,11 +114,7 @@ export class OrdersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get detailed order by ID" })
   @ApiParam({ name: "id", description: "Order UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Order details retrieved successfully",
-    type: OrderResponseDto,
-  })
+  @ApiOkResponseGeneric(OrderResponseDto)
   async getOrderById(@Param("id") id: string) {
     const order = await this.ordersService.findById(id);
     return apiSuccess(order);
@@ -147,11 +134,7 @@ export class OrdersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Update order status along state machine" })
   @ApiParam({ name: "id", description: "Order UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Order status updated successfully",
-    type: OrderResponseDto,
-  })
+  @ApiOkResponseGeneric(OrderResponseDto)
   async updateStatus(
     @Param("id") id: string,
     @Body() dto: UpdateOrderStatusDto,
@@ -177,11 +160,7 @@ export class OrdersController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: "Cancel order and release reserved stock" })
   @ApiParam({ name: "id", description: "Order UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Order cancelled and inventory returned to stock",
-    type: OrderResponseDto,
-  })
+  @ApiOkResponseGeneric(OrderResponseDto)
   async cancelOrder(@Param("id") id: string) {
     const order = await this.ordersService.cancelOrder(id);
     return apiSuccess(order);
@@ -197,10 +176,7 @@ export class OrdersController {
   @ApiOperation({
     summary: "Auto-expire pending unpaid orders and restock inventory (Cron)",
   })
-  @ApiResponse({
-    status: 200,
-    description: "Cron execution summary with count of expired orders",
-  })
+  @ApiOkResponseGeneric()
   async expireOrders() {
     const expiredCount = await this.ordersService.expirePendingOrders();
     return apiSuccess({ expiredCount });

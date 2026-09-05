@@ -1,5 +1,5 @@
 export const ORDER_ROUTES = {
-  TAG: "Orders",
+  TAG: "orders",
   ROOT: "orders",
   CHECKOUT: "checkout",
   ADMIN: "admin",

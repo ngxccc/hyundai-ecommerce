@@ -1598,6 +1598,43 @@ export interface components {
       /** @example true */
       isActive?: boolean;
     };
+    PaginationMetaDto: {
+      /**
+       * @description Current page index (1-based)
+       * @example 1
+       */
+      page: number;
+      /**
+       * @description Number of records per page
+       * @example 20
+       */
+      limit: number;
+      /**
+       * @description Total number of matching records
+       * @example 100
+       */
+      total: number;
+      /**
+       * @description Total number of calculated pages
+       * @example 5
+       */
+      totalPages: number;
+      /**
+       * @description Indicates if there is a next page available
+       * @example true
+       */
+      hasNextPage: boolean;
+      /**
+       * @description Indicates if there is a previous page available
+       * @example false
+       */
+      hasPrevPage: boolean;
+    };
+    PaginatedApiResponseDto: {
+      /** @example true */
+      success: boolean;
+      meta: components["schemas"]["PaginationMetaDto"];
+    };
     ProductResponseDto: {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
       id: string;
@@ -2211,83 +2248,6 @@ export interface components {
       /** @description List of guest cart items to merge into authenticated user cart */
       items: components["schemas"]["GuestCartItemDto"][];
     };
-    CreateQuoteItemDto: {
-      /**
-       * @description Catalog product UUID, or null for bespoke custom item
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
-       */
-      productId?: string;
-      /**
-       * @description Whether this is a bespoke line item not in catalog
-       * @default false
-       * @example false
-       */
-      isCustomItem: Record<string, never>;
-      /**
-       * @description Item name or description
-       * @example Máy phát điện Hyundai DHY6000SE
-       */
-      itemName: string;
-      /**
-       * @description Manufacturer model code
-       * @example DHY6000SE
-       */
-      itemModel?: string;
-      /**
-       * @description Technical specifications summary
-       * @example 5.0kVA - 230V / 50Hz - Chống ồn
-       */
-      itemSpecs?: string;
-      /**
-       * @description Requested quantity
-       * @example 2
-       */
-      quantity: number;
-      /**
-       * @description Customer target/requested unit price
-       * @example 25000000.00
-       */
-      requestedPrice?: string;
-    };
-    CreateQuoteDto: {
-      /**
-       * @description Customer or company contact name
-       * @example Công ty Cổ phần Xây dựng Nam Á
-       */
-      customerName: string;
-      /**
-       * @description Customer contact phone number
-       * @example 0901234567
-       */
-      customerPhone: string;
-      /**
-       * @description Customer contact email
-       * @example contact@nama.vn
-       */
-      customerEmail?: string;
-      /**
-       * @description Full registered company name
-       * @example Công ty Cổ phần Xây dựng Nam Á
-       */
-      companyName?: string;
-      /**
-       * @description Corporate enterprise tax ID
-       * @example 0312345678
-       */
-      taxId?: string;
-      /**
-       * @description Project or delivery site destination
-       * @example Số 45 Lê Duẩn, Quận 1, TP. Hồ Chí Minh
-       */
-      shippingAddress?: string;
-      /**
-       * @description Customer special requirements or notes
-       * @example Yêu cầu giao hàng trước ngày 15/10
-       */
-      note?: string;
-      /** @description List of requested quote items */
-      items: components["schemas"]["CreateQuoteItemDto"][];
-    };
     QuoteCommercialTermsDto: {
       /**
        * @default 15
@@ -2470,6 +2430,83 @@ export interface components {
       items: components["schemas"]["QuoteItemResponseDto"][];
       messages?: components["schemas"]["QuoteMessageResponseDto"][];
       user: components["schemas"]["QuoteUserSummaryDto"] | null;
+    };
+    CreateQuoteItemDto: {
+      /**
+       * @description Catalog product UUID, or null for bespoke custom item
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
+       */
+      productId?: string;
+      /**
+       * @description Whether this is a bespoke line item not in catalog
+       * @default false
+       * @example false
+       */
+      isCustomItem: Record<string, never>;
+      /**
+       * @description Item name or description
+       * @example Máy phát điện Hyundai DHY6000SE
+       */
+      itemName: string;
+      /**
+       * @description Manufacturer model code
+       * @example DHY6000SE
+       */
+      itemModel?: string;
+      /**
+       * @description Technical specifications summary
+       * @example 5.0kVA - 230V / 50Hz - Chống ồn
+       */
+      itemSpecs?: string;
+      /**
+       * @description Requested quantity
+       * @example 2
+       */
+      quantity: number;
+      /**
+       * @description Customer target/requested unit price
+       * @example 25000000.00
+       */
+      requestedPrice?: string;
+    };
+    CreateQuoteDto: {
+      /**
+       * @description Customer or company contact name
+       * @example Công ty Cổ phần Xây dựng Nam Á
+       */
+      customerName: string;
+      /**
+       * @description Customer contact phone number
+       * @example 0901234567
+       */
+      customerPhone: string;
+      /**
+       * @description Customer contact email
+       * @example contact@nama.vn
+       */
+      customerEmail?: string;
+      /**
+       * @description Full registered company name
+       * @example Công ty Cổ phần Xây dựng Nam Á
+       */
+      companyName?: string;
+      /**
+       * @description Corporate enterprise tax ID
+       * @example 0312345678
+       */
+      taxId?: string;
+      /**
+       * @description Project or delivery site destination
+       * @example Số 45 Lê Duẩn, Quận 1, TP. Hồ Chí Minh
+       */
+      shippingAddress?: string;
+      /**
+       * @description Customer special requirements or notes
+       * @example Yêu cầu giao hàng trước ngày 15/10
+       */
+      note?: string;
+      /** @description List of requested quote items */
+      items: components["schemas"]["CreateQuoteItemDto"][];
     };
     CommercialTermsDto: {
       /**
@@ -2655,54 +2692,6 @@ export interface components {
         | "REJECTED"
         | "EXPIRED";
     };
-    GuestOrderItemInputDto: {
-      /**
-       * @description Product UUID to purchase
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
-       */
-      productId: string;
-      /**
-       * @description Item quantity
-       * @example 1
-       */
-      quantity: number;
-    };
-    CreateGuestOrderDto: {
-      /**
-       * @description Customer full name
-       * @example Nguyễn Văn A
-       */
-      customerName: string;
-      /**
-       * @description Customer Vietnamese contact phone number
-       * @example 0901234567
-       */
-      customerPhone: string;
-      /**
-       * @description Customer email address for notifications
-       * @example nguyenvana@example.com
-       */
-      customerEmail?: string;
-      /**
-       * @description Delivery destination street address
-       * @example Số 123 Đường Nguyễn Trãi, Phường 2, Quận 5, TP. Hồ Chí Minh
-       */
-      shippingAddress: string;
-      /**
-       * @description Checkout payment method
-       * @default PAYOS
-       * @example PAYOS
-       * @enum {string}
-       */
-      paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
-      /**
-       * @description Customer delivery notes
-       * @example Giao hàng trong giờ hành chính
-       */
-      note?: string;
-      /** @description Order line items */
-      items: components["schemas"]["GuestOrderItemInputDto"][];
-    };
     OrderItemProductSummaryDto: {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
       id: string;
@@ -2827,6 +2816,54 @@ export interface components {
       items: components["schemas"]["OrderItemResponseDto"][];
       user?: components["schemas"]["OrderUserSummaryDto"];
     };
+    GuestOrderItemInputDto: {
+      /**
+       * @description Product UUID to purchase
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
+       */
+      productId: string;
+      /**
+       * @description Item quantity
+       * @example 1
+       */
+      quantity: number;
+    };
+    CreateGuestOrderDto: {
+      /**
+       * @description Customer full name
+       * @example Nguyễn Văn A
+       */
+      customerName: string;
+      /**
+       * @description Customer Vietnamese contact phone number
+       * @example 0901234567
+       */
+      customerPhone: string;
+      /**
+       * @description Customer email address for notifications
+       * @example nguyenvana@example.com
+       */
+      customerEmail?: string;
+      /**
+       * @description Delivery destination street address
+       * @example Số 123 Đường Nguyễn Trãi, Phường 2, Quận 5, TP. Hồ Chí Minh
+       */
+      shippingAddress: string;
+      /**
+       * @description Checkout payment method
+       * @default PAYOS
+       * @example PAYOS
+       * @enum {string}
+       */
+      paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+      /**
+       * @description Customer delivery notes
+       * @example Giao hàng trong giờ hành chính
+       */
+      note?: string;
+      /** @description Order line items */
+      items: components["schemas"]["GuestOrderItemInputDto"][];
+    };
     B2bOrderItemInputDto: {
       /**
        * @description Product UUID to purchase
@@ -2929,30 +2966,6 @@ export interface components {
        */
       note?: string;
     };
-    CreateCheckoutLinkDto: {
-      /**
-       * @description Order UUID identifier to create payment link for
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb91
-       */
-      orderId: string;
-      /**
-       * @description Transaction type (FULL_PAYMENT or DEPOSIT percentage)
-       * @example FULL_PAYMENT
-       * @enum {string}
-       */
-      transactionType?:
-        "FULL_PAYMENT" | "DEPOSIT" | "REMAINING" | "DEBT_REPAYMENT";
-      /**
-       * @description URL redirect after customer successfully completes payment
-       * @example https://hyundai-nhatnang.vn/checkout/success
-       */
-      returnUrl?: string;
-      /**
-       * @description URL redirect if customer cancels payment on gateway
-       * @example https://hyundai-nhatnang.vn/checkout/cancel
-       */
-      cancelUrl?: string;
-    };
     CheckoutLinkResponseDto: {
       /**
        * @description PayOS checkout redirect web URL
@@ -2979,6 +2992,30 @@ export interface components {
        * @example 019fa8bc-8f4d-7000-b366-e691f45cfb91
        */
       paymentLinkId: string;
+    };
+    CreateCheckoutLinkDto: {
+      /**
+       * @description Order UUID identifier to create payment link for
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb91
+       */
+      orderId: string;
+      /**
+       * @description Transaction type (FULL_PAYMENT or DEPOSIT percentage)
+       * @example FULL_PAYMENT
+       * @enum {string}
+       */
+      transactionType?:
+        "FULL_PAYMENT" | "DEPOSIT" | "REMAINING" | "DEBT_REPAYMENT";
+      /**
+       * @description URL redirect after customer successfully completes payment
+       * @example https://hyundai-nhatnang.vn/checkout/success
+       */
+      returnUrl?: string;
+      /**
+       * @description URL redirect if customer cancels payment on gateway
+       * @example https://hyundai-nhatnang.vn/checkout/cancel
+       */
+      cancelUrl?: string;
     };
     PayOSWebhookDataClass: {
       /** @example 1725451234567 */
@@ -3025,18 +3062,6 @@ export interface components {
        * @example 6c9b3a6e7a2e7b56b74c419b4eb14b9a...
        */
       signature: string;
-    };
-    VerifyCashPaymentDto: {
-      /**
-       * @description Actual cash amount collected by accountant/cashier
-       * @example 490000000
-       */
-      amount: Record<string, never>;
-      /**
-       * @description Optional verification notes or internal receipt code
-       * @example Đã thu đủ tiền mặt tại văn phòng Hà Nội ngày 04/09
-       */
-      note?: string;
     };
     PaymentTransactionResponseDto: {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
@@ -3096,38 +3121,17 @@ export interface components {
       /** @description List of related payment transactions */
       transactions: components["schemas"]["PaymentTransactionResponseDto"][];
     };
-    RepayDebtDto: {
+    VerifyCashPaymentDto: {
       /**
-       * @description Target dealer user UUID if processed by Admin/Sales
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb90
-       */
-      userId?: string;
-      /**
-       * @description Debt repayment amount in VND
-       * @example 50000000
+       * @description Actual cash amount collected by accountant/cashier
+       * @example 490000000
        */
       amount: Record<string, never>;
       /**
-       * @description Payment method used for repayment (PAYOS, CASH, BANK_TRANSFER)
-       * @example PAYOS
-       * @enum {string}
-       */
-      paymentMethod?: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
-      /**
-       * @description Repayment note or reference
-       * @example Thanh toán công nợ lô máy phát điện tháng 08
+       * @description Optional verification notes or internal receipt code
+       * @example Đã thu đủ tiền mặt tại văn phòng Hà Nội ngày 04/09
        */
       note?: string;
-      /**
-       * @description Return URL after online payment completes
-       * @example https://hyundai-nhatnang.vn/portal/debt?repaymentSuccess=true
-       */
-      returnUrl?: string;
-      /**
-       * @description Cancel URL if customer cancels payment
-       * @example https://hyundai-nhatnang.vn/portal/debt?repaymentCancel=true
-       */
-      cancelUrl?: string;
     };
     DebtRepaymentResponseDto: {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
@@ -3166,6 +3170,39 @@ export interface components {
        * @example 2026-09-04T08:00:00.000Z
        */
       updatedAt: string;
+    };
+    RepayDebtDto: {
+      /**
+       * @description Target dealer user UUID if processed by Admin/Sales
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb90
+       */
+      userId?: string;
+      /**
+       * @description Debt repayment amount in VND
+       * @example 50000000
+       */
+      amount: Record<string, never>;
+      /**
+       * @description Payment method used for repayment (PAYOS, CASH, BANK_TRANSFER)
+       * @example PAYOS
+       * @enum {string}
+       */
+      paymentMethod?: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+      /**
+       * @description Repayment note or reference
+       * @example Thanh toán công nợ lô máy phát điện tháng 08
+       */
+      note?: string;
+      /**
+       * @description Return URL after online payment completes
+       * @example https://hyundai-nhatnang.vn/portal/debt?repaymentSuccess=true
+       */
+      returnUrl?: string;
+      /**
+       * @description Cancel URL if customer cancels payment
+       * @example https://hyundai-nhatnang.vn/portal/debt?repaymentCancel=true
+       */
+      cancelUrl?: string;
     };
   };
   responses: never;
@@ -5128,8 +5165,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiResponseDto"] & {
+          "application/json": components["schemas"]["PaginatedApiResponseDto"] & {
             data?: components["schemas"]["ProductResponseDto"][];
+            meta?: components["schemas"]["PaginationMetaDto"];
           };
         };
       };
@@ -5476,13 +5514,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description List of warehouses retrieved successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["WarehouseResponseDto"][];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["WarehouseResponseDto"][];
+          };
         };
       };
     };
@@ -5500,13 +5539,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Warehouse created successfully */
       201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["WarehouseResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["WarehouseResponseDto"];
+          };
         };
       };
     };
@@ -5523,13 +5563,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Product warehouse stock distribution */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["WarehouseStockResponseDto"][];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["WarehouseStockResponseDto"][];
+          };
         };
       };
     };
@@ -5546,13 +5587,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Warehouse stock inventory */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["WarehouseStockResponseDto"][];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["WarehouseStockResponseDto"][];
+          };
         };
       };
     };
@@ -5573,13 +5615,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Warehouse stock updated and totalStockCache synchronized */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["WarehouseStockResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["WarehouseStockResponseDto"];
+          };
         };
       };
     };
@@ -5596,13 +5639,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Warehouse details */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["WarehouseResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["WarehouseResponseDto"];
+          };
         };
       };
     };
@@ -5623,13 +5667,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Warehouse updated successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["WarehouseResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["WarehouseResponseDto"];
+          };
         };
       };
     };
@@ -5646,12 +5691,16 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Warehouse deactivated successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            /** @default null */
+            data: Record<string, never> | null;
+          };
+        };
       };
     };
   };
@@ -5664,13 +5713,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description User cart retrieved successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["CartResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["CartResponseDto"];
+          };
         };
       };
     };
@@ -5688,13 +5738,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Item added to cart successfully */
       201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["CartResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["CartResponseDto"];
+          };
         };
       };
     };
@@ -5715,13 +5766,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Cart item quantity updated */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["CartResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["CartResponseDto"];
+          };
         };
       };
     };
@@ -5738,13 +5790,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Cart item removed successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["CartResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["CartResponseDto"];
+          };
         };
       };
     };
@@ -5762,13 +5815,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Guest cart merged successfully with clamped quantities */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["CartResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["CartResponseDto"];
+          };
         };
       };
     };
@@ -5799,13 +5853,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Paginated list of quotes retrieved successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["PaginatedQuoteResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["PaginatedQuoteResponseDto"];
+          };
         };
       };
     };
@@ -5823,13 +5878,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Customer RFQ submitted successfully */
       201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuoteResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["QuoteResponseDto"];
+          };
         };
       };
     };
@@ -5847,13 +5903,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description B2B quote created successfully */
       201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuoteResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["QuoteResponseDto"];
+          };
         };
       };
     };
@@ -5870,13 +5927,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Quote details retrieved successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuoteResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["QuoteResponseDto"];
+          };
         };
       };
     };
@@ -5897,13 +5955,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Quote status updated successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuoteResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["QuoteResponseDto"];
+          };
         };
       };
     };
@@ -5926,13 +5985,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Quote item price adjusted successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuoteResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["QuoteResponseDto"];
+          };
         };
       };
     };
@@ -5953,13 +6013,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Negotiation message recorded successfully */
       201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["QuoteMessageResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["QuoteMessageResponseDto"];
+          };
         };
       };
     };
@@ -5976,13 +6037,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Quote approved and converted to order successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApproveToOrderResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["ApproveToOrderResponseDto"];
+          };
         };
       };
     };
@@ -6021,13 +6083,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Order placed successfully with PENDING status */
       201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrderResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["OrderResponseDto"];
+          };
         };
       };
     };
@@ -6045,13 +6108,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description B2B order created successfully */
       201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrderResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["OrderResponseDto"];
+          };
         };
       };
     };
@@ -6078,13 +6142,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Paginated list of orders retrieved successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["PaginatedOrderResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["PaginatedOrderResponseDto"];
+          };
         };
       };
     };
@@ -6101,13 +6166,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Order details retrieved successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrderResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["OrderResponseDto"];
+          };
         };
       };
     };
@@ -6128,13 +6194,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Order status updated successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrderResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["OrderResponseDto"];
+          };
         };
       };
     };
@@ -6151,13 +6218,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Order cancelled and inventory returned to stock */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrderResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["OrderResponseDto"];
+          };
         };
       };
     };
@@ -6171,12 +6239,16 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Cron execution summary with count of expired orders */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            /** @default null */
+            data: Record<string, never> | null;
+          };
+        };
       };
     };
   };
@@ -6193,13 +6265,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Checkout link created successfully */
       201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["CheckoutLinkResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["CheckoutLinkResponseDto"];
+          };
         };
       };
     };
@@ -6217,12 +6290,16 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Webhook processed idempotently */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            /** @default null */
+            data: Record<string, never> | null;
+          };
+        };
       };
     };
   };
@@ -6242,13 +6319,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Cash payment confirmed and order marked fully paid */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrderPaymentSummaryDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["OrderPaymentSummaryDto"];
+          };
         };
       };
     };
@@ -6266,13 +6344,14 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Debt repayment processed or online link generated */
       201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["DebtRepaymentResponseDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["DebtRepaymentResponseDto"];
+          };
         };
       };
     };
@@ -6289,13 +6368,14 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Order payment summary retrieved successfully */
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["OrderPaymentSummaryDto"];
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["OrderPaymentSummaryDto"];
+          };
         };
       };
     };

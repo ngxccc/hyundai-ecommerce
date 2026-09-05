@@ -14,9 +14,12 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiParam,
-  ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import {
+  ApiOkResponseGeneric,
+  ApiCreatedResponseGeneric,
+} from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
 import { CurrentUser } from "@/common/decorators/current-user.decorator";
 import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
@@ -39,11 +42,7 @@ export class CartController {
 
   @Get()
   @ApiOperation({ summary: "Get current authenticated user shopping cart" })
-  @ApiResponse({
-    status: 200,
-    description: "User cart retrieved successfully",
-    type: CartResponseDto,
-  })
+  @ApiOkResponseGeneric(CartResponseDto)
   async getCart(@CurrentUser("sub") userId: string) {
     const data = await this.cartService.getOrCreateCart(userId);
     return apiSuccess(data);
@@ -52,11 +51,7 @@ export class CartController {
   @Post(CART_ROUTES.ITEMS)
   @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiOperation({ summary: "Add item to cart or increment quantity" })
-  @ApiResponse({
-    status: 201,
-    description: "Item added to cart successfully",
-    type: CartResponseDto,
-  })
+  @ApiCreatedResponseGeneric(CartResponseDto)
   async addItem(
     @CurrentUser("sub") userId: string,
     @Body() dto: AddCartItemDto,
@@ -69,11 +64,7 @@ export class CartController {
   @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiOperation({ summary: "Update quantity of a cart item" })
   @ApiParam({ name: "id", description: "Cart item UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Cart item quantity updated",
-    type: CartResponseDto,
-  })
+  @ApiOkResponseGeneric(CartResponseDto)
   async updateItemQuantity(
     @CurrentUser("sub") userId: string,
     @Param("id") itemId: string,
@@ -87,11 +78,7 @@ export class CartController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Remove item from cart" })
   @ApiParam({ name: "id", description: "Cart item UUID" })
-  @ApiResponse({
-    status: 200,
-    description: "Cart item removed successfully",
-    type: CartResponseDto,
-  })
+  @ApiOkResponseGeneric(CartResponseDto)
   async removeItem(
     @CurrentUser("sub") userId: string,
     @Param("id") itemId: string,
@@ -107,11 +94,7 @@ export class CartController {
     summary:
       "Merge guest cart items into authenticated user cart with inventory stock clamping",
   })
-  @ApiResponse({
-    status: 200,
-    description: "Guest cart merged successfully with clamped quantities",
-    type: CartResponseDto,
-  })
+  @ApiOkResponseGeneric(CartResponseDto)
   async mergeGuestCart(
     @CurrentUser("sub") userId: string,
     @Body() dto: MergeCartDto,

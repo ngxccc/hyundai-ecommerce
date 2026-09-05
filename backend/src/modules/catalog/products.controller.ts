@@ -19,6 +19,7 @@ import { RolesGuard } from "@/common/guards/roles.guard";
 import { Roles } from "@/common/decorators/roles.decorator";
 import {
   ApiOkResponseGeneric,
+  ApiOkResponsePaginated,
   ApiCreatedResponseGeneric,
   ApiNotFoundResponseRfc9457,
   ApiBadRequestResponseRfc9457,
@@ -48,7 +49,7 @@ export class ProductsController {
     description:
       "Returns a paginated list of products matching filter criteria (power, price, brand, category, specs).",
   })
-  @ApiOkResponseGeneric(ProductResponseDto, { isArray: true })
+  @ApiOkResponsePaginated(ProductResponseDto)
   @ApiTooManyRequestsResponseRfc9457()
   async getProducts(
     @Query() query: ProductQueryDto,

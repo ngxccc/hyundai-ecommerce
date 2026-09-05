@@ -1,5 +1,5 @@
 export const WAREHOUSE_ROUTES = {
-  TAG: "Warehouses",
+  TAG: "warehouses",
   ROOT: "warehouses",
   BY_ID: ":id",
   STOCK: ":id/stock",

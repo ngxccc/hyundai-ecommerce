@@ -1,6 +1,6 @@
 export const CATALOG_ROUTES = {
   PRODUCTS: {
-    TAG: "Products",
+    TAG: "products",
     PREFIX: "products",
     FIND_ALL: "",
     METADATA: "metadata",
@@ -10,7 +10,7 @@ export const CATALOG_ROUTES = {
     DELETE: ":id",
   },
   CATEGORIES: {
-    TAG: "Categories",
+    TAG: "categories",
     PREFIX: "categories",
     FIND_ALL: "",
     TREE: "tree",
@@ -20,7 +20,7 @@ export const CATALOG_ROUTES = {
     DELETE: ":id",
   },
   BRANDS: {
-    TAG: "Brands",
+    TAG: "brands",
     PREFIX: "brands",
     FIND_ALL: "",
     FIND_BY_ID: ":id",
