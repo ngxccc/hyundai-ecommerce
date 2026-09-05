@@ -16,6 +16,7 @@
     "docker:up": "docker compose up -d",
     "format:pkg": "syncpack format",
     "format:pkg:check": "syncpack format --check",
+    "install:all": "bun install && (cd backend && bun install) && (cd storefront && bun install) && (cd admin && bun install)",
     "lint": "bun run lint:backend && bun run lint:storefront && bun run lint:admin",
     "lint:admin": "cd admin && bun run lint",
     "lint:backend": "cd backend && bun run lint",
