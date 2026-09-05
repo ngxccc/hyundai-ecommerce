@@ -4,12 +4,14 @@ on:
   push:
     branches: ["main"]
   workflow_dispatch:
+
 permissions:
   contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -22,17 +24,7 @@ jobs:
         with:
           filters: |
             admin:
-              - "apps/admin/**"
-              - "packages/database/**"
-              - "packages/eslint-config/**"
-              - "packages/shared/**"
-              - "packages/core/**"
-              - "packages/ui/**"
-              - "packages/typescript-config/**"
-              - ".github/setup-environment/**"
-              - "turbo.json"
-              - "bun.lock"
-              - "package.json"
+              - "admin/**"
               - ".github/workflows/admin.yml"
 
   deploy:
@@ -41,17 +33,22 @@ jobs:
     name: Release to Vercel
     runs-on: ubuntu-latest
     environment: Production
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+
       - name: Setup Environment
         uses: ./.github/setup-environment
 
       - name: Final Safety Check (Lint, Test)
-        run: bun turbo run lint check-types test --filter=admin
+        working-directory: admin
+        run: |
+          bun install
+          bun run check-types
+          bun run lint
+          bun test
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
 
       - name: Deploy to Vercel
         uses: ./.github/vercel-deploy
@@ -60,9 +57,3 @@ jobs:
           vercel_org_id: ${{ secrets.VERCEL_ORG_ID }}
           vercel_project_id: ${{ secrets.VERCEL_ADMIN_PROJECT_ID }}
           doppler_token: ${{ secrets.DOPPLER_TOKEN }}
-
-      - name: Apply Expand Migration to Prod DB
-        working-directory: packages/database
-        run: bun run db:migrate
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}

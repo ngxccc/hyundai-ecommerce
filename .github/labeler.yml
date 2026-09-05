@@ -2,34 +2,17 @@
 "area:storefront":
   - changed-files:
       - any-glob-to-any-file:
-          - "apps/storefront/**/*"
+          - "storefront/**/*"
 
 "area:admin":
   - changed-files:
       - any-glob-to-any-file:
-          - "apps/admin/**/*"
+          - "admin/**/*"
 
-"area:core":
+"area:backend":
   - changed-files:
       - any-glob-to-any-file:
-          - "packages/core/**/*"
-
-"area:db":
-  - changed-files:
-      - any-glob-to-any-file:
-          - "packages/database/**/*"
-          - "drizzle/**/*"
-          - "drizzle.config.ts"
-
-"area:shared":
-  - changed-files:
-      - any-glob-to-any-file:
-          - "packages/shared/**/*"
-
-"area:ui":
-  - changed-files:
-      - any-glob-to-any-file:
-          - "packages/ui/**/*"
+          - "backend/**/*"
 
 "area:ci":
   - changed-files:
