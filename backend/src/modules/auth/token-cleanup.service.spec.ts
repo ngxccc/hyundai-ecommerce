@@ -5,10 +5,10 @@ import { createMockDb } from "../../../test/mocks";
 
 describe("TokenCleanupService", () => {
   let service: TokenCleanupService;
-  const mockDb = createMockDb();
+  let mockDb: ReturnType<typeof createMockDb>;
 
   beforeEach(() => {
-    mockDb.clearAll();
+    mockDb = createMockDb();
     service = new TokenCleanupService(mockDb as unknown as DrizzleDB);
   });
 
@@ -60,21 +60,19 @@ describe("TokenCleanupService", () => {
     });
 
     it("should catch and log database errors gracefully when database delete fails", async () => {
-      const errorSpy = spyOn(
-        (service as unknown as { logger: { error: () => void } }).logger,
-        "error",
-      ).mockImplementation(() => undefined);
+      const errorMock = mock(() => undefined);
+      (
+        service as unknown as { logger: { error: typeof errorMock } }
+      ).logger.error = errorMock;
 
-      Object.defineProperty(mockDb, "delete", {
-        value: mock(() => {
-          throw new Error("Database connection dropped");
-        }),
-        configurable: true,
-      });
+      mockDb.delete = mock(() => ({
+        where: mock(() =>
+          Promise.reject(new Error("Database connection dropped")),
+        ),
+      })) as unknown as typeof mockDb.delete;
 
       await service.cleanupTokens();
-      expect(errorSpy).toHaveBeenCalledTimes(1);
-      errorSpy.mockRestore();
+      expect(errorMock).toHaveBeenCalledTimes(1);
     });
   });
 });

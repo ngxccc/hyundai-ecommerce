@@ -6,11 +6,23 @@ const zUrl = (defaultVal: string, errorMsg?: string) =>
     (val) => {
       if (!val || typeof val !== "string") return defaultVal;
       const trimmed = val.trim().replace(/^["'\\]+|["'\\]+$/g, "");
-      if (!trimmed) return defaultVal;
-      if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
-        return `https://${trimmed}`;
+      if (
+        !trimmed ||
+        trimmed === "[SENSITIVE]" ||
+        trimmed.includes("[SENSITIVE]")
+      ) {
+        return defaultVal;
       }
-      return trimmed;
+      const withProtocol =
+        trimmed.startsWith("http://") || trimmed.startsWith("https://")
+          ? trimmed
+          : `https://${trimmed}`;
+      try {
+        new URL(withProtocol);
+        return withProtocol;
+      } catch {
+        return defaultVal;
+      }
     },
     errorMsg ? z.url(errorMsg) : z.url(),
   );
