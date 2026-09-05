@@ -7,6 +7,7 @@ import {
   updateBrandSchema,
   type CreateBrandInput,
   type UpdateBrandInput,
+  isValidIdentifier,
 } from "@/shared/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@/shared/constants";
@@ -23,7 +24,6 @@ import { uploadToCloudinary, validateUploadedFile } from "@/shared/services";
 export const createBrandAction = async (formData: FormData) => {
   try {
     await requireAuth();
-
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
     const data = JSON.parse(payloadStr as string) as CreateBrandInput;
@@ -89,6 +89,9 @@ export const createBrandAction = async (formData: FormData) => {
 };
 
 export async function updateBrandAction(id: string, formData: FormData) {
+  if (!isValidIdentifier(id)) {
+    return { success: false, error: "Invalid brand identifier" };
+  }
   try {
     await requireAuth();
 
@@ -157,6 +160,9 @@ export async function updateBrandAction(id: string, formData: FormData) {
 }
 
 export async function deleteBrandAction(id: string) {
+  if (!isValidIdentifier(id)) {
+    return { success: false, error: "Invalid brand identifier" };
+  }
   try {
     await requireAuth();
     const success = await adminApiClient.brands.delete(id);

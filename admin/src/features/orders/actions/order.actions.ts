@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { adminApiClient, ApiClientError } from "@/lib/api-client";
 import { type Order } from "@/shared/types/admin-schema.types";
+import { isValidIdentifier } from "@/shared/validators";
 import {
   requireAuth,
   assertFinanceRole,
@@ -16,6 +17,9 @@ export const updateOrderStatusAction = async (
   note?: string,
 ) => {
   const t = await getTranslations("errors");
+  if (!isValidIdentifier(orderId)) {
+    return { success: false as const, error: t("default") };
+  }
   try {
     await requireAuth();
     const updated = await adminApiClient.orders.updateStatus(
@@ -45,6 +49,9 @@ export const updateOrderStatusAction = async (
 
 export const approveDealerOrderAction = async (orderId: string) => {
   const t = await getTranslations("errors");
+  if (!isValidIdentifier(orderId)) {
+    return { success: false as const, error: t("default") };
+  }
   try {
     await assertSalesOrFinanceRole();
     const result = await adminApiClient.orders.updateStatus(
@@ -78,6 +85,9 @@ export const verifyCashPaymentAction = async (
   note?: string,
 ) => {
   const t = await getTranslations("errors");
+  if (!isValidIdentifier(orderId)) {
+    return { success: false as const, error: t("default") };
+  }
   try {
     await assertFinanceRole();
     const result = await adminApiClient.payments.verifyCash(orderId, {
@@ -109,6 +119,9 @@ export const approveOrderCancellationAction = async (
   _reason?: string,
 ) => {
   const t = await getTranslations("errors");
+  if (!isValidIdentifier(orderId)) {
+    return { success: false as const, error: t("default") };
+  }
   try {
     await assertSalesOrFinanceRole();
     const result = await adminApiClient.orders.cancel(orderId);

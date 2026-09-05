@@ -58,16 +58,36 @@ const getBaseUrl = (): string => {
   return process.env.BACKEND_API_URL ?? "http://127.0.0.1:3000";
 };
 
+export function safeId(id: string): string {
+  const trimmed = id.trim();
+  if (!/^[a-zA-Z0-9_-]+$/.test(trimmed)) {
+    throw new ApiClientError("Invalid identifier format", 400);
+  }
+  return encodeURIComponent(trimmed);
+}
+
 export async function adminApiFetch<T>(
   endpoint: string,
   options: RequestOptions = {},
 ): Promise<T> {
+  if (
+    endpoint.includes("://") ||
+    endpoint.startsWith("//") ||
+    endpoint.includes("..") ||
+    endpoint.includes("\\")
+  ) {
+    throw new ApiClientError("Forbidden URL pattern", 400);
+  }
+
   const baseUrl = getBaseUrl();
   const base = new URL(baseUrl);
   const cleanPath = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
-  const targetUrl = new URL(cleanPath, base);
+  const targetUrl = new URL(cleanPath, base.origin);
 
-  if (targetUrl.origin !== base.origin) {
+  if (
+    targetUrl.origin !== base.origin ||
+    !targetUrl.href.startsWith(base.origin + "/")
+  ) {
     throw new ApiClientError("Cross-origin requests are forbidden", 403);
   }
   const headers: Record<string, string> = {
@@ -394,7 +414,7 @@ export const adminApiClient = {
     },
 
     getById: (id: string) =>
-      adminApiFetch<AdminProduct | null>(`/products/${id}`),
+      adminApiFetch<AdminProduct | null>(`/products/${safeId(id)}`),
 
     create: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminProduct>("/products", {
@@ -403,13 +423,13 @@ export const adminApiClient = {
       }),
 
     update: (id: string, dto: Record<string, unknown>) =>
-      adminApiFetch<AdminProduct>(`/products/${id}`, {
+      adminApiFetch<AdminProduct>(`/products/${safeId(id)}`, {
         method: "PUT",
         body: JSON.stringify(dto),
       }),
 
     delete: (id: string) =>
-      adminApiFetch<boolean>(`/products/${id}`, {
+      adminApiFetch<boolean>(`/products/${safeId(id)}`, {
         method: "DELETE",
       }),
   },
@@ -420,7 +440,7 @@ export const adminApiClient = {
     tree: () => adminApiFetch<AdminCategory[]>("/categories/tree"),
 
     getById: (id: string) =>
-      adminApiFetch<AdminCategory | null>(`/categories/${id}`),
+      adminApiFetch<AdminCategory | null>(`/categories/${safeId(id)}`),
 
     create: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminCategory>("/categories", {
@@ -429,13 +449,13 @@ export const adminApiClient = {
       }),
 
     update: (id: string, dto: Record<string, unknown>) =>
-      adminApiFetch<AdminCategory>(`/categories/${id}`, {
+      adminApiFetch<AdminCategory>(`/categories/${safeId(id)}`, {
         method: "PUT",
         body: JSON.stringify(dto),
       }),
 
     delete: (id: string) =>
-      adminApiFetch<boolean>(`/categories/${id}`, {
+      adminApiFetch<boolean>(`/categories/${safeId(id)}`, {
         method: "DELETE",
       }),
   },
@@ -443,7 +463,8 @@ export const adminApiClient = {
   brands: {
     list: () => adminApiFetch<AdminBrand[]>("/brands"),
 
-    getById: (id: string) => adminApiFetch<AdminBrand | null>(`/brands/${id}`),
+    getById: (id: string) =>
+      adminApiFetch<AdminBrand | null>(`/brands/${safeId(id)}`),
 
     create: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminBrand>("/brands", {
@@ -452,13 +473,13 @@ export const adminApiClient = {
       }),
 
     update: (id: string, dto: Record<string, unknown>) =>
-      adminApiFetch<AdminBrand>(`/brands/${id}`, {
+      adminApiFetch<AdminBrand>(`/brands/${safeId(id)}`, {
         method: "PUT",
         body: JSON.stringify(dto),
       }),
 
     delete: (id: string) =>
-      adminApiFetch<boolean>(`/brands/${id}`, {
+      adminApiFetch<boolean>(`/brands/${safeId(id)}`, {
         method: "DELETE",
       }),
   },
@@ -477,7 +498,8 @@ export const adminApiClient = {
       );
     },
 
-    getById: (id: string) => adminApiFetch<AdminQuote | null>(`/quotes/${id}`),
+    getById: (id: string) =>
+      adminApiFetch<AdminQuote | null>(`/quotes/${safeId(id)}`),
 
     createAdminQuote: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminQuote>("/quotes/admin", {
@@ -486,26 +508,32 @@ export const adminApiClient = {
       }),
 
     updateStatus: (id: string, status: string) =>
-      adminApiFetch<AdminQuote>(`/quotes/${id}/status`, {
+      adminApiFetch<AdminQuote>(`/quotes/${safeId(id)}/status`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
       }),
 
     updateItemPrice: (id: string, itemId: string, agreedPrice: string) =>
-      adminApiFetch<AdminQuote>(`/quotes/${id}/items/${itemId}/price`, {
-        method: "PUT",
-        body: JSON.stringify({ agreedPrice }),
-      }),
+      adminApiFetch<AdminQuote>(
+        `/quotes/${safeId(id)}/items/${safeId(itemId)}/price`,
+        {
+          method: "PUT",
+          body: JSON.stringify({ agreedPrice }),
+        },
+      ),
 
     sendMessage: (id: string, message: string) =>
-      adminApiFetch<{ id: string; message: string }>(`/quotes/${id}/messages`, {
-        method: "POST",
-        body: JSON.stringify({ message }),
-      }),
+      adminApiFetch<{ id: string; message: string }>(
+        `/quotes/${safeId(id)}/messages`,
+        {
+          method: "POST",
+          body: JSON.stringify({ message }),
+        },
+      ),
 
     approveToOrder: (id: string) =>
       adminApiFetch<{ orderId: string; quoteId: string }>(
-        `/quotes/${id}/approve-to-order`,
+        `/quotes/${safeId(id)}/approve-to-order`,
         {
           method: "POST",
         },
@@ -513,7 +541,15 @@ export const adminApiClient = {
 
     exportExcel: (id: string) => {
       const baseUrl = getBaseUrl();
-      return fetch(`${baseUrl}/quotes/${id}/export-excel`);
+      const base = new URL(baseUrl);
+      const targetUrl = new URL(
+        `/quotes/${safeId(id)}/export-excel`,
+        base.origin,
+      );
+      if (targetUrl.origin !== base.origin) {
+        throw new ApiClientError("Cross-origin requests are forbidden", 403);
+      }
+      return fetch(targetUrl.href);
     },
   },
 
@@ -531,7 +567,8 @@ export const adminApiClient = {
       );
     },
 
-    getById: (id: string) => adminApiFetch<AdminOrder | null>(`/orders/${id}`),
+    getById: (id: string) =>
+      adminApiFetch<AdminOrder | null>(`/orders/${safeId(id)}`),
 
     createB2B: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminOrder>("/orders/admin", {
@@ -540,13 +577,13 @@ export const adminApiClient = {
       }),
 
     updateStatus: (id: string, status: string, note?: string) =>
-      adminApiFetch<AdminOrder>(`/orders/${id}/status`, {
+      adminApiFetch<AdminOrder>(`/orders/${safeId(id)}/status`, {
         method: "PATCH",
         body: JSON.stringify({ status, note }),
       }),
 
     cancel: (id: string) =>
-      adminApiFetch<AdminOrder>(`/orders/${id}/cancel`, {
+      adminApiFetch<AdminOrder>(`/orders/${safeId(id)}/cancel`, {
         method: "POST",
       }),
   },
@@ -554,7 +591,7 @@ export const adminApiClient = {
   payments: {
     verifyCash: (id: string, dto: { amount: number; note?: string }) =>
       adminApiFetch<{ orderId: string; paymentStatus: string }>(
-        `/payments/${id}/verify-cash`,
+        `/payments/${safeId(id)}/verify-cash`,
         {
           method: "POST",
           body: JSON.stringify(dto),
@@ -563,7 +600,7 @@ export const adminApiClient = {
 
     getOrderSummary: (orderId: string) =>
       adminApiFetch<{ orderId: string; paymentStatus: string }>(
-        `/payments/order/${orderId}`,
+        `/payments/order/${safeId(orderId)}`,
       ),
   },
 
@@ -571,7 +608,7 @@ export const adminApiClient = {
     list: () => adminApiFetch<AdminWarehouse[]>("/warehouses"),
 
     getById: (id: string) =>
-      adminApiFetch<AdminWarehouse | null>(`/warehouses/${id}`),
+      adminApiFetch<AdminWarehouse | null>(`/warehouses/${safeId(id)}`),
 
     create: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminWarehouse>("/warehouses", {
@@ -580,13 +617,13 @@ export const adminApiClient = {
       }),
 
     update: (id: string, dto: Record<string, unknown>) =>
-      adminApiFetch<AdminWarehouse>(`/warehouses/${id}`, {
+      adminApiFetch<AdminWarehouse>(`/warehouses/${safeId(id)}`, {
         method: "PUT",
         body: JSON.stringify(dto),
       }),
 
     delete: (id: string) =>
-      adminApiFetch<boolean>(`/warehouses/${id}`, {
+      adminApiFetch<boolean>(`/warehouses/${safeId(id)}`, {
         method: "DELETE",
       }),
 
@@ -594,14 +631,14 @@ export const adminApiClient = {
       id: string,
       dto: { productId: string; stock: number; minStockWarning?: number },
     ) =>
-      adminApiFetch<AdminWarehouseStock>(`/warehouses/${id}/stock`, {
+      adminApiFetch<AdminWarehouseStock>(`/warehouses/${safeId(id)}/stock`, {
         method: "PUT",
         body: JSON.stringify(dto),
       }),
 
     getProductStock: (productId: string) =>
       adminApiFetch<AdminWarehouseStock[]>(
-        `/warehouses/stock/product/${productId}`,
+        `/warehouses/stock/product/${safeId(productId)}`,
       ),
   },
 
@@ -609,6 +646,6 @@ export const adminApiClient = {
     list: () => adminApiFetch<AdminDealerTier[]>("/dealer-tiers"),
 
     getById: (id: string) =>
-      adminApiFetch<AdminDealerTier>(`/dealer-tiers/${id}`),
+      adminApiFetch<AdminDealerTier>(`/dealer-tiers/${safeId(id)}`),
   },
 };

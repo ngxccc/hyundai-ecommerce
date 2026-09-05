@@ -3,9 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { adminApiClient, ApiClientError } from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
+import { isValidIdentifier } from "@/shared/validators";
 
 export async function approveAndConvertToOrderAction(quoteId: string) {
   const t = await getTranslations("errors");
+  if (!isValidIdentifier(quoteId)) {
+    return { success: false as const, error: t("default") };
+  }
   try {
     const data = await adminApiClient.quotes.approveToOrder(quoteId);
     revalidatePath("/quotes");
@@ -26,6 +30,9 @@ export async function approveAndConvertToOrderAction(quoteId: string) {
 
 export async function updateQuoteStatusAction(quoteId: string, status: string) {
   const t = await getTranslations("errors");
+  if (!isValidIdentifier(quoteId)) {
+    return { success: false as const, error: t("default") };
+  }
   try {
     const data = await adminApiClient.quotes.updateStatus(quoteId, status);
     revalidatePath("/quotes");
@@ -49,6 +56,9 @@ export async function updateQuoteItemPriceAction(
   agreedPrice: string,
 ) {
   const t = await getTranslations("errors");
+  if (!isValidIdentifier(quoteId) || !isValidIdentifier(itemId)) {
+    return { success: false as const, error: t("default") };
+  }
   try {
     const data = await adminApiClient.quotes.updateItemPrice(
       quoteId,
@@ -74,6 +84,9 @@ export async function sendAdminNegotiationMessageAction(
   message: string,
 ) {
   const t = await getTranslations("errors");
+  if (!isValidIdentifier(quoteId)) {
+    return { success: false as const, error: t("default") };
+  }
   try {
     const data = await adminApiClient.quotes.sendMessage(quoteId, message);
     revalidatePath(`/quotes/${quoteId}`);

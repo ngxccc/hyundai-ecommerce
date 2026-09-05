@@ -7,6 +7,7 @@ import {
   updateCategorySchema,
   type CreateCategoryInput,
   type UpdateCategoryInput,
+  isValidIdentifier,
 } from "@/shared/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@/shared/constants";
@@ -91,6 +92,9 @@ export const createCategoryAction = async (formData: FormData) => {
 };
 
 export async function updateCategoryAction(id: string, formData: FormData) {
+  if (!isValidIdentifier(id)) {
+    return { success: false, error: "Invalid category identifier" };
+  }
   try {
     await requireAuth();
 
@@ -162,6 +166,9 @@ export async function updateCategoryAction(id: string, formData: FormData) {
 }
 
 export async function deleteCategoryAction(id: string) {
+  if (!isValidIdentifier(id)) {
+    return { success: false, error: "Invalid category identifier" };
+  }
   try {
     await requireAuth();
     const success = await adminApiClient.categories.delete(id);

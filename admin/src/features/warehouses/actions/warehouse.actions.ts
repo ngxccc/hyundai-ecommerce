@@ -7,6 +7,7 @@ import {
   updateWarehouseSchema,
   type CreateWarehouseInput,
   type UpdateWarehouseInput,
+  isValidIdentifier,
 } from "@/shared/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@/shared/constants";
@@ -67,6 +68,9 @@ export async function updateWarehouseAction(
   input: UpdateWarehouseInput,
 ) {
   const t = await getTranslations("errors");
+  if (!isValidIdentifier(id)) {
+    return { success: false as const, error: t("default") };
+  }
   try {
     await requireAuth();
     const parsed = await updateWarehouseSchema.safeParseAsync(input);
@@ -115,6 +119,9 @@ export async function updateWarehouseAction(
 
 export async function deleteWarehouseAction(id: string) {
   const t = await getTranslations("errors");
+  if (!isValidIdentifier(id)) {
+    return { success: false as const, error: t("default") };
+  }
   try {
     await requireAuth();
     await adminApiClient.warehouses.delete(id);

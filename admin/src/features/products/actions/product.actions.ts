@@ -7,6 +7,7 @@ import {
   updateProductSchema,
   type CreateProductInput,
   type UpdateProductInput,
+  isValidIdentifier,
 } from "@/shared/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@/shared/constants";
@@ -104,6 +105,9 @@ export const createProductAction = async (formData: FormData) => {
 };
 
 export async function updateProductAction(id: string, formData: FormData) {
+  if (!isValidIdentifier(id)) {
+    return { success: false, error: "Invalid product identifier" };
+  }
   try {
     await requireAuth();
 
@@ -197,6 +201,9 @@ export async function updateProductAction(id: string, formData: FormData) {
 }
 
 export async function deleteProductAction(id: string) {
+  if (!isValidIdentifier(id)) {
+    return { success: false, error: "Invalid product identifier" };
+  }
   try {
     await requireAuth();
     const success = await adminApiClient.products.delete(id);

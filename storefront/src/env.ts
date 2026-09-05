@@ -11,7 +11,7 @@ export const env = createEnv({
         ENVIRONMENT_MODES.TEST,
       ])
       .default(ENVIRONMENT_MODES.DEVELOPMENT),
-    BACKEND_API_URL: z.string().url().default("http://127.0.0.1:3000"),
+    BACKEND_API_URL: z.url().default("http://127.0.0.1:3000"),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.url(MESSAGES.NEXT_URL_IS_INVALID),

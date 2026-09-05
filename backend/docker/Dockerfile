@@ -1,4 +1,4 @@
-FROM oven/bun:1.3-alpine AS base
+FROM oven/bun:1.4-alpine AS base
 WORKDIR /usr/src/app
 
 # Stage 2: Install all dependencies (development + production) for building

@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+export const isValidIdentifier = (id: unknown): id is string => {
+  return typeof id === "string" && /^[a-zA-Z0-9_-]+$/.test(id.trim());
+};
+
 // Brand Validators
 export const createBrandSchema = z.object({
   name: z.string().min(1, "validation.nameRequired"),
