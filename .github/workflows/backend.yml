@@ -40,14 +40,33 @@ jobs:
       - name: Setup Environment
         uses: ./.github/setup-environment
 
-      - name: Final Safety Check (Lint, Type-Check, Test, Build)
+      - name: Type-Check
         working-directory: backend
+        run: bun run check-types
+
+      - name: Lint Code
+        working-directory: backend
+        run: bun run lint
+
+      - name: Run Test Suite
+        working-directory: backend
+        run: bun run test
+
+      - name: Production Build
+        working-directory: backend
+        run: bun run build
+
+      - name: Run Database Migrations
+        working-directory: backend
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
         run: |
-          bun install
-          bun run check-types
-          bun run lint
-          bun test src/
-          bun run build
+          if [ -n "$DOPPLER_TOKEN" ]; then
+            echo "Running database migrations via Doppler..."
+            bun run db:migrate
+          else
+            echo "Notice: DOPPLER_TOKEN is not set. Skipping automated migration."
+          fi
 
       - name: Trigger Render Deployment
         env:

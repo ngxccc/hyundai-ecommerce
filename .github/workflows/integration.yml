@@ -8,9 +8,19 @@ permissions:
   checks: write
 
 jobs:
-  integration:
-    name: "Build, Lint & Test Pipeline"
+  quality-gate:
+    name: "${{ matrix.app.name }} Quality Gate"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - name: "Backend"
+            dir: "backend"
+          - name: "Storefront"
+            dir: "storefront"
+          - name: "Admin"
+            dir: "admin"
     steps:
       - name: Checkout Code
         uses: actions/checkout@v7
@@ -18,23 +28,18 @@ jobs:
       - name: Setup Environment
         uses: ./.github/setup-environment
 
-      - name: Backend Quality Gate
-        working-directory: backend
-        run: |
-          bun install
-          bun run check-types
-          bun run lint
-          bun test src/
-          bun run build
-      - name: Storefront Quality Gate
-        working-directory: storefront
-        run: |
-          bun install
-          bun run check-types
+      - name: Type-Check
+        working-directory: ${{ matrix.app.dir }}
+        run: bun run check-types
 
-      - name: Admin Quality Gate
-        working-directory: admin
-        run: |
-          bun install
-          bun run check-types
-          bun test
+      - name: Lint Code
+        working-directory: ${{ matrix.app.dir }}
+        run: bun run lint
+
+      - name: Run Test Suite
+        working-directory: ${{ matrix.app.dir }}
+        run: bun run test
+
+      - name: Production Build
+        working-directory: ${{ matrix.app.dir }}
+        run: bun run build

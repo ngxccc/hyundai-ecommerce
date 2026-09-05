@@ -40,13 +40,18 @@ jobs:
       - name: Setup Environment
         uses: ./.github/setup-environment
 
-      - name: Final Safety Check (Lint, Test)
+      - name: Type-Check
         working-directory: storefront
-        run: |
-          bun install
-          bun run check-types
-          bun run lint
-          bun test
+        run: bun run check-types
+
+      - name: Lint Code
+        working-directory: storefront
+        run: bun run lint
+
+      - name: Run Test Suite
+        working-directory: storefront
+        run: bun run test
+
       - name: Deploy to Vercel
         uses: ./.github/vercel-deploy
         with:
