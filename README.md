@@ -58,8 +58,6 @@ The repository adopts a **Decoupled Standalone Multi-Application Architecture (P
 │   ├── src/lib/        # Typed API client with compile-time DTO schemas
 │   ├── docs/standards/ # Frontend Engineering Standards
 │   └── .github/        # Independent CI/CD (Vercel deploy)
-│
-├── docs/standards/     # Central Engineering Standards Reference
 ├── docker-compose.yml  # Local PostgreSQL 18 & Redis 8 infrastructure
 ├── package.json        # Root coordination & verification scripts
 └── .github/workflows/  # Thin Monorepo CI/CD orchestrators with path filtering
@@ -178,14 +176,10 @@ The root `package.json` provides scripts to coordinate all 3 applications:
 
 ## Architecture & Engineering Standards
 
-Operational standards are maintained in [`docs/standards/`](docs/standards/) and localized within each package's `docs/standards/`:
+Operational standards are localized directly inside each package's `docs/standards/` to support independent polyrepo development:
 
-- **Database & Migrations**: Schema rules & Drizzle practices in [`docs/standards/database-and-migrations.md`](docs/standards/database-and-migrations.md).
-- **Concurrency & Locking**: Pessimistic locks & Redlock in [`docs/standards/concurrency-and-locking.md`](docs/standards/concurrency-and-locking.md).
-- **API Design & Errors**: REST conventions & RFC 9457 errors in [`docs/standards/api-design-and-error-handling.md`](docs/standards/api-design-and-error-handling.md).
-- **Architecture Principles**: Module depth & DRY/AHA balance in [`docs/standards/code-architecture-and-design-principles.md`](docs/standards/code-architecture-and-design-principles.md).
-- **Testing & Fixtures**: Isolation and test fixtures in [`docs/standards/testing-and-fixtures.md`](docs/standards/testing-and-fixtures.md).
-- **Git Flow & PR Matrix**: Conventional Commits & code reviews in [`docs/standards/git-flow-and-pr-matrix.md`](docs/standards/git-flow-and-pr-matrix.md).
+- **Backend Standards (`backend/docs/standards/`)**: 11 operational standards covering Database, Concurrency Locking, REST API, Benchmarks, Security, Testing, and Domain models.
+- **Frontend Standards (`admin/docs/standards/` & `storefront/docs/standards/`)**: 6 operational standards covering Architecture, Testing, Security, Comment taxonomy, Git Flow, and Issue tracking.
 
 ---
 

@@ -1,0 +1,8 @@
+node_modules/
+.next/
+out/
+build/
+coverage/
+.eslintcache
+messages/*.d.json.ts
+src/types/api-schema.d.ts

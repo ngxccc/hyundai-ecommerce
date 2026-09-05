@@ -15,51 +15,61 @@
 
 ---
 
-## Engineering Standards
+## Engineering Standards (Localized per Package)
 
-MUST read the corresponding standard file under `docs/standards/` before modifying related code or tests:
+Each package maintains its own localized operational standards. You MUST read and comply with the corresponding standard under `<package>/docs/standards/` when working within that package:
 
-- **Issue tracking & tickets** → `docs/standards/issue-tracker.md`
-- **Domain glossary & ADRs** → `docs/standards/domain-docs.md`
-- **Architecture & design principles (DRY, YAGNI, AHA, Deep Modules)** → `docs/standards/code-architecture-and-design-principles.md`
-- **Comments & docstrings** → `docs/standards/code-comment-taxonomy.md`
-- **Routes, DTOs, and error responses** → `docs/standards/api-design-and-error-handling.md`
-- **Schemas, queries, and migrations** → `docs/standards/database-and-migrations.md`
-- **Locks, race conditions, and transactions** → `docs/standards/concurrency-and-locking.md`
-- **Tests, factories, and fixtures** → `docs/standards/testing-and-fixtures.md`
-- **Benchmarks & performance** → `docs/standards/benchmarking-and-performance-testing.md`
-- **Auth, hashing, and sanitization** → `docs/standards/security-and-cryptography.md`
-- **Branches, commits, and PRs** → `docs/standards/git-flow-and-pr-matrix.md`
-- **Formal specifications** → `docs/formal-specs/`
+### Backend Standards (`backend/docs/standards/`)
+
+- **Database & Migrations** → `backend/docs/standards/database-and-migrations.md`
+- **Concurrency & Locking** → `backend/docs/standards/concurrency-and-locking.md`
+- **API Design & Error Handling** → `backend/docs/standards/api-design-and-error-handling.md`
+- **Benchmarks & Performance** → `backend/docs/standards/benchmarking-and-performance-testing.md`
+- **Testing & Fixtures** → `backend/docs/standards/testing-and-fixtures.md`
+- **Security & Cryptography** → `backend/docs/standards/security-and-cryptography.md`
+- **Architecture & Deep Modules** → `backend/docs/standards/code-architecture-and-design-principles.md`
+- **Domain Glossary & ADRs** → `backend/docs/standards/domain-docs.md`
+- **Git Flow & PR Matrix** → `backend/docs/standards/git-flow-and-pr-matrix.md`
+- **Comment Taxonomy** → `backend/docs/standards/code-comment-taxonomy.md`
+- **Issue Tracking & Tickets** → `backend/docs/standards/issue-tracker.md`
+
+### Frontend Standards (`admin/docs/standards/` & `storefront/docs/standards/`)
+
+- **Architecture & Components** → `<app>/docs/standards/code-architecture-and-design-principles.md`
+- **Testing & Test Harness** → `<app>/docs/standards/testing-and-fixtures.md`
+- **Security & Token Handling** → `<app>/docs/standards/security-and-cryptography.md`
+- **Git Flow & PR Matrix** → `<app>/docs/standards/git-flow-and-pr-matrix.md`
+- **Comment Taxonomy** → `<app>/docs/standards/code-comment-taxonomy.md`
+- **Issue Tracking & Tickets** → `<app>/docs/standards/issue-tracker.md`
 
 ---
 
 ## Tech Stack & Commands
 
-- **Monorepo Engine & Runtime:** Turborepo + Bun v1.3+ Workspaces
-- **Frontend Applications:** Next.js 16 (App Router, React Server Components, Server Actions, Route Handlers, `"use cache"`)
-- **Database & ORM:** PostgreSQL + Drizzle ORM (`packages/database`)
-- **Service Architecture:** Direct Pure Service Singletons with Constructor Dependency Injection (ADR 0002 & ADR 0013)
-- **Cache & Concurrency:** Redis (IoRedis, Redlock, Rate Limiter)
-- **Payment & Media Integrations:** PayOS (OpenAPI webhook & checkout), Cloudinary SDK
-- **Environment Secrets:** Doppler CLI (`doppler run -- turbo run ...`)
-- **Development:** `bun run dev` (or `bun run dev:storefront`)
-- **Testing:** `bun run test` (or `bun test packages/database/`, `bun test apps/storefront/`)
-- **Type Check:** `bun run check-types` (`turbo run check-types`)
-- **Linting & Formatting:** `bun run lint` & `bun run format:pkg`
+- **Architecture:** Decoupled Standalone Multi-Application Architecture (Polyrepo-Ready)
+- **Runtime:** Bun v1.4+
+- **Backend Service:** NestJS 11 + Drizzle ORM + PostgreSQL 18 + Redis 8 (`backend/`)
+- **Admin Portal:** Next.js 16 (App Router, Server Actions, `openapi-fetch`) on Port 3002 (`admin/`)
+- **Customer Storefront:** Next.js 16 (App Router, Server Actions, `openapi-fetch`) on Port 3001 (`storefront/`)
+- **Development Commands:**
+  - Backend: `bun run dev:backend`
+  - Storefront: `bun run dev:storefront`
+  - Admin: `bun run dev:admin`
+- **Quality & Verification:**
+  - Type Check: `bun run check-types`
+  - Linting: `bun run lint`
+  - Testing: `bun run test` (or `bun run test:backend`)
+- **API Contract Sync:** `bun run types:sync` (root) or `bun run types:pull` (in `admin/` & `storefront/`)
 
 ---
 
 ## Project Structure
 
-- `apps/storefront/` — Next.js 16 Customer Storefront (`app/[locale]/(shop)`, `(portal)`, API Route Handlers, Cron jobs)
-- `apps/admin/` — Next.js 16 Backoffice Admin Portal (Quản lý sản phẩm, danh mục, thương hiệu, kho, đơn hàng, báo giá B2B)
-- `packages/database/` — Drizzle ORM schemas, migrations, DTOs, validators, and pure service singletons (`src/services/`)
-- `packages/shared/` — Shared constants, utilities, PayOS client, and rate limiters
-- `packages/ui/` — Shared React UI components (Tailwind CSS, Radix UI)
-- `packages/eslint-config/` & `packages/typescript-config/` — Monorepo configs
-- `docs/standards/` — Engineering operational standards
-- `docs/adr/` — Architectural Decision Records
+- `backend/` — Standalone NestJS 11 REST API Server (`src/modules/`, `src/database/`, `test/`)
+- `admin/` — Standalone Next.js 16 Backoffice Admin Dashboard (`app/`, `src/features/`, `messages/`)
+- `storefront/` — Standalone Next.js 16 Customer Storefront & B2B RFQ Portal (`app/`, `src/features/`, `messages/`)
+- `docker-compose.yml` — Local PostgreSQL 18 & Redis 8 infrastructure
+- `.github/workflows/` — Monorepo CI/CD orchestrators with path filtering
 
 ---
 
