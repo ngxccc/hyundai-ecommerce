@@ -24,7 +24,8 @@ jobs:
           bun install
           bun run check-types
           bun run lint
-
+          bun test src/
+          bun run build
       - name: Storefront Quality Gate
         working-directory: storefront
         run: |

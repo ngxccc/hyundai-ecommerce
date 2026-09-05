@@ -1,0 +1,62 @@
+name: Backend App CD
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.2
+        id: filter
+        with:
+          filters: |
+            backend:
+              - "backend/**"
+              - ".github/workflows/backend.yml"
+
+  deploy:
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
+    name: Build, Verify & Release to Render
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Environment
+        uses: ./.github/setup-environment
+
+      - name: Final Safety Check (Lint, Type-Check, Test, Build)
+        working-directory: backend
+        run: |
+          bun install
+          bun run check-types
+          bun run lint
+          bun test src/
+          bun run build
+
+      - name: Trigger Render Deployment
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -n "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "Calling Render Deploy Hook..."
+            curl -f -s -S -X POST "$RENDER_DEPLOY_HOOK_URL"
+            echo "Render deploy hook triggered successfully."
+          else
+            echo "Notice: RENDER_DEPLOY_HOOK_URL is not set. Render will auto-deploy via GitHub push integration if enabled."
+          fi

@@ -5,7 +5,7 @@
       "name": "🧪 Debug Test Current File (Doppler TEST)",
       "type": "node-terminal",
       "request": "launch",
-      "command": "doppler run -c test_backend -- bun test ${file}",
+      "command": "doppler run -c test -- bun test ${file}",
       "cwd": "${workspaceFolder}"
     },
     {

@@ -21,7 +21,7 @@
     "lint:backend": "cd backend && bun run lint",
     "lint:storefront": "cd storefront && bun run lint",
     "prepare": "husky",
-    "test": "bun run test:storefront && bun run test:admin",
+    "test": "bun run test:backend && bun run test:storefront && bun run test:admin",
     "test:admin": "cd admin && bun run test",
     "test:backend": "cd backend && bun run test",
     "test:storefront": "cd storefront && bun run test"
