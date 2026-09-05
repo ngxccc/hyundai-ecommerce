@@ -63,10 +63,13 @@ export async function adminApiFetch<T>(
   options: RequestOptions = {},
 ): Promise<T> {
   const baseUrl = getBaseUrl();
-  const url = endpoint.startsWith("http")
-    ? endpoint
-    : `${baseUrl}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+  const base = new URL(baseUrl);
+  const cleanPath = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const targetUrl = new URL(cleanPath, base);
 
+  if (targetUrl.origin !== base.origin) {
+    throw new ApiClientError("Cross-origin requests are forbidden", 403);
+  }
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -88,7 +91,7 @@ export async function adminApiFetch<T>(
     }
   }
 
-  const response = await fetch(url, {
+  const response = await fetch(targetUrl.toString(), {
     ...options,
     headers,
   });

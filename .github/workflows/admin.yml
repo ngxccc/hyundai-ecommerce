@@ -47,13 +47,9 @@ jobs:
           bun run check-types
           bun run lint
           bun test
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-
       - name: Deploy to Vercel
         uses: ./.github/vercel-deploy
         with:
           vercel_token: ${{ secrets.VERCEL_TOKEN }}
           vercel_org_id: ${{ secrets.VERCEL_ORG_ID }}
           vercel_project_id: ${{ secrets.VERCEL_ADMIN_PROJECT_ID }}
-          doppler_token: ${{ secrets.DOPPLER_TOKEN }}

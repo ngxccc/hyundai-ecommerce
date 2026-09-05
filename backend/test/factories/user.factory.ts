@@ -1,3 +1,4 @@
+import { randomInt, randomUUID } from "node:crypto";
 import type { DrizzleDB } from "@/database/database.module";
 import { users, type User, type NewUser } from "@/database/schemas";
 
@@ -5,8 +6,8 @@ export async function createUser(
   db: DrizzleDB,
   overrides: Partial<NewUser> = {},
 ): Promise<User> {
-  const uid = crypto.randomUUID().slice(0, 8);
-  const randomDigits = String(Math.floor(10000000 + Math.random() * 90000000));
+  const uid = randomUUID().slice(0, 8);
+  const randomDigits = String(randomInt(10000000, 99999999));
 
   const [user] = await db
     .insert(users)
