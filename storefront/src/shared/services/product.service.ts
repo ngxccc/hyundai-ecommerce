@@ -1,5 +1,12 @@
 import { cacheLife } from "next/cache";
-import { apiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
+import type {
+  ProductQueryParams,
+  ProductPhase,
+  ProductFuelType,
+  ProductCanopyType,
+  ProductSort,
+} from "@/types/api";
 import {
   type StorefrontProduct,
   type StorefrontFilterMetadata,
@@ -16,31 +23,20 @@ export interface GetProductsResponse {
   nextCursor?: string | undefined;
   prevCursor?: string | undefined;
 }
-
-export interface CatalogQueryOptions {
-  page?: number | undefined;
-  limit?: number | undefined;
-  search?: string | undefined;
-  brandId?: string | undefined;
+export type CatalogQueryOptions = Omit<
+  ProductQueryParams,
+  "phase" | "fuelType" | "canopyType" | "sort" | "voltage"
+> & {
+  phase?: ProductPhase | (string & {}) | undefined;
+  fuelType?: ProductFuelType | (string & {}) | undefined;
+  canopyType?: ProductCanopyType | (string & {}) | undefined;
+  sort?: ProductSort | (string & {}) | undefined;
+  voltage?: string | number | undefined;
   brandIds?: string[] | undefined;
-  categoryId?: string | undefined;
   categoryIds?: string[] | undefined;
-  priceMin?: number | undefined;
-  priceMax?: number | undefined;
-  phase?: string | undefined;
-  fuelType?: string | undefined;
-  canopyType?: string | undefined;
-  voltage?: number | undefined;
-  minPower?: number | undefined;
-  maxPower?: number | undefined;
-  engineBrand?: string | undefined;
-  alternatorBrand?: string | undefined;
-  isQuoteOnly?: boolean | undefined;
-  status?: string | undefined;
   after?: string | undefined;
   before?: string | undefined;
-  sort?: string | undefined;
-}
+};
 
 export const productService = {
   getProducts: async (
@@ -51,32 +47,37 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const res = await apiClient.catalog.getProducts({
-        limit,
-        page: options?.page ?? 1,
-        search: options?.search,
-        brandId: options?.brandId,
-        categoryId: options?.categoryId,
-        priceMin: options?.priceMin,
-        priceMax: options?.priceMax,
-        phase: options?.phase,
-        fuelType: options?.fuelType,
-        canopyType: options?.canopyType,
-        sort: options?.sort,
+      const { data: res } = await api.GET("/products", {
+        params: {
+          query: {
+            limit,
+            page: options?.page ?? 1,
+            search: options?.search,
+            brandId: options?.brandId,
+            categoryId: options?.categoryId,
+            priceMin: options?.priceMin,
+            priceMax: options?.priceMax,
+            phase: options?.phase as ProductPhase,
+            fuelType: options?.fuelType as ProductFuelType,
+            canopyType: options?.canopyType as ProductCanopyType,
+            sort: options?.sort as ProductSort,
+            voltage:
+              options?.voltage != null ? String(options.voltage) : undefined,
+          },
+        },
       });
 
+      const items = res?.data ?? [];
+      const meta = res?.meta;
+
       return {
-        data: res.items.map((p) => mapProductToStorefront(p, locale)),
-        total: res.pagination.total,
-        page: res.pagination.page,
-        totalPages: res.pagination.totalPages,
-        hasMore: res.pagination.hasNext,
-        nextCursor: res.pagination.hasNext
-          ? String(res.pagination.page + 1)
-          : undefined,
-        prevCursor: res.pagination.hasPrev
-          ? String(res.pagination.page - 1)
-          : undefined,
+        data: items.map((p) => mapProductToStorefront(p, locale)),
+        total: meta?.total ?? 0,
+        page: meta?.page ?? 1,
+        totalPages: meta?.totalPages ?? 0,
+        hasMore: meta?.hasNextPage ?? false,
+        nextCursor: meta?.hasNextPage ? String(meta.page + 1) : undefined,
+        prevCursor: meta?.hasPrevPage ? String(meta.page - 1) : undefined,
       };
     } catch (error) {
       console.error("Failed to fetch products from backend:", error);
@@ -96,8 +97,12 @@ export const productService = {
     "use cache";
     cacheLife("days");
     try {
-      const res = await apiClient.catalog.getProducts({ limit: 100 });
-      return res.items.map((p) => p.slug);
+      const { data: res } = await api.GET("/products", {
+        params: {
+          query: { limit: 100 },
+        },
+      });
+      return (res?.data ?? []).map((p) => p.slug);
     } catch (error) {
       console.error("Failed to fetch product slugs:", error);
       return [];
@@ -111,7 +116,12 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const product = await apiClient.catalog.getProductByIdOrSlug(slug);
+      const { data: res } = await api.GET("/products/{id}", {
+        params: {
+          path: { id: slug },
+        },
+      });
+      const product = res?.data;
       if (!product) return null;
       return mapProductToStorefront(product, locale);
     } catch (error) {
@@ -126,13 +136,16 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const metadata = await apiClient.catalog.getFiltersMetadata();
-      return metadata.filters.map((m) => ({
-        id: m.id,
-        name: locale === "en" && m.nameEn ? m.nameEn : m.nameVi,
-        categoryId: m.categoryId,
-        brandId: m.brandId,
-        specs: m.specs,
+      const { data: res } = await api.GET("/products/metadata");
+      const metadata = res?.data;
+      if (!metadata) return [];
+      const isEn = locale === "en";
+      return metadata.categories.map((c) => ({
+        id: c.id,
+        name: isEn && c.nameEn ? c.nameEn : c.nameVi,
+        categoryId: c.id,
+        brandId: null,
+        specs: null,
       }));
     } catch (error) {
       console.error("Failed to fetch product filters metadata:", error);

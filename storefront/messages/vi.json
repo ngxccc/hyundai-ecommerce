@@ -394,7 +394,11 @@
     "quoteNow": "Yêu cầu báo giá ngay",
     "addedSuccess": "Đã thêm \"{name}\" vào danh sách báo giá",
     "viewQuoteList": "Yêu cầu báo giá ({count})",
-    "deleteItem": "Xóa sản phẩm"
+    "deleteItem": "Xóa sản phẩm",
+    "contactInfoRequired": "Vui lòng nhập đầy đủ họ tên và số điện thoại liên hệ.",
+    "emptyItemsRequired": "Danh sách sản phẩm yêu cầu báo giá không được để trống.",
+    "submitError": "Không thể gửi yêu cầu báo giá. Vui lòng liên hệ hotline để được hỗ trợ trực tiếp.",
+    "createFailed": "Không thể tạo báo giá. Vui lòng thử lại sau."
   },
   "Orders": {
     "status": {

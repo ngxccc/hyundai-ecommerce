@@ -1,6 +1,7 @@
 "use server";
 
-import { apiClient, ApiClientError } from "@/lib/api-client";
+import { getTranslations } from "next-intl/server";
+import { api } from "@/lib/api-client";
 
 export interface SubmitQuoteItemInput {
   productId?: string | null;
@@ -24,48 +25,63 @@ export interface SubmitQuoteInput {
 }
 
 export async function submitQuoteRequestAction(data: SubmitQuoteInput) {
+  const t = await getTranslations("Quote");
+
   if (!data.customerName || !data.customerPhone) {
     return {
       success: false as const,
-      error: "Vui lòng nhập đầy đủ họ tên và số điện thoại liên hệ.",
+      error: t("contactInfoRequired"),
     };
   }
 
   if (data.items.length === 0) {
     return {
       success: false as const,
-      error: "Danh sách sản phẩm yêu cầu báo giá không được để trống.",
+      error: t("emptyItemsRequired"),
     };
   }
 
   try {
-    const quote = await apiClient.quotes.createQuote({
-      customerName: data.customerName,
-      customerPhone: data.customerPhone,
-      customerEmail: data.customerEmail ?? null,
-      companyName: data.companyName ?? null,
-      taxId: data.taxId ?? null,
-      shippingAddress: data.shippingAddress ?? null,
-      note: data.note ?? null,
-      items: data.items,
+    const { data: res } = await api.POST("/quotes", {
+      body: {
+        customerName: data.customerName,
+        customerPhone: data.customerPhone,
+        customerEmail: data.customerEmail ?? undefined,
+        companyName: data.companyName ?? undefined,
+        taxId: data.taxId ?? undefined,
+        shippingAddress: data.shippingAddress ?? undefined,
+        note: data.note ?? undefined,
+        items: data.items.map((item) => ({
+          productId: item.productId ?? undefined,
+          isCustomItem: (item.isCustomItem ?? false) as unknown as Record<
+            string,
+            never
+          >,
+          itemName: item.itemName,
+          itemModel: item.itemModel ?? undefined,
+          itemSpecs: item.itemSpecs ?? undefined,
+          quantity: item.quantity,
+          requestedPrice: item.requestedPrice ?? undefined,
+        })),
+      },
     });
+
+    if (!res?.data) {
+      return {
+        success: false as const,
+        error: t("createFailed"),
+      };
+    }
 
     return {
       success: true as const,
-      data: quote,
+      data: res.data,
     };
   } catch (error) {
     console.error("[submitQuoteRequestAction] Error:", error);
-    if (error instanceof ApiClientError && error.problem?.detail) {
-      return {
-        success: false as const,
-        error: error.problem.detail,
-      };
-    }
     return {
       success: false as const,
-      error:
-        "Không thể gửi yêu cầu báo giá. Vui lòng liên hệ hotline để được hỗ trợ trực tiếp.",
+      error: t("submitError"),
     };
   }
 }

@@ -96,9 +96,10 @@ export function QuoteRequestView() {
       const res = await submitQuoteRequestAction(payload);
       if (res.success) {
         setSubmittedQuote({
-          quoteNumber: res.data.quoteNumber,
-          customerName: res.data.customerName,
-          totalAmount: res.data.totalAmount,
+          quoteNumber: res.data.quoteNumber ?? "",
+          customerName: res.data.customerName ?? "",
+          totalAmount:
+            res.data.totalQuotedPrice ?? res.data.subtotalPrice ?? "0",
         });
         clearQuote();
         toast.success(t("successTitle"));

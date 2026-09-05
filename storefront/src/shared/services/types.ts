@@ -1,11 +1,6 @@
 export type JSONContent = Record<string, unknown>;
 import type { Locale } from "next-intl";
-import type {
-  ApiProduct,
-  ApiCategory,
-  ApiCategoryTree,
-  ApiBrand,
-} from "@/lib/api-client";
+import type { ApiProduct, ApiCategory, ApiBrand } from "@/types/api";
 
 export interface StorefrontProduct {
   id: string;
@@ -71,12 +66,12 @@ export function mapProductToStorefront(
       ? dto.descriptionEn
       : dto.descriptionVi) as JSONContent | null,
     shortDescription:
-      isEn && dto.shortDescriptionEn
+      (isEn && dto.shortDescriptionEn
         ? dto.shortDescriptionEn
-        : dto.shortDescriptionVi,
+        : dto.shortDescriptionVi) ?? null,
     images: dto.images,
-    brandId: dto.brandId,
-    categoryId: dto.categoryId,
+    brandId: dto.brandId ?? null,
+    categoryId: dto.categoryId ?? null,
     specs: dto.specs,
     totalStockCache: dto.totalStockCache,
     isQuoteOnly: dto.isQuoteOnly,
@@ -93,22 +88,25 @@ export function mapCategoryToStorefront(
     name: isEn && dto.nameEn ? dto.nameEn : dto.nameVi,
     slug: dto.slug,
     description:
-      isEn && dto.descriptionEn ? dto.descriptionEn : dto.descriptionVi,
-    icon: dto.icon,
-    image: dto.image,
-    parentId: dto.parentId,
-    sortOrder: dto.sortOrder,
+      (isEn && dto.descriptionEn ? dto.descriptionEn : dto.descriptionVi) ??
+      null,
+    icon: null,
+    image: dto.image ?? null,
+    parentId: dto.parentId ?? null,
+    sortOrder: 0,
     isActive: dto.isActive,
   };
 }
 
 export function mapCategoryTreeToStorefront(
-  node: ApiCategoryTree,
+  node: ApiCategory,
   locale: Locale,
 ): StorefrontCategoryWithChildren {
   return {
     ...mapCategoryToStorefront(node, locale),
-    children: node.children.map((c) => mapCategoryTreeToStorefront(c, locale)),
+    children: (node.children ?? []).map((c) =>
+      mapCategoryTreeToStorefront(c, locale),
+    ),
   };
 }
 
@@ -121,11 +119,12 @@ export function mapBrandToStorefront(
     id: dto.id,
     name: dto.name,
     slug: dto.slug,
-    logo: dto.logo,
+    logo: dto.logo ?? null,
     description:
-      isEn && dto.descriptionEn ? dto.descriptionEn : dto.descriptionVi,
-    website: dto.website,
-    sortOrder: dto.sortOrder,
+      (isEn && dto.descriptionEn ? dto.descriptionEn : dto.descriptionVi) ??
+      null,
+    website: null,
+    sortOrder: 0,
     isActive: dto.isActive,
   };
 }

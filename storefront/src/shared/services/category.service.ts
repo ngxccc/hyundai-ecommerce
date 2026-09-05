@@ -1,5 +1,5 @@
 import { cacheLife } from "next/cache";
-import { apiClient } from "@/lib/api-client";
+import { api } from "@/lib/api-client";
 import {
   type StorefrontCategory,
   type StorefrontCategoryWithChildren,
@@ -13,7 +13,8 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const categories = await apiClient.catalog.getCategories();
+      const { data: res } = await api.GET("/categories");
+      const categories = res?.data;
       if (!Array.isArray(categories)) {
         return [];
       }
@@ -30,7 +31,8 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const tree = await apiClient.catalog.getCategoryTree();
+      const { data: res } = await api.GET("/categories/tree");
+      const tree = res?.data;
       if (!Array.isArray(tree)) {
         return [];
       }
@@ -45,7 +47,11 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const tree = await apiClient.catalog.getCategoryTree();
+      const { data: res } = await api.GET("/categories/tree");
+      const tree = res?.data;
+      if (!Array.isArray(tree)) {
+        return [categoryId];
+      }
       const findDescendants = (
         nodes: typeof tree,
         targetId: string,
@@ -54,11 +60,11 @@ export const categoryService = {
           if (node.id === targetId) {
             const collect = (n: typeof node): string[] => [
               n.id,
-              ...n.children.flatMap(collect),
+              ...(n.children ?? []).flatMap(collect),
             ];
             return collect(node);
           }
-          if (node.children.length > 0) {
+          if (node.children && node.children.length > 0) {
             const found = findDescendants(node.children, targetId);
             if (found.length > 0) return found;
           }

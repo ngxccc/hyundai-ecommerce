@@ -1,5 +1,5 @@
 /**
- * Pure TypeScript DTOs and schema type aliases for Hyundai Admin.
+ * Pure TypeScript DTOs and schema type aliases for Hyundai Storefront.
  * 100% compile-time types with ZERO runtime code or side effects.
  * Safe to import in both Server Components and Client Components.
  */
@@ -42,18 +42,18 @@ export interface ApiProblemDetails {
 }
 
 // Domain Entity Response DTOs
-export type AdminProduct = ApiSchemas["ProductResponseDto"];
-export type AdminCategory = ApiSchemas["CategoryResponseDto"];
-export type AdminBrand = ApiSchemas["BrandResponseDto"];
-export type AdminWarehouse = ApiSchemas["WarehouseResponseDto"];
-export type AdminWarehouseStock = ApiSchemas["WarehouseStockResponseDto"];
-export type AdminOrder = ApiSchemas["OrderResponseDto"];
-export type AdminOrderItem = ApiSchemas["OrderItemResponseDto"];
-export type AdminQuote = ApiSchemas["QuoteResponseDto"];
-export type AdminQuoteItem = ApiSchemas["QuoteItemResponseDto"];
-export type AdminQuoteMessage = ApiSchemas["QuoteMessageResponseDto"];
-export type AdminUser = ApiSchemas["UserResponseDto"];
-export type AdminDealerTier = ApiSchemas["DealerTierResponseDto"];
+export type ApiProduct = ApiSchemas["ProductResponseDto"];
+export type ApiCategory = ApiSchemas["CategoryResponseDto"];
+export type ApiBrand = ApiSchemas["BrandResponseDto"];
+export type ApiWarehouse = ApiSchemas["WarehouseResponseDto"];
+export type ApiWarehouseStock = ApiSchemas["WarehouseStockResponseDto"];
+export type ApiOrder = ApiSchemas["OrderResponseDto"];
+export type ApiOrderItem = ApiSchemas["OrderItemResponseDto"];
+export type ApiQuote = ApiSchemas["QuoteResponseDto"];
+export type ApiQuoteItem = ApiSchemas["QuoteItemResponseDto"];
+export type ApiQuoteMessage = ApiSchemas["QuoteMessageResponseDto"];
+export type ApiUser = ApiSchemas["UserResponseDto"];
+export type ApiDealerTier = ApiSchemas["DealerTierResponseDto"];
 export type CommercialTerms = ApiSchemas["CommercialTermsDto"];
 export type QuoteCommercialTerms = ApiSchemas["QuoteCommercialTermsDto"];
 

@@ -394,7 +394,11 @@
     "quoteNow": "Request Quote Now",
     "addedSuccess": "Added \"{name}\" to quote list",
     "viewQuoteList": "Request Quote ({count})",
-    "deleteItem": "Remove item"
+    "deleteItem": "Remove item",
+    "contactInfoRequired": "Please enter both contact name and phone number.",
+    "emptyItemsRequired": "The quote product list cannot be empty.",
+    "submitError": "Unable to submit quote request. Please contact our hotline for immediate support.",
+    "createFailed": "Unable to create quote request. Please try again later."
   },
   "Orders": {
     "status": {
