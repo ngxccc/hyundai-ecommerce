@@ -175,17 +175,15 @@ export const AdminImageUploadSection = ({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles, fileRejections) => {
-      if (fileRejections.length > 0) {
-        const firstRejection = fileRejections[0];
-        const fileError = firstRejection?.errors?.[0];
-        if (fileError) {
-          if (fileError.code === "file-too-large") {
-            toast.error(tCloudinary("fileTooLarge"));
-          } else if (fileError.code === "file-invalid-type") {
-            toast.error(tCloudinary("invalidMimeType"));
-          } else {
-            toast.error(fileError.message);
-          }
+      const firstRejection = fileRejections[0];
+      if (firstRejection.errors.length > 0) {
+        const firstError = firstRejection.errors[0];
+        if (firstError.code === "file-too-large") {
+          toast.error(tCloudinary("fileTooLarge"));
+        } else if (firstError.code === "file-invalid-type") {
+          toast.error(tCloudinary("invalidMimeType"));
+        } else {
+          toast.error(firstError.message);
         }
       }
       void handleDrop(acceptedFiles);

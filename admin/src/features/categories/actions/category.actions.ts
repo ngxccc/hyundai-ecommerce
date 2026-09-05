@@ -56,7 +56,7 @@ export const createCategoryAction = async (formData: FormData) => {
     const categoryData = await adminApiClient.categories.create(validatedData);
 
     // Background Image Upload
-    if (categoryData?.id && imageFile) {
+    if (categoryData.id && imageFile) {
       after(async () => {
         try {
           const url = await uploadToCloudinary(imageFile, "categories");

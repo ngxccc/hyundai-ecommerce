@@ -178,7 +178,7 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
             <FormItem className="flex flex-row items-start space-y-0 space-x-3 rounded-md border p-3 shadow-sm">
               <FormControl>
                 <Checkbox
-                  checked={field.value ?? false}
+                  checked={field.value}
                   onCheckedChange={field.onChange}
                 />
               </FormControl>

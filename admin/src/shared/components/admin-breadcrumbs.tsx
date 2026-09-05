@@ -14,7 +14,7 @@ export interface AdminBreadcrumbsProps {
 }
 
 export const AdminBreadcrumbs = ({ items }: AdminBreadcrumbsProps) => {
-  if (!items || items.length === 0) return null;
+  if (items.length === 0) return null;
 
   return (
     <Breadcrumb className="mb-2">

@@ -16,7 +16,7 @@ export default async function DashboardLayout({
     "WAREHOUSE_MANAGER",
   ];
   const isAdmin =
-    session?.user?.role && allowedRoles.includes(session.user.role);
+    session?.user.role && allowedRoles.includes(session.user.role);
 
   return (
     <div className="bg-background text-foreground flex h-screen overflow-hidden font-sans">

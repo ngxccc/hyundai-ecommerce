@@ -6,7 +6,8 @@ import type { Locale } from "next-intl";
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const locale = (searchParams.get("locale") as Locale) || "vi";
+    const rawLocale = searchParams.get("locale");
+    const locale: Locale = rawLocale === "en" ? "en" : "vi";
     const metadata = await productService.getFiltersMetadata(locale);
     return jsonSuccess(metadata);
   } catch (error) {

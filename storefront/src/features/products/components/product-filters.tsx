@@ -48,7 +48,7 @@ function flattenCategoriesTree(
       slug: node.slug,
       parentId,
     });
-    if (node.children && node.children.length > 0) {
+    if (node.children.length > 0) {
       result.push(...flattenCategoriesTree(node.children, node.id));
     }
   }
@@ -288,7 +288,7 @@ export function ProductFilters({
     node: StorefrontCategoryWithChildren,
     depth = 0,
   ) => {
-    const hasChildren = node.children && node.children.length > 0;
+    const hasChildren = node.children.length > 0;
     const isExpanded = expandedCategories[node.id];
     const isSelected = selectedCategory === node.slug;
     const isDisabled = facetStatus ? !facetStatus.categories[node.slug] : false;

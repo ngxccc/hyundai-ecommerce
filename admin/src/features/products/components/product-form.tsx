@@ -49,7 +49,9 @@ export const ProductForm = ({
   const [isPending, startTransition] = useTransition();
   const isEditing = !!initialData;
   const [images, setImages] = useState<(string | File)[]>(
-    initialData?.images?.length ? initialData.images : [],
+    initialData?.images && initialData.images.length > 0
+      ? initialData.images
+      : [],
   );
   const emptyFormValues = {
     nameVi: "",
@@ -109,7 +111,7 @@ export const ProductForm = ({
         ...data,
         price: data.price ? data.price.replace(/\./g, "") : "",
         images: existingImageUrls.filter((image) => image.trim().length > 0),
-        isQuoteOnly: data.isQuoteOnly ?? false,
+        isQuoteOnly: Boolean(data.isQuoteOnly),
       };
 
       const finalFormData = new FormData();
@@ -134,7 +136,7 @@ export const ProductForm = ({
       } else {
         if (result.fieldErrors) {
           Object.entries(result.fieldErrors).forEach(([field, errors]) => {
-            const message = errors?.[0];
+            const message = errors[0];
             if (message) {
               form.setError(field as keyof CreateProductInput, {
                 type: "server",

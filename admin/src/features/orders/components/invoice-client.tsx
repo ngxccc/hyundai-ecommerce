@@ -145,7 +145,7 @@ export const InvoiceClient = ({ order }: InvoiceClientProps) => {
               <span className="text-base font-extrabold">
                 {order.user?.companyName ?? order.user?.name ?? t("unknown")}
               </span>
-              {order.user?.companyName && order.user?.name && (
+              {order.user?.companyName && order.user.name && (
                 <span className="text-xs text-slate-600 dark:text-slate-400 print:text-slate-600">
                   {t("attnPrefix")} {order.user.name}
                 </span>

@@ -107,7 +107,7 @@ export default async function RootLayout({
 
   if (!routing.locales.includes(locale)) {
     const localeStr = String(locale);
-    if (localeStr === "[locale]" || !locale) {
+    if (localeStr === "[locale]" || localeStr === "") {
       return (
         <html lang="vi">
           <body className="flex min-h-full flex-col">{children}</body>

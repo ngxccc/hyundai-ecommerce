@@ -4,7 +4,7 @@ import { PromoCarousel } from "./promo-carousel";
 export async function PromotionsSection() {
   const promos = await promoService.getPromos();
 
-  if (!promos?.length) return null;
+  if (promos.length === 0) return null;
 
   return (
     <section className="bg-background pt-14" aria-labelledby="promo-heading">

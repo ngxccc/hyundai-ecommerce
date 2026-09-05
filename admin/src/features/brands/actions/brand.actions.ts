@@ -56,7 +56,7 @@ export const createBrandAction = async (formData: FormData) => {
     const brandData = await adminApiClient.brands.create(validatedData);
 
     // Background Image Upload
-    if (brandData?.id && logoFile) {
+    if (brandData.id && logoFile) {
       after(async () => {
         try {
           const url = await uploadToCloudinary(logoFile, "brands");

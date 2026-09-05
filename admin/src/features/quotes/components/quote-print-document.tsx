@@ -126,7 +126,7 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
           </Button>
 
           <Badge variant="secondary" className="font-mono text-xs">
-            {quote.quoteNumber ?? `#${quote.id.slice(0, 8)}`}
+            {quote.quoteNumber || `#${quote.id.slice(0, 8)}`}
           </Badge>
         </div>
 
@@ -183,7 +183,7 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
               <span>
                 {translate("printDocument.quoteNo")}:{" "}
                 <strong className="font-mono font-bold text-slate-900">
-                  {quote.quoteNumber ?? `#${quote.id.slice(0, 8)}`}
+                  {quote.quoteNumber || `#${quote.id.slice(0, 8)}`}
                 </strong>
               </span>
               <span>
@@ -300,10 +300,8 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
 
               <tbody className="divide-y divide-slate-200">
                 {(quote.items ?? []).map((item, index) => {
-                  const unitPrice = parseFloat(item.unitPrice ?? "0");
-                  const discountPercent = parseFloat(
-                    item.discountPercent ?? "0",
-                  );
+                  const unitPrice = parseFloat(item.unitPrice);
+                  const discountPercent = parseFloat(item.discountPercent);
                   const finalUnitPrice =
                     unitPrice * (1 - discountPercent / 100);
                   const totalPrice = finalUnitPrice * item.quantity;
@@ -487,7 +485,7 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
               <p className="mt-1 text-xs text-slate-600">
                 Kèm theo Báo giá số:{" "}
                 <strong className="font-mono text-slate-900">
-                  {quote.quoteNumber ?? `#${quote.id.slice(0, 8)}`}
+                  {quote.quoteNumber || `#${quote.id.slice(0, 8)}`}
                 </strong>{" "}
                 | Khách hàng: <strong>{quote.customerName}</strong>
               </p>

@@ -43,16 +43,11 @@ export const env = createEnv({
     issues.forEach((issue) => {
       const pathString = issue.path
         ? issue.path
-            .map((segment) => {
-              const isObject =
-                typeof segment === "object" &&
-                segment !== null &&
-                "key" in segment;
-
-              const rawKey = isObject ? segment.key : segment;
-
-              return String(rawKey);
-            })
+            .map((segment) =>
+              typeof segment === "string" || typeof segment === "number"
+                ? String(segment)
+                : "",
+            )
             .join(".")
         : "root";
 

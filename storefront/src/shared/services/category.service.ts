@@ -48,11 +48,11 @@ export const categoryService = {
           if (node.id === targetId) {
             const collect = (n: typeof node): string[] => [
               n.id,
-              ...(n.children || []).flatMap(collect),
+              ...n.children.flatMap(collect),
             ];
             return collect(node);
           }
-          if (node.children?.length) {
+          if (node.children.length > 0) {
             const found = findDescendants(node.children, targetId);
             if (found.length > 0) return found;
           }

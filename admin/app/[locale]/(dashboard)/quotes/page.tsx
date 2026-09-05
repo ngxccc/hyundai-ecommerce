@@ -67,10 +67,10 @@ export default async function AdminQuotesPage({
   const filteredQuotes = searchLower
     ? quotes.filter((q) => {
         const idMatch = q.id.toLowerCase().includes(searchLower);
-        const quoteNoMatch =
-          q.quoteNumber?.toLowerCase().includes(searchLower) ?? false;
-        const customerMatch =
-          q.customerName?.toLowerCase().includes(searchLower) ?? false;
+        const quoteNoMatch = q.quoteNumber.toLowerCase().includes(searchLower);
+        const customerMatch = q.customerName
+          .toLowerCase()
+          .includes(searchLower);
         const emailMatch =
           q.customerEmail?.toLowerCase().includes(searchLower) ?? false;
         const companyMatch =
@@ -78,7 +78,7 @@ export default async function AdminQuotesPage({
         const userNameMatch =
           q.user?.name?.toLowerCase().includes(searchLower) ?? false;
         const userEmailMatch =
-          q.user?.email?.toLowerCase().includes(searchLower) ?? false;
+          q.user?.email.toLowerCase().includes(searchLower) ?? false;
         const userCompanyMatch =
           q.user?.companyName?.toLowerCase().includes(searchLower) ?? false;
         return (

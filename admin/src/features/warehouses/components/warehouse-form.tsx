@@ -57,7 +57,7 @@ export const WarehouseForm = ({
   const onSubmit = (data: CreateWarehouseInput) => {
     startTransition(async () => {
       try {
-        if (isEditing && initialData) {
+        if (initialData) {
           const res = await updateWarehouseAction(initialData.id, data);
           if (res.success) {
             toast.success(t("messages.successUpdate"));

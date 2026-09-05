@@ -10,7 +10,7 @@ export async function ProductsSection() {
 
   const { data: products } = await productService.getProducts(locale);
 
-  if (!products?.length) return null;
+  if (products.length === 0) return null;
 
   return (
     <section className="bg-background pt-14">

@@ -58,7 +58,7 @@ export const WarehouseCard = ({ warehouse }: { warehouse: WarehouseDTO }) => {
             </Link>
             <DeleteWarehouseButton
               warehouseId={warehouse.id}
-              warehouseName={warehouse.nameVi ?? warehouse.name}
+              warehouseName={warehouse.nameVi}
             />
           </div>
         </div>

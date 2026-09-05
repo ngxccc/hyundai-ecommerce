@@ -42,7 +42,7 @@ export const DeleteWarehouseButton = ({
         setIsOpen(false);
         router.refresh();
       } else {
-        toast.error(result.error ?? t("messages.deleteError"));
+        toast.error(result.error);
       }
     });
   };

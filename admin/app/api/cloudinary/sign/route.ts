@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       "ACCOUNTANT",
       "WAREHOUSE_MANAGER",
     ];
-    if (!session?.user?.role || !allowedRoles.includes(session.user.role)) {
+    if (!session?.user.role || !allowedRoles.includes(session.user.role)) {
       return jsonError({
         status: HTTP_STATUS.UNAUTHORIZED,
         detail: t("unauthorized"),

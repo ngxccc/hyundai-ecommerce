@@ -45,7 +45,7 @@ export const NumberWithUnitField = <
   defaultUnit,
 }: NumberWithUnitFieldProps<TFieldValues, TName>) => {
   // Find initial unit based on value, default to first unit or defaultUnit
-  const baseUnit = defaultUnit ?? units[0]?.value ?? "";
+  const baseUnit = defaultUnit ?? (units[0] ? units[0].value : "");
   const [selectedUnit, setSelectedUnit] = useState(baseUnit);
 
   const currentMultiplier =

@@ -38,7 +38,7 @@ export function ProductSort({ currentSort, searchParams }: ProductSortProps) {
     const params = new URLSearchParams();
 
     Object.entries(searchParams).forEach(([key, val]) => {
-      if (val !== undefined && val !== null && val !== "") {
+      if (val !== undefined && val !== "") {
         params.set(key, String(val));
       }
     });

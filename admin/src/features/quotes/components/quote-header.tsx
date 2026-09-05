@@ -46,7 +46,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `Bao-Gia-Hyundai-${quote.quoteNumber ?? quote.id.slice(0, 8)}.xlsx`;
+      a.download = `Bao-Gia-Hyundai-${quote.quoteNumber || quote.id.slice(0, 8)}.xlsx`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -115,7 +115,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
   const handleApproveAndConvert = () => {
     startTransition(async () => {
       const res = await approveAndConvertToOrderAction(quote.id);
-      if (res.success && res.data?.orderId) {
+      if (res.success && res.data.orderId) {
         toast.success(t("convertSuccess"));
         router.push(`/orders/${res.data.orderId}`);
       } else {
@@ -236,7 +236,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
                 {t("buyer")}
               </p>
               <p className="text-foreground text-sm font-semibold">
-                {quote.user?.name ?? quote.customerName ?? "Khách hàng"}
+                {quote.user?.name ?? quote.customerName}
               </p>
             </div>
           </div>

@@ -94,7 +94,7 @@ export function QuoteRequestView() {
 
     startTransition(async () => {
       const res = await submitQuoteRequestAction(payload);
-      if (res.success && res.data) {
+      if (res.success) {
         setSubmittedQuote({
           quoteNumber: res.data.quoteNumber,
           customerName: res.data.customerName,

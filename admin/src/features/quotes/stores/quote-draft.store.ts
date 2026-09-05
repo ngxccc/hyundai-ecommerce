@@ -140,9 +140,9 @@ export const useQuoteDraftStore = create<QuoteDraftState>()(
             itemModel: model ?? product.slug,
             itemSpecs: specsSummary || null,
             quantity,
-            unitPrice: parseFloat(product.price ?? "0"),
+            unitPrice: parseFloat(product.price),
             discountPercent: 0,
-            image: product.images?.[0] ?? null,
+            image: product.images[0] ?? null,
           };
 
           return { items: [...state.items, newItem] };

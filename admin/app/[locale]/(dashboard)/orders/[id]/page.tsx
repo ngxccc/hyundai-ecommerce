@@ -62,7 +62,7 @@ export default async function AdminOrderDetailPage({
               ? {
                   id: session.user.id,
                   role: session.user.role as UserRole,
-                  name: session.user.name ?? session.user.email ?? "",
+                  name: session.user.name,
                 }
               : undefined
           }

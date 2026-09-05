@@ -82,7 +82,7 @@ export const QuoteComposer = () => {
 
       const response = await createAdminQuoteAction(payload);
 
-      if (response.success && response.data) {
+      if (response.success) {
         toast.success(
           translate("composer.successToast", {
             quoteNumber: response.data.quoteNumber,
@@ -100,9 +100,7 @@ export const QuoteComposer = () => {
           }
           setErrors(flattened);
         }
-        toast.error(
-          response.error ?? translate("composer.errors.genericFailure"),
-        );
+        toast.error(response.error);
       }
     });
   };

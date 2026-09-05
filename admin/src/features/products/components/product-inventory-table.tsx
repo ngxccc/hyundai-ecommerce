@@ -36,8 +36,7 @@ export const ProductInventoryTable = ({
 
   // Sort warehouses so active ones are first
   const sortedWarehouses = [...warehouses].sort((a, b) => {
-    if (a.isActive === b.isActive)
-      return (a.nameVi ?? a.name).localeCompare(b.nameVi ?? b.name);
+    if (a.isActive === b.isActive) return a.nameVi.localeCompare(b.nameVi);
     return a.isActive ? -1 : 1;
   });
 
@@ -137,7 +136,7 @@ const InventoryRow = ({
       if (result.success) {
         toast.success(t("messages.successSave"));
       } else {
-        toast.error(result.error ?? t("messages.errorSave"));
+        toast.error(result.error);
       }
     });
   };

@@ -60,7 +60,7 @@ export const createProductAction = async (formData: FormData) => {
     const newProduct = await adminApiClient.products.create(validatedData);
 
     // Background Image Upload
-    if (newProduct?.id) {
+    if (newProduct.id) {
       if (rawImages.length > 0) {
         after(async () => {
           try {
@@ -71,7 +71,7 @@ export const createProductAction = async (formData: FormData) => {
             }
             if (uploadedUrls.length > 0) {
               await adminApiClient.products.update(newProduct.id, {
-                images: [...(validatedData.images || []), ...uploadedUrls],
+                images: [...validatedData.images, ...uploadedUrls],
               });
             }
           } catch (e) {
@@ -126,9 +126,9 @@ export async function updateProductAction(id: string, formData: FormData) {
     const validatedData = parsed.data;
 
     const existingProduct = await adminApiClient.products.getById(id);
-    const existingImages = existingProduct?.images ?? [];
+    const existingImages = existingProduct ? existingProduct.images : [];
     const imagesToDelete = existingImages.filter(
-      (url) => !(validatedData.images ?? []).includes(url),
+      (url) => !validatedData.images?.includes(url),
     );
 
     const rawImages = formData.getAll("images") as (File | string)[];

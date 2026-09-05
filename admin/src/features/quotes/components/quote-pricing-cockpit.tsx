@@ -64,7 +64,7 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
 
   const handlePriceUpdate = (itemId: string, savedValue: string | null) => {
     const rawVal = inputValues[itemId];
-    if (rawVal === undefined) return;
+    if (!rawVal) return;
 
     // If empty string and there was no agreed price, do nothing
     if (rawVal.trim() === "" && savedValue === null) {
@@ -122,15 +122,14 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
   let totalNegotiatedAmount = 0;
 
   for (const item of quote.items ?? []) {
-    const reqPrice = parseFloat(item.requestedPrice ?? item.unitPrice ?? "0");
+    const reqPrice = parseFloat(item.requestedPrice ?? item.unitPrice);
     totalRequestedAmount += reqPrice * item.quantity;
 
     const finalPrice = parseFloat(
       item.agreedPrice ??
         item.finalUnitPrice ??
         item.requestedPrice ??
-        item.unitPrice ??
-        "0",
+        item.unitPrice,
     );
     totalNegotiatedAmount += finalPrice * item.quantity;
   }
@@ -164,20 +163,16 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
               {(quote.items ?? []).map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="max-w-50 truncate font-medium">
-                    {item.itemName ?? item.product?.nameVi ?? "Sản phẩm"}
+                    {item.itemName}
                   </TableCell>
                   <TableCell className="text-right font-medium">
                     {item.quantity}
                   </TableCell>
                   <TableCell className="text-muted-foreground text-right font-semibold">
-                    {formatCurrency(
-                      item.product?.price ?? item.unitPrice ?? "0",
-                    )}
+                    {formatCurrency(item.product?.price ?? item.unitPrice)}
                   </TableCell>
                   <TableCell className="text-right font-semibold text-orange-600 dark:text-orange-400">
-                    {formatCurrency(
-                      item.requestedPrice ?? item.unitPrice ?? "0",
-                    )}
+                    {formatCurrency(item.requestedPrice ?? item.unitPrice)}
                   </TableCell>
                   <TableCell className="text-right">
                     {isFinalized ? (
@@ -191,9 +186,7 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
                         <Input
                           type="text"
                           disabled={isPending}
-                          placeholder={
-                            item.requestedPrice ?? item.unitPrice ?? undefined
-                          }
+                          placeholder={item.requestedPrice ?? item.unitPrice}
                           value={inputValues[item.id] ?? ""}
                           onChange={(e) =>
                             handleInputChange(item.id, e.target.value)

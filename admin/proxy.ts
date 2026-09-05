@@ -39,7 +39,7 @@ export async function proxy(request: NextRequest) {
   const pathLocale = routing.locales.includes(segments[0] as Locale)
     ? segments[0]
     : null;
-  const locale = pathLocale ?? routing.defaultLocale ?? "vi";
+  const locale = pathLocale ?? routing.defaultLocale;
 
   const applySecurityHeaders = (res: NextResponse) => {
     res.headers.set("X-XSS-Protection", "1; mode=block");
@@ -68,7 +68,7 @@ export async function proxy(request: NextRequest) {
     const session = await getCachedSession();
 
     if (session?.user) {
-      user = session?.user;
+      user = session.user;
     }
   } catch (error) {
     // HACK: Swallow network exceptions to prevent Edge runtime crashes.

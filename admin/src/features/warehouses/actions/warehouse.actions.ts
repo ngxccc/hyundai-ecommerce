@@ -40,7 +40,7 @@ export const createWarehouseAction = async (input: CreateWarehouseInput) => {
       streetAddress: validatedData.streetAddress,
       district: validatedData.district,
       city: validatedData.city,
-      isActive: validatedData.isActive ?? true,
+      isActive: validatedData.isActive,
     };
 
     const data = await adminApiClient.warehouses.create(payload);

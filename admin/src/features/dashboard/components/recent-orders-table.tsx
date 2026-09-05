@@ -93,11 +93,18 @@ export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
             const customerName = order.user?.name ?? "Customer";
             const initial = customerName.charAt(0).toUpperCase();
             const items = order.items ?? [];
-            const firstItem = items[0];
-            const productName = firstItem?.product?.nameVi ?? "Sản phẩm";
-            const productText = firstItem
-              ? `${productName}${items.length > 1 ? ` + ${items.length - 1}` : ""}`
-              : "No Product";
+            let productText = "No Product";
+            if (items.length > 0) {
+              const firstItem = items[0];
+              const productName =
+                firstItem.product?.nameVi ??
+                firstItem.productName ??
+                "Sản phẩm";
+              productText =
+                items.length > 1
+                  ? `${productName} + ${items.length - 1}`
+                  : productName;
+            }
             const formattedDate = new Intl.DateTimeFormat("vi-VN", {
               day: "2-digit",
               month: "short",

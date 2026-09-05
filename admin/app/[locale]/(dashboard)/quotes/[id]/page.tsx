@@ -43,7 +43,11 @@ export default async function AdminQuoteDetailPage({
     notFound();
   }
   const displayId =
-    quote.quoteNumber ?? (id.length > 8 ? `#${id.slice(0, 8)}` : id);
+    quote.quoteNumber !== ""
+      ? quote.quoteNumber
+      : id.length > 8
+        ? `#${id.slice(0, 8)}`
+        : id;
 
   return (
     <>

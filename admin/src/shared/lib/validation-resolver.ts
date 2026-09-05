@@ -38,7 +38,7 @@ export function translatedZodResolver<
   const baseResolver = zodResolver(schema);
   return async (values, context, options) => {
     const result = await baseResolver(values, context, options);
-    if (result.errors) {
+    if (Object.keys(result.errors).length > 0) {
       translateFieldErrors(result.errors, t);
     }
     return result;

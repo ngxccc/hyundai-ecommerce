@@ -31,7 +31,7 @@ export async function submitQuoteRequestAction(data: SubmitQuoteInput) {
     };
   }
 
-  if (!data.items || data.items.length === 0) {
+  if (data.items.length === 0) {
     return {
       success: false as const,
       error: "Danh sách sản phẩm yêu cầu báo giá không được để trống.",

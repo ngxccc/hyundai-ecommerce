@@ -178,10 +178,10 @@ async function ProductDetailsPageContent({
           </h2>
           <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
             {Object.entries(
-              (product.specs as Record<
-                string,
-                string | number | boolean | null | undefined
-              >) || {},
+              (product.specs as
+                | Record<string, string | number | boolean | null | undefined>
+                | null
+                | undefined) ?? {},
             ).map(([key, value]) => {
               if (value === null || value === undefined || value === "")
                 return null;

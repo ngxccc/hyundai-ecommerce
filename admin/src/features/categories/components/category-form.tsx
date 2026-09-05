@@ -38,7 +38,6 @@ import {
   createCategorySchema,
 } from "@/shared/validators";
 import { Save, Loader2, X, Info } from "lucide-react";
-import { SYSTEM_ERROR_CODES } from "@/shared/constants";
 import {
   AdminImageUploadSection,
   type AdminImageItem,
@@ -116,19 +115,18 @@ export const CategoryForm = ({
         router.push("/categories");
         router.refresh();
       } else {
-        if (
-          "code" in result &&
-          result.code === SYSTEM_ERROR_CODES.VALIDATION_ERROR &&
-          "error" in result &&
-          result.error === "validation.slugExists"
-        ) {
-          form.setError("slug", { message: t("validation.slugExists") });
+        if ("fieldErrors" in result && result.fieldErrors) {
+          Object.entries(result.fieldErrors).forEach(([field, errors]) => {
+            const message = errors[0];
+            if (message) {
+              form.setError(field as keyof CreateCategoryInput, {
+                type: "server",
+                message: t(message as never),
+              });
+            }
+          });
         } else {
-          toast.error(
-            "error" in result && result.error
-              ? result.error
-              : t("messages.error"),
-          );
+          toast.error("error" in result ? result.error : t("messages.error"));
         }
       }
     });

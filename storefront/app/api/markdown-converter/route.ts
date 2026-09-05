@@ -54,7 +54,7 @@ export function resolveSuspenseStreaming(html: string): string {
   // Extract all unique S:X IDs
   const sIdMatches = Array.from(html.matchAll(/id="S:(\d+)"/g));
   const sIds = Array.from(
-    new Set(sIdMatches.map((m) => parseInt(m[1] ?? "0", 10))),
+    new Set(sIdMatches.map((m) => parseInt(m[1], 10))),
   ).sort((a, b) => b - a); // Sort descending to resolve from leaf to root
 
   for (const sId of sIds) {
@@ -130,13 +130,10 @@ function extractMainHTML(html: string): string {
 }
 
 export async function GET(request: NextRequest | Request) {
-  const url =
-    "nextUrl" in request && request.nextUrl
-      ? request.nextUrl
-      : new URL(request.url);
+  const url = "nextUrl" in request ? request.nextUrl : new URL(request.url);
   const rawPath =
-    request.headers?.get?.("x-markdown-path") ??
-    url.searchParams?.get?.("path") ??
+    request.headers.get("x-markdown-path") ??
+    url.searchParams.get("path") ??
     null;
 
   // Strict SSRF path sanitization: only allow standard internal relative paths

@@ -68,7 +68,7 @@ export default async function AdminOrdersPage({
           o.id.toLowerCase().includes(search.toLowerCase()) ||
           (o.user?.name?.toLowerCase().includes(search.toLowerCase()) ??
             false) ||
-          (o.user?.email?.toLowerCase().includes(search.toLowerCase()) ??
+          (o.user?.email.toLowerCase().includes(search.toLowerCase()) ??
             false) ||
           (o.user?.companyName?.toLowerCase().includes(search.toLowerCase()) ??
             false),

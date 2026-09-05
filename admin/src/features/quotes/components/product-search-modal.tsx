@@ -160,8 +160,8 @@ export const ProductSearchModal = ({
           ) : results.length > 0 ? (
             results.map((product) => {
               const { model, power, phase } = extractModelAndPower(product);
-              const image = product.images?.[0];
-              const inStock = (product.totalStockCache ?? 0) > 0;
+              const image = product.images[0];
+              const inStock = product.totalStockCache > 0;
               const isJustAdded = recentlyAddedId === product.id;
 
               return (

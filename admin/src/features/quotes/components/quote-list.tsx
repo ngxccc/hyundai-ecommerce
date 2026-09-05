@@ -111,8 +111,7 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
         line.agreedPrice ??
           line.finalUnitPrice ??
           line.requestedPrice ??
-          line.unitPrice ??
-          "0",
+          line.unitPrice,
       );
       total += price * line.quantity;
     }
@@ -188,9 +187,7 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
                     <TableCell>
                       <div className="flex flex-col">
                         <span className="text-sm font-medium">
-                          {quote.user?.name ??
-                            quote.customerName ??
-                            t("noCompany")}
+                          {quote.user?.name ?? quote.customerName}
                         </span>
                         <span className="text-muted-foreground text-xs">
                           {quote.user?.companyName ??
@@ -243,7 +240,7 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
                 <div className="flex flex-col gap-1">
                   <div className="flex flex-col">
                     <span className="text-sm font-bold">
-                      {quote.user?.name ?? quote.customerName ?? t("noCompany")}
+                      {quote.user?.name ?? quote.customerName}
                     </span>
                     <span className="text-muted-foreground text-xs">
                       {quote.user?.companyName ??

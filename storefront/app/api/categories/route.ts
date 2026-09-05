@@ -5,7 +5,8 @@ import { categoryService } from "@/shared/services";
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const locale = (searchParams.get("locale") as "vi" | "en") || "vi";
+    const rawLocale = searchParams.get("locale");
+    const locale: "vi" | "en" = rawLocale === "en" ? "en" : "vi";
     const dbCategories = await categoryService.getCategories(locale);
     return jsonSuccess(dbCategories);
   } catch (error) {

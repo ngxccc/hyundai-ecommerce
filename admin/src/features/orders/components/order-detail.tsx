@@ -145,7 +145,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
         if (result.success) {
           toast.success(t("statusUpdated"));
         } else {
-          toast.error(result.error ?? t("statusUpdateError"));
+          toast.error(result.error);
         }
       } catch (err) {
         console.error(err);
@@ -562,7 +562,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
                 <span className="text-primary mt-0.5 font-bold">
                   {order.user.companyName}
                 </span>
-                {order.user?.taxId && (
+                {order.user.taxId && (
                   <span className="text-muted-foreground mt-0.5 text-xs">
                     {t("taxId")}: {order.user.taxId}
                   </span>

@@ -361,7 +361,7 @@ export const adminApiClient = {
     ) => {
       const searchParams = new URLSearchParams();
       for (const [key, value] of Object.entries(params)) {
-        if (value !== undefined && value !== null && value !== "") {
+        if (value !== undefined && value !== "") {
           searchParams.set(key, String(value));
         }
       }
@@ -390,7 +390,8 @@ export const adminApiClient = {
       return res;
     },
 
-    getById: (id: string) => adminApiFetch<AdminProduct>(`/products/${id}`),
+    getById: (id: string) =>
+      adminApiFetch<AdminProduct | null>(`/products/${id}`),
 
     create: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminProduct>("/products", {
@@ -415,7 +416,8 @@ export const adminApiClient = {
 
     tree: () => adminApiFetch<AdminCategory[]>("/categories/tree"),
 
-    getById: (id: string) => adminApiFetch<AdminCategory>(`/categories/${id}`),
+    getById: (id: string) =>
+      adminApiFetch<AdminCategory | null>(`/categories/${id}`),
 
     create: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminCategory>("/categories", {
@@ -438,7 +440,7 @@ export const adminApiClient = {
   brands: {
     list: () => adminApiFetch<AdminBrand[]>("/brands"),
 
-    getById: (id: string) => adminApiFetch<AdminBrand>(`/brands/${id}`),
+    getById: (id: string) => adminApiFetch<AdminBrand | null>(`/brands/${id}`),
 
     create: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminBrand>("/brands", {
@@ -462,7 +464,7 @@ export const adminApiClient = {
     list: (params: Record<string, string | number | undefined> = {}) => {
       const searchParams = new URLSearchParams();
       for (const [key, value] of Object.entries(params)) {
-        if (value !== undefined && value !== null && value !== "") {
+        if (value !== undefined && value !== "") {
           searchParams.set(key, String(value));
         }
       }
@@ -472,7 +474,7 @@ export const adminApiClient = {
       );
     },
 
-    getById: (id: string) => adminApiFetch<AdminQuote>(`/quotes/${id}`),
+    getById: (id: string) => adminApiFetch<AdminQuote | null>(`/quotes/${id}`),
 
     createAdminQuote: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminQuote>("/quotes/admin", {
@@ -516,7 +518,7 @@ export const adminApiClient = {
     list: (params: Record<string, string | number | undefined> = {}) => {
       const searchParams = new URLSearchParams();
       for (const [key, value] of Object.entries(params)) {
-        if (value !== undefined && value !== null && value !== "") {
+        if (value !== undefined && value !== "") {
           searchParams.set(key, String(value));
         }
       }
@@ -526,7 +528,7 @@ export const adminApiClient = {
       );
     },
 
-    getById: (id: string) => adminApiFetch<AdminOrder>(`/orders/${id}`),
+    getById: (id: string) => adminApiFetch<AdminOrder | null>(`/orders/${id}`),
 
     createB2B: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminOrder>("/orders/admin", {
@@ -565,7 +567,8 @@ export const adminApiClient = {
   warehouses: {
     list: () => adminApiFetch<AdminWarehouse[]>("/warehouses"),
 
-    getById: (id: string) => adminApiFetch<AdminWarehouse>(`/warehouses/${id}`),
+    getById: (id: string) =>
+      adminApiFetch<AdminWarehouse | null>(`/warehouses/${id}`),
 
     create: (dto: Record<string, unknown>) =>
       adminApiFetch<AdminWarehouse>("/warehouses", {

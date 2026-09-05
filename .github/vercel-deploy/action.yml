@@ -1,7 +1,6 @@
 name: Deploy to Vercel
 description: Pulls, builds, and deploys artifacts to Vercel with optional Doppler secrets
 
-# Khai báo các cổng nhận dữ liệu từ file Workflow mẹ
 inputs:
   vercel_token:
     required: true
@@ -11,7 +10,7 @@ inputs:
     required: true
   doppler_token:
     required: false
-    default: ''
+    default: ""
 
 runs:
   using: "composite"

@@ -50,7 +50,6 @@ export const AdminSidebar = () => {
     name: "Quản trị viên",
     email: "admin@hyundai.vn",
   };
-  const isPending = false;
 
   const handleLogout = () => {
     document.cookie = "adminAccessToken=; path=/; max-age=0";
@@ -152,116 +151,104 @@ export const AdminSidebar = () => {
 
       {/* Footer / User Area */}
       <div className="border-border/50 hover:bg-muted/50 mt-auto flex items-center justify-center border-t p-2 transition-colors">
-        {isPending ? (
-          <div className="flex w-full animate-pulse gap-3">
-            <div className="bg-secondary h-10 w-10 rounded-full" />
-            {!isCollapsed && (
-              <div className="flex-1 space-y-2">
-                <div className="bg-secondary h-4 w-3/4 rounded"></div>
-                <div className="bg-secondary h-3 w-1/2 rounded"></div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div
-                role="button"
-                className={cn(
-                  "-mx-2 flex w-full cursor-pointer items-center gap-3 rounded-md p-2",
-                  isCollapsed && "justify-center",
-                )}
-              >
-                <div className="bg-secondary text-secondary-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold uppercase">
-                  {user?.name?.[0] ?? "U"}
-                </div>
-                {!isCollapsed && (
-                  <div className="min-w-0 flex-1 text-left">
-                    <p className="text-foreground truncate text-sm font-bold">
-                      {user?.name ?? "Unknow"}
-                    </p>
-                    <p className="text-muted-foreground truncate text-xs">
-                      {user?.email ?? "unknow"}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              side="right"
-              sideOffset={8}
-              className="w-56"
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div
+              role="button"
+              className={cn(
+                "-mx-2 flex w-full cursor-pointer items-center gap-3 rounded-md p-2",
+                isCollapsed && "justify-center",
+              )}
             >
-              <DropdownMenuLabel>{t("userMenu.myAccount")}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>{t("userMenu.profile")}</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>{t("userMenu.settings")}</span>
-              </DropdownMenuItem>
+              <div className="bg-secondary text-secondary-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-bold uppercase">
+                {user.name.charAt(0)}
+              </div>
+              {!isCollapsed && (
+                <div className="min-w-0 flex-1 text-left">
+                  <p className="text-foreground truncate text-sm font-bold">
+                    {user.name}
+                  </p>
+                  <p className="text-muted-foreground truncate text-xs">
+                    {user.email}
+                  </p>
+                </div>
+              )}
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            side="right"
+            sideOffset={8}
+            className="w-56"
+          >
+            <DropdownMenuLabel>{t("userMenu.myAccount")}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              <span>{t("userMenu.profile")}</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>{t("userMenu.settings")}</span>
+            </DropdownMenuItem>
 
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <Palette className="mr-2 h-4 w-4" />
-                  <span>{t("userMenu.theme")}</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuRadioGroup
-                      value={theme ?? "system"}
-                      onValueChange={setTheme}
-                    >
-                      <DropdownMenuRadioItem value="light">
-                        {t("userMenu.light")}
-                      </DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="dark">
-                        {t("userMenu.dark")}
-                      </DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="system">
-                        {t("userMenu.system")}
-                      </DropdownMenuRadioItem>
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <Palette className="mr-2 h-4 w-4" />
+                <span>{t("userMenu.theme")}</span>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  <DropdownMenuRadioGroup
+                    value={theme ?? "system"}
+                    onValueChange={setTheme}
+                  >
+                    <DropdownMenuRadioItem value="light">
+                      {t("userMenu.light")}
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="dark">
+                      {t("userMenu.dark")}
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="system">
+                      {t("userMenu.system")}
+                    </DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
 
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <Globe className="mr-2 h-4 w-4" />
-                  <span>{t("userMenu.language")}</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuRadioGroup
-                      value={locale}
-                      onValueChange={handleLanguageChange}
-                    >
-                      <DropdownMenuRadioItem value="vi">
-                        {t("userMenu.vietnamese")}
-                      </DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="en">
-                        {t("userMenu.english")}
-                      </DropdownMenuRadioItem>
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <Globe className="mr-2 h-4 w-4" />
+                <span>{t("userMenu.language")}</span>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  <DropdownMenuRadioGroup
+                    value={locale}
+                    onValueChange={handleLanguageChange}
+                  >
+                    <DropdownMenuRadioItem value="vi">
+                      {t("userMenu.vietnamese")}
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="en">
+                      {t("userMenu.english")}
+                    </DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
 
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="text-destructive focus:bg-destructive/10 focus:text-destructive"
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>{t("userMenu.logout")}</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>{t("userMenu.logout")}</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </aside>
   );

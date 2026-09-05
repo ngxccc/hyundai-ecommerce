@@ -76,7 +76,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
         productId: product.id,
         name: product.name,
         price: product.price,
-        image: product.images?.[0] ?? "",
+        image: product.images[0] ?? "",
         totalStock: product.totalStockCache,
       },
       1,
@@ -90,7 +90,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
     <Card className="group hover:border-primary/50 flex h-full flex-col gap-4 overflow-hidden py-0 transition-all hover:shadow-xl">
       <Link href={`/products/${product.slug}`}>
         <CardHeader className="relative aspect-4/3 w-full p-0">
-          {product.images?.[0] && product.images[0] !== "" ? (
+          {product.images[0] ? (
             <ImageWithSkeleton
               src={product.images[0]}
               alt={product.name}
@@ -169,7 +169,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
               productId={product.id}
               name={product.name}
               price={product.price}
-              image={product.images?.[0] ?? ""}
+              image={product.images[0] ?? ""}
               totalStock={product.totalStockCache}
             />
           )}

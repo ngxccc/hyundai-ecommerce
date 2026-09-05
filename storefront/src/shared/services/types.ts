@@ -108,9 +108,7 @@ export function mapCategoryTreeToStorefront(
 ): StorefrontCategoryWithChildren {
   return {
     ...mapCategoryToStorefront(node, locale),
-    children: (node.children || []).map((c) =>
-      mapCategoryTreeToStorefront(c, locale),
-    ),
+    children: node.children.map((c) => mapCategoryTreeToStorefront(c, locale)),
   };
 }
 

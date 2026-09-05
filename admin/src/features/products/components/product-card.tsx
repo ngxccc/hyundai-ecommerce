@@ -20,7 +20,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
 
   const status = product.totalStockCache > 0 ? "active" : "outOfStock";
   const image =
-    product.images?.[0] ?? "https://placehold.co/400x300/png?text=No+Image";
+    product.images[0] || "https://placehold.co/400x300/png?text=No+Image";
   const formattedPrice = new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
