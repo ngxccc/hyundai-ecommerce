@@ -2,6 +2,7 @@ CREATE TYPE "approval_status" AS ENUM('PENDING', 'APPROVED', 'REJECTED');--> sta
 CREATE TYPE "business_type" AS ENUM('CONTRACTOR', 'COMMERCIAL', 'GOVERNMENT', 'END_USER', 'DEALER');--> statement-breakpoint
 CREATE TYPE "debt_repayment_status" AS ENUM('PENDING', 'COMPLETED', 'FAILED');--> statement-breakpoint
 CREATE TYPE "event_type" AS ENUM('SEND_QUOTE_EMAIL', 'SEND_MAIL', 'SEND_ZALO_ZNS', 'ORDER_CREATED', 'PAYMENT_RECEIVED', 'DEALER_APPROVAL_REQUIRED');--> statement-breakpoint
+CREATE TYPE "lead_status" AS ENUM('NEW', 'CONTACTING', 'SURVEY_SCHEDULED', 'QUOTED', 'CONVERTED', 'REJECTED', 'LOST');--> statement-breakpoint
 CREATE TYPE "order_payment_status" AS ENUM('PENDING', 'DEPOSIT_PAID', 'FULLY_PAID', 'REFUNDED', 'FAILED');--> statement-breakpoint
 CREATE TYPE "order_status" AS ENUM('PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED');--> statement-breakpoint
 CREATE TYPE "outbox_event_status" AS ENUM('PENDING', 'PROCESSING', 'PROCESSED', 'FAILED');--> statement-breakpoint
@@ -10,7 +11,7 @@ CREATE TYPE "payment_status" AS ENUM('PENDING', 'COMPLETED', 'FAILED', 'REFUNDED
 CREATE TYPE "payment_transaction_status" AS ENUM('PENDING', 'COMPLETED', 'FAILED', 'CANCELLED');--> statement-breakpoint
 CREATE TYPE "payment_transaction_type" AS ENUM('FULL_PAYMENT', 'DEPOSIT', 'REMAINING', 'DEBT_REPAYMENT');--> statement-breakpoint
 CREATE TYPE "quote_status" AS ENUM('DRAFT', 'SUBMITTED', 'NEGOTIATING', 'APPROVED', 'REJECTED', 'EXPIRED');--> statement-breakpoint
-CREATE TYPE "user_role" AS ENUM('CUSTOMER', 'DEALER_APPROVER', 'DEALER_PURCHASER', 'ADMIN');--> statement-breakpoint
+CREATE TYPE "user_role" AS ENUM('ADMIN', 'SALES');--> statement-breakpoint
 CREATE TYPE "user_status" AS ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED', 'PENDING_VERIFICATION');--> statement-breakpoint
 CREATE TABLE "dealer_tier" (
 	"id" uuid PRIMARY KEY,
@@ -44,7 +45,7 @@ CREATE TABLE "users" (
 	"phone_number" varchar(20) NOT NULL,
 	"avatar_url" text,
 	"password_hash" text NOT NULL,
-	"role" "user_role" DEFAULT 'CUSTOMER'::"user_role" NOT NULL,
+	"role" "user_role" DEFAULT 'SALES'::"user_role" NOT NULL,
 	"status" "user_status" DEFAULT 'ACTIVE'::"user_status" NOT NULL,
 	"email_verified" boolean DEFAULT false NOT NULL,
 	"dealer_tier_id" uuid,
@@ -147,6 +148,7 @@ CREATE TABLE "product" (
 	"specs" jsonb DEFAULT '{}',
 	"total_stock_cache" integer DEFAULT 0 NOT NULL,
 	"total_sales_cache" integer DEFAULT 0 NOT NULL,
+	"is_quote_only" boolean DEFAULT false NOT NULL,
 	"is_active" boolean DEFAULT true NOT NULL
 );
 --> statement-breakpoint
@@ -206,7 +208,12 @@ CREATE TABLE "order" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"deleted_at" timestamp with time zone,
 	"order_number" varchar(32),
-	"user_id" uuid NOT NULL,
+	"user_id" uuid,
+	"lead_id" uuid,
+	"customer_name" varchar(255),
+	"customer_phone" varchar(20),
+	"customer_email" varchar(255),
+	"company_name" varchar(255),
 	"status" "order_status" DEFAULT 'PENDING'::"order_status" NOT NULL,
 	"shipping_fee" numeric(15,2) DEFAULT '0.00' NOT NULL,
 	"shipping_address" text NOT NULL,
@@ -216,7 +223,8 @@ CREATE TABLE "order" (
 	"payment_method" "payment_method" DEFAULT 'PAYOS'::"payment_method" NOT NULL,
 	"payment_status" "order_payment_status" DEFAULT 'PENDING'::"order_payment_status" NOT NULL,
 	"approval_status" "approval_status" DEFAULT 'APPROVED'::"approval_status" NOT NULL,
-	"approved_by" uuid
+	"approved_by" uuid,
+	"note" text
 );
 --> statement-breakpoint
 CREATE TABLE "shipping_bid" (
@@ -335,6 +343,38 @@ CREATE TABLE "outbox_events" (
 	"last_error" text
 );
 --> statement-breakpoint
+CREATE TABLE "lead_item" (
+	"id" uuid PRIMARY KEY,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"lead_id" uuid NOT NULL,
+	"product_id" uuid NOT NULL,
+	"quantity" integer DEFAULT 1 NOT NULL,
+	"product_name_vi" varchar(255) NOT NULL,
+	"product_name_en" varchar(255),
+	"product_model" varchar(100),
+	"product_sku" varchar(100)
+);
+--> statement-breakpoint
+CREATE TABLE "lead" (
+	"id" uuid PRIMARY KEY,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"deleted_at" timestamp with time zone,
+	"lead_code" varchar(32) NOT NULL UNIQUE,
+	"full_name" varchar(255) NOT NULL,
+	"phone_number" varchar(20) NOT NULL,
+	"email" varchar(255),
+	"company_name" varchar(255),
+	"city" varchar(100) NOT NULL,
+	"ward" varchar(100) NOT NULL,
+	"street_address" varchar(255),
+	"notes" text,
+	"status" "lead_status" DEFAULT 'NEW'::"lead_status" NOT NULL,
+	"assigned_sales_id" uuid,
+	"lost_reason" text
+);
+--> statement-breakpoint
 CREATE UNIQUE INDEX "refresh_tokens_token_hash_uidx" ON "refresh_tokens" ("token_hash");--> statement-breakpoint
 CREATE INDEX "refresh_tokens_user_id_idx" ON "refresh_tokens" ("user_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "users_email_uidx" ON "users" ("email");--> statement-breakpoint
@@ -363,6 +403,9 @@ CREATE UNIQUE INDEX "cart_product_unique_idx" ON "cart_item" ("cart_id","product
 CREATE INDEX "order_item_order_idx" ON "order_item" ("order_id");--> statement-breakpoint
 CREATE INDEX "order_item_product_idx" ON "order_item" ("product_id");--> statement-breakpoint
 CREATE INDEX "order_user_status_created_idx" ON "order" ("user_id","status","created_at");--> statement-breakpoint
+CREATE INDEX "order_lead_idx" ON "order" ("lead_id");--> statement-breakpoint
+CREATE INDEX "order_customer_phone_idx" ON "order" ("customer_phone");--> statement-breakpoint
+CREATE INDEX "order_order_number_idx" ON "order" ("order_number");--> statement-breakpoint
 CREATE INDEX "order_active_metrics_idx" ON "order" ("created_at") WHERE "status" != 'CANCELLED';--> statement-breakpoint
 CREATE UNIQUE INDEX "one_selected_bid_order_idx" ON "shipping_bid" ("order_id") WHERE "is_selected" = true;--> statement-breakpoint
 CREATE INDEX "quote_item_quote_idx" ON "quote_item" ("quote_id");--> statement-breakpoint
@@ -380,6 +423,11 @@ CREATE UNIQUE INDEX "payment_transaction_order_code_uidx" ON "payment_transactio
 CREATE INDEX "payment_order_idx" ON "payment" ("order_id");--> statement-breakpoint
 CREATE INDEX "payment_status_idx" ON "payment" ("status");--> statement-breakpoint
 CREATE INDEX "outbox_events_status_created_at_idx" ON "outbox_events" ("status","created_at");--> statement-breakpoint
+CREATE INDEX "lead_item_lead_idx" ON "lead_item" ("lead_id");--> statement-breakpoint
+CREATE INDEX "lead_item_product_idx" ON "lead_item" ("product_id");--> statement-breakpoint
+CREATE INDEX "lead_status_created_idx" ON "lead" ("status","created_at");--> statement-breakpoint
+CREATE INDEX "lead_phone_idx" ON "lead" ("phone_number");--> statement-breakpoint
+CREATE INDEX "lead_sales_idx" ON "lead" ("assigned_sales_id");--> statement-breakpoint
 ALTER TABLE "refresh_tokens" ADD CONSTRAINT "refresh_tokens_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "users" ADD CONSTRAINT "users_dealer_tier_id_dealer_tier_id_fkey" FOREIGN KEY ("dealer_tier_id") REFERENCES "dealer_tier"("id") ON DELETE SET NULL;--> statement-breakpoint
 ALTER TABLE "users" ADD CONSTRAINT "users_parent_id_users_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "users"("id") ON DELETE SET NULL;--> statement-breakpoint
@@ -396,7 +444,8 @@ ALTER TABLE "cart_item" ADD CONSTRAINT "cart_item_product_id_product_id_fkey" FO
 ALTER TABLE "cart" ADD CONSTRAINT "cart_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "order_item" ADD CONSTRAINT "order_item_order_id_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "order"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "order_item" ADD CONSTRAINT "order_item_product_id_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE RESTRICT;--> statement-breakpoint
-ALTER TABLE "order" ADD CONSTRAINT "order_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT;--> statement-breakpoint
+ALTER TABLE "order" ADD CONSTRAINT "order_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL;--> statement-breakpoint
+ALTER TABLE "order" ADD CONSTRAINT "order_lead_id_lead_id_fkey" FOREIGN KEY ("lead_id") REFERENCES "lead"("id") ON DELETE SET NULL;--> statement-breakpoint
 ALTER TABLE "order" ADD CONSTRAINT "order_approved_by_users_id_fkey" FOREIGN KEY ("approved_by") REFERENCES "users"("id") ON DELETE SET NULL;--> statement-breakpoint
 ALTER TABLE "shipping_bid" ADD CONSTRAINT "shipping_bid_order_id_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "order"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "quote_item" ADD CONSTRAINT "quote_item_quote_id_quote_id_fkey" FOREIGN KEY ("quote_id") REFERENCES "quote"("id") ON DELETE CASCADE;--> statement-breakpoint
@@ -410,4 +459,7 @@ ALTER TABLE "debt_repayment" ADD CONSTRAINT "debt_repayment_user_id_users_id_fke
 ALTER TABLE "debt_repayment" ADD CONSTRAINT "debt_repayment_verified_by_users_id_fkey" FOREIGN KEY ("verified_by") REFERENCES "users"("id") ON DELETE SET NULL;--> statement-breakpoint
 ALTER TABLE "payment_transaction" ADD CONSTRAINT "payment_transaction_order_id_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "order"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "payment_transaction" ADD CONSTRAINT "payment_transaction_verified_by_users_id_fkey" FOREIGN KEY ("verified_by") REFERENCES "users"("id") ON DELETE SET NULL;--> statement-breakpoint
-ALTER TABLE "payment" ADD CONSTRAINT "payment_order_id_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "order"("id") ON DELETE RESTRICT;
+ALTER TABLE "payment" ADD CONSTRAINT "payment_order_id_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "order"("id") ON DELETE RESTRICT;--> statement-breakpoint
+ALTER TABLE "lead_item" ADD CONSTRAINT "lead_item_lead_id_lead_id_fkey" FOREIGN KEY ("lead_id") REFERENCES "lead"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "lead_item" ADD CONSTRAINT "lead_item_product_id_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE RESTRICT;--> statement-breakpoint
+ALTER TABLE "lead" ADD CONSTRAINT "lead_assigned_sales_id_users_id_fkey" FOREIGN KEY ("assigned_sales_id") REFERENCES "users"("id") ON DELETE SET NULL;

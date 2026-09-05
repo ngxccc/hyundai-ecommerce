@@ -5,7 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import type { I18nService } from "nestjs-i18n";
+import { I18nService } from "nestjs-i18n";
 import type { I18nTranslations } from "@/generated/i18n.generated";
 import { asc, eq } from "drizzle-orm";
 import {
