@@ -17,5 +17,6 @@
   "isInt": "{property} must be an integer",
   "isPositive": "{property} must be a positive number",
   "isIn": "{property} must be one of the following values: {constraints.0}",
-  "isDate": "{property} must be a valid date in YYYY-MM-DD format"
+  "isDate": "{property} must be a valid date in YYYY-MM-DD format",
+  "isNonNegative": "{property} cannot be negative"
 }

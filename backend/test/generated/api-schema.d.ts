@@ -1609,6 +1609,11 @@ export interface components {
       slug: string;
       /** @example 245000000.00 */
       price: string;
+      /**
+       * @description Whether the product requires quotation request (price <= 0)
+       * @example false
+       */
+      isQuoteOnly: boolean;
       /** @example null */
       descriptionVi?: Record<string, never> | null;
       /** @example null */
@@ -1874,6 +1879,11 @@ export interface components {
        * @example true
        */
       isActive: boolean;
+      /**
+       * @default false
+       * @example false
+       */
+      isQuoteOnly: boolean;
     };
     UpdateProductDto: {
       /** @example Máy phát điện cập nhật */
@@ -1956,6 +1966,8 @@ export interface components {
       totalStockCache?: number;
       /** @example true */
       isActive?: boolean;
+      /** @example false */
+      isQuoteOnly?: boolean;
     };
     WarehouseResponseDto: {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
@@ -5092,6 +5104,18 @@ export interface operations {
           | "tower"
           | "rackmount";
         sort?: "newest" | "priceAsc" | "priceDesc";
+        /** @description Minimum power in kVA (alias for powerKvaMin) */
+        minPower?: number;
+        /** @description Maximum power in kVA (alias for powerKvaMax) */
+        maxPower?: number;
+        /** @description Filter by engine brand */
+        engineBrand?: string;
+        /** @description Filter by alternator brand */
+        alternatorBrand?: string;
+        /** @description Stock/lifecycle status */
+        status?: "active" | "outOfStock" | "all";
+        /** @description Filter products marked for quote only */
+        isQuoteOnly?: boolean;
       };
       header?: never;
       path?: never;

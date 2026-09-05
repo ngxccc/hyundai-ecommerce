@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import path from "node:path";
 process.env["SKIP_ENV_VALIDATION"] = "true";
 
 async function generate() {
@@ -39,9 +40,19 @@ async function generate() {
     parser: "typescript",
   });
 
-  const outputPath = "test/generated/api-schema.d.ts";
-  await Bun.write(outputPath, formattedContents);
-  console.log(`OpenAPI types successfully generated at ${outputPath}`);
+  const outputPaths = [
+    path.resolve(import.meta.dirname, "../test/generated/api-schema.d.ts"),
+    path.resolve(import.meta.dirname, "../../admin/src/types/api-schema.d.ts"),
+    path.resolve(
+      import.meta.dirname,
+      "../../storefront/src/types/api-schema.d.ts",
+    ),
+  ];
+
+  for (const outPath of outputPaths) {
+    await Bun.write(outPath, formattedContents);
+    console.log(`OpenAPI types successfully generated at ${outPath}`);
+  }
 }
 
 generate().catch((err: unknown) => {

@@ -17,5 +17,6 @@
   "isInt": "{property} phải là số nguyên",
   "isPositive": "{property} phải là số dương",
   "isIn": "{property} phải là một trong các giá trị: {constraints.0}",
-  "isDate": "{property} phải là ngày hợp lệ theo định dạng YYYY-MM-DD"
+  "isDate": "{property} phải là ngày hợp lệ theo định dạng YYYY-MM-DD",
+  "isNonNegative": "{property} không được nhỏ hơn 0"
 }

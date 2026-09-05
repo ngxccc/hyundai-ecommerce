@@ -5,6 +5,8 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import type { I18nService } from "nestjs-i18n";
+import type { I18nTranslations } from "@/generated/i18n.generated";
 import { asc, eq } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -20,8 +22,8 @@ export class BrandsService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
+    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
-
   /**
    * Retrieves all active brands ordered by name ascending.
    */
@@ -45,7 +47,9 @@ export class BrandsService {
       .limit(1);
 
     if (!record) {
-      throw new NotFoundException(`Brand with ID "${id}" not found`);
+      throw new NotFoundException(
+        this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id } }),
+      );
     }
 
     return this.mapBrandToDto(record);
@@ -63,7 +67,9 @@ export class BrandsService {
 
     if (existingSlug) {
       throw new ConflictException(
-        `Brand with slug "${dto.slug}" already exists`,
+        this.i18n.t("catalog.BRAND_SLUG_EXISTS", {
+          args: { slug: dto.slug },
+        }),
       );
     }
 
@@ -75,7 +81,9 @@ export class BrandsService {
 
     if (existingName) {
       throw new ConflictException(
-        `Brand with name "${dto.name}" already exists`,
+        this.i18n.t("catalog.BRAND_NAME_EXISTS", {
+          args: { name: dto.name },
+        }),
       );
     }
 
@@ -109,7 +117,9 @@ export class BrandsService {
       .limit(1);
 
     if (!existing) {
-      throw new NotFoundException(`Brand with ID "${id}" not found`);
+      throw new NotFoundException(
+        this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id } }),
+      );
     }
 
     if (dto.slug && dto.slug !== existing.slug) {
@@ -121,7 +131,9 @@ export class BrandsService {
 
       if (slugConflict) {
         throw new ConflictException(
-          `Brand with slug "${dto.slug}" already exists`,
+          this.i18n.t("catalog.BRAND_SLUG_EXISTS", {
+            args: { slug: dto.slug },
+          }),
         );
       }
     }
@@ -135,7 +147,9 @@ export class BrandsService {
 
       if (nameConflict) {
         throw new ConflictException(
-          `Brand with name "${dto.name}" already exists`,
+          this.i18n.t("catalog.BRAND_NAME_EXISTS", {
+            args: { name: dto.name },
+          }),
         );
       }
     }
@@ -171,7 +185,9 @@ export class BrandsService {
       .limit(1);
 
     if (!existing) {
-      throw new NotFoundException(`Brand with ID "${id}" not found`);
+      throw new NotFoundException(
+        this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id } }),
+      );
     }
 
     await this.db.delete(brands).where(eq(brands.id, id));

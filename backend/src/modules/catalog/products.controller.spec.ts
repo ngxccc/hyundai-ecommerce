@@ -15,6 +15,7 @@ describe("ProductsController", () => {
     nameEn: "Hyundai 60kVA Generator",
     slug: "may-phat-dien-hyundai-60kva",
     price: "245000000.00",
+    isQuoteOnly: false,
     descriptionVi: null,
     descriptionEn: null,
     shortDescriptionVi: null,
@@ -149,6 +150,7 @@ describe("ProductsController", () => {
           specSheet: [],
           specs: {},
           totalStockCache: 1,
+          isQuoteOnly: false,
           isActive: true,
         };
 

@@ -33,6 +33,12 @@ export class ProductResponseDto {
   @ApiProperty({ example: "245000000.00" })
   public price!: string;
 
+  @ApiProperty({
+    example: false,
+    description: "Whether the product requires quotation request (price <= 0)",
+  })
+  public isQuoteOnly!: boolean;
+
   @ApiPropertyOptional({ example: null, nullable: true })
   public descriptionVi!: JSONContent | null;
 

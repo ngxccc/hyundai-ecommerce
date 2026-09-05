@@ -5,6 +5,8 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import type { I18nService } from "nestjs-i18n";
+import type { I18nTranslations } from "@/generated/i18n.generated";
 import { asc, eq } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -20,6 +22,7 @@ export class CategoriesService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
+    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   /**
@@ -84,9 +87,10 @@ export class CategoriesService {
       .limit(1);
 
     if (!record) {
-      throw new NotFoundException(`Category with ID "${id}" not found`);
+      throw new NotFoundException(
+        this.i18n.t("catalog.CATEGORY_NOT_FOUND", { args: { id } }),
+      );
     }
-
     return this.mapCategoryToDto(record);
   }
 
@@ -102,7 +106,9 @@ export class CategoriesService {
 
     if (existingSlug) {
       throw new ConflictException(
-        `Category with slug "${dto.slug}" already exists`,
+        this.i18n.t("catalog.CATEGORY_SLUG_EXISTS", {
+          args: { slug: dto.slug },
+        }),
       );
     }
 
@@ -115,7 +121,9 @@ export class CategoriesService {
 
       if (!parent) {
         throw new BadRequestException(
-          `Parent category with ID "${dto.parentId}" not found`,
+          this.i18n.t("catalog.CATEGORY_NOT_FOUND", {
+            args: { id: dto.parentId },
+          }),
         );
       }
     }
@@ -153,9 +161,10 @@ export class CategoriesService {
       .from(categories)
       .where(eq(categories.id, id))
       .limit(1);
-
     if (!existing) {
-      throw new NotFoundException(`Category with ID "${id}" not found`);
+      throw new NotFoundException(
+        this.i18n.t("catalog.CATEGORY_NOT_FOUND", { args: { id } }),
+      );
     }
 
     if (dto.slug && dto.slug !== existing.slug) {
@@ -167,7 +176,9 @@ export class CategoriesService {
 
       if (slugConflict) {
         throw new ConflictException(
-          `Category with slug "${dto.slug}" already exists`,
+          this.i18n.t("catalog.CATEGORY_SLUG_EXISTS", {
+            args: { slug: dto.slug },
+          }),
         );
       }
     }
@@ -185,7 +196,9 @@ export class CategoriesService {
 
         if (!parent) {
           throw new BadRequestException(
-            `Parent category with ID "${dto.parentId}" not found`,
+            this.i18n.t("catalog.CATEGORY_NOT_FOUND", {
+              args: { id: dto.parentId },
+            }),
           );
         }
       }
@@ -224,7 +237,9 @@ export class CategoriesService {
       .limit(1);
 
     if (!existing) {
-      throw new NotFoundException(`Category with ID "${id}" not found`);
+      throw new NotFoundException(
+        this.i18n.t("catalog.CATEGORY_NOT_FOUND", { args: { id } }),
+      );
     }
 
     await this.db.delete(categories).where(eq(categories.id, id));

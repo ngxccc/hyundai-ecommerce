@@ -6,15 +6,21 @@ import {
 } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import type { DrizzleDB } from "@/database/database.module";
-import { createMockDb } from "../../../test/mocks";
+import type { I18nService } from "nestjs-i18n";
+import { createMockDb, createMockI18nService } from "../../../test/mocks";
 
 describe("ProductsService", () => {
   let service: ProductsService;
   const mockDb = createMockDb();
+  const mockI18nService = createMockI18nService();
 
   beforeEach(() => {
     mockDb.clearAll();
-    service = new ProductsService(mockDb as unknown as DrizzleDB);
+    mockI18nService.clearAll();
+    service = new ProductsService(
+      mockDb as unknown as DrizzleDB,
+      mockI18nService as unknown as I18nService,
+    );
   });
 
   describe("findProducts()", () => {
@@ -242,6 +248,7 @@ describe("ProductsService", () => {
             specSheet: [],
             specs: {},
             totalStockCache: 1,
+            isQuoteOnly: false,
             isActive: true,
           }),
         ).rejects.toThrow(ConflictException);
@@ -266,6 +273,7 @@ describe("ProductsService", () => {
             specSheet: [],
             specs: {},
             totalStockCache: 1,
+            isQuoteOnly: false,
             isActive: true,
           }),
         ).rejects.toThrow(BadRequestException);

@@ -70,6 +70,7 @@ export const products = snakeCase.table(
     specs: jsonb().$type<Record<string, unknown>>().default({}),
     totalStockCache: integer().notNull().default(0),
     totalSalesCache: integer().notNull().default(0),
+    isQuoteOnly: boolean().default(false).notNull(),
     isActive: boolean().default(true).notNull(),
   },
   (table) => [

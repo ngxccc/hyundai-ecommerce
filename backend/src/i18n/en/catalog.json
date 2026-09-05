@@ -1,4 +1,10 @@
 {
-  "MOVIE_NOT_FOUND": "Movie not found with identifier: {id}",
-  "CINEMA_NOT_FOUND": "Cinema venue not found with identifier: {id}"
+  "PRICE_NEGATIVE": "Product price cannot be negative",
+  "PRODUCT_SLUG_EXISTS": "Product with slug \"{slug}\" already exists",
+  "BRAND_SLUG_EXISTS": "Brand with slug \"{slug}\" already exists",
+  "BRAND_NAME_EXISTS": "Brand with name \"{name}\" already exists",
+  "CATEGORY_SLUG_EXISTS": "Category with slug \"{slug}\" already exists",
+  "PRODUCT_NOT_FOUND": "Product not found with identifier: {id}",
+  "BRAND_NOT_FOUND": "Brand not found with identifier: {id}",
+  "CATEGORY_NOT_FOUND": "Category not found with identifier: {id}"
 }

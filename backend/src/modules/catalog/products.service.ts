@@ -5,6 +5,8 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import type { I18nService } from "nestjs-i18n";
+import type { I18nTranslations } from "@/generated/i18n.generated";
 import { and, asc, count, desc, eq, isNull, sql } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -74,6 +76,7 @@ function toProductInsertValues(
     specSheet: dto.specSheet,
     specs: dto.specs,
     totalStockCache: dto.totalStockCache,
+    isQuoteOnly: dto.isQuoteOnly,
     isActive: dto.isActive,
   };
 }
@@ -88,7 +91,9 @@ function toProductUpdateValues(
   if (dto.nameVi !== undefined) updateValues.nameVi = dto.nameVi;
   if (dto.nameEn !== undefined) updateValues.nameEn = dto.nameEn;
   if (dto.slug !== undefined) updateValues.slug = dto.slug;
-  if (dto.price !== undefined) updateValues.price = String(dto.price);
+  if (dto.price !== undefined) {
+    updateValues.price = String(dto.price);
+  }
   if (dto.descriptionVi !== undefined)
     updateValues.descriptionVi = dto.descriptionVi;
   if (dto.descriptionEn !== undefined)
@@ -127,6 +132,7 @@ function toProductUpdateValues(
   if (dto.specs !== undefined) updateValues.specs = dto.specs;
   if (dto.totalStockCache !== undefined)
     updateValues.totalStockCache = dto.totalStockCache;
+  if (dto.isQuoteOnly !== undefined) updateValues.isQuoteOnly = dto.isQuoteOnly;
   if (dto.isActive !== undefined) updateValues.isActive = dto.isActive;
   updateValues.updatedAt = new Date();
   return updateValues;
@@ -142,6 +148,7 @@ function mapProductRow(
 ): ProductResponseDto {
   return {
     ...product,
+    isQuoteOnly: product.isQuoteOnly,
     productType: product.productType ?? "generator",
     powerKva: product.powerKva ?? null,
     powerKw: product.powerKw ?? null,
@@ -171,6 +178,7 @@ export class ProductsService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
+    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   /**
@@ -385,16 +393,21 @@ export class ProductsService {
       .limit(1);
 
     if (!record) {
-      throw new NotFoundException(`Product "${idOrSlug}" not found`);
+      throw new NotFoundException(
+        this.i18n.t("catalog.PRODUCT_NOT_FOUND", { args: { id: idOrSlug } }),
+      );
     }
 
     return mapProductRow(record.product, record.brand, record.category);
   }
-
   /**
    * Creates a new product.
    */
   async create(dto: CreateProductDto): Promise<ProductResponseDto> {
+    if (dto.price < 0) {
+      throw new BadRequestException(this.i18n.t("catalog.PRICE_NEGATIVE"));
+    }
+
     const [existingSlug] = await this.db
       .select({ id: products.id })
       .from(products)
@@ -403,7 +416,9 @@ export class ProductsService {
 
     if (existingSlug) {
       throw new ConflictException(
-        `Product with slug "${dto.slug}" already exists`,
+        this.i18n.t("catalog.PRODUCT_SLUG_EXISTS", {
+          args: { slug: dto.slug },
+        }),
       );
     }
 
@@ -416,7 +431,7 @@ export class ProductsService {
 
       if (!brand) {
         throw new BadRequestException(
-          `Brand with ID "${dto.brandId}" not found`,
+          this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id: dto.brandId } }),
         );
       }
     }
@@ -430,7 +445,9 @@ export class ProductsService {
 
       if (!category) {
         throw new BadRequestException(
-          `Category with ID "${dto.categoryId}" not found`,
+          this.i18n.t("catalog.CATEGORY_NOT_FOUND", {
+            args: { id: dto.categoryId },
+          }),
         );
       }
     }
@@ -451,6 +468,9 @@ export class ProductsService {
    * Updates an existing product.
    */
   async update(id: string, dto: UpdateProductDto): Promise<ProductResponseDto> {
+    if (dto.price !== undefined && dto.price < 0) {
+      throw new BadRequestException(this.i18n.t("catalog.PRICE_NEGATIVE"));
+    }
     const [existing] = await this.db
       .select({ id: products.id, slug: products.slug })
       .from(products)
@@ -458,7 +478,9 @@ export class ProductsService {
       .limit(1);
 
     if (!existing) {
-      throw new NotFoundException(`Product with ID "${id}" not found`);
+      throw new NotFoundException(
+        this.i18n.t("catalog.PRODUCT_NOT_FOUND", { args: { id } }),
+      );
     }
 
     if (dto.slug && dto.slug !== existing.slug) {
@@ -470,7 +492,9 @@ export class ProductsService {
 
       if (slugConflict) {
         throw new ConflictException(
-          `Product with slug "${dto.slug}" already exists`,
+          this.i18n.t("catalog.PRODUCT_SLUG_EXISTS", {
+            args: { slug: dto.slug },
+          }),
         );
       }
     }
@@ -484,7 +508,7 @@ export class ProductsService {
 
       if (!brand) {
         throw new BadRequestException(
-          `Brand with ID "${dto.brandId}" not found`,
+          this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id: dto.brandId } }),
         );
       }
     }
@@ -498,11 +522,12 @@ export class ProductsService {
 
       if (!category) {
         throw new BadRequestException(
-          `Category with ID "${dto.categoryId}" not found`,
+          this.i18n.t("catalog.CATEGORY_NOT_FOUND", {
+            args: { id: dto.categoryId },
+          }),
         );
       }
     }
-
     const updatePayload = toProductUpdateValues(dto);
 
     const [updatedProduct] = await this.db
@@ -511,7 +536,9 @@ export class ProductsService {
       .where(eq(products.id, id))
       .returning();
     if (!updatedProduct) {
-      throw new NotFoundException(`Product with ID "${id}" not found`);
+      throw new NotFoundException(
+        this.i18n.t("catalog.PRODUCT_NOT_FOUND", { args: { id } }),
+      );
     }
 
     return mapProductRow(updatedProduct);
@@ -528,7 +555,9 @@ export class ProductsService {
       .limit(1);
 
     if (!existing) {
-      throw new NotFoundException(`Product with ID "${id}" not found`);
+      throw new NotFoundException(
+        this.i18n.t("catalog.PRODUCT_NOT_FOUND", { args: { id } }),
+      );
     }
 
     await this.db

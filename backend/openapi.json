@@ -2544,6 +2544,61 @@
               "type": "string",
               "enum": ["newest", "priceAsc", "priceDesc"]
             }
+          },
+          {
+            "name": "minPower",
+            "required": false,
+            "in": "query",
+            "description": "Minimum power in kVA (alias for powerKvaMin)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxPower",
+            "required": false,
+            "in": "query",
+            "description": "Maximum power in kVA (alias for powerKvaMax)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "engineBrand",
+            "required": false,
+            "in": "query",
+            "description": "Filter by engine brand",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "alternatorBrand",
+            "required": false,
+            "in": "query",
+            "description": "Filter by alternator brand",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Stock/lifecycle status",
+            "schema": {
+              "type": "string",
+              "enum": ["active", "outOfStock", "all"]
+            }
+          },
+          {
+            "name": "isQuoteOnly",
+            "required": false,
+            "in": "query",
+            "description": "Filter products marked for quote only",
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -5357,6 +5412,11 @@
             "type": "string",
             "example": "245000000.00"
           },
+          "isQuoteOnly": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether the product requires quotation request (price <= 0)"
+          },
           "descriptionVi": {
             "type": ["object", "null"],
             "example": null
@@ -5526,6 +5586,7 @@
           "nameVi",
           "slug",
           "price",
+          "isQuoteOnly",
           "images",
           "specSheet",
           "specs",
@@ -5821,6 +5882,11 @@
             "type": "boolean",
             "example": true,
             "default": true
+          },
+          "isQuoteOnly": {
+            "type": "boolean",
+            "example": false,
+            "default": false
           }
         },
         "required": ["nameVi", "slug", "price"]
@@ -5965,6 +6031,10 @@
           "isActive": {
             "type": "boolean",
             "example": true
+          },
+          "isQuoteOnly": {
+            "type": "boolean",
+            "example": false
           }
         }
       },

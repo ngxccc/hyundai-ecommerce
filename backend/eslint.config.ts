@@ -39,6 +39,9 @@ export default defineConfig(
       },
     },
     rules: {
+      "@typescript-eslint/no-unnecessary-condition": "error",
+      "@typescript-eslint/no-deprecated": "error",
+      "@typescript-eslint/no-empty-object-type": "error",
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",

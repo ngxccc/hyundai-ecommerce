@@ -2,15 +2,21 @@ import { beforeEach, describe, expect, test } from "bun:test";
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { BrandsService } from "./brands.service";
 import type { DrizzleDB } from "@/database/database.module";
-import { createMockDb } from "../../../test/mocks";
+import type { I18nService } from "nestjs-i18n";
+import { createMockDb, createMockI18nService } from "../../../test/mocks";
 
 describe("BrandsService", () => {
   let service: BrandsService;
   const mockDb = createMockDb();
+  const mockI18nService = createMockI18nService();
 
   beforeEach(() => {
     mockDb.clearAll();
-    service = new BrandsService(mockDb as unknown as DrizzleDB);
+    mockI18nService.clearAll();
+    service = new BrandsService(
+      mockDb as unknown as DrizzleDB,
+      mockI18nService as unknown as I18nService,
+    );
   });
 
   describe("findAll()", () => {

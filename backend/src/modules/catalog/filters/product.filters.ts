@@ -164,10 +164,10 @@ export const productFilters = {
    */
   byQuoteOnly: (isQuoteOnly?: boolean | null): SQL | undefined => {
     if (isQuoteOnly === true) {
-      return lte(products.price, "0");
+      return eq(products.isQuoteOnly, true);
     }
     if (isQuoteOnly === false) {
-      return sql`cast(${products.price} as numeric) > 0`;
+      return eq(products.isQuoteOnly, false);
     }
     return undefined;
   },

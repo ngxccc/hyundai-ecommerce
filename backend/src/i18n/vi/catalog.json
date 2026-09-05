@@ -1,4 +1,10 @@
 {
-  "MOVIE_NOT_FOUND": "Không tìm thấy phim với mã định danh: {id}",
-  "CINEMA_NOT_FOUND": "Không tìm thấy rạp chiếu với mã định danh: {id}"
+  "PRICE_NEGATIVE": "Giá sản phẩm không được nhỏ hơn 0",
+  "PRODUCT_SLUG_EXISTS": "Sản phẩm với đường dẫn \"{slug}\" đã tồn tại",
+  "BRAND_SLUG_EXISTS": "Thương hiệu với đường dẫn \"{slug}\" đã tồn tại",
+  "BRAND_NAME_EXISTS": "Thương hiệu với tên \"{name}\" đã tồn tại",
+  "CATEGORY_SLUG_EXISTS": "Danh mục với đường dẫn \"{slug}\" đã tồn tại",
+  "PRODUCT_NOT_FOUND": "Không tìm thấy sản phẩm với mã định danh: {id}",
+  "BRAND_NOT_FOUND": "Không tìm thấy thương hiệu với mã định danh: {id}",
+  "CATEGORY_NOT_FOUND": "Không tìm thấy danh mục với mã định danh: {id}"
 }

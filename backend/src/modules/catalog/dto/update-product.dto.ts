@@ -121,4 +121,7 @@ export class UpdateProductDto implements UpdateProductDtoType {
 
   @ApiPropertyOptional({ example: true })
   public isActive?: boolean;
+
+  @ApiPropertyOptional({ example: false })
+  public isQuoteOnly?: boolean;
 }

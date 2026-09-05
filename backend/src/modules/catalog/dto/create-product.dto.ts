@@ -88,7 +88,12 @@ export const createProductSchema = z
       .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
         message: i18nZodMsg("validation.matches"),
       }),
-    price: z.number().min(0).default(0),
+    price: z
+      .number()
+      .min(0, {
+        message: i18nZodMsg("validation.isNonNegative", { property: "price" }),
+      })
+      .default(0),
     descriptionVi: jsonContentSchema.nullish(),
     descriptionEn: jsonContentSchema.nullish(),
     shortDescriptionVi: zSanitizedString({ max: 1000 }).nullish(),
@@ -114,6 +119,7 @@ export const createProductSchema = z
     specSheet: productSpecSheetSchema.default([]),
     specs: productSpecsSchema,
     totalStockCache: z.number().int().min(0).default(0),
+    isQuoteOnly: z.boolean().default(false),
     isActive: z.boolean().default(true),
   })
   .strict();
@@ -257,4 +263,7 @@ export class CreateProductDto implements CreateProductDtoType {
 
   @ApiPropertyOptional({ example: true, default: true })
   public isActive!: boolean;
+
+  @ApiPropertyOptional({ example: false, default: false })
+  public isQuoteOnly!: boolean;
 }

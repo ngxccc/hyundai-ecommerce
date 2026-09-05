@@ -1,0 +1,1 @@
+ALTER TABLE "product" ADD COLUMN "is_quote_only" boolean DEFAULT false NOT NULL;

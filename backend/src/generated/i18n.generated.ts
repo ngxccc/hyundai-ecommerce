@@ -39,8 +39,14 @@ export type I18nTranslations = {
         "PAYOS_WEBHOOK_STALE_TIMESTAMP": string;
     };
     "catalog": {
-        "MOVIE_NOT_FOUND": string;
-        "CINEMA_NOT_FOUND": string;
+        "PRICE_NEGATIVE": string;
+        "PRODUCT_SLUG_EXISTS": string;
+        "BRAND_SLUG_EXISTS": string;
+        "BRAND_NAME_EXISTS": string;
+        "CATEGORY_SLUG_EXISTS": string;
+        "PRODUCT_NOT_FOUND": string;
+        "BRAND_NOT_FOUND": string;
+        "CATEGORY_NOT_FOUND": string;
     };
     "common": {
         "INTERNAL_SERVER_ERROR": string;
@@ -118,6 +124,7 @@ export type I18nTranslations = {
         "isPositive": string;
         "isIn": string;
         "isDate": string;
+        "isNonNegative": string;
     };
 };
 /* prettier-ignore */
