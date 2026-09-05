@@ -1,0 +1,53 @@
+name: Storefront CD
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: "Pre-Deploy Verification"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Environment
+        uses: ./.github/setup-environment
+
+      - name: Type-Check
+        run: bun run check-types
+
+      - name: Lint Code
+        run: bun run lint
+
+      - name: Run Test Suite
+        run: bun run test
+
+  deploy:
+    name: Release to Vercel
+    needs: ci
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Environment
+        uses: ./.github/setup-environment
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v42.3.0
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID_STOREFRONT }}
+          vercel-args: "--prod"
