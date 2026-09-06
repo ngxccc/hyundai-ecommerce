@@ -5,10 +5,12 @@
  */
 
 import createClient, { type Middleware } from "openapi-fetch";
+import { cookies } from "next/headers";
 import { env } from "@/env";
 import type { paths } from "@/types/api-schema";
 import type { ApiProblemDetails } from "@/types/api";
-
+import { isJwtExpired } from "@/shared/lib/jwt";
+import { rotateAdminToken } from "@/shared/lib/token-refresh";
 export class ApiClientError extends Error {
   public readonly status: number;
   public readonly problem?: ApiProblemDetails;
@@ -21,11 +23,11 @@ export class ApiClientError extends Error {
   }
 }
 
-const getBaseUrl = (): string => {
+export const getBaseUrl = (): string => {
   if (typeof window !== "undefined") {
     return "";
   }
-  const url = env.BACKEND_API_URL;
+  const url = env.BACKEND_API_URL || "http://localhost:3000";
   const trimmed = url.trim().replace(/^["'\\]+|["'\\]+$/g, "");
   if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
     return `https://${trimmed}`;
@@ -43,11 +45,40 @@ const authMiddleware: Middleware = {
     }
     if (!request.headers.has("Authorization")) {
       try {
-        const { cookies } = await import("next/headers");
         const cookieStore = await cookies();
-        const token =
+        let token =
           cookieStore.get("adminAccessToken")?.value ??
           cookieStore.get("accessToken")?.value;
+        const refreshToken =
+          cookieStore.get("adminRefreshToken")?.value ??
+          cookieStore.get("refreshToken")?.value;
+
+        // Auto Token Rotation: If access token is expired or expiring soon and refresh token exists
+        if (isJwtExpired(token) && refreshToken) {
+          const rotated = await rotateAdminToken(refreshToken);
+          if (rotated) {
+            token = rotated.accessToken;
+            try {
+              cookieStore.set("adminAccessToken", rotated.accessToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/",
+                maxAge: 604800,
+              });
+              cookieStore.set("adminRefreshToken", rotated.refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/",
+                maxAge: 2592000,
+              });
+            } catch {
+              // Cookie store can be read-only in Server Components
+            }
+          }
+        }
+
         if (token) {
           request.headers.set("Authorization", `Bearer ${token}`);
         }

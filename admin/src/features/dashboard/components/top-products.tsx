@@ -28,7 +28,7 @@ export const TopProducts = ({ products }: TopProductsProps) => {
   const t = useTranslations("AdminDashboard.topProducts");
 
   return (
-    <Card className="flex h-full flex-col gap-0 p-3 shadow-sm">
+    <Card size="compact" className="h-full">
       <div className="border-border/50 flex flex-wrap items-center justify-between gap-4 border-b pb-4">
         <h3 className="text-primary text-xl font-semibold">{t("title")}</h3>
         <Button

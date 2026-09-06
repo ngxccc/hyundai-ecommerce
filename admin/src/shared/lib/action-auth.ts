@@ -41,9 +41,18 @@ export const getActionErrorMessage = (
   if (isDomainError(error)) {
     return t(error.translationKey);
   }
-  if (error instanceof Error && error.message.startsWith("errors.")) {
-    const key = error.message.replace("errors.", "");
-    return t(key);
+  if (error instanceof Error) {
+    if (error.message.startsWith("errors.")) {
+      const key = error.message.replace("errors.", "");
+      return t(key);
+    }
+    if (
+      error.message &&
+      !error.message.startsWith("Failed to ") &&
+      !error.message.includes("fetch failed")
+    ) {
+      return error.message;
+    }
   }
   return t(fallbackKey);
 };

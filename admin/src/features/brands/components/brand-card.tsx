@@ -10,7 +10,7 @@ import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
 import type { AdminBrand } from "@/types/api";
 
-import { isCloudinaryUrl } from "@/shared/utils";
+import { canUseCldImage } from "@/shared/utils";
 
 import { DeleteBrandButton } from "./delete-brand-button";
 
@@ -23,7 +23,7 @@ export const BrandCard = ({ brand }: { brand: AdminBrand }) => {
     : "https://placehold.co/400x300/png?text=No+Image";
 
   return (
-    <Card className="group relative flex flex-col gap-0 p-3 shadow-sm">
+    <Card size="compact" className="group relative">
       <div className="absolute top-4 right-4 z-10">
         <Badge
           variant="secondary"
@@ -38,7 +38,7 @@ export const BrandCard = ({ brand }: { brand: AdminBrand }) => {
       </div>
 
       <div className="bg-muted relative mb-4 aspect-4/3 overflow-hidden rounded-lg">
-        {isCloudinaryUrl(image) ? (
+        {canUseCldImage(image) ? (
           <CldImage
             src={image}
             alt={brand.name}
@@ -52,6 +52,7 @@ export const BrandCard = ({ brand }: { brand: AdminBrand }) => {
             alt={brand.name}
             width={400}
             height={300}
+            unoptimized
             className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
           />
         )}

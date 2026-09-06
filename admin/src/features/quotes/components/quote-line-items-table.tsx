@@ -32,7 +32,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { isCloudinaryUrl } from "@/shared/utils";
+import { canUseCldImage } from "@/shared/utils";
 import { ProductSearchModal } from "./product-search-modal";
 import {
   useQuoteDraftStore,
@@ -106,8 +106,8 @@ export const QuoteLineItemsTable = () => {
       <Card className="border-border border shadow-xs">
         <CardHeader className="bg-muted/20 flex flex-row flex-wrap items-center justify-between gap-4 border-b p-4 pb-3">
           <div>
-            <CardTitle className="flex items-center gap-2 text-base font-semibold">
-              <Package className="text-primary h-4 w-4" />
+            <CardTitle>
+              <Package />
               {translate("composer.items.title")}
               <Badge variant="secondary" className="px-1.5 font-mono text-xs">
                 {items.length}
@@ -213,7 +213,7 @@ export const QuoteLineItemsTable = () => {
                       <TableCell>
                         <div className="flex items-start gap-2.5">
                           <div className="bg-muted relative h-10 w-10 shrink-0 overflow-hidden rounded-md border">
-                            {item.image && isCloudinaryUrl(item.image) ? (
+                            {item.image && canUseCldImage(item.image) ? (
                               <CldImage
                                 src={item.image}
                                 alt={item.itemName}
@@ -227,6 +227,7 @@ export const QuoteLineItemsTable = () => {
                                 alt={item.itemName}
                                 width={40}
                                 height={40}
+                                unoptimized
                                 className="h-full w-full object-cover"
                               />
                             ) : (

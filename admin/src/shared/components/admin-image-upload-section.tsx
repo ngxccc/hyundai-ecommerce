@@ -9,15 +9,14 @@ import {
 } from "react";
 import { Image as ImageIcon, Link as LinkIcon, Plus, X } from "lucide-react";
 import { useDropzone, type Accept } from "react-dropzone";
-import { CldImage } from "next-cloudinary";
 import Image from "next/image";
+import { CldImage } from "next-cloudinary";
+import { canUseCldImage } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-
-import { isCloudinaryUrl } from "@/shared/utils";
 
 export type AdminImageItem = string | File;
 
@@ -58,7 +57,7 @@ const PreviewImage = ({ item }: { item: AdminImageItem }) => {
     return null;
   }
 
-  return isCloudinaryUrl(previewUrl) ? (
+  return canUseCldImage(previewUrl) ? (
     <CldImage
       src={previewUrl}
       alt="Preview"
@@ -71,6 +70,7 @@ const PreviewImage = ({ item }: { item: AdminImageItem }) => {
       src={previewUrl}
       alt="Preview"
       fill
+      unoptimized
       sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
       className="h-full w-full object-cover"
     />
@@ -200,14 +200,14 @@ export const AdminImageUploadSection = ({
     typeof maxImages === "number" && Boolean(limitReachedMessage);
 
   return (
-    <Card className={cardClassName ?? "gap-4 py-4 shadow-sm"}>
-      <CardHeader className="border-b px-4 pb-1!">
-        <CardTitle className="text-primary flex items-center gap-2 text-lg">
-          <ImageIcon className="text-primary h-5 w-5" />
+    <Card size="dense" className={cardClassName}>
+      <CardHeader bordered size="dense">
+        <CardTitle size="lg">
+          <ImageIcon />
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4 px-4">
+      <CardContent size="dense">
         {enableFileUpload ? (
           <div
             {...getRootProps()}

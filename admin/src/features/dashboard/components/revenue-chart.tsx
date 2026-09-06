@@ -54,7 +54,7 @@ export const RevenueChart = ({ data }: RevenueChartProps) => {
     "0",
   ];
   return (
-    <Card className="flex h-full flex-col p-3 shadow-sm">
+    <Card size="compact" className="h-full">
       <div className="border-border/50 mb-6 flex flex-wrap items-center justify-between gap-4 border-b pb-4">
         <h3 className="text-primary text-xl font-semibold">{t("title")}</h3>
         <div className="flex gap-2">

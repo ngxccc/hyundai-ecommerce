@@ -41,6 +41,24 @@ export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
 
 // Product Validators
+export const specItemSchema = z.object({
+  key: z.string().min(1),
+  nameVi: z.string().min(1),
+  nameEn: z.string().nullish(),
+  value: z.string(),
+  unit: z.string().nullish(),
+});
+
+export const specGroupSchema = z.object({
+  groupKey: z.string().min(1),
+  titleVi: z.string().min(1),
+  titleEn: z.string().nullish(),
+  order: z.number().default(0),
+  items: z.array(specItemSchema).default([]),
+});
+
+export const productSpecSheetSchema = z.array(specGroupSchema);
+
 export const productSpecsSchema = z
   .object({
     model: z.string().optional(),
@@ -65,12 +83,51 @@ export const createProductSchema = z.object({
   descriptionEn: z.unknown().nullable().optional(),
   shortDescriptionVi: z.string().nullable().optional(),
   shortDescriptionEn: z.string().nullable().optional(),
-  images: z.array(z.string()).default([]),
-  brandId: z.string().nullable().optional(),
-  categoryId: z.string().nullable().optional(),
+  images: z.array(z.string()).min(1, "validation.imagesRequired"),
+  brandId: z.string().min(1, "validation.brandRequired"),
+  categoryId: z.string().min(1, "validation.categoryRequired"),
+  productType: z
+    .enum(["generator", "ups", "ats", "accessory"])
+    .default("generator"),
+  powerKva: z.union([z.string(), z.number()]).nullable().optional(),
+  powerKw: z.union([z.string(), z.number()]).nullable().optional(),
+  standbyPowerKva: z.union([z.string(), z.number()]).nullable().optional(),
+  standbyPowerKw: z.union([z.string(), z.number()]).nullable().optional(),
+  phase: z.enum(["1phase", "3phase", "multi_phase"]).nullable().optional(),
+  voltage: z.string().nullable().optional(),
+  frequency: z
+    .union([z.string(), z.number()])
+    .nullable()
+    .optional()
+    .default(50),
+  fuelType: z.enum(["diesel", "gasoline", "gas"]).nullable().optional(),
+  canopyType: z
+    .enum([
+      "silent",
+      "super_silent",
+      "open_frame",
+      "closed_case",
+      "tower",
+      "rackmount",
+    ])
+    .nullable()
+    .optional(),
+  startMethod: z
+    .enum(["electric", "recoil", "remote", "auto_ats"])
+    .nullable()
+    .optional(),
+  engineBrand: z.string().nullable().optional(),
+  alternatorBrand: z.string().nullable().optional(),
+  upsTopology: z
+    .enum(["offline", "line_interactive", "online_double_conversion"])
+    .nullable()
+    .optional(),
+  upsBatteryType: z.enum(["internal", "external"]).nullable().optional(),
+  specSheet: productSpecSheetSchema.default([]),
   specs: productSpecsSchema.nullable().optional(),
   totalStockCache: z.coerce.number().default(0),
   isQuoteOnly: z.boolean().default(false),
+  isActive: z.boolean().default(true),
 });
 
 export const updateProductSchema = createProductSchema.partial();

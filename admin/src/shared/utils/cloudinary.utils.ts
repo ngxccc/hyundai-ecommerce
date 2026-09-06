@@ -26,3 +26,14 @@ export const isCloudinaryUrl = (url: string | null | undefined): boolean => {
     return false;
   }
 };
+
+export const isCloudinaryConfigured = (): boolean => {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  return Boolean(
+    cloudName && cloudName !== "dummy-cloud" && cloudName.trim().length > 0,
+  );
+};
+
+export const canUseCldImage = (url: string | null | undefined): boolean => {
+  return isCloudinaryConfigured() && isCloudinaryUrl(url);
+};

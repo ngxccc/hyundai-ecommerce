@@ -107,8 +107,8 @@ export const ShippingBidPanel = ({ order }: ShippingBidPanelProps) => {
   return (
     <Card className="border-dashed">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Truck className="text-muted-foreground h-5 w-5" />
+        <CardTitle>
+          <Truck className="text-muted-foreground" />
           {t("shippingBidsTitle")}
         </CardTitle>
         <CardDescription>{t("shippingBidsDescription")}</CardDescription>

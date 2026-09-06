@@ -26,7 +26,7 @@ import {
   type CreateWarehouseInput,
   createWarehouseSchema,
 } from "@/shared/validators";
-import { Save, Loader2, X } from "lucide-react";
+import { Save, Loader2, X, Warehouse } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const WarehouseForm = ({
@@ -115,13 +115,17 @@ export const WarehouseForm = ({
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">
+          <Card size="dense">
+            <CardHeader bordered size="dense">
+              <CardTitle size="lg">
+                <Warehouse />
                 {t("sections.general")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <CardContent
+              size="dense"
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+            >
               <FormField
                 control={form.control}
                 name="name"

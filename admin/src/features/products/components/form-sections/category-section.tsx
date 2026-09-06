@@ -33,14 +33,14 @@ export const ProductCategorySection = ({
   const t = useTranslations("AdminProductForm");
 
   return (
-    <Card className="py-4 shadow-sm">
-      <CardHeader className="border-b px-4 pb-1!">
-        <CardTitle className="text-primary flex items-center gap-2 text-lg">
-          <Tag className="text-primary h-5 w-5" />
+    <Card size="dense" collapsible defaultOpen={true}>
+      <CardHeader bordered size="dense">
+        <CardTitle size="lg">
+          <Tag />
           {t("fields.categoryGroup")}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4 px-4">
+      <CardContent size="dense">
         <FormField
           control={form.control}
           name="categoryId"
@@ -50,11 +50,8 @@ export const ProductCategorySection = ({
             field: ControllerRenderProps<CreateProductInput, "categoryId">;
           }) => (
             <FormItem>
-              <FormLabel>{t("fields.category")}</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value ?? ""}
-              >
+              <FormLabel required>{t("fields.category")}</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue
@@ -88,11 +85,8 @@ export const ProductCategorySection = ({
             field: ControllerRenderProps<CreateProductInput, "brandId">;
           }) => (
             <FormItem>
-              <FormLabel>{t("fields.brand")}</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value ?? ""}
-              >
+              <FormLabel required>{t("fields.brand")}</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder={t("fields.brandPlaceholder")} />

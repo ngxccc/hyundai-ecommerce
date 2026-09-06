@@ -33,8 +33,8 @@ export const CommercialTermsEditor = () => {
   return (
     <Card className="border-border border shadow-xs">
       <CardHeader className="bg-muted/20 border-b p-4 pb-3">
-        <CardTitle className="flex items-center gap-2 text-base font-semibold">
-          <FileText className="text-primary h-4 w-4" />
+        <CardTitle>
+          <FileText />
           {translate("composer.terms.title")}
         </CardTitle>
         <CardDescription className="text-xs">

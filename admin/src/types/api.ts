@@ -43,6 +43,8 @@ export interface ApiProblemDetails {
 
 // Domain Entity Response DTOs
 export type AdminProduct = ApiSchemas["ProductResponseDto"];
+export type AdminCreateProduct = ApiSchemas["CreateProductDto"];
+export type AdminUpdateProduct = ApiSchemas["UpdateProductDto"];
 export type AdminCategory = ApiSchemas["CategoryResponseDto"];
 export type AdminBrand = ApiSchemas["BrandResponseDto"];
 export type AdminWarehouse = ApiSchemas["WarehouseResponseDto"];
@@ -72,3 +74,6 @@ export type ProductPhase = ProductQueryParams["phase"];
 export type ProductFuelType = ProductQueryParams["fuelType"];
 export type ProductCanopyType = ProductQueryParams["canopyType"];
 export type ProductSort = ProductQueryParams["sort"];
+
+// Spec Sheet Types
+export * from "./product-spec";

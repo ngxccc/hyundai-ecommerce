@@ -160,7 +160,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
       {/* Left side (Timeline Stepper & Items list) */}
       <div className="flex flex-col gap-6 lg:col-span-2">
         {/* Stepper Card */}
-        <Card className="border-border bg-card flex flex-col gap-6 border p-4 shadow-sm">
+        <Card className="p-4">
           <div className="border-border flex items-center justify-between border-b pb-4">
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
@@ -337,7 +337,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
         </Card>
 
         {/* Order Items Table Card */}
-        <Card className="border-border bg-card gap-0 overflow-hidden border py-0 shadow-sm">
+        <Card size="compact" className="overflow-hidden p-0">
           <div className="border-border bg-card/50 border-b px-6 py-4">
             <h3 className="text-lg font-bold">{t("orderItems")}</h3>
           </div>
@@ -421,7 +421,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
         {/* Cash Payment Verification Card */}
         {order.paymentMethod === "CASH" &&
           order.paymentStatus !== "FULLY_PAID" && (
-            <Card className="border-border bg-card flex flex-col gap-4 border p-4 shadow-sm">
+            <Card size="dense" className="p-4">
               <div className="flex flex-col gap-1">
                 <h4 className="flex items-center gap-1.5 text-base font-bold text-amber-950 dark:text-amber-400">
                   <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400" />
@@ -452,7 +452,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
             </Card>
           )}
         {/* Buyer Portfolio Card */}
-        <Card className="border-border bg-card flex flex-col gap-6 border p-4 shadow-sm">
+        <Card className="p-4">
           <div className="border-border flex items-center gap-2 border-b pb-4">
             <User className="text-muted-foreground h-5 w-5" />
             <h3 className="text-lg font-bold">{t("buyerInfo")}</h3>
@@ -505,7 +505,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
         </Card>
 
         {/* Shipping Address Card */}
-        <Card className="border-border bg-card flex flex-col gap-6 border p-4 shadow-sm">
+        <Card className="p-4">
           <div className="border-border flex items-center gap-2 border-b pb-4">
             <MapPin className="text-muted-foreground h-5 w-5" />
             <h3 className="text-lg font-bold">{t("shippingAddress")}</h3>
@@ -518,7 +518,7 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
         </Card>
 
         {/* Invoice Generator Card */}
-        <Card className="border-border bg-card flex flex-col gap-4 border p-4 shadow-sm">
+        <Card size="dense" className="p-4">
           <div className="flex flex-col gap-1">
             <h4 className="text-base font-bold">{t("invoiceCardTitle")}</h4>
             <p className="text-muted-foreground text-xs">

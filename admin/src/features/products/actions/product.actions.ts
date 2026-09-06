@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { api } from "@/lib/api-client";
+import type { AdminCreateProduct, AdminUpdateProduct } from "@/types/api";
 import {
   createProductSchema,
   updateProductSchema,
@@ -24,6 +25,174 @@ import {
   deleteFromCloudinary,
   validateUploadedFile,
 } from "@/shared/services";
+
+function parseOptionalNumber(
+  val: string | number | null | undefined,
+): number | undefined {
+  if (val === null || val === undefined) return undefined;
+  if (typeof val === "number") return isNaN(val) ? undefined : val;
+  const cleaned = String(val).replace(/,/g, "").trim();
+  if (!cleaned) return undefined;
+  const num = Number(cleaned);
+  return isNaN(num) ? undefined : num;
+}
+
+function toTipTapJson(
+  content: unknown,
+): AdminCreateProduct["descriptionVi"] | undefined {
+  if (!content) return undefined;
+  if (typeof content === "object") {
+    return content as unknown as AdminCreateProduct["descriptionVi"];
+  }
+  if (typeof content === "string") {
+    const trimmed = content.trim();
+    if (!trimmed) return undefined;
+    try {
+      const parsed: unknown = JSON.parse(trimmed);
+      if (typeof parsed === "object" && parsed !== null) {
+        return parsed as unknown as AdminCreateProduct["descriptionVi"];
+      }
+    } catch {
+      // Plain text, wrap into standard TipTap JSONContent structure
+    }
+    const paragraphs = trimmed.split("\n\n").filter(Boolean);
+    if (paragraphs.length === 0) return undefined;
+    return {
+      type: "doc",
+      content: paragraphs.map((p) => ({
+        type: "paragraph",
+        content: [{ type: "text", text: p.trim() }],
+      })),
+    } as unknown as AdminCreateProduct["descriptionVi"];
+  }
+  return undefined;
+}
+
+function toCreateProductDto(input: CreateProductInput): AdminCreateProduct {
+  const rawPrice =
+    typeof input.price === "string"
+      ? Number(input.price.replace(/[.,]/g, "").trim())
+      : Number(input.price);
+  return {
+    nameVi: input.nameVi.trim(),
+    nameEn: input.nameEn?.trim() ? input.nameEn.trim() : undefined,
+    slug: input.slug.trim(),
+    price: isNaN(rawPrice) ? 0 : rawPrice,
+    descriptionVi: toTipTapJson(input.descriptionVi),
+    descriptionEn: toTipTapJson(input.descriptionEn),
+    shortDescriptionVi: input.shortDescriptionVi?.trim()
+      ? input.shortDescriptionVi.trim()
+      : undefined,
+    shortDescriptionEn: input.shortDescriptionEn?.trim()
+      ? input.shortDescriptionEn.trim()
+      : undefined,
+    images: input.images,
+    brandId: input.brandId.trim() ? input.brandId.trim() : undefined,
+    categoryId: input.categoryId.trim() ? input.categoryId.trim() : undefined,
+    productType: input.productType,
+    powerKva: parseOptionalNumber(input.powerKva),
+    powerKw: parseOptionalNumber(input.powerKw),
+    standbyPowerKva: parseOptionalNumber(input.standbyPowerKva),
+    standbyPowerKw: parseOptionalNumber(input.standbyPowerKw),
+    phase: input.phase ?? undefined,
+    voltage: input.voltage?.trim() ? input.voltage.trim() : undefined,
+    frequency: parseOptionalNumber(input.frequency) ?? 50,
+    fuelType: input.fuelType ?? undefined,
+    canopyType: input.canopyType ?? undefined,
+    startMethod: input.startMethod ?? undefined,
+    engineBrand: input.engineBrand?.trim()
+      ? input.engineBrand.trim()
+      : undefined,
+    alternatorBrand: input.alternatorBrand?.trim()
+      ? input.alternatorBrand.trim()
+      : undefined,
+    upsTopology: input.upsTopology ?? undefined,
+    upsBatteryType: input.upsBatteryType ?? undefined,
+    specSheet: input.specSheet as unknown as AdminCreateProduct["specSheet"],
+    specs: (input.specs ?? {}) as AdminCreateProduct["specs"],
+    totalStockCache: input.totalStockCache,
+    isQuoteOnly: input.isQuoteOnly,
+    isActive: input.isActive,
+  };
+}
+
+function toUpdateProductDto(input: UpdateProductInput): AdminUpdateProduct {
+  const result: AdminUpdateProduct = {};
+
+  if (input.nameVi !== undefined) result.nameVi = input.nameVi.trim();
+  if (input.nameEn !== undefined)
+    result.nameEn = input.nameEn?.trim() ? input.nameEn.trim() : undefined;
+  if (input.slug !== undefined) result.slug = input.slug.trim();
+  if (input.price !== undefined) {
+    const rawPrice =
+      typeof input.price === "string"
+        ? Number(input.price.replace(/[.,]/g, "").trim())
+        : Number(input.price);
+    result.price = isNaN(rawPrice) ? 0 : rawPrice;
+  }
+  if (input.descriptionVi !== undefined)
+    result.descriptionVi = toTipTapJson(input.descriptionVi);
+  if (input.descriptionEn !== undefined)
+    result.descriptionEn = toTipTapJson(input.descriptionEn);
+  if (input.shortDescriptionVi !== undefined)
+    result.shortDescriptionVi = input.shortDescriptionVi?.trim()
+      ? input.shortDescriptionVi.trim()
+      : undefined;
+  if (input.shortDescriptionEn !== undefined)
+    result.shortDescriptionEn = input.shortDescriptionEn?.trim()
+      ? input.shortDescriptionEn.trim()
+      : undefined;
+  if (input.images !== undefined) result.images = input.images;
+  if (input.brandId !== undefined)
+    result.brandId = input.brandId.trim() ? input.brandId.trim() : undefined;
+  if (input.categoryId !== undefined)
+    result.categoryId = input.categoryId.trim()
+      ? input.categoryId.trim()
+      : undefined;
+  if (input.productType !== undefined) result.productType = input.productType;
+  if (input.powerKva !== undefined)
+    result.powerKva = parseOptionalNumber(input.powerKva);
+  if (input.powerKw !== undefined)
+    result.powerKw = parseOptionalNumber(input.powerKw);
+  if (input.standbyPowerKva !== undefined)
+    result.standbyPowerKva = parseOptionalNumber(input.standbyPowerKva);
+  if (input.standbyPowerKw !== undefined)
+    result.standbyPowerKw = parseOptionalNumber(input.standbyPowerKw);
+  if (input.phase !== undefined) result.phase = input.phase ?? undefined;
+  if (input.voltage !== undefined)
+    result.voltage = input.voltage?.trim() ? input.voltage.trim() : undefined;
+  if (input.frequency !== undefined)
+    result.frequency = parseOptionalNumber(input.frequency) ?? 50;
+  if (input.fuelType !== undefined)
+    result.fuelType = input.fuelType ?? undefined;
+  if (input.canopyType !== undefined)
+    result.canopyType = input.canopyType ?? undefined;
+  if (input.startMethod !== undefined)
+    result.startMethod = input.startMethod ?? undefined;
+  if (input.engineBrand !== undefined)
+    result.engineBrand = input.engineBrand?.trim()
+      ? input.engineBrand.trim()
+      : undefined;
+  if (input.alternatorBrand !== undefined)
+    result.alternatorBrand = input.alternatorBrand?.trim()
+      ? input.alternatorBrand.trim()
+      : undefined;
+  if (input.upsTopology !== undefined)
+    result.upsTopology = input.upsTopology ?? undefined;
+  if (input.upsBatteryType !== undefined)
+    result.upsBatteryType = input.upsBatteryType ?? undefined;
+  if (input.specSheet !== undefined)
+    result.specSheet = (input.specSheet ??
+      []) as unknown as AdminUpdateProduct["specSheet"];
+  if (input.specs !== undefined)
+    result.specs = (input.specs ?? {}) as AdminUpdateProduct["specs"];
+  if (input.totalStockCache !== undefined)
+    result.totalStockCache = input.totalStockCache;
+  if (input.isQuoteOnly !== undefined) result.isQuoteOnly = input.isQuoteOnly;
+  if (input.isActive !== undefined) result.isActive = input.isActive;
+
+  return result;
+}
 
 export const createProductAction = async (formData: FormData) => {
   try {
@@ -61,12 +230,20 @@ export const createProductAction = async (formData: FormData) => {
     const { data: createRes, error: createError } = await api.POST(
       "/products",
       {
-        body: validatedData as never,
+        body: toCreateProductDto(validatedData),
       },
     );
     if (createError || !createRes.data) {
-      const errorMsg =
-        createError && "detail" in createError ? createError.detail : undefined;
+      let errorMsg: string | undefined;
+      if (createError && typeof createError === "object") {
+        if ("detail" in createError && typeof createError.detail === "string") {
+          errorMsg = createError.detail;
+        } else if ("message" in createError) {
+          errorMsg = Array.isArray(createError.message)
+            ? createError.message.join(", ")
+            : String(createError.message);
+        }
+      }
       throw new Error(errorMsg ?? "Failed to create product");
     }
     const newProduct = createRes.data;
@@ -86,7 +263,7 @@ export const createProductAction = async (formData: FormData) => {
                 params: { path: { id: newProduct.id } },
                 body: {
                   images: [...validatedData.images, ...uploadedUrls],
-                } as never,
+                },
               });
             }
           } catch (e) {
@@ -168,7 +345,7 @@ export async function updateProductAction(id: string, formData: FormData) {
       "/products/{id}",
       {
         params: { path: { id } },
-        body: validatedData as never,
+        body: toUpdateProductDto(validatedData),
       },
     );
     if (updateError || !updateRes.data) {

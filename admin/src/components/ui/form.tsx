@@ -80,24 +80,31 @@ function FormItem({ className, ...props }: React.ComponentProps<"div">) {
     <FormItemContext.Provider value={{ id }}>
       <div
         data-slot="form-item"
-        className={cn("grid gap-2", className)}
+        className={cn("flex flex-col gap-2", className)}
         {...props}
       />
     </FormItemContext.Provider>
   );
 }
 
-function FormLabel({
-  className,
-  ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+export interface FormLabelProps extends React.ComponentProps<
+  typeof LabelPrimitive.Root
+> {
+  required?: boolean;
+}
+
+function FormLabel({ className, required, ...props }: FormLabelProps) {
   const { error, formItemId } = useFormField();
 
   return (
     <Label
       data-slot="form-label"
       data-error={!!error}
-      className={cn("data-[error=true]:text-destructive", className)}
+      className={cn(
+        "data-[error=true]:text-destructive",
+        required && 'after:text-destructive after:ml-0.5 after:content-["*"]',
+        className,
+      )}
       htmlFor={formItemId}
       {...props}
     />

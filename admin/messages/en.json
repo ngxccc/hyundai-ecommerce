@@ -9,7 +9,7 @@
     "rateLimitExceeded": "Rate limit exceeded. Please wait before trying again.",
     "unauthorized": "Unauthorized access. Admin privileges required.",
     "invalidFolder": "Invalid folder prefix path traversal risk",
-    "fileTooLarge": "File is too large (maximum 10MB)",
+    "fileTooLarge": "File is too large, maximum 10MB",
     "invalidMimeType": "Invalid file type. Only image uploads are allowed.",
     "ssrfDetected": "Invalid upload source URL detected."
   },
@@ -36,7 +36,7 @@
         }
       },
       "imageUpload": {
-        "alt": "Alternative text (Alt)",
+        "alt": "Alternative text",
         "uploading": "Uploading...",
         "cancel": "Cancel",
         "crop": "Crop"
@@ -49,6 +49,7 @@
     }
   },
   "Login": {
+    "metaTitle": "Login to Hyundai Nhat Nang System",
     "title": "Login to <br></br>Hyundai Nhat Nang System",
     "description": "Welcome back! Please sign in to manage your orders and products.",
     "submit": "Login",
@@ -188,8 +189,8 @@
       "quoteOnly": "Quote Only",
       "engineBrand": "Engine Brand...",
       "alternatorBrand": "Alternator Brand...",
-      "minPower": "Min Power (KW)...",
-      "maxPower": "Max Power (KW)...",
+      "minPower": "Min Power (kW)...",
+      "maxPower": "Max Power (kW)...",
       "voltage": "Voltage (V)...",
       "allBrands": "All Brands",
       "allFuels": "All Fuels",
@@ -255,6 +256,10 @@
   "AdminProductForm": {
     "title": "Add New Product",
     "editTitle": "Edit Product",
+    "tabs": {
+      "vi": "Vietnamese",
+      "en": "English"
+    },
     "placeholders": {
       "model": "e.g., DHY8000SE",
       "power": "e.g., 6.0",
@@ -285,8 +290,9 @@
       "price": "Price",
       "pricePlaceholder": "15.000.000",
       "description": "Detailed Description",
+      "descriptionPlaceholder": "Enter detailed product description...",
       "shortDescription": "Short Description",
-      "images": "Images (URLs)",
+      "images": "Images",
       "imagesPlaceholder": "https://...",
       "addImage": "Add Image URL",
       "removeImage": "Remove",
@@ -327,14 +333,79 @@
       "powerFactor": "Power Factor",
       "startingSystem": "Starting System",
       "coolingSystem": "Cooling System",
-      "isQuoteOnly": "Quote Only (Hide Buy button)",
+      "isQuoteOnly": "Quote Only",
       "selectPhase": "Select Phase",
       "selectFuel": "Select Fuel Type",
       "dragDropImage": "Drag and drop images here",
       "orClickToSelect": "or click to select file",
       "orEnterUrl": "Or enter image URL",
       "categoryGroup": "Classification",
-      "noCategoriesFound": "No categories found"
+      "noCategoriesFound": "No categories found",
+      "powerKva": "Prime Power (kVA)",
+      "powerKw": "Prime Power (kW)",
+      "standbyPowerKva": "Standby Power (kVA)",
+      "canopyType": "Canopy Type",
+      "selectCanopy": "Select canopy type",
+      "startMethod": "Start Method",
+      "selectStartMethod": "Select start method",
+      "productType": "Product Type",
+      "selectProductType": "Select product type",
+      "upsTopology": "UPS Topology",
+      "selectTopology": "Select topology",
+      "upsBatteryType": "UPS Battery Type",
+      "selectBattery": "Select battery type",
+      "facetedTitle": "Faceted & Search Attributes",
+      "specSheetTitle": "Detailed Specification Sheet",
+      "selectTemplate": "Select Template...",
+      "addGroup": "Add Spec Group",
+      "deleteGroup": "Delete Group",
+      "groupTitlePlaceholder": "e.g. Engine, Alternator...",
+      "emptySpecSheetTitle": "No specifications added yet",
+      "emptySpecSheetDescription": "Select a template above to autofill or click \"Add Spec Group\" to create custom specs.",
+      "createFirstGroup": "Create First Group",
+      "colParamName": "Parameter Name",
+      "colParamValue": "Value",
+      "colParamUnit": "Unit",
+      "colParamDelete": "Delete",
+      "paramNamePlaceholder": "e.g. Prime Power",
+      "paramValuePlaceholder": "e.g. 50 or Cummins",
+      "paramUnitPlaceholder": "e.g. kVA, kW...",
+      "addItem": "Add spec to this group"
+    },
+    "templateOptions": {
+      "industrial_diesel": "Industrial Diesel Generator 1500rpm",
+      "diesel_standby": "Standby Diesel Generator 3000rpm",
+      "gasoline_portable": "Portable Gasoline Generator",
+      "ups_online": "Online Double Conversion UPS"
+    },
+    "productTypeOptions": {
+      "generator": "Generator",
+      "ups": "Uninterruptible Power Supply",
+      "ats": "ATS / Electrical Panel",
+      "accessory": "Accessories & Spare Parts"
+    },
+    "canopyOptions": {
+      "silent": "Soundproof",
+      "super_silent": "Super Silent",
+      "open_frame": "Open Frame",
+      "closed_case": "Closed Case",
+      "tower": "Tower",
+      "rackmount": "Rackmount"
+    },
+    "startOptions": {
+      "electric": "Electric Start",
+      "recoil": "Recoil Start",
+      "remote": "Remote Start",
+      "auto_ats": "Auto ATS"
+    },
+    "topologyOptions": {
+      "online_double_conversion": "Online Double Conversion",
+      "line_interactive": "Line-Interactive",
+      "offline": "Offline"
+    },
+    "batteryOptions": {
+      "internal": "Internal Battery",
+      "external": "External Battery"
     },
     "categoryOptions": {
       "diesel": "Diesel Generator",
@@ -348,7 +419,8 @@
     },
     "phaseOptions": {
       "1phase": "1 Phase",
-      "3phase": "3 Phase"
+      "3phase": "3 Phase",
+      "multi_phase": "Multi-Phase"
     },
     "buttons": {
       "submit": "Save Product",
@@ -365,6 +437,10 @@
       "nameRequired": "Product name is required",
       "slugRequired": "URL slug is required",
       "priceRequired": "Price is required",
+      "categoryRequired": "Please select a category",
+      "brandRequired": "Please select a brand",
+      "imagesRequired": "Please upload at least 1 image",
+      "powerKvaRequired": "Please enter power rating (kVA)",
       "invalidUrl": "Must be a valid URL",
       "invalidBrand": "Invalid brand selected",
       "invalidCategory": "Invalid category selected",
@@ -458,7 +534,7 @@
       "image": "https://..."
     },
     "labels": {
-      "none": "None (Root)"
+      "none": "None"
     },
     "messages": {
       "successCreate": "Category created successfully",
@@ -877,9 +953,9 @@
     "invoiceTableNo": "No.",
     "invoiceSubtotal": "Subtotal",
     "invoiceBuyerSign": "Người mua hàng / Customer",
-    "invoiceBuyerSignDesc": "(Ký, ghi rõ họ tên / Signature)",
+    "invoiceBuyerSignDesc": "Signature and full name",
     "invoiceSellerSign": "Người bán hàng / Seller representative",
-    "invoiceSellerSignDesc": "(Ký, đóng dấu / Authorized seal)",
+    "invoiceSellerSignDesc": "Signature and stamp",
     "accountOwner": "Account Owner",
     "corporateEntity": "Corporate Entity",
     "contactPhone": "Contact Phone",
@@ -917,7 +993,7 @@
     "shippingBidsQuotedPriceRequired": "Quoted price is required and must be positive",
     "shippingBidsDescription": "Manage carrier bidding profiles for this order.",
     "shippingBidsPending": "Pending Approval",
-    "shippingBidsNotePlaceholder": "Additional note (optional)"
+    "shippingBidsNotePlaceholder": "Additional note..."
   },
   "AdminQuotes": {
     "title": "B2B Quotes detail workspace",
@@ -956,7 +1032,7 @@
     "statusChangeSuccess": "Quote status updated successfully",
     "convertSuccess": "Quote approved and converted to order successfully",
     "placeholderAgreedPrice": "Enter agreed price",
-    "exportExcel": "Export Excel (.xlsx)",
+    "exportExcel": "Export Excel",
     "exportExcelSuccess": "Quote Excel spreadsheet exported successfully!",
     "exportExcelError": "Failed to export quote Excel file. Please retry.",
     "timelineSystem": "SYSTEM",
@@ -969,7 +1045,7 @@
     "searchModal": {
       "title": "Search Products for Quote",
       "description": "Quickly search by generator name, model, power rating, or slug to add line items.",
-      "inputPlaceholder": "Enter model name (e.g. DHY12500SE, HY3200, 10kVA)...",
+      "inputPlaceholder": "e.g. DHY12500SE, HY3200, 10kVA...",
       "searching": "Searching products...",
       "inStock": "{count} in stock",
       "outOfStock": "Out of Stock / Pre-order",
@@ -1003,7 +1079,7 @@
       },
       "items": {
         "title": "Line Items & Products",
-        "description": "Add generator models from stock or auxiliary items (ATS panels, cabling, labor).",
+        "description": "Add generator models from stock or auxiliary items such as ATS panels, cabling, labor.",
         "addCustomItem": "Add Custom Item",
         "searchCatalog": "Search Generator Catalog",
         "customTag": "Custom",
@@ -1050,10 +1126,10 @@
         "totalItems": "Line Items",
         "lineItemsUnit": "items",
         "unitsCount": "units",
-        "subtotal": "Subtotal (Excl. Tax)",
+        "subtotal": "Subtotal Excl. Tax",
         "vat": "VAT Tax Amount",
         "grandTotal": "TOTAL QUOTE AMOUNT",
-        "vatInclusiveNotice": "(VAT inclusive)",
+        "vatInclusiveNotice": "VAT inclusive",
         "submitButton": "Create & Save Quote",
         "submitting": "Creating formal quote...",
         "resetDraftButton": "Clear Quote Draft",
@@ -1091,8 +1167,8 @@
       "colUnitPrice": "Unit Price (VND)",
       "colDiscount": "Disc. (%)",
       "colTotal": "Total (VND)",
-      "subtotal": "Subtotal (Excl. VAT)",
-      "vat": "Value Added Tax (VAT)",
+      "subtotal": "Subtotal Excl. VAT",
+      "vat": "Value Added Tax",
       "grandTotal": "TOTAL QUOTED AMOUNT",
       "amountInWords": "Amount in words",
       "commercialTermsTitle": "COMMERCIAL TERMS & TECHNICAL WARRANTY",
@@ -1104,8 +1180,8 @@
       "customerRepresentative": "Customer Representative",
       "companyRepresentative": "Authorized Representative",
       "directorTitle": "DIRECTOR / LEGAL REPRESENTATIVE",
-      "signAndStamp": "(Sign, full name and stamp)",
-      "signFullName": "(Sign and full name)",
+      "signAndStamp": "Sign, full name and stamp",
+      "signFullName": "Sign and full name",
       "toggleAppendix": "Include detailed technical appendix",
       "techAppendixTitle": "APPENDIX: STANDARD TECHNICAL SPECIFICATIONS & DATASHEET",
       "attachedToQuote": "Attached to Quotation No",

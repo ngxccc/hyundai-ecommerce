@@ -48,7 +48,7 @@ export const CustomerDirectory = ({ initialUsers }: CustomerDirectoryProps) => {
 
       {/* Users Table */}
       <Card>
-        <CardContent className="p-0">
+        <CardContent size="compact">
           <Table>
             <TableHeader>
               <TableRow>

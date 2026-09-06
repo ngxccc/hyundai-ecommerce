@@ -139,8 +139,8 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <DollarSign className="h-5 w-5 text-green-600" />
+        <CardTitle>
+          <DollarSign className="text-green-600" />
           {t("pricingCockpit")}
         </CardTitle>
         <CardDescription>{t("description")}</CardDescription>

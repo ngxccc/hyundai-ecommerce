@@ -7,11 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
+import { canUseCldImage } from "@/shared/utils";
 import { Link, useRouter } from "@/i18n/routing";
 import { toast } from "@/components/ui/sonner";
 import type { ProductGridItem } from "../product-form-types";
 import { DeleteProductButton } from "./delete-product-button";
-import { isCloudinaryUrl } from "@/shared/utils";
 import { useQuoteDraftStore } from "@/features/quotes/stores";
 export const ProductCard = ({ product }: { product: ProductGridItem }) => {
   const t = useTranslations("AdminProducts.card");
@@ -47,7 +47,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
     );
   };
   return (
-    <Card className="group relative flex flex-col gap-0 p-3 shadow-sm">
+    <Card size="compact" className="group relative">
       <div className="absolute top-4 right-4 z-10">
         <Badge
           variant="secondary"
@@ -62,7 +62,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
       </div>
 
       <div className="bg-muted relative mb-4 aspect-4/3 overflow-hidden rounded-lg">
-        {isCloudinaryUrl(image) ? (
+        {canUseCldImage(image) ? (
           <CldImage
             src={image}
             alt={product.nameVi}
@@ -76,6 +76,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
             alt={product.nameVi}
             width={400}
             height={300}
+            unoptimized
             className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
           />
         )}

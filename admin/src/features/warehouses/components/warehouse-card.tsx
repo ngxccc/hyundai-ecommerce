@@ -16,7 +16,10 @@ export const WarehouseCard = ({ warehouse }: { warehouse: AdminWarehouse }) => {
   const status = warehouse.isActive ? "active" : "inactive";
 
   return (
-    <Card className="group relative flex flex-col gap-0 px-4 py-2 shadow-sm transition-shadow hover:shadow-md">
+    <Card
+      size="compact"
+      className="group relative px-4 py-2 transition-shadow hover:shadow-md"
+    >
       <div className="absolute top-4 right-4 z-10">
         <Badge
           variant="secondary"

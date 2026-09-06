@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/sonner";
-import { isCloudinaryUrl } from "@/shared/utils";
+import { canUseCldImage } from "@/shared/utils";
 import type { AdminProduct } from "@/types/api";
 import { searchProductsAction } from "@/features/products/actions";
 import { useQuoteDraftStore } from "../stores/quote-draft.store";
@@ -175,7 +175,7 @@ export const ProductSearchModal = ({
                 >
                   <div className="flex min-w-0 items-center gap-3">
                     <div className="bg-muted relative h-14 w-14 shrink-0 overflow-hidden rounded-md border">
-                      {image && isCloudinaryUrl(image) ? (
+                      {image && canUseCldImage(image) ? (
                         <CldImage
                           src={image}
                           alt={product.nameVi}
@@ -189,6 +189,7 @@ export const ProductSearchModal = ({
                           alt={product.nameVi}
                           width={56}
                           height={56}
+                          unoptimized
                           className="h-full w-full object-cover"
                         />
                       ) : (

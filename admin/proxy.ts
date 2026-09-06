@@ -2,6 +2,11 @@ import { routing } from "@/i18n/routing";
 import { checkRateLimitWithQueue } from "@/shared/lib/rate-limiter";
 import { HTTP_STATUS } from "@/shared/constants";
 import { parseSessionFromCookieStore } from "@/shared/lib/session";
+import { isJwtExpired } from "@/shared/lib/jwt";
+import {
+  rotateAdminToken,
+  type RotatedTokens,
+} from "@/shared/lib/token-refresh";
 import type { Locale } from "next-intl";
 import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
@@ -69,8 +74,26 @@ export async function proxy(request: NextRequest) {
     return applySecurityHeaders(NextResponse.redirect(url));
   };
 
-  const session = parseSessionFromCookieStore(request.cookies);
-  const user = session?.user ?? null;
+  let session = parseSessionFromCookieStore(request.cookies);
+  let user = session?.user ?? null;
+  const refreshToken =
+    request.cookies.get("adminRefreshToken")?.value ??
+    request.cookies.get("refreshToken")?.value;
+
+  let newTokens: RotatedTokens | null = null;
+
+  // Silent Token Rotation: If access token is expired/missing but refresh token exists
+  if ((!session || isJwtExpired(session.accessToken)) && refreshToken) {
+    newTokens = await rotateAdminToken(refreshToken);
+    if (newTokens) {
+      request.cookies.set("adminAccessToken", newTokens.accessToken);
+      request.cookies.set("adminRefreshToken", newTokens.refreshToken);
+      session = parseSessionFromCookieStore(request.cookies);
+      user = session?.user ?? null;
+    } else {
+      user = null;
+    }
+  }
 
   const allowedRoles = ["ADMIN", "SALES"];
   const isAdmin = user && allowedRoles.includes(user.role);
@@ -80,13 +103,34 @@ export async function proxy(request: NextRequest) {
     if (isAuthRoute && isAdmin)
       return redirect(pathname.replace(/\/login$/, "") || "/");
   } else {
-    if (!isPublicRoute) return redirect(`/${locale}/login`);
+    if (!isPublicRoute) {
+      const redirectRes = redirect(`/${locale}/login`);
+      redirectRes.cookies.delete("adminAccessToken");
+      redirectRes.cookies.delete("adminRefreshToken");
+      redirectRes.cookies.delete("adminUser");
+      return redirectRes;
+    }
   }
 
   const response = handleI18nRouting(request);
+  if (newTokens) {
+    response.cookies.set("adminAccessToken", newTokens.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 604800,
+    });
+    response.cookies.set("adminRefreshToken", newTokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 2592000,
+    });
+  }
   return applySecurityHeaders(response);
 }
-
 export const config = {
   matcher: [
     "/(vi|en)/:path*",

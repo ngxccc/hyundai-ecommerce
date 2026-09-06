@@ -62,12 +62,12 @@ export default async function ProductInventoryPage({
             </div>
           </div>
 
-          <Card className="py-4">
-            <CardHeader className="px-4">
+          <Card size="dense">
+            <CardHeader size="dense">
               <CardTitle>{t("tableTitle")}</CardTitle>
               <CardDescription>{t("tableDescription")}</CardDescription>
             </CardHeader>
-            <CardContent className="px-4">
+            <CardContent size="dense">
               <ProductInventoryTable
                 productId={product.id}
                 warehouses={warehouses}

@@ -239,10 +239,7 @@ export const OrderList = ({ orders }: OrderListProps) => {
           {/* Mobile Cards Grid View */}
           <div className="grid grid-cols-1 gap-4 md:hidden">
             {orders.map((order) => (
-              <Card
-                key={order.id}
-                className="border-border bg-card flex flex-col gap-4 border p-4 shadow-sm"
-              >
+              <Card key={order.id} size="dense" className="p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground font-mono text-xs font-bold">
                     #{order.id.slice(0, 8)}...

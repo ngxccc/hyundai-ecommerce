@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { translatedZodResolver } from "@/shared/lib/validation-resolver";
 import { useTranslations } from "next-intl";
@@ -18,11 +18,11 @@ import {
   type CreateProductInput,
   createProductSchema,
 } from "@/shared/validators";
-import { isCloudinaryUrl } from "@/shared/utils";
 
 import {
   ProductGeneralInfo,
-  ProductTechnicalSpecs,
+  FacetedSpecs,
+  SpecSheetEditor,
   ProductCategorySection,
   ProductDescriptionSection,
 } from "./form-sections";
@@ -49,6 +49,7 @@ export const ProductForm = ({
       ? initialData.images
       : [],
   );
+
   const emptyFormValues = {
     nameVi: "",
     nameEn: "",
@@ -59,9 +60,26 @@ export const ProductForm = ({
     shortDescriptionVi: "",
     shortDescriptionEn: "",
     images: [],
-    brandId: null,
-    categoryId: null,
+    brandId: "",
+    categoryId: "",
+    productType: "generator",
+    powerKva: "",
+    powerKw: "",
+    standbyPowerKva: "",
+    standbyPowerKw: "",
+    phase: null,
+    voltage: "",
+    frequency: 50,
+    fuelType: null,
+    canopyType: null,
+    startMethod: null,
+    engineBrand: "",
+    alternatorBrand: "",
+    upsTopology: null,
+    upsBatteryType: null,
+    specSheet: [],
     isQuoteOnly: false,
+    isActive: true,
     totalStockCache: 0,
     specs: {},
   } satisfies CreateProductInput;
@@ -80,33 +98,59 @@ export const ProductForm = ({
       shortDescriptionVi: initialData?.shortDescriptionVi ?? "",
       shortDescriptionEn: initialData?.shortDescriptionEn ?? "",
       images: initialData?.images ?? [],
-      brandId: initialData?.brandId ?? null,
-      categoryId: initialData?.categoryId ?? null,
+      brandId: initialData?.brandId ?? "",
+      categoryId: initialData?.categoryId ?? "",
+      productType: initialData?.productType ?? "generator",
+      powerKva: initialData?.powerKva ?? "",
+      powerKw: initialData?.powerKw ?? "",
+      standbyPowerKva: initialData?.standbyPowerKva ?? "",
+      standbyPowerKw: initialData?.standbyPowerKw ?? "",
+      phase: initialData?.phase ?? null,
+      voltage: initialData?.voltage ?? "",
+      frequency: initialData?.frequency ?? 50,
+      fuelType: initialData?.fuelType ?? null,
+      canopyType: initialData?.canopyType ?? null,
+      startMethod: initialData?.startMethod ?? null,
+      engineBrand: initialData?.engineBrand ?? "",
+      alternatorBrand: initialData?.alternatorBrand ?? "",
+      upsTopology: initialData?.upsTopology ?? null,
+      upsBatteryType: initialData?.upsBatteryType ?? null,
+      specSheet:
+        (initialData?.specSheet as unknown as
+          CreateProductInput["specSheet"] | undefined) ?? [],
       isQuoteOnly: initialData?.isQuoteOnly ?? false,
+      isActive: initialData?.isActive ?? true,
       totalStockCache: initialData?.totalStockCache ?? 0,
       specs: initialData?.specs ?? {},
     },
   });
+  useEffect(() => {
+    const stringImages = images.map((img) =>
+      typeof img === "string" ? img : img.name,
+    );
+    form.setValue("images", stringImages, {
+      shouldValidate: form.formState.isSubmitted,
+      shouldDirty: true,
+    });
+  }, [images, form]);
 
   const onSubmit = (data: CreateProductInput) => {
     startTransition(async () => {
       const existingImageUrls: string[] = [];
-      const imagesToUpload: (File | string)[] = [];
+      const imagesToUpload: File[] = [];
 
       for (const item of images) {
         if (item instanceof File) {
           imagesToUpload.push(item);
-        } else if (typeof item === "string" && !isCloudinaryUrl(item)) {
-          imagesToUpload.push(item);
-        } else {
-          existingImageUrls.push(item);
+        } else if (typeof item === "string" && item.trim().length > 0) {
+          existingImageUrls.push(item.trim());
         }
       }
 
       const payload = {
         ...data,
         price: data.price ? data.price.replace(/\./g, "") : "",
-        images: existingImageUrls.filter((image) => image.trim().length > 0),
+        images: existingImageUrls,
         isQuoteOnly: Boolean(data.isQuoteOnly),
       };
 
@@ -170,20 +214,27 @@ export const ProductForm = ({
           <div className="space-y-6 lg:col-span-2">
             <ProductGeneralInfo form={form} />
             <ProductDescriptionSection form={form} />
-            <ProductTechnicalSpecs form={form} />
+            <FacetedSpecs form={form} />
+            <SpecSheetEditor form={form} />
           </div>
-
           {/* Right Column */}
           <div className="space-y-6">
-            <AdminImageUploadSection
-              title={t("fields.images")}
-              images={images}
-              setImages={setImages}
-              urlPlaceholder={t("fields.imagesPlaceholder")}
-              addUrlLabel={t("buttons.addUrl")}
-              dragDropLabel={t("fields.dragDropImage")}
-              clickToSelectLabel={t("fields.orClickToSelect")}
-            />
+            <div>
+              <AdminImageUploadSection
+                title={t("fields.images")}
+                images={images}
+                setImages={setImages}
+                urlPlaceholder={t("fields.imagesPlaceholder")}
+                addUrlLabel={t("buttons.addUrl")}
+                dragDropLabel={t("fields.dragDropImage")}
+                clickToSelectLabel={t("fields.orClickToSelect")}
+              />
+              {form.formState.errors.images && (
+                <p className="text-destructive mt-1.5 px-1 text-sm">
+                  {form.formState.errors.images.message}
+                </p>
+              )}
+            </div>
             <ProductCategorySection
               form={form}
               categories={categories}

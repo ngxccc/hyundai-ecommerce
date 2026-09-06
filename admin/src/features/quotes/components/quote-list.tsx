@@ -223,10 +223,7 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
           {/* Mobile Cards Grid View */}
           <div className="grid grid-cols-1 gap-4 md:hidden">
             {quotes.map((quote) => (
-              <Card
-                key={quote.id}
-                className="border-border bg-card flex flex-col gap-4 border p-4 shadow-sm"
-              >
+              <Card key={quote.id} size="dense" className="p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground font-mono text-xs font-bold">
                     #{quote.id.slice(0, 8)}...

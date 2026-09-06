@@ -159,14 +159,14 @@ export const CategoryForm = ({
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <Card className="col-span-1 gap-4 py-4 shadow-sm">
-            <CardHeader className="border-b px-4 pb-1!">
-              <CardTitle className="text-primary flex items-center gap-2 text-lg">
-                <Info className="text-primary h-5 w-5" />
+          <Card size="dense" className="col-span-1">
+            <CardHeader bordered size="dense">
+              <CardTitle size="lg">
+                <Info />
                 {t("sections.general")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 px-4">
+            <CardContent size="dense">
               <FormField
                 control={form.control}
                 name="nameVi"

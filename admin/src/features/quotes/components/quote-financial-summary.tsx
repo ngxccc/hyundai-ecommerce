@@ -55,8 +55,8 @@ export const QuoteFinancialSummary = ({
   return (
     <Card className="border-border sticky top-6 border shadow-sm">
       <CardHeader className="bg-muted/20 border-b p-4 pb-3">
-        <CardTitle className="flex items-center gap-2 text-base font-semibold">
-          <Calculator className="text-primary h-4 w-4" />
+        <CardTitle>
+          <Calculator />
           {translate("composer.summary.title")}
         </CardTitle>
       </CardHeader>

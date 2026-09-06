@@ -18,7 +18,7 @@ export async function generateMetadata({
     namespace: "Login",
   });
   return {
-    title: t("title").replace(/<br\s*\/?>/gi, " "),
+    title: t("metaTitle"),
   };
 }
 

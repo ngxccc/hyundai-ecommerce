@@ -33,8 +33,8 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
   return (
     <Card className="border-border border shadow-xs">
       <CardHeader className="bg-muted/20 border-b p-4 pb-3">
-        <CardTitle className="flex items-center gap-2 text-base font-semibold">
-          <User className="text-primary h-4 w-4" />
+        <CardTitle>
+          <User />
           {translate("composer.customer.title")}
         </CardTitle>
         <CardDescription className="text-xs">
