@@ -15,6 +15,6 @@ if ! groups | grep -q "\bdocker\b"; then
 fi
 
 echo "==> Reloading Caddy configuration..."
-$DOCKER_CMD exec ticket-booking-caddy caddy reload --config /etc/caddy/Caddyfile
+$DOCKER_CMD exec hyundai-caddy caddy reload --config /etc/caddy/Caddyfile
 
 echo "========================================================="

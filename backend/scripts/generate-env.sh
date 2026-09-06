@@ -12,7 +12,7 @@ if [ -n "${DOPPLER_TOKEN:-}" ]; then
         # Service tokens (dp.st.) are locked to their own config/project, so we do not pass these flags.
         CONFIG_FLAG=""
         if [[ "${DOPPLER_TOKEN:-}" =~ ^dp\.(pt|cli)\. ]]; then
-            CONFIG_FLAG="--project ticket-booking --config ${DOPPLER_CONFIG:-prd}"
+            CONFIG_FLAG="--project hyundai-ecommerce --config ${DOPPLER_CONFIG:-prd}"
         fi
 
         # WHY: Remove the existing file first. If it was created by root or another user,
@@ -43,12 +43,12 @@ else
         cat <<EOF >"$ENV_FILE"
 NODE_ENV=production
 PORT=3000
-DOMAIN_NAME=http://ticketbooking.ngxc.io.vn
+DOMAIN_NAME=https://hyundai-ecommerce.onrender.com
 DB_HOST=postgres
 DB_PORT=5432
 DB_USERNAME=postgres
 DB_PASSWORD=postgrespassword
-DB_DATABASE=ticket_booking
+DB_DATABASE=hyundai_ecommerce
 REDIS_HOST=redis
 REDIS_PORT=6379
 EOF
@@ -56,7 +56,7 @@ EOF
         echo "==> $ENV_FILE already exists. Checking for missing variables..."
         if ! grep -q "^DOMAIN_NAME=" "$ENV_FILE"; then
             echo "==> Appending DOMAIN_NAME to existing $ENV_FILE..."
-            echo "DOMAIN_NAME=http://ticketbooking.ngxc.io.vn" >>"$ENV_FILE"
+            echo "DOMAIN_NAME=https://hyundai-ecommerce.onrender.com" >>"$ENV_FILE"
         fi
     fi
 fi

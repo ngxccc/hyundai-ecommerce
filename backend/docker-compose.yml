@@ -1,12 +1,12 @@
 services:
   postgres:
     image: postgres:18-alpine
-    container_name: ticket-booking-postgres
+    container_name: hyundai-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgrespassword}
-      POSTGRES_DB: ${DB_DATABASE:-ticket_booking}
+      POSTGRES_DB: ${DB_DATABASE:-hyundai_ecommerce}
     ports:
       - "5432:5432"
     volumes:
@@ -25,14 +25,14 @@ services:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-ticket_booking}",
+          "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-hyundai_ecommerce}",
         ]
       interval: 5s
       timeout: 5s
       retries: 5
       start_period: 15s
     networks:
-      - ticket-booking-net
+      - hyundai-net
     deploy:
       resources:
         limits:
@@ -43,7 +43,7 @@ services:
 
   redis:
     image: redis:8-alpine
-    container_name: ticket-booking-redis
+    container_name: hyundai-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -71,7 +71,7 @@ services:
       retries: 5
       start_period: 5s
     networks:
-      - ticket-booking-net
+      - hyundai-net
     deploy:
       resources:
         limits:
@@ -82,7 +82,7 @@ services:
 
   caddy:
     image: caddy:2-alpine
-    container_name: ticket-booking-caddy
+    container_name: hyundai-caddy
     restart: unless-stopped
     ports:
       - "80:80"
@@ -92,7 +92,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     networks:
-      - ticket-booking-net
+      - hyundai-net
     deploy:
       resources:
         limits:
@@ -111,5 +111,5 @@ volumes:
   caddy_config:
 
 networks:
-  ticket-booking-net:
+  hyundai-net:
     driver: bridge

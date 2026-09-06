@@ -1,5 +1,9 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { BadRequestException, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from "@nestjs/common";
 import type { I18nService } from "nestjs-i18n";
 import { PaymentsService } from "./payments.service";
 import type { DrizzleDB } from "@/database/database.module";
@@ -415,6 +419,32 @@ describe("PaymentsService", () => {
 
         expect(service.repayDebt(dto, "admin-1")).rejects.toThrow(
           NotFoundException,
+        );
+      });
+    });
+    describe("when non-admin attempts cash repayment", () => {
+      test("should throw ForbiddenException", () => {
+        const dto: RepayDebtDto = {
+          amount: 10000000,
+          paymentMethod: "CASH",
+        };
+
+        expect(service.repayDebt(dto, "dealer-1", "DEALER")).rejects.toThrow(
+          ForbiddenException,
+        );
+      });
+    });
+
+    describe("when non-admin attempts to repay debt for another user", () => {
+      test("should throw ForbiddenException", () => {
+        const dto: RepayDebtDto = {
+          userId: "other-dealer-uuid",
+          amount: 10000000,
+          paymentMethod: "PAYOS",
+        };
+
+        expect(service.repayDebt(dto, "dealer-1", "DEALER")).rejects.toThrow(
+          ForbiddenException,
         );
       });
     });

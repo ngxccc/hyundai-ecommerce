@@ -61,8 +61,12 @@ describe("PaymentsController", () => {
       (_id: string, _dto: VerifyCashPaymentDto, _adminId: string) =>
         Promise.resolve(mockPaymentSummary),
     ),
-    repayDebt: mock((_dto: RepayDebtDto, _currentUserId?: string) =>
-      Promise.resolve(mockDebtRepaymentResult),
+    repayDebt: mock(
+      (
+        _dto: RepayDebtDto,
+        _currentUserId?: string,
+        _currentUserRole?: string,
+      ) => Promise.resolve(mockDebtRepaymentResult),
     ),
     getOrderPaymentSummary: mock((_orderId: string) =>
       Promise.resolve(mockPaymentSummary),
@@ -163,11 +167,16 @@ describe("PaymentsController", () => {
           paymentMethod: "PAYOS",
         };
 
-        const result = await controller.repayDebt(dto, "user-uuid-1");
+        const result = await controller.repayDebt(dto, {
+          sub: "user-uuid-1",
+          email: "dealer@example.com",
+          role: "DEALER",
+        });
 
         expect(mockPaymentsService.repayDebt).toHaveBeenCalledWith(
           dto,
           "user-uuid-1",
+          "DEALER",
         );
         expect(result.success).toBe(true);
         expect(result.data.id).toBe("debt-uuid-1");

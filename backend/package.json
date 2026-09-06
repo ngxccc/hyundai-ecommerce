@@ -32,11 +32,6 @@
     "test:ci": "mkdir -p coverage && bun test src/ --coverage --reporter=junit --reporter-outfile=coverage/junit.xml",
     "test:cov": "bun test src/ --coverage",
     "test:e2e": "doppler run --preserve-env=\"true\" -c test -- bun test test/",
-    "test:load": "bun run test:load:build && bun run test:load:seed && bun run test:load:run && bun run test:load:verify",
-    "test:load:build": "bun build test/load/booking-concurrency.k6.ts --target=browser --external \"k6\" --external \"k6/*\" --outfile dist/booking-concurrency.k6.js",
-    "test:load:run": "k6 run dist/booking-concurrency.k6.js",
-    "test:load:seed": "doppler run --preserve-env=\"true\" -c test -- bun test/load/seed.ts",
-    "test:load:verify": "doppler run --preserve-env=\"true\" -c test -- bun test/load/verify-and-teardown.ts",
     "test:watch": "bun test src/ --watch"
   },
   "dependencies": {
