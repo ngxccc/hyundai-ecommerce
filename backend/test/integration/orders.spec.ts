@@ -10,6 +10,7 @@ import request from "supertest";
 import { type INestApplication } from "@nestjs/common";
 import type { Server } from "node:http";
 import { JwtService } from "@nestjs/jwt";
+import { env } from "@/env";
 import {
   createTestApp,
   teardownTestApp,
@@ -368,9 +369,12 @@ describe("Orders Module Integration", () => {
         .where(eq(orders.id, orderId));
 
       // 4. Trigger auto-expiration cron endpoint
-      const cronRes = await request(getHttpServer()).post(
-        "/orders/cron/expire",
-      );
+      const cronRes = await request(getHttpServer())
+        .post("/orders/cron/expire")
+        .set(
+          "x-cron-secret",
+          env.CRON_SECRET ?? "dev-cron-secret-change-in-production",
+        );
 
       expect(cronRes.status).toBe(200);
       const cronBody = (
