@@ -72,6 +72,7 @@ export const env = createEnv({
     PAYOS_CLIENT_ID: z.string().default("dummy-client-id"),
     PAYOS_API_KEY: z.string().default("dummy-api-key"),
     PAYOS_CHECKSUM_KEY: z.string().default("dummy-checksum-key"),
+
     // Cloudinary configuration
     CLOUDINARY_CLOUD_NAME: z.string().optional().catch(undefined),
     CLOUDINARY_API_KEY: z.string().optional().catch(undefined),
