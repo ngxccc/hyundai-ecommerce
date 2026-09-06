@@ -105,6 +105,15 @@ export class GlobalExceptionFilter implements ExceptionFilter {
             lang,
             "The database or downstream service timed out. Please retry.",
           );
+          // Map database invalid syntax (22P02) e.g. invalid UUID format to HTTP 400 Bad Request.
+        } else if (dbErr.code === PG_ERROR_CODE.INVALID_TEXT_REPRESENTATION) {
+          status = HttpStatus.BAD_REQUEST;
+          title = "Bad Request";
+          detail = this.translate(
+            "validation.isUuid",
+            lang,
+            "Invalid input syntax or UUID format.",
+          );
           // Sanitize unknown database exceptions to HTTP 500 without disclosing query parameters or database schema.
         } else {
           status = HttpStatus.INTERNAL_SERVER_ERROR;
