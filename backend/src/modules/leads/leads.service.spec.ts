@@ -72,7 +72,7 @@ describe("LeadsService", () => {
           items: [{ productId: mockProduct.id, quantity: 1 }],
         });
 
-        expect(result.leadCode).toMatch(/^RFQ-\d{8}-\d{4}$/);
+        expect(result.leadCode).toMatch(/^RFQ-\d{8}-[A-Z0-9]+$/);
         expect(result.fullName).toBe("Nguyễn Văn An");
         expect(result.status).toBe("NEW");
         expect(result.items?.length).toBe(1);
@@ -129,24 +129,26 @@ describe("LeadsService", () => {
           productSku: "hy3100le",
         };
 
-        mockDb.setSelectResultsQueue([[mockLead], [mockItem]]);
+        mockDb.setSelectResultsQueue([[{ count: 1 }], [mockLead], [mockItem]]);
 
         const result = await service.findAll();
 
-        expect(result.length).toBe(1);
-        const firstLead = result[0];
+        expect(result.items.length).toBe(1);
+        const firstLead = result.items[0];
         expect(firstLead?.leadCode).toBe("RFQ-20260904-0001");
         expect(firstLead?.items?.length).toBe(1);
+        expect(result.meta.total).toBe(1);
       });
     });
 
     describe("when no leads exist", () => {
       test("should return an empty array without querying items", async () => {
-        mockDb.setSelectResult([]);
+        mockDb.setSelectResultsQueue([[{ count: 0 }], []]);
 
         const result = await service.findAll();
 
-        expect(result).toEqual([]);
+        expect(result.items).toEqual([]);
+        expect(result.meta.total).toBe(0);
       });
     });
   });
@@ -211,10 +213,9 @@ describe("LeadsService", () => {
           createdAt: new Date(),
         };
 
-        // 1st select: existing check
-        // 2nd select: findById lead
-        // 3rd select: findById items
-        mockDb.setSelectResultsQueue([[{ id: "lead-update" }], [mockLead], []]);
+        // 1st update.returning: updated lead
+        // 2nd select: lead items
+        mockDb.setSelectResultsQueue([[mockLead], []]);
 
         const result = await service.updateStatus("lead-update", {
           status: "LOST",
@@ -263,15 +264,9 @@ describe("LeadsService", () => {
         };
 
         // 1st select: check salesUser
-        // 2nd select: check lead exists
-        // 3rd select: findById lead
-        // 4th select: findById items
-        mockDb.setSelectResultsQueue([
-          [mockSalesUser],
-          [{ id: "lead-assign" }],
-          [mockLead],
-          [],
-        ]);
+        // 2nd update.returning: updated lead
+        // 3rd select: lead items
+        mockDb.setSelectResultsQueue([[mockSalesUser], [mockLead], []]);
 
         const result = await service.assignSales("lead-assign", "sales-uuid-1");
 

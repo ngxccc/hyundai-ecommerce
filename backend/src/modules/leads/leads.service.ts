@@ -4,25 +4,24 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
+import {
+  buildPaginationMeta,
+  type PaginationMetaDto,
+} from "@/common/dto/pagination-meta.dto";
+import { CODE_PREFIX } from "@/common/constants/business.constant";
+import { generateDocumentCode } from "@/common/utils/code.util";
 import {
   DATABASE_CONNECTION,
   type DrizzleDB,
 } from "@/database/database.module";
-import {
-  leads,
-  leadItems,
-  products,
-  users,
-  type Lead,
-  type LeadItem,
-} from "@/database/schemas";
-import type { CreateLeadDto } from "./dto/create-lead.dto";
-import type { UpdateLeadStatusDto } from "./dto/update-lead-status.dto";
+import { leads, leadItems, products, users } from "@/database/schemas";
 import type {
+  CreateLeadDto,
+  LeadQueryDto,
   LeadResponseDto,
-  LeadItemResponseDto,
-} from "./dto/lead-response.dto";
+  UpdateLeadStatusDto,
+} from "./dto";
 
 @Injectable()
 export class LeadsService {
@@ -30,15 +29,6 @@ export class LeadsService {
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
   ) {}
-
-  /**
-   * Generates a unique, human-friendly lead code with format RFQ-YYYYMMDD-XXXX.
-   */
-  private generateLeadCode(): string {
-    const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const randomSuffix = String(Math.floor(1000 + Math.random() * 9000));
-    return `RFQ-${datePart}-${randomSuffix}`;
-  }
 
   /**
    * Submits a public Request for Quote (RFQ) from Storefront visitors without requiring login.
@@ -69,7 +59,7 @@ export class LeadsService {
     }
 
     const productMap = new Map(existingProducts.map((p) => [p.id, p]));
-    const leadCode = this.generateLeadCode();
+    const leadCode = generateDocumentCode(CODE_PREFIX.LEAD);
 
     return this.db.transaction(async (tx) => {
       const [newLead] = await tx
@@ -118,16 +108,56 @@ export class LeadsService {
   }
 
   /**
-   * Retrieves all leads for CMS Admin & Sales staff, ordered by latest creation date.
+   * Retrieves paginated leads for CMS Admin & Sales staff, ordered by latest creation date.
    */
-  async findAll(): Promise<LeadResponseDto[]> {
-    const allLeads = await this.db
-      .select()
-      .from(leads)
-      .orderBy(desc(leads.createdAt));
+  async findAll(query?: LeadQueryDto): Promise<{
+    items: LeadResponseDto[];
+    meta: PaginationMetaDto;
+  }> {
+    const page = query?.page ?? 1;
+    const limit = query?.limit ?? 20;
+    const offset = (page - 1) * limit;
+
+    const conditions = [];
+
+    if (query?.status) {
+      conditions.push(eq(leads.status, query.status));
+    }
+
+    if (query?.search?.trim()) {
+      const pattern = `%${query.search.trim()}%`;
+      conditions.push(
+        or(
+          ilike(leads.fullName, pattern),
+          ilike(leads.phoneNumber, pattern),
+          ilike(leads.companyName, pattern),
+        ),
+      );
+    }
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+    const [totalCountResult, allLeads] = await Promise.all([
+      this.db
+        .select({ count: sql<number>`cast(count(*) as int)` })
+        .from(leads)
+        .where(whereClause),
+      this.db
+        .select()
+        .from(leads)
+        .where(whereClause)
+        .orderBy(desc(leads.createdAt))
+        .limit(limit)
+        .offset(offset),
+    ]);
+
+    const total = totalCountResult[0]?.count ?? 0;
 
     if (allLeads.length === 0) {
-      return [];
+      return {
+        items: [],
+        meta: buildPaginationMeta(total, page, limit),
+      };
     }
 
     const leadIds = allLeads.map((l) => l.id);
@@ -136,16 +166,19 @@ export class LeadsService {
       .from(leadItems)
       .where(inArray(leadItems.leadId, leadIds));
 
-    const itemsByLeadId = new Map<string, LeadItem[]>();
+    const itemsByLeadId = new Map<string, (typeof leadItems.$inferSelect)[]>();
     for (const item of allItems) {
       const list = itemsByLeadId.get(item.leadId) ?? [];
       list.push(item);
       itemsByLeadId.set(item.leadId, list);
     }
 
-    return allLeads.map((l) =>
-      this.mapLeadToResponseDto(l, itemsByLeadId.get(l.id) ?? []),
-    );
+    return {
+      items: allLeads.map((l) =>
+        this.mapLeadToResponseDto(l, itemsByLeadId.get(l.id) ?? []),
+      ),
+      meta: buildPaginationMeta(total, page, limit),
+    };
   }
 
   /**
@@ -177,26 +210,25 @@ export class LeadsService {
     id: string,
     dto: UpdateLeadStatusDto,
   ): Promise<LeadResponseDto> {
-    const [existing] = await this.db
-      .select({ id: leads.id })
-      .from(leads)
-      .where(eq(leads.id, id))
-      .limit(1);
-
-    if (!existing) {
-      throw new NotFoundException(`Lead with ID "${id}" not found`);
-    }
-
-    await this.db
+    const [updatedLead] = await this.db
       .update(leads)
       .set({
         status: dto.status,
         lostReason: dto.lostReason ?? null,
-        updatedAt: new Date(),
       })
-      .where(eq(leads.id, id));
+      .where(eq(leads.id, id))
+      .returning();
 
-    return this.findById(id);
+    if (!updatedLead) {
+      throw new NotFoundException(`Lead with ID "${id}" not found`);
+    }
+
+    const items = await this.db
+      .select()
+      .from(leadItems)
+      .where(eq(leadItems.leadId, id));
+
+    return this.mapLeadToResponseDto(updatedLead, items);
   }
 
   /**
@@ -213,29 +245,31 @@ export class LeadsService {
       throw new NotFoundException(`Sales user with ID "${salesId}" not found`);
     }
 
-    const [lead] = await this.db
-      .select({ id: leads.id })
-      .from(leads)
-      .where(eq(leads.id, id))
-      .limit(1);
-
-    if (!lead) {
-      throw new NotFoundException(`Lead with ID "${id}" not found`);
-    }
-
-    await this.db
+    const [updatedLead] = await this.db
       .update(leads)
       .set({
         assignedSalesId: salesId,
         status: "CONTACTING",
-        updatedAt: new Date(),
       })
-      .where(eq(leads.id, id));
+      .where(eq(leads.id, id))
+      .returning();
 
-    return this.findById(id);
+    if (!updatedLead) {
+      throw new NotFoundException(`Lead with ID "${id}" not found`);
+    }
+
+    const items = await this.db
+      .select()
+      .from(leadItems)
+      .where(eq(leadItems.leadId, id));
+
+    return this.mapLeadToResponseDto(updatedLead, items);
   }
 
-  private mapLeadToResponseDto(lead: Lead, items: LeadItem[]): LeadResponseDto {
+  private mapLeadToResponseDto(
+    lead: typeof leads.$inferSelect,
+    items: (typeof leadItems.$inferSelect)[],
+  ): LeadResponseDto {
     return {
       id: lead.id,
       leadCode: lead.leadCode,
@@ -251,7 +285,7 @@ export class LeadsService {
       assignedSalesId: lead.assignedSalesId,
       lostReason: lead.lostReason,
       createdAt: lead.createdAt,
-      items: items.map((i): LeadItemResponseDto => ({
+      items: items.map((i) => ({
         id: i.id,
         productId: i.productId,
         quantity: i.quantity,
