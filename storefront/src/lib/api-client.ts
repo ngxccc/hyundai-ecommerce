@@ -33,6 +33,8 @@ const getBaseUrl = (): string => {
   return trimmed;
 };
 
+const PUBLIC_PREFIXES = ["/products", "/categories", "/brands", "/leads"];
+
 const authMiddleware: Middleware = {
   async onRequest({ request }) {
     if (typeof window !== "undefined") {
@@ -41,6 +43,17 @@ const authMiddleware: Middleware = {
         500,
       );
     }
+
+    // Next.js 16 "use cache" forbids accessing dynamic cookies() inside cached functions.
+    // Public catalog and lead routes never require authorization headers.
+    const url = new URL(request.url);
+    const isPublic = PUBLIC_PREFIXES.some((prefix) =>
+      url.pathname.startsWith(prefix),
+    );
+    if (isPublic) {
+      return request;
+    }
+
     if (!request.headers.has("Authorization")) {
       try {
         const { cookies } = await import("next/headers");
