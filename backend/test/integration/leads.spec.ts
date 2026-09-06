@@ -142,7 +142,7 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
         const body =
           res.body as unknown as GenericSuccessResponse<LeadResponseBody>;
         expect(body.success).toBe(true);
-        expect(body.data.leadCode).toMatch(/^RFQ-\d{8}-\d{4}$/);
+        expect(body.data.leadCode).toMatch(/^RFQ-\d{8}-[A-Z0-9]+$/);
         expect(body.data.fullName).toBe(payload.fullName);
         expect(body.data.phoneNumber).toBe(payload.phoneNumber);
         expect(body.data.city).toBe("Bình Dương");

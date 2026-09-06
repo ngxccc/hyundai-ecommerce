@@ -8,9 +8,9 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
 import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
@@ -18,17 +18,23 @@ import { RolesGuard } from "@/common/guards/roles.guard";
 import { Roles } from "@/common/decorators/roles.decorator";
 import {
   ApiOkResponseGeneric,
+  ApiOkResponsePaginated,
   ApiCreatedResponseGeneric,
   ApiNotFoundResponseRfc9457,
   ApiBadRequestResponseRfc9457,
   ApiTooManyRequestsResponseRfc9457,
 } from "@/common/decorators";
-import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  CreateLeadDto,
+  LeadQueryDto,
+  LeadResponseDto,
+  UpdateLeadStatusDto,
+} from "./dto";
+import type { PaginationMetaDto } from "@/common/dto/pagination-meta.dto";
 import { LEADS_ROUTES } from "./leads.routes";
 import { LeadsService } from "./leads.service";
-import { CreateLeadDto } from "./dto/create-lead.dto";
-import { UpdateLeadStatusDto } from "./dto/update-lead-status.dto";
-import { LeadResponseDto } from "./dto/lead-response.dto";
+import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 
 @ApiTags(LEADS_ROUTES.TAG)
 @Controller(LEADS_ROUTES.PREFIX)
@@ -72,10 +78,12 @@ export class LeadsController {
     description:
       "Returns all leads and quote requests ordered by latest submission date.",
   })
-  @ApiOkResponseGeneric(LeadResponseDto, { isArray: true })
-  async getAll(): Promise<ApiResponse<LeadResponseDto[]>> {
-    const allLeads = await this.leadsService.findAll();
-    return apiSuccess(allLeads);
+  @ApiOkResponsePaginated(LeadResponseDto)
+  async getAll(
+    @Query() query: LeadQueryDto,
+  ): Promise<ApiResponse<LeadResponseDto[], PaginationMetaDto>> {
+    const { items, meta } = await this.leadsService.findAll(query);
+    return apiSuccess(items, meta);
   }
 
   /**

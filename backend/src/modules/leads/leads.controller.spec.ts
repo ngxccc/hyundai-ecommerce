@@ -27,12 +27,24 @@ describe("LeadsController", () => {
 
   const mockLeadsService = {
     submitRfq: mock((_dto: CreateLeadDto) => Promise.resolve(mockLeadResponse)),
-    findAll: mock(() => Promise.resolve([mockLeadResponse])),
+    findAll: mock(() =>
+      Promise.resolve({
+        items: [mockLeadResponse],
+        meta: {
+          page: 1,
+          limit: 20,
+          total: 1,
+          totalPages: 1,
+          hasNextPage: false,
+          hasPrevPage: false,
+        },
+      }),
+    ),
     findById: mock((_id: string) => Promise.resolve(mockLeadResponse)),
     updateStatus: mock((_id: string, _dto: unknown) =>
       Promise.resolve(
         Object.assign({}, mockLeadResponse, {
-          status: "CONTACTING" as const,
+          status: (_dto as { status: string }).status,
         }),
       ),
     ),
@@ -85,12 +97,21 @@ describe("LeadsController", () => {
   describe("GET /leads", () => {
     describe("when sales/admin queries all leads", () => {
       test("should return apiSuccess wrapped list of leads", async () => {
-        const result = await controller.getAll();
+        const query = { page: 1, limit: 20 };
+        const result = await controller.getAll(query);
 
-        expect(mockLeadsService.findAll).toHaveBeenCalled();
+        expect(mockLeadsService.findAll).toHaveBeenCalledWith(query);
         expect(result).toEqual({
           success: true,
           data: [mockLeadResponse],
+          meta: {
+            page: 1,
+            limit: 20,
+            total: 1,
+            totalPages: 1,
+            hasNextPage: false,
+            hasPrevPage: false,
+          },
         });
       });
     });
