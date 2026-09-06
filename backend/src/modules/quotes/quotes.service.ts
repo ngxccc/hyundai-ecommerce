@@ -1,10 +1,12 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from "@nestjs/common";
-import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
   type DrizzleDB,
@@ -18,7 +20,14 @@ import {
   quotes,
   users,
 } from "@/database/schemas";
+import { CODE_PREFIX } from "@/common/constants/business.constant";
+import { generateDocumentCode } from "@/common/utils/code.util";
+import {
+  buildPaginationMeta,
+  type PaginationMetaDto,
+} from "@/common/dto/pagination-meta.dto";
 import { I18nService } from "nestjs-i18n";
+import type { JwtPayload } from "@/common/decorators/current-user.decorator";
 import type { I18nTranslations } from "@/generated/i18n.generated";
 import type { QuoteStatus } from "@/database/schemas/enums.schema";
 import type {
@@ -89,7 +98,7 @@ export class QuotesService {
       };
     });
 
-    const quoteRecord = await this.db.transaction(async (tx) => {
+    return this.db.transaction(async (tx) => {
       const [newQuote] = await tx
         .insert(quotes)
         .values({
@@ -114,17 +123,77 @@ export class QuotesService {
         throw new BadRequestException("Failed to create customer RFQ");
       }
 
-      await tx.insert(quoteItems).values(
-        itemsToInsert.map((item) => ({
+      const insertedItems = await tx
+        .insert(quoteItems)
+        .values(
+          itemsToInsert.map((item) => ({
+            ...item,
+            quoteId: newQuote.id,
+          })),
+        )
+        .returning();
+
+      const productIds = dto.items
+        .map((i) => i.productId)
+        .filter((id): id is string => Boolean(id));
+
+      const productRecords =
+        productIds.length > 0
+          ? await tx
+              .select({
+                id: products.id,
+                nameVi: products.nameVi,
+                nameEn: products.nameEn,
+                slug: products.slug,
+                price: products.price,
+                images: products.images,
+                totalStockCache: products.totalStockCache,
+              })
+              .from(products)
+              .where(inArray(products.id, productIds))
+          : [];
+
+      const productsMap = new Map(productRecords.map((p) => [p.id, p]));
+
+      let userSummary: {
+        id: string;
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+        role: string;
+      } | null = null;
+
+      if (userId) {
+        const [u] = await tx
+          .select({
+            id: users.id,
+            fullName: users.fullName,
+            email: users.email,
+            phoneNumber: users.phoneNumber,
+            role: users.role,
+          })
+          .from(users)
+          .where(eq(users.id, userId))
+          .limit(1);
+
+        if (u) {
+          userSummary = u;
+        }
+      }
+
+      return {
+        ...newQuote,
+        commercialTerms: null,
+        items: insertedItems.map((item) => ({
           ...item,
-          quoteId: newQuote.id,
+          product: item.productId
+            ? (productsMap.get(item.productId) ?? null)
+            : null,
         })),
-      );
-
-      return newQuote;
+        messages: [],
+        user: userSummary,
+      };
     });
-
-    return this.findById(quoteRecord.id);
   }
 
   /**
@@ -179,7 +248,7 @@ export class QuotesService {
       );
     }
 
-    const createdQuote = await this.db.transaction(async (tx) => {
+    return this.db.transaction(async (tx) => {
       const [newQuote] = await tx
         .insert(quotes)
         .values({
@@ -207,17 +276,78 @@ export class QuotesService {
         throw new BadRequestException("Failed to persist admin quotation");
       }
 
-      await tx.insert(quoteItems).values(
-        computedItems.map((item) => ({
+      const insertedItems = await tx
+        .insert(quoteItems)
+        .values(
+          computedItems.map((item) => ({
+            ...item,
+            quoteId: newQuote.id,
+          })),
+        )
+        .returning();
+
+      const productIds = dto.items
+        .map((i) => i.productId)
+        .filter((id): id is string => Boolean(id));
+
+      const productRecords =
+        productIds.length > 0
+          ? await tx
+              .select({
+                id: products.id,
+                nameVi: products.nameVi,
+                nameEn: products.nameEn,
+                slug: products.slug,
+                price: products.price,
+                images: products.images,
+                totalStockCache: products.totalStockCache,
+              })
+              .from(products)
+              .where(inArray(products.id, productIds))
+          : [];
+
+      const productsMap = new Map(productRecords.map((p) => [p.id, p]));
+
+      let userSummary: {
+        id: string;
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+        role: string;
+      } | null = null;
+
+      if (dto.userId) {
+        const [u] = await tx
+          .select({
+            id: users.id,
+            fullName: users.fullName,
+            email: users.email,
+            phoneNumber: users.phoneNumber,
+            role: users.role,
+          })
+          .from(users)
+          .where(eq(users.id, dto.userId))
+          .limit(1);
+
+        if (u) {
+          userSummary = u;
+        }
+      }
+
+      return {
+        ...newQuote,
+        commercialTerms:
+          newQuote.commercialTerms as QuoteResponseDto["commercialTerms"],
+        items: insertedItems.map((item) => ({
           ...item,
-          quoteId: newQuote.id,
+          product: item.productId
+            ? (productsMap.get(item.productId) ?? null)
+            : null,
         })),
-      );
-
-      return newQuote;
+        messages: [],
+        user: userSummary,
+      };
     });
-
-    return this.findById(createdQuote.id);
   }
 
   /**
@@ -228,9 +358,7 @@ export class QuotesService {
    */
   async findAll(query: QuoteQueryDto): Promise<{
     items: QuoteResponseDto[];
-    total: number;
-    page: number;
-    limit: number;
+    meta: PaginationMetaDto;
   }> {
     const page = query.page;
     const limit = query.limit;
@@ -275,15 +403,124 @@ export class QuotesService {
       .limit(limit)
       .offset(offset);
 
-    const items = await Promise.all(
-      quoteRecords.map((record) => this.findById(record.id)),
-    );
+    if (quoteRecords.length === 0) {
+      return {
+        items: [],
+        meta: buildPaginationMeta(total, page, limit),
+      };
+    }
 
+    const quoteIds = quoteRecords.map((q) => q.id);
+    const userIds = [
+      ...new Set(
+        quoteRecords
+          .map((q) => q.userId)
+          .filter((id): id is string => Boolean(id)),
+      ),
+    ];
+
+    // WHY: Batch fetch items, messages, and users in parallel to eliminate N+1 cascade.
+    const [allItemRecords, allMessageRecords, allUsers] = await Promise.all([
+      this.db
+        .select({
+          item: quoteItems,
+          product: {
+            id: products.id,
+            nameVi: products.nameVi,
+            nameEn: products.nameEn,
+            slug: products.slug,
+            price: products.price,
+            images: products.images,
+            totalStockCache: products.totalStockCache,
+          },
+        })
+        .from(quoteItems)
+        .leftJoin(products, eq(quoteItems.productId, products.id))
+        .where(inArray(quoteItems.quoteId, quoteIds)),
+
+      this.db
+        .select({
+          message: quoteMessages,
+          sender: {
+            id: users.id,
+            fullName: users.fullName,
+            email: users.email,
+            role: users.role,
+          },
+        })
+        .from(quoteMessages)
+        .leftJoin(users, eq(quoteMessages.senderId, users.id))
+        .where(inArray(quoteMessages.quoteId, quoteIds))
+        .orderBy(desc(quoteMessages.createdAt)),
+
+      userIds.length > 0
+        ? this.db
+            .select({
+              id: users.id,
+              fullName: users.fullName,
+              email: users.email,
+              phoneNumber: users.phoneNumber,
+              role: users.role,
+            })
+            .from(users)
+            .where(inArray(users.id, userIds))
+        : Promise.resolve([]),
+    ]);
+
+    const itemsByQuoteId = new Map<
+      string,
+      ((typeof allItemRecords)[number]["item"] & {
+        product: (typeof allItemRecords)[number]["product"] | null;
+      })[]
+    >();
+    for (const { item, product } of allItemRecords) {
+      const list = itemsByQuoteId.get(item.quoteId) ?? [];
+      list.push({
+        ...item,
+        product: product?.id ? product : null,
+      });
+      itemsByQuoteId.set(item.quoteId, list);
+    }
+
+    const messagesByQuoteId = new Map<
+      string,
+      ((typeof allMessageRecords)[number]["message"] & {
+        sender: (typeof allMessageRecords)[number]["sender"] | null;
+      })[]
+    >();
+    for (const { message, sender } of allMessageRecords) {
+      const list = messagesByQuoteId.get(message.quoteId) ?? [];
+      list.push({
+        ...message,
+        sender: sender?.id ? sender : null,
+      });
+      messagesByQuoteId.set(message.quoteId, list);
+    }
+
+    const usersById = new Map<string, (typeof allUsers)[number]>();
+    for (const u of allUsers) {
+      usersById.set(u.id, u);
+    }
+
+    const items: QuoteResponseDto[] = quoteRecords.map((quote) => {
+      const itemsList = itemsByQuoteId.get(quote.id) ?? [];
+      const messagesList = messagesByQuoteId.get(quote.id) ?? [];
+      const userSummary = quote.userId
+        ? (usersById.get(quote.userId) ?? null)
+        : null;
+
+      return {
+        ...quote,
+        commercialTerms:
+          quote.commercialTerms as QuoteResponseDto["commercialTerms"],
+        items: itemsList,
+        messages: messagesList,
+        user: userSummary,
+      };
+    });
     return {
       items,
-      total,
-      page,
-      limit,
+      meta: buildPaginationMeta(total, page, limit),
     };
   }
 
@@ -395,20 +632,23 @@ export class QuotesService {
 
     const allowedTransitions = VALID_QUOTE_TRANSITIONS[current.status];
     if (!allowedTransitions.includes(newStatus)) {
-      throw new BadRequestException(
+      throw new UnprocessableEntityException(
         this.i18n.t("quotes.INVALID_STATUS_TRANSITION"),
       );
     }
 
-    await this.db
+    const [updatedQuote] = await this.db
       .update(quotes)
       .set({
         status: newStatus,
-        updatedAt: new Date(),
       })
-      .where(eq(quotes.id, id));
+      .where(eq(quotes.id, id))
+      .returning();
 
-    return this.findById(id);
+    current.status = newStatus;
+    current.updatedAt = updatedQuote?.updatedAt ?? new Date();
+
+    return current;
   }
 
   /**
@@ -435,38 +675,26 @@ export class QuotesService {
         this.i18n.t("quotes.QUOTE_CANNOT_BE_MODIFIED"),
       );
     }
+    const targetItem = quote.items.find((it) => it.id === itemId);
+    if (!targetItem) {
+      throw new NotFoundException(this.i18n.t("quotes.QUOTE_ITEM_NOT_FOUND"));
+    }
+
+    const agreedPriceNum = parseFloat(agreedPrice);
+    const newLineTotal = agreedPriceNum * targetItem.quantity;
 
     await this.db.transaction(async (tx) => {
-      const [item] = await tx
-        .select()
-        .from(quoteItems)
-        .where(and(eq(quoteItems.id, itemId), eq(quoteItems.quoteId, quoteId)))
-        .limit(1);
-
-      if (!item) {
-        throw new NotFoundException(this.i18n.t("quotes.QUOTE_ITEM_NOT_FOUND"));
-      }
-
-      const agreedPriceNum = parseFloat(agreedPrice);
-      const newLineTotal = agreedPriceNum * item.quantity;
-
       await tx
         .update(quoteItems)
         .set({
           agreedPrice,
           totalPrice: newLineTotal.toFixed(2),
-          updatedAt: new Date(),
         })
         .where(eq(quoteItems.id, itemId));
 
-      // Recalculate quote subtotal and VAT
-      const allItems = await tx
-        .select()
-        .from(quoteItems)
-        .where(eq(quoteItems.quoteId, quoteId));
-
+      // Calculate quote subtotal directly from existing in-memory items
       let newSubtotal = 0;
-      for (const it of allItems) {
+      for (const it of quote.items) {
         const price = parseFloat(
           it.id === itemId
             ? agreedPrice
@@ -479,18 +707,25 @@ export class QuotesService {
       const vatAmount = newSubtotal * (vatRate / 100);
       const totalQuotedPrice = newSubtotal + vatAmount;
 
-      await tx
+      const [updatedQuote] = await tx
         .update(quotes)
         .set({
           subtotalPrice: newSubtotal.toFixed(2),
           vatAmount: vatAmount.toFixed(2),
           totalQuotedPrice: totalQuotedPrice.toFixed(2),
-          updatedAt: new Date(),
         })
-        .where(eq(quotes.id, quoteId));
+        .where(eq(quotes.id, quoteId))
+        .returning();
+
+      targetItem.agreedPrice = agreedPrice;
+      targetItem.totalPrice = newLineTotal.toFixed(2);
+      quote.subtotalPrice = newSubtotal.toFixed(2);
+      quote.vatAmount = vatAmount.toFixed(2);
+      quote.totalQuotedPrice = totalQuotedPrice.toFixed(2);
+      quote.updatedAt = updatedQuote?.updatedAt ?? new Date();
     });
 
-    return this.findById(quoteId);
+    return quote;
   }
 
   /**
@@ -505,8 +740,21 @@ export class QuotesService {
     quoteId: string,
     senderId: string,
     messageText: string,
+    currentUser?: JwtPayload,
   ): Promise<QuoteMessageResponseDto> {
     const quote = await this.findById(quoteId);
+
+    if (currentUser) {
+      if (
+        currentUser.role !== "ADMIN" &&
+        currentUser.role !== "SALES" &&
+        quote.userId !== currentUser.sub
+      ) {
+        throw new ForbiddenException(
+          "You are not authorized to participate in this quote negotiation",
+        );
+      }
+    }
 
     if (
       quote.status === "APPROVED" ||
@@ -517,7 +765,6 @@ export class QuotesService {
         this.i18n.t("quotes.QUOTE_CANNOT_BE_MODIFIED"),
       );
     }
-
     return await this.db.transaction(async (tx) => {
       const [newMessage] = await tx
         .insert(quoteMessages)
@@ -536,7 +783,7 @@ export class QuotesService {
       if (quote.status === "SUBMITTED") {
         await tx
           .update(quotes)
-          .set({ status: "NEGOTIATING", updatedAt: new Date() })
+          .set({ status: "NEGOTIATING" })
           .where(eq(quotes.id, quoteId));
       }
 
@@ -639,9 +886,7 @@ export class QuotesService {
         }
       }
 
-      const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-      const orderNumber = `ORD-${todayStr}-${String(randomSuffix)}`;
+      const orderNumber = generateDocumentCode(CODE_PREFIX.ORDER);
       // Create Order
       const [newOrder] = await tx
         .insert(orders)
