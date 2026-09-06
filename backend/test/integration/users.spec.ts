@@ -15,7 +15,7 @@ import {
   teardownTestApp,
   type TestAppSetup,
 } from "../helpers/app.helper";
-import { truncateAllTables } from "@/database/database.connection";
+import { truncateAllTables } from "@/database/utils/truncate.util";
 import { createAuthenticatedUser } from "../helpers/auth.helper";
 import type { DrizzleDB } from "@/database/database.module";
 import type { UserResponseDto } from "@/modules/users/dto/user-response.dto";

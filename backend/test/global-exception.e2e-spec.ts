@@ -16,7 +16,7 @@ import {
 } from "./helpers/app.helper";
 import type { DrizzleDB } from "@/database/database.module";
 import type { Rfc9457ErrorResponse } from "@/common/filters/global-exception.filter";
-import { truncateAllTables } from "@/database/database.connection";
+import { truncateAllTables } from "@/database/utils/truncate.util";
 
 describe("GlobalExceptionFilter Pipeline E2E", () => {
   let setup: TestAppSetup;

@@ -11,7 +11,7 @@ import {
   teardownWorkerTestDatabase,
   type TestDatabaseContext,
 } from "../helpers/database.helper";
-import { truncateAllTables } from "@/database/database.connection";
+import { truncateAllTables } from "@/database/utils/truncate.util";
 import {
   dealerTiers,
   users,

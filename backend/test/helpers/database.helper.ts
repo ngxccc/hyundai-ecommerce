@@ -8,8 +8,8 @@ import {
   normalizeDatabaseUrl,
   createDatabasePool,
   createDrizzleClient,
-  clearSchemaTablesCache,
 } from "@/database/database.connection";
+import { clearSchemaTablesCache } from "@/database/utils/truncate.util";
 
 /**
  * Encapsulates the isolated database resources provisioned for a test worker suite.

@@ -1,4 +1,4 @@
-import { truncateAllTables } from "@/database/database.connection";
+import { truncateAllTables } from "@/database/utils/truncate.util";
 import { isScopeActive, normalizeSeedScopes } from "./constants/seed.constant";
 import type {
   SeedOptions,
