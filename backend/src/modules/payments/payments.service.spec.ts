@@ -9,6 +9,7 @@ import { PaymentsService } from "./payments.service";
 import type { DrizzleDB } from "@/database/database.module";
 import { createMockDb, createMockI18nService } from "../../../test/mocks";
 import { generatePayOSSignature } from "./payos.util";
+import { PAYOS_ENDPOINTS } from "./constants/payment.constant";
 import { env } from "@/env";
 import type {
   CreateCheckoutLinkDto,
@@ -86,7 +87,7 @@ describe("PaymentsService", () => {
         const result = await service.createCheckoutLink(dto);
 
         expect(result.amount).toBe(10000000);
-        expect(result.checkoutUrl).toContain("pay.payos.vn/web/");
+        expect(result.checkoutUrl).toContain(PAYOS_ENDPOINTS.CHECKOUT_WEB_BASE);
         expect(result.orderCode).toBeGreaterThan(0);
       });
     });
@@ -179,6 +180,21 @@ describe("PaymentsService", () => {
         );
       });
     });
+    describe("when webhook arrives with non-success response code", () => {
+      test("should acknowledge webhook without error and marked as uncompleted", async () => {
+        const nonSuccessDto: PayOSWebhookDto = {
+          code: "01",
+          desc: "Cancelled",
+          success: false,
+          data: validData,
+          signature: generatePayOSSignature(validData, env.PAYOS_CHECKSUM_KEY),
+        };
+
+        const result = await service.handlePayOSWebhook(nonSuccessDto);
+        expect(result.processed).toBe(false);
+        expect(result.reason).toBe("Non-success code acknowledged");
+      });
+    });
 
     describe("when webhook signature is authentic and matches pending transaction", () => {
       test("should update transaction, order status to PROCESSING, and emit outbox events", async () => {
@@ -202,7 +218,6 @@ describe("PaymentsService", () => {
 
         const result = await service.handlePayOSWebhook(webhookDto);
 
-        expect(result.success).toBe(true);
         expect(result.processed).toBe(true);
       });
     });
@@ -226,9 +241,8 @@ describe("PaymentsService", () => {
 
         const result = await service.handlePayOSWebhook(webhookDto);
 
-        expect(result.success).toBe(true);
         expect(result.processed).toBe(true);
-        expect(result.message).toBe("Transaction already processed");
+        expect(result.reason).toBe("Transaction already processed");
       });
     });
 
@@ -296,7 +310,6 @@ describe("PaymentsService", () => {
 
         const result = await service.handlePayOSWebhook(webhookDto);
 
-        expect(result.success).toBe(true);
         expect(result.processed).toBe(true);
       });
     });
@@ -370,7 +383,7 @@ describe("PaymentsService", () => {
 
         expect(result.userId).toBe(mockUser.id);
         expect(result.status).toBe("PENDING");
-        expect(result.checkoutUrl).toContain("pay.payos.vn/web/");
+        expect(result.checkoutUrl).toContain(PAYOS_ENDPOINTS.CHECKOUT_WEB_BASE);
       });
     });
 

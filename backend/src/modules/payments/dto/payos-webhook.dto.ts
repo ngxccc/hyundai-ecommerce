@@ -88,3 +88,19 @@ export class PayOSWebhookDto implements PayOSWebhookDtoType {
   })
   public signature!: string;
 }
+
+export class PayOSWebhookResponseDto {
+  @ApiProperty({
+    example: true,
+    description:
+      "Indicates whether the payment transaction was successfully processed into database records",
+  })
+  public processed!: boolean;
+
+  @ApiPropertyOptional({
+    example: "Non-success code acknowledged",
+    description:
+      "Informational reason when webhook processing was skipped or acknowledged idempotently",
+  })
+  public reason?: string;
+}

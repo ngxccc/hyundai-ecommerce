@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { CODE_PREFIX } from "@/common/constants/business.constant";
 
 /**
  * Normalizes and sorts an object's keys alphabetically into a query string for HMAC signing.
@@ -38,14 +39,18 @@ export function sortAndStringifyPayOSData(
  */
 export function generatePayOSSignature(
   data: Record<string, unknown>,
-  checksumKey?: string,
+  checksumKey: string,
 ): string {
-  const key =
-    typeof checksumKey === "string" && checksumKey.length > 0
-      ? checksumKey
-      : "dummy-checksum-key";
+  if (!checksumKey || checksumKey.trim() === "") {
+    throw new Error(
+      "PayOS Checksum Key is required to compute HMAC-SHA256 signature.",
+    );
+  }
   const queryString = sortAndStringifyPayOSData(data);
-  return crypto.createHmac("sha256", key).update(queryString).digest("hex");
+  return crypto
+    .createHmac("sha256", checksumKey)
+    .update(queryString)
+    .digest("hex");
 }
 
 /**
@@ -59,20 +64,15 @@ export function generatePayOSSignature(
 export function verifyPayOSSignature(
   data: Record<string, unknown>,
   signature: string,
-  checksumKey?: string,
+  checksumKey: string,
 ): boolean {
-  if (!signature) {
+  if (!signature || !checksumKey || checksumKey.trim() === "") {
     return false;
   }
-  const key =
-    typeof checksumKey === "string" && checksumKey.length > 0
-      ? checksumKey
-      : "dummy-checksum-key";
   try {
-    const expected = generatePayOSSignature(data, key);
+    const expected = generatePayOSSignature(data, checksumKey);
     const expectedBuf = Buffer.from(expected, "utf-8");
     const actualBuf = Buffer.from(signature, "utf-8");
-
     if (expectedBuf.length !== actualBuf.length) {
       return false;
     }
@@ -90,4 +90,22 @@ export function verifyPayOSSignature(
  */
 export function generatePayOSOrderCode(): number {
   return Date.now() * 1000 + Math.floor(Math.random() * 1000);
+}
+
+/**
+ * Formats an order description compliant with PayOS 25-character constraint.
+ *
+ * @param orderNumber - Business order number (e.g. ORD-20260906-8A3B1C4D2E5F).
+ * @param orderId - Fallback internal order UUID.
+ * @returns Description string truncated to at most 25 characters.
+ */
+export function formatPayOSDescription(
+  orderNumber: string | null | undefined,
+  orderId: string,
+): string {
+  if (orderNumber && orderNumber.trim() !== "") {
+    return orderNumber.slice(0, 25);
+  }
+  const cleanId = orderId.replace(/-/g, "");
+  return `${CODE_PREFIX.ORDER}-${cleanId}`.slice(0, 25);
 }

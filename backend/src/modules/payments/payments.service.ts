@@ -23,10 +23,21 @@ import {
 import { env } from "@/env";
 import { OUTBOX_EVENT_TYPE } from "@/common/constants/event.constant";
 import {
+  formatPayOSDescription,
   generatePayOSOrderCode,
-  generatePayOSSignature,
   verifyPayOSSignature,
 } from "./payos.util";
+import {
+  PAYOS_RESPONSE_CODE,
+  PAYMENT_LOCK,
+  buildPaymentLockKey,
+  buildPayOSCheckoutUrl,
+  buildSimulatedVietQR,
+} from "./constants/payment.constant";
+import {
+  PAYMENT_GATEWAY_TOKEN,
+  type PaymentGateway,
+} from "./interfaces/payment-gateway.interface";
 import { RedlockService } from "@/common/services/redlock.service";
 import type {
   CheckoutLinkResponseDto,
@@ -35,6 +46,7 @@ import type {
   OrderPaymentSummaryDto,
   PaymentTransactionResponseDto,
   PayOSWebhookDto,
+  PayOSWebhookResponseDto,
   RepayDebtDto,
   VerifyCashPaymentDto,
 } from "./dto";
@@ -47,6 +59,8 @@ export class PaymentsService {
     private readonly i18n: I18nService,
     @Optional()
     private readonly redlockService?: RedlockService,
+    @Inject(PAYMENT_GATEWAY_TOKEN)
+    private readonly paymentGateway?: PaymentGateway,
   ) {}
 
   /**
@@ -132,64 +146,23 @@ export class PaymentsService {
       });
     }
 
-    const description =
-      `ORD-${order.orderNumber ?? order.id.slice(0, 8)}`.slice(0, 25);
+    const description = formatPayOSDescription(order.orderNumber, order.id);
     const returnUrl = dto.returnUrl ?? `${env.FRONTEND_URL}/checkout/success`;
     const cancelUrl = dto.cancelUrl ?? `${env.FRONTEND_URL}/checkout/cancel`;
 
-    // Try creating payment link via PayOS API if credentials are configured
-    let checkoutUrl = `https://pay.payos.vn/web/${orderCode.toString()}`;
-    let qrCode = `00020101021238540010A00000072701260006970422${orderCode.toString()}`;
-    let paymentLinkId = `plink_${orderCode.toString()}`;
-
-    if (env.PAYOS_CLIENT_ID !== "dummy-client-id" && env.NODE_ENV !== "test") {
-      try {
-        const payloadToSign = {
+    const { checkoutUrl, qrCode, paymentLinkId } = this.paymentGateway
+      ? await this.paymentGateway.createPaymentLink({
           amount: payableAmount,
           cancelUrl,
           description,
           orderCode,
           returnUrl,
+        })
+      : {
+          checkoutUrl: buildPayOSCheckoutUrl(orderCode),
+          qrCode: buildSimulatedVietQR(orderCode),
+          paymentLinkId: `plink_${orderCode.toString()}`,
         };
-        const signature = generatePayOSSignature(
-          payloadToSign,
-          env.PAYOS_CHECKSUM_KEY,
-        );
-
-        const response = await fetch(
-          "https://api-merchant.payos.vn/v2/payment-requests",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "x-client-id": env.PAYOS_CLIENT_ID,
-              "x-api-key": env.PAYOS_API_KEY,
-            },
-            body: JSON.stringify({
-              ...payloadToSign,
-              signature,
-            }),
-          },
-        );
-
-        const resData = (await response.json()) as {
-          code: string;
-          data?: {
-            checkoutUrl?: string;
-            qrCode?: string;
-            paymentLinkId?: string;
-          };
-        };
-
-        if (resData.code === "00" && resData.data?.checkoutUrl) {
-          checkoutUrl = resData.data.checkoutUrl;
-          qrCode = resData.data.qrCode ?? qrCode;
-          paymentLinkId = resData.data.paymentLinkId ?? paymentLinkId;
-        }
-      } catch {
-        // Fall back to generated URLs on connection error
-      }
-    }
 
     return {
       checkoutUrl,
@@ -209,7 +182,7 @@ export class PaymentsService {
    */
   async handlePayOSWebhook(
     webhookDto: PayOSWebhookDto,
-  ): Promise<{ success: boolean; processed: boolean; message?: string }> {
+  ): Promise<PayOSWebhookResponseDto> {
     const isAuthentic = verifyPayOSSignature(
       webhookDto.data as unknown as Record<string, unknown>,
       webhookDto.signature,
@@ -223,20 +196,19 @@ export class PaymentsService {
     }
 
     // Acknowledge non-success webhook codes (cancelled, expired) without error
-    if (webhookDto.code !== "00") {
-      return { success: true, processed: false, message: "Non-success code" };
+    if (webhookDto.code !== PAYOS_RESPONSE_CODE.SUCCESS) {
+      return { processed: false, reason: "Non-success code acknowledged" };
     }
 
     const { orderCode, amount, reference } = webhookDto.data;
 
-    // WHY: Acquire distributed lock to defend against concurrent duplicate webhook deliveries.
-    const lockKey = `lock:payment:orderCode:${orderCode.toString()}`;
+    // Acquire distributed lock to defend against concurrent duplicate webhook deliveries.
+    const lockKey = buildPaymentLockKey(orderCode);
     const lock = this.redlockService
-      ? await this.redlockService.acquireLock([lockKey], 5000)
+      ? await this.redlockService.acquireLock([lockKey], PAYMENT_LOCK.TTL_MS)
       : null;
 
     try {
-      // 1. Check if matching order paymentTransaction exists
       const [tx] = await this.db
         .select()
         .from(paymentTransactions)
@@ -244,12 +216,10 @@ export class PaymentsService {
         .limit(1);
 
       if (tx) {
-        // Idempotent guard: already succeeded
         if (tx.status === "COMPLETED") {
           return {
-            success: true,
             processed: true,
-            message: "Transaction already processed",
+            reason: "Transaction already processed",
           };
         }
 
@@ -343,10 +313,8 @@ export class PaymentsService {
           });
         });
 
-        return { success: true, processed: true };
+        return { processed: true };
       }
-
-      // 2. Check if matching debtRepayment exists
       const [debt] = await this.db
         .select()
         .from(debtRepayments)
@@ -356,12 +324,10 @@ export class PaymentsService {
       if (debt) {
         if (debt.status === "COMPLETED") {
           return {
-            success: true,
             processed: true,
-            message: "Debt repayment already processed",
+            reason: "Debt repayment already processed",
           };
         }
-
         await this.db.transaction(async (dbTx) => {
           await dbTx
             .update(debtRepayments)
@@ -392,13 +358,12 @@ export class PaymentsService {
           });
         });
 
-        return { success: true, processed: true };
+        return { processed: true };
       }
 
       return {
-        success: true,
         processed: false,
-        message: "Order code not recognized",
+        reason: "Order code not recognized",
       };
     } finally {
       if (lock && this.redlockService) {
@@ -644,9 +609,21 @@ export class PaymentsService {
     if (!repayment) {
       throw new BadRequestException("Failed to register debt repayment");
     }
+    const paymentLink = this.paymentGateway
+      ? await this.paymentGateway.createPaymentLink({
+          amount: repaymentAmount,
+          cancelUrl: `${env.FRONTEND_URL}/dealer/debt`,
+          description: `DEBT-${dealer.id.replace(/-/g, "").slice(0, 20)}`,
+          orderCode,
+          returnUrl: `${env.FRONTEND_URL}/dealer/debt?status=success`,
+        })
+      : {
+          checkoutUrl: buildPayOSCheckoutUrl(orderCode),
+          qrCode: buildSimulatedVietQR(orderCode),
+        };
 
-    const checkoutUrl = `https://pay.payos.vn/web/${orderCode.toString()}`;
-    const qrCode = `00020101021238540010A00000072701260006970422${orderCode.toString()}`;
+    const checkoutUrl = paymentLink.checkoutUrl;
+    const qrCode = paymentLink.qrCode;
 
     return {
       id: repayment.id,
