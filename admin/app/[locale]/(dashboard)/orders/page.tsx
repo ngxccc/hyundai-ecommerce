@@ -58,7 +58,7 @@ export default async function AdminOrdersPage({
       query: status ? { status: status as never } : undefined,
     },
   });
-  const orders: AdminOrder[] = ordersRes?.data?.items ?? [];
+  const orders: AdminOrder[] = ordersRes?.data ?? [];
 
   // In-memory search filtering (ID, user name, email, company)
   const filteredOrders = search

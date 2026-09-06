@@ -45,7 +45,7 @@ export const AdminDashboard = async () => {
     api.GET("/orders", { params: { query: { limit: 5 } } }),
   ]);
 
-  const ordersList: AdminOrder[] = allOrders.data?.data?.items ?? [];
+  const ordersList: AdminOrder[] = allOrders.data?.data ?? [];
   const recentOrders = ordersList.slice(0, 5);
 
   return (

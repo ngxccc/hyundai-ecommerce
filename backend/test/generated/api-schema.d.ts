@@ -1428,6 +1428,44 @@ export interface components {
       /** @description List of requested products and quantities */
       items: components["schemas"]["CreateLeadItemDto"][];
     };
+    PaginationMetaDto: {
+      /**
+       * @description Current page index (1-based)
+       * @example 1
+       */
+      page: number;
+      /**
+       * @description Number of records per page
+       * @example 20
+       */
+      limit: number;
+      /**
+       * @description Total number of matching records
+       * @example 100
+       */
+      total: number;
+      /**
+       * @description Total number of calculated pages
+       * @example 5
+       */
+      totalPages: number;
+      /**
+       * @description Indicates if there is a next page available
+       * @example true
+       */
+      hasNextPage: boolean;
+      /**
+       * @description Indicates if there is a previous page available
+       * @example false
+       */
+      hasPrevPage: boolean;
+    };
+    PaginatedApiResponseDto: {
+      /** @example true */
+      success: boolean;
+      meta: components["schemas"]["PaginationMetaDto"];
+    };
+    Object: Record<string, never>;
     UpdateLeadStatusDto: {
       /**
        * @description New pipeline status of the lead
@@ -1534,7 +1572,6 @@ export interface components {
       /** @example true */
       isActive?: boolean;
     };
-    Object: Record<string, never>;
     BrandResponseDto: {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
       id: string;
@@ -1597,43 +1634,6 @@ export interface components {
       descriptionEn?: string;
       /** @example true */
       isActive?: boolean;
-    };
-    PaginationMetaDto: {
-      /**
-       * @description Current page index (1-based)
-       * @example 1
-       */
-      page: number;
-      /**
-       * @description Number of records per page
-       * @example 20
-       */
-      limit: number;
-      /**
-       * @description Total number of matching records
-       * @example 100
-       */
-      total: number;
-      /**
-       * @description Total number of calculated pages
-       * @example 5
-       */
-      totalPages: number;
-      /**
-       * @description Indicates if there is a next page available
-       * @example true
-       */
-      hasNextPage: boolean;
-      /**
-       * @description Indicates if there is a previous page available
-       * @example false
-       */
-      hasPrevPage: boolean;
-    };
-    PaginatedApiResponseDto: {
-      /** @example true */
-      success: boolean;
-      meta: components["schemas"]["PaginationMetaDto"];
     };
     ProductResponseDto: {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
@@ -2638,15 +2638,6 @@ export interface components {
       /** @description Quotation line items with pricing and discounts */
       items: components["schemas"]["AdminQuoteItemInputDto"][];
     };
-    PaginatedQuoteResponseDto: {
-      items: components["schemas"]["QuoteResponseDto"][];
-      /** @example 10 */
-      total: number;
-      /** @example 1 */
-      page: number;
-      /** @example 20 */
-      limit: number;
-    };
     UpdateQuoteStatusDto: {
       /**
        * @description Target quotation workflow status
@@ -2943,15 +2934,6 @@ export interface components {
       note?: string;
       /** @description Order line items */
       items: components["schemas"]["B2bOrderItemInputDto"][];
-    };
-    PaginatedOrderResponseDto: {
-      items: components["schemas"]["OrderResponseDto"][];
-      /** @example 10 */
-      total: number;
-      /** @example 1 */
-      page: number;
-      /** @example 20 */
-      limit: number;
     };
     UpdateOrderStatusDto: {
       /**
@@ -4202,7 +4184,21 @@ export interface operations {
   };
   LeadsController_getAll: {
     parameters: {
-      query?: never;
+      query?: {
+        page?: components["schemas"]["Object"];
+        limit?: components["schemas"]["Object"];
+        /** @description Filter leads by operational status */
+        status?:
+          | "NEW"
+          | "CONTACTING"
+          | "SURVEY_SCHEDULED"
+          | "QUOTED"
+          | "CONVERTED"
+          | "REJECTED"
+          | "LOST";
+        /** @description Search across customerName, phoneNumber, companyName, notes */
+        search?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -4214,8 +4210,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiResponseDto"] & {
+          "application/json": components["schemas"]["PaginatedApiResponseDto"] & {
             data?: components["schemas"]["LeadResponseDto"][];
+            meta?: components["schemas"]["PaginationMetaDto"];
           };
         };
       };
@@ -5695,12 +5692,7 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          "application/json": components["schemas"]["ApiResponseDto"] & {
-            /** @default null */
-            data: Record<string, never> | null;
-          };
-        };
+        content?: never;
       };
     };
   };
@@ -5858,8 +5850,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["PaginatedQuoteResponseDto"];
+          "application/json": components["schemas"]["PaginatedApiResponseDto"] & {
+            data?: components["schemas"]["QuoteResponseDto"][];
+            meta?: components["schemas"]["PaginationMetaDto"];
           };
         };
       };
@@ -6147,8 +6140,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["PaginatedOrderResponseDto"];
+          "application/json": components["schemas"]["PaginatedApiResponseDto"] & {
+            data?: components["schemas"]["OrderResponseDto"][];
+            meta?: components["schemas"]["PaginationMetaDto"];
           };
         };
       };

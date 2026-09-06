@@ -56,7 +56,7 @@ export default async function AdminQuotesPage({
       query: status ? { status: status as never } : undefined,
     },
   });
-  const quotes: AdminQuote[] = quotesRes?.data?.items ?? [];
+  const quotes: AdminQuote[] = quotesRes?.data ?? [];
 
   // In-memory search filtering
   const searchLower = search?.toLowerCase();
