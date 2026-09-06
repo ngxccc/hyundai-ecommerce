@@ -3,8 +3,8 @@ import type { Pool } from "pg";
 import {
   createDatabasePool,
   createDrizzleClient,
-  truncateAllTables,
 } from "../database.connection";
+import { truncateAllTables } from "../utils/truncate.util";
 import type { DrizzleDB } from "../database.module";
 import {
   SEED_SCOPES,

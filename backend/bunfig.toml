@@ -1,5 +1,5 @@
 [test]
-preload = ["./test/helpers/global-setup.ts"]
+preload = ["./test/helpers/test-env.ts", "./test/helpers/global-setup.ts"]
 coverageSkipTestFiles = true
 coveragePathIgnorePatterns = [
   "**/*.spec.ts",

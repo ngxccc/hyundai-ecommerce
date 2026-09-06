@@ -18,7 +18,7 @@ import {
 import type { DrizzleDB } from "@/database/database.module";
 import { users, refreshTokens, outboxEvents } from "@/database/schemas";
 import type { components } from "../generated/api-schema";
-import { truncateAllTables } from "@/database/database.connection";
+import { truncateAllTables } from "@/database/utils/truncate.util";
 import { OUTBOX_EVENT_TYPE } from "@/common/constants/event.constant";
 
 type ApiResponse<T = unknown> = components["schemas"]["ApiResponseDto"] & {
