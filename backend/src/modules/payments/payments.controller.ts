@@ -36,6 +36,7 @@ import {
   DebtRepaymentResponseDto,
   OrderPaymentSummaryDto,
   PayOSWebhookDto,
+  PayOSWebhookResponseDto,
   RepayDebtDto,
   VerifyCashPaymentDto,
 } from "./dto";
@@ -72,7 +73,7 @@ export class PaymentsController {
   @ApiOperation({
     summary: "Receive and cryptographically verify PayOS payment webhook",
   })
-  @ApiOkResponseGeneric()
+  @ApiOkResponseGeneric(PayOSWebhookResponseDto)
   async handleWebhook(@Body() dto: PayOSWebhookDto) {
     const result = await this.paymentsService.handlePayOSWebhook(dto);
     return apiSuccess(result);

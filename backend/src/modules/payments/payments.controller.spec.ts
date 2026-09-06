@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test, mock } from "bun:test";
 import { PaymentsController } from "./payments.controller";
+import { buildPayOSCheckoutUrl } from "./constants/payment.constant";
 import type { PaymentsService } from "./payments.service";
 import type {
   CreateCheckoutLinkDto,
@@ -12,7 +13,7 @@ describe("PaymentsController", () => {
   let controller: PaymentsController;
 
   const mockCheckoutResult = {
-    checkoutUrl: "https://pay.payos.vn/web/1725451234567",
+    checkoutUrl: buildPayOSCheckoutUrl(1725451234567),
     qrCode: "00020101021238540010A000000727012600069704221725451234567",
     orderCode: 1725451234567,
     amount: 10000000,
@@ -20,7 +21,6 @@ describe("PaymentsController", () => {
   };
 
   const mockWebhookResult = {
-    success: true,
     processed: true,
   };
 
@@ -44,7 +44,7 @@ describe("PaymentsController", () => {
     orderCode: 1725459999999,
     referenceCode: null,
     verifiedBy: null,
-    checkoutUrl: "https://pay.payos.vn/web/1725459999999",
+    checkoutUrl: buildPayOSCheckoutUrl(1725459999999),
     qrCode: "0002010102...",
     createdAt: new Date("2026-09-04T08:00:00.000Z"),
     updatedAt: new Date("2026-09-04T08:00:00.000Z"),

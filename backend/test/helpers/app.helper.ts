@@ -19,6 +19,10 @@ import {
 } from "./database.helper";
 import { createRedisClient } from "@/config/redis.config";
 import { ZodValidationPipe } from "@/common/pipes/zod-validation.pipe";
+import { PAYMENT_GATEWAY_TOKEN } from "@/modules/payments/interfaces/payment-gateway.interface";
+import { MockPaymentGateway } from "@/modules/payments/gateways/mock-payment.gateway";
+import { MAIL_TRANSPORT_TOKEN } from "@/modules/mail/interfaces/mail-transport.interface";
+import { LogMailTransport } from "@/modules/mail/transports/log-mail.transport";
 
 /**
  * Encapsulates the runtime application and isolated resources provisioned for a test suite.
@@ -131,6 +135,10 @@ export async function createTestApp(
       sendVerificationEmail: async () => Promise.resolve(),
       sendPasswordResetEmail: async () => Promise.resolve(),
     })
+    .overrideProvider(PAYMENT_GATEWAY_TOKEN)
+    .useClass(MockPaymentGateway)
+    .overrideProvider(MAIL_TRANSPORT_TOKEN)
+    .useClass(LogMailTransport)
     .compile();
 
   const app = moduleFixture.createNestApplication();
