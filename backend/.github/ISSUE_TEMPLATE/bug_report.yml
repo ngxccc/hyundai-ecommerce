@@ -1,0 +1,58 @@
+name: "Bug Report"
+description: "Report an unexpected error, invariant violation, or test failure"
+title: "fix(<area>): <summary>"
+labels: ["type:fix"]
+body:
+  - type: textarea
+    id: bug_description
+    attributes:
+      label: "Bug Summary"
+      description: "Clear and concise description of the defect"
+      placeholder: "What went wrong? Include endpoint and status code..."
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Severity / Priority"
+      options:
+        - "priority:p0 (Critical blocker / Financial loss / System outage)"
+        - "priority:p1 (High priority / Release milestone blocker)"
+        - "priority:p2 (Normal priority / Functional bug)"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: "Affected Subsystem Area"
+      options:
+        - "area:auth"
+        - "area:products"
+        - "area:orders"
+        - "area:quotes"
+        - "area:payments"
+        - "area:warehouse"
+        - "area:leads"
+        - "area:cart"
+        - "area:api"
+        - "area:db"
+        - "area:infra"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "Steps to Reproduce / Reproduction Script"
+      description: "Provide HTTP request, payload, or failing test case"
+      placeholder: |
+        1. Call POST /auth/register with payload ...
+        2. Observed behavior: 500 error instead of 400 Bad Request
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected Behavior"
+      placeholder: "Expected 400 Bad Request with RFC 9457 Problem Details payload..."
+    validations:
+      required: true
