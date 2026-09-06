@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Post,
   UseGuards,
 } from "@nestjs/common";
@@ -19,7 +20,10 @@ import {
   ApiCreatedResponseGeneric,
 } from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
-import { CurrentUser } from "@/common/decorators/current-user.decorator";
+import {
+  CurrentUser,
+  type JwtPayload,
+} from "@/common/decorators/current-user.decorator";
 import { Roles } from "@/common/decorators/roles.decorator";
 import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
 import { RolesGuard } from "@/common/guards/roles.guard";
@@ -120,9 +124,13 @@ export class PaymentsController {
   @ApiCreatedResponseGeneric(DebtRepaymentResponseDto)
   async repayDebt(
     @Body() dto: RepayDebtDto,
-    @CurrentUser("sub") currentUserId: string,
+    @CurrentUser() currentUser: JwtPayload,
   ) {
-    const result = await this.paymentsService.repayDebt(dto, currentUserId);
+    const result = await this.paymentsService.repayDebt(
+      dto,
+      currentUser.sub,
+      currentUser.role,
+    );
     return apiSuccess(result);
   }
 
@@ -138,7 +146,9 @@ export class PaymentsController {
   @ApiOperation({ summary: "Get order payment status and transactions" })
   @ApiParam({ name: "orderId", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderPaymentSummaryDto)
-  async getOrderPaymentSummary(@Param("orderId") orderId: string) {
+  async getOrderPaymentSummary(
+    @Param("orderId", ParseUUIDPipe) orderId: string,
+  ) {
     const result = await this.paymentsService.getOrderPaymentSummary(orderId);
     return apiSuccess(result);
   }

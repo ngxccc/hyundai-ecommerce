@@ -8,7 +8,7 @@ RUN grep -q '^bun:' /etc/group || addgroup -g 1001 -S bun && \
 
 RUN chown bun:bun /usr/src/app
 USER bun
-COPY --chown=bun:bun package.json bun.lock ./
+COPY --chown=bun:bun package.json bun.lock tsconfig.json ./
 # WHY: Avoid running lifecycle scripts (e.g. husky prepare hook) since devDependencies are not installed in production.
 RUN bun install --prod --frozen-lockfile --ignore-scripts
 COPY --chown=bun:bun dist ./dist

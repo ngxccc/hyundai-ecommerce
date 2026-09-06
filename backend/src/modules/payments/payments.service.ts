@@ -1,8 +1,10 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
 import { eq, sql } from "drizzle-orm";
 import { I18nService } from "nestjs-i18n";
@@ -25,6 +27,7 @@ import {
   generatePayOSSignature,
   verifyPayOSSignature,
 } from "./payos.util";
+import { RedlockService } from "@/common/services/redlock.service";
 import type {
   CheckoutLinkResponseDto,
   CreateCheckoutLinkDto,
@@ -42,6 +45,8 @@ export class PaymentsService {
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
     private readonly i18n: I18nService,
+    @Optional()
+    private readonly redlockService?: RedlockService,
   ) {}
 
   /**
@@ -224,172 +229,183 @@ export class PaymentsService {
 
     const { orderCode, amount, reference } = webhookDto.data;
 
-    // 1. Check if matching order paymentTransaction exists
-    const [tx] = await this.db
-      .select()
-      .from(paymentTransactions)
-      .where(eq(paymentTransactions.orderCode, orderCode))
-      .limit(1);
+    // WHY: Acquire distributed lock to defend against concurrent duplicate webhook deliveries.
+    const lockKey = `lock:payment:orderCode:${orderCode.toString()}`;
+    const lock = this.redlockService
+      ? await this.redlockService.acquireLock([lockKey], 5000)
+      : null;
 
-    if (tx) {
-      // Idempotent guard: already succeeded
-      if (tx.status === "COMPLETED") {
-        return {
-          success: true,
-          processed: true,
-          message: "Transaction already processed",
-        };
-      }
-
-      // Validate payment amount
-      const expectedAmount = Number(tx.amount);
-      if (amount < expectedAmount) {
-        await this.db
-          .update(paymentTransactions)
-          .set({ status: "FAILED", updatedAt: new Date() })
-          .where(eq(paymentTransactions.id, tx.id));
-
-        throw new BadRequestException(
-          this.i18n.t("payments.PAYMENT_AMOUNT_MISMATCH"),
-        );
-      }
-
-      const [order] = await this.db
+    try {
+      // 1. Check if matching order paymentTransaction exists
+      const [tx] = await this.db
         .select()
-        .from(orders)
-        .where(eq(orders.id, tx.orderId))
+        .from(paymentTransactions)
+        .where(eq(paymentTransactions.orderCode, orderCode))
         .limit(1);
 
-      await this.db.transaction(async (dbTx) => {
-        // Update transaction status
-        await dbTx
-          .update(paymentTransactions)
-          .set({
-            status: "COMPLETED",
-            referenceCode: reference ?? null,
-            updatedAt: new Date(),
-          })
-          .where(eq(paymentTransactions.id, tx.id));
-
-        // Update payment status
-        await dbTx
-          .update(payments)
-          .set({
-            status: "COMPLETED",
-            rawPayload: JSON.stringify(webhookDto.data),
-            updatedAt: new Date(),
-          })
-          .where(eq(payments.orderId, tx.orderId));
-
-        // Update order status based on transaction type
-        if (order) {
-          const isDeposit = tx.transactionType === "DEPOSIT";
-          const newPaymentStatus = isDeposit ? "DEPOSIT_PAID" : "FULLY_PAID";
-          const newStatus =
-            order.status === "PENDING" ? "PROCESSING" : order.status;
-
-          const depositAmt = isDeposit ? tx.amount : order.totalAmount;
-          const remainingAmt = isDeposit
-            ? Math.max(
-                0,
-                Number(order.totalAmount) - Number(tx.amount),
-              ).toFixed(2)
-            : "0.00";
-
-          await dbTx
-            .update(orders)
-            .set({
-              paymentStatus: newPaymentStatus,
-              status: newStatus,
-              depositAmount: depositAmt,
-              remainingAmount: remainingAmt,
-              updatedAt: new Date(),
-            })
-            .where(eq(orders.id, order.id));
-
-          if (order.status === "PENDING") {
-            await dbTx.insert(outboxEvents).values({
-              eventType: OUTBOX_EVENT_TYPE.ORDER_CONFIRMED,
-              payload: {
-                orderId: order.id,
-                orderNumber: order.orderNumber,
-              },
-            });
-          }
+      if (tx) {
+        // Idempotent guard: already succeeded
+        if (tx.status === "COMPLETED") {
+          return {
+            success: true,
+            processed: true,
+            message: "Transaction already processed",
+          };
         }
 
-        // Emit payment completed outbox event
-        await dbTx.insert(outboxEvents).values({
-          eventType: OUTBOX_EVENT_TYPE.PAYMENT_COMPLETED,
-          payload: {
-            orderId: tx.orderId,
-            orderCode,
-            amount,
-            transactionType: tx.transactionType,
-            referenceCode: reference ?? null,
-          },
+        // Validate payment amount
+        const expectedAmount = Number(tx.amount);
+        if (amount < expectedAmount) {
+          await this.db
+            .update(paymentTransactions)
+            .set({ status: "FAILED", updatedAt: new Date() })
+            .where(eq(paymentTransactions.id, tx.id));
+
+          throw new BadRequestException(
+            this.i18n.t("payments.PAYMENT_AMOUNT_MISMATCH"),
+          );
+        }
+
+        const [order] = await this.db
+          .select()
+          .from(orders)
+          .where(eq(orders.id, tx.orderId))
+          .limit(1);
+
+        await this.db.transaction(async (dbTx) => {
+          // Update transaction status
+          await dbTx
+            .update(paymentTransactions)
+            .set({
+              status: "COMPLETED",
+              referenceCode: reference ?? null,
+              updatedAt: new Date(),
+            })
+            .where(eq(paymentTransactions.id, tx.id));
+
+          // Update payment status
+          await dbTx
+            .update(payments)
+            .set({
+              status: "COMPLETED",
+              rawPayload: JSON.stringify(webhookDto.data),
+              updatedAt: new Date(),
+            })
+            .where(eq(payments.orderId, tx.orderId));
+
+          // Update order status based on transaction type
+          if (order) {
+            const isDeposit = tx.transactionType === "DEPOSIT";
+            const newPaymentStatus = isDeposit ? "DEPOSIT_PAID" : "FULLY_PAID";
+            const newStatus =
+              order.status === "PENDING" ? "PROCESSING" : order.status;
+
+            const depositAmt = isDeposit ? tx.amount : order.totalAmount;
+            const remainingAmt = isDeposit
+              ? Math.max(
+                  0,
+                  Number(order.totalAmount) - Number(tx.amount),
+                ).toFixed(2)
+              : "0.00";
+
+            await dbTx
+              .update(orders)
+              .set({
+                paymentStatus: newPaymentStatus,
+                status: newStatus,
+                depositAmount: depositAmt,
+                remainingAmount: remainingAmt,
+                updatedAt: new Date(),
+              })
+              .where(eq(orders.id, order.id));
+
+            if (order.status === "PENDING") {
+              await dbTx.insert(outboxEvents).values({
+                eventType: OUTBOX_EVENT_TYPE.ORDER_CONFIRMED,
+                payload: {
+                  orderId: order.id,
+                  orderNumber: order.orderNumber,
+                },
+              });
+            }
+          }
+
+          // Emit payment completed outbox event
+          await dbTx.insert(outboxEvents).values({
+            eventType: OUTBOX_EVENT_TYPE.PAYMENT_COMPLETED,
+            payload: {
+              orderId: tx.orderId,
+              orderCode,
+              amount,
+              transactionType: tx.transactionType,
+              referenceCode: reference ?? null,
+            },
+          });
         });
-      });
 
-      return { success: true, processed: true };
-    }
-
-    // 2. Check if matching debtRepayment exists
-    const [debt] = await this.db
-      .select()
-      .from(debtRepayments)
-      .where(eq(debtRepayments.orderCode, orderCode))
-      .limit(1);
-
-    if (debt) {
-      if (debt.status === "COMPLETED") {
-        return {
-          success: true,
-          processed: true,
-          message: "Debt repayment already processed",
-        };
+        return { success: true, processed: true };
       }
 
-      await this.db.transaction(async (dbTx) => {
-        await dbTx
-          .update(debtRepayments)
-          .set({
-            status: "COMPLETED",
-            referenceCode: reference ?? null,
-            updatedAt: new Date(),
-          })
-          .where(eq(debtRepayments.id, debt.id));
+      // 2. Check if matching debtRepayment exists
+      const [debt] = await this.db
+        .select()
+        .from(debtRepayments)
+        .where(eq(debtRepayments.orderCode, orderCode))
+        .limit(1);
 
-        // Atomically decrease dealer debt
-        await dbTx
-          .update(users)
-          .set({
-            currentDebt: sql`GREATEST(0, ${users.currentDebt} - ${debt.amount})`,
-            updatedAt: new Date(),
-          })
-          .where(eq(users.id, debt.userId));
+      if (debt) {
+        if (debt.status === "COMPLETED") {
+          return {
+            success: true,
+            processed: true,
+            message: "Debt repayment already processed",
+          };
+        }
 
-        await dbTx.insert(outboxEvents).values({
-          eventType: OUTBOX_EVENT_TYPE.DEBT_REPAID,
-          payload: {
-            userId: debt.userId,
-            amount: debt.amount,
-            orderCode,
-            referenceCode: reference ?? null,
-          },
+        await this.db.transaction(async (dbTx) => {
+          await dbTx
+            .update(debtRepayments)
+            .set({
+              status: "COMPLETED",
+              referenceCode: reference ?? null,
+              updatedAt: new Date(),
+            })
+            .where(eq(debtRepayments.id, debt.id));
+
+          // Atomically decrease dealer debt
+          await dbTx
+            .update(users)
+            .set({
+              currentDebt: sql`GREATEST(0, ${users.currentDebt} - ${debt.amount})`,
+              updatedAt: new Date(),
+            })
+            .where(eq(users.id, debt.userId));
+
+          await dbTx.insert(outboxEvents).values({
+            eventType: OUTBOX_EVENT_TYPE.DEBT_REPAID,
+            payload: {
+              userId: debt.userId,
+              amount: debt.amount,
+              orderCode,
+              referenceCode: reference ?? null,
+            },
+          });
         });
-      });
 
-      return { success: true, processed: true };
+        return { success: true, processed: true };
+      }
+
+      return {
+        success: true,
+        processed: false,
+        message: "Order code not recognized",
+      };
+    } finally {
+      if (lock && this.redlockService) {
+        await this.redlockService.releaseLock(lock);
+      }
     }
-
-    return {
-      success: true,
-      processed: false,
-      message: "Order code not recognized",
-    };
   }
-
   /**
    * Confirms offline cash payment receipt for an order by Admin or Accountant.
    *
@@ -519,8 +535,28 @@ export class PaymentsService {
   async repayDebt(
     dto: RepayDebtDto,
     currentUserId?: string,
+    currentUserRole = "ADMIN",
   ): Promise<DebtRepaymentResponseDto> {
-    const targetUserId = dto.userId ?? currentUserId;
+    if (dto.paymentMethod === "CASH" && currentUserRole !== "ADMIN") {
+      throw new ForbiddenException(
+        "Only ADMIN can verify cash debt repayments",
+      );
+    }
+
+    if (
+      dto.userId &&
+      dto.userId !== currentUserId &&
+      currentUserRole !== "ADMIN"
+    ) {
+      throw new ForbiddenException(
+        "You are not authorized to repay debt for another user",
+      );
+    }
+
+    const targetUserId =
+      currentUserRole === "ADMIN"
+        ? (dto.userId ?? currentUserId)
+        : currentUserId;
     if (!targetUserId) {
       throw new BadRequestException(this.i18n.t("payments.DEALER_NOT_FOUND"));
     }

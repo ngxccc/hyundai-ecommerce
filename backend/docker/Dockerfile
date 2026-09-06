@@ -32,7 +32,7 @@ USER bun
 # Copy dependencies and build artifacts from previous stages
 COPY --chown=bun:bun --from=prod-install /usr/src/app/node_modules ./node_modules
 COPY --chown=bun:bun --from=builder /usr/src/app/dist ./dist
-COPY --chown=bun:bun package.json ./
+COPY --chown=bun:bun package.json tsconfig.json ./
 
 EXPOSE 3000
 
