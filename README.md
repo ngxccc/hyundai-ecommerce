@@ -29,7 +29,7 @@
 
 | Service                 | Technology              | Local Port | Production URL                                                                    | Description                                              |
 | :---------------------- | :---------------------- | :--------: | :-------------------------------------------------------------------------------- | :------------------------------------------------------- |
-| **REST API Server**     | NestJS 11 + Drizzle ORM |  `:3000`   | [api.hyundainhatnang.ngxc.io.vn](https://api.hyundainhatnang.ngxc.io.vn/api/docs) | Core backend, database queries, and OpenAPI contract     |
+| **REST API Server**     | NestJS 11 + Drizzle ORM |  `:3000`   | [hyundai-ecommerce.onrender.com](https://hyundai-ecommerce.onrender.com/api/docs) | Core backend, database queries, and OpenAPI contract     |
 | **Customer Storefront** | Next.js 16 (App Router) |  `:3001`   | [hyundainhatnang.ngxc.io.vn](https://hyundainhatnang.ngxc.io.vn)                  | Customer catalog, quote submission, and shopping cart    |
 | **Admin Portal**        | Next.js 16 (App Router) |  `:3002`   | [admin.hyundainhatnang.ngxc.io.vn](https://admin.hyundainhatnang.ngxc.io.vn)      | Backoffice dashboard, quote approvals, orders, inventory |
 

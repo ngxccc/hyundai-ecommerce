@@ -6,49 +6,65 @@
 - **TypeScript Model Properties**: MUST be `camelCase` in TypeScript.
 - **Primary Keys**:
   - Entity primary keys: UUIDv7 generated via `primaryKeyUuid` (`uuid().defaultRandom().primaryKey()`).
-  - Associative / Join tables: Composite primary keys (`primaryKey({ columns: [table.movieId, table.genreId] })`).
+  - Associative / Join tables: Composite primary keys (`primaryKey({ columns: [table.orderId, table.productId] })`).
 - **Timestamps**:
-  - Every base entity MUST include `created_at` and `updated_at` timestamps with timezone (`timestamp({ withTimezone: true, mode: "date" }).defaultNow()`).
+  - Base entities extending `fullEntity` define `createdAt` and `updatedAt` with `.$onUpdate(() => new Date())`.
+  - Never manually pass `updatedAt: new Date()` in update statements; Drizzle executes the hook automatically on query generation.
 
 ---
 
 ## 2. Indexing Strategy & Performance Rules
 
 - **Index Naming**:
-  - Non-unique index: `<table>_<columns>_idx` (e.g. `shows_hall_id_start_time_idx`).
+  - Non-unique index: `<table>_<columns>_idx` (e.g. `orders_user_id_created_at_idx`).
   - Unique index: `<table>_<columns>_uidx` (e.g. `users_email_uidx`).
-- **Partial Index Rule**: Use `WHERE` clauses for sparse states (e.g. indexing `verification_expires_at` ONLY where `status = 'pending_verification'`).
-- **PostgreSQL Exclusion Constraints**: Use `EXCLUDE USING gist` for time-range collision protection.
+- **Partial Index Rule**: Use `WHERE` clauses for sparse states (e.g. indexing `verification_expires_at` only where `status = 'PENDING_VERIFICATION'`).
 
 ---
 
-## 3. Query Optimization: YAGNI Selective Projections & Selective Returning
+## 3. Query Optimization: Projection Strategy
 
-- **PROHIBITION**: Never execute `SELECT *` (`.select()`) or unbounded `.returning()` across any layer of the application (API services, seeders, background jobs, or CLI tools).
-- **MANDATORY**:
-  1. **Explicit Selective Projections**: Explicitly project only required columns using Drizzle `.select({ col1: table.col1, ... })` to maximize PostgreSQL Index-Only Scans and prevent unneeded serialization of heavy or sensitive columns (e.g. `passwordHash`, `verificationToken`).
-  2. **Explicit Selective Returning**: When mutating records with `.returning()`, always specify the exact return payload shape (e.g. `.returning({ id: table.id, name: table.name })`). Never emit bare `.returning()`.
+In Drizzle ORM, `.select().from(table)` and `.returning()` expand to the schema's explicit column list (not SQL `*`). Tailor projection depth to data sensitivity and query intent:
+
+### A. Existence & State Guards (Index-Only Scans)
+
+When checking record existence, ownership, or status transitions, project minimal columns to enable PostgreSQL Index-Only Scans without reading the heap:
 
 ```ts
-// GOOD (Selective Projection, leverages Index-Only Scan)
-const [show] = await db
-  .select({ id: shows.id, status: shows.status })
-  .from(shows)
-  .where(eq(shows.id, showId))
+// Fast: index-only scan on primary key
+const [lead] = await db
+  .select({ id: leads.id })
+  .from(leads)
+  .where(eq(leads.id, id))
   .limit(1);
-
-// GOOD (Selective Returning on Mutation)
-const [newCinema] = await db
-  .insert(cinemas)
-  .values(cinemaData)
-  .returning({ id: cinemas.id, name: cinemas.name });
-
-// BANNED (Fetches unneeded columns, bypasses index-only scan optimization)
-const [show] = await db.select().from(shows).where(eq(shows.id, showId));
-
-// BANNED (Returns entire raw row including timestamps and internal metadata)
-const [newCinema] = await db.insert(cinemas).values(cinemaData).returning();
 ```
+
+### B. Sensitive & Heavy Column Masking
+
+When querying tables containing secrets (`users`) or large text/JSON blobs (`products`), omit unneeded columns:
+
+```ts
+// Omit sensitive credentials from user queries
+const {
+  passwordHash,
+  verificationToken,
+  resetPasswordToken,
+  ...safeUserColumns
+} = getTableColumns(users);
+const [user] = await db
+  .select(safeUserColumns)
+  .from(users)
+  .where(eq(users.id, id));
+
+// Omit heavy descriptions on product listing to reduce serialization I/O
+const { descriptionVi, descriptionEn, specSheet, ...summaryColumns } =
+  getTableColumns(products);
+const items = await db.select(summaryColumns).from(products).limit(20);
+```
+
+### C. Full Entity Operations
+
+For standard scalar tables without secrets or heavy blobs (`leads`, `categories`, `brands`), bare `.select().from(table)` and `.returning()` are idiomatic and maintainable. Avoid handcoding 15+ column projection objects when every field is consumed.
 
 ---
 
