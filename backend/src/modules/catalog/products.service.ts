@@ -134,7 +134,6 @@ function toProductUpdateValues(
     updateValues.totalStockCache = dto.totalStockCache;
   if (dto.isQuoteOnly !== undefined) updateValues.isQuoteOnly = dto.isQuoteOnly;
   if (dto.isActive !== undefined) updateValues.isActive = dto.isActive;
-  updateValues.updatedAt = new Date();
   return updateValues;
 }
 
@@ -565,7 +564,6 @@ export class ProductsService {
       .set({
         deletedAt: new Date(),
         isActive: false,
-        updatedAt: new Date(),
       })
       .where(eq(products.id, id));
   }

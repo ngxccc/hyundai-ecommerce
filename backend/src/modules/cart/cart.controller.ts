@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   UseGuards,
@@ -67,7 +68,7 @@ export class CartController {
   @ApiOkResponseGeneric(CartResponseDto)
   async updateItemQuantity(
     @CurrentUser("sub") userId: string,
-    @Param("id") itemId: string,
+    @Param("id", ParseUUIDPipe) itemId: string,
     @Body() dto: UpdateCartItemDto,
   ) {
     const data = await this.cartService.updateItemQuantity(userId, itemId, dto);
@@ -81,7 +82,7 @@ export class CartController {
   @ApiOkResponseGeneric(CartResponseDto)
   async removeItem(
     @CurrentUser("sub") userId: string,
-    @Param("id") itemId: string,
+    @Param("id", ParseUUIDPipe) itemId: string,
   ) {
     const data = await this.cartService.removeItem(userId, itemId);
     return apiSuccess(data);

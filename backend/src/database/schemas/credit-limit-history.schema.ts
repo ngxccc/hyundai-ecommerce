@@ -1,19 +1,26 @@
-import { numeric, snakeCase, text, uuid } from "drizzle-orm/pg-core";
+import { index, numeric, snakeCase, text, uuid } from "drizzle-orm/pg-core";
 import { users } from "./auth.schema";
 import { fullEntity } from "./helpers.schema";
 
-export const creditLimitHistory = snakeCase.table("credit_limit_history", {
-  ...fullEntity,
-  userId: uuid()
-    .references(() => users.id, { onDelete: "cascade" })
-    .notNull(),
-  oldLimit: numeric({ precision: 15, scale: 2 }).notNull(),
-  newLimit: numeric({ precision: 15, scale: 2 }).notNull(),
-  changedBy: uuid()
-    .references(() => users.id, { onDelete: "restrict" })
-    .notNull(),
-  reason: text(),
-});
+export const creditLimitHistory = snakeCase.table(
+  "credit_limit_history",
+  {
+    ...fullEntity,
+    userId: uuid()
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    oldLimit: numeric({ precision: 15, scale: 2 }).notNull(),
+    newLimit: numeric({ precision: 15, scale: 2 }).notNull(),
+    changedBy: uuid()
+      .references(() => users.id, { onDelete: "restrict" })
+      .notNull(),
+    reason: text(),
+  },
+  (table) => [
+    index("credit_limit_history_user_id_idx").on(table.userId),
+    index("credit_limit_history_changed_by_idx").on(table.changedBy),
+  ],
+);
 
 export type CreditLimitHistory = typeof creditLimitHistory.$inferSelect;
 export type NewCreditLimitHistory = typeof creditLimitHistory.$inferInsert;

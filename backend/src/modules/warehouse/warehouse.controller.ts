@@ -6,6 +6,8 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseBoolPipe,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
@@ -51,9 +53,11 @@ export class WarehouseController {
     description: "Whether to include deactivated warehouses",
   })
   @ApiOkResponseGeneric(WarehouseResponseDto, { isArray: true })
-  async getAll(@Query("includeInactive") includeInactive?: string) {
-    const shouldInclude = includeInactive === "true";
-    const data = await this.warehouseService.findAll(shouldInclude);
+  async getAll(
+    @Query("includeInactive", new ParseBoolPipe({ optional: true }))
+    includeInactive?: boolean,
+  ) {
+    const data = await this.warehouseService.findAll(Boolean(includeInactive));
     return apiSuccess(data);
   }
 
@@ -63,7 +67,7 @@ export class WarehouseController {
   })
   @ApiParam({ name: "productId", description: "Product UUID" })
   @ApiOkResponseGeneric(WarehouseStockResponseDto, { isArray: true })
-  async getProductStocks(@Param("productId") productId: string) {
+  async getProductStocks(@Param("productId", ParseUUIDPipe) productId: string) {
     const data = await this.warehouseService.getProductStocks(productId);
     return apiSuccess(data);
   }
@@ -74,7 +78,7 @@ export class WarehouseController {
   })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
   @ApiOkResponseGeneric(WarehouseStockResponseDto, { isArray: true })
-  async getWarehouseStocks(@Param("id") id: string) {
+  async getWarehouseStocks(@Param("id", ParseUUIDPipe) id: string) {
     const data = await this.warehouseService.getWarehouseStocks(id);
     return apiSuccess(data);
   }
@@ -83,7 +87,7 @@ export class WarehouseController {
   @ApiOperation({ summary: "Get warehouse details by UUID" })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
   @ApiOkResponseGeneric(WarehouseResponseDto)
-  async getById(@Param("id") id: string) {
+  async getById(@Param("id", ParseUUIDPipe) id: string) {
     const data = await this.warehouseService.findById(id);
     return apiSuccess(data);
   }
@@ -111,7 +115,10 @@ export class WarehouseController {
   })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
   @ApiOkResponseGeneric(WarehouseStockResponseDto)
-  async updateStock(@Param("id") id: string, @Body() dto: UpdateStockDto) {
+  async updateStock(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: UpdateStockDto,
+  ) {
     const data = await this.warehouseService.updateStock(id, dto);
     return apiSuccess(data);
   }
@@ -124,7 +131,10 @@ export class WarehouseController {
   @ApiOperation({ summary: "Update warehouse details (Admin Only)" })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
   @ApiOkResponseGeneric(WarehouseResponseDto)
-  async update(@Param("id") id: string, @Body() dto: UpdateWarehouseDto) {
+  async update(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: UpdateWarehouseDto,
+  ) {
     const data = await this.warehouseService.update(id, dto);
     return apiSuccess(data);
   }
@@ -136,8 +146,7 @@ export class WarehouseController {
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Deactivate warehouse (Admin Only)" })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
-  @ApiOkResponseGeneric()
-  async delete(@Param("id") id: string) {
+  async delete(@Param("id", ParseUUIDPipe) id: string) {
     await this.warehouseService.delete(id);
     return apiSuccess(null);
   }

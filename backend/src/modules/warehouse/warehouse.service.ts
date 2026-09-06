@@ -93,8 +93,6 @@ export class WarehouseService {
     id: string,
     dto: UpdateWarehouseDto,
   ): Promise<WarehouseResponseDto> {
-    await this.findById(id);
-
     const updateValues: Partial<typeof warehouses.$inferInsert> = {};
     if (dto.nameVi !== undefined) updateValues.nameVi = dto.nameVi;
     if (dto.nameEn !== undefined) updateValues.nameEn = dto.nameEn;
@@ -103,7 +101,6 @@ export class WarehouseService {
     if (dto.district !== undefined) updateValues.district = dto.district;
     if (dto.city !== undefined) updateValues.city = dto.city;
     if (dto.isActive !== undefined) updateValues.isActive = dto.isActive;
-    updateValues.updatedAt = new Date();
 
     const [updated] = await this.db
       .update(warehouses)
@@ -122,15 +119,17 @@ export class WarehouseService {
    * Deactivates a warehouse.
    */
   async delete(id: string): Promise<void> {
-    await this.findById(id);
-
-    await this.db
+    const [updated] = await this.db
       .update(warehouses)
       .set({
         isActive: false,
-        updatedAt: new Date(),
       })
-      .where(eq(warehouses.id, id));
+      .where(eq(warehouses.id, id))
+      .returning();
+
+    if (!updated) {
+      throw new NotFoundException(`Warehouse with ID "${id}" not found`);
+    }
   }
 
   /**
@@ -252,6 +251,14 @@ export class WarehouseService {
 
     // 3. Atomically upsert warehouse stock and synchronize product totalStockCache inside transaction
     const updatedStockRecord = await this.db.transaction(async (tx) => {
+      // WHY: Lock product row to serialize inventory cache synchronization across concurrent stock updates.
+      await tx
+        .select({ id: products.id })
+        .from(products)
+        .where(eq(products.id, dto.productId))
+        .for("update")
+        .limit(1);
+
       // Upsert per-warehouse stock
       const [upserted] = await tx
         .insert(warehouseStocks)
@@ -266,7 +273,6 @@ export class WarehouseService {
           set: {
             stock: dto.stock,
             minStockWarning: dto.minStockWarning,
-            updatedAt: new Date(),
           },
         })
         .returning();
@@ -291,7 +297,6 @@ export class WarehouseService {
         .update(products)
         .set({
           totalStockCache,
-          updatedAt: new Date(),
         })
         .where(eq(products.id, dto.productId));
 

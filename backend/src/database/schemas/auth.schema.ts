@@ -50,6 +50,8 @@ export const users = snakeCase.table(
   (table) => [
     uniqueIndex("users_email_uidx").on(table.email),
     uniqueIndex("users_phone_uidx").on(table.phoneNumber),
+    index("users_verification_token_idx").on(table.verificationToken),
+    index("users_reset_password_token_idx").on(table.resetPasswordToken),
     index("users_dealer_tier_idx").on(table.dealerTierId),
     index("users_parent_id_idx").on(table.parentId),
     index("users_role_idx").on(table.role),

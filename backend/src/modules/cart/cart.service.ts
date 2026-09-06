@@ -32,25 +32,15 @@ export class CartService {
    * Retrieves or lazily creates a cart for the specified user with calculated line totals.
    */
   async getOrCreateCart(userId: string): Promise<CartResponseDto> {
-    let [cart] = await this.db
-      .select()
-      .from(carts)
-      .where(eq(carts.userId, userId))
-      .limit(1);
+    const cart = await this.getOrCreateCartEntity(userId);
+    return this.fetchCartResponse(cart.id, userId);
+  }
 
-    if (!cart) {
-      const [newCart] = await this.db
-        .insert(carts)
-        .values({ userId })
-        .returning();
-
-      if (!newCart) {
-        throw new BadRequestException("Failed to initialize user cart");
-      }
-      cart = newCart;
-    }
-
-    const items = await this.fetchCartItems(cart.id);
+  private async fetchCartResponse(
+    cartId: string,
+    userId: string,
+  ): Promise<CartResponseDto> {
+    const items = await this.fetchCartItems(cartId);
 
     const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
     const totalAmount = items
@@ -58,15 +48,15 @@ export class CartService {
       .toFixed(2);
 
     return {
-      id: cart.id,
-      userId: cart.userId,
+      id: cartId,
+      userId,
       items,
       summary: {
         totalItems,
         totalAmount,
       },
-      createdAt: cart.createdAt,
-      updatedAt: cart.updatedAt,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
   }
 
@@ -121,13 +111,9 @@ export class CartService {
     }
 
     if (existingItem) {
-      await this.db
-        .update(cartItems)
-        .set({
-          quantity: newQuantity,
-          updatedAt: new Date(),
-        })
-        .where(eq(cartItems.id, existingItem.id));
+      await this.db.update(cartItems).set({
+        quantity: newQuantity,
+      });
     } else {
       await this.db.insert(cartItems).values({
         cartId: cart.id,
@@ -136,7 +122,7 @@ export class CartService {
       });
     }
 
-    return this.getOrCreateCart(userId);
+    return this.fetchCartResponse(cart.id, userId);
   }
 
   /**
@@ -174,15 +160,11 @@ export class CartService {
       );
     }
 
-    await this.db
-      .update(cartItems)
-      .set({
-        quantity: dto.quantity,
-        updatedAt: new Date(),
-      })
-      .where(eq(cartItems.id, itemId));
+    await this.db.update(cartItems).set({
+      quantity: dto.quantity,
+    });
 
-    return this.getOrCreateCart(userId);
+    return this.fetchCartResponse(cart.id, userId);
   }
 
   /**
@@ -203,7 +185,7 @@ export class CartService {
 
     await this.db.delete(cartItems).where(eq(cartItems.id, itemId));
 
-    return this.getOrCreateCart(userId);
+    return this.fetchCartResponse(cart.id, userId);
   }
 
   /**
@@ -217,16 +199,19 @@ export class CartService {
       return this.getOrCreateCart(userId);
     }
 
-    await this.db.transaction(async (tx) => {
+    const cartId = await this.db.transaction(async (tx) => {
       // 1. Get or create user cart entity within transaction
       let [cart] = await tx
-        .select()
+        .select({ id: carts.id })
         .from(carts)
         .where(eq(carts.userId, userId))
         .limit(1);
 
       if (!cart) {
-        const [created] = await tx.insert(carts).values({ userId }).returning();
+        const [created] = await tx
+          .insert(carts)
+          .values({ userId })
+          .returning({ id: carts.id });
         if (!created) {
           throw new BadRequestException("Failed to initialize user cart");
         }
@@ -282,13 +267,9 @@ export class CartService {
         }
 
         if (existingItem) {
-          await tx
-            .update(cartItems)
-            .set({
-              quantity: finalQuantity,
-              updatedAt: new Date(),
-            })
-            .where(eq(cartItems.id, existingItem.id));
+          await tx.update(cartItems).set({
+            quantity: finalQuantity,
+          });
         } else {
           await tx.insert(cartItems).values({
             cartId: cart.id,
@@ -297,9 +278,10 @@ export class CartService {
           });
         }
       }
+      return cart.id;
     });
 
-    return this.getOrCreateCart(userId);
+    return this.fetchCartResponse(cartId, userId);
   }
 
   /**

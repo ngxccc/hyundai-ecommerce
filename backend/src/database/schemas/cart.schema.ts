@@ -1,4 +1,12 @@
-import { integer, snakeCase, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import {
+  check,
+  index,
+  integer,
+  snakeCase,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { baseEntity } from "./helpers.schema";
 import { users } from "./auth.schema";
 import { products } from "./product.schema";
@@ -25,6 +33,8 @@ export const cartItems = snakeCase.table(
   },
   (table) => [
     uniqueIndex("cart_product_unique_idx").on(table.cartId, table.productId),
+    index("cart_item_product_id_idx").on(table.productId),
+    check("cart_item_quantity_positive_chk", sql`${table.quantity} > 0`),
   ],
 );
 
