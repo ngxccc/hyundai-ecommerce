@@ -41,24 +41,28 @@ describe("OutboxService", () => {
     it("should instantiate OutboxService correctly", () => {
       expect(service).toBeDefined();
     });
-
-    it("should skip starting polling interval when running in test environment", () => {
-      const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = "test";
+    it("should skip starting polling interval when polling is disabled via configuration", () => {
+      const disabledService = new OutboxService(
+        mockDb as unknown as DrizzleDB,
+        mockQueue as unknown as Queue,
+        { enablePolling: false },
+      );
 
       const setIntervalSpy = spyOn(globalThis, "setInterval");
       try {
-        service.onApplicationBootstrap();
+        disabledService.onApplicationBootstrap();
         expect(setIntervalSpy).not.toHaveBeenCalled();
       } finally {
-        process.env.NODE_ENV = originalEnv;
         setIntervalSpy.mockRestore();
       }
     });
 
-    it("should start 5-second polling interval and trigger processOutbox when running in production environment", () => {
-      const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = "production";
+    it("should start 5-second polling interval and trigger processOutbox when polling is enabled via configuration", () => {
+      const enabledService = new OutboxService(
+        mockDb as unknown as DrizzleDB,
+        mockQueue as unknown as Queue,
+        { enablePolling: true },
+      );
 
       const originalSetInterval = globalThis.setInterval;
       const setIntervalMock = mock((cb: () => void) => {
@@ -67,16 +71,16 @@ describe("OutboxService", () => {
       });
       globalThis.setInterval = setIntervalMock as unknown as typeof setInterval;
 
-      const processSpy = spyOn(service, "processOutbox").mockImplementation(
-        () => Promise.resolve(),
-      );
+      const processSpy = spyOn(
+        enabledService,
+        "processOutbox",
+      ).mockImplementation(() => Promise.resolve());
 
       try {
-        service.onApplicationBootstrap();
+        enabledService.onApplicationBootstrap();
         expect(setIntervalMock).toHaveBeenCalledTimes(1);
         expect(processSpy).toHaveBeenCalled();
       } finally {
-        process.env.NODE_ENV = originalEnv;
         globalThis.setInterval = originalSetInterval;
         processSpy.mockRestore();
       }
