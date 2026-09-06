@@ -12,7 +12,7 @@ import {
   type DrizzleDB,
 } from "@/database/database.module";
 import { outboxEvents } from "@/database/schemas";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import {
   OUTBOX_EVENT_TYPE,
   MAIL_JOB_NAME,
@@ -45,7 +45,7 @@ export class OutboxService
 
   onApplicationBootstrap() {
     if (process.env.NODE_ENV === "test") return;
-    // WHY: Polling interval of 5 seconds to process outbox events while keeping DB CPU usage low.
+    // Polling interval of 5 seconds balances event processing latency against database CPU utilization.
     this.timer = setInterval(() => {
       void this.processOutbox();
     }, 5000);
@@ -68,7 +68,7 @@ export class OutboxService
 
     try {
       const pendingEvents = await this.db.transaction(async (tx) => {
-        return tx
+        const events = await tx
           .select({
             id: outboxEvents.id,
             eventType: outboxEvents.eventType,
@@ -79,6 +79,20 @@ export class OutboxService
           .where(eq(outboxEvents.status, "PENDING"))
           .limit(10)
           .for("update", { skipLocked: true });
+
+        if (events.length > 0) {
+          await tx
+            .update(outboxEvents)
+            .set({ status: "PROCESSING" })
+            .where(
+              inArray(
+                outboxEvents.id,
+                events.map((e) => e.id),
+              ),
+            );
+        }
+
+        return events;
       });
 
       if (pendingEvents.length === 0) {
@@ -161,6 +175,7 @@ export class OutboxService
             delay: 2000,
           },
           removeOnComplete: true,
+          removeOnFail: { count: 500 },
         })
         .finally(() => {
           clearTimeout(timer);

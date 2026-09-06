@@ -45,7 +45,6 @@ export class LoggingInterceptor implements NestInterceptor {
     if (user) {
       this.sentryService?.setUser({
         id: user.id,
-        email: user.email,
         role: user.role,
       });
     }
