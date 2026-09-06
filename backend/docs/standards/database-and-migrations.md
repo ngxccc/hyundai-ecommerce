@@ -22,49 +22,47 @@
 
 ---
 
-## 3. Query Optimization: Projection Strategy
+## 3. Projection Strategy: Bare vs Explicit
 
-In Drizzle ORM, `.select().from(table)` and `.returning()` expand to the schema's explicit column list (not SQL `*`). Tailor projection depth to data sensitivity and query intent:
+Drizzle expands `.select()` and `.returning()` to explicit schema columns. Balance PostgreSQL heap fetch cost against type inference:
 
-### A. Existence & State Guards (Index-Only Scans)
-
-When checking record existence, ownership, or status transitions, project minimal columns to enable PostgreSQL Index-Only Scans without reading the heap:
+| Pattern                               | When to Use                                                                                                                                                            | Engine Mechanism                                                                                       |
+| :------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------- |
+| **Bare `.select()` / `.returning()`** | Single-row by PK (`id`, `orderCode`), `INSERT/UPDATE ... RETURNING`, lean tables (`orders`, `payments`, `outbox_events`).                                              | Tuple already in 8KB shared buffer; 0 extra disk I/O. Retains full `InferSelectModel` typing.          |
+| **Explicit `.select({ ... })`**       | Multi-row listing (20–100 rows), tables with TOAST blobs (`products.descriptionVi`, `specSheet`), index-only existence checks, masking secrets (`users.passwordHash`). | Skips TOAST table lookups, prevents memory bloat, enables B-Tree index-only scans without heap access. |
 
 ```ts
-// Fast: index-only scan on primary key
-const [lead] = await db
-  .select({ id: leads.id })
-  .from(leads)
-  .where(eq(leads.id, id))
+// Bare: single-row lookup or mutation return
+const [payment] = await db
+  .select()
+  .from(payments)
+  .where(eq(payments.id, id))
   .limit(1);
-```
+const [newTx] = await db
+  .insert(paymentTransactions)
+  .values(payload)
+  .returning();
 
-### B. Sensitive & Heavy Column Masking
-
-When querying tables containing secrets (`users`) or large text/JSON blobs (`products`), omit unneeded columns:
-
-```ts
-// Omit sensitive credentials from user queries
-const {
-  passwordHash,
-  verificationToken,
-  resetPasswordToken,
-  ...safeUserColumns
-} = getTableColumns(users);
+// Masked: omit secrets
+const { passwordHash, verificationToken, ...safeUserColumns } =
+  getTableColumns(users);
 const [user] = await db
   .select(safeUserColumns)
   .from(users)
   .where(eq(users.id, id));
 
-// Omit heavy descriptions on product listing to reduce serialization I/O
+// TOAST-trimmed: paginated listing
 const { descriptionVi, descriptionEn, specSheet, ...summaryColumns } =
   getTableColumns(products);
 const items = await db.select(summaryColumns).from(products).limit(20);
+
+// Index-only: existence check
+const [exists] = await db
+  .select({ id: leads.id })
+  .from(leads)
+  .where(eq(leads.id, id))
+  .limit(1);
 ```
-
-### C. Full Entity Operations
-
-For standard scalar tables without secrets or heavy blobs (`leads`, `categories`, `brands`), bare `.select().from(table)` and `.returning()` are idiomatic and maintainable. Avoid handcoding 15+ column projection objects when every field is consumed.
 
 ---
 
