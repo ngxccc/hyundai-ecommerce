@@ -49,7 +49,7 @@ export function verifyPayOSSignature(
 ### Tier 2: Technical Rationale Comments (Natural Prose) — Why, Not What
 
 **Scope**: Non-obvious architectural decisions, security safeguards, concurrency handling, resilience strategies, and third-party library workarounds.  
-**Format**: Concise, natural English sentences explaining the technical reason, invariant, or failure mode prevented. (Do not mandate artificial prefixes like `// WHY:`; write direct, professional prose).
+**Format**: Concise, natural English sentences explaining the technical reason, invariant, or failure mode prevented. Write direct, professional prose.
 
 #### 4 Primary Use Cases
 
@@ -117,5 +117,4 @@ export function verifyPayOSSignature(
 
 1. [ ] Are all comments written in **English**?
 2. [ ] Does any comment merely repeat what the code says? If yes $\rightarrow$ **Remove**.
-3. [ ] Does non-obvious security or resilience logic have a `// WHY:` comment?
-4. [ ] Are public utilities documented with **TSDoc** (`/** ... */`)?
+3. [ ] Are public utilities documented with **TSDoc** (`/** ... */`)?
