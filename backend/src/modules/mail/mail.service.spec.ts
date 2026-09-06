@@ -1,38 +1,19 @@
 import { MailService } from "./mail.service";
-import { beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
-import { env } from "@/env";
-
-// Mock the resend module globally using Bun's native mock.module wrapper.
-const mockSend = mock(() =>
-  Promise.resolve<{
-    data: { id: string } | null;
-    error: { name: string; message: string } | null;
-  }>({
-    data: { id: "mock-email-id-123" },
-    error: null,
-  }),
-);
-
-await mock.module("resend", () => {
-  return {
-    Resend: class {
-      emails = {
-        send: mockSend,
-      };
-    },
-  };
-});
+import { beforeEach, describe, expect, it, mock, type Mock } from "bun:test";
+import type { MailTransport } from "./interfaces/mail-transport.interface";
+import { LogMailTransport } from "./transports/log-mail.transport";
 
 describe("MailService", () => {
   let service: MailService;
+  let mockTransport: MailTransport;
+  let sendMock: Mock<MailTransport["send"]>;
 
   beforeEach(() => {
-    mockSend.mockClear();
-    service = new MailService();
-    spyOn(
-      (service as unknown as { logger: { error: () => void } }).logger,
-      "error",
-    ).mockImplementation(() => undefined);
+    sendMock = mock(() => Promise.resolve({ id: "mock-email-id-123" }));
+    mockTransport = {
+      send: sendMock,
+    };
+    service = new MailService(mockTransport);
   });
 
   describe("when initializing mail module", () => {
@@ -42,112 +23,76 @@ describe("MailService", () => {
   });
 
   describe("when sending verification email", () => {
-    it("should bypass sending email when recipient belongs to test domain @example.com in non-production", async () => {
-      const originalEnv = env.NODE_ENV;
-      (env as { NODE_ENV: string }).NODE_ENV = "test";
-
+    it("should call transport.send with verification link and recipient details", async () => {
       await service.sendVerificationEmail(
-        "user@example.com",
-        "Test User",
-        "token-123",
+        "user@hyundainhatnang.vn",
+        "Nguyễn Văn An",
+        "token-uuid-123",
       );
 
-      expect(mockSend).not.toHaveBeenCalled();
-      (env as { NODE_ENV: string }).NODE_ENV = originalEnv;
+      expect(sendMock).toHaveBeenCalledTimes(1);
+      const call = sendMock.mock.calls[0]?.[0];
+      expect(call?.to).toBe("user@hyundainhatnang.vn");
+      expect(call?.subject).toBe("Xác thực tài khoản của bạn");
+      expect(call?.html).toContain("verify-email?token=token-uuid-123");
     });
 
-    it("should call resend.emails.send with verification link when email is valid", async () => {
-      await service.sendVerificationEmail(
-        "user@ticketbooking.vn",
-        "Test User",
-        "token-xyz",
+    it("should propagate errors when transport fails", () => {
+      sendMock.mockImplementationOnce(() =>
+        Promise.reject(new Error("SMTP Connection Failed")),
       );
 
-      expect(mockSend).toHaveBeenCalledWith(
-        expect.objectContaining({
-          to: "user@ticketbooking.vn",
-          subject: "Xác thực tài khoản của bạn",
-          html: expect.stringContaining("token-xyz") as unknown as string,
-        }),
-      );
-    });
-
-    it("should throw error and log failure when resend api returns an error", async () => {
-      mockSend.mockImplementationOnce(() =>
-        Promise.resolve({
-          data: null,
-          error: { name: "Error", message: "API Error" },
-        }),
-      );
-
-      let thrown = false;
-      try {
-        await service.sendVerificationEmail(
-          "user@ticketbooking.vn",
+      expect(
+        service.sendVerificationEmail(
+          "user@hyundainhatnang.vn",
           "Test User",
-          "token-xyz",
-        );
-      } catch (err) {
-        thrown = true;
-        expect(err).toBeInstanceOf(Error);
-        expect((err as Error).message).toBe("API Error");
-      }
-      expect(thrown).toBe(true);
+          "token-fail",
+        ),
+      ).rejects.toThrow("SMTP Connection Failed");
     });
   });
 
   describe("when sending password reset email", () => {
-    it("should bypass sending email when recipient belongs to test domain @example.com in non-production", async () => {
-      const originalEnv = env.NODE_ENV;
-      (env as { NODE_ENV: string }).NODE_ENV = "test";
-
+    it("should call transport.send with reset link and recipient details", async () => {
       await service.sendPasswordResetEmail(
-        "user@example.com",
-        "Test User",
-        "token-123",
+        "user@hyundainhatnang.vn",
+        "Trần Thị Bình",
+        "reset-token-456",
       );
 
-      expect(mockSend).not.toHaveBeenCalled();
-      (env as { NODE_ENV: string }).NODE_ENV = originalEnv;
+      expect(sendMock).toHaveBeenCalledTimes(1);
+      const call = sendMock.mock.calls[0]?.[0];
+      expect(call?.to).toBe("user@hyundainhatnang.vn");
+      expect(call?.subject).toBe("Khôi phục mật khẩu của bạn");
+      expect(call?.html).toContain("reset-password?token=reset-token-456");
     });
 
-    it("should call resend.emails.send with password reset link when email is valid", async () => {
-      await service.sendPasswordResetEmail(
-        "user@ticketbooking.vn",
-        "Test User",
-        "token-reset-xyz",
+    it("should propagate errors when transport fails", () => {
+      sendMock.mockImplementationOnce(() =>
+        Promise.reject(new Error("Quota Exceeded")),
       );
 
-      expect(mockSend).toHaveBeenCalledWith(
-        expect.objectContaining({
-          to: "user@ticketbooking.vn",
-          subject: "Khôi phục mật khẩu của bạn",
-          html: expect.stringContaining("token-reset-xyz") as unknown as string,
-        }),
-      );
-    });
-
-    it("should throw error and log failure when resend api returns an error", async () => {
-      mockSend.mockImplementationOnce(() =>
-        Promise.resolve({
-          data: null,
-          error: { name: "Error", message: "Reset API Error" },
-        }),
-      );
-
-      let thrown = false;
-      try {
-        await service.sendPasswordResetEmail(
-          "user@ticketbooking.vn",
+      expect(
+        service.sendPasswordResetEmail(
+          "user@hyundainhatnang.vn",
           "Test User",
-          "token-reset-xyz",
-        );
-      } catch (err) {
-        thrown = true;
-        expect(err).toBeInstanceOf(Error);
-        expect((err as Error).message).toBe("Reset API Error");
-      }
-      expect(thrown).toBe(true);
+          "token-fail",
+        ),
+      ).rejects.toThrow("Quota Exceeded");
+    });
+  });
+
+  describe("LogMailTransport", () => {
+    it("should simulate delivery and return log id without error", async () => {
+      const logTransport = new LogMailTransport();
+      const result = await logTransport.send({
+        to: "test@example.com",
+        subject: "Hello",
+        html: "<p>World</p>",
+      });
+
+      expect(result.id).toBeDefined();
+      expect(result.id).toMatch(/^log-\d+/);
     });
   });
 });
