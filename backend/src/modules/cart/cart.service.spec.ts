@@ -148,10 +148,12 @@ describe("CartService", () => {
         // 2. select existing item
         // 3. getOrCreateCart (cart select)
         // 4. getOrCreateCart (items select: empty)
+        // 1. getOrCreateCartEntity
+        // 2. select existing item
+        // 3. fetchCartItems: empty
         mockDb.setSelectResultsQueue([
           [existingCart],
           [{ id: "item-del" }],
-          [existingCart],
           [],
         ]);
 
@@ -185,14 +187,11 @@ describe("CartService", () => {
         // 1. tx.select cart: [userCart]
         // 2. tx.select products: [productA]
         // 3. tx.select existing cartItems: [existingItemA]
-        // 4. getOrCreateCart (outside tx):
-        //    - cart: [userCart]
-        //    - items: [mock item with clamped qty 3]
+        // 4. fetchCartItems: [mock item with clamped qty 3]
         mockDb.setSelectResultsQueue([
           [userCart],
           [productA],
           [existingItemA],
-          [userCart],
           [
             {
               item: {

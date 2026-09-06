@@ -154,7 +154,7 @@ export class BrandsService {
       }
     }
 
-    await this.db
+    const [updated] = await this.db
       .update(brands)
       .set({
         ...(dto.name !== undefined ? { name: dto.name } : {}),
@@ -167,11 +167,17 @@ export class BrandsService {
           ? { descriptionEn: dto.descriptionEn }
           : {}),
         ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
-        updatedAt: new Date(),
       })
-      .where(eq(brands.id, id));
+      .where(eq(brands.id, id))
+      .returning();
 
-    return this.findById(id);
+    if (!updated) {
+      throw new NotFoundException(
+        this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id } }),
+      );
+    }
+
+    return this.mapBrandToDto(updated);
   }
 
   /**

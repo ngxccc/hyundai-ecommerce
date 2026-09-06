@@ -204,7 +204,7 @@ export class CategoriesService {
       }
     }
 
-    await this.db
+    const [updated] = await this.db
       .update(categories)
       .set({
         ...(dto.nameVi !== undefined ? { nameVi: dto.nameVi } : {}),
@@ -219,11 +219,17 @@ export class CategoriesService {
           : {}),
         ...(dto.image !== undefined ? { image: dto.image } : {}),
         ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
-        updatedAt: new Date(),
       })
-      .where(eq(categories.id, id));
+      .where(eq(categories.id, id))
+      .returning();
 
-    return this.findById(id);
+    if (!updated) {
+      throw new NotFoundException(
+        this.i18n.t("catalog.CATEGORY_NOT_FOUND", { args: { id } }),
+      );
+    }
+
+    return this.mapCategoryToDto(updated);
   }
 
   /**

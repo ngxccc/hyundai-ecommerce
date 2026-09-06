@@ -125,9 +125,8 @@ describe("WarehouseService", () => {
           nameVi: "Kho Mới Cập Nhật",
         };
 
-        // 1st select: findById
-        // 2nd returning: update
-        mockDb.setSelectResultsQueue([[existingWarehouse], [updatedWarehouse]]);
+        // update.returning
+        mockDb.setSelectResultsQueue([[updatedWarehouse]]);
 
         const result = await service.update("wh-1", {
           nameVi: "Kho Mới Cập Nhật",

@@ -1,5 +1,6 @@
 import {
   boolean,
+  check,
   index,
   integer,
   jsonb,
@@ -9,6 +10,7 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import type {
   CanopyType,
   FuelType,
@@ -87,6 +89,7 @@ export const products = snakeCase.table(
     index("product_canopy_type_idx").on(table.canopyType),
     index("product_ups_topology_idx").on(table.upsTopology),
     index("product_product_type_idx").on(table.productType),
+    check("product_stock_non_negative_chk", sql`${table.totalStockCache} >= 0`),
   ],
 );
 

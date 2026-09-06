@@ -1,5 +1,6 @@
 import {
   boolean,
+  check,
   index,
   integer,
   primaryKey,
@@ -7,6 +8,7 @@ import {
   text,
   uuid,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { baseEntity, baseTimestamps } from "./helpers.schema";
 import { products } from "./product.schema";
 
@@ -40,6 +42,7 @@ export const warehouseStocks = snakeCase.table(
   (table) => [
     primaryKey({ columns: [table.warehouseId, table.productId] }),
     index("warehouse_stock_product_idx").on(table.productId),
+    check("warehouse_stock_stock_non_negative_chk", sql`${table.stock} >= 0`),
   ],
 );
 
