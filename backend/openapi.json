@@ -1271,7 +1271,63 @@
       "get": {
         "description": "Returns all leads and quote requests ordered by latest submission date.",
         "operationId": "LeadsController_getAll",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 20,
+              "example": 20,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter leads by operational status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NEW",
+                "CONTACTING",
+                "SURVEY_SCHEDULED",
+                "QUOTED",
+                "CONVERTED",
+                "REJECTED",
+                "LOST"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search across customerName, phoneNumber, companyName, notes",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -1280,7 +1336,7 @@
                 "schema": {
                   "allOf": [
                     {
-                      "$ref": "#/components/schemas/ApiResponseDto"
+                      "$ref": "#/components/schemas/PaginatedApiResponseDto"
                     },
                     {
                       "properties": {
@@ -1289,6 +1345,9 @@
                           "items": {
                             "$ref": "#/components/schemas/LeadResponseDto"
                           }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/PaginationMetaDto"
                         }
                       }
                     }
@@ -3389,26 +3448,7 @@
         ],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ApiResponseDto"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "type": ["object", "null"],
-                          "default": null
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
+            "description": ""
           }
         },
         "security": [
@@ -3760,12 +3800,18 @@
                 "schema": {
                   "allOf": [
                     {
-                      "$ref": "#/components/schemas/ApiResponseDto"
+                      "$ref": "#/components/schemas/PaginatedApiResponseDto"
                     },
                     {
                       "properties": {
                         "data": {
-                          "$ref": "#/components/schemas/PaginatedQuoteResponseDto"
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/QuoteResponseDto"
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/PaginationMetaDto"
                         }
                       }
                     }
@@ -4333,12 +4379,18 @@
                 "schema": {
                   "allOf": [
                     {
-                      "$ref": "#/components/schemas/ApiResponseDto"
+                      "$ref": "#/components/schemas/PaginatedApiResponseDto"
                     },
                     {
                       "properties": {
                         "data": {
-                          "$ref": "#/components/schemas/PaginatedOrderResponseDto"
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/OrderResponseDto"
+                          }
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/PaginationMetaDto"
                         }
                       }
                     }
@@ -4496,6 +4548,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Cancel order and release reserved stock",
         "tags": ["orders"]
       }
@@ -5505,6 +5562,66 @@
         },
         "required": ["fullName", "phoneNumber", "city", "ward", "items"]
       },
+      "PaginationMetaDto": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "description": "Current page index (1-based)",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of records per page",
+            "example": 20
+          },
+          "total": {
+            "type": "number",
+            "description": "Total number of matching records",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total number of calculated pages",
+            "example": 5
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Indicates if there is a next page available",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Indicates if there is a previous page available",
+            "example": false
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage"
+        ]
+      },
+      "PaginatedApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": ["success", "meta"]
+      },
+      "Object": {
+        "type": "object",
+        "properties": {}
+      },
       "UpdateLeadStatusDto": {
         "type": "object",
         "properties": {
@@ -5677,10 +5794,6 @@
           }
         }
       },
-      "Object": {
-        "type": "object",
-        "properties": {}
-      },
       "BrandResponseDto": {
         "type": "object",
         "properties": {
@@ -5786,62 +5899,6 @@
             "example": true
           }
         }
-      },
-      "PaginationMetaDto": {
-        "type": "object",
-        "properties": {
-          "page": {
-            "type": "number",
-            "description": "Current page index (1-based)",
-            "example": 1
-          },
-          "limit": {
-            "type": "number",
-            "description": "Number of records per page",
-            "example": 20
-          },
-          "total": {
-            "type": "number",
-            "description": "Total number of matching records",
-            "example": 100
-          },
-          "totalPages": {
-            "type": "number",
-            "description": "Total number of calculated pages",
-            "example": 5
-          },
-          "hasNextPage": {
-            "type": "boolean",
-            "description": "Indicates if there is a next page available",
-            "example": true
-          },
-          "hasPrevPage": {
-            "type": "boolean",
-            "description": "Indicates if there is a previous page available",
-            "example": false
-          }
-        },
-        "required": [
-          "page",
-          "limit",
-          "total",
-          "totalPages",
-          "hasNextPage",
-          "hasPrevPage"
-        ]
-      },
-      "PaginatedApiResponseDto": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "example": true
-          },
-          "meta": {
-            "$ref": "#/components/schemas/PaginationMetaDto"
-          }
-        },
-        "required": ["success", "meta"]
       },
       "ProductResponseDto": {
         "type": "object",
@@ -7605,30 +7662,6 @@
         },
         "required": ["customerName", "customerPhone", "items"]
       },
-      "PaginatedQuoteResponseDto": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/QuoteResponseDto"
-            }
-          },
-          "total": {
-            "type": "number",
-            "example": 10
-          },
-          "page": {
-            "type": "number",
-            "example": 1
-          },
-          "limit": {
-            "type": "number",
-            "example": 20
-          }
-        },
-        "required": ["items", "total", "page", "limit"]
-      },
       "UpdateQuoteStatusDto": {
         "type": "object",
         "properties": {
@@ -8117,30 +8150,6 @@
           "shippingAddress",
           "items"
         ]
-      },
-      "PaginatedOrderResponseDto": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OrderResponseDto"
-            }
-          },
-          "total": {
-            "type": "number",
-            "example": 10
-          },
-          "page": {
-            "type": "number",
-            "example": 1
-          },
-          "limit": {
-            "type": "number",
-            "example": 20
-          }
-        },
-        "required": ["items", "total", "page", "limit"]
       },
       "UpdateOrderStatusDto": {
         "type": "object",
