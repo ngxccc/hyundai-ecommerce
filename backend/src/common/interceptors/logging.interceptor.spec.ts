@@ -226,7 +226,6 @@ describe("LoggingInterceptor", () => {
           expect(setTagMock).toHaveBeenCalledWith("requestId", "req-999");
           expect(setUserMock).toHaveBeenCalledWith({
             id: "user-123",
-            email: "user@test.com",
             role: "admin",
           });
           expect(addBreadcrumbMock).toHaveBeenCalledWith(

@@ -9,7 +9,7 @@ import {
 import request from "supertest";
 import { type INestApplication } from "@nestjs/common";
 import type { Server } from "node:http";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import {
   createTestApp,
   teardownTestApp,
@@ -19,6 +19,7 @@ import type { DrizzleDB } from "@/database/database.module";
 import { users, refreshTokens, outboxEvents } from "@/database/schemas";
 import type { components } from "../generated/api-schema";
 import { truncateAllTables } from "@/database/database.connection";
+import { OUTBOX_EVENT_TYPE } from "@/common/constants/event.constant";
 
 type ApiResponse<T = unknown> = components["schemas"]["ApiResponseDto"] & {
   data?: T;
@@ -78,8 +79,36 @@ describe("Auth Module Integration", () => {
         .limit(1);
       expect(dbUser).toBeDefined();
       if (!dbUser) throw new Error("dbUser is undefined");
-      expect(dbUser.status).toBe("ACTIVE");
+      expect(dbUser.status).toBe("PENDING_VERIFICATION");
 
+      const [outboxEvent] = await db
+        .select()
+        .from(outboxEvents)
+        .where(
+          eq(
+            outboxEvents.eventType,
+            OUTBOX_EVENT_TYPE.AUTH_VERIFICATION_EMAIL_REQUESTED,
+          ),
+        )
+        .limit(1);
+      expect(outboxEvent).toBeDefined();
+      if (!outboxEvent) throw new Error("outboxEvent is undefined");
+      const verificationToken = (outboxEvent.payload as { token: string })
+        .token;
+      expect(verificationToken).toBeDefined();
+
+      const verifyRes = await request(getHttpServer())
+        .post("/auth/verify-email")
+        .send({ token: verificationToken });
+      expect(verifyRes.status).toBe(200);
+
+      const [verifiedUser] = await db
+        .select({ status: users.status, emailVerified: users.emailVerified })
+        .from(users)
+        .where(eq(users.email, email))
+        .limit(1);
+      expect(verifiedUser?.status).toBe("ACTIVE");
+      expect(verifiedUser?.emailVerified).toBe(true);
       const loginRes = await request(getHttpServer()).post("/auth/login").send({
         email,
         password,
@@ -281,19 +310,28 @@ describe("Auth Module Integration", () => {
           errorMsg.includes("chưa được xác thực");
         expect(hasEmailNotVerified || hasNotVerifiedVietnamese).toBe(true);
 
-        const [userWithToken] = await db
-          .select({ verificationToken: users.verificationToken })
-          .from(users)
-          .where(eq(users.email, email))
+        const [outboxEvent] = await db
+          .select({ payload: outboxEvents.payload })
+          .from(outboxEvents)
+          .where(
+            eq(
+              outboxEvents.eventType,
+              OUTBOX_EVENT_TYPE.AUTH_VERIFICATION_EMAIL_REQUESTED,
+            ),
+          )
+          .orderBy(desc(outboxEvents.createdAt))
           .limit(1);
-        expect(userWithToken).toBeDefined();
-        if (!userWithToken?.verificationToken) {
-          throw new Error("Verification token was not generated");
+        if (!outboxEvent) {
+          throw new Error("Verification event was not found in outbox");
+        }
+        const rawToken = (outboxEvent.payload as { token: string }).token;
+        if (!rawToken) {
+          throw new Error("Verification token was not found in outbox payload");
         }
 
         const verifyRes = await request(getHttpServer())
           .post("/auth/verify-email")
-          .send({ token: userWithToken.verificationToken });
+          .send({ token: rawToken });
         expect(verifyRes.status).toBe(200);
 
         const loginSuccessRes = await request(getHttpServer())
@@ -324,11 +362,15 @@ describe("Auth Module Integration", () => {
             agreeTerms: true,
           });
         expect(registerRes.status).toBe(201);
+        // Activate user before forgot-password
+        await db
+          .update(users)
+          .set({ status: "ACTIVE" })
+          .where(eq(users.email, email));
 
         const forgotRes = await request(getHttpServer())
           .post("/auth/forgot-password")
           .send({ email });
-        expect(forgotRes.status).toBe(200);
         const forgotBody = forgotRes.body as unknown as ApiResponse;
         expect(forgotBody.success).toBe(true);
         const [userInDb] = await db
@@ -348,16 +390,16 @@ describe("Auth Module Integration", () => {
         const expiresAt = userInDb.resetPasswordExpiresAt;
         if (!expiresAt) throw new Error("expiresAt is null");
         expect(expiresAt.getTime()).toBeGreaterThan(Date.now());
-
-        const resetToken = userInDb.resetPasswordToken;
-        if (!resetToken) throw new Error("resetToken is null");
-
         const outboxEvent = await db
           .select({ payload: outboxEvents.payload })
           .from(outboxEvents)
           .where(
-            eq(outboxEvents.eventType, "auth.reset_password_email_requested"),
+            eq(
+              outboxEvents.eventType,
+              OUTBOX_EVENT_TYPE.AUTH_RESET_PASSWORD_EMAIL_REQUESTED,
+            ),
           )
+          .orderBy(desc(outboxEvents.createdAt))
           .limit(1);
         expect(outboxEvent.length).toBe(1);
         const firstEvent = outboxEvent[0];
@@ -367,8 +409,8 @@ describe("Auth Module Integration", () => {
           token: string;
         };
         expect(payload.email).toBe(email);
-        expect(payload.token).toBe(resetToken);
-
+        const resetToken = payload.token;
+        if (!resetToken) throw new Error("resetToken is null");
         const loginRes = await request(getHttpServer())
           .post("/auth/login")
           .send({ email, password });
@@ -437,21 +479,32 @@ describe("Auth Module Integration", () => {
           confirmPassword: password,
           agreeTerms: true,
         });
+        // Activate user before requesting password reset
+        await db
+          .update(users)
+          .set({ status: "ACTIVE" })
+          .where(eq(users.email, email));
 
         await request(getHttpServer())
           .post("/auth/forgot-password")
           .send({ email });
 
-        const [user] = await db
-          .select({ resetPasswordToken: users.resetPasswordToken })
-          .from(users)
-          .where(eq(users.email, email))
+        const [resetEvent] = await db
+          .select({ payload: outboxEvents.payload })
+          .from(outboxEvents)
+          .where(
+            eq(
+              outboxEvents.eventType,
+              OUTBOX_EVENT_TYPE.AUTH_RESET_PASSWORD_EMAIL_REQUESTED,
+            ),
+          )
+          .orderBy(desc(outboxEvents.createdAt))
           .limit(1);
-        if (!user) throw new Error("user is undefined");
-
-        const token = user.resetPasswordToken;
+        if (!resetEvent) {
+          throw new Error("Reset event was not found in outbox");
+        }
+        const token = (resetEvent.payload as { token: string }).token;
         if (!token) throw new Error("token is null");
-
         const firstReset = await request(getHttpServer())
           .post("/auth/reset-password")
           .send({

@@ -142,6 +142,7 @@ describe("OutboxService", () => {
             delay: 2000,
           },
           removeOnComplete: true,
+          removeOnFail: { count: 500 },
         },
       );
       expect(mockDb.update).toHaveBeenCalled();

@@ -13,11 +13,11 @@ import {
   setUser as setSentryUser,
   setTag as setSentryTag,
 } from "@sentry/nestjs";
-import { env } from "@/env";
+import { env } from "../../env";
 import {
   SENTRY_BREADCRUMB_CATEGORY,
   type SentryBreadcrumbCategory,
-} from "@/common/constants/sentry.constant";
+} from "../constants/sentry.constant";
 
 /**
  * Categorized sensitive key pattern registry for PII and credential detection.
