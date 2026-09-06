@@ -39,7 +39,6 @@ export class LeadsService {
   async submitRfq(dto: CreateLeadDto): Promise<LeadResponseDto> {
     const productIds = dto.items.map((i) => i.productId);
 
-    // Verify all requested products exist and retrieve snapshot data
     const existingProducts = await this.db
       .select({
         id: products.id,

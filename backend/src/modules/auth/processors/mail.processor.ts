@@ -18,7 +18,6 @@ export class MailProcessor extends WorkerHost {
   ): Promise<void> {
     const { email, fullName, token } = job.data;
     this.logger.debug(`Processing mail job: ${job.name}`);
-    // WHY: Route to the appropriate email sending method based on BullMQ job name.
     switch (job.name) {
       case MAIL_JOB_NAME.SEND_VERIFICATION:
         await this.mailService.sendVerificationEmail(email, fullName, token);

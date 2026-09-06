@@ -109,7 +109,7 @@ export class QuoteExcelService {
       color: { argb: "FF64748B" },
     };
 
-    worksheet.addRow([]); // Blank Row
+    worksheet.addRow([]);
 
     // 3. Document Main Banner
     const bannerRow = worksheet.addRow([
@@ -131,7 +131,7 @@ export class QuoteExcelService {
     };
     bannerCell.alignment = { vertical: "middle", horizontal: "center" };
 
-    worksheet.addRow([]); // Blank Row
+    worksheet.addRow([]);
 
     // 4. Customer Information & Quote Metadata Grid
     const terms = quote.commercialTerms;
@@ -209,7 +209,7 @@ export class QuoteExcelService {
       };
     }
 
-    worksheet.addRow([]); // Blank Row
+    worksheet.addRow([]);
 
     // 5. Line Items Table Header
     const tableHeaderRow = worksheet.addRow([
@@ -427,7 +427,7 @@ export class QuoteExcelService {
       cell.border = thinBorder;
     });
 
-    worksheet.addRow([]); // Blank Row
+    worksheet.addRow([]);
 
     // 8. Commercial Terms & Technical Policies
     const termsTitleRow = worksheet.addRow([
@@ -465,7 +465,7 @@ export class QuoteExcelService {
       addTermLine(`5. Ghi chú bổ sung: ${quote.note}`);
     }
 
-    worksheet.addRow([]); // Blank Row
+    worksheet.addRow([]);
 
     // 9. Signatures Block
     const sigTitleRow = worksheet.addRow([

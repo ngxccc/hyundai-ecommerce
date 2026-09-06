@@ -224,7 +224,6 @@ export class WarehouseService {
     warehouseId: string,
     dto: UpdateStockDto,
   ): Promise<WarehouseStockResponseDto> {
-    // 1. Verify warehouse exists and is active
     const warehouse = await this.findById(warehouseId);
     if (!warehouse.isActive) {
       throw new BadRequestException(
@@ -232,7 +231,6 @@ export class WarehouseService {
       );
     }
 
-    // 2. Verify product exists and is not deleted
     const [product] = await this.db
       .select({
         id: products.id,
@@ -249,9 +247,8 @@ export class WarehouseService {
       );
     }
 
-    // 3. Atomically upsert warehouse stock and synchronize product totalStockCache inside transaction
     const updatedStockRecord = await this.db.transaction(async (tx) => {
-      // WHY: Lock product row to serialize inventory cache synchronization across concurrent stock updates.
+      // Lock product row to serialize inventory cache synchronization across concurrent stock updates.
       await tx
         .select({ id: products.id })
         .from(products)
@@ -259,7 +256,6 @@ export class WarehouseService {
         .for("update")
         .limit(1);
 
-      // Upsert per-warehouse stock
       const [upserted] = await tx
         .insert(warehouseStocks)
         .values({
@@ -282,7 +278,6 @@ export class WarehouseService {
         );
       }
 
-      // Recalculate total stock across all warehouses for this product
       const [sumResult] = await tx
         .select({
           total: sql<number>`cast(coalesce(sum(${warehouseStocks.stock}), 0) as int)`,
@@ -292,7 +287,6 @@ export class WarehouseService {
 
       const totalStockCache = sumResult?.total ?? 0;
 
-      // Update totalStockCache on product table
       await tx
         .update(products)
         .set({
