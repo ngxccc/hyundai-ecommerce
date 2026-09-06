@@ -21,14 +21,12 @@ Issues and specifications for this repository are managed via **GitHub Issues**.
 
 ## 3. Repository Label Taxonomy
 
-### A. Status Labels (Lifecycle)
+### A. Status & Lifecycle (Pragmatic & Automated)
 
-- `status:triage` — Initial state; newly created issue awaiting evaluation.
-- `status:in-progress` — Active development in progress.
-- `status:blocked` — Blocked on external dependency, missing credentials, or reporter clarification.
-- `status:needs-review` — PR submitted, awaiting review.
-- `status:approved` — Reviewed and approved for merge.
-- `wontfix` — Out of scope or rejected proposal.
+Issue lifecycle is automated natively via Pull Requests (`Fixes #<id>`) and GitHub Projects. The repository eliminates manual status shuffling (`in-progress`, `needs-review`, `approved`, `triage`) to avoid administrative overhead and state desynchronization, retaining only actionable exception labels:
+
+- `status:blocked` — Blocked on external dependency, third-party credentials, or upstream blocker issue.
+- `wontfix` — Explicitly closed as out of scope, superseded, or rejected proposal.
 
 ### B. Type Labels (Conventional Commits Alignment)
 
@@ -67,13 +65,13 @@ Issues and specifications for this repository are managed via **GitHub Issues**.
 
 ## 4. Triage Skill Mapping (`/triage`)
 
-| Canonical Triage Role | Mapped Repo Label                               |
-| :-------------------- | :---------------------------------------------- |
-| `needs-triage`        | `status:triage`                                 |
-| `needs-info`          | `status:blocked`                                |
-| `ready-for-agent`     | `status:triage` + `type:*` + `area:*`           |
-| `ready-for-human`     | `status:triage` + `priority:p0` / `priority:p1` |
-| `wontfix`             | `wontfix`                                       |
+| Canonical Triage Role | Mapped Repo Label                          |
+| :-------------------- | :----------------------------------------- |
+| `needs-triage`        | Default open issue (no extra label needed) |
+| `needs-info`          | `status:blocked`                           |
+| `ready-for-agent`     | `type:*` + `area:*`                        |
+| `ready-for-human`     | `priority:p0` / `priority:p1`              |
+| `wontfix`             | `wontfix`                                  |
 
 ---
 
