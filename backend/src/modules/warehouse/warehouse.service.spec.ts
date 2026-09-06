@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from "bun:test";
+import { beforeEach, describe, expect, test, it } from "bun:test";
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { WarehouseService } from "./warehouse.service";
 import type { DrizzleDB } from "@/database/database.module";
@@ -234,6 +234,130 @@ describe("WarehouseService", () => {
           }),
         ).rejects.toThrow(NotFoundException);
       });
+    });
+    describe("when valid stock payload provided", () => {
+      test("should upsert stock and update product totalStockCache", async () => {
+        const activeWarehouse = {
+          id: "wh-active",
+          nameVi: "Kho Hoạt Động",
+          nameEn: null,
+          streetAddress: "Địa chỉ",
+          district: "Quận",
+          city: "Hà Nội",
+          isActive: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        const mockProduct = {
+          id: "prod-1",
+          nameVi: "Máy phát điện",
+          slug: "may-phat-dien",
+        };
+        const mockUpserted = {
+          warehouseId: "wh-active",
+          productId: "prod-1",
+          stock: 20,
+          minStockWarning: 5,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+
+        mockDb.setSelectResultsQueue([
+          [activeWarehouse], // findById
+          [mockProduct], // select product
+          [mockProduct], // select for update
+          [mockUpserted], // insert on conflict returning
+          [{ total: 20 }], // select sum
+        ]);
+
+        const result = await service.updateStock("wh-active", {
+          productId: "prod-1",
+          stock: 20,
+          minStockWarning: 5,
+        });
+
+        expect(result.stock).toBe(20);
+        expect(result.product?.totalStockCache).toBe(20);
+        expect(result.warehouse?.id).toBe("wh-active");
+      });
+    });
+  });
+
+  describe("getWarehouseStocks()", () => {
+    it("should return product stocks for warehouse", async () => {
+      const activeWarehouse = {
+        id: "wh-1",
+        nameVi: "Kho Hà Nội",
+        nameEn: null,
+        streetAddress: "Địa chỉ",
+        district: "Quận",
+        city: "Hà Nội",
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      mockDb.setSelectResultsQueue([
+        [activeWarehouse], // findById
+        [
+          {
+            stock: {
+              warehouseId: "wh-1",
+              productId: "prod-1",
+              stock: 15,
+              minStockWarning: 2,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+            product: {
+              id: "prod-1",
+              nameVi: "Máy phát điện",
+              slug: "may-phat-dien",
+              totalStockCache: 15,
+            },
+          },
+        ],
+      ]);
+
+      const result = await service.getWarehouseStocks("wh-1");
+      expect(result.length).toBe(1);
+      expect(result[0]?.stock).toBe(15);
+      expect(result[0]?.product?.id).toBe("prod-1");
+    });
+  });
+
+  describe("getProductStocks()", () => {
+    it("should return stocks across warehouses for product", async () => {
+      mockDb.setSelectResultsQueue([
+        [{ id: "prod-1" }], // check product exists
+        [
+          {
+            stock: {
+              warehouseId: "wh-1",
+              productId: "prod-1",
+              stock: 10,
+              minStockWarning: 2,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            },
+            warehouse: {
+              id: "wh-1",
+              nameVi: "Kho Hà Nội",
+              city: "Hà Nội",
+            },
+          },
+        ],
+      ]);
+
+      const result = await service.getProductStocks("prod-1");
+      expect(result[0]?.warehouse?.id).toBe("wh-1");
+    });
+
+    it("should throw NotFoundException when product does not exist", () => {
+      mockDb.setSelectResult([]);
+      expect(service.getProductStocks("non-existent")).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

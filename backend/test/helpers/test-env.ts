@@ -6,3 +6,5 @@ process.env["PAYOS_API_KEY"] ??= "test-payos-api-key";
 process.env["OUTBOX_ENABLE_POLLING"] ??= "false";
 process.env["PAYMENT_DRIVER"] ??= "mock";
 process.env["MAIL_DRIVER"] ??= "log";
+process.env["CRON_SECRET"] ??= "test-cron-secret-32-characters";
+process.env["RESEND_API_KEY"] ??= "re_test_key_for_testing_32_chars";

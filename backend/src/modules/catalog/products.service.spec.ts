@@ -14,6 +14,44 @@ describe("ProductsService", () => {
   const mockDb = createMockDb();
   const mockI18nService = createMockI18nService();
 
+  const mockProduct = {
+    id: "prod-1",
+    nameVi: "Máy phát điện Hyundai 60kVA",
+    nameEn: "Hyundai 60kVA Generator",
+    slug: "may-phat-dien-hyundai-60kva",
+    price: "245000000.00",
+    descriptionVi: null,
+    descriptionEn: null,
+    shortDescriptionVi: null,
+    shortDescriptionEn: null,
+    images: [],
+    brandId: "brand-1",
+    categoryId: "cat-1",
+    productType: "generator" as const,
+    powerKva: "60.00",
+    powerKw: "48.00",
+    standbyPowerKva: "66.00",
+    standbyPowerKw: "52.80",
+    phase: "3phase" as const,
+    voltage: "230/400V",
+    frequency: 50,
+    fuelType: "diesel" as const,
+    canopyType: "silent" as const,
+    startMethod: "electric" as const,
+    engineBrand: "Hyundai",
+    alternatorBrand: "Hyundai",
+    upsTopology: null,
+    upsBatteryType: null,
+    specSheet: [],
+    specs: { model: "DHY65KSE" },
+    totalStockCache: 5,
+    totalSalesCache: 0,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    deletedAt: null,
+  };
+
   beforeEach(() => {
     mockDb.clearAll();
     mockI18nService.clearAll();
@@ -26,43 +64,8 @@ describe("ProductsService", () => {
   describe("findProducts()", () => {
     describe("when products match filter criteria", () => {
       test("should calculate offset pagination and return items with metadata", async () => {
-        const mockProduct = {
-          id: "prod-1",
-          nameVi: "Máy phát điện Hyundai 60kVA",
-          nameEn: "Hyundai 60kVA Generator",
-          slug: "may-phat-dien-hyundai-60kva",
-          price: "245000000.00",
-          descriptionVi: null,
-          descriptionEn: null,
-          shortDescriptionVi: null,
-          shortDescriptionEn: null,
-          images: [],
-          brandId: "brand-1",
-          categoryId: "cat-1",
-          productType: "generator" as const,
-          powerKva: "60.00",
-          powerKw: "48.00",
-          standbyPowerKva: "66.00",
-          standbyPowerKw: "52.80",
-          phase: "3phase" as const,
-          voltage: "230/400V",
-          frequency: 50,
-          fuelType: "diesel" as const,
-          canopyType: "silent" as const,
-          startMethod: "electric" as const,
-          engineBrand: "Hyundai",
-          alternatorBrand: "Hyundai",
-          upsTopology: null,
-          upsBatteryType: null,
-          specSheet: [],
-          specs: { model: "DHY65KSE" },
-          totalStockCache: 5,
-          totalSalesCache: 0,
-          isActive: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deletedAt: null,
-        };
+        // 1st select: count query -> returns total: 1
+        // 2nd select: paginated records join -> returns [record]
 
         // 1st select: count query -> returns total: 1
         // 2nd select: paginated records join -> returns [record]
@@ -277,6 +280,88 @@ describe("ProductsService", () => {
             isActive: true,
           }),
         ).rejects.toThrow(BadRequestException);
+      });
+    });
+    describe("when valid payload provided", () => {
+      test("should insert product and return mapped response", async () => {
+        const dto = {
+          nameVi: "Máy phát điện",
+          slug: "dhy65kse",
+          price: 245000000,
+          images: [],
+          productType: "generator" as const,
+          frequency: 50,
+          specSheet: [],
+          specs: {},
+          totalStockCache: 1,
+          isQuoteOnly: false,
+          isActive: true,
+        };
+
+        mockDb.setSelectResultsQueue([
+          [], // slug exists check (none)
+          [{ ...mockProduct, id: "prod-created", price: "245000000.00" }], // insert product returning
+        ]);
+
+        const result = await service.create(dto);
+        expect(result.id).toBe("prod-created");
+        expect(result.price).toBe("245000000.00");
+      });
+    });
+  });
+
+  describe("update()", () => {
+    describe("when price is negative", () => {
+      test("should throw BadRequestException", () => {
+        expect(service.update("prod-1", { price: -100 })).rejects.toThrow(
+          BadRequestException,
+        );
+      });
+    });
+
+    describe("when product does not exist", () => {
+      test("should throw NotFoundException", () => {
+        mockDb.setSelectResult([]);
+        expect(service.update("prod-1", { nameVi: "Mới" })).rejects.toThrow(
+          NotFoundException,
+        );
+      });
+    });
+
+    describe("when slug already exists on another product", () => {
+      test("should throw ConflictException", () => {
+        mockDb.setSelectResultsQueue([
+          [{ id: "prod-1", slug: "old-slug" }], // existing check
+          [{ id: "other-prod" }], // slug conflict check
+        ]);
+
+        expect(service.update("prod-1", { slug: "new-slug" })).rejects.toThrow(
+          ConflictException,
+        );
+      });
+    });
+
+    describe("when valid update payload provided", () => {
+      test("should update product and return mapped response", async () => {
+        const updatedRecord = {
+          ...mockProduct,
+          id: "prod-1",
+          nameVi: "Tên Đã Cập Nhật",
+          price: "300000000.00",
+        };
+
+        mockDb.setSelectResultsQueue([
+          [{ id: "prod-1", slug: "may-phat-dien-hyundai-60kva" }], // existing check
+          [updatedRecord], // update returning
+        ]);
+
+        const result = await service.update("prod-1", {
+          nameVi: "Tên Đã Cập Nhật",
+          price: 300000000,
+        });
+
+        expect(result.id).toBe("prod-1");
+        expect(result.nameVi).toBe("Tên Đã Cập Nhật");
       });
     });
   });

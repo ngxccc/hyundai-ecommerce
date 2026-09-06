@@ -104,6 +104,36 @@ describe("OrdersService", () => {
         expect(result.totalAmount).toBe("180000000.00");
       });
     });
+    describe("when multiple items are ordered", () => {
+      test("should sort items deterministically to avoid deadlocks", async () => {
+        const prodA = { ...mockProduct, id: "prod-a" };
+        const prodB = { ...mockProduct, id: "prod-b" };
+
+        const dto: CreateGuestOrderDto = {
+          customerName: "Nguyễn Văn A",
+          customerPhone: "0901234567",
+          shippingAddress: "Số 123",
+          paymentMethod: "PAYOS",
+          items: [
+            { productId: "prod-b", quantity: 1 },
+            { productId: "prod-a", quantity: 1 },
+          ],
+        };
+
+        mockDb.setSelectResultsQueue([
+          [prodA],
+          [{ warehouseId: "wh-1", stock: 5 }],
+          [prodB],
+          [{ warehouseId: "wh-1", stock: 5 }],
+          [mockOrderRecord],
+          [mockOrderRecord],
+          [mockOrderItemRecord],
+        ]);
+
+        const result = await service.createGuestOrder(dto);
+        expect(result.id).toBe(mockOrderRecord.id);
+      });
+    });
 
     describe("when requested product is not found", () => {
       test("should throw NotFoundException", () => {
@@ -185,6 +215,38 @@ describe("OrdersService", () => {
         expect(result.id).toBe(b2bOrderRecord.id);
         expect(result.paymentMethod).toBe("TRADE_CREDIT");
         expect(result.totalAmount).toBe("350500000.00");
+      });
+    });
+    describe("when multiple items are included in B2B order", () => {
+      test("should sort items deterministically to avoid deadlocks", async () => {
+        const prodA = { ...mockProduct, id: "prod-a" };
+        const prodB = { ...mockProduct, id: "prod-b" };
+
+        const dto: CreateB2bOrderDto = {
+          customerName: "B2B",
+          customerPhone: "0911223344",
+          shippingAddress: "Kho",
+          paymentMethod: "TRADE_CREDIT",
+          shippingFee: 0,
+          depositAmount: 0,
+          items: [
+            { productId: "prod-b", quantity: 1, unitPrice: 1000 },
+            { productId: "prod-a", quantity: 1, unitPrice: 1000 },
+          ],
+        };
+
+        mockDb.setSelectResultsQueue([
+          [prodA],
+          [{ warehouseId: "wh-1", stock: 5 }],
+          [prodB],
+          [{ warehouseId: "wh-1", stock: 5 }],
+          [mockOrderRecord],
+          [mockOrderRecord],
+          [mockOrderItemRecord],
+        ]);
+
+        const result = await service.createB2bOrder(dto, "admin-1");
+        expect(result.id).toBe(mockOrderRecord.id);
       });
     });
   });
