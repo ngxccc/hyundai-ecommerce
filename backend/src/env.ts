@@ -60,6 +60,7 @@ export const env = createEnv({
     // Resend configuration
     RESEND_API_KEY: z.string().default("re_dummy_key_for_testing"),
     EMAIL_FROM: z.string().default("Hyundai Nhat Nang <onboarding@resend.dev>"),
+    MAIL_DRIVER: z.enum(["resend", "log"]).default("resend"),
 
     // JWT configuration
     JWT_SECRET: z
@@ -72,6 +73,7 @@ export const env = createEnv({
     PAYOS_CLIENT_ID: z.string().default("dummy-client-id"),
     PAYOS_API_KEY: z.string().default("dummy-api-key"),
     PAYOS_CHECKSUM_KEY: z.string().default("dummy-checksum-key"),
+    PAYMENT_DRIVER: z.enum(["payos", "mock"]).default("payos"),
 
     // Cloudinary configuration
     CLOUDINARY_CLOUD_NAME: z.string().optional().catch(undefined),
@@ -102,6 +104,9 @@ export const env = createEnv({
     SENTRY_DSN: z.string().optional().catch(undefined),
     SENTRY_ENVIRONMENT: z.string().optional().catch(undefined),
     SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(1.0),
+
+    // Outbox worker configuration
+    OUTBOX_ENABLE_POLLING: z.coerce.boolean().default(true),
   },
   runtimeEnv: {
     PORT: process.env["PORT"],
@@ -121,6 +126,7 @@ export const env = createEnv({
     REDIS_PORT: process.env["REDIS_PORT"],
     RESEND_API_KEY: process.env["RESEND_API_KEY"],
     EMAIL_FROM: process.env["EMAIL_FROM"],
+    MAIL_DRIVER: process.env["MAIL_DRIVER"],
     JWT_SECRET: process.env["JWT_SECRET"],
     JWT_ACCESS_EXPIRES_IN: process.env["JWT_ACCESS_EXPIRES_IN"],
     JWT_REFRESH_EXPIRES_IN: process.env["JWT_REFRESH_EXPIRES_IN"],
@@ -129,6 +135,7 @@ export const env = createEnv({
     PAYOS_API_KEY: process.env["PAYOS_API_KEY"],
     PAYOS_CHECKSUM_KEY: process.env["PAYOS_CHECKSUM_KEY"],
     CLOUDINARY_CLOUD_NAME: process.env["CLOUDINARY_CLOUD_NAME"],
+    PAYMENT_DRIVER: process.env["PAYMENT_DRIVER"],
     CLOUDINARY_API_KEY: process.env["CLOUDINARY_API_KEY"],
     CLOUDINARY_API_SECRET: process.env["CLOUDINARY_API_SECRET"],
     VAT_RATE: process.env["VAT_RATE"],
@@ -141,6 +148,7 @@ export const env = createEnv({
     TARGET_URL: process.env["TARGET_URL"],
     SENTRY_DSN: process.env["SENTRY_DSN"],
     SENTRY_ENVIRONMENT: process.env["SENTRY_ENVIRONMENT"],
+    OUTBOX_ENABLE_POLLING: process.env["OUTBOX_ENABLE_POLLING"],
     SENTRY_TRACES_SAMPLE_RATE: process.env["SENTRY_TRACES_SAMPLE_RATE"],
   },
   emptyStringAsUndefined: true,
