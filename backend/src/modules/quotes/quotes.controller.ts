@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Put,
@@ -18,26 +20,30 @@ import {
   ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiResponse,
+  ApiResponse as SwaggerResponse,
   ApiTags,
 } from "@nestjs/swagger";
 import {
   ApiOkResponseGeneric,
+  ApiOkResponsePaginated,
   ApiCreatedResponseGeneric,
 } from "@/common/decorators";
+import type { PaginationMetaDto } from "@/common/dto/pagination-meta.dto";
 import { Throttle } from "@nestjs/throttler";
 import type { Response } from "express";
-import { CurrentUser } from "@/common/decorators/current-user.decorator";
+import {
+  CurrentUser,
+  type JwtPayload,
+} from "@/common/decorators/current-user.decorator";
 import { Roles } from "@/common/decorators/roles.decorator";
 import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
 import { RolesGuard } from "@/common/guards/roles.guard";
-import { apiSuccess } from "@/common/utils/api-response.util";
+import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { QUOTE_ROUTES } from "./quote.routes";
 import { QuotesService } from "./quotes.service";
 import { QuoteExcelService } from "./services/quote-excel.service";
 import {
   ApproveToOrderResponseDto,
-  PaginatedQuoteResponseDto,
   QuoteMessageResponseDto,
   QuoteResponseDto,
   CreateAdminQuoteDto,
@@ -102,6 +108,7 @@ export class QuotesController {
    */
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
   @ApiOperation({ summary: "List quotes with filtering and pagination" })
   @ApiQuery({ name: "page", required: false, type: Number })
@@ -109,10 +116,12 @@ export class QuotesController {
   @ApiQuery({ name: "userId", required: false, type: String })
   @ApiQuery({ name: "status", required: false, type: String })
   @ApiQuery({ name: "search", required: false, type: String })
-  @ApiOkResponseGeneric(PaginatedQuoteResponseDto)
-  async listQuotes(@Query() query: QuoteQueryDto) {
-    const result = await this.quotesService.findAll(query);
-    return apiSuccess(result);
+  @ApiOkResponsePaginated(QuoteResponseDto)
+  async listQuotes(
+    @Query() query: QuoteQueryDto,
+  ): Promise<ApiResponse<QuoteResponseDto[], PaginationMetaDto>> {
+    const { items, meta } = await this.quotesService.findAll(query);
+    return apiSuccess(items, meta);
   }
 
   /**
@@ -127,8 +136,20 @@ export class QuotesController {
   @ApiOperation({ summary: "Get detailed quote by ID" })
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiOkResponseGeneric(QuoteResponseDto)
-  async getQuoteById(@Param("id") id: string) {
+  async getQuoteById(
+    @Param("id", ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: JwtPayload,
+  ) {
     const quote = await this.quotesService.findById(id);
+    if (
+      currentUser.role !== "ADMIN" &&
+      currentUser.role !== "SALES" &&
+      quote.userId !== currentUser.sub
+    ) {
+      throw new ForbiddenException(
+        "You are not authorized to access this quote",
+      );
+    }
     return apiSuccess(quote);
   }
 
@@ -149,7 +170,7 @@ export class QuotesController {
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiOkResponseGeneric(QuoteResponseDto)
   async updateStatus(
-    @Param("id") id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateQuoteStatusDto,
   ) {
     const quote = await this.quotesService.updateStatus(id, dto.status);
@@ -175,8 +196,8 @@ export class QuotesController {
   @ApiParam({ name: "itemId", description: "Quote item UUID" })
   @ApiOkResponseGeneric(QuoteResponseDto)
   async updateItemPrice(
-    @Param("id") quoteId: string,
-    @Param("itemId") itemId: string,
+    @Param("id", ParseUUIDPipe) quoteId: string,
+    @Param("itemId", ParseUUIDPipe) itemId: string,
     @Body() dto: UpdateQuoteItemPriceDto,
   ) {
     const quote = await this.quotesService.updateItemPrice(
@@ -203,14 +224,15 @@ export class QuotesController {
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiCreatedResponseGeneric(QuoteMessageResponseDto)
   async sendMessage(
-    @Param("id") quoteId: string,
-    @CurrentUser("sub") senderId: string,
+    @Param("id", ParseUUIDPipe) quoteId: string,
+    @CurrentUser() currentUser: JwtPayload,
     @Body() dto: SendQuoteMessageDto,
   ) {
     const message = await this.quotesService.sendMessage(
       quoteId,
-      senderId,
+      currentUser.sub,
       dto.message,
+      currentUser,
     );
     return apiSuccess(message);
   }
@@ -233,7 +255,7 @@ export class QuotesController {
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiOkResponseGeneric(ApproveToOrderResponseDto)
   async approveToOrder(
-    @Param("id") quoteId: string,
+    @Param("id", ParseUUIDPipe) quoteId: string,
     @CurrentUser("sub") adminUserId: string,
   ) {
     const result = await this.quotesService.approveAndConvertToOrder(
@@ -255,15 +277,25 @@ export class QuotesController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Download B2B quote Excel (.xlsx) spreadsheet" })
   @ApiParam({ name: "id", description: "Quote UUID" })
-  @ApiResponse({
+  @SwaggerResponse({
     status: 200,
     description: "Excel workbook stream",
   })
   async exportExcel(
-    @Param("id") id: string,
+    @Param("id", ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: JwtPayload,
     @Res({ passthrough: true }) res: Response,
   ): Promise<StreamableFile> {
     const quote = await this.quotesService.findById(id);
+    if (
+      currentUser.role !== "ADMIN" &&
+      currentUser.role !== "SALES" &&
+      quote.userId !== currentUser.sub
+    ) {
+      throw new ForbiddenException(
+        "You are not authorized to export this quote",
+      );
+    }
     const buffer =
       await this.quoteExcelService.generateQuoteExcelWorkbook(quote);
     const filename = `${quote.quoteNumber ?? "Bao_Gia"}.xlsx`;

@@ -50,9 +50,14 @@ describe("QuotesController", () => {
     findAll: mock((_query: QuoteQueryDto) =>
       Promise.resolve({
         items: [mockQuote],
-        total: 1,
-        page: 1,
-        limit: 20,
+        meta: {
+          total: 1,
+          page: 1,
+          limit: 20,
+          totalPages: 1,
+          hasNext: false,
+          hasPrev: false,
+        },
       }),
     ),
     findById: mock((_id: string) => Promise.resolve(mockQuote)),
@@ -172,8 +177,8 @@ describe("QuotesController", () => {
 
         expect(mockQuotesService.findAll).toHaveBeenCalledWith(query);
         expect(result.success).toBe(true);
-        expect(result.data.items.length).toBe(1);
-        expect(result.data.total).toBe(1);
+        expect(result.data.length).toBe(1);
+        expect(result.meta?.total).toBe(1);
       });
     });
   });
@@ -181,7 +186,11 @@ describe("QuotesController", () => {
   describe("GET /quotes/:id", () => {
     describe("when retrieving quote details", () => {
       test("should return wrapped quote", async () => {
-        const result = await controller.getQuoteById(mockQuote.id);
+        const result = await controller.getQuoteById(mockQuote.id, {
+          sub: "user-1",
+          email: "user@example.com",
+          role: "ADMIN",
+        });
 
         expect(mockQuotesService.findById).toHaveBeenCalledWith(mockQuote.id);
         expect(result.success).toBe(true);
@@ -235,7 +244,11 @@ describe("QuotesController", () => {
 
         const result = await controller.sendMessage(
           mockQuote.id,
-          "user-1",
+          {
+            sub: "user-1",
+            email: "user@example.com",
+            role: "ADMIN",
+          },
           dto,
         );
 
@@ -243,6 +256,11 @@ describe("QuotesController", () => {
           mockQuote.id,
           "user-1",
           "Tin nhắn thảo luận",
+          {
+            sub: "user-1",
+            email: "user@example.com",
+            role: "ADMIN",
+          },
         );
         expect(result.success).toBe(true);
         expect(result.data.id).toBe("msg-1");
@@ -275,6 +293,11 @@ describe("QuotesController", () => {
 
         const result = await controller.exportExcel(
           mockQuote.id,
+          {
+            sub: "user-1",
+            email: "user@example.com",
+            role: "ADMIN",
+          },
           mockResponse as unknown as Response,
         );
 

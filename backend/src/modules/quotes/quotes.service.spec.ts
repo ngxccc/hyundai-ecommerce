@@ -1,10 +1,14 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { BadRequestException, NotFoundException } from "@nestjs/common";
 import type { I18nService } from "nestjs-i18n";
-import { QuotesService } from "./quotes.service";
 import type { DrizzleDB } from "@/database/database.module";
-import { createMockDb, createMockI18nService } from "../../../test/mocks";
+import {
+  BadRequestException,
+  NotFoundException,
+  UnprocessableEntityException,
+} from "@nestjs/common";
 import type { CreateAdminQuoteDto, CreateQuoteDto, QuoteQueryDto } from "./dto";
+import { QuotesService } from "./quotes.service";
+import { createMockDb, createMockI18nService } from "../../../test/mocks";
 
 describe("QuotesService", () => {
   let service: QuotesService;
@@ -157,18 +161,17 @@ describe("QuotesService", () => {
         mockDb.setSelectResultsQueue([
           [{ count: 1 }], // total count
           [mockQuoteRecord], // quote records
-          [mockQuoteRecord], // findById quote
-          [mockItemRecord], // findById items
-          [], // findById messages
-          [], // findById user
+          [mockItemRecord], // allItemRecords
+          [], // allMessageRecords
+          [], // allUsers
         ]);
 
         const result = await service.findAll(query);
 
         expect(result.items.length).toBe(1);
-        expect(result.total).toBe(1);
-        expect(result.page).toBe(1);
-        expect(result.limit).toBe(10);
+        expect(result.meta.total).toBe(1);
+        expect(result.meta.page).toBe(1);
+        expect(result.meta.limit).toBe(10);
       });
     });
   });
@@ -225,7 +228,7 @@ describe("QuotesService", () => {
     });
 
     describe("when invalid state machine transition is requested", () => {
-      test("should throw BadRequestException", () => {
+      test("should throw UnprocessableEntityException", () => {
         mockDb.setSelectResultsQueue([
           [{ ...mockQuoteRecord, status: "APPROVED" }], // terminal APPROVED status
           [],
@@ -236,7 +239,7 @@ describe("QuotesService", () => {
         // APPROVED cannot transition to DRAFT
         expect(
           service.updateStatus(mockQuoteRecord.id, "DRAFT"),
-        ).rejects.toThrow(BadRequestException);
+        ).rejects.toThrow(UnprocessableEntityException);
       });
     });
   });
