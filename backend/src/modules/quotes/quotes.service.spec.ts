@@ -182,7 +182,23 @@ describe("QuotesService", () => {
         mockDb.setSelectResultsQueue([
           [mockQuoteRecord], // quote
           [mockItemRecord], // items
-          [], // messages
+          [
+            {
+              message: {
+                id: "msg-1",
+                quoteId: mockQuoteRecord.id,
+                senderId: "u-1",
+                message: "Test message",
+                createdAt: new Date(),
+              },
+              sender: {
+                id: "u-1",
+                fullName: "Admin",
+                email: "admin@test.com",
+                role: "ADMIN",
+              },
+            },
+          ],
           [], // user
         ]);
 

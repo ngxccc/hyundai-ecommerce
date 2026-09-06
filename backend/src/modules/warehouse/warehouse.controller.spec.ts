@@ -136,6 +136,40 @@ describe("WarehouseController", () => {
       });
     });
   });
+  describe("PUT /warehouses/:id", () => {
+    test("should update warehouse details and return wrapped response", async () => {
+      const dto: UpdateWarehouseDto = {
+        nameVi: "Kho Hà Nội Đã Đổi Tên",
+      };
+
+      const result = await controller.update("wh-1", dto);
+      expect(mockWarehouseService.update).toHaveBeenCalledWith("wh-1", dto);
+      expect(result.success).toBe(true);
+      expect(result.data.id).toBe("wh-1");
+    });
+  });
+
+  describe("GET /warehouses/:id/stock", () => {
+    test("should return warehouse stock distribution", async () => {
+      const result = await controller.getWarehouseStocks("wh-1");
+      expect(mockWarehouseService.getWarehouseStocks).toHaveBeenCalledWith(
+        "wh-1",
+      );
+      expect(result.success).toBe(true);
+      expect(result.data.length).toBe(1);
+    });
+  });
+
+  describe("GET /warehouses/product-stocks/:productId", () => {
+    test("should return product stocks across all warehouses", async () => {
+      const result = await controller.getProductStocks("prod-1");
+      expect(mockWarehouseService.getProductStocks).toHaveBeenCalledWith(
+        "prod-1",
+      );
+      expect(result.success).toBe(true);
+      expect(result.data.length).toBe(1);
+    });
+  });
 
   describe("DELETE /warehouses/:id", () => {
     describe("when admin deactivates warehouse", () => {

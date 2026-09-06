@@ -22,6 +22,12 @@ describe("numberToVietnameseWords", () => {
         expect(numberToVietnameseWords(15000)).toBe(
           "Mười lăm nghìn đồng chẵn.",
         );
+        expect(numberToVietnameseWords(11000)).toBe(
+          "Mười một nghìn đồng chẵn.",
+        );
+        expect(numberToVietnameseWords(12000)).toBe(
+          "Mười hai nghìn đồng chẵn.",
+        );
         expect(numberToVietnameseWords(21000)).toBe(
           "Hai mươi mốt nghìn đồng chẵn.",
         );

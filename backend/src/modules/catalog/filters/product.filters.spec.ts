@@ -167,4 +167,60 @@ describe("productFilters", () => {
       });
     });
   });
+  describe("byEngineBrand()", () => {
+    test("should return undefined when empty or whitespace", () => {
+      expect(productFilters.byEngineBrand(null)).toBeUndefined();
+      expect(productFilters.byEngineBrand("   ")).toBeUndefined();
+    });
+
+    test("should return ilike SQL condition when brand is specified", () => {
+      expect(productFilters.byEngineBrand("Hyundai")).toBeDefined();
+    });
+  });
+
+  describe("byAlternatorBrand()", () => {
+    test("should return undefined when empty or whitespace", () => {
+      expect(productFilters.byAlternatorBrand(null)).toBeUndefined();
+      expect(productFilters.byAlternatorBrand("   ")).toBeUndefined();
+    });
+
+    test("should return ilike SQL condition when brand is specified", () => {
+      expect(productFilters.byAlternatorBrand("Stamford")).toBeDefined();
+    });
+  });
+
+  describe("byStatus()", () => {
+    test("should filter out of stock when status is outOfStock", () => {
+      expect(productFilters.byStatus("outOfStock")).toBeDefined();
+    });
+
+    test("should filter active in stock when status is active", () => {
+      expect(productFilters.byStatus("active")).toBeDefined();
+      expect(productFilters.byStatus("ACTIVE")).toBeDefined();
+    });
+
+    test("should filter inactive when status is INACTIVE", () => {
+      expect(productFilters.byStatus("INACTIVE")).toBeDefined();
+    });
+
+    test("should return undefined for other status values", () => {
+      expect(productFilters.byStatus(null)).toBeUndefined();
+      expect(productFilters.byStatus("unknown")).toBeUndefined();
+    });
+  });
+
+  describe("byQuoteOnly()", () => {
+    test("should filter quote-only products when true", () => {
+      expect(productFilters.byQuoteOnly(true)).toBeDefined();
+    });
+
+    test("should filter non-quote-only products when false", () => {
+      expect(productFilters.byQuoteOnly(false)).toBeDefined();
+    });
+
+    test("should return undefined when nullish", () => {
+      expect(productFilters.byQuoteOnly(null)).toBeUndefined();
+      expect(productFilters.byQuoteOnly(undefined)).toBeUndefined();
+    });
+  });
 });

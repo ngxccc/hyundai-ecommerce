@@ -69,6 +69,16 @@ describe("PayOS Utilities & Constants", () => {
         "amount=50000&cancelUrl=https://cancel.com&orderCode=123",
       );
     });
+    it("should handle null, nullish strings, and nested objects in sortAndStringifyPayOSData", () => {
+      const data = {
+        nullVal: null,
+        strNull: "null",
+        strUndef: "undefined",
+        nested: { a: 1 },
+      };
+      const result = sortAndStringifyPayOSData(data);
+      expect(result).toBe('nested={"a":1}&nullVal=&strNull=&strUndef=');
+    });
   });
 
   describe("generatePayOSSignature & verifyPayOSSignature", () => {
