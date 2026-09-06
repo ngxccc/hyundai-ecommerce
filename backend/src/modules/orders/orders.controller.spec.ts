@@ -53,9 +53,14 @@ describe("OrdersController", () => {
     findAll: mock((_query: OrderQueryDto) =>
       Promise.resolve({
         items: [mockOrder],
-        total: 1,
-        page: 1,
-        limit: 20,
+        meta: {
+          total: 1,
+          page: 1,
+          limit: 20,
+          totalPages: 1,
+          hasNext: false,
+          hasPrev: false,
+        },
       }),
     ),
     findById: mock((_id: string) => Promise.resolve(mockOrder)),
@@ -150,8 +155,8 @@ describe("OrdersController", () => {
 
         expect(mockOrdersService.findAll).toHaveBeenCalledWith(query);
         expect(result.success).toBe(true);
-        expect(result.data.total).toBe(1);
-        expect(result.data.items.length).toBe(1);
+        expect(result.data.length).toBe(1);
+        expect(result.meta?.total).toBe(1);
       });
     });
   });
@@ -159,7 +164,11 @@ describe("OrdersController", () => {
   describe("GET /orders/:id", () => {
     describe("when retrieving order details", () => {
       test("should return wrapped order details", async () => {
-        const result = await controller.getOrderById(mockOrder.id);
+        const result = await controller.getOrderById(mockOrder.id, {
+          sub: "user-1",
+          email: "user@example.com",
+          role: "ADMIN",
+        });
 
         expect(mockOrdersService.findById).toHaveBeenCalledWith(mockOrder.id);
         expect(result.success).toBe(true);
@@ -197,10 +206,20 @@ describe("OrdersController", () => {
   describe("POST /orders/:id/cancel", () => {
     describe("when cancelling an order", () => {
       test("should return wrapped cancelled order", async () => {
-        const result = await controller.cancelOrder(mockOrder.id);
+        const result = await controller.cancelOrder(mockOrder.id, {
+          sub: "user-1",
+          email: "user@example.com",
+          role: "ADMIN",
+        });
 
         expect(mockOrdersService.cancelOrder).toHaveBeenCalledWith(
           mockOrder.id,
+          null,
+          {
+            sub: "user-1",
+            email: "user@example.com",
+            role: "ADMIN",
+          },
         );
         expect(result.success).toBe(true);
         expect(result.data.status).toBe("CANCELLED");

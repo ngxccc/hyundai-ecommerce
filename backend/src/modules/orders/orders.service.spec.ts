@@ -1,5 +1,9 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { BadRequestException, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  NotFoundException,
+  UnprocessableEntityException,
+} from "@nestjs/common";
 import type { I18nService } from "nestjs-i18n";
 import { OrdersService } from "./orders.service";
 import type { DrizzleDB } from "@/database/database.module";
@@ -220,15 +224,22 @@ describe("OrdersService", () => {
         mockDb.setSelectResultsQueue([
           [{ count: 1 }],
           [mockOrderRecord],
-          [mockOrderRecord], // findById
-          [mockOrderItemRecord], // findById
+          [
+            {
+              item: {
+                ...mockOrderItemRecord.item,
+                orderId: mockOrderRecord.id,
+              },
+              product: mockProduct,
+            },
+          ],
         ]);
 
         const result = await service.findAll(query);
 
-        expect(result.total).toBe(1);
+        expect(result.meta.total).toBe(1);
         expect(result.items.length).toBe(1);
-        expect(result.page).toBe(1);
+        expect(result.meta.page).toBe(1);
       });
     });
   });
@@ -267,7 +278,7 @@ describe("OrdersService", () => {
 
         expect(
           service.updateStatus(mockOrderRecord.id, "DELIVERED"),
-        ).rejects.toThrow(BadRequestException);
+        ).rejects.toThrow(UnprocessableEntityException);
       });
     });
 

@@ -1,15 +1,18 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from "@nestjs/common";
-import { and, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
+import { and, desc, eq, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
   type DrizzleDB,
 } from "@/database/database.module";
 import {
+  dealerTiers,
   orders,
   orderItems,
   outboxEvents,
@@ -19,14 +22,20 @@ import {
 } from "@/database/schemas";
 import { type OrderStatus } from "@/database/schemas/enums.schema";
 import { OUTBOX_EVENT_TYPE } from "@/common/constants/event.constant";
+import { CODE_PREFIX } from "@/common/constants/business.constant";
+import { generateDocumentCode } from "@/common/utils/code.util";
+import {
+  buildPaginationMeta,
+  type PaginationMetaDto,
+} from "@/common/dto/pagination-meta.dto";
 import { I18nService } from "nestjs-i18n";
+import type { JwtPayload } from "@/common/decorators/current-user.decorator";
 import type { I18nTranslations } from "@/generated/i18n.generated";
 import type {
   CreateB2bOrderDto,
   CreateGuestOrderDto,
   OrderQueryDto,
   OrderResponseDto,
-  PaginatedOrderResponseDto,
 } from "./dto";
 
 /**
@@ -48,28 +57,17 @@ export class OrdersService {
   ) {}
 
   /**
-   * Generates a human-readable order number matching corporate format.
-   *
-   * @returns Order identifier string (e.g. ORD-20260904-4821)
-   */
-  private generateOrderNumber(): string {
-    const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    return `ORD-${todayStr}-${String(randomSuffix)}`;
-  }
-
-  /**
    * Places a retail order for guest customers without requiring prior account registration.
    *
    * @param dto - Guest customer contact information and line items to purchase.
    * @returns Created order record with initial PENDING status.
    * @throws NotFoundException if a requested product ID is not found.
-   * @throws BadRequestException if requested quantity exceeds available stock.
+   * @throws BadRequestException if requested quantity exceeds available stock or order creation fails.
    */
   async createGuestOrder(dto: CreateGuestOrderDto): Promise<OrderResponseDto> {
-    const orderNumber = this.generateOrderNumber();
+    const orderNumber = generateDocumentCode(CODE_PREFIX.ORDER);
 
-    const createdOrder = await this.db.transaction(async (tx) => {
+    return this.db.transaction(async (tx) => {
       let subtotal = 0;
       const orderItemsToInsert: {
         productId: string;
@@ -78,12 +76,31 @@ export class OrdersService {
         quantity: number;
         unitPrice: string;
       }[] = [];
+      const productsMap = new Map<
+        string,
+        {
+          id: string;
+          nameVi: string;
+          nameEn: string | null;
+          slug: string;
+          price: string;
+          images: string[];
+          totalStockCache: number;
+        }
+      >();
 
-      for (const item of dto.items) {
+      // Sort items deterministically by productId to prevent database deadlocks across concurrent transactions.
+      const sortedItems = [...dto.items].sort((a, b) =>
+        a.productId.localeCompare(b.productId),
+      );
+
+      for (const item of sortedItems) {
+        // Acquire pessimistic write lock (FOR UPDATE) to serialize inventory deduction and prevent overselling.
         const [product] = await tx
           .select()
           .from(products)
           .where(eq(products.id, item.productId))
+          .for("update")
           .limit(1);
 
         if (!product) {
@@ -99,16 +116,13 @@ export class OrdersService {
         const priceNum = Number(product.price);
         subtotal += priceNum * item.quantity;
 
-        // Atomic inventory deduction: Decrement totalStockCache
         await tx
           .update(products)
           .set({
             totalStockCache: sql`${products.totalStockCache} - ${item.quantity}`,
-            updatedAt: new Date(),
           })
           .where(eq(products.id, item.productId));
 
-        // Deduct from warehouse stock entries where available
         const stocks = await tx
           .select()
           .from(warehouseStocks)
@@ -118,6 +132,7 @@ export class OrdersService {
               sql`${warehouseStocks.stock} > 0`,
             ),
           )
+          .for("update")
           .limit(1);
 
         if (stocks.length > 0 && stocks[0]) {
@@ -125,7 +140,6 @@ export class OrdersService {
             .update(warehouseStocks)
             .set({
               stock: sql`GREATEST(0, ${warehouseStocks.stock} - ${item.quantity})`,
-              updatedAt: new Date(),
             })
             .where(
               and(
@@ -134,6 +148,16 @@ export class OrdersService {
               ),
             );
         }
+
+        productsMap.set(product.id, {
+          id: product.id,
+          nameVi: product.nameVi,
+          nameEn: product.nameEn,
+          slug: product.slug,
+          price: product.price,
+          images: product.images,
+          totalStockCache: product.totalStockCache,
+        });
 
         orderItemsToInsert.push({
           productId: product.id,
@@ -171,14 +195,17 @@ export class OrdersService {
         );
       }
 
-      for (const itemRecord of orderItemsToInsert) {
-        await tx.insert(orderItems).values({
-          orderId: newOrder.id,
-          ...itemRecord,
-        });
-      }
+      const insertedItems = await tx
+        .insert(orderItems)
+        .values(
+          orderItemsToInsert.map((item) => ({
+            orderId: newOrder.id,
+            ...item,
+          })),
+        )
+        .returning();
 
-      // Record Transactional Outbox domain event
+      // Record transactional outbox event to guarantee reliable asynchronous order creation notification.
       await tx.insert(outboxEvents).values({
         eventType: OUTBOX_EVENT_TYPE.ORDER_CREATED,
         payload: {
@@ -192,10 +219,15 @@ export class OrdersService {
         },
       });
 
-      return newOrder;
+      return {
+        ...newOrder,
+        items: insertedItems.map((item) => ({
+          ...item,
+          product: productsMap.get(item.productId) ?? null,
+        })),
+        user: null,
+      };
     });
-
-    return this.findById(createdOrder.id);
   }
 
   /**
@@ -205,15 +237,15 @@ export class OrdersService {
    * @param adminUserId - Authenticated admin/sales user ID creating the order.
    * @returns Created order record.
    * @throws NotFoundException if product is missing.
-   * @throws BadRequestException if quantity exceeds available stock.
+   * @throws BadRequestException if quantity exceeds available stock or order creation fails.
    */
   async createB2bOrder(
     dto: CreateB2bOrderDto,
     adminUserId: string,
   ): Promise<OrderResponseDto> {
-    const orderNumber = this.generateOrderNumber();
+    const orderNumber = generateDocumentCode(CODE_PREFIX.ORDER);
 
-    const createdOrder = await this.db.transaction(async (tx) => {
+    return this.db.transaction(async (tx) => {
       let subtotal = 0;
       const orderItemsToInsert: {
         productId: string;
@@ -222,12 +254,31 @@ export class OrdersService {
         quantity: number;
         unitPrice: string;
       }[] = [];
+      const productsMap = new Map<
+        string,
+        {
+          id: string;
+          nameVi: string;
+          nameEn: string | null;
+          slug: string;
+          price: string;
+          images: string[];
+          totalStockCache: number;
+        }
+      >();
 
-      for (const item of dto.items) {
+      // Sort items deterministically by productId to prevent database deadlocks across concurrent transactions.
+      const sortedItems = [...dto.items].sort((a, b) =>
+        a.productId.localeCompare(b.productId),
+      );
+
+      for (const item of sortedItems) {
+        // Acquire pessimistic write lock (FOR UPDATE) to serialize inventory deduction and prevent overselling.
         const [product] = await tx
           .select()
           .from(products)
           .where(eq(products.id, item.productId))
+          .for("update")
           .limit(1);
 
         if (!product) {
@@ -247,12 +298,10 @@ export class OrdersService {
 
         subtotal += unitPriceNum * item.quantity;
 
-        // Decrement stock
         await tx
           .update(products)
           .set({
             totalStockCache: sql`${products.totalStockCache} - ${item.quantity}`,
-            updatedAt: new Date(),
           })
           .where(eq(products.id, item.productId));
 
@@ -265,6 +314,7 @@ export class OrdersService {
               sql`${warehouseStocks.stock} > 0`,
             ),
           )
+          .for("update")
           .limit(1);
 
         if (stocks.length > 0 && stocks[0]) {
@@ -272,7 +322,6 @@ export class OrdersService {
             .update(warehouseStocks)
             .set({
               stock: sql`GREATEST(0, ${warehouseStocks.stock} - ${item.quantity})`,
-              updatedAt: new Date(),
             })
             .where(
               and(
@@ -281,6 +330,16 @@ export class OrdersService {
               ),
             );
         }
+        productsMap.set(product.id, {
+          id: product.id,
+          nameVi: product.nameVi,
+          nameEn: product.nameEn,
+          slug: product.slug,
+          price: product.price,
+          images: product.images,
+          totalStockCache: product.totalStockCache,
+        });
+
         orderItemsToInsert.push({
           productId: product.id,
           productName: product.nameVi,
@@ -295,6 +354,31 @@ export class OrdersService {
       const depositAmountNum = Number(dto.depositAmount);
       const remainingAmountNum = Math.max(0, totalAmountNum - depositAmountNum);
 
+      let userSummary: {
+        id: string;
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+        role: string;
+      } | null = null;
+
+      if (dto.userId) {
+        const [u] = await tx
+          .select({
+            id: users.id,
+            fullName: users.fullName,
+            email: users.email,
+            phoneNumber: users.phoneNumber,
+            role: users.role,
+          })
+          .from(users)
+          .where(eq(users.id, dto.userId))
+          .limit(1);
+
+        if (u) {
+          userSummary = u;
+        }
+      }
       const [newOrder] = await tx
         .insert(orders)
         .values({
@@ -330,14 +414,17 @@ export class OrdersService {
         );
       }
 
-      for (const itemRecord of orderItemsToInsert) {
-        await tx.insert(orderItems).values({
-          orderId: newOrder.id,
-          ...itemRecord,
-        });
-      }
+      const insertedItems = await tx
+        .insert(orderItems)
+        .values(
+          orderItemsToInsert.map((item) => ({
+            orderId: newOrder.id,
+            ...item,
+          })),
+        )
+        .returning();
+      // Record transactional outbox event to guarantee reliable asynchronous order creation notification.
 
-      // Record Outbox domain event
       await tx.insert(outboxEvents).values({
         eventType: OUTBOX_EVENT_TYPE.ORDER_CREATED,
         payload: {
@@ -350,10 +437,15 @@ export class OrdersService {
         },
       });
 
-      return newOrder;
+      return {
+        ...newOrder,
+        items: insertedItems.map((item) => ({
+          ...item,
+          product: productsMap.get(item.productId) ?? null,
+        })),
+        user: userSummary,
+      };
     });
-
-    return this.findById(createdOrder.id);
   }
 
   /**
@@ -426,7 +518,10 @@ export class OrdersService {
    * @param query - Query filter parameters.
    * @returns Paginated list of order response dtos.
    */
-  async findAll(query: OrderQueryDto): Promise<PaginatedOrderResponseDto> {
+  async findAll(query: OrderQueryDto): Promise<{
+    items: OrderResponseDto[];
+    meta: PaginationMetaDto;
+  }> {
     const page = query.page;
     const limit = query.limit;
     const offset = (page - 1) * limit;
@@ -491,15 +586,96 @@ export class OrdersService {
 
     const total = totalCountResult[0]?.count ?? 0;
 
-    const fullItems = await Promise.all(
-      orderList.map((order) => this.findById(order.id)),
-    );
+    if (orderList.length === 0) {
+      return {
+        items: [],
+        meta: buildPaginationMeta(total, page, limit),
+      };
+    }
 
+    const orderIds = orderList.map((o) => o.id);
+    const userIds = [
+      ...new Set(
+        orderList
+          .map((o) => o.userId)
+          .filter((id): id is string => Boolean(id)),
+      ),
+    ];
+
+    // Batch fetch order items and user records in two parallel queries to eliminate N+1 cascade.
+    const [allItems, allUsers] = await Promise.all([
+      this.db
+        .select({
+          item: orderItems,
+          product: {
+            id: products.id,
+            nameVi: products.nameVi,
+            nameEn: products.nameEn,
+            slug: products.slug,
+            price: products.price,
+            images: products.images,
+            totalStockCache: products.totalStockCache,
+          },
+        })
+        .from(orderItems)
+        .leftJoin(products, eq(orderItems.productId, products.id))
+        .where(inArray(orderItems.orderId, orderIds)),
+
+      userIds.length > 0
+        ? this.db
+            .select({
+              id: users.id,
+              email: users.email,
+              fullName: users.fullName,
+              phoneNumber: users.phoneNumber,
+              companyName: users.companyName,
+              role: users.role,
+              dealerTier: dealerTiers.nameVi,
+            })
+            .from(users)
+            .leftJoin(dealerTiers, eq(users.dealerTierId, dealerTiers.id))
+            .where(inArray(users.id, userIds))
+        : Promise.resolve([]),
+    ]);
+
+    const itemsByOrderId = new Map<string, typeof allItems>();
+    for (const record of allItems) {
+      const list = itemsByOrderId.get(record.item.orderId) ?? [];
+      list.push(record);
+      itemsByOrderId.set(record.item.orderId, list);
+    }
+
+    const usersById = new Map<string, (typeof allUsers)[number]>();
+    for (const u of allUsers) {
+      usersById.set(u.id, u);
+    }
+
+    const fullItems = orderList.map((order) => {
+      const orderItemsList = itemsByOrderId.get(order.id) ?? [];
+      const userRecord = order.userId ? usersById.get(order.userId) : null;
+
+      return {
+        ...order,
+        items: orderItemsList.map((r) => ({
+          ...r.item,
+          product: r.product?.id ? r.product : null,
+        })),
+        user: userRecord
+          ? {
+              id: userRecord.id,
+              email: userRecord.email,
+              fullName: userRecord.fullName,
+              phoneNumber: userRecord.phoneNumber,
+              companyName: userRecord.companyName,
+              role: userRecord.role,
+              dealerTier: userRecord.dealerTier ?? undefined,
+            }
+          : null,
+      };
+    });
     return {
       items: fullItems,
-      total,
-      page,
-      limit,
+      meta: buildPaginationMeta(total, page, limit),
     };
   }
 
@@ -511,7 +687,8 @@ export class OrdersService {
    * @param adminUserId - Authenticated user approving/updating status.
    * @param note - Operational status update note.
    * @returns Updated order details.
-   * @throws BadRequestException if transition is invalid or order is terminal.
+   * @throws NotFoundException if order does not exist.
+   * @throws UnprocessableEntityException if state transition is invalid or order is terminal.
    */
   async updateStatus(
     id: string,
@@ -520,27 +697,34 @@ export class OrdersService {
     note?: string | null,
   ): Promise<OrderResponseDto> {
     const current = await this.findById(id);
+    return this.applyStatusTransition(current, newStatus, adminUserId, note);
+  }
 
+  private async applyStatusTransition(
+    current: OrderResponseDto,
+    newStatus: OrderStatus,
+    adminUserId?: string,
+    note?: string | null,
+  ): Promise<OrderResponseDto> {
     if (current.status === newStatus) {
       return current;
     }
 
     const allowed = VALID_ORDER_TRANSITIONS[current.status];
     if (!allowed.includes(newStatus)) {
-      throw new BadRequestException(
+      throw new UnprocessableEntityException(
         this.i18n.t("orders.INVALID_STATUS_TRANSITION"),
       );
     }
 
-    await this.db.transaction(async (tx) => {
-      // If moving to CANCELLED, restock inventory atomically
+    const updatedOrder = await this.db.transaction(async (tx) => {
+      // Restock physical and cached warehouse inventory when cancelling an active order.
       if (newStatus === "CANCELLED") {
         for (const item of current.items) {
           await tx
             .update(products)
             .set({
               totalStockCache: sql`${products.totalStockCache} + ${item.quantity}`,
-              updatedAt: new Date(),
             })
             .where(eq(products.id, item.productId));
 
@@ -548,6 +732,7 @@ export class OrdersService {
             .select()
             .from(warehouseStocks)
             .where(eq(warehouseStocks.productId, item.productId))
+            .for("update")
             .limit(1);
 
           if (stocks.length > 0 && stocks[0]) {
@@ -555,7 +740,6 @@ export class OrdersService {
               .update(warehouseStocks)
               .set({
                 stock: sql`${warehouseStocks.stock} + ${item.quantity}`,
-                updatedAt: new Date(),
               })
               .where(
                 and(
@@ -584,18 +768,27 @@ export class OrdersService {
         });
       }
 
-      await tx
+      const [updated] = await tx
         .update(orders)
         .set({
           status: newStatus,
           approvedBy: adminUserId ?? current.approvedBy,
           note: note !== undefined ? note : current.note,
-          updatedAt: new Date(),
         })
-        .where(eq(orders.id, id));
+        .where(eq(orders.id, current.id))
+        .returning();
+
+      return updated;
     });
 
-    return this.findById(id);
+    current.status = newStatus;
+    current.approvedBy =
+      updatedOrder?.approvedBy ?? adminUserId ?? current.approvedBy;
+    current.note =
+      updatedOrder?.note ?? (note !== undefined ? note : current.note);
+    current.updatedAt = updatedOrder?.updatedAt ?? new Date();
+
+    return current;
   }
 
   /**
@@ -604,13 +797,28 @@ export class OrdersService {
    * @param id - Order UUID identifier.
    * @param note - Reason for cancellation.
    * @returns Updated cancelled order details.
+   * @throws NotFoundException if order does not exist.
    * @throws BadRequestException if order is already cancelled or in shipping/delivered status.
+   * @throws UnprocessableEntityException if order state transition is rejected by state machine.
    */
   async cancelOrder(
     id: string,
     note?: string | null,
+    currentUser?: JwtPayload,
   ): Promise<OrderResponseDto> {
     const current = await this.findById(id);
+
+    if (currentUser) {
+      if (
+        currentUser.role !== "ADMIN" &&
+        currentUser.role !== "SALES" &&
+        current.userId !== currentUser.sub
+      ) {
+        throw new ForbiddenException(
+          "You are not authorized to cancel this order",
+        );
+      }
+    }
 
     if (current.status === "CANCELLED") {
       throw new BadRequestException(
@@ -624,7 +832,12 @@ export class OrdersService {
       );
     }
 
-    return this.updateStatus(id, "CANCELLED", undefined, note);
+    return this.applyStatusTransition(
+      current,
+      "CANCELLED",
+      currentUser?.sub,
+      note,
+    );
   }
 
   /**

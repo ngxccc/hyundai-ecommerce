@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -20,20 +22,25 @@ import {
 import { Throttle } from "@nestjs/throttler";
 import {
   ApiOkResponseGeneric,
+  ApiOkResponsePaginated,
   ApiCreatedResponseGeneric,
-  CurrentUser,
-  Roles,
 } from "@/common/decorators";
+import type { PaginationMetaDto } from "@/common/dto/pagination-meta.dto";
+import {
+  CurrentUser,
+  type JwtPayload,
+} from "@/common/decorators/current-user.decorator";
+import { Roles } from "@/common/decorators/roles.decorator";
 import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
 import { RolesGuard } from "@/common/guards/roles.guard";
-import { apiSuccess } from "@/common/utils/api-response.util";
+import { CronAuthGuard } from "@/common/guards/cron-auth.guard";
+import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { ORDER_ROUTES } from "./order.routes";
 import { OrdersService } from "./orders.service";
 import {
   CreateB2bOrderDto,
   CreateGuestOrderDto,
   OrderResponseDto,
-  PaginatedOrderResponseDto,
   OrderQueryDto,
   UpdateOrderStatusDto,
 } from "./dto";
@@ -97,10 +104,12 @@ export class OrdersController {
   @ApiQuery({ name: "status", required: false, type: String })
   @ApiQuery({ name: "paymentStatus", required: false, type: String })
   @ApiQuery({ name: "search", required: false, type: String })
-  @ApiOkResponseGeneric(PaginatedOrderResponseDto)
-  async listOrders(@Query() query: OrderQueryDto) {
-    const result = await this.ordersService.findAll(query);
-    return apiSuccess(result);
+  @ApiOkResponsePaginated(OrderResponseDto)
+  async listOrders(
+    @Query() query: OrderQueryDto,
+  ): Promise<ApiResponse<OrderResponseDto[], PaginationMetaDto>> {
+    const { items, meta } = await this.ordersService.findAll(query);
+    return apiSuccess(items, meta);
   }
 
   /**
@@ -115,8 +124,20 @@ export class OrdersController {
   @ApiOperation({ summary: "Get detailed order by ID" })
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderResponseDto)
-  async getOrderById(@Param("id") id: string) {
+  async getOrderById(
+    @Param("id", ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: JwtPayload,
+  ) {
     const order = await this.ordersService.findById(id);
+    if (
+      currentUser.role !== "ADMIN" &&
+      currentUser.role !== "SALES" &&
+      order.userId !== currentUser.sub
+    ) {
+      throw new ForbiddenException(
+        "You are not authorized to access this order",
+      );
+    }
     return apiSuccess(order);
   }
 
@@ -136,7 +157,7 @@ export class OrdersController {
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderResponseDto)
   async updateStatus(
-    @Param("id") id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateOrderStatusDto,
     @CurrentUser("sub") adminUserId: string,
   ) {
@@ -158,12 +179,20 @@ export class OrdersController {
   @Post(ORDER_ROUTES.CANCEL)
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: "Cancel order and release reserved stock" })
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderResponseDto)
-  async cancelOrder(@Param("id") id: string) {
-    const order = await this.ordersService.cancelOrder(id);
-    return apiSuccess(order);
+  async cancelOrder(
+    @Param("id", ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: JwtPayload,
+  ) {
+    const cancelled = await this.ordersService.cancelOrder(
+      id,
+      null,
+      currentUser,
+    );
+    return apiSuccess(cancelled);
   }
 
   /**
@@ -173,6 +202,7 @@ export class OrdersController {
    */
   @Post(ORDER_ROUTES.EXPIRE_CRON)
   @HttpCode(HttpStatus.OK)
+  @UseGuards(CronAuthGuard)
   @ApiOperation({
     summary: "Auto-expire pending unpaid orders and restock inventory (Cron)",
   })
