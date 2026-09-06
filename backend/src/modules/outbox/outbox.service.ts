@@ -1,7 +1,9 @@
+import { env } from "@/env";
 import {
   Injectable,
   Logger,
   Inject,
+  Optional,
   type OnApplicationBootstrap,
   type OnApplicationShutdown,
 } from "@nestjs/common";
@@ -18,6 +20,11 @@ import {
   MAIL_JOB_NAME,
 } from "@/common/constants/event.constant";
 import { QUEUE_NAMES } from "@/common/constants/queue.constants";
+import {
+  type OutboxServiceOptions,
+  OUTBOX_OPTIONS_TOKEN,
+} from "./interfaces/outbox-options.interface";
+export { type OutboxServiceOptions, OUTBOX_OPTIONS_TOKEN };
 
 const EVENT_TO_JOB_MAP: Record<string, string> = {
   [OUTBOX_EVENT_TYPE.AUTH_VERIFICATION_EMAIL_REQUESTED]:
@@ -35,16 +42,22 @@ export class OutboxService
   private readonly logger = new Logger(OutboxService.name);
   private timer: NodeJS.Timeout | null = null;
   private isProcessing = false;
+  private readonly enablePolling: boolean;
 
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
     @InjectQueue(QUEUE_NAMES.MAIL)
     private readonly mailQueue: Queue,
-  ) {}
+    @Optional()
+    @Inject(OUTBOX_OPTIONS_TOKEN)
+    options?: OutboxServiceOptions,
+  ) {
+    this.enablePolling = options?.enablePolling ?? env.OUTBOX_ENABLE_POLLING;
+  }
 
   onApplicationBootstrap() {
-    if (process.env.NODE_ENV === "test") return;
+    if (!this.enablePolling) return;
     // Polling interval of 5 seconds balances event processing latency against database CPU utilization.
     this.timer = setInterval(() => {
       void this.processOutbox();
