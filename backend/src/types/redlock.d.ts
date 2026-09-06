@@ -1,4 +1,4 @@
-// WHY: Redlock v5 package uses CJS `export = Redlock` export syntax which fails ESM resolution under TypeScript's `verbatimModuleSyntax` and `moduleResolution: "bundler"`. This ambient module declaration bridges the ESM default import shape while keeping strict compiler flags intact.
+// Redlock v5 package uses CJS `export = Redlock` export syntax which fails ESM resolution under TypeScript's `verbatimModuleSyntax` and `moduleResolution: "bundler"`. This ambient module declaration bridges the ESM default import shape while keeping strict compiler flags intact.
 declare module "redlock" {
   export interface Lock {
     resources: string[];

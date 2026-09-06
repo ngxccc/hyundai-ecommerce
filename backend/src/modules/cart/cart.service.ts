@@ -64,7 +64,6 @@ export class CartService {
    * Adds an item to the user's cart or increments existing quantity with stock boundary validation.
    */
   async addItem(userId: string, dto: AddCartItemDto): Promise<CartResponseDto> {
-    // 1. Verify product exists, is active, and has available inventory
     const [product] = await this.db
       .select({
         id: products.id,
@@ -90,7 +89,6 @@ export class CartService {
 
     const cart = await this.getOrCreateCartEntity(userId);
 
-    // 2. Check if product already exists in cart
     const [existingItem] = await this.db
       .select()
       .from(cartItems)
@@ -200,7 +198,6 @@ export class CartService {
     }
 
     const cartId = await this.db.transaction(async (tx) => {
-      // 1. Get or create user cart entity within transaction
       let [cart] = await tx
         .select({ id: carts.id })
         .from(carts)
@@ -218,7 +215,6 @@ export class CartService {
         cart = created;
       }
 
-      // 2. Fetch all products referenced in guest cart
       const productIds = dto.items.map((i) => i.productId);
       const productRecords = await tx
         .select({
@@ -233,7 +229,6 @@ export class CartService {
 
       const productMap = new Map(productRecords.map((p) => [p.id, p]));
 
-      // 3. Fetch current items in user's cart
       const existingUserCartItems = await tx
         .select()
         .from(cartItems)
@@ -243,7 +238,6 @@ export class CartService {
         existingUserCartItems.map((item) => [item.productId, item]),
       );
 
-      // 4. Process each guest item and clamp to product stock
       for (const guestItem of dto.items) {
         const product = productMap.get(guestItem.productId);
 

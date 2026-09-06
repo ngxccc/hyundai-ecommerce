@@ -174,8 +174,8 @@ export class AuthService {
   }
 
   async resendVerificationEmail(dto: ResendVerificationDto): Promise<void> {
-    const TOKEN_TTL_MS = TIME_IN_MS.DAY; // 24 hours
-    const RESEND_COOLDOWN_MS = TIME_IN_MS.MINUTE; // 1 minute
+    const TOKEN_TTL_MS = TIME_IN_MS.DAY;
+    const RESEND_COOLDOWN_MS = TIME_IN_MS.MINUTE;
 
     await this.db.transaction(async (tx) => {
       const [user] = await tx

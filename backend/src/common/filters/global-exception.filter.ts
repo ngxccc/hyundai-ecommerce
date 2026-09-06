@@ -279,7 +279,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   ): string {
     if (!rawReason) return "Invalid value";
 
-    // WHY: Format nestjs-i18n raw validation message string "key|{args_json}" into localized human-readable error text.
+    // Format nestjs-i18n raw validation message string "key|{args_json}" into localized human-readable error text.
     if (rawReason.includes("|")) {
       const pipeIndex = rawReason.indexOf("|");
       const key = rawReason.slice(0, pipeIndex);
@@ -326,7 +326,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     return rawName.replace(/([a-z])([A-Z])/g, "$1 $2");
   }
 
-  // WHY: Safe fallback helper to translate error messages without risk of crashing if I18nService is missing or fails.
+  // Safe fallback helper to translate error messages without risk of crashing if I18nService is missing or fails.
   private translate(key: string, lang?: string, fallback = ""): string {
     return this.translateWithArgs(key, lang, undefined, fallback);
   }

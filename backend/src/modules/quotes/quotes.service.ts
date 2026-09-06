@@ -419,7 +419,7 @@ export class QuotesService {
       ),
     ];
 
-    // WHY: Batch fetch items, messages, and users in parallel to eliminate N+1 cascade.
+    // Batch fetch items, messages, and users in parallel to eliminate N+1 cascade.
     const [allItemRecords, allMessageRecords, allUsers] = await Promise.all([
       this.db
         .select({
@@ -541,7 +541,6 @@ export class QuotesService {
       throw new NotFoundException(this.i18n.t("quotes.QUOTE_NOT_FOUND"));
     }
 
-    // Fetch items with joined product summaries
     const itemRecords = await this.db
       .select({
         item: quoteItems,
@@ -564,7 +563,6 @@ export class QuotesService {
       product: product?.id ? product : null,
     }));
 
-    // Fetch messages with sender summaries
     const messageRecords = await this.db
       .select({
         message: quoteMessages,
@@ -585,7 +583,6 @@ export class QuotesService {
       sender: sender?.id ? sender : null,
     }));
 
-    // Fetch user details if customer is registered
     let userSummary = null;
     if (quote.userId) {
       const [u] = await this.db
@@ -692,7 +689,6 @@ export class QuotesService {
         })
         .where(eq(quoteItems.id, itemId));
 
-      // Calculate quote subtotal directly from existing in-memory items
       let newSubtotal = 0;
       for (const it of quote.items) {
         const price = parseFloat(
@@ -873,7 +869,6 @@ export class QuotesService {
         const subtotal = parseFloat(finalPrice) * item.quantity;
         totalAmountDecimal += subtotal;
 
-        // Link catalog product if available
         if (item.productId) {
           orderItemsToInsert.push({
             productId: item.productId,
@@ -887,7 +882,6 @@ export class QuotesService {
       }
 
       const orderNumber = generateDocumentCode(CODE_PREFIX.ORDER);
-      // Create Order
       const [newOrder] = await tx
         .insert(orders)
         .values({
@@ -914,7 +908,6 @@ export class QuotesService {
         );
       }
 
-      // Update parent Quote to APPROVED and link orderId
       await tx
         .update(quotes)
         .set({
@@ -925,7 +918,6 @@ export class QuotesService {
         })
         .where(eq(quotes.id, quoteId));
 
-      // Append system timeline message
       await tx.insert(quoteMessages).values({
         quoteId,
         senderId: adminUserId,
