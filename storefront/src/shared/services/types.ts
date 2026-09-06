@@ -1,6 +1,7 @@
 export type JSONContent = Record<string, unknown>;
 import type { Locale } from "next-intl";
 import type { ApiProduct, ApiCategory, ApiBrand } from "@/types/api";
+import type { ProductSpecSheet } from "@/types/product-spec";
 
 export interface StorefrontProduct {
   id: string;
@@ -13,6 +14,7 @@ export interface StorefrontProduct {
   brandId: string | null;
   categoryId: string | null;
   specs: Record<string, unknown> | null;
+  specSheet: ProductSpecSheet | null;
   totalStockCache: number;
   isQuoteOnly: boolean;
 }
@@ -73,6 +75,7 @@ export function mapProductToStorefront(
     brandId: dto.brandId ?? null,
     categoryId: dto.categoryId ?? null,
     specs: dto.specs,
+    specSheet: Array.isArray(dto.specSheet) ? dto.specSheet : null,
     totalStockCache: dto.totalStockCache,
     isQuoteOnly: dto.isQuoteOnly,
   };

@@ -170,43 +170,83 @@ async function ProductDetailsPageContent({
           <h2 className="text-foreground mb-4 text-lg font-bold">
             {t("detailedSpecs")}
           </h2>
-          <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
-            {Object.entries(
-              (product.specs as
-                | Record<string, string | number | boolean | null | undefined>
-                | null
-                | undefined) ?? {},
-            ).map(([key, value]) => {
-              if (value === null || value === undefined || value === "")
-                return null;
-
-              if (!ALLOWED_SPEC_KEYS.has(key)) return null;
-              const label = t(`specs.${key}` as never);
-
-              let displayValue = String(value);
-              if (key === "fuelType" && typeof value === "string") {
-                displayValue = ALLOWED_FUEL_TYPES.has(value)
-                  ? t(`fuelTypes.${value}` as never)
-                  : String(value);
-              } else if (key === "phase" && typeof value === "string") {
-                displayValue = ALLOWED_PHASES.has(value)
-                  ? t(`phases.${value}` as never)
-                  : String(value);
-              }
-
-              return (
+          {product.specSheet && product.specSheet.length > 0 ? (
+            <div className="space-y-6">
+              {product.specSheet.map((group) => (
                 <div
-                  key={key}
-                  className="flex justify-between border-b pb-2 text-sm"
+                  key={group.groupKey || group.titleVi}
+                  className="bg-card rounded-lg border p-4 shadow-2xs"
                 >
-                  <span className="text-muted-foreground">{label}</span>
-                  <span className="text-foreground font-semibold">
-                    {displayValue}
-                  </span>
+                  <h3 className="text-primary mb-3 border-b pb-2 text-sm font-bold">
+                    {locale === "en" && group.titleEn
+                      ? group.titleEn
+                      : group.titleVi}
+                  </h3>
+                  <div className="grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2">
+                    {group.items.map((item) => {
+                      if (!item.value) return null;
+                      const label =
+                        locale === "en" && item.nameEn
+                          ? item.nameEn
+                          : item.nameVi;
+                      const displayVal = item.unit
+                        ? `${item.value} ${item.unit}`
+                        : item.value;
+                      return (
+                        <div
+                          key={item.key || item.nameVi}
+                          className="flex justify-between border-b pb-1.5 text-sm"
+                        >
+                          <span className="text-muted-foreground">{label}</span>
+                          <span className="text-foreground font-semibold">
+                            {displayVal}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
+              {Object.entries(
+                (product.specs as
+                  | Record<string, string | number | boolean | null | undefined>
+                  | null
+                  | undefined) ?? {},
+              ).map(([key, value]) => {
+                if (value === null || value === undefined || value === "")
+                  return null;
+
+                if (!ALLOWED_SPEC_KEYS.has(key)) return null;
+                const label = t(`specs.${key}` as never);
+
+                let displayValue = String(value);
+                if (key === "fuelType" && typeof value === "string") {
+                  displayValue = ALLOWED_FUEL_TYPES.has(value)
+                    ? t(`fuelTypes.${value}` as never)
+                    : String(value);
+                } else if (key === "phase" && typeof value === "string") {
+                  displayValue = ALLOWED_PHASES.has(value)
+                    ? t(`phases.${value}` as never)
+                    : String(value);
+                }
+
+                return (
+                  <div
+                    key={key}
+                    className="flex justify-between border-b pb-2 text-sm"
+                  >
+                    <span className="text-muted-foreground">{label}</span>
+                    <span className="text-foreground font-semibold">
+                      {displayValue}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
     </section>

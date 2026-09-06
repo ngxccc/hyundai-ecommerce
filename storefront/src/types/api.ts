@@ -72,3 +72,6 @@ export type ProductPhase = ProductQueryParams["phase"];
 export type ProductFuelType = ProductQueryParams["fuelType"];
 export type ProductCanopyType = ProductQueryParams["canopyType"];
 export type ProductSort = ProductQueryParams["sort"];
+
+// Spec Sheet Types
+export * from "./product-spec";

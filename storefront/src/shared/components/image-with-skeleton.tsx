@@ -4,6 +4,10 @@ import { useState } from "react";
 import Image, { type ImageProps } from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/shared/lib/utils";
+import {
+  cloudinaryLoader,
+  isCloudinaryUrl,
+} from "@/shared/utils/cloudinary.utils";
 
 interface ImageWithSkeletonProps extends ImageProps {
   skeletonClassName?: string;
@@ -25,6 +29,9 @@ export function ImageWithSkeleton({
 
   const styleWidth = typeof width === "number" ? `${width}px` : width;
   const styleHeight = typeof height === "number" ? `${height}px` : height;
+  const srcString = typeof src === "string" ? src : "";
+  const isCld = isCloudinaryUrl(srcString);
+  const selectedLoader = props.loader ?? (isCld ? cloudinaryLoader : undefined);
 
   return (
     <div
@@ -44,6 +51,7 @@ export function ImageWithSkeleton({
       <Image
         src={src}
         alt={alt}
+        loader={selectedLoader}
         width={width}
         height={height}
         fill={fill}

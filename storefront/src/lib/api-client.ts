@@ -25,7 +25,7 @@ const getBaseUrl = (): string => {
   if (typeof window !== "undefined") {
     return "";
   }
-  const url = env.BACKEND_API_URL;
+  const url = env.BACKEND_API_URL || "http://localhost:3000";
   const trimmed = url.trim().replace(/^["'\\]+|["'\\]+$/g, "");
   if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
     return `https://${trimmed}`;
