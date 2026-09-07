@@ -18,6 +18,10 @@ import {
 import {
   ApiOkResponseGeneric,
   ApiCreatedResponseGeneric,
+  ApiBadRequestResponseRfc9457,
+  ApiNotFoundResponseRfc9457,
+  ApiUnauthorizedResponseRfc9457,
+  ApiForbiddenResponseRfc9457,
 } from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
 import {
@@ -57,6 +61,8 @@ export class PaymentsController {
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: "Create PayOS checkout link and VietQR code" })
   @ApiCreatedResponseGeneric(CheckoutLinkResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
   async createCheckoutLink(@Body() dto: CreateCheckoutLinkDto) {
     const result = await this.paymentsService.createCheckoutLink(dto);
     return apiSuccess(result);
@@ -74,6 +80,7 @@ export class PaymentsController {
     summary: "Receive and cryptographically verify PayOS payment webhook",
   })
   @ApiOkResponseGeneric(PayOSWebhookResponseDto)
+  @ApiBadRequestResponseRfc9457()
   async handleWebhook(@Body() dto: PayOSWebhookDto) {
     const result = await this.paymentsService.handlePayOSWebhook(dto);
     return apiSuccess(result);
@@ -95,6 +102,10 @@ export class PaymentsController {
   @ApiOperation({ summary: "Verify offline cash payment (Admin/Accountant)" })
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderPaymentSummaryDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async verifyCashPayment(
     @Param("id") id: string,
     @Body() dto: VerifyCashPaymentDto,
@@ -123,6 +134,9 @@ export class PaymentsController {
     summary: "Repay B2B dealer debt via PayOS gateway or cash",
   })
   @ApiCreatedResponseGeneric(DebtRepaymentResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
   async repayDebt(
     @Body() dto: RepayDebtDto,
     @CurrentUser() currentUser: JwtPayload,
@@ -147,6 +161,8 @@ export class PaymentsController {
   @ApiOperation({ summary: "Get order payment status and transactions" })
   @ApiParam({ name: "orderId", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderPaymentSummaryDto)
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
   async getOrderPaymentSummary(
     @Param("orderId", ParseUUIDPipe) orderId: string,
   ) {

@@ -1,4 +1,5 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
+import { I18nNotFoundException } from "@/common/exceptions";
 import { asc, eq } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -53,7 +54,7 @@ export class DealerTiersService {
       .limit(1);
 
     if (!tier) {
-      throw new NotFoundException(`Dealer tier with id "${id}" not found`);
+      throw new I18nNotFoundException("users.DEALER_TIER_NOT_FOUND", { id });
     }
 
     return tier;

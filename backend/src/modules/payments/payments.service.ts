@@ -1,13 +1,10 @@
+import { Inject, Injectable, Optional } from "@nestjs/common";
 import {
-  BadRequestException,
-  ForbiddenException,
-  Inject,
-  Injectable,
-  NotFoundException,
-  Optional,
-} from "@nestjs/common";
+  I18nBadRequestException,
+  I18nForbiddenException,
+  I18nNotFoundException,
+} from "@/common/exceptions";
 import { eq, sql } from "drizzle-orm";
-import { I18nService } from "nestjs-i18n";
 import {
   DATABASE_CONNECTION,
   type DrizzleDB,
@@ -56,7 +53,6 @@ export class PaymentsService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
-    private readonly i18n: I18nService,
     @Optional()
     private readonly redlockService?: RedlockService,
     @Inject(PAYMENT_GATEWAY_TOKEN)
@@ -81,17 +77,15 @@ export class PaymentsService {
       .limit(1);
 
     if (!order) {
-      throw new NotFoundException(this.i18n.t("payments.ORDER_NOT_FOUND"));
+      throw new I18nNotFoundException("payments.ORDER_NOT_FOUND");
     }
 
     if (order.status === "CANCELLED") {
-      throw new BadRequestException(
-        this.i18n.t("orders.ORDER_CANNOT_BE_CANCELLED"),
-      );
+      throw new I18nBadRequestException("orders.ORDER_CANNOT_BE_CANCELLED");
     }
 
     if (order.paymentStatus === "FULLY_PAID") {
-      throw new BadRequestException(this.i18n.t("payments.ORDER_ALREADY_PAID"));
+      throw new I18nBadRequestException("payments.ORDER_ALREADY_PAID");
     }
 
     const totalAmountNum = Number(order.totalAmount);
@@ -190,9 +184,7 @@ export class PaymentsService {
     );
 
     if (!isAuthentic) {
-      throw new BadRequestException(
-        this.i18n.t("payments.INVALID_PAYMENT_SIGNATURE"),
-      );
+      throw new I18nBadRequestException("payments.INVALID_PAYMENT_SIGNATURE");
     }
 
     // Acknowledge non-success webhook codes (cancelled, expired) without error
@@ -231,9 +223,7 @@ export class PaymentsService {
             .set({ status: "FAILED", updatedAt: new Date() })
             .where(eq(paymentTransactions.id, tx.id));
 
-          throw new BadRequestException(
-            this.i18n.t("payments.PAYMENT_AMOUNT_MISMATCH"),
-          );
+          throw new I18nBadRequestException("payments.PAYMENT_AMOUNT_MISMATCH");
         }
 
         const [order] = await this.db
@@ -393,17 +383,15 @@ export class PaymentsService {
       .limit(1);
 
     if (!order) {
-      throw new NotFoundException(this.i18n.t("payments.ORDER_NOT_FOUND"));
+      throw new I18nNotFoundException("payments.ORDER_NOT_FOUND");
     }
 
     if (order.status === "CANCELLED") {
-      throw new BadRequestException(
-        this.i18n.t("orders.ORDER_CANNOT_BE_CANCELLED"),
-      );
+      throw new I18nBadRequestException("orders.ORDER_CANNOT_BE_CANCELLED");
     }
 
     if (order.paymentStatus === "FULLY_PAID") {
-      throw new BadRequestException(this.i18n.t("payments.ORDER_ALREADY_PAID"));
+      throw new I18nBadRequestException("payments.ORDER_ALREADY_PAID");
     }
 
     const cashAmountNum = Number(dto.amount);
@@ -503,9 +491,7 @@ export class PaymentsService {
     currentUserRole = "ADMIN",
   ): Promise<DebtRepaymentResponseDto> {
     if (dto.paymentMethod === "CASH" && currentUserRole !== "ADMIN") {
-      throw new ForbiddenException(
-        "Only ADMIN can verify cash debt repayments",
-      );
+      throw new I18nForbiddenException("payments.ONLY_ADMIN_CASH_VERIFY");
     }
 
     if (
@@ -513,9 +499,7 @@ export class PaymentsService {
       dto.userId !== currentUserId &&
       currentUserRole !== "ADMIN"
     ) {
-      throw new ForbiddenException(
-        "You are not authorized to repay debt for another user",
-      );
+      throw new I18nForbiddenException("payments.FORBIDDEN_REPAY_OTHER");
     }
 
     const targetUserId =
@@ -523,7 +507,7 @@ export class PaymentsService {
         ? (dto.userId ?? currentUserId)
         : currentUserId;
     if (!targetUserId) {
-      throw new BadRequestException(this.i18n.t("payments.DEALER_NOT_FOUND"));
+      throw new I18nBadRequestException("payments.DEALER_NOT_FOUND");
     }
 
     const [dealer] = await this.db
@@ -533,7 +517,7 @@ export class PaymentsService {
       .limit(1);
 
     if (!dealer) {
-      throw new NotFoundException(this.i18n.t("payments.DEALER_NOT_FOUND"));
+      throw new I18nNotFoundException("payments.DEALER_NOT_FOUND");
     }
 
     const repaymentAmount = Number(dto.amount);
@@ -577,7 +561,7 @@ export class PaymentsService {
       });
 
       if (!repayment) {
-        throw new BadRequestException("Debt repayment failed to process");
+        throw new I18nBadRequestException("payments.DEBT_REPAYMENT_FAILED");
       }
 
       return {
@@ -607,7 +591,7 @@ export class PaymentsService {
       .returning();
 
     if (!repayment) {
-      throw new BadRequestException("Failed to register debt repayment");
+      throw new I18nBadRequestException("payments.DEBT_REGISTER_FAILED");
     }
     const paymentLink = this.paymentGateway
       ? await this.paymentGateway.createPaymentLink({
@@ -658,7 +642,7 @@ export class PaymentsService {
       .limit(1);
 
     if (!order) {
-      throw new NotFoundException(this.i18n.t("payments.ORDER_NOT_FOUND"));
+      throw new I18nNotFoundException("payments.ORDER_NOT_FOUND");
     }
 
     const txList = await this.db

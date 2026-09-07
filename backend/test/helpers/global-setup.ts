@@ -12,6 +12,7 @@ import {
 } from "./database.helper";
 
 // Suppress intentional NestJS log noise during unit test suites to keep terminal output clean.
+Logger.overrideLogger(false);
 spyOn(Logger.prototype, "error").mockImplementation(() => undefined);
 spyOn(Logger.prototype, "warn").mockImplementation(() => undefined);
 spyOn(Logger.prototype, "log").mockImplementation(() => undefined);

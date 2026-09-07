@@ -6,5 +6,9 @@
   "CATEGORY_SLUG_EXISTS": "Category with slug \"{slug}\" already exists",
   "PRODUCT_NOT_FOUND": "Product not found with identifier: {id}",
   "BRAND_NOT_FOUND": "Brand not found with identifier: {id}",
-  "CATEGORY_NOT_FOUND": "Category not found with identifier: {id}"
+  "CATEGORY_NOT_FOUND": "Category not found with identifier: {id}",
+  "BRAND_CREATE_FAILED": "Failed to create brand",
+  "CATEGORY_CREATE_FAILED": "Failed to create category",
+  "CATEGORY_SELF_PARENT": "Category cannot be its own parent",
+  "PRODUCT_CREATE_FAILED": "Failed to create product record"
 }

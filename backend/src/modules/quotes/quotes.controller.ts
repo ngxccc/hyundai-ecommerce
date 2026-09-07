@@ -27,6 +27,10 @@ import {
   ApiOkResponseGeneric,
   ApiOkResponsePaginated,
   ApiCreatedResponseGeneric,
+  ApiBadRequestResponseRfc9457,
+  ApiNotFoundResponseRfc9457,
+  ApiUnauthorizedResponseRfc9457,
+  ApiForbiddenResponseRfc9457,
 } from "@/common/decorators";
 import type { PaginationMetaDto } from "@/common/dto/pagination-meta.dto";
 import { Throttle } from "@nestjs/throttler";
@@ -73,6 +77,7 @@ export class QuotesController {
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: "Submit customer Request For Quotation (RFQ)" })
   @ApiCreatedResponseGeneric(QuoteResponseDto)
+  @ApiBadRequestResponseRfc9457()
   async submitRfq(@Body() dto: CreateQuoteDto) {
     const quote = await this.quotesService.createRfq(dto);
     return apiSuccess(quote);
@@ -92,6 +97,9 @@ export class QuotesController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create official B2B quotation (Admin only)" })
   @ApiCreatedResponseGeneric(QuoteResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async createAdminQuote(
     @Body() dto: CreateAdminQuoteDto,
     @CurrentUser("sub") adminUserId: string,
@@ -117,6 +125,9 @@ export class QuotesController {
   @ApiQuery({ name: "status", required: false, type: String })
   @ApiQuery({ name: "search", required: false, type: String })
   @ApiOkResponsePaginated(QuoteResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async listQuotes(
     @Query() query: QuoteQueryDto,
   ): Promise<ApiResponse<QuoteResponseDto[], PaginationMetaDto>> {
@@ -136,6 +147,9 @@ export class QuotesController {
   @ApiOperation({ summary: "Get detailed quote by ID" })
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiOkResponseGeneric(QuoteResponseDto)
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async getQuoteById(
     @Param("id", ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: JwtPayload,
@@ -169,6 +183,10 @@ export class QuotesController {
   })
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiOkResponseGeneric(QuoteResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async updateStatus(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateQuoteStatusDto,
@@ -195,6 +213,10 @@ export class QuotesController {
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiParam({ name: "itemId", description: "Quote item UUID" })
   @ApiOkResponseGeneric(QuoteResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async updateItemPrice(
     @Param("id", ParseUUIDPipe) quoteId: string,
     @Param("itemId", ParseUUIDPipe) itemId: string,
@@ -223,6 +245,9 @@ export class QuotesController {
   @ApiOperation({ summary: "Post a message to quote negotiation timeline" })
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiCreatedResponseGeneric(QuoteMessageResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
   async sendMessage(
     @Param("id", ParseUUIDPipe) quoteId: string,
     @CurrentUser() currentUser: JwtPayload,
@@ -254,6 +279,10 @@ export class QuotesController {
   })
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiOkResponseGeneric(ApproveToOrderResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async approveToOrder(
     @Param("id", ParseUUIDPipe) quoteId: string,
     @CurrentUser("sub") adminUserId: string,
@@ -281,6 +310,9 @@ export class QuotesController {
     status: 200,
     description: "Excel workbook stream",
   })
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async exportExcel(
     @Param("id", ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: JwtPayload,

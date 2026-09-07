@@ -1,0 +1,8 @@
+{
+  "PRODUCT_NOT_AVAILABLE": "Sản phẩm với mã định danh \"{id}\" không tìm thấy hoặc đã ngừng bán",
+  "OUT_OF_STOCK": "Sản phẩm \"{name}\" đã hết hàng",
+  "STOCK_EXCEEDED": "Số lượng yêu cầu ({requested}) vượt quá tồn kho khả dụng ({available})",
+  "ITEM_NOT_FOUND": "Không tìm thấy sản phẩm trong giỏ hàng với mã \"{id}\"",
+  "INIT_FAILED": "Không thể khởi tạo giỏ hàng cho người dùng",
+  "CART_NOT_FOUND": "Không tìm thấy giỏ hàng"
+}

@@ -40,6 +40,8 @@ function isRecordObject(res: unknown): res is Record<string, unknown> {
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name);
+  private static readonly I18N_KEY_REGEX =
+    /^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
 
   constructor(
     @Optional() private readonly i18n?: I18nService,
@@ -56,6 +58,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     let title = "Internal Server Error";
     let detail: string;
     let invalidParams: InvalidParam[] = [];
+    let code: string | undefined;
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
@@ -67,6 +70,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       );
       detail = parsed.detail;
       invalidParams = parsed.invalidParams;
+      code = parsed.code;
     } else {
       const errStack =
         exception instanceof Error
@@ -91,6 +95,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         ) {
           status = HttpStatus.CONFLICT;
           title = "Conflict";
+          code = "common.RESOURCE_CONFLICT";
           detail = this.translate(
             "common.RESOURCE_CONFLICT",
             lang,
@@ -100,6 +105,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         } else if (dbErr.code === PG_ERROR_CODE.QUERY_CANCELED) {
           status = HttpStatus.GATEWAY_TIMEOUT;
           title = "Gateway Timeout";
+          code = "common.GATEWAY_TIMEOUT";
           detail = this.translate(
             "common.GATEWAY_TIMEOUT",
             lang,
@@ -109,6 +115,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         } else if (dbErr.code === PG_ERROR_CODE.INVALID_TEXT_REPRESENTATION) {
           status = HttpStatus.BAD_REQUEST;
           title = "Bad Request";
+          code = "validation.isUuid";
           detail = this.translate(
             "validation.isUuid",
             lang,
@@ -118,6 +125,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         } else {
           status = HttpStatus.INTERNAL_SERVER_ERROR;
           title = "Internal Server Error";
+          code = "common.INTERNAL_SERVER_ERROR";
           detail = this.translate(
             "common.INTERNAL_SERVER_ERROR",
             lang,
@@ -127,6 +135,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       } else {
         this.logger.error(`Unhandled Exception: ${errStack}`);
         // Sanitize generic unhandled application exceptions to prevent internal stack trace leakage.
+        code = "common.INTERNAL_SERVER_ERROR";
         detail = this.translate(
           "common.INTERNAL_SERVER_ERROR",
           lang,
@@ -185,6 +194,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         status,
         detail,
         instance: request.url,
+        ...(code ? { code } : {}),
         ...(eventId ? { eventId } : {}),
         invalidParams,
         timestamp: new Date().toISOString(),
@@ -195,46 +205,100 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   private parseHttpExceptionResponse(
     res: unknown,
     lang?: string,
-  ): { detail: string; invalidParams: InvalidParam[] } {
+  ): { detail: string; invalidParams: InvalidParam[]; code?: string } {
     if (typeof res === "string") {
-      return { detail: res, invalidParams: [] };
+      const { detail, code } = this.resolveTextOrKey(res, lang);
+      return { detail, invalidParams: [], code };
     }
 
     if (!isRecordObject(res)) {
-      return { detail: "Invalid error payload", invalidParams: [] };
+      return {
+        detail: "Invalid error payload",
+        invalidParams: [],
+        code: "INVALID_ERROR_PAYLOAD",
+      };
     }
 
-    const detail = this.extractDetail(res, lang);
+    const { detail, code } = this.extractDetailAndCode(res, lang);
     const invalidParams = this.extractInvalidParams(res, lang);
 
-    return { detail, invalidParams };
+    return { detail, invalidParams, code };
   }
 
-  private extractDetail(res: Record<string, unknown>, lang?: string): string {
+  private resolveTextOrKey(
+    text: string,
+    lang?: string,
+    explicitArgs?: Record<string, unknown>,
+  ): { detail: string; code?: string } {
+    if (text.includes("|")) {
+      const pipeIndex = text.indexOf("|");
+      const key = text.slice(0, pipeIndex);
+      const detail = this.formatReason(text, lang);
+      const code = key || undefined;
+      return { detail, code };
+    }
+
+    if (GlobalExceptionFilter.I18N_KEY_REGEX.test(text)) {
+      const detail = this.translateWithArgs(text, lang, explicitArgs, text);
+      const code = text;
+      return { detail, code };
+    }
+
+    return { detail: text };
+  }
+
+  private extractDetailAndCode(
+    res: Record<string, unknown>,
+    lang?: string,
+  ): { detail: string; code?: string } {
+    const explicitCode =
+      typeof res["code"] === "string" && res["code"].trim()
+        ? res["code"].trim()
+        : undefined;
+    const explicitArgs = isRecordObject(res["args"]) ? res["args"] : undefined;
+
     if (typeof res["detail"] === "string") {
-      return this.formatReason(res["detail"], lang);
+      const resolved = this.resolveTextOrKey(res["detail"], lang, explicitArgs);
+      return {
+        detail: resolved.detail,
+        code: explicitCode ?? resolved.code,
+      };
     }
 
     const msg = res["message"];
     if (typeof msg === "string") {
-      return msg;
+      const resolved = this.resolveTextOrKey(msg, lang, explicitArgs);
+      return {
+        detail: resolved.detail,
+        code: explicitCode ?? resolved.code,
+      };
     }
 
     if (Array.isArray(msg) && msg.length > 0) {
       const first = msg[0] as unknown;
       if (typeof first === "string") {
-        return first;
+        const resolved = this.resolveTextOrKey(first, lang, explicitArgs);
+        return {
+          detail: resolved.detail,
+          code: explicitCode ?? resolved.code ?? "common.INVALID_INPUT",
+        };
       }
       if (isRecordObject(first) && "property" in first) {
-        return this.translate(
-          "common.INVALID_INPUT",
-          lang,
-          "Submitted data format is invalid",
-        );
+        return {
+          detail: this.translate(
+            "common.INVALID_INPUT",
+            lang,
+            "Submitted data format is invalid",
+          ),
+          code: explicitCode ?? "common.INVALID_INPUT",
+        };
       }
     }
 
-    return "Error occurred";
+    return {
+      detail: "Error occurred",
+      code: explicitCode,
+    };
   }
 
   private extractInvalidParams(
@@ -311,6 +375,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         }
       }
     }
+    if (GlobalExceptionFilter.I18N_KEY_REGEX.test(rawReason)) {
+      const args = propName ? { property: propName } : undefined;
+      return this.translateWithArgs(rawReason, lang, args, rawReason).trim();
+    }
+
     return rawReason.trim();
   }
 

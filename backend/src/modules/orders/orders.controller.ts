@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -12,6 +11,7 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
+import { I18nForbiddenException } from "@/common/exceptions";
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -24,6 +24,10 @@ import {
   ApiOkResponseGeneric,
   ApiOkResponsePaginated,
   ApiCreatedResponseGeneric,
+  ApiBadRequestResponseRfc9457,
+  ApiNotFoundResponseRfc9457,
+  ApiUnauthorizedResponseRfc9457,
+  ApiForbiddenResponseRfc9457,
 } from "@/common/decorators";
 import type { PaginationMetaDto } from "@/common/dto/pagination-meta.dto";
 import {
@@ -61,6 +65,8 @@ export class OrdersController {
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: "Guest checkout for storefront retail customers" })
   @ApiCreatedResponseGeneric(OrderResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
   async checkout(@Body() dto: CreateGuestOrderDto) {
     const order = await this.ordersService.createGuestOrder(dto);
     return apiSuccess(order);
@@ -80,6 +86,10 @@ export class OrdersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create official B2B order (Admin/Sales)" })
   @ApiCreatedResponseGeneric(OrderResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async createB2bOrder(
     @Body() dto: CreateB2bOrderDto,
     @CurrentUser("sub") adminUserId: string,
@@ -105,6 +115,9 @@ export class OrdersController {
   @ApiQuery({ name: "paymentStatus", required: false, type: String })
   @ApiQuery({ name: "search", required: false, type: String })
   @ApiOkResponsePaginated(OrderResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async listOrders(
     @Query() query: OrderQueryDto,
   ): Promise<ApiResponse<OrderResponseDto[], PaginationMetaDto>> {
@@ -124,6 +137,9 @@ export class OrdersController {
   @ApiOperation({ summary: "Get detailed order by ID" })
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderResponseDto)
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async getOrderById(
     @Param("id", ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: JwtPayload,
@@ -134,9 +150,7 @@ export class OrdersController {
       currentUser.role !== "SALES" &&
       order.userId !== currentUser.sub
     ) {
-      throw new ForbiddenException(
-        "You are not authorized to access this order",
-      );
+      throw new I18nForbiddenException("orders.FORBIDDEN_ACCESS");
     }
     return apiSuccess(order);
   }
@@ -156,6 +170,10 @@ export class OrdersController {
   @ApiOperation({ summary: "Update order status along state machine" })
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async updateStatus(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateOrderStatusDto,
@@ -183,6 +201,10 @@ export class OrdersController {
   @ApiOperation({ summary: "Cancel order and release reserved stock" })
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async cancelOrder(
     @Param("id", ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: JwtPayload,
@@ -207,6 +229,7 @@ export class OrdersController {
     summary: "Auto-expire pending unpaid orders and restock inventory (Cron)",
   })
   @ApiOkResponseGeneric()
+  @ApiUnauthorizedResponseRfc9457()
   async expireOrders() {
     const expiredCount = await this.ordersService.expirePendingOrders();
     return apiSuccess({ expiredCount });

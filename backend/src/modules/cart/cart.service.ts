@@ -1,9 +1,8 @@
+import { Inject, Injectable } from "@nestjs/common";
 import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+  I18nBadRequestException,
+  I18nNotFoundException,
+} from "@/common/exceptions";
 import { and, asc, eq, inArray, isNull } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -33,14 +32,14 @@ export class CartService {
    */
   async getOrCreateCart(userId: string): Promise<CartResponseDto> {
     const cart = await this.getOrCreateCartEntity(userId);
-    return this.fetchCartResponse(cart.id, userId);
+    return this.fetchCartResponse(cart, userId);
   }
 
   private async fetchCartResponse(
-    cartId: string,
+    cart: { id: string; createdAt: Date; updatedAt: Date },
     userId: string,
   ): Promise<CartResponseDto> {
-    const items = await this.fetchCartItems(cartId);
+    const items = await this.fetchCartItems(cart.id);
 
     const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
     const totalAmount = items
@@ -48,15 +47,15 @@ export class CartService {
       .toFixed(2);
 
     return {
-      id: cartId,
+      id: cart.id,
       userId,
       items,
       summary: {
         totalItems,
         totalAmount,
       },
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: cart.createdAt,
+      updatedAt: cart.updatedAt,
     };
   }
 
@@ -76,15 +75,15 @@ export class CartService {
       .limit(1);
 
     if (!product?.isActive) {
-      throw new NotFoundException(
-        `Product with ID "${dto.productId}" not found or unavailable`,
-      );
+      throw new I18nNotFoundException("cart.PRODUCT_NOT_AVAILABLE", {
+        id: dto.productId,
+      });
     }
 
     if (product.totalStockCache <= 0) {
-      throw new BadRequestException(
-        `Product "${product.nameVi}" is out of stock`,
-      );
+      throw new I18nBadRequestException("cart.OUT_OF_STOCK", {
+        name: product.nameVi,
+      });
     }
 
     const cart = await this.getOrCreateCartEntity(userId);
@@ -103,9 +102,10 @@ export class CartService {
     const newQuantity = (existingItem?.quantity ?? 0) + dto.quantity;
 
     if (newQuantity > product.totalStockCache) {
-      throw new BadRequestException(
-        `Requested quantity (${String(newQuantity)}) exceeds available stock (${String(product.totalStockCache)})`,
-      );
+      throw new I18nBadRequestException("cart.STOCK_EXCEEDED", {
+        requested: newQuantity,
+        available: product.totalStockCache,
+      });
     }
 
     if (existingItem) {
@@ -120,7 +120,7 @@ export class CartService {
       });
     }
 
-    return this.fetchCartResponse(cart.id, userId);
+    return this.fetchCartResponse(cart, userId);
   }
 
   /**
@@ -149,20 +149,21 @@ export class CartService {
       .limit(1);
 
     if (!itemWithProduct) {
-      throw new NotFoundException(`Cart item with ID "${itemId}" not found`);
+      throw new I18nNotFoundException("cart.ITEM_NOT_FOUND", { id: itemId });
     }
 
     if (dto.quantity > itemWithProduct.product.totalStockCache) {
-      throw new BadRequestException(
-        `Requested quantity (${String(dto.quantity)}) exceeds available stock (${String(itemWithProduct.product.totalStockCache)})`,
-      );
+      throw new I18nBadRequestException("cart.STOCK_EXCEEDED", {
+        requested: dto.quantity,
+        available: itemWithProduct.product.totalStockCache,
+      });
     }
 
     await this.db.update(cartItems).set({
       quantity: dto.quantity,
     });
 
-    return this.fetchCartResponse(cart.id, userId);
+    return this.fetchCartResponse(cart, userId);
   }
 
   /**
@@ -178,12 +179,12 @@ export class CartService {
       .limit(1);
 
     if (!existing) {
-      throw new NotFoundException(`Cart item with ID "${itemId}" not found`);
+      throw new I18nNotFoundException("cart.ITEM_NOT_FOUND", { id: itemId });
     }
 
     await this.db.delete(cartItems).where(eq(cartItems.id, itemId));
 
-    return this.fetchCartResponse(cart.id, userId);
+    return this.fetchCartResponse(cart, userId);
   }
 
   /**
@@ -197,20 +198,25 @@ export class CartService {
       return this.getOrCreateCart(userId);
     }
 
-    const cartId = await this.db.transaction(async (tx) => {
+    const cartRecord = await this.db.transaction(async (tx) => {
       let [cart] = await tx
-        .select({ id: carts.id })
+        .select({
+          id: carts.id,
+          createdAt: carts.createdAt,
+          updatedAt: carts.updatedAt,
+        })
         .from(carts)
         .where(eq(carts.userId, userId))
         .limit(1);
 
       if (!cart) {
-        const [created] = await tx
-          .insert(carts)
-          .values({ userId })
-          .returning({ id: carts.id });
+        const [created] = await tx.insert(carts).values({ userId }).returning({
+          id: carts.id,
+          createdAt: carts.createdAt,
+          updatedAt: carts.updatedAt,
+        });
         if (!created) {
-          throw new BadRequestException("Failed to initialize user cart");
+          throw new I18nBadRequestException("cart.INIT_FAILED");
         }
         cart = created;
       }
@@ -272,10 +278,10 @@ export class CartService {
           });
         }
       }
-      return cart.id;
+      return cart;
     });
 
-    return this.fetchCartResponse(cartId, userId);
+    return this.fetchCartResponse(cartRecord, userId);
   }
 
   /**
@@ -328,9 +334,17 @@ export class CartService {
     });
   }
 
-  private async getOrCreateCartEntity(userId: string): Promise<{ id: string }> {
+  private async getOrCreateCartEntity(userId: string): Promise<{
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }> {
     let [cart] = await this.db
-      .select({ id: carts.id })
+      .select({
+        id: carts.id,
+        createdAt: carts.createdAt,
+        updatedAt: carts.updatedAt,
+      })
       .from(carts)
       .where(eq(carts.userId, userId))
       .limit(1);
@@ -339,10 +353,14 @@ export class CartService {
       const [newCart] = await this.db
         .insert(carts)
         .values({ userId })
-        .returning({ id: carts.id });
+        .returning({
+          id: carts.id,
+          createdAt: carts.createdAt,
+          updatedAt: carts.updatedAt,
+        });
 
       if (!newCart) {
-        throw new BadRequestException("Failed to initialize user cart");
+        throw new I18nBadRequestException("cart.INIT_FAILED");
       }
       cart = newCart;
     }

@@ -1,4 +1,5 @@
 {
   "USER_NOT_FOUND": "Không tìm thấy thông tin người dùng",
-  "ACCOUNT_SUSPENDED_OR_INACTIVE": "Tài khoản đang bị tạm khóa hoặc ngưng hoạt động"
+  "ACCOUNT_SUSPENDED_OR_INACTIVE": "Tài khoản đang bị tạm khóa hoặc ngưng hoạt động",
+  "DEALER_TIER_NOT_FOUND": "Không tìm thấy phân hạng đại lý với mã \"{id}\""
 }

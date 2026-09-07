@@ -23,6 +23,11 @@ import {
 import {
   ApiOkResponseGeneric,
   ApiCreatedResponseGeneric,
+  ApiBadRequestResponseRfc9457,
+  ApiNotFoundResponseRfc9457,
+  ApiConflictResponseRfc9457,
+  ApiUnauthorizedResponseRfc9457,
+  ApiForbiddenResponseRfc9457,
 } from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
 import { Roles } from "@/common/decorators/roles.decorator";
@@ -67,6 +72,7 @@ export class WarehouseController {
   })
   @ApiParam({ name: "productId", description: "Product UUID" })
   @ApiOkResponseGeneric(WarehouseStockResponseDto, { isArray: true })
+  @ApiNotFoundResponseRfc9457()
   async getProductStocks(@Param("productId", ParseUUIDPipe) productId: string) {
     const data = await this.warehouseService.getProductStocks(productId);
     return apiSuccess(data);
@@ -78,6 +84,7 @@ export class WarehouseController {
   })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
   @ApiOkResponseGeneric(WarehouseStockResponseDto, { isArray: true })
+  @ApiNotFoundResponseRfc9457()
   async getWarehouseStocks(@Param("id", ParseUUIDPipe) id: string) {
     const data = await this.warehouseService.getWarehouseStocks(id);
     return apiSuccess(data);
@@ -87,6 +94,7 @@ export class WarehouseController {
   @ApiOperation({ summary: "Get warehouse details by UUID" })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
   @ApiOkResponseGeneric(WarehouseResponseDto)
+  @ApiNotFoundResponseRfc9457()
   async getById(@Param("id", ParseUUIDPipe) id: string) {
     const data = await this.warehouseService.findById(id);
     return apiSuccess(data);
@@ -99,6 +107,10 @@ export class WarehouseController {
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Create a new physical warehouse (Admin Only)" })
   @ApiCreatedResponseGeneric(WarehouseResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiConflictResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async create(@Body() dto: CreateWarehouseDto) {
     const data = await this.warehouseService.create(dto);
     return apiSuccess(data);
@@ -115,6 +127,10 @@ export class WarehouseController {
   })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
   @ApiOkResponseGeneric(WarehouseStockResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async updateStock(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateStockDto,
@@ -131,6 +147,11 @@ export class WarehouseController {
   @ApiOperation({ summary: "Update warehouse details (Admin Only)" })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
   @ApiOkResponseGeneric(WarehouseResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiConflictResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async update(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateWarehouseDto,
@@ -146,6 +167,10 @@ export class WarehouseController {
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Deactivate warehouse (Admin Only)" })
   @ApiParam({ name: "id", description: "Warehouse UUID" })
+  @ApiOkResponseGeneric(Object)
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async delete(@Param("id", ParseUUIDPipe) id: string) {
     await this.warehouseService.delete(id);
     return apiSuccess(null);

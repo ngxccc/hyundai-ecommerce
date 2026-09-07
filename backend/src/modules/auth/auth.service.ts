@@ -1,10 +1,9 @@
+import { Inject, Injectable } from "@nestjs/common";
 import {
-  BadRequestException,
-  ConflictException,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from "@nestjs/common";
+  I18nBadRequestException,
+  I18nConflictException,
+  I18nUnauthorizedException,
+} from "@/common/exceptions";
 import { eq } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -34,8 +33,7 @@ import {
 } from "@/common/utils/crypto.util";
 import { randomBytes } from "node:crypto";
 import { getExpiryDate } from "@/common/utils/date.util";
-import { I18nContext, I18nService } from "nestjs-i18n";
-import type { I18nTranslations, I18nPath } from "@/generated/i18n.generated";
+import type { I18nPath } from "@/generated/i18n.generated";
 import { JwtService } from "@nestjs/jwt";
 import { env } from "@/env";
 @Injectable()
@@ -43,19 +41,14 @@ export class AuthService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
-    private readonly i18n: I18nService<I18nTranslations>,
     private readonly jwtService: JwtService,
   ) {}
 
   private throwException(
     key: I18nPath,
-    Exception: new (message: string) => Error = BadRequestException,
+    Exception: new (keyOrPayload: I18nPath) => Error = I18nBadRequestException,
   ): never {
-    throw new Exception(
-      this.i18n.t(key, {
-        lang: I18nContext.current()?.lang,
-      }),
-    );
+    throw new Exception(key);
   }
 
   private async generateTokens(userId: string, email: string, role: string) {
@@ -96,11 +89,7 @@ export class AuthService {
       .limit(1);
 
     if (existingUser) {
-      throw new ConflictException(
-        this.i18n.t("auth.EMAIL_ALREADY_EXISTS", {
-          lang: I18nContext.current()?.lang,
-        }),
-      );
+      throw new I18nConflictException("auth.EMAIL_ALREADY_EXISTS");
     }
 
     const passwordHash = await hashPassword(dto.password);
@@ -131,11 +120,7 @@ export class AuthService {
       });
     } catch (error) {
       if (isPostgresErrorCode(error, PG_ERROR_CODE.UNIQUE_VIOLATION)) {
-        throw new ConflictException(
-          this.i18n.t("auth.EMAIL_ALREADY_EXISTS", {
-            lang: I18nContext.current()?.lang,
-          }),
-        );
+        throw new I18nConflictException("auth.EMAIL_ALREADY_EXISTS");
       }
       throw error;
     }
@@ -309,7 +294,7 @@ export class AuthService {
     ) {
       this.throwException(
         "auth.TOKEN_INVALID_OR_EXPIRED",
-        UnauthorizedException,
+        I18nUnauthorizedException,
       );
     }
 
@@ -327,7 +312,7 @@ export class AuthService {
     if (user?.status !== "ACTIVE") {
       this.throwException(
         "auth.TOKEN_INVALID_OR_EXPIRED",
-        UnauthorizedException,
+        I18nUnauthorizedException,
       );
     }
 
@@ -360,7 +345,7 @@ export class AuthService {
     ) {
       this.throwException(
         "auth.TOKEN_INVALID_OR_EXPIRED",
-        UnauthorizedException,
+        I18nUnauthorizedException,
       );
     }
 
@@ -371,7 +356,7 @@ export class AuthService {
     if (!userId) {
       this.throwException(
         "auth.TOKEN_INVALID_OR_EXPIRED",
-        UnauthorizedException,
+        I18nUnauthorizedException,
       );
     }
 
@@ -465,13 +450,13 @@ export class AuthService {
       .limit(1);
 
     if (!user) {
-      this.throwException("auth.INVALID_CREDENTIALS", BadRequestException);
+      this.throwException("auth.INVALID_CREDENTIALS", I18nBadRequestException);
     }
 
     if (!user.passwordHash) {
       this.throwException(
         "auth.CANNOT_CHANGE_OAUTH_PASSWORD",
-        BadRequestException,
+        I18nBadRequestException,
       );
     }
 
@@ -482,12 +467,15 @@ export class AuthService {
     if (!isPasswordValid) {
       this.throwException(
         "auth.INVALID_CURRENT_PASSWORD",
-        UnauthorizedException,
+        I18nUnauthorizedException,
       );
     }
 
     if (dto.currentPassword === dto.newPassword) {
-      this.throwException("auth.NEW_PASSWORD_SAME_AS_OLD", BadRequestException);
+      this.throwException(
+        "auth.NEW_PASSWORD_SAME_AS_OLD",
+        I18nBadRequestException,
+      );
     }
 
     const newPasswordHash = await hashPassword(dto.newPassword);

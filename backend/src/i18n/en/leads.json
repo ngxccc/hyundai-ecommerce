@@ -1,0 +1,7 @@
+{
+  "PRODUCTS_NOT_FOUND": "Products not found for IDs: {ids}",
+  "CREATE_FAILED": "Failed to create lead record",
+  "PRODUCT_NOT_FOUND": "Product \"{id}\" not found",
+  "LEAD_NOT_FOUND": "Lead with ID \"{id}\" not found",
+  "SALES_USER_NOT_FOUND": "Sales user with ID \"{id}\" not found"
+}

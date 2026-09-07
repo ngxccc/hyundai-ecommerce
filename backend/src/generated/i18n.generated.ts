@@ -23,20 +23,13 @@ export type I18nTranslations = {
         "NEW_PASSWORD_SAME_AS_OLD": string;
         "CANNOT_CHANGE_OAUTH_PASSWORD": string;
     };
-    "booking": {
-        "SEATS_ALREADY_LOCKED": string;
-        "SHOWTIME_NOT_FOUND": string;
-        "SEAT_NOT_BELONG_TO_SHOWTIME": string;
-        "SEATS_NOT_AVAILABLE": string;
-        "BOOKING_FAILED": string;
-        "IDEMPOTENCY_KEY_REQUIRED": string;
-        "BOOKING_NOT_FOUND": string;
-        "BOOKING_EXPIRED": string;
-        "PAYMENT_AMOUNT_MISMATCH": string;
-        "DUPLICATE_TRANSACTION": string;
-        "RECORD_PAYMENT_FAILED": string;
-        "PAYOS_WEBHOOK_INVALID_SIGNATURE": string;
-        "PAYOS_WEBHOOK_STALE_TIMESTAMP": string;
+    "cart": {
+        "PRODUCT_NOT_AVAILABLE": string;
+        "OUT_OF_STOCK": string;
+        "STOCK_EXCEEDED": string;
+        "ITEM_NOT_FOUND": string;
+        "INIT_FAILED": string;
+        "CART_NOT_FOUND": string;
     };
     "catalog": {
         "PRICE_NEGATIVE": string;
@@ -47,12 +40,24 @@ export type I18nTranslations = {
         "PRODUCT_NOT_FOUND": string;
         "BRAND_NOT_FOUND": string;
         "CATEGORY_NOT_FOUND": string;
+        "BRAND_CREATE_FAILED": string;
+        "CATEGORY_CREATE_FAILED": string;
+        "CATEGORY_SELF_PARENT": string;
+        "PRODUCT_CREATE_FAILED": string;
     };
     "common": {
         "INTERNAL_SERVER_ERROR": string;
         "INVALID_INPUT": string;
         "RESOURCE_CONFLICT": string;
         "GATEWAY_TIMEOUT": string;
+        "FORBIDDEN": string;
+    };
+    "leads": {
+        "PRODUCTS_NOT_FOUND": string;
+        "CREATE_FAILED": string;
+        "PRODUCT_NOT_FOUND": string;
+        "LEAD_NOT_FOUND": string;
+        "SALES_USER_NOT_FOUND": string;
     };
     "orders": {
         "ORDER_NOT_FOUND": string;
@@ -63,6 +68,8 @@ export type I18nTranslations = {
         "ORDER_ALREADY_PAID": string;
         "ORDER_CANNOT_BE_CANCELLED": string;
         "ORDER_CREATE_FAILED": string;
+        "FORBIDDEN_ACCESS": string;
+        "FORBIDDEN_CANCEL": string;
     };
     "payments": {
         "ORDER_NOT_FOUND": string;
@@ -77,6 +84,10 @@ export type I18nTranslations = {
         "DEBT_ALREADY_REPAID": string;
         "ORDER_ALREADY_PAID": string;
         "UNAUTHORIZED_VERIFICATION": string;
+        "ONLY_ADMIN_CASH_VERIFY": string;
+        "FORBIDDEN_REPAY_OTHER": string;
+        "DEBT_REPAYMENT_FAILED": string;
+        "DEBT_REGISTER_FAILED": string;
     };
     "quotes": {
         "QUOTE_NOT_FOUND": string;
@@ -85,24 +96,19 @@ export type I18nTranslations = {
         "QUOTE_CANNOT_BE_MODIFIED": string;
         "QUOTE_NO_USER_ACCOUNT": string;
         "QUOTE_ALREADY_CONVERTED": string;
-    };
-    "shows": {
-        "MOVIE_NOT_FOUND": string;
-        "HALL_NOT_FOUND": string;
-        "NO_SEATS_CONFIGURED": string;
-        "SCHEDULE_COLLISION": string;
-        "CREATE_SHOW_FAILED": string;
-        "INVALID_DATE_RANGE": string;
-        "MAX_DAYS_EXCEEDED": string;
-        "MAX_SHOWS_EXCEEDED": string;
-        "PAST_SHOW_SLOT": string;
-        "INTRA_BATCH_COLLISION": string;
-        "DATE_PAST": string;
-        "DATE_HORIZON_EXCEEDED": string;
+        "RFQ_CREATE_FAILED": string;
+        "QUOTATION_PERSIST_FAILED": string;
+        "MESSAGE_RECORD_FAILED": string;
+        "QUOTE_NO_ITEMS": string;
+        "ORDER_GENERATE_FAILED": string;
+        "FORBIDDEN_ACCESS": string;
+        "FORBIDDEN_EXPORT": string;
+        "FORBIDDEN_NEGOTIATION": string;
     };
     "users": {
         "USER_NOT_FOUND": string;
         "ACCOUNT_SUSPENDED_OR_INACTIVE": string;
+        "DEALER_TIER_NOT_FOUND": string;
     };
     "validation": {
         "isNotEmpty": string;
@@ -125,6 +131,13 @@ export type I18nTranslations = {
         "isIn": string;
         "isDate": string;
         "isNonNegative": string;
+    };
+    "warehouse": {
+        "WAREHOUSE_NOT_FOUND": string;
+        "CREATE_FAILED": string;
+        "INACTIVE_WAREHOUSE": string;
+        "PRODUCT_NOT_FOUND": string;
+        "STOCK_UPDATE_FAILED": string;
     };
 };
 /* prettier-ignore */

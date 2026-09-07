@@ -4,10 +4,9 @@ import {
   ForbiddenException,
   NotFoundException,
 } from "@nestjs/common";
-import type { I18nService } from "nestjs-i18n";
 import { PaymentsService } from "./payments.service";
 import type { DrizzleDB } from "@/database/database.module";
-import { createMockDb, createMockI18nService } from "../../../test/mocks";
+import { createMockDb } from "../../../test/mocks";
 import { generatePayOSSignature } from "./payos.util";
 import { PAYOS_ENDPOINTS } from "./constants/payment.constant";
 import { env } from "@/env";
@@ -21,7 +20,6 @@ import type {
 describe("PaymentsService", () => {
   let service: PaymentsService;
   const mockDb = createMockDb();
-  const mockI18nService = createMockI18nService();
 
   const mockOrder = {
     id: "019fa8bc-8f4d-7000-b366-e691f45cfb91",
@@ -64,11 +62,7 @@ describe("PaymentsService", () => {
 
   beforeEach(() => {
     mockDb.clearAll();
-    mockI18nService.clearAll();
-    service = new PaymentsService(
-      mockDb as unknown as DrizzleDB,
-      mockI18nService as unknown as I18nService,
-    );
+    service = new PaymentsService(mockDb as unknown as DrizzleDB);
   });
 
   describe("createCheckoutLink()", () => {

@@ -1,11 +1,10 @@
+import { Inject, Injectable } from "@nestjs/common";
 import {
-  BadRequestException,
-  ForbiddenException,
-  Inject,
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from "@nestjs/common";
+  I18nBadRequestException,
+  I18nForbiddenException,
+  I18nNotFoundException,
+  I18nUnprocessableEntityException,
+} from "@/common/exceptions";
 import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -26,9 +25,7 @@ import {
   buildPaginationMeta,
   type PaginationMetaDto,
 } from "@/common/dto/pagination-meta.dto";
-import { I18nService } from "nestjs-i18n";
 import type { JwtPayload } from "@/common/decorators/current-user.decorator";
-import type { I18nTranslations } from "@/generated/i18n.generated";
 import type { QuoteStatus } from "@/database/schemas/enums.schema";
 import type {
   AdminQuoteItemInputDto,
@@ -58,10 +55,7 @@ const VALID_QUOTE_TRANSITIONS: Record<QuoteStatus, readonly QuoteStatus[]> = {
  */
 @Injectable()
 export class QuotesService {
-  constructor(
-    @Inject(DATABASE_CONNECTION) private readonly db: DrizzleDB,
-    private readonly i18n: I18nService<I18nTranslations>,
-  ) {}
+  constructor(@Inject(DATABASE_CONNECTION) private readonly db: DrizzleDB) {}
 
   /**
    * Submits a customer Request For Quotation (RFQ).
@@ -120,7 +114,7 @@ export class QuotesService {
         .returning();
 
       if (!newQuote) {
-        throw new BadRequestException("Failed to create customer RFQ");
+        throw new I18nBadRequestException("quotes.RFQ_CREATE_FAILED");
       }
 
       const insertedItems = await tx
@@ -273,7 +267,7 @@ export class QuotesService {
         .returning();
 
       if (!newQuote) {
-        throw new BadRequestException("Failed to persist admin quotation");
+        throw new I18nBadRequestException("quotes.QUOTATION_PERSIST_FAILED");
       }
 
       const insertedItems = await tx
@@ -538,7 +532,7 @@ export class QuotesService {
       .limit(1);
 
     if (!quote) {
-      throw new NotFoundException(this.i18n.t("quotes.QUOTE_NOT_FOUND"));
+      throw new I18nNotFoundException("quotes.QUOTE_NOT_FOUND");
     }
 
     const itemRecords = await this.db
@@ -629,8 +623,8 @@ export class QuotesService {
 
     const allowedTransitions = VALID_QUOTE_TRANSITIONS[current.status];
     if (!allowedTransitions.includes(newStatus)) {
-      throw new UnprocessableEntityException(
-        this.i18n.t("quotes.INVALID_STATUS_TRANSITION"),
+      throw new I18nUnprocessableEntityException(
+        "quotes.INVALID_STATUS_TRANSITION",
       );
     }
 
@@ -668,13 +662,11 @@ export class QuotesService {
       quote.status === "REJECTED" ||
       quote.status === "EXPIRED"
     ) {
-      throw new BadRequestException(
-        this.i18n.t("quotes.QUOTE_CANNOT_BE_MODIFIED"),
-      );
+      throw new I18nBadRequestException("quotes.QUOTE_CANNOT_BE_MODIFIED");
     }
     const targetItem = quote.items.find((it) => it.id === itemId);
     if (!targetItem) {
-      throw new NotFoundException(this.i18n.t("quotes.QUOTE_ITEM_NOT_FOUND"));
+      throw new I18nNotFoundException("quotes.QUOTE_ITEM_NOT_FOUND");
     }
 
     const agreedPriceNum = parseFloat(agreedPrice);
@@ -746,9 +738,7 @@ export class QuotesService {
         currentUser.role !== "SALES" &&
         quote.userId !== currentUser.sub
       ) {
-        throw new ForbiddenException(
-          "You are not authorized to participate in this quote negotiation",
-        );
+        throw new I18nForbiddenException("quotes.FORBIDDEN_NEGOTIATION");
       }
     }
 
@@ -757,9 +747,7 @@ export class QuotesService {
       quote.status === "REJECTED" ||
       quote.status === "EXPIRED"
     ) {
-      throw new BadRequestException(
-        this.i18n.t("quotes.QUOTE_CANNOT_BE_MODIFIED"),
-      );
+      throw new I18nBadRequestException("quotes.QUOTE_CANNOT_BE_MODIFIED");
     }
     return await this.db.transaction(async (tx) => {
       const [newMessage] = await tx
@@ -772,7 +760,7 @@ export class QuotesService {
         .returning();
 
       if (!newMessage) {
-        throw new BadRequestException("Failed to record quote message");
+        throw new I18nBadRequestException("quotes.MESSAGE_RECORD_FAILED");
       }
 
       // Requirement: Timeline messaging advances state from SUBMITTED to NEGOTIATING
@@ -820,25 +808,19 @@ export class QuotesService {
         .limit(1);
 
       if (!quote) {
-        throw new NotFoundException(this.i18n.t("quotes.QUOTE_NOT_FOUND"));
+        throw new I18nNotFoundException("quotes.QUOTE_NOT_FOUND");
       }
 
       if (quote.status === "APPROVED") {
-        throw new BadRequestException(
-          this.i18n.t("quotes.QUOTE_ALREADY_CONVERTED"),
-        );
+        throw new I18nBadRequestException("quotes.QUOTE_ALREADY_CONVERTED");
       }
 
       if (quote.status === "REJECTED" || quote.status === "EXPIRED") {
-        throw new BadRequestException(
-          this.i18n.t("quotes.INVALID_STATUS_TRANSITION"),
-        );
+        throw new I18nBadRequestException("quotes.INVALID_STATUS_TRANSITION");
       }
 
       if (!quote.userId) {
-        throw new BadRequestException(
-          this.i18n.t("quotes.QUOTE_NO_USER_ACCOUNT"),
-        );
+        throw new I18nBadRequestException("quotes.QUOTE_NO_USER_ACCOUNT");
       }
 
       const items = await tx
@@ -851,9 +833,7 @@ export class QuotesService {
         .where(eq(quoteItems.quoteId, quoteId));
 
       if (items.length === 0) {
-        throw new BadRequestException(
-          "Cannot convert quote with no line items",
-        );
+        throw new I18nBadRequestException("quotes.QUOTE_NO_ITEMS");
       }
 
       let totalAmountDecimal = 0;
@@ -896,7 +876,7 @@ export class QuotesService {
         .returning();
 
       if (!newOrder) {
-        throw new BadRequestException("Failed to generate order from quote");
+        throw new I18nBadRequestException("quotes.ORDER_GENERATE_FAILED");
       }
 
       if (orderItemsToInsert.length > 0) {

@@ -1,0 +1,7 @@
+{
+  "PRODUCTS_NOT_FOUND": "Không tìm thấy sản phẩm cho các mã: {ids}",
+  "CREATE_FAILED": "Không thể tạo bản ghi liên hệ",
+  "PRODUCT_NOT_FOUND": "Không tìm thấy sản phẩm \"{id}\"",
+  "LEAD_NOT_FOUND": "Không tìm thấy liên hệ với mã \"{id}\"",
+  "SALES_USER_NOT_FOUND": "Không tìm thấy nhân viên phụ trách với mã \"{id}\""
+}

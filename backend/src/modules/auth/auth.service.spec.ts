@@ -8,8 +8,7 @@ import {
 } from "@nestjs/common";
 import type { JwtService } from "@nestjs/jwt";
 import type { RegisterDto } from "./dto";
-import type { I18nService } from "nestjs-i18n";
-import { createMockDb, createMockI18nService } from "../../../test/mocks";
+import { createMockDb } from "../../../test/mocks";
 import { hashPassword } from "@/common/utils/crypto.util";
 import { OUTBOX_EVENT_TYPE } from "@/common/constants/event.constant";
 import { PG_ERROR_CODE } from "@/common/constants/error.constant";
@@ -17,7 +16,6 @@ import { PG_ERROR_CODE } from "@/common/constants/error.constant";
 describe("AuthService", () => {
   let service: AuthService;
   const mockDb = createMockDb();
-  const mockI18nService = createMockI18nService();
   const mockJwtService = {
     signAsync: mock(() => Promise.resolve("mock_access_token")),
     verifyAsync: mock(() =>
@@ -31,12 +29,10 @@ describe("AuthService", () => {
 
   beforeEach(() => {
     mockDb.clearAll();
-    mockI18nService.clearAll();
     mockJwtService.clearAll();
 
     service = new AuthService(
       mockDb as unknown as DrizzleDB,
-      mockI18nService as unknown as I18nService,
       mockJwtService as unknown as JwtService,
     );
   });

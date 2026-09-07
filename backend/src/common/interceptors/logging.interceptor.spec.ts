@@ -42,9 +42,9 @@ describe("LoggingInterceptor", () => {
   });
 
   afterEach(() => {
-    debugSpy.mockRestore();
-    warnSpy.mockRestore();
-    errorSpy.mockRestore();
+    debugSpy.mockClear();
+    warnSpy.mockClear();
+    errorSpy.mockClear();
   });
 
   describe("when logging HTTP request lifecycle", () => {

@@ -23,6 +23,8 @@ import {
   ApiNotFoundResponseRfc9457,
   ApiBadRequestResponseRfc9457,
   ApiTooManyRequestsResponseRfc9457,
+  ApiUnauthorizedResponseRfc9457,
+  ApiForbiddenResponseRfc9457,
 } from "@/common/decorators";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import {
@@ -79,6 +81,8 @@ export class LeadsController {
       "Returns all leads and quote requests ordered by latest submission date.",
   })
   @ApiOkResponsePaginated(LeadResponseDto)
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async getAll(
     @Query() query: LeadQueryDto,
   ): Promise<ApiResponse<LeadResponseDto[], PaginationMetaDto>> {
@@ -99,6 +103,8 @@ export class LeadsController {
   })
   @ApiOkResponseGeneric(LeadResponseDto)
   @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async getById(
     @Param("id", ParseUUIDPipe) id: string,
   ): Promise<ApiResponse<LeadResponseDto>> {
@@ -121,6 +127,8 @@ export class LeadsController {
   @ApiOkResponseGeneric(LeadResponseDto)
   @ApiNotFoundResponseRfc9457()
   @ApiBadRequestResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async updateStatus(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateLeadStatusDto,
@@ -142,6 +150,8 @@ export class LeadsController {
   })
   @ApiOkResponseGeneric(LeadResponseDto)
   @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async assignSales(
     @Param("id", ParseUUIDPipe) id: string,
     @Body("salesId", ParseUUIDPipe) salesId: string,

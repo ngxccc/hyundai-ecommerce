@@ -1,0 +1,8 @@
+{
+  "PRODUCT_NOT_AVAILABLE": "Product with ID \"{id}\" not found or unavailable",
+  "OUT_OF_STOCK": "Product \"{name}\" is out of stock",
+  "STOCK_EXCEEDED": "Requested quantity ({requested}) exceeds available stock ({available})",
+  "ITEM_NOT_FOUND": "Cart item with ID \"{id}\" not found",
+  "INIT_FAILED": "Failed to initialize user cart",
+  "CART_NOT_FOUND": "Cart not found"
+}

@@ -10,5 +10,9 @@
   "DEBT_REPAYMENT_NOT_FOUND": "Debt repayment record not found",
   "DEBT_ALREADY_REPAID": "Debt repayment has already been processed and credited",
   "ORDER_ALREADY_PAID": "Order has already been fully paid",
-  "UNAUTHORIZED_VERIFICATION": "You are not authorized to verify this payment transaction"
+  "UNAUTHORIZED_VERIFICATION": "You are not authorized to verify this payment transaction",
+  "ONLY_ADMIN_CASH_VERIFY": "Only ADMIN can verify cash debt repayments",
+  "FORBIDDEN_REPAY_OTHER": "You are not authorized to repay debt for another user",
+  "DEBT_REPAYMENT_FAILED": "Debt repayment failed to process",
+  "DEBT_REGISTER_FAILED": "Failed to register debt repayment"
 }

@@ -4,10 +4,9 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from "@nestjs/common";
-import type { I18nService } from "nestjs-i18n";
 import { OrdersService } from "./orders.service";
 import type { DrizzleDB } from "@/database/database.module";
-import { createMockDb, createMockI18nService } from "../../../test/mocks";
+import { createMockDb } from "../../../test/mocks";
 import type {
   CreateB2bOrderDto,
   CreateGuestOrderDto,
@@ -17,7 +16,6 @@ import type {
 describe("OrdersService", () => {
   let service: OrdersService;
   const mockDb = createMockDb();
-  const mockI18nService = createMockI18nService();
 
   const mockProduct = {
     id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9c",
@@ -70,11 +68,7 @@ describe("OrdersService", () => {
 
   beforeEach(() => {
     mockDb.clearAll();
-    mockI18nService.clearAll();
-    service = new OrdersService(
-      mockDb as unknown as DrizzleDB,
-      mockI18nService as unknown as I18nService,
-    );
+    service = new OrdersService(mockDb as unknown as DrizzleDB);
   });
 
   describe("createGuestOrder()", () => {

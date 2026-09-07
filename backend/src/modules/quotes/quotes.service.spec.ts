@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import type { I18nService } from "nestjs-i18n";
 import type { DrizzleDB } from "@/database/database.module";
 import {
   BadRequestException,
@@ -8,12 +7,11 @@ import {
 } from "@nestjs/common";
 import type { CreateAdminQuoteDto, CreateQuoteDto, QuoteQueryDto } from "./dto";
 import { QuotesService } from "./quotes.service";
-import { createMockDb, createMockI18nService } from "../../../test/mocks";
+import { createMockDb } from "../../../test/mocks";
 
 describe("QuotesService", () => {
   let service: QuotesService;
   const mockDb = createMockDb();
-  const mockI18nService = createMockI18nService();
 
   const mockQuoteRecord = {
     id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9a",
@@ -71,11 +69,7 @@ describe("QuotesService", () => {
 
   beforeEach(() => {
     mockDb.clearAll();
-    mockI18nService.clearAll();
-    service = new QuotesService(
-      mockDb as unknown as DrizzleDB,
-      mockI18nService as unknown as I18nService,
-    );
+    service = new QuotesService(mockDb as unknown as DrizzleDB);
   });
 
   describe("createRfq()", () => {

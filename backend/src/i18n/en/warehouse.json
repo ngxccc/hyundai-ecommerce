@@ -1,0 +1,7 @@
+{
+  "WAREHOUSE_NOT_FOUND": "Warehouse with ID \"{id}\" not found",
+  "CREATE_FAILED": "Failed to create warehouse record",
+  "INACTIVE_WAREHOUSE": "Cannot update inventory in an inactive warehouse",
+  "PRODUCT_NOT_FOUND": "Product with ID \"{id}\" not found",
+  "STOCK_UPDATE_FAILED": "Failed to update warehouse stock record"
+}

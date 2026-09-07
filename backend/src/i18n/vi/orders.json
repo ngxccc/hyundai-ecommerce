@@ -6,5 +6,7 @@
   "ORDER_ALREADY_CANCELLED": "Đơn hàng đã bị hủy trước đó",
   "ORDER_ALREADY_PAID": "Đơn hàng đã được thanh toán",
   "ORDER_CANNOT_BE_CANCELLED": "Đơn hàng đang giao hoặc đã hoàn thành, không thể hủy",
-  "ORDER_CREATE_FAILED": "Không thể tạo đơn hàng, vui lòng thử lại"
+  "ORDER_CREATE_FAILED": "Không thể tạo đơn hàng, vui lòng thử lại",
+  "FORBIDDEN_ACCESS": "Bạn không có quyền truy cập đơn hàng này",
+  "FORBIDDEN_CANCEL": "Bạn không có quyền hủy đơn hàng này"
 }

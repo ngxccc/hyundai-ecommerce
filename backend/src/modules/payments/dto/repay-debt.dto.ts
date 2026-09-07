@@ -36,7 +36,8 @@ export class RepayDebtDto implements RepayDebtDtoType {
 
   @ApiProperty({
     example: 50000000,
-    description: "Debt repayment amount in VND",
+    description: "Repayment amount (VND)",
+    oneOf: [{ type: "number" }, { type: "string" }],
   })
   public amount!: number | string;
 

@@ -24,6 +24,8 @@ import {
   ApiBadRequestResponseRfc9457,
   ApiConflictResponseRfc9457,
   ApiTooManyRequestsResponseRfc9457,
+  ApiUnauthorizedResponseRfc9457,
+  ApiForbiddenResponseRfc9457,
 } from "@/common/decorators";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { CATALOG_ROUTES } from "./catalog.routes";
@@ -79,6 +81,8 @@ export class BrandsController {
   @ApiCreatedResponseGeneric(BrandResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiConflictResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async create(
     @Body() dto: CreateBrandDto,
   ): Promise<ApiResponse<BrandResponseDto>> {
@@ -98,6 +102,8 @@ export class BrandsController {
   @ApiNotFoundResponseRfc9457()
   @ApiBadRequestResponseRfc9457()
   @ApiConflictResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async update(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateBrandDto,
@@ -117,6 +123,8 @@ export class BrandsController {
   })
   @ApiOkResponseGeneric(Object)
   @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async delete(
     @Param("id", ParseUUIDPipe) id: string,
   ): Promise<ApiResponse<null>> {

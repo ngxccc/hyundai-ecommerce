@@ -78,6 +78,7 @@ export class AdminQuoteItemInputDto implements AdminQuoteItemInputDtoType {
   public productId?: string | null;
 
   @ApiPropertyOptional({
+    type: Boolean,
     example: false,
     default: false,
     description: "Whether this is a bespoke line item not in catalog",
@@ -112,6 +113,7 @@ export class AdminQuoteItemInputDto implements AdminQuoteItemInputDtoType {
   @ApiProperty({
     example: 28000000,
     description: "Unit price quoted to customer (VND)",
+    oneOf: [{ type: "number" }, { type: "string" }],
   })
   public unitPrice!: number | string;
 
@@ -119,12 +121,14 @@ export class AdminQuoteItemInputDto implements AdminQuoteItemInputDtoType {
     example: 5,
     default: 0,
     description: "Line item discount percentage (0 - 100)",
+    oneOf: [{ type: "number" }, { type: "string" }],
   })
   public discountPercent: number | string = 0;
 }
 
 export class CommercialTermsDto implements CommercialTermsDtoType {
   @ApiPropertyOptional({
+    type: Number,
     example: 15,
     default: 15,
     description: "Quote validity duration in days",
@@ -202,6 +206,7 @@ export class CreateAdminQuoteDto implements CreateAdminQuoteDtoType {
   public shippingAddress?: string | null;
 
   @ApiPropertyOptional({
+    type: Number,
     example: 10,
     default: 10,
     description: "VAT percentage rate (e.g. 10 or 8)",
