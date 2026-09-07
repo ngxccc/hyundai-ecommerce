@@ -19,7 +19,7 @@ export async function submitQuoteRequestAction(rawInput: SubmitQuoteInput) {
   if (!parsed.success) {
     const firstIssue = parsed.error.issues[0];
     const errorMessage = translateZodMessage(firstIssue.message, (key, args) =>
-      tRoot(key as never, args as never),
+      tRoot(key, args),
     );
 
     return {
