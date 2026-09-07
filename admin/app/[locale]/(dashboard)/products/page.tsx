@@ -19,7 +19,7 @@ export const generateMetadata = async ({
 }) => {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({ locale, namespace: "AdminMetadata" });
+  const t = await getTranslations({ locale, namespace: "adminMetadata" });
 
   return {
     title: t("products"),
@@ -80,8 +80,8 @@ export default async function AdminProductsPage({
   };
 
   const [t, tNav, productsRes, categoriesRes, brandsRes] = await Promise.all([
-    getTranslations("AdminProducts.header"),
-    getTranslations("AdminDashboard.nav"),
+    getTranslations("adminProducts.header"),
+    getTranslations("adminDashboard.nav"),
     api.GET("/products", {
       params: { query: { limit: 20, ...options } as never },
     }),

@@ -27,7 +27,7 @@ interface FacetedSpecsProps {
 }
 
 export const FacetedSpecs = ({ form }: FacetedSpecsProps) => {
-  const t = useTranslations("AdminProductForm");
+  const t = useTranslations("adminProductForm");
   const productType = form.watch("productType");
 
   return (

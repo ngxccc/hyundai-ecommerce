@@ -25,8 +25,8 @@ export const CategoryHeader = ({
   description,
   showAddButton = true,
 }: CategoryHeaderProps) => {
-  const t = useTranslations("AdminCategories.header");
-  const tDashboard = useTranslations("AdminDashboard");
+  const t = useTranslations("adminCategories.header");
+  const tDashboard = useTranslations("adminDashboard");
   const navItems = useAdminNav();
   const pathname = usePathname();
 

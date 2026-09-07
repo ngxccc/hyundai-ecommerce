@@ -234,17 +234,7 @@ export const createProductAction = async (formData: FormData) => {
       },
     );
     if (createError || !createRes.data) {
-      let errorMsg: string | undefined;
-      if (createError && typeof createError === "object") {
-        if ("detail" in createError && typeof createError.detail === "string") {
-          errorMsg = createError.detail;
-        } else if ("message" in createError) {
-          errorMsg = Array.isArray(createError.message)
-            ? createError.message.join(", ")
-            : String(createError.message);
-        }
-      }
-      throw new Error(errorMsg ?? "Failed to create product");
+      throw new Error(createError?.detail ?? "Failed to create product");
     }
     const newProduct = createRes.data;
 
@@ -349,9 +339,7 @@ export async function updateProductAction(id: string, formData: FormData) {
       },
     );
     if (updateError || !updateRes.data) {
-      const errorMsg =
-        updateError && "detail" in updateError ? updateError.detail : undefined;
-      throw new Error(errorMsg ?? "Failed to update product");
+      throw new Error(updateError?.detail ?? "Failed to update product");
     }
     const updatedProduct = updateRes.data;
 

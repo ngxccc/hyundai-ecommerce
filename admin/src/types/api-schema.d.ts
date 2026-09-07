@@ -1083,6 +1083,11 @@ export interface components {
        * @example /auth/register
        */
       instance: string;
+      /**
+       * @description Machine-readable error code
+       * @example CART_OUT_OF_STOCK
+       */
+      code?: string;
       /** @description List of invalid parameters that failed validation */
       invalidParams?: components["schemas"]["InvalidParamDto"][];
       /**
@@ -2442,7 +2447,7 @@ export interface components {
        * @default false
        * @example false
        */
-      isCustomItem: Record<string, never>;
+      isCustomItem: boolean;
       /**
        * @description Item name or description
        * @example Máy phát điện Hyundai DHY6000SE
@@ -2514,7 +2519,7 @@ export interface components {
        * @default 15
        * @example 15
        */
-      validityDays: Record<string, never>;
+      validityDays: number;
       /**
        * @description Commercial payment schedule and terms
        * @example Tạm ứng 30%, thanh toán 70% trước khi giao hàng
@@ -2547,7 +2552,7 @@ export interface components {
        * @default false
        * @example false
        */
-      isCustomItem: Record<string, never>;
+      isCustomItem: boolean;
       /**
        * @description Item name or description
        * @example Máy phát điện Hyundai DHY6000SE
@@ -2572,13 +2577,13 @@ export interface components {
        * @description Unit price quoted to customer (VND)
        * @example 28000000
        */
-      unitPrice: Record<string, never>;
+      unitPrice: number | string;
       /**
        * @description Line item discount percentage (0 - 100)
        * @default 0
        * @example 5
        */
-      discountPercent: Record<string, never>;
+      discountPercent: number | string;
     };
     CreateAdminQuoteDto: {
       /**
@@ -2621,7 +2626,7 @@ export interface components {
        * @default 10
        * @example 10
        */
-      vatRate: Record<string, never>;
+      vatRate: number;
       /** @description Structured commercial, warranty, and delivery terms */
       commercialTerms?: components["schemas"]["CommercialTermsDto"];
       /**
@@ -2870,7 +2875,7 @@ export interface components {
        * @description Custom agreed unit price overriding catalog price
        * @example 120000000.00
        */
-      unitPrice?: Record<string, never>;
+      unitPrice?: string | number;
     };
     CreateB2bOrderDto: {
       /**
@@ -2920,13 +2925,13 @@ export interface components {
        * @default 0
        * @example 500000.00
        */
-      shippingFee: Record<string, never>;
+      shippingFee: string | number;
       /**
        * @description Initial deposit amount paid
        * @default 0
        * @example 50000000.00
        */
-      depositAmount: Record<string, never>;
+      depositAmount: string | number;
       /**
        * @description Internal order notes
        * @example Giao tại công trình kèm biên bản nghiệm thu
@@ -2998,6 +3003,18 @@ export interface components {
        * @example https://hyundai-nhatnang.vn/checkout/cancel
        */
       cancelUrl?: string;
+    };
+    PayOSWebhookResponseDto: {
+      /**
+       * @description Indicates whether the payment transaction was successfully processed into database records
+       * @example true
+       */
+      processed: boolean;
+      /**
+       * @description Informational reason when webhook processing was skipped or acknowledged idempotently
+       * @example Non-success code acknowledged
+       */
+      reason?: string;
     };
     PayOSWebhookDataClass: {
       /** @example 1725451234567 */
@@ -3108,7 +3125,7 @@ export interface components {
        * @description Actual cash amount collected by accountant/cashier
        * @example 490000000
        */
-      amount: Record<string, never>;
+      amount: number | string;
       /**
        * @description Optional verification notes or internal receipt code
        * @example Đã thu đủ tiền mặt tại văn phòng Hà Nội ngày 04/09
@@ -3160,10 +3177,10 @@ export interface components {
        */
       userId?: string;
       /**
-       * @description Debt repayment amount in VND
+       * @description Repayment amount (VND)
        * @example 50000000
        */
-      amount: Record<string, never>;
+      amount: number | string;
       /**
        * @description Payment method used for repayment (PAYOS, CASH, BANK_TRANSFER)
        * @example PAYOS
@@ -3951,7 +3968,7 @@ export interface operations {
           /**
            * @example {
            *       "type": "http://localhost:3000/errors/forbidden",
-           *       "title": "Forbidden",
+           *       "title": "forbidden",
            *       "status": 403,
            *       "detail": "Account suspended or inactive",
            *       "instance": "/api/example",
@@ -4126,6 +4143,42 @@ export interface operations {
           };
         };
       };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   LeadsController_submitRfq: {
@@ -4211,6 +4264,42 @@ export interface operations {
           };
         };
       };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Resource not found (Not Found) */
       404: {
         headers: Record<string, unknown>;
@@ -4277,6 +4366,42 @@ export interface operations {
           "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Resource not found (Not Found) */
       404: {
         headers: Record<string, unknown>;
@@ -4314,6 +4439,42 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["LeadResponseDto"];
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
       /** @description Resource not found (Not Found) */
@@ -4411,6 +4572,42 @@ export interface operations {
            *           "reason": "Invalid email address format"
            *         }
            *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
            *     }
            */
@@ -4577,6 +4774,42 @@ export interface operations {
           "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Resource not found (Not Found) */
       404: {
         headers: Record<string, unknown>;
@@ -4632,6 +4865,42 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["Object"];
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
       /** @description Resource not found (Not Found) */
@@ -4729,6 +4998,42 @@ export interface operations {
            *           "reason": "Invalid email address format"
            *         }
            *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
            *     }
            */
@@ -4858,6 +5163,42 @@ export interface operations {
           "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Resource not found (Not Found) */
       404: {
         headers: Record<string, unknown>;
@@ -4913,6 +5254,42 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["Object"];
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
       /** @description Resource not found (Not Found) */
@@ -5054,6 +5431,42 @@ export interface operations {
            *           "reason": "Invalid email address format"
            *         }
            *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
            *     }
            */
@@ -5220,6 +5633,42 @@ export interface operations {
           "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Resource not found (Not Found) */
       404: {
         headers: Record<string, unknown>;
@@ -5275,6 +5724,42 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["Object"];
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
       /** @description Resource not found (Not Found) */
@@ -5340,6 +5825,83 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource conflict (Conflict) */
+      409: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/conflict",
+           *       "title": "Conflict",
+           *       "status": 409,
+           *       "detail": "Email address already exists",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   WarehouseController_getProductStocks: {
@@ -5362,6 +5924,24 @@ export interface operations {
           };
         };
       };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   WarehouseController_getWarehouseStocks: {
@@ -5382,6 +5962,24 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["WarehouseStockResponseDto"][];
           };
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -5410,6 +6008,83 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   WarehouseController_getById: {
@@ -5430,6 +6105,24 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["WarehouseResponseDto"];
           };
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -5458,6 +6151,101 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource conflict (Conflict) */
+      409: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/conflict",
+           *       "title": "Conflict",
+           *       "status": 409,
+           *       "detail": "Email address already exists",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   WarehouseController_delete: {
@@ -5474,7 +6262,65 @@ export interface operations {
     responses: {
       200: {
         headers: Record<string, unknown>;
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["Object"];
+          };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
       };
     };
   };
@@ -5493,6 +6339,24 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CartResponseDto"];
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -5516,6 +6380,65 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CartResponseDto"];
           };
+        };
+      };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -5544,6 +6467,65 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   CartController_removeItem: {
@@ -5564,6 +6546,42 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CartResponseDto"];
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -5587,6 +6605,47 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CartResponseDto"];
           };
+        };
+      };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -5626,6 +6685,65 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   QuotesController_submitRfq: {
@@ -5647,6 +6765,29 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["QuoteResponseDto"];
           };
+        };
+      };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -5672,6 +6813,65 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   QuotesController_getQuoteById: {
@@ -5692,6 +6892,60 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["QuoteResponseDto"];
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -5718,6 +6972,83 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["QuoteResponseDto"];
           };
+        };
+      };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -5748,6 +7079,83 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   QuotesController_sendMessage: {
@@ -5774,6 +7182,65 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   QuotesController_approveToOrder: {
@@ -5796,6 +7263,83 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   QuotesController_exportExcel: {
@@ -5814,6 +7358,60 @@ export interface operations {
       200: {
         headers: Record<string, unknown>;
         content?: never;
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
       };
     };
   };
@@ -5838,6 +7436,47 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   OrdersController_createB2bOrder: {
@@ -5859,6 +7498,83 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["OrderResponseDto"];
           };
+        };
+      };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -5894,6 +7610,65 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   OrdersController_getOrderById: {
@@ -5914,6 +7689,60 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["OrderResponseDto"];
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -5942,6 +7771,83 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   OrdersController_cancelOrder: {
@@ -5964,6 +7870,83 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   OrdersController_expireOrders: {
@@ -5982,6 +7965,24 @@ export interface operations {
             /** @default null */
             data: Record<string, never> | null;
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -6007,6 +8008,47 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   PaymentsController_handleWebhook: {
@@ -6026,9 +8068,31 @@ export interface operations {
         headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
-            /** @default null */
-            data: Record<string, never> | null;
+            data?: components["schemas"]["PayOSWebhookResponseDto"];
           };
+        };
+      };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };
@@ -6057,6 +8121,83 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   PaymentsController_repayDebt: {
@@ -6080,6 +8221,65 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   PaymentsController_getOrderPaymentSummary: {
@@ -6100,6 +8300,42 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["OrderPaymentSummaryDto"];
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "User profile not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
     };

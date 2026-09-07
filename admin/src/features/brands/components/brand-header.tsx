@@ -25,8 +25,8 @@ export const BrandHeader = ({
   description,
   showAddButton = true,
 }: BrandHeaderProps) => {
-  const t = useTranslations("AdminBrands.header");
-  const tDashboard = useTranslations("AdminDashboard");
+  const t = useTranslations("adminBrands.header");
+  const tDashboard = useTranslations("adminDashboard");
   const navItems = useAdminNav();
   const pathname = usePathname();
 

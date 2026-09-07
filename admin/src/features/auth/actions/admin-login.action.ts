@@ -46,14 +46,11 @@ export const adminLoginAction = async (data: AdminLoginForm) => {
     });
 
     if (error || !res.data) {
-      const errorDetail =
-        error && typeof error === "object" && "detail" in error
-          ? (error as { detail?: string }).detail
-          : undefined;
       return {
         success: false as const,
         error:
-          errorDetail ?? "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.",
+          error?.detail ??
+          "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.",
       };
     }
 

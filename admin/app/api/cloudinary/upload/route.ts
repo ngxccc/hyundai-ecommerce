@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     requestedLocale === "en" || requestedLocale === "vi"
       ? requestedLocale
       : "vi";
-  const t = await getTranslations({ locale, namespace: "Cloudinary" });
+  const t = await getTranslations({ locale, namespace: "cloudinary" });
 
   try {
     // 1. Session and role check

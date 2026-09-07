@@ -27,7 +27,7 @@ interface SpecSheetEditorProps {
 }
 
 export const SpecSheetEditor = ({ form }: SpecSheetEditorProps) => {
-  const t = useTranslations("AdminProductForm");
+  const t = useTranslations("adminProductForm");
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
 
   const specSheet: ProductSpecSheet =

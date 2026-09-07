@@ -20,7 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({ locale, namespace: "AdminQuotes" });
+  const t = await getTranslations({ locale, namespace: "adminQuotes" });
 
   return {
     title: t("listTitle"),
@@ -32,8 +32,8 @@ export default async function AdminQuotesPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const tNav = await getTranslations("AdminDashboard.nav");
-  const tHeader = await getTranslations("AdminQuotes");
+  const tNav = await getTranslations("adminDashboard.nav");
+  const tHeader = await getTranslations("adminQuotes");
 
   const resolvedSearchParams = await searchParams;
   const search =

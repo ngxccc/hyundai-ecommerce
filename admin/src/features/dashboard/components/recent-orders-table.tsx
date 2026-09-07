@@ -52,7 +52,7 @@ const formatVND = (value: string | number) => {
 };
 
 export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
-  const t = useTranslations("AdminDashboard.recentOrders");
+  const t = useTranslations("adminDashboard.recentOrders");
 
   return (
     <Card className="gap-0 overflow-hidden py-0 shadow-sm">

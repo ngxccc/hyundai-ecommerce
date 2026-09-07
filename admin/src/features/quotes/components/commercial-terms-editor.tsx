@@ -22,7 +22,7 @@ import { Label } from "@/components/ui/label";
 import { useQuoteDraftStore } from "../stores/quote-draft.store";
 
 export const CommercialTermsEditor = () => {
-  const t = useTranslations("AdminQuotes");
+  const t = useTranslations("adminQuotes");
   const translate = t as unknown as (key: string) => string;
 
   const commercialTerms = useQuoteDraftStore((state) => state.commercialTerms);

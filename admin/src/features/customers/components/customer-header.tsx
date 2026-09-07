@@ -20,8 +20,8 @@ interface CustomerHeaderProps {
 }
 
 export const CustomerHeader = ({ title, description }: CustomerHeaderProps) => {
-  const tDashboard = useTranslations("AdminDashboard");
-  const tNav = useTranslations("AdminDashboard.nav");
+  const tDashboard = useTranslations("adminDashboard");
+  const tNav = useTranslations("adminDashboard.nav");
   const navItems = useAdminNav();
   const pathname = usePathname();
 

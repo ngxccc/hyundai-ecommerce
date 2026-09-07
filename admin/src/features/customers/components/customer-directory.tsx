@@ -22,7 +22,7 @@ interface CustomerDirectoryProps {
 }
 
 export const CustomerDirectory = ({ initialUsers }: CustomerDirectoryProps) => {
-  const t = useTranslations("AdminCustomers");
+  const t = useTranslations("adminCustomers");
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredUsers = initialUsers.filter((user) => {

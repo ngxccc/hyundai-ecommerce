@@ -61,9 +61,7 @@ export const createCategoryAction = async (formData: FormData) => {
       },
     );
     if (createError || !createRes.data) {
-      const errorMsg =
-        createError && "detail" in createError ? createError.detail : undefined;
-      throw new Error(errorMsg ?? "Failed to create category");
+      throw new Error(createError?.detail ?? "Failed to create category");
     }
     const categoryData = createRes.data;
 
@@ -147,9 +145,7 @@ export async function updateCategoryAction(id: string, formData: FormData) {
       },
     );
     if (updateError || !updateRes.data) {
-      const errorMsg =
-        updateError && "detail" in updateError ? updateError.detail : undefined;
-      throw new Error(errorMsg ?? "Failed to update category");
+      throw new Error(updateError?.detail ?? "Failed to update category");
     }
     const updatedCategory = updateRes.data;
 
@@ -199,8 +195,7 @@ export async function deleteCategoryAction(id: string) {
       params: { path: { id } },
     });
     if (deleteError) {
-      const errorMsg = "detail" in deleteError ? deleteError.detail : undefined;
-      throw new Error(errorMsg ?? "Failed to delete category");
+      throw new Error(deleteError.detail);
     }
     const success = true;
     revalidatePath("/categories");

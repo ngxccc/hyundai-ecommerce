@@ -26,7 +26,7 @@ interface OrderListProps {
 }
 
 export const OrderList = ({ orders }: OrderListProps) => {
-  const t = useTranslations("AdminOrders");
+  const t = useTranslations("adminOrders");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

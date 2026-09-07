@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { i18nZodMsg } from "@/shared/lib/i18n-zod";
 
 export const isValidIdentifier = (id: unknown): id is string => {
   return typeof id === "string" && /^[a-zA-Z0-9_-]+$/.test(id.trim());
@@ -179,6 +180,13 @@ export const updateCustomerStatusSchema = z.object({
   status: z.enum(["ACTIVE", "BLOCKED", "PENDING_APPROVAL"]),
 });
 
+export const updateCustomerTierSchema = z.object({
+  dealerTierId: z.string().nullable(),
+  businessType: z.enum(["DEALER", "CONTRACTOR", "END_USER", "DISTRIBUTOR"]),
+});
+
+export type UpdateCustomerTierInput = z.infer<typeof updateCustomerTierSchema>;
+
 export const setCreditLimitSchema = z.object({
   creditLimit: z.string().min(1),
 });
@@ -221,9 +229,20 @@ export const quoteIdSchema = z.object({
   quoteId: z.string().min(1),
 });
 
+export const quoteStatusEnum = z.enum([
+  "DRAFT",
+  "SUBMITTED",
+  "NEGOTIATING",
+  "APPROVED",
+  "REJECTED",
+  "EXPIRED",
+]);
+
 export const updateQuoteStatusSchema = z.object({
-  status: z.string().min(1),
+  status: quoteStatusEnum,
 });
+
+export type UpdateQuoteStatusInput = z.infer<typeof updateQuoteStatusSchema>;
 
 export const updateQuoteItemPriceSchema = z.object({
   agreedPrice: z.string().min(1),
@@ -233,17 +252,47 @@ export const sendQuoteMessageSchema = z.object({
   message: z.string().min(1),
 });
 
-export const createAdminQuoteSchema = z.object({
-  customerName: z.string().min(1),
-  customerPhone: z.string().min(1),
-  customerEmail: z.email().optional().nullable(),
-  companyName: z.string().optional().nullable(),
-  taxId: z.string().optional().nullable(),
-  shippingAddress: z.string().optional().nullable(),
-  note: z.string().optional().nullable(),
-  vatRate: z.number().default(10),
-  expirationDate: z.coerce.date().optional().nullable(),
-  items: z.array(z.record(z.string(), z.unknown())),
+export const adminQuoteItemInputSchema = z.object({
+  productId: z.string().nullable().optional(),
+  isCustomItem: z.boolean().default(false),
+  itemName: z.string().min(1, i18nZodMsg("validation.nameRequired")),
+  itemModel: z.string().nullable().optional(),
+  itemSpecs: z.string().nullable().optional(),
+  quantity: z.coerce
+    .number()
+    .int()
+    .positive(i18nZodMsg("validation.quantityPositive")),
+  unitPrice: z.union([z.string(), z.number()]).default("0"),
+  discountPercent: z.coerce.number().min(0).max(100).default(0),
 });
 
+export const commercialTermsSchema = z.object({
+  validityDays: z.coerce.number().int().positive().default(15),
+  paymentSchedule: z.string().nullable().optional(),
+  warrantyTerms: z.string().nullable().optional(),
+  deliveryTime: z.string().nullable().optional(),
+  deliveryLocation: z.string().nullable().optional(),
+});
+
+export const createAdminQuoteSchema = z.object({
+  userId: z.string().nullable().optional(),
+  customerName: z.string().min(2, i18nZodMsg("validation.customerNameMin")),
+  customerPhone: z.string().min(8, i18nZodMsg("validation.phoneInvalid")),
+  customerEmail: z
+    .email(i18nZodMsg("validation.emailInvalid"))
+    .nullable()
+    .optional()
+    .or(z.literal("")),
+  companyName: z.string().nullable().optional(),
+  taxId: z.string().nullable().optional(),
+  shippingAddress: z.string().nullable().optional(),
+  vatRate: z.coerce.number().min(0).max(100).default(10),
+  commercialTerms: commercialTermsSchema.nullable().optional(),
+  note: z.string().nullable().optional(),
+  expirationDate: z.coerce.date().nullable().optional(),
+  items: z
+    .array(adminQuoteItemInputSchema)
+    .min(1, i18nZodMsg("validation.itemsRequired")),
+});
+export type CommercialTermsInput = z.infer<typeof commercialTermsSchema>;
 export type CreateAdminQuoteInput = z.infer<typeof createAdminQuoteSchema>;

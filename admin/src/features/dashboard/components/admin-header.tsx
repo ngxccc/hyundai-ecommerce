@@ -16,7 +16,7 @@ import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/shared/lib/utils";
 
 export const AdminHeader = () => {
-  const t = useTranslations("AdminDashboard");
+  const t = useTranslations("adminDashboard");
   const navItems = useAdminNav();
   const pathname = usePathname();
 

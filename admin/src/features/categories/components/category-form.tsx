@@ -52,7 +52,7 @@ export const CategoryForm = ({
   categories?: AdminCategory[];
   breadcrumbs?: ReactNode;
 }) => {
-  const t = useTranslations("AdminCategoryForm");
+  const t = useTranslations("adminCategoryForm");
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

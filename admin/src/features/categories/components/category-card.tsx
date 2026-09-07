@@ -21,7 +21,7 @@ export const CategoryCard = ({
   category: AdminCategory;
   parentName?: string | undefined;
 }) => {
-  const t = useTranslations("AdminCategories.card");
+  const t = useTranslations("adminCategories.card");
 
   const status = category.isActive ? "active" : "inactive";
   const image = category.image?.length

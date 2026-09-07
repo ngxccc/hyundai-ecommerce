@@ -39,7 +39,7 @@ export const ProductForm = ({
   brands: AdminBrand[];
   breadcrumbs?: React.ReactNode;
 }) => {
-  const t = useTranslations("AdminProductForm");
+  const t = useTranslations("adminProductForm");
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

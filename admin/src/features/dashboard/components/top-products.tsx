@@ -25,7 +25,7 @@ const formatPrice = (priceStr: string) => {
 };
 
 export const TopProducts = ({ products }: TopProductsProps) => {
-  const t = useTranslations("AdminDashboard.topProducts");
+  const t = useTranslations("adminDashboard.topProducts");
 
   return (
     <Card size="compact" className="h-full">

@@ -44,10 +44,12 @@ export const createWarehouseAction = async (input: CreateWarehouseInput) => {
       isActive: validatedData.isActive,
     };
 
-    const { data } = await api.POST("/warehouses", {
+    const { data, error } = await api.POST("/warehouses", {
       body: payload as never,
     });
-
+    if (error) {
+      throw new ApiClientError(error.detail, error.status, error);
+    }
     revalidatePath("/warehouses");
     return { success: true as const, data };
   } catch (error) {
@@ -100,10 +102,13 @@ export async function updateWarehouseAction(
     if (validatedData.isActive !== undefined)
       updatePayload.isActive = validatedData.isActive;
 
-    const { data } = await api.PUT("/warehouses/{id}", {
+    const { data, error } = await api.PUT("/warehouses/{id}", {
       params: { path: { id } },
       body: updatePayload as never,
     });
+    if (error) {
+      throw new ApiClientError(error.detail, error.status, error);
+    }
     revalidatePath("/warehouses");
     revalidatePath(`/warehouses/${id}`);
     return { success: true as const, data };
@@ -129,9 +134,12 @@ export async function deleteWarehouseAction(id: string) {
   }
   try {
     await requireAuth();
-    await api.DELETE("/warehouses/{id}", {
+    const { error } = await api.DELETE("/warehouses/{id}", {
       params: { path: { id } },
     });
+    if (error) {
+      throw new ApiClientError(error.detail, error.status, error);
+    }
     revalidatePath("/warehouses");
     return { success: true as const };
   } catch (error) {

@@ -11,7 +11,7 @@ import type { AdminWarehouse } from "@/types/api";
 import { DeleteWarehouseButton } from "./delete-warehouse-button";
 
 export const WarehouseCard = ({ warehouse }: { warehouse: AdminWarehouse }) => {
-  const t = useTranslations("AdminWarehouses.card");
+  const t = useTranslations("adminWarehouses.card");
 
   const status = warehouse.isActive ? "active" : "inactive";
 

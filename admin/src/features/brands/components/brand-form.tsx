@@ -38,7 +38,7 @@ export const BrandForm = ({
   initialData?: AdminBrand | null;
   breadcrumbs?: ReactNode;
 }) => {
-  const t = useTranslations("AdminBrandForm");
+  const t = useTranslations("adminBrandForm");
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

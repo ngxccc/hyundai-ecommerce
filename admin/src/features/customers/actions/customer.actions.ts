@@ -8,7 +8,10 @@ import {
   AuthError,
 } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
-
+import {
+  updateCustomerTierSchema,
+  type UpdateCustomerTierInput,
+} from "@/shared/validators";
 export const createDealerTierAction = async (formData: FormData) => {
   try {
     await assertFinanceRole();
@@ -40,10 +43,14 @@ export const createDealerTierAction = async (formData: FormData) => {
 
 export const updateCustomerTierAction = (
   _userId: string,
-  _payload: {
-    dealerTierId: string | null;
-    businessType: "DEALER" | "CONTRACTOR" | "END_USER" | "DISTRIBUTOR";
-  },
+  payload: UpdateCustomerTierInput,
 ) => {
+  const parsed = updateCustomerTierSchema.safeParse(payload);
+  if (!parsed.success) {
+    return Promise.resolve({
+      success: false as const,
+      error: "Dữ liệu không hợp lệ.",
+    });
+  }
   return Promise.resolve({ success: true as const });
 };

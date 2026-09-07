@@ -28,7 +28,7 @@ export const DeleteWarehouseButton = ({
   warehouseId,
   warehouseName,
 }: DeleteWarehouseButtonProps) => {
-  const t = useTranslations("AdminWarehouses");
+  const t = useTranslations("adminWarehouses");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);

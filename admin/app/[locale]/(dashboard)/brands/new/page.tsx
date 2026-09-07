@@ -19,7 +19,7 @@ export async function generateMetadata({
   const locale = rawLocale as Locale;
   const t = await getTranslations({
     locale,
-    namespace: "AdminBrandForm",
+    namespace: "adminBrandForm",
   });
 
   return {
@@ -28,8 +28,8 @@ export async function generateMetadata({
 }
 
 export default async function AdminNewBrandPage() {
-  const tNav = await getTranslations("AdminDashboard.nav");
-  const tForm = await getTranslations("AdminBrandForm");
+  const tNav = await getTranslations("adminDashboard.nav");
+  const tForm = await getTranslations("adminBrandForm");
 
   return (
     <>

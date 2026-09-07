@@ -12,7 +12,7 @@ import { useQuoteDraftStore } from "../stores/quote-draft.store";
 import { createAdminQuoteAction } from "../actions/quote.actions";
 
 export const QuoteComposer = () => {
-  const t = useTranslations("AdminQuotes");
+  const t = useTranslations("adminQuotes");
   const translate = t as unknown as (
     key: string,
     params?: Record<string, unknown>,

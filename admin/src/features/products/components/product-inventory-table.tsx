@@ -29,7 +29,7 @@ export const ProductInventoryTable = ({
   warehouses,
   warehouseStocks,
 }: ProductInventoryTableProps) => {
-  const t = useTranslations("AdminInventory");
+  const t = useTranslations("adminInventory");
 
   // Sort warehouses so active ones are first
   const sortedWarehouses = [...warehouses].sort((a, b) => {
@@ -91,7 +91,7 @@ const InventoryRow = ({
   initialStock: number;
   initialMinStock: number;
 }) => {
-  const t = useTranslations("AdminInventory");
+  const t = useTranslations("adminInventory");
   const [stock, setStock] = useState(initialStock.toString());
   const [minStock, setMinStock] = useState(initialMinStock.toString());
   const [isPending, startTransition] = useTransition();

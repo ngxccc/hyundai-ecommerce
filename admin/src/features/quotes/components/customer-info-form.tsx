@@ -25,7 +25,7 @@ export interface CustomerInfoFormProps {
 }
 
 export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
-  const t = useTranslations("AdminQuotes");
+  const t = useTranslations("adminQuotes");
   const translate = t as unknown as (key: string) => string;
   const customerInfo = useQuoteDraftStore((state) => state.customerInfo);
   const setCustomerInfo = useQuoteDraftStore((state) => state.setCustomerInfo);

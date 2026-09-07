@@ -14,7 +14,7 @@ import type { ProductGridItem } from "../product-form-types";
 import { DeleteProductButton } from "./delete-product-button";
 import { useQuoteDraftStore } from "@/features/quotes/stores";
 export const ProductCard = ({ product }: { product: ProductGridItem }) => {
-  const t = useTranslations("AdminProducts.card");
+  const t = useTranslations("adminProducts.card");
   const router = useRouter();
   const addProductToDraft = useQuoteDraftStore((s) => s.addProduct);
 

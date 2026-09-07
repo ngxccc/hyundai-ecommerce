@@ -6,8 +6,8 @@ import { api } from "@/lib/api-client";
 
 export default async function CreateProductPage() {
   const [t, tNav, categoriesRes, brandsRes] = await Promise.all([
-    getTranslations("AdminProductForm"),
-    getTranslations("AdminDashboard.nav"),
+    getTranslations("adminProductForm"),
+    getTranslations("adminDashboard.nav"),
     api.GET("/categories"),
     api.GET("/brands"),
   ]);

@@ -27,7 +27,7 @@ interface QuoteListProps {
 }
 
 export const QuoteList = ({ quotes }: QuoteListProps) => {
-  const t = useTranslations("AdminQuotes");
+  const t = useTranslations("adminQuotes");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

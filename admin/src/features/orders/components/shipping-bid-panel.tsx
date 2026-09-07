@@ -55,7 +55,7 @@ interface ShippingBidPanelProps {
 }
 
 export const ShippingBidPanel = ({ order }: ShippingBidPanelProps) => {
-  const t = useTranslations("AdminOrders");
+  const t = useTranslations("adminOrders");
   const [isPending, startTransition] = useTransition();
   const bids = (order as { bids?: ShippingBid[] }).bids;
 

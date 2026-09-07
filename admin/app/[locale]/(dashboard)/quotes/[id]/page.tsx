@@ -15,7 +15,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale, id } = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({ locale, namespace: "AdminQuotes" });
+  const t = await getTranslations({ locale, namespace: "adminQuotes" });
   const shortId = id.length > 8 ? id.slice(0, 8) : id;
 
   return {
@@ -30,8 +30,8 @@ export default async function AdminQuoteDetailPage({
 }) {
   const { id } = await params;
   await requireAuth();
-  const tNav = await getTranslations("AdminDashboard.nav");
-  const tHeader = await getTranslations("AdminQuotes");
+  const tNav = await getTranslations("adminDashboard.nav");
+  const tHeader = await getTranslations("adminQuotes");
 
   const { data: quoteRes } = await api.GET("/quotes/{id}", {
     params: { path: { id } },

@@ -15,7 +15,7 @@ export async function generateMetadata({
   const resolvedParams = await params;
   const t = await getTranslations({
     locale: resolvedParams.locale,
-    namespace: "Login",
+    namespace: "login",
   });
   return {
     title: t("metaTitle"),

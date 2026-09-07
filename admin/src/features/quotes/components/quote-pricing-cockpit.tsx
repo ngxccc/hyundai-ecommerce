@@ -36,7 +36,7 @@ interface QuotePricingCockpitProps {
 }
 
 export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
-  const t = useTranslations("AdminQuotes");
+  const t = useTranslations("adminQuotes");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 

@@ -21,7 +21,7 @@ interface ProductDescriptionSectionProps {
 export const ProductDescriptionSection = ({
   form,
 }: ProductDescriptionSectionProps) => {
-  const t = useTranslations("AdminProductForm");
+  const t = useTranslations("adminProductForm");
   const [langTab, setLangTab] = useState<"vi" | "en">("vi");
 
   const initialDescriptionVi = form.getValues(

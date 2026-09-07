@@ -22,8 +22,8 @@ export default async function ProductInventoryPage({
   const [productRes, t, tNav, warehousesRes, warehouseStocksRes] =
     await Promise.all([
       api.GET("/products/{id}", { params: { path: { id } } }),
-      getTranslations("AdminInventory"),
-      getTranslations("AdminDashboard.nav"),
+      getTranslations("adminInventory"),
+      getTranslations("adminDashboard.nav"),
       api.GET("/warehouses"),
       api.GET("/warehouses/stock/product/{productId}", {
         params: { path: { productId: id } },

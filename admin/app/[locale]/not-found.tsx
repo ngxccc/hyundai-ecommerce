@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 const NotFoundPage = () => {
-  const t = useTranslations("NotFound");
+  const t = useTranslations("notFound");
 
   return (
     <div className="bg-background flex flex-1 flex-col items-center justify-center p-3">

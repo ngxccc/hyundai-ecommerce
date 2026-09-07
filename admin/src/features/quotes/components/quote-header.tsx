@@ -33,7 +33,7 @@ interface QuoteHeaderProps {
 }
 
 export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
-  const t = useTranslations("AdminQuotes");
+  const t = useTranslations("adminQuotes");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isExportingExcel, setIsExportingExcel] = useState(false);
@@ -110,13 +110,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
   };
 
   const handleStatusChange = (
-    newStatus:
-      | "NEGOTIATING"
-      | "REJECTED"
-      | "EXPIRED"
-      | "negotiating"
-      | "rejected"
-      | "expired",
+    newStatus: "NEGOTIATING" | "REJECTED" | "EXPIRED",
   ) => {
     startTransition(async () => {
       const res = await updateQuoteStatusAction(quote.id, newStatus);

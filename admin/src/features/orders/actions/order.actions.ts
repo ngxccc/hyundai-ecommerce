@@ -22,11 +22,13 @@ export const updateOrderStatusAction = async (
   }
   try {
     await requireAuth();
-    const { data: updated } = await api.PATCH("/orders/{id}/status", {
+    const { data: updated, error } = await api.PATCH("/orders/{id}/status", {
       params: { path: { id: orderId } },
       body: { status, note },
     });
-
+    if (error) {
+      throw new ApiClientError(error.detail, error.status, error);
+    }
     revalidatePath("/orders");
     revalidatePath(`/orders/${orderId}`);
 
@@ -53,11 +55,13 @@ export const approveDealerOrderAction = async (orderId: string) => {
   }
   try {
     await assertSalesOrFinanceRole();
-    const { data: result } = await api.PATCH("/orders/{id}/status", {
+    const { data: result, error } = await api.PATCH("/orders/{id}/status", {
       params: { path: { id: orderId } },
       body: { status: "PROCESSING", note: "Duyệt đơn hàng đại lý" },
     });
-
+    if (error) {
+      throw new ApiClientError(error.detail, error.status, error);
+    }
     revalidatePath("/orders");
     revalidatePath(`/orders/${orderId}`);
 
@@ -88,14 +92,19 @@ export const verifyCashPaymentAction = async (
   }
   try {
     await assertFinanceRole();
-    const { data: result } = await api.POST("/payments/{id}/verify-cash", {
-      params: { path: { id: orderId } },
-      body: {
-        amount: amount as never,
-        note: note ?? "Kế toán xác nhận thu tiền mặt",
+    const { data: result, error } = await api.POST(
+      "/payments/{id}/verify-cash",
+      {
+        params: { path: { id: orderId } },
+        body: {
+          amount,
+          note: note ?? "Kế toán xác nhận thu tiền mặt",
+        },
       },
-    });
-
+    );
+    if (error) {
+      throw new ApiClientError(error.detail, error.status, error);
+    }
     revalidatePath("/orders");
     revalidatePath(`/orders/${orderId}`);
 
@@ -125,10 +134,12 @@ export const approveOrderCancellationAction = async (
   }
   try {
     await assertSalesOrFinanceRole();
-    const { data: result } = await api.POST("/orders/{id}/cancel", {
+    const { data: result, error } = await api.POST("/orders/{id}/cancel", {
       params: { path: { id: orderId } },
     });
-
+    if (error) {
+      throw new ApiClientError(error.detail, error.status, error);
+    }
     revalidatePath("/orders");
     revalidatePath(`/orders/${orderId}`);
 
