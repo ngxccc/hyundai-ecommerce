@@ -4,5 +4,13 @@
   "INVALID_STATUS_TRANSITION": "Invalid quote status transition",
   "QUOTE_CANNOT_BE_MODIFIED": "Cannot adjust item price on an approved, rejected, or expired quote",
   "QUOTE_NO_USER_ACCOUNT": "Quote has no linked customer user account to create an order",
-  "QUOTE_ALREADY_CONVERTED": "Quote has already been converted to an order"
+  "QUOTE_ALREADY_CONVERTED": "Quote has already been converted to an order",
+  "RFQ_CREATE_FAILED": "Failed to create customer RFQ",
+  "QUOTATION_PERSIST_FAILED": "Failed to persist admin quotation",
+  "MESSAGE_RECORD_FAILED": "Failed to record quote message",
+  "QUOTE_NO_ITEMS": "Cannot convert quote with no line items",
+  "ORDER_GENERATE_FAILED": "Failed to generate order from quote",
+  "FORBIDDEN_ACCESS": "You are not authorized to access this quote",
+  "FORBIDDEN_EXPORT": "You are not authorized to export this quote",
+  "FORBIDDEN_NEGOTIATION": "You are not authorized to participate in this quote negotiation"
 }

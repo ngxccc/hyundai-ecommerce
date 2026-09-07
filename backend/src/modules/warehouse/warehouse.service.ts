@@ -1,9 +1,8 @@
+import { Inject, Injectable } from "@nestjs/common";
 import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+  I18nBadRequestException,
+  I18nNotFoundException,
+} from "@/common/exceptions";
 import { and, asc, eq, isNull, sql } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -57,7 +56,7 @@ export class WarehouseService {
       .limit(1);
 
     if (!record) {
-      throw new NotFoundException(`Warehouse with ID "${id}" not found`);
+      throw new I18nNotFoundException("warehouse.WAREHOUSE_NOT_FOUND", { id });
     }
 
     return this.mapWarehouseToDto(record);
@@ -80,7 +79,7 @@ export class WarehouseService {
       .returning();
 
     if (!created) {
-      throw new BadRequestException("Failed to create warehouse record");
+      throw new I18nBadRequestException("warehouse.CREATE_FAILED");
     }
 
     return this.mapWarehouseToDto(created);
@@ -109,7 +108,7 @@ export class WarehouseService {
       .returning();
 
     if (!updated) {
-      throw new NotFoundException(`Warehouse with ID "${id}" not found`);
+      throw new I18nNotFoundException("warehouse.WAREHOUSE_NOT_FOUND", { id });
     }
 
     return this.mapWarehouseToDto(updated);
@@ -128,7 +127,7 @@ export class WarehouseService {
       .returning();
 
     if (!updated) {
-      throw new NotFoundException(`Warehouse with ID "${id}" not found`);
+      throw new I18nNotFoundException("warehouse.WAREHOUSE_NOT_FOUND", { id });
     }
   }
 
@@ -184,7 +183,9 @@ export class WarehouseService {
       .limit(1);
 
     if (!product) {
-      throw new NotFoundException(`Product with ID "${productId}" not found`);
+      throw new I18nNotFoundException("warehouse.PRODUCT_NOT_FOUND", {
+        id: productId,
+      });
     }
 
     const records = await this.db
@@ -226,9 +227,7 @@ export class WarehouseService {
   ): Promise<WarehouseStockResponseDto> {
     const warehouse = await this.findById(warehouseId);
     if (!warehouse.isActive) {
-      throw new BadRequestException(
-        "Cannot update inventory in an inactive warehouse",
-      );
+      throw new I18nBadRequestException("warehouse.INACTIVE_WAREHOUSE");
     }
 
     const [product] = await this.db
@@ -242,9 +241,9 @@ export class WarehouseService {
       .limit(1);
 
     if (!product) {
-      throw new NotFoundException(
-        `Product with ID "${dto.productId}" not found`,
-      );
+      throw new I18nNotFoundException("warehouse.PRODUCT_NOT_FOUND", {
+        id: dto.productId,
+      });
     }
 
     const updatedStockRecord = await this.db.transaction(async (tx) => {
@@ -273,9 +272,7 @@ export class WarehouseService {
         })
         .returning();
       if (!upserted) {
-        throw new BadRequestException(
-          "Failed to update warehouse stock record",
-        );
+        throw new I18nBadRequestException("warehouse.STOCK_UPDATE_FAILED");
       }
 
       const [sumResult] = await tx

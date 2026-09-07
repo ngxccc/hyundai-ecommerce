@@ -53,6 +53,7 @@ export class CreateQuoteItemDto implements CreateQuoteItemDtoType {
   public productId?: string | null;
 
   @ApiPropertyOptional({
+    type: Boolean,
     example: false,
     default: false,
     description: "Whether this is a bespoke line item not in catalog",

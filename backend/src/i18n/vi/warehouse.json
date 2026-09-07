@@ -1,0 +1,7 @@
+{
+  "WAREHOUSE_NOT_FOUND": "Không tìm thấy kho hàng với mã \"{id}\"",
+  "CREATE_FAILED": "Không thể tạo bản ghi kho hàng",
+  "INACTIVE_WAREHOUSE": "Không thể cập nhật tồn kho trong kho hàng đang ngừng hoạt động",
+  "PRODUCT_NOT_FOUND": "Không tìm thấy sản phẩm với mã định danh \"{id}\"",
+  "STOCK_UPDATE_FAILED": "Không thể cập nhật bản ghi tồn kho"
+}

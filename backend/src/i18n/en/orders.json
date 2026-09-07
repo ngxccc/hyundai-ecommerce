@@ -6,5 +6,7 @@
   "ORDER_ALREADY_CANCELLED": "Order has already been cancelled",
   "ORDER_ALREADY_PAID": "Order has already been paid",
   "ORDER_CANNOT_BE_CANCELLED": "Order cannot be cancelled in its current state",
-  "ORDER_CREATE_FAILED": "Failed to create order, please try again"
+  "ORDER_CREATE_FAILED": "Failed to create order, please try again",
+  "FORBIDDEN_ACCESS": "You are not authorized to access this order",
+  "FORBIDDEN_CANCEL": "You are not authorized to cancel this order"
 }

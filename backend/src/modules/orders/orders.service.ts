@@ -1,11 +1,10 @@
+import { Inject, Injectable } from "@nestjs/common";
 import {
-  BadRequestException,
-  ForbiddenException,
-  Inject,
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from "@nestjs/common";
+  I18nBadRequestException,
+  I18nForbiddenException,
+  I18nNotFoundException,
+  I18nUnprocessableEntityException,
+} from "@/common/exceptions";
 import { and, desc, eq, gte, ilike, inArray, lte, or, sql } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -28,9 +27,7 @@ import {
   buildPaginationMeta,
   type PaginationMetaDto,
 } from "@/common/dto/pagination-meta.dto";
-import { I18nService } from "nestjs-i18n";
 import type { JwtPayload } from "@/common/decorators/current-user.decorator";
-import type { I18nTranslations } from "@/generated/i18n.generated";
 import type {
   CreateB2bOrderDto,
   CreateGuestOrderDto,
@@ -51,10 +48,7 @@ const VALID_ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
 
 @Injectable()
 export class OrdersService {
-  constructor(
-    @Inject(DATABASE_CONNECTION) private readonly db: DrizzleDB,
-    private readonly i18n: I18nService<I18nTranslations>,
-  ) {}
+  constructor(@Inject(DATABASE_CONNECTION) private readonly db: DrizzleDB) {}
 
   /**
    * Places a retail order for guest customers without requiring prior account registration.
@@ -104,13 +98,11 @@ export class OrdersService {
           .limit(1);
 
         if (!product) {
-          throw new NotFoundException(this.i18n.t("orders.PRODUCT_NOT_FOUND"));
+          throw new I18nNotFoundException("orders.PRODUCT_NOT_FOUND");
         }
 
         if (product.totalStockCache < item.quantity) {
-          throw new BadRequestException(
-            this.i18n.t("orders.INSUFFICIENT_STOCK"),
-          );
+          throw new I18nBadRequestException("orders.INSUFFICIENT_STOCK");
         }
 
         const priceNum = Number(product.price);
@@ -190,9 +182,7 @@ export class OrdersService {
         .returning();
 
       if (!newOrder) {
-        throw new BadRequestException(
-          this.i18n.t("orders.ORDER_CREATE_FAILED"),
-        );
+        throw new I18nBadRequestException("orders.ORDER_CREATE_FAILED");
       }
 
       const insertedItems = await tx
@@ -282,13 +272,11 @@ export class OrdersService {
           .limit(1);
 
         if (!product) {
-          throw new NotFoundException(this.i18n.t("orders.PRODUCT_NOT_FOUND"));
+          throw new I18nNotFoundException("orders.PRODUCT_NOT_FOUND");
         }
 
         if (product.totalStockCache < item.quantity) {
-          throw new BadRequestException(
-            this.i18n.t("orders.INSUFFICIENT_STOCK"),
-          );
+          throw new I18nBadRequestException("orders.INSUFFICIENT_STOCK");
         }
 
         const unitPriceNum =
@@ -409,9 +397,7 @@ export class OrdersService {
         .returning();
 
       if (!newOrder) {
-        throw new BadRequestException(
-          this.i18n.t("orders.ORDER_CREATE_FAILED"),
-        );
+        throw new I18nBadRequestException("orders.ORDER_CREATE_FAILED");
       }
 
       const insertedItems = await tx
@@ -463,7 +449,7 @@ export class OrdersService {
       .limit(1);
 
     if (!order) {
-      throw new NotFoundException(this.i18n.t("orders.ORDER_NOT_FOUND"));
+      throw new I18nNotFoundException("orders.ORDER_NOT_FOUND");
     }
 
     const items = await this.db
@@ -712,8 +698,8 @@ export class OrdersService {
 
     const allowed = VALID_ORDER_TRANSITIONS[current.status];
     if (!allowed.includes(newStatus)) {
-      throw new UnprocessableEntityException(
-        this.i18n.t("orders.INVALID_STATUS_TRANSITION"),
+      throw new I18nUnprocessableEntityException(
+        "orders.INVALID_STATUS_TRANSITION",
       );
     }
 
@@ -814,22 +800,16 @@ export class OrdersService {
         currentUser.role !== "SALES" &&
         current.userId !== currentUser.sub
       ) {
-        throw new ForbiddenException(
-          "You are not authorized to cancel this order",
-        );
+        throw new I18nForbiddenException("orders.FORBIDDEN_CANCEL");
       }
     }
 
     if (current.status === "CANCELLED") {
-      throw new BadRequestException(
-        this.i18n.t("orders.ORDER_ALREADY_CANCELLED"),
-      );
+      throw new I18nBadRequestException("orders.ORDER_ALREADY_CANCELLED");
     }
 
     if (current.status === "SHIPPED" || current.status === "DELIVERED") {
-      throw new BadRequestException(
-        this.i18n.t("orders.ORDER_CANNOT_BE_CANCELLED"),
-      );
+      throw new I18nBadRequestException("orders.ORDER_CANNOT_BE_CANCELLED");
     }
 
     return this.applyStatusTransition(

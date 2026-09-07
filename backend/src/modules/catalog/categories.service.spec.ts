@@ -6,21 +6,15 @@ import {
 } from "@nestjs/common";
 import { CategoriesService } from "./categories.service";
 import type { DrizzleDB } from "@/database/database.module";
-import type { I18nService } from "nestjs-i18n";
-import { createMockDb, createMockI18nService } from "../../../test/mocks";
+import { createMockDb } from "../../../test/mocks";
 
 describe("CategoriesService", () => {
   let service: CategoriesService;
   const mockDb = createMockDb();
-  const mockI18nService = createMockI18nService();
 
   beforeEach(() => {
     mockDb.clearAll();
-    mockI18nService.clearAll();
-    service = new CategoriesService(
-      mockDb as unknown as DrizzleDB,
-      mockI18nService as unknown as I18nService,
-    );
+    service = new CategoriesService(mockDb as unknown as DrizzleDB);
   });
 
   describe("findAll()", () => {

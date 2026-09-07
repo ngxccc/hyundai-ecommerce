@@ -82,6 +82,7 @@ export class B2bOrderItemInputDto implements B2bOrderItemDto {
   @ApiPropertyOptional({
     example: "120000000.00",
     description: "Custom agreed unit price overriding catalog price",
+    oneOf: [{ type: "string" }, { type: "number" }],
   })
   public unitPrice?: string | number | null;
 }
@@ -143,6 +144,7 @@ export class CreateB2bOrderDto implements CreateB2bOrderDtoType {
     example: "500000.00",
     default: 0,
     description: "Freight / shipping fee",
+    oneOf: [{ type: "string" }, { type: "number" }],
   })
   public shippingFee!: string | number;
 
@@ -150,6 +152,7 @@ export class CreateB2bOrderDto implements CreateB2bOrderDtoType {
     example: "50000000.00",
     default: 0,
     description: "Initial deposit amount paid",
+    oneOf: [{ type: "string" }, { type: "number" }],
   })
   public depositAmount!: string | number;
 

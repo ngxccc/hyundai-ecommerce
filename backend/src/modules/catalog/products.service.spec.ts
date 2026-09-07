@@ -6,13 +6,11 @@ import {
 } from "@nestjs/common";
 import { ProductsService } from "./products.service";
 import type { DrizzleDB } from "@/database/database.module";
-import type { I18nService } from "nestjs-i18n";
-import { createMockDb, createMockI18nService } from "../../../test/mocks";
+import { createMockDb } from "../../../test/mocks";
 
 describe("ProductsService", () => {
   let service: ProductsService;
   const mockDb = createMockDb();
-  const mockI18nService = createMockI18nService();
 
   const mockProduct = {
     id: "prod-1",
@@ -54,11 +52,7 @@ describe("ProductsService", () => {
 
   beforeEach(() => {
     mockDb.clearAll();
-    mockI18nService.clearAll();
-    service = new ProductsService(
-      mockDb as unknown as DrizzleDB,
-      mockI18nService as unknown as I18nService,
-    );
+    service = new ProductsService(mockDb as unknown as DrizzleDB);
   });
 
   describe("findProducts()", () => {

@@ -349,4 +349,138 @@ describe("GlobalExceptionFilter", () => {
       );
     });
   });
+  describe("when handling standardized i18n translation and machine-readable error codes", () => {
+    it("should translate string i18n key and preserve namespaced code", () => {
+      const mockI18n = {
+        translate: mock((key: string) => {
+          if (key === "catalog.PRODUCT_NOT_FOUND") {
+            return "Sản phẩm không tồn tại";
+          }
+          return key;
+        }),
+      };
+      const i18nFilter = new GlobalExceptionFilter(
+        mockI18n as unknown as I18nService,
+      );
+      const exception = new BadRequestException("catalog.PRODUCT_NOT_FOUND");
+
+      i18nFilter.catch(exception, mockArgumentsHost);
+
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          detail: "Sản phẩm không tồn tại",
+          code: "catalog.PRODUCT_NOT_FOUND",
+        }),
+      );
+    });
+
+    it("should translate exception object with key and args, and preserve namespaced code", () => {
+      const mockI18n = {
+        translate: mock(
+          (key: string, opts?: { args?: Record<string, unknown> }) => {
+            if (key === "cart.STOCK_EXCEEDED") {
+              const req =
+                typeof opts?.args?.["requested"] === "number"
+                  ? opts.args["requested"].toString()
+                  : "";
+              const avail =
+                typeof opts?.args?.["available"] === "number"
+                  ? opts.args["available"].toString()
+                  : "";
+              return `Số lượng yêu cầu (${req}) vượt quá tồn kho (${avail})`;
+            }
+            return key;
+          },
+        ),
+      };
+      const i18nFilter = new GlobalExceptionFilter(
+        mockI18n as unknown as I18nService,
+      );
+      const exception = new BadRequestException({
+        message: "cart.STOCK_EXCEEDED",
+        args: { requested: 10, available: 5 },
+      });
+
+      i18nFilter.catch(exception, mockArgumentsHost);
+
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          detail: "Số lượng yêu cầu (10) vượt quá tồn kho (5)",
+          code: "cart.STOCK_EXCEEDED",
+        }),
+      );
+    });
+
+    it("should preserve explicit custom code if provided in exception payload", () => {
+      const mockI18n = {
+        translate: mock(() => "Sản phẩm giỏ hàng không tìm thấy"),
+      };
+      const i18nFilter = new GlobalExceptionFilter(
+        mockI18n as unknown as I18nService,
+      );
+      const exception = new BadRequestException({
+        message: "cart.ITEM_NOT_FOUND",
+        code: "CUSTOM_CART_CODE",
+      });
+
+      i18nFilter.catch(exception, mockArgumentsHost);
+
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          detail: "Sản phẩm giỏ hàng không tìm thấy",
+          code: "CUSTOM_CART_CODE",
+        }),
+      );
+    });
+
+    it("should translate invalidParams reason when it is a plain i18n key", () => {
+      const mockI18n = {
+        translate: mock(
+          (key: string, opts?: { args?: Record<string, unknown> }) => {
+            if (key === "validation.isEmail") {
+              const prop =
+                typeof opts?.args?.["property"] === "string"
+                  ? opts.args["property"]
+                  : "";
+              return `${prop} phải là địa chỉ email hợp lệ`;
+            }
+            return key;
+          },
+        ),
+      };
+      const i18nFilter = new GlobalExceptionFilter(
+        mockI18n as unknown as I18nService,
+      );
+      const exception = new BadRequestException({
+        invalidParams: [{ name: "email", reason: "validation.isEmail" }],
+      });
+
+      i18nFilter.catch(exception, mockArgumentsHost);
+
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          invalidParams: [
+            { name: "email", reason: "email phải là địa chỉ email hợp lệ" },
+          ],
+        }),
+      );
+    });
+
+    it("should include standard error codes for database conflicts and timeouts", () => {
+      const uniqueError = {
+        message: "duplicate key value violates unique constraint",
+        code: "23505",
+        table: "users",
+        constraint: "users_email_uidx",
+      };
+
+      filter.catch(uniqueError, mockArgumentsHost);
+
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: "common.RESOURCE_CONFLICT",
+        }),
+      );
+    });
+  });
 });

@@ -1,4 +1,5 @@
 {
   "USER_NOT_FOUND": "User profile not found",
-  "ACCOUNT_SUSPENDED_OR_INACTIVE": "Account is suspended or inactive"
+  "ACCOUNT_SUSPENDED_OR_INACTIVE": "Account is suspended or inactive",
+  "DEALER_TIER_NOT_FOUND": "Dealer tier with id \"{id}\" not found"
 }

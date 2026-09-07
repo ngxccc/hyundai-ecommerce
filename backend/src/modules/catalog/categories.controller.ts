@@ -24,6 +24,8 @@ import {
   ApiBadRequestResponseRfc9457,
   ApiConflictResponseRfc9457,
   ApiTooManyRequestsResponseRfc9457,
+  ApiUnauthorizedResponseRfc9457,
+  ApiForbiddenResponseRfc9457,
 } from "@/common/decorators";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { CATALOG_ROUTES } from "./catalog.routes";
@@ -93,6 +95,8 @@ export class CategoriesController {
   @ApiCreatedResponseGeneric(CategoryResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiConflictResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async create(
     @Body() dto: CreateCategoryDto,
   ): Promise<ApiResponse<CategoryResponseDto>> {
@@ -112,6 +116,8 @@ export class CategoriesController {
   @ApiNotFoundResponseRfc9457()
   @ApiBadRequestResponseRfc9457()
   @ApiConflictResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async update(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateCategoryDto,
@@ -131,6 +137,8 @@ export class CategoriesController {
   })
   @ApiOkResponseGeneric(Object)
   @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async delete(
     @Param("id", ParseUUIDPipe) id: string,
   ): Promise<ApiResponse<null>> {

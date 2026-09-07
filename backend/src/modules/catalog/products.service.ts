@@ -1,12 +1,9 @@
+import { Inject, Injectable } from "@nestjs/common";
 import {
-  BadRequestException,
-  ConflictException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
-import { I18nService } from "nestjs-i18n";
-import type { I18nTranslations } from "@/generated/i18n.generated";
+  I18nBadRequestException,
+  I18nConflictException,
+  I18nNotFoundException,
+} from "@/common/exceptions";
 import { and, asc, count, desc, eq, isNull, sql } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -177,7 +174,6 @@ export class ProductsService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
-    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   /**
@@ -392,9 +388,9 @@ export class ProductsService {
       .limit(1);
 
     if (!record) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.PRODUCT_NOT_FOUND", { args: { id: idOrSlug } }),
-      );
+      throw new I18nNotFoundException("catalog.PRODUCT_NOT_FOUND", {
+        id: idOrSlug,
+      });
     }
 
     return mapProductRow(record.product, record.brand, record.category);
@@ -404,7 +400,7 @@ export class ProductsService {
    */
   async create(dto: CreateProductDto): Promise<ProductResponseDto> {
     if (dto.price < 0) {
-      throw new BadRequestException(this.i18n.t("catalog.PRICE_NEGATIVE"));
+      throw new I18nBadRequestException("catalog.PRICE_NEGATIVE");
     }
 
     const [existingSlug] = await this.db
@@ -414,11 +410,9 @@ export class ProductsService {
       .limit(1);
 
     if (existingSlug) {
-      throw new ConflictException(
-        this.i18n.t("catalog.PRODUCT_SLUG_EXISTS", {
-          args: { slug: dto.slug },
-        }),
-      );
+      throw new I18nConflictException("catalog.PRODUCT_SLUG_EXISTS", {
+        slug: dto.slug,
+      });
     }
 
     if (dto.brandId) {
@@ -429,9 +423,9 @@ export class ProductsService {
         .limit(1);
 
       if (!brand) {
-        throw new BadRequestException(
-          this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id: dto.brandId } }),
-        );
+        throw new I18nBadRequestException("catalog.BRAND_NOT_FOUND", {
+          id: dto.brandId,
+        });
       }
     }
 
@@ -443,11 +437,9 @@ export class ProductsService {
         .limit(1);
 
       if (!category) {
-        throw new BadRequestException(
-          this.i18n.t("catalog.CATEGORY_NOT_FOUND", {
-            args: { id: dto.categoryId },
-          }),
-        );
+        throw new I18nBadRequestException("catalog.CATEGORY_NOT_FOUND", {
+          id: dto.categoryId,
+        });
       }
     }
 
@@ -457,7 +449,7 @@ export class ProductsService {
       .returning();
 
     if (!newProduct) {
-      throw new BadRequestException("Failed to create product record");
+      throw new I18nBadRequestException("catalog.PRODUCT_CREATE_FAILED");
     }
 
     return mapProductRow(newProduct);
@@ -468,7 +460,7 @@ export class ProductsService {
    */
   async update(id: string, dto: UpdateProductDto): Promise<ProductResponseDto> {
     if (dto.price !== undefined && dto.price < 0) {
-      throw new BadRequestException(this.i18n.t("catalog.PRICE_NEGATIVE"));
+      throw new I18nBadRequestException("catalog.PRICE_NEGATIVE");
     }
     const [existing] = await this.db
       .select({ id: products.id, slug: products.slug })
@@ -477,9 +469,7 @@ export class ProductsService {
       .limit(1);
 
     if (!existing) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.PRODUCT_NOT_FOUND", { args: { id } }),
-      );
+      throw new I18nNotFoundException("catalog.PRODUCT_NOT_FOUND", { id });
     }
 
     if (dto.slug && dto.slug !== existing.slug) {
@@ -490,11 +480,9 @@ export class ProductsService {
         .limit(1);
 
       if (slugConflict) {
-        throw new ConflictException(
-          this.i18n.t("catalog.PRODUCT_SLUG_EXISTS", {
-            args: { slug: dto.slug },
-          }),
-        );
+        throw new I18nConflictException("catalog.PRODUCT_SLUG_EXISTS", {
+          slug: dto.slug,
+        });
       }
     }
 
@@ -506,9 +494,9 @@ export class ProductsService {
         .limit(1);
 
       if (!brand) {
-        throw new BadRequestException(
-          this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id: dto.brandId } }),
-        );
+        throw new I18nBadRequestException("catalog.BRAND_NOT_FOUND", {
+          id: dto.brandId,
+        });
       }
     }
 
@@ -520,11 +508,9 @@ export class ProductsService {
         .limit(1);
 
       if (!category) {
-        throw new BadRequestException(
-          this.i18n.t("catalog.CATEGORY_NOT_FOUND", {
-            args: { id: dto.categoryId },
-          }),
-        );
+        throw new I18nBadRequestException("catalog.CATEGORY_NOT_FOUND", {
+          id: dto.categoryId,
+        });
       }
     }
     const updatePayload = toProductUpdateValues(dto);
@@ -535,9 +521,7 @@ export class ProductsService {
       .where(eq(products.id, id))
       .returning();
     if (!updatedProduct) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.PRODUCT_NOT_FOUND", { args: { id } }),
-      );
+      throw new I18nNotFoundException("catalog.PRODUCT_NOT_FOUND", { id });
     }
 
     return mapProductRow(updatedProduct);
@@ -554,9 +538,7 @@ export class ProductsService {
       .limit(1);
 
     if (!existing) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.PRODUCT_NOT_FOUND", { args: { id } }),
-      );
+      throw new I18nNotFoundException("catalog.PRODUCT_NOT_FOUND", { id });
     }
 
     await this.db

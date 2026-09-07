@@ -21,6 +21,7 @@ export class VerifyCashPaymentDto implements VerifyCashPaymentDtoType {
   @ApiProperty({
     example: 490000000,
     description: "Actual cash amount collected by accountant/cashier",
+    oneOf: [{ type: "number" }, { type: "string" }],
   })
   public amount!: number | string;
 

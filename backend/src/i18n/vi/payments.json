@@ -10,5 +10,9 @@
   "DEBT_REPAYMENT_NOT_FOUND": "Không tìm thấy hồ sơ thanh toán công nợ",
   "DEBT_ALREADY_REPAID": "Khoản công nợ này đã được thanh toán hoàn tất",
   "ORDER_ALREADY_PAID": "Đơn hàng đã được thanh toán đầy đủ trước đó",
-  "UNAUTHORIZED_VERIFICATION": "Bạn không có thẩm quyền xác thực giao dịch này"
+  "UNAUTHORIZED_VERIFICATION": "Bạn không có thẩm quyền xác thực giao dịch này",
+  "ONLY_ADMIN_CASH_VERIFY": "Chỉ có quản trị viên mới được quyền xác nhận thanh toán công nợ tiền mặt",
+  "FORBIDDEN_REPAY_OTHER": "Bạn không có quyền thanh toán công nợ thay cho người dùng khác",
+  "DEBT_REPAYMENT_FAILED": "Xử lý thanh toán công nợ thất bại",
+  "DEBT_REGISTER_FAILED": "Không thể đăng ký khoản thanh toán công nợ"
 }

@@ -1,9 +1,8 @@
+import { Inject, Injectable } from "@nestjs/common";
 import {
-  ForbiddenException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+  I18nForbiddenException,
+  I18nNotFoundException,
+} from "@/common/exceptions";
 import { eq } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -14,15 +13,12 @@ import {
   UserResponseDto,
   type DealerTierInfoDto,
 } from "./dto/user-response.dto";
-import { I18nService } from "nestjs-i18n";
-import type { I18nTranslations } from "@/generated/i18n.generated";
 
 @Injectable()
 export class UsersService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
-    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   /**
@@ -58,13 +54,11 @@ export class UsersService {
       .limit(1);
 
     if (!user) {
-      throw new NotFoundException(this.i18n.t("users.USER_NOT_FOUND"));
+      throw new I18nNotFoundException("users.USER_NOT_FOUND");
     }
 
     if (user.status === "SUSPENDED" || user.status === "INACTIVE") {
-      throw new ForbiddenException(
-        this.i18n.t("users.ACCOUNT_SUSPENDED_OR_INACTIVE"),
-      );
+      throw new I18nForbiddenException("users.ACCOUNT_SUSPENDED_OR_INACTIVE");
     }
 
     let tierInfo: DealerTierInfoDto | null = null;

@@ -1,12 +1,9 @@
+import { Inject, Injectable } from "@nestjs/common";
 import {
-  BadRequestException,
-  ConflictException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
-import { I18nService } from "nestjs-i18n";
-import type { I18nTranslations } from "@/generated/i18n.generated";
+  I18nBadRequestException,
+  I18nConflictException,
+  I18nNotFoundException,
+} from "@/common/exceptions";
 import { asc, eq } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -22,7 +19,6 @@ export class BrandsService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
-    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
   /**
    * Retrieves all active brands ordered by name ascending.
@@ -47,9 +43,7 @@ export class BrandsService {
       .limit(1);
 
     if (!record) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id } }),
-      );
+      throw new I18nNotFoundException("catalog.BRAND_NOT_FOUND", { id });
     }
 
     return this.mapBrandToDto(record);
@@ -66,11 +60,9 @@ export class BrandsService {
       .limit(1);
 
     if (existingSlug) {
-      throw new ConflictException(
-        this.i18n.t("catalog.BRAND_SLUG_EXISTS", {
-          args: { slug: dto.slug },
-        }),
-      );
+      throw new I18nConflictException("catalog.BRAND_SLUG_EXISTS", {
+        slug: dto.slug,
+      });
     }
 
     const [existingName] = await this.db
@@ -80,11 +72,9 @@ export class BrandsService {
       .limit(1);
 
     if (existingName) {
-      throw new ConflictException(
-        this.i18n.t("catalog.BRAND_NAME_EXISTS", {
-          args: { name: dto.name },
-        }),
-      );
+      throw new I18nConflictException("catalog.BRAND_NAME_EXISTS", {
+        name: dto.name,
+      });
     }
 
     const [newBrand] = await this.db
@@ -100,7 +90,7 @@ export class BrandsService {
       .returning();
 
     if (!newBrand) {
-      throw new BadRequestException("Failed to create brand");
+      throw new I18nBadRequestException("catalog.BRAND_CREATE_FAILED");
     }
 
     return this.mapBrandToDto(newBrand);
@@ -117,9 +107,7 @@ export class BrandsService {
       .limit(1);
 
     if (!existing) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id } }),
-      );
+      throw new I18nNotFoundException("catalog.BRAND_NOT_FOUND", { id });
     }
 
     if (dto.slug && dto.slug !== existing.slug) {
@@ -130,11 +118,9 @@ export class BrandsService {
         .limit(1);
 
       if (slugConflict) {
-        throw new ConflictException(
-          this.i18n.t("catalog.BRAND_SLUG_EXISTS", {
-            args: { slug: dto.slug },
-          }),
-        );
+        throw new I18nConflictException("catalog.BRAND_SLUG_EXISTS", {
+          slug: dto.slug,
+        });
       }
     }
 
@@ -146,11 +132,9 @@ export class BrandsService {
         .limit(1);
 
       if (nameConflict) {
-        throw new ConflictException(
-          this.i18n.t("catalog.BRAND_NAME_EXISTS", {
-            args: { name: dto.name },
-          }),
-        );
+        throw new I18nConflictException("catalog.BRAND_NAME_EXISTS", {
+          name: dto.name,
+        });
       }
     }
 
@@ -172,9 +156,7 @@ export class BrandsService {
       .returning();
 
     if (!updated) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id } }),
-      );
+      throw new I18nNotFoundException("catalog.BRAND_NOT_FOUND", { id });
     }
 
     return this.mapBrandToDto(updated);
@@ -191,9 +173,7 @@ export class BrandsService {
       .limit(1);
 
     if (!existing) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.BRAND_NOT_FOUND", { args: { id } }),
-      );
+      throw new I18nNotFoundException("catalog.BRAND_NOT_FOUND", { id });
     }
 
     await this.db.delete(brands).where(eq(brands.id, id));

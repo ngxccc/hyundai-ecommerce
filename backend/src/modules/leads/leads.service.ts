@@ -1,9 +1,8 @@
+import { Inject, Injectable } from "@nestjs/common";
 import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+  I18nBadRequestException,
+  I18nNotFoundException,
+} from "@/common/exceptions";
 import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import {
   buildPaginationMeta,
@@ -52,9 +51,9 @@ export class LeadsService {
     if (existingProducts.length !== productIds.length) {
       const foundIds = new Set(existingProducts.map((p) => p.id));
       const missingIds = productIds.filter((id) => !foundIds.has(id));
-      throw new NotFoundException(
-        `Products not found for IDs: ${missingIds.join(", ")}`,
-      );
+      throw new I18nNotFoundException("leads.PRODUCTS_NOT_FOUND", {
+        ids: missingIds.join(", "),
+      });
     }
 
     const productMap = new Map(existingProducts.map((p) => [p.id, p]));
@@ -78,13 +77,15 @@ export class LeadsService {
         .returning();
 
       if (!newLead) {
-        throw new BadRequestException("Failed to create Lead record");
+        throw new I18nBadRequestException("leads.CREATE_FAILED");
       }
 
       const itemsToInsert = dto.items.map((item) => {
         const prod = productMap.get(item.productId);
         if (!prod) {
-          throw new NotFoundException(`Product ${item.productId} not found`);
+          throw new I18nNotFoundException("leads.PRODUCT_NOT_FOUND", {
+            id: item.productId,
+          });
         }
         return {
           leadId: newLead.id,
@@ -191,7 +192,7 @@ export class LeadsService {
       .limit(1);
 
     if (!lead) {
-      throw new NotFoundException(`Lead with ID "${id}" not found`);
+      throw new I18nNotFoundException("leads.LEAD_NOT_FOUND", { id });
     }
 
     const items = await this.db
@@ -219,7 +220,7 @@ export class LeadsService {
       .returning();
 
     if (!updatedLead) {
-      throw new NotFoundException(`Lead with ID "${id}" not found`);
+      throw new I18nNotFoundException("leads.LEAD_NOT_FOUND", { id });
     }
 
     const items = await this.db
@@ -241,7 +242,9 @@ export class LeadsService {
       .limit(1);
 
     if (!salesUser) {
-      throw new NotFoundException(`Sales user with ID "${salesId}" not found`);
+      throw new I18nNotFoundException("leads.SALES_USER_NOT_FOUND", {
+        id: salesId,
+      });
     }
 
     const [updatedLead] = await this.db
@@ -254,7 +257,7 @@ export class LeadsService {
       .returning();
 
     if (!updatedLead) {
-      throw new NotFoundException(`Lead with ID "${id}" not found`);
+      throw new I18nNotFoundException("leads.LEAD_NOT_FOUND", { id });
     }
 
     const items = await this.db

@@ -46,6 +46,11 @@ export class Rfc9457ErrorResponseDto {
   instance!: string;
 
   @ApiPropertyOptional({
+    description: "Machine-readable error code",
+    example: "CART_OUT_OF_STOCK",
+  })
+  code?: string;
+  @ApiPropertyOptional({
     description: "List of invalid parameters that failed validation",
     type: [InvalidParamDto],
   })

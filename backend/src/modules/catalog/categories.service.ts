@@ -1,12 +1,9 @@
+import { Inject, Injectable } from "@nestjs/common";
 import {
-  BadRequestException,
-  ConflictException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
-import { I18nService } from "nestjs-i18n";
-import type { I18nTranslations } from "@/generated/i18n.generated";
+  I18nBadRequestException,
+  I18nConflictException,
+  I18nNotFoundException,
+} from "@/common/exceptions";
 import { asc, eq } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
@@ -22,7 +19,6 @@ export class CategoriesService {
   constructor(
     @Inject(DATABASE_CONNECTION)
     private readonly db: DrizzleDB,
-    private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
   /**
@@ -87,9 +83,7 @@ export class CategoriesService {
       .limit(1);
 
     if (!record) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.CATEGORY_NOT_FOUND", { args: { id } }),
-      );
+      throw new I18nNotFoundException("catalog.CATEGORY_NOT_FOUND", { id });
     }
     return this.mapCategoryToDto(record);
   }
@@ -105,11 +99,9 @@ export class CategoriesService {
       .limit(1);
 
     if (existingSlug) {
-      throw new ConflictException(
-        this.i18n.t("catalog.CATEGORY_SLUG_EXISTS", {
-          args: { slug: dto.slug },
-        }),
-      );
+      throw new I18nConflictException("catalog.CATEGORY_SLUG_EXISTS", {
+        slug: dto.slug,
+      });
     }
 
     if (dto.parentId) {
@@ -120,11 +112,9 @@ export class CategoriesService {
         .limit(1);
 
       if (!parent) {
-        throw new BadRequestException(
-          this.i18n.t("catalog.CATEGORY_NOT_FOUND", {
-            args: { id: dto.parentId },
-          }),
-        );
+        throw new I18nBadRequestException("catalog.CATEGORY_NOT_FOUND", {
+          id: dto.parentId,
+        });
       }
     }
 
@@ -143,7 +133,7 @@ export class CategoriesService {
       .returning();
 
     if (!newCategory) {
-      throw new BadRequestException("Failed to create category");
+      throw new I18nBadRequestException("catalog.CATEGORY_CREATE_FAILED");
     }
 
     return this.mapCategoryToDto(newCategory);
@@ -162,9 +152,7 @@ export class CategoriesService {
       .where(eq(categories.id, id))
       .limit(1);
     if (!existing) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.CATEGORY_NOT_FOUND", { args: { id } }),
-      );
+      throw new I18nNotFoundException("catalog.CATEGORY_NOT_FOUND", { id });
     }
 
     if (dto.slug && dto.slug !== existing.slug) {
@@ -175,17 +163,15 @@ export class CategoriesService {
         .limit(1);
 
       if (slugConflict) {
-        throw new ConflictException(
-          this.i18n.t("catalog.CATEGORY_SLUG_EXISTS", {
-            args: { slug: dto.slug },
-          }),
-        );
+        throw new I18nConflictException("catalog.CATEGORY_SLUG_EXISTS", {
+          slug: dto.slug,
+        });
       }
     }
 
     if (dto.parentId !== undefined) {
       if (dto.parentId === id) {
-        throw new BadRequestException("Category cannot be its own parent");
+        throw new I18nBadRequestException("catalog.CATEGORY_SELF_PARENT");
       }
       if (dto.parentId !== null) {
         const [parent] = await this.db
@@ -195,11 +181,9 @@ export class CategoriesService {
           .limit(1);
 
         if (!parent) {
-          throw new BadRequestException(
-            this.i18n.t("catalog.CATEGORY_NOT_FOUND", {
-              args: { id: dto.parentId },
-            }),
-          );
+          throw new I18nBadRequestException("catalog.CATEGORY_NOT_FOUND", {
+            id: dto.parentId,
+          });
         }
       }
     }
@@ -224,9 +208,7 @@ export class CategoriesService {
       .returning();
 
     if (!updated) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.CATEGORY_NOT_FOUND", { args: { id } }),
-      );
+      throw new I18nNotFoundException("catalog.CATEGORY_NOT_FOUND", { id });
     }
 
     return this.mapCategoryToDto(updated);
@@ -243,9 +225,7 @@ export class CategoriesService {
       .limit(1);
 
     if (!existing) {
-      throw new NotFoundException(
-        this.i18n.t("catalog.CATEGORY_NOT_FOUND", { args: { id } }),
-      );
+      throw new I18nNotFoundException("catalog.CATEGORY_NOT_FOUND", { id });
     }
 
     await this.db.delete(categories).where(eq(categories.id, id));

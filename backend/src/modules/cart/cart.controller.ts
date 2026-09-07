@@ -20,6 +20,9 @@ import {
 import {
   ApiOkResponseGeneric,
   ApiCreatedResponseGeneric,
+  ApiBadRequestResponseRfc9457,
+  ApiNotFoundResponseRfc9457,
+  ApiUnauthorizedResponseRfc9457,
 } from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
 import { CurrentUser } from "@/common/decorators/current-user.decorator";
@@ -44,6 +47,7 @@ export class CartController {
   @Get()
   @ApiOperation({ summary: "Get current authenticated user shopping cart" })
   @ApiOkResponseGeneric(CartResponseDto)
+  @ApiUnauthorizedResponseRfc9457()
   async getCart(@CurrentUser("sub") userId: string) {
     const data = await this.cartService.getOrCreateCart(userId);
     return apiSuccess(data);
@@ -53,6 +57,9 @@ export class CartController {
   @Throttle({ default: { limit: 60, ttl: 60000 } })
   @ApiOperation({ summary: "Add item to cart or increment quantity" })
   @ApiCreatedResponseGeneric(CartResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
   async addItem(
     @CurrentUser("sub") userId: string,
     @Body() dto: AddCartItemDto,
@@ -66,6 +73,9 @@ export class CartController {
   @ApiOperation({ summary: "Update quantity of a cart item" })
   @ApiParam({ name: "id", description: "Cart item UUID" })
   @ApiOkResponseGeneric(CartResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
   async updateItemQuantity(
     @CurrentUser("sub") userId: string,
     @Param("id", ParseUUIDPipe) itemId: string,
@@ -80,6 +90,8 @@ export class CartController {
   @ApiOperation({ summary: "Remove item from cart" })
   @ApiParam({ name: "id", description: "Cart item UUID" })
   @ApiOkResponseGeneric(CartResponseDto)
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
   async removeItem(
     @CurrentUser("sub") userId: string,
     @Param("id", ParseUUIDPipe) itemId: string,
@@ -96,6 +108,8 @@ export class CartController {
       "Merge guest cart items into authenticated user cart with inventory stock clamping",
   })
   @ApiOkResponseGeneric(CartResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
   async mergeGuestCart(
     @CurrentUser("sub") userId: string,
     @Body() dto: MergeCartDto,
