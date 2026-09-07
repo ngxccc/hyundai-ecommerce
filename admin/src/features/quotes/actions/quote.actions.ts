@@ -162,7 +162,7 @@ export async function createAdminQuoteAction(rawInput: CreateAdminQuoteInput) {
   if (!parsed.success) {
     const firstIssue = parsed.error.issues[0];
     const errorMessage = translateZodMessage(firstIssue.message, (key, args) =>
-      t(key as never, args as never),
+      t(key, args),
     );
     return {
       success: false as const,
