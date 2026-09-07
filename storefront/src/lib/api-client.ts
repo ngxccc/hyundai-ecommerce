@@ -54,19 +54,27 @@ const authMiddleware: Middleware = {
       return request;
     }
 
-    if (!request.headers.has("Authorization")) {
-      try {
-        const { cookies } = await import("next/headers");
-        const cookieStore = await cookies();
+    try {
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+
+      if (!request.headers.has("Accept-Language")) {
+        const locale = cookieStore.get("NEXT_LOCALE")?.value;
+        if (locale) {
+          request.headers.set("Accept-Language", locale);
+        }
+      }
+
+      if (!request.headers.has("Authorization")) {
         const token =
           cookieStore.get("customerAccessToken")?.value ??
           cookieStore.get("accessToken")?.value;
         if (token) {
           request.headers.set("Authorization", `Bearer ${token}`);
         }
-      } catch {
-        // Cookies not accessible in non-request contexts
       }
+    } catch {
+      // Cookies not accessible in non-request contexts
     }
     return request;
   },

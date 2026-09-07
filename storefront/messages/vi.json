@@ -397,6 +397,8 @@
     "deleteItem": "Xóa sản phẩm",
     "contactInfoRequired": "Vui lòng nhập đầy đủ họ tên và số điện thoại liên hệ.",
     "emptyItemsRequired": "Danh sách sản phẩm yêu cầu báo giá không được để trống.",
+    "itemNameRequired": "Vui lòng nhập tên sản phẩm yêu cầu.",
+    "quantityPositive": "Số lượng sản phẩm phải lớn hơn 0.",
     "submitError": "Không thể gửi yêu cầu báo giá. Vui lòng liên hệ hotline để được hỗ trợ trực tiếp.",
     "createFailed": "Không thể tạo báo giá. Vui lòng thử lại sau."
   },
