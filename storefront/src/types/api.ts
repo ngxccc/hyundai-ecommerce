@@ -29,17 +29,7 @@ export interface PaginatedResponse<T> {
   pagination: PaginationMeta;
 }
 
-export interface ApiProblemDetails {
-  type?: string;
-  title: string;
-  status: number;
-  detail: string;
-  instance?: string;
-  invalidParams?: {
-    name: string;
-    reason: string;
-  }[];
-}
+export type ApiProblemDetails = ApiSchemas["Rfc9457ErrorResponseDto"];
 
 // Domain Entity Response DTOs
 export type ApiProduct = ApiSchemas["ProductResponseDto"];

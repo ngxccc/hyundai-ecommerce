@@ -2,47 +2,36 @@
 
 import { getTranslations } from "next-intl/server";
 import { api } from "@/lib/api-client";
+import { translateZodMessage } from "@/shared/lib/i18n-zod";
+import {
+  submitQuoteSchema,
+  type SubmitQuoteInput,
+  type SubmitQuoteItemInput,
+} from "../schemas/quote.schema";
 
-export interface SubmitQuoteItemInput {
-  productId?: string | null;
-  isCustomItem?: boolean;
-  itemName: string;
-  itemModel?: string | null;
-  itemSpecs?: string | null;
-  quantity: number;
-  requestedPrice?: string | null;
-}
+export type { SubmitQuoteInput, SubmitQuoteItemInput };
 
-export interface SubmitQuoteInput {
-  customerName: string;
-  customerPhone: string;
-  customerEmail?: string | null;
-  companyName?: string | null;
-  taxId?: string | null;
-  shippingAddress?: string | null;
-  note?: string | null;
-  items: SubmitQuoteItemInput[];
-}
-
-export async function submitQuoteRequestAction(data: SubmitQuoteInput) {
+export async function submitQuoteRequestAction(rawInput: SubmitQuoteInput) {
   const t = await getTranslations("Quote");
+  const tRoot = await getTranslations();
+  const parsed = submitQuoteSchema.safeParse(rawInput);
 
-  if (!data.customerName || !data.customerPhone) {
+  if (!parsed.success) {
+    const firstIssue = parsed.error.issues[0];
+    const errorMessage = translateZodMessage(firstIssue.message, (key, args) =>
+      tRoot(key as never, args as never),
+    );
+
     return {
       success: false as const,
-      error: t("contactInfoRequired"),
+      error: errorMessage || t("submitError"),
     };
   }
 
-  if (data.items.length === 0) {
-    return {
-      success: false as const,
-      error: t("emptyItemsRequired"),
-    };
-  }
+  const data = parsed.data;
 
   try {
-    const { data: res } = await api.POST("/quotes", {
+    const res = await api.POST("/quotes", {
       body: {
         customerName: data.customerName,
         customerPhone: data.customerPhone,
@@ -53,10 +42,7 @@ export async function submitQuoteRequestAction(data: SubmitQuoteInput) {
         note: data.note ?? undefined,
         items: data.items.map((item) => ({
           productId: item.productId ?? undefined,
-          isCustomItem: (item.isCustomItem ?? false) as unknown as Record<
-            string,
-            never
-          >,
+          isCustomItem: item.isCustomItem ?? false,
           itemName: item.itemName,
           itemModel: item.itemModel ?? undefined,
           itemSpecs: item.itemSpecs ?? undefined,
@@ -66,16 +52,18 @@ export async function submitQuoteRequestAction(data: SubmitQuoteInput) {
       },
     });
 
-    if (!res?.data) {
+    const errorPayload = res.error;
+    const quoteData = res.data?.data;
+    if (errorPayload || !quoteData) {
       return {
         success: false as const,
-        error: t("createFailed"),
+        error: errorPayload?.detail ?? t("createFailed"),
       };
     }
 
     return {
       success: true as const,
-      data: res.data,
+      data: quoteData,
     };
   } catch (error) {
     console.error("[submitQuoteRequestAction] Error:", error);

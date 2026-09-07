@@ -397,6 +397,8 @@
     "deleteItem": "Remove item",
     "contactInfoRequired": "Please enter both contact name and phone number.",
     "emptyItemsRequired": "The quote product list cannot be empty.",
+    "itemNameRequired": "Please enter the requested item name.",
+    "quantityPositive": "Quantity must be greater than 0.",
     "submitError": "Unable to submit quote request. Please contact our hotline for immediate support.",
     "createFailed": "Unable to create quote request. Please try again later."
   },
