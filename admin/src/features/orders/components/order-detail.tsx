@@ -51,7 +51,7 @@ interface OrderDetailProps {
 }
 
 export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
-  const t = useTranslations("AdminOrders");
+  const t = useTranslations("adminOrders");
   const [isPending, startTransition] = useTransition();
   const [orientation, setOrientation] = useState<"horizontal" | "vertical">(
     "horizontal",

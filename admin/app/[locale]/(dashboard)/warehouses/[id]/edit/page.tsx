@@ -20,7 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({ locale, namespace: "AdminWarehouseForm" });
+  const t = await getTranslations({ locale, namespace: "adminWarehouseForm" });
 
   return {
     title: t("editTitle"),
@@ -42,9 +42,9 @@ export default async function EditWarehousePage({
     notFound();
   }
 
-  const tNav = await getTranslations("AdminDashboard.nav");
-  const tForm = await getTranslations("AdminWarehouseForm");
-  const tHeader = await getTranslations("AdminWarehouses.header");
+  const tNav = await getTranslations("adminDashboard.nav");
+  const tForm = await getTranslations("adminWarehouseForm");
+  const tHeader = await getTranslations("adminWarehouses.header");
 
   const breadcrumbs = (
     <AdminBreadcrumbs

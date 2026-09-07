@@ -30,7 +30,7 @@ export interface QuotePrintDocumentProps {
   quote: AdminQuote;
 }
 export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
-  const t = useTranslations("AdminQuotes");
+  const t = useTranslations("adminQuotes");
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);

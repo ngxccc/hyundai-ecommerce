@@ -34,7 +34,7 @@ import {
 import { useTheme } from "next-themes";
 
 export const AdminSidebar = () => {
-  const t = useTranslations("AdminDashboard");
+  const t = useTranslations("adminDashboard");
   const pathname = usePathname();
   const router = useRouter();
   const locale = useLocale();

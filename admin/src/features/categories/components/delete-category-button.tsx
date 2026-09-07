@@ -28,7 +28,7 @@ export const DeleteCategoryButton = ({
   categoryId,
   categoryName,
 }: DeleteCategoryButtonProps) => {
-  const t = useTranslations("AdminCategories");
+  const t = useTranslations("adminCategories");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);

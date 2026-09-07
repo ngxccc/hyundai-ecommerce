@@ -16,7 +16,7 @@ export async function generateMetadata({
   const locale = rawLocale as Locale;
   const t = await getTranslations({
     locale,
-    namespace: "AdminCategoryForm",
+    namespace: "adminCategoryForm",
   });
 
   return {
@@ -30,8 +30,8 @@ export default async function AdminEditCategoryPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const tNav = await getTranslations("AdminDashboard.nav");
-  const tForm = await getTranslations("AdminCategoryForm");
+  const tNav = await getTranslations("adminDashboard.nav");
+  const tForm = await getTranslations("adminCategoryForm");
 
   const [categoriesRes, categoryRes] = await Promise.all([
     api.GET("/categories"),

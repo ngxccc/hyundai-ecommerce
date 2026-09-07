@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 export const useAdminNav = () => {
-  const t = useTranslations("AdminDashboard.nav");
+  const t = useTranslations("adminDashboard.nav");
 
   const navItems = [
     { icon: LayoutDashboard, label: t("overview"), href: "/" },

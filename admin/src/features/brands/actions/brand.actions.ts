@@ -57,9 +57,7 @@ export const createBrandAction = async (formData: FormData) => {
       body: validatedData as never,
     });
     if (createError || !createRes.data) {
-      const errorMsg =
-        createError && "detail" in createError ? createError.detail : undefined;
-      throw new Error(errorMsg ?? "Failed to create brand");
+      throw new Error(createError?.detail ?? "Failed to create brand");
     }
     const brandData = createRes.data;
 
@@ -143,9 +141,7 @@ export async function updateBrandAction(id: string, formData: FormData) {
       },
     );
     if (updateError || !updateRes.data) {
-      const errorMsg =
-        updateError && "detail" in updateError ? updateError.detail : undefined;
-      throw new Error(errorMsg ?? "Failed to update brand");
+      throw new Error(updateError?.detail ?? "Failed to update brand");
     }
     const updatedBrand = updateRes.data;
 
@@ -195,8 +191,7 @@ export async function deleteBrandAction(id: string) {
       params: { path: { id } },
     });
     if (deleteError) {
-      const errorMsg = "detail" in deleteError ? deleteError.detail : undefined;
-      throw new Error(errorMsg ?? "Failed to delete brand");
+      throw new Error(deleteError.detail);
     }
     const success = true;
     revalidatePath("/brands");

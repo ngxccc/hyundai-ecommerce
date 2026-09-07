@@ -30,7 +30,7 @@ export const ProductCategorySection = ({
   categories,
   brands,
 }: ProductCategorySectionProps) => {
-  const t = useTranslations("AdminProductForm");
+  const t = useTranslations("adminProductForm");
 
   return (
     <Card size="dense" collapsible defaultOpen={true}>

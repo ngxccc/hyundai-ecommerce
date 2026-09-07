@@ -36,7 +36,7 @@ export const WarehouseForm = ({
   initialData?: AdminWarehouse;
   breadcrumbs?: ReactNode;
 }) => {
-  const t = useTranslations("AdminWarehouseForm");
+  const t = useTranslations("adminWarehouseForm");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!initialData;

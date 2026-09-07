@@ -92,7 +92,7 @@ export const AdminImageUploadSection = ({
   accept = defaultAccept,
   cardClassName,
 }: AdminImageUploadSectionProps) => {
-  const tCloudinary = useTranslations("Cloudinary");
+  const tCloudinary = useTranslations("cloudinary");
   const [externalUrl, setExternalUrl] = useState("");
 
   const remainingCapacity = useMemo(() => {

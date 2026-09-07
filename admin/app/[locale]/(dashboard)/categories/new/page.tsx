@@ -20,7 +20,7 @@ export async function generateMetadata({
   const locale = rawLocale as Locale;
   const t = await getTranslations({
     locale,
-    namespace: "AdminCategoryForm",
+    namespace: "adminCategoryForm",
   });
 
   return {
@@ -29,8 +29,8 @@ export async function generateMetadata({
 }
 
 export default async function AdminNewCategoryPage() {
-  const tNav = await getTranslations("AdminDashboard.nav");
-  const tForm = await getTranslations("AdminCategoryForm");
+  const tNav = await getTranslations("adminDashboard.nav");
+  const tForm = await getTranslations("adminCategoryForm");
 
   const { data: res } = await api.GET("/categories");
   const categories = res?.data ?? [];

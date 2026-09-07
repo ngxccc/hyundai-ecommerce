@@ -14,8 +14,8 @@ export default async function EditProductPage({
 
   const [productRes, t, tNav, categoriesRes, brandsRes] = await Promise.all([
     api.GET("/products/{id}", { params: { path: { id } } }),
-    getTranslations("AdminProductForm"),
-    getTranslations("AdminDashboard.nav"),
+    getTranslations("adminProductForm"),
+    getTranslations("adminDashboard.nav"),
     api.GET("/categories"),
     api.GET("/brands"),
   ]);

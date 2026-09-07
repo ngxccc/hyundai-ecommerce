@@ -16,7 +16,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale, id } = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({ locale, namespace: "AdminOrders" });
+  const t = await getTranslations({ locale, namespace: "adminOrders" });
 
   return {
     title: `${t("orderDetailTitle")} #${id.slice(0, 8)}`,
@@ -29,8 +29,8 @@ export default async function AdminOrderDetailPage({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const { id } = await params;
-  const tNav = await getTranslations("AdminDashboard.nav");
-  const tHeader = await getTranslations("AdminOrders");
+  const tNav = await getTranslations("adminDashboard.nav");
+  const tHeader = await getTranslations("adminOrders");
 
   const [orderRes, session] = await Promise.all([
     api.GET("/orders/{id}", { params: { path: { id } } }),

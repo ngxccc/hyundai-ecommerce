@@ -17,7 +17,7 @@ interface RevenueChartProps {
 }
 
 export const RevenueChart = ({ data }: RevenueChartProps) => {
-  const t = useTranslations("AdminDashboard.chart");
+  const t = useTranslations("adminDashboard.chart");
 
   const maxRevenue = Math.max(...data.map((d) => Number(d.revenue)), 0);
   const currentMonthStr = (new Date().getMonth() + 1)

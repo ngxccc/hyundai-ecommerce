@@ -21,7 +21,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({ locale, namespace: "AdminCustomers" });
+  const t = await getTranslations({ locale, namespace: "adminCustomers" });
 
   return {
     title: t("title"),
@@ -29,8 +29,8 @@ export async function generateMetadata({
 }
 
 export default async function AdminCustomersPage() {
-  const tNav = await getTranslations("AdminDashboard.nav");
-  const tCustomers = await getTranslations("AdminCustomers");
+  const tNav = await getTranslations("adminDashboard.nav");
+  const tCustomers = await getTranslations("adminCustomers");
 
   const users: AdminUser[] = [];
   const { data: tierRes } = await api.GET("/dealer-tiers");

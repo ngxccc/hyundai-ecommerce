@@ -17,7 +17,7 @@ export async function generateMetadata({
   const resolvedParams = await params;
   const t = await getTranslations({
     locale: resolvedParams.locale,
-    namespace: "Forbidden",
+    namespace: "forbidden",
   });
   return { title: t("status") };
 }
@@ -30,7 +30,7 @@ const ForbiddenPage = async ({
   const resolvedParams = await params;
   const t = await getTranslations({
     locale: resolvedParams.locale,
-    namespace: "Forbidden",
+    namespace: "forbidden",
   });
   const storefrontUrl = env.NEXT_PUBLIC_STOREFRONT_URL;
 

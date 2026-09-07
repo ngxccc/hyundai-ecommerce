@@ -28,7 +28,7 @@ export const DeleteBrandButton = ({
   brandId,
   brandName,
 }: DeleteBrandButtonProps) => {
-  const t = useTranslations("AdminBrands");
+  const t = useTranslations("adminBrands");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);

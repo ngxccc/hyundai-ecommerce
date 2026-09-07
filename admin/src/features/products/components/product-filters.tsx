@@ -24,7 +24,7 @@ interface ProductFiltersProps {
 }
 
 export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
-  const t = useTranslations("AdminProducts.filters");
+  const t = useTranslations("adminProducts.filters");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

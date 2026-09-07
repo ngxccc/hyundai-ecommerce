@@ -19,7 +19,7 @@ interface InvoiceClientProps {
 }
 
 export const InvoiceClient = ({ order }: InvoiceClientProps) => {
-  const t = useTranslations("AdminOrders");
+  const t = useTranslations("adminOrders");
   const router = useRouter();
 
   const formatCurrency = (amountStr: string) => {

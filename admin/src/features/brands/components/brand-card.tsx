@@ -15,7 +15,7 @@ import { canUseCldImage } from "@/shared/utils";
 import { DeleteBrandButton } from "./delete-brand-button";
 
 export const BrandCard = ({ brand }: { brand: AdminBrand }) => {
-  const t = useTranslations("AdminBrands.card");
+  const t = useTranslations("adminBrands.card");
 
   const status = brand.isActive ? "active" : "inactive";
   const image = brand.logo?.length

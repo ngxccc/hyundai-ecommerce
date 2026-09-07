@@ -1,5 +1,5 @@
 {
-  "Cloudinary": {
+  "cloudinary": {
     "signFailed": "Failed to sign upload request",
     "noFileProvided": "No file provided",
     "noUrlProvided": "No URL provided",
@@ -13,7 +13,7 @@
     "invalidMimeType": "Invalid file type. Only image uploads are allowed.",
     "ssrfDetected": "Invalid upload source URL detected."
   },
-  "Editor": {
+  "editor": {
     "editor": {
       "image": {
         "dialog": {
@@ -48,7 +48,7 @@
       }
     }
   },
-  "Login": {
+  "login": {
     "metaTitle": "Login to Hyundai Nhat Nang System",
     "title": "Login to <br></br>Hyundai Nhat Nang System",
     "description": "Welcome back! Please sign in to manage your orders and products.",
@@ -78,7 +78,7 @@
       "unverifiedEmail": "Your email has not been verified. Please check your inbox."
     }
   },
-  "NotFound": {
+  "notFound": {
     "status": "Status: Terminal",
     "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
     "errorMessage": "Connection to this partition has been lost. The generator data or page you are looking for does not exist on the system.",
@@ -97,12 +97,12 @@
       }
     }
   },
-  "Forbidden": {
+  "forbidden": {
     "status": "403 Forbidden",
     "errorMessage": "Staff area only. Click here to return to the shopping page.",
     "button": "Return to Storefront"
   },
-  "AdminDashboard": {
+  "adminDashboard": {
     "title": "Hyundai Nhat Nang",
     "logoutSuccess": "Logged out successfully",
     "logoutError": "Logout failed",
@@ -171,7 +171,7 @@
       "system": "System"
     }
   },
-  "AdminProducts": {
+  "adminProducts": {
     "header": {
       "title": "Products",
       "description": "Manage your product catalog.",
@@ -253,7 +253,7 @@
       "showingCursor": "Showing product list"
     }
   },
-  "AdminProductForm": {
+  "adminProductForm": {
     "title": "Add New Product",
     "editTitle": "Edit Product",
     "tabs": {
@@ -449,14 +449,14 @@
       "invalidNumber": "Must be a valid number"
     }
   },
-  "AdminMetadata": {
+  "adminMetadata": {
     "titleTemplate": "%s | Admin Portal",
     "defaultTitle": "Dashboard | Admin Portal",
     "description": "Hyundai Nhat Nang Admin Portal for managing products, orders, and customers.",
     "dashboard": "Overview",
     "products": "Product Management"
   },
-  "AdminBrandForm": {
+  "adminBrandForm": {
     "title": "Add Brand",
     "description": "Enter details for the new brand.",
     "editTitle": "Edit Brand",
@@ -500,7 +500,7 @@
       "invalidUrl": "Invalid URL format"
     }
   },
-  "AdminCategoryForm": {
+  "adminCategoryForm": {
     "title": "Add Category",
     "description": "Enter details for the new category.",
     "editTitle": "Edit Category",
@@ -550,7 +550,7 @@
       "invalidParent": "Invalid parent category"
     }
   },
-  "AdminBrandTable": {
+  "adminBrandTable": {
     "columns": {
       "name": "Name",
       "slug": "Slug",
@@ -563,7 +563,7 @@
     },
     "empty": "No brands found."
   },
-  "AdminCategoryTable": {
+  "adminCategoryTable": {
     "columns": {
       "name": "Name",
       "slug": "Slug",
@@ -576,7 +576,7 @@
     },
     "empty": "No categories found."
   },
-  "AdminCategories": {
+  "adminCategories": {
     "header": {
       "searchPlaceholder": "Search categories...",
       "addCategory": "Add Category",
@@ -607,7 +607,7 @@
       }
     }
   },
-  "AdminBrands": {
+  "adminBrands": {
     "header": {
       "searchPlaceholder": "Search brands...",
       "addBrand": "Add Brand",
@@ -638,7 +638,7 @@
       }
     }
   },
-  "AdminWarehouses": {
+  "adminWarehouses": {
     "header": {
       "searchPlaceholder": "Search warehouses...",
       "addWarehouse": "Add Warehouse",
@@ -669,7 +669,7 @@
       }
     }
   },
-  "AdminWarehouseForm": {
+  "adminWarehouseForm": {
     "title": "Add Warehouse",
     "description": "Enter details for the new warehouse.",
     "editTitle": "Edit Warehouse",
@@ -759,7 +759,7 @@
       "slugExists": "Slug already exists"
     }
   },
-  "AdminInventory": {
+  "adminInventory": {
     "title": "Inventory Management",
     "description": "Manage stock for product: {name}",
     "tableTitle": "Warehouse Stock",
@@ -792,7 +792,7 @@
       "updateWarehouseStockFailed": "Failed to update warehouse stock in database"
     }
   },
-  "AdminCustomers": {
+  "adminCustomers": {
     "title": "Customers Directory",
     "description": "Manage standard and B2B corporate customer portfolios.",
     "searchPlaceholder": "Search by name, email, or phone...",
@@ -841,7 +841,7 @@
     },
     "empty": "No customers found matching filters."
   },
-  "AdminDealerTiers": {
+  "adminDealerTiers": {
     "title": "Dealer Tiers Configurator",
     "description": "Set up discount percentages and minimum spend metrics for corporate accounts.",
     "addTier": "Create New Tier",
@@ -877,7 +877,7 @@
     },
     "empty": "No discount tiers configured yet."
   },
-  "AdminOrders": {
+  "adminOrders": {
     "title": "B2B Orders Dashboard",
     "description": "Manage corporate orders, track delivery milestones, and issue corporate invoice receipts.",
     "searchPlaceholder": "Search orders by ID or customer...",
@@ -995,7 +995,7 @@
     "shippingBidsPending": "Pending Approval",
     "shippingBidsNotePlaceholder": "Additional note..."
   },
-  "AdminQuotes": {
+  "adminQuotes": {
     "title": "B2B Quotes detail workspace",
     "description": "Negotiate custom pricing, chat with B2B dealers, and atomically convert quotes to active orders.",
     "listTitle": "B2B Quotes",

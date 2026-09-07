@@ -31,7 +31,7 @@ import { useRouter } from "@/i18n/routing";
 import { toast } from "@/components/ui/sonner";
 
 export const LoginForm = () => {
-  const t = useTranslations("Login");
+  const t = useTranslations("login");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 

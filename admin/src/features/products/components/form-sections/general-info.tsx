@@ -22,7 +22,7 @@ interface ProductGeneralInfoProps {
 }
 
 export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
-  const t = useTranslations("AdminProductForm");
+  const t = useTranslations("adminProductForm");
   const [langTab, setLangTab] = useState<"vi" | "en">("vi");
 
   const nameViError = Boolean(form.formState.errors.nameVi);

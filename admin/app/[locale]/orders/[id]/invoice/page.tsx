@@ -12,7 +12,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale, id } = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({ locale, namespace: "AdminOrders" });
+  const t = await getTranslations({ locale, namespace: "adminOrders" });
 
   return {
     title: `${t("invoiceTitle")} #${id.slice(0, 8).toUpperCase()}`,

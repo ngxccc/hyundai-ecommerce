@@ -3,7 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { api, ApiClientError } from "@/lib/api-client";
 import { getTranslations } from "next-intl/server";
-import { isValidIdentifier } from "@/shared/validators";
+import { translateZodMessage } from "@/shared/lib/i18n-zod";
+import {
+  isValidIdentifier,
+  createAdminQuoteSchema,
+  updateQuoteStatusSchema,
+  type CreateAdminQuoteInput,
+  type UpdateQuoteStatusInput,
+} from "@/shared/validators";
 
 export async function approveAndConvertToOrderAction(quoteId: string) {
   const t = await getTranslations("errors");
@@ -11,12 +18,16 @@ export async function approveAndConvertToOrderAction(quoteId: string) {
     return { success: false as const, error: t("default") };
   }
   try {
-    const { data } = await api.POST("/quotes/{id}/approve-to-order", {
+    const { data, error } = await api.POST("/quotes/{id}/approve-to-order", {
       params: { path: { id: quoteId } },
     });
     const res = data?.data;
-    if (!res) {
-      throw new ApiClientError(t("quoteNotEditableOrConvertible"), 400);
+    if (error || !res) {
+      throw new ApiClientError(
+        error?.detail ?? t("quoteNotEditableOrConvertible"),
+        error?.status ?? 400,
+        error,
+      );
     }
     revalidatePath("/quotes");
     revalidatePath(`/quotes/${quoteId}`);
@@ -34,19 +45,30 @@ export async function approveAndConvertToOrderAction(quoteId: string) {
   }
 }
 
-export async function updateQuoteStatusAction(quoteId: string, status: string) {
+export async function updateQuoteStatusAction(
+  quoteId: string,
+  status: UpdateQuoteStatusInput["status"],
+) {
   const t = await getTranslations("errors");
   if (!isValidIdentifier(quoteId)) {
     return { success: false as const, error: t("default") };
   }
+  const parsedStatus = updateQuoteStatusSchema.safeParse({ status });
+  if (!parsedStatus.success) {
+    return { success: false as const, error: t("default") };
+  }
   try {
-    const { data } = await api.PATCH("/quotes/{id}/status", {
+    const { data, error } = await api.PATCH("/quotes/{id}/status", {
       params: { path: { id: quoteId } },
-      body: { status: status as never },
+      body: { status: parsedStatus.data.status },
     });
     const res = data?.data;
-    if (!res) {
-      throw new ApiClientError(t("default"), 400);
+    if (error || !res) {
+      throw new ApiClientError(
+        error?.detail ?? t("default"),
+        error?.status ?? 400,
+        error,
+      );
     }
     revalidatePath("/quotes");
     revalidatePath(`/quotes/${quoteId}`);
@@ -73,13 +95,17 @@ export async function updateQuoteItemPriceAction(
     return { success: false as const, error: t("default") };
   }
   try {
-    const { data } = await api.PUT("/quotes/{id}/items/{itemId}/price", {
+    const { data, error } = await api.PUT("/quotes/{id}/items/{itemId}/price", {
       params: { path: { id: quoteId, itemId } },
       body: { agreedPrice },
     });
     const res = data?.data;
-    if (!res) {
-      throw new ApiClientError(t("default"), 400);
+    if (error || !res) {
+      throw new ApiClientError(
+        error?.detail ?? t("default"),
+        error?.status ?? 400,
+        error,
+      );
     }
     revalidatePath(`/quotes/${quoteId}`);
     return { success: true as const, data: res };
@@ -104,13 +130,17 @@ export async function sendAdminNegotiationMessageAction(
     return { success: false as const, error: t("default") };
   }
   try {
-    const { data } = await api.POST("/quotes/{id}/messages", {
+    const { data, error } = await api.POST("/quotes/{id}/messages", {
       params: { path: { id: quoteId } },
       body: { message },
     });
     const res = data?.data;
-    if (!res) {
-      throw new ApiClientError(t("default"), 400);
+    if (error || !res) {
+      throw new ApiClientError(
+        error?.detail ?? t("default"),
+        error?.status ?? 400,
+        error,
+      );
     }
     revalidatePath(`/quotes/${quoteId}`);
     return { success: true as const, data: res };
@@ -126,15 +156,65 @@ export async function sendAdminNegotiationMessageAction(
   }
 }
 
-export async function createAdminQuoteAction(dto: Record<string, unknown>) {
+export async function createAdminQuoteAction(rawInput: CreateAdminQuoteInput) {
   const t = await getTranslations("errors");
+  const parsed = createAdminQuoteSchema.safeParse(rawInput);
+  if (!parsed.success) {
+    const firstIssue = parsed.error.issues[0];
+    const errorMessage = translateZodMessage(firstIssue.message, (key, args) =>
+      t(key as never, args as never),
+    );
+    return {
+      success: false as const,
+      error: errorMessage || t("createQuoteFailed"),
+      fieldErrors: undefined,
+    };
+  }
+  const dto = parsed.data;
   try {
-    const { data } = await api.POST("/quotes/admin", {
-      body: dto as never,
+    const { data, error } = await api.POST("/quotes/admin", {
+      body: {
+        userId: dto.userId ?? undefined,
+        customerName: dto.customerName,
+        customerPhone: dto.customerPhone,
+        customerEmail: dto.customerEmail ?? undefined,
+        companyName: dto.companyName ?? undefined,
+        taxId: dto.taxId ?? undefined,
+        shippingAddress: dto.shippingAddress ?? undefined,
+        vatRate: dto.vatRate,
+        commercialTerms: dto.commercialTerms
+          ? {
+              validityDays: dto.commercialTerms.validityDays,
+              paymentSchedule: dto.commercialTerms.paymentSchedule ?? undefined,
+              warrantyTerms: dto.commercialTerms.warrantyTerms ?? undefined,
+              deliveryTime: dto.commercialTerms.deliveryTime ?? undefined,
+              deliveryLocation:
+                dto.commercialTerms.deliveryLocation ?? undefined,
+            }
+          : undefined,
+        note: dto.note ?? undefined,
+        expirationDate: dto.expirationDate
+          ? dto.expirationDate.toISOString()
+          : undefined,
+        items: dto.items.map((item) => ({
+          productId: item.productId ?? undefined,
+          isCustomItem: item.isCustomItem,
+          itemName: item.itemName,
+          itemModel: item.itemModel ?? undefined,
+          itemSpecs: item.itemSpecs ?? undefined,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          discountPercent: item.discountPercent,
+        })),
+      },
     });
     const res = data?.data;
-    if (!res) {
-      throw new ApiClientError(t("createQuoteFailed"), 400);
+    if (error || !res) {
+      throw new ApiClientError(
+        error?.detail ?? t("createQuoteFailed"),
+        error?.status ?? 400,
+        error,
+      );
     }
     revalidatePath("/quotes");
     return { success: true as const, data: res };

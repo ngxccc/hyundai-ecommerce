@@ -18,7 +18,7 @@ export const ProductPagination = ({
   nextCursor,
   prevCursor,
 }: ProductPaginationProps) => {
-  // const t = useTranslations("AdminProducts.pagination");
+  // const t = useTranslations("adminProducts.pagination");
 
   return (
     <div className="border-border/50 flex flex-col items-center justify-between gap-4 border-t pt-6">

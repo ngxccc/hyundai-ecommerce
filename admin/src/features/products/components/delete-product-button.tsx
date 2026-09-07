@@ -28,7 +28,7 @@ export const DeleteProductButton = ({
   productId,
   productName,
 }: DeleteProductButtonProps) => {
-  const t = useTranslations("AdminProducts");
+  const t = useTranslations("adminProducts");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);

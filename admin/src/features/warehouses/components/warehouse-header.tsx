@@ -25,8 +25,8 @@ export const WarehouseHeader = ({
   description,
   showAddButton = true,
 }: WarehouseHeaderProps) => {
-  const t = useTranslations("AdminWarehouses.header");
-  const tDashboard = useTranslations("AdminDashboard");
+  const t = useTranslations("adminWarehouses.header");
+  const tDashboard = useTranslations("adminDashboard");
   const navItems = useAdminNav();
   const pathname = usePathname();
 

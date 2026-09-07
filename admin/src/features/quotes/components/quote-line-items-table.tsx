@@ -40,7 +40,7 @@ import {
 } from "../stores/quote-draft.store";
 
 export const QuoteLineItemsTable = () => {
-  const t = useTranslations("AdminQuotes");
+  const t = useTranslations("adminQuotes");
   const translate = t as unknown as (
     key: string,
     params?: Record<string, unknown>,
