@@ -13,7 +13,7 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/categories");
+      const { data: res } = await api.GET("/api/v1/categories");
       const categories = res?.data;
       if (!Array.isArray(categories)) {
         return [];
@@ -31,7 +31,7 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/categories/tree");
+      const { data: res } = await api.GET("/api/v1/categories/tree");
       const tree = res?.data;
       if (!Array.isArray(tree)) {
         return [];
@@ -47,7 +47,7 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/categories/tree");
+      const { data: res } = await api.GET("/api/v1/categories/tree");
       const tree = res?.data;
       if (!Array.isArray(tree)) {
         return [categoryId];

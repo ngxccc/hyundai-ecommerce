@@ -8,7 +8,7 @@ export const brandService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/brands");
+      const { data: res } = await api.GET("/api/v1/brands");
       const brands = res?.data;
       if (!Array.isArray(brands)) {
         return [];
