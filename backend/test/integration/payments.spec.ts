@@ -93,7 +93,7 @@ describe("Payments Module Integration", () => {
 
       // 2. Customer initiates PayOS payment link generation
       const linkRes = await request(getHttpServer())
-        .post("/payments/checkout-link")
+        .post("/api/v1/payments/checkout-link")
         .send({
           orderId,
           transactionType: "FULL_PAYMENT",
@@ -177,7 +177,7 @@ describe("Payments Module Integration", () => {
       );
 
       const webhookRes = await request(getHttpServer())
-        .post("/payments/payos-webhook")
+        .post("/api/v1/payments/payos-webhook")
         .send({
           code: "00",
           desc: "Success",
@@ -215,7 +215,7 @@ describe("Payments Module Integration", () => {
 
       // 6. Test Idempotency: Re-sending identical webhook returns 200 without error
       const repeatRes = await request(getHttpServer())
-        .post("/payments/payos-webhook")
+        .post("/api/v1/payments/payos-webhook")
         .send({
           code: "00",
           desc: "Success",
@@ -229,7 +229,7 @@ describe("Payments Module Integration", () => {
 
     it("should reject tampered or invalid webhook signatures with 400 Bad Request", async () => {
       const webhookRes = await request(getHttpServer())
-        .post("/payments/payos-webhook")
+        .post("/api/v1/payments/payos-webhook")
         .send({
           code: "00",
           desc: "Success",
@@ -273,7 +273,7 @@ describe("Payments Module Integration", () => {
 
       // 2. Admin verifies cash collection
       const verifyRes = await request(getHttpServer())
-        .post(`/payments/${orderId}/verify-cash`)
+        .post(`/api/v1/payments/${orderId}/verify-cash`)
         .set(adminAuth)
         .send({
           amount: 30000000,
@@ -329,7 +329,7 @@ describe("Payments Module Integration", () => {
 
       // 2. Process cash debt repayment of 30,000,000
       const repayRes = await request(getHttpServer())
-        .post("/payments/repay-debt")
+        .post("/api/v1/payments/repay-debt")
         .set(adminAuth)
         .send({
           userId: dealerUser.id,

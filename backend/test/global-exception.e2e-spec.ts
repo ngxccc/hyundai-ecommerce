@@ -41,7 +41,7 @@ describe("GlobalExceptionFilter Pipeline E2E", () => {
   describe("when handling DTO validation failures", () => {
     it("should return RFC 9457 formatted 400 Bad Request with application/problem+json on DTO validation failure", async () => {
       const res = await request(getHttpServer())
-        .post("/auth/register")
+        .post("/api/v1/auth/register")
         .send({
           email: "invalid-email-format",
           fullName: "Test User",
@@ -57,7 +57,7 @@ describe("GlobalExceptionFilter Pipeline E2E", () => {
       const body = res.body as Rfc9457ErrorResponse;
       expect(body.title).toBe("Bad Request");
       expect(body.status).toBe(400);
-      expect(body.instance).toBe("/auth/register");
+      expect(body.instance).toBe("/api/v1/auth/register");
       expect(body.type).toContain("/errors/bad-request");
       expect(Array.isArray(body.invalidParams)).toBe(true);
       expect(body.invalidParams.length).toBeGreaterThan(0);
@@ -69,11 +69,7 @@ describe("GlobalExceptionFilter Pipeline E2E", () => {
   describe("when handling authentication failures", () => {
     it("should return RFC 9457 formatted 401 Unauthorized with application/problem+json on auth failure", async () => {
       const res = await request(getHttpServer())
-        .post("/auth/login")
-        .send({
-          email: "nonexistent@example.com",
-          password: "WrongPassword123!",
-        })
+        .get("/api/v1/users/me")
         .expect(401);
 
       expect(res.headers["content-type"]).toContain("application/problem+json");
@@ -81,7 +77,7 @@ describe("GlobalExceptionFilter Pipeline E2E", () => {
       const body = res.body as Rfc9457ErrorResponse;
       expect(body.title).toBe("Unauthorized");
       expect(body.status).toBe(401);
-      expect(body.instance).toBe("/auth/login");
+      expect(body.instance).toBe("/api/v1/users/me");
       expect(body.type).toContain("/errors/unauthorized");
       expect(body.invalidParams).toEqual([]);
     });

@@ -38,7 +38,7 @@ import {
 } from "./dto";
 
 @ApiTags(CART_ROUTES.TAG)
-@Controller(CART_ROUTES.ROOT)
+@Controller({ path: CART_ROUTES.ROOT, version: "1" })
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth("JWT-auth")
 export class CartController {

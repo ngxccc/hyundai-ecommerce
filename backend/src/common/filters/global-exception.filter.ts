@@ -391,7 +391,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     ) {
       return resResponse["error"];
     }
-    const rawName = exceptionName.replace(/Exception$/, "");
+    const rawName = exceptionName
+      .replace(/Exception$/, "")
+      .replace(/^I18n/, "");
     return rawName.replace(/([a-z])([A-Z])/g, "$1 $2");
   }
 

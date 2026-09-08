@@ -104,7 +104,9 @@ describe("Catalog Module Integration", () => {
           parentId: parent ? parent.id : null,
         });
 
-        const res = await request(getHttpServer()).get("/categories/tree");
+        const res = await request(getHttpServer()).get(
+          "/api/v1/categories/tree",
+        );
 
         expect(res.status).toBe(200);
         const body = res.body as unknown as GenericSuccessResponse<
@@ -128,7 +130,7 @@ describe("Catalog Module Integration", () => {
         });
 
         const res = await request(getHttpServer())
-          .post("/categories")
+          .post("/api/v1/categories")
           .set(authHeader)
           .send({
             nameVi: "Bộ lưu điện UPS",
@@ -145,10 +147,12 @@ describe("Catalog Module Integration", () => {
       }, 15000);
 
       it("should return 401 Unauthorized when unauthenticated", async () => {
-        const res = await request(getHttpServer()).post("/categories").send({
-          nameVi: "Bộ lưu điện UPS",
-          slug: "bo-luu-dien-ups",
-        });
+        const res = await request(getHttpServer())
+          .post("/api/v1/categories")
+          .send({
+            nameVi: "Bộ lưu điện UPS",
+            slug: "bo-luu-dien-ups",
+          });
 
         expect(res.status).toBe(401);
       }, 15000);
@@ -163,7 +167,7 @@ describe("Catalog Module Integration", () => {
           slug: "hyundai-power",
         });
 
-        const res = await request(getHttpServer()).get("/brands");
+        const res = await request(getHttpServer()).get("/api/v1/brands");
 
         expect(res.status).toBe(200);
         const body = res.body as unknown as GenericSuccessResponse<
@@ -249,7 +253,7 @@ describe("Catalog Module Integration", () => {
     describe("GET /products (Offset Pagination & Faceted Search)", () => {
       it("should support offset pagination query params and return structured envelope", async () => {
         const res = await request(getHttpServer())
-          .get("/products")
+          .get("/api/v1/products")
           .query({ page: 1, limit: 2 });
 
         expect(res.status).toBe(200);
@@ -269,11 +273,13 @@ describe("Catalog Module Integration", () => {
       }, 15000);
 
       it("should filter by fuelType and power range", async () => {
-        const res = await request(getHttpServer()).get("/products").query({
-          fuelType: "diesel",
-          powerKvaMin: 50,
-          powerKvaMax: 100,
-        });
+        const res = await request(getHttpServer())
+          .get("/api/v1/products")
+          .query({
+            fuelType: "diesel",
+            powerKvaMin: 50,
+            powerKvaMax: 100,
+          });
 
         expect(res.status).toBe(200);
         const body = res.body as unknown as GenericSuccessResponse<
@@ -288,7 +294,9 @@ describe("Catalog Module Integration", () => {
 
     describe("GET /products/metadata", () => {
       it("should return aggregated facet counts and available filter ranges", async () => {
-        const res = await request(getHttpServer()).get("/products/metadata");
+        const res = await request(getHttpServer()).get(
+          "/api/v1/products/metadata",
+        );
 
         expect(res.status).toBe(200);
         const body =
@@ -304,7 +312,7 @@ describe("Catalog Module Integration", () => {
     describe("GET /products/:id", () => {
       it("should return single product by slug", async () => {
         const res = await request(getHttpServer()).get(
-          "/products/dhy65kse-60kva",
+          "/api/v1/products/dhy65kse-60kva",
         );
 
         expect(res.status).toBe(200);
@@ -326,7 +334,7 @@ describe("Catalog Module Integration", () => {
 
         // 1. Create product
         const createRes = await request(getHttpServer())
-          .post("/products")
+          .post("/api/v1/products")
           .set(authHeader)
           .send({
             nameVi: "Máy phát điện mới 50kVA",
@@ -347,14 +355,14 @@ describe("Catalog Module Integration", () => {
 
         // 2. Delete product
         const deleteRes = await request(getHttpServer())
-          .delete(`/products/${newProductId}`)
+          .delete(`/api/v1/products/${newProductId}`)
           .set(authHeader);
 
         expect(deleteRes.status).toBe(200);
 
         // 3. Verify GET returns 404
         const verifyRes = await request(getHttpServer()).get(
-          `/products/${newProductId}`,
+          `/api/v1/products/${newProductId}`,
         );
         expect(verifyRes.status).toBe(404);
       }, 15000);

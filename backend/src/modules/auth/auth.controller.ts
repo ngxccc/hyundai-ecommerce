@@ -39,7 +39,7 @@ import {
 } from "./dto";
 
 @UseGuards(CustomThrottlerGuard)
-@Controller(AUTH_ROUTES.BASE)
+@Controller({ path: AUTH_ROUTES.BASE, version: "1" })
 @ApiTags(AUTH_ROUTES.BASE)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

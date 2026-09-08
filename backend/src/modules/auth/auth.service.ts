@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import {
   I18nBadRequestException,
   I18nConflictException,
+  I18nForbiddenException,
   I18nUnauthorizedException,
 } from "@/common/exceptions";
 import { eq } from "drizzle-orm";
@@ -231,16 +232,8 @@ export class AuthService {
       .where(eq(users.email, dto.email))
       .limit(1);
 
-    if (
-      !user?.passwordHash ||
-      user.status === "INACTIVE" ||
-      user.status === "SUSPENDED"
-    ) {
+    if (!user?.passwordHash) {
       this.throwException("auth.INVALID_CREDENTIALS");
-    }
-
-    if (user.status === "PENDING_VERIFICATION") {
-      this.throwException("auth.EMAIL_NOT_VERIFIED");
     }
 
     const isPasswordValid = await comparePassword(
@@ -249,6 +242,14 @@ export class AuthService {
     );
     if (!isPasswordValid) {
       this.throwException("auth.INVALID_CREDENTIALS");
+    }
+
+    if (user.status === "PENDING_VERIFICATION") {
+      this.throwException("auth.EMAIL_NOT_VERIFIED");
+    }
+
+    if (user.status === "INACTIVE" || user.status === "SUSPENDED") {
+      throw new I18nForbiddenException("users.ACCOUNT_SUSPENDED_OR_INACTIVE");
     }
 
     const { accessToken, refreshToken } = await this.createTokenSession(

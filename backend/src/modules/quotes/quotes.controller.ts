@@ -59,7 +59,7 @@ import {
 } from "./dto";
 
 @ApiTags(QUOTE_ROUTES.TAG)
-@Controller(QUOTE_ROUTES.ROOT)
+@Controller({ path: QUOTE_ROUTES.ROOT, version: "1" })
 export class QuotesController {
   constructor(
     private readonly quotesService: QuotesService,

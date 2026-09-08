@@ -7,8 +7,11 @@ async function generate() {
   const { AppModule } = await import("../src/app.module");
   const { createOpenApiDocument } =
     await import("../src/common/config/openapi.config");
+  const { setupGlobalPrefix } =
+    await import("../src/common/config/api-prefix.config");
 
   const app = await NestFactory.create(AppModule, { logger: false });
+  setupGlobalPrefix(app);
   const document = createOpenApiDocument(app);
   await app.close();
 

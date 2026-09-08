@@ -35,7 +35,7 @@ import { UpdateBrandDto } from "./dto/update-brand.dto";
 import { BrandResponseDto } from "./dto/brand-response.dto";
 
 @ApiTags(CATALOG_ROUTES.BRANDS.TAG)
-@Controller(CATALOG_ROUTES.BRANDS.PREFIX)
+@Controller({ path: CATALOG_ROUTES.BRANDS.PREFIX, version: "1" })
 @UseGuards(CustomThrottlerGuard)
 export class BrandsController {
   constructor(private readonly brandsService: BrandsService) {}

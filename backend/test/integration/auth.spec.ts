@@ -54,13 +54,13 @@ describe("Auth Module Integration", () => {
     await teardownTestApp(setup);
   });
 
-  describe("POST /auth/register, POST /auth/login, POST /auth/refresh, POST /auth/logout", () => {
+  describe("POST /api/v1/auth/register, POST /api/v1/auth/login, POST /api/v1/auth/refresh, POST /api/v1/auth/logout", () => {
     it("should complete the full registration, login, token refresh, and logout lifecycle", async () => {
       const email = "john.doe@example.com";
       const password = "Password123!";
 
       const registerRes = await request(getHttpServer())
-        .post("/auth/register")
+        .post("/api/v1/auth/register")
         .send({
           email,
           fullName: "John Doe",
@@ -98,7 +98,7 @@ describe("Auth Module Integration", () => {
       expect(verificationToken).toBeDefined();
 
       const verifyRes = await request(getHttpServer())
-        .post("/auth/verify-email")
+        .post("/api/v1/auth/verify-email")
         .send({ token: verificationToken });
       expect(verifyRes.status).toBe(200);
 
@@ -109,10 +109,12 @@ describe("Auth Module Integration", () => {
         .limit(1);
       expect(verifiedUser?.status).toBe("ACTIVE");
       expect(verifiedUser?.emailVerified).toBe(true);
-      const loginRes = await request(getHttpServer()).post("/auth/login").send({
-        email,
-        password,
-      });
+      const loginRes = await request(getHttpServer())
+        .post("/api/v1/auth/login")
+        .send({
+          email,
+          password,
+        });
       expect(loginRes.status).toBe(200);
       const loginBody = loginRes.body as unknown as AuthResponse;
       expect(loginBody.success).toBe(true);
@@ -121,7 +123,7 @@ describe("Auth Module Integration", () => {
 
       const { refreshToken } = loginBody.data;
       const refreshRes = await request(getHttpServer())
-        .post("/auth/refresh")
+        .post("/api/v1/auth/refresh")
         .send({
           refreshToken,
         });
@@ -134,7 +136,7 @@ describe("Auth Module Integration", () => {
       const newRefreshToken = refreshBody.data.refreshToken;
 
       const logoutRes = await request(getHttpServer())
-        .post("/auth/logout")
+        .post("/api/v1/auth/logout")
         .send({
           refreshToken: newRefreshToken,
         });
@@ -144,7 +146,7 @@ describe("Auth Module Integration", () => {
     });
   });
 
-  describe("POST /auth/register", () => {
+  describe("POST /api/v1/auth/register", () => {
     describe("when validating registration payload and security controls", () => {
       it("should return 409 Conflict when attempting to register duplicate email", async () => {
         const email = "duplicate@example.com";
@@ -158,12 +160,12 @@ describe("Auth Module Integration", () => {
         };
 
         const firstReg = await request(getHttpServer())
-          .post("/auth/register")
+          .post("/api/v1/auth/register")
           .send(payload);
         expect(firstReg.status).toBe(201);
 
         const secondReg = await request(getHttpServer())
-          .post("/auth/register")
+          .post("/api/v1/auth/register")
           .send(payload);
         expect(secondReg.status).toBe(409);
         const secondRegBody = secondReg.body as unknown as Rfc9457ErrorResponse;
@@ -184,7 +186,7 @@ describe("Auth Module Integration", () => {
         };
 
         const res = await request(getHttpServer())
-          .post("/auth/register")
+          .post("/api/v1/auth/register")
           .send(payload);
         expect(res.status).toBe(400);
         const resBody = res.body as unknown as Rfc9457ErrorResponse;
@@ -205,7 +207,7 @@ describe("Auth Module Integration", () => {
         };
 
         const res = await request(getHttpServer())
-          .post("/auth/register")
+          .post("/api/v1/auth/register")
           .send(payload);
         expect(res.status).toBe(201);
 
@@ -230,7 +232,7 @@ describe("Auth Module Integration", () => {
         };
 
         const res = await request(getHttpServer())
-          .post("/auth/register")
+          .post("/api/v1/auth/register")
           .send(payload);
         expect(res.status).toBe(400);
         const resBody = res.body as unknown as Rfc9457ErrorResponse;
@@ -252,7 +254,7 @@ describe("Auth Module Integration", () => {
         };
 
         const res = await request(getHttpServer())
-          .post("/auth/register")
+          .post("/api/v1/auth/register")
           .send(payload);
         expect(res.status).toBe(201);
 
@@ -279,7 +281,7 @@ describe("Auth Module Integration", () => {
         };
 
         const regRes = await request(getHttpServer())
-          .post("/auth/register")
+          .post("/api/v1/auth/register")
           .send(payload);
         expect(regRes.status).toBe(201);
 
@@ -297,7 +299,7 @@ describe("Auth Module Integration", () => {
           .where(eq(users.id, userBefore.id));
 
         const loginFailRes = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({ email, password });
         expect(loginFailRes.status).toBe(400);
         const loginFailBody =
@@ -330,21 +332,52 @@ describe("Auth Module Integration", () => {
         }
 
         const verifyRes = await request(getHttpServer())
-          .post("/auth/verify-email")
+          .post("/api/v1/auth/verify-email")
           .send({ token: rawToken });
         expect(verifyRes.status).toBe(200);
 
         const loginSuccessRes = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({ email, password });
         expect(loginSuccessRes.status).toBe(200);
         const loginSuccessBody = loginSuccessRes.body as unknown as ApiResponse;
         expect(loginSuccessBody.success).toBe(true);
       }, 15000);
+
+      it("should reject login with 403 Forbidden when account status is SUSPENDED and password is correct", async () => {
+        const email = "suspended.login@example.com";
+        const password = "Password123!";
+
+        const regRes = await request(getHttpServer())
+          .post("/api/v1/auth/register")
+          .send({
+            email,
+            fullName: "Suspended User",
+            phoneNumber: "0912345679",
+            password,
+            confirmPassword: password,
+            agreeTerms: true,
+          });
+        expect(regRes.status).toBe(201);
+
+        await db
+          .update(users)
+          .set({ status: "SUSPENDED" })
+          .where(eq(users.email, email));
+
+        const res = await request(getHttpServer())
+          .post("/api/v1/auth/login")
+          .send({ email, password });
+
+        expect(res.status).toBe(403);
+        const body = res.body as unknown as Rfc9457ErrorResponse;
+        expect(body.status).toBe(403);
+        expect(body.title).toBe("Forbidden");
+      }, 15000);
     });
   });
 
-  describe("POST /auth/forgot-password & POST /auth/reset-password", () => {
+  describe("POST /api/v1/auth/forgot-password & POST /api/v1/auth/reset-password", () => {
     const password = "Password123!";
 
     describe("when processing password reset lifecycle", () => {
@@ -352,7 +385,7 @@ describe("Auth Module Integration", () => {
         const email = "forgot.happy@example.com";
 
         const registerRes = await request(getHttpServer())
-          .post("/auth/register")
+          .post("/api/v1/auth/register")
           .send({
             email,
             fullName: "Happy User",
@@ -369,7 +402,7 @@ describe("Auth Module Integration", () => {
           .where(eq(users.email, email));
 
         const forgotRes = await request(getHttpServer())
-          .post("/auth/forgot-password")
+          .post("/api/v1/auth/forgot-password")
           .send({ email });
         const forgotBody = forgotRes.body as unknown as ApiResponse;
         expect(forgotBody.success).toBe(true);
@@ -412,7 +445,7 @@ describe("Auth Module Integration", () => {
         const resetToken = payload.token;
         if (!resetToken) throw new Error("resetToken is null");
         const loginRes = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({ email, password });
         expect(loginRes.status).toBe(200);
         const loginBody = loginRes.body as unknown as AuthResponse;
@@ -426,7 +459,7 @@ describe("Auth Module Integration", () => {
 
         const newPassword = "NewPassword123!";
         const resetRes = await request(getHttpServer())
-          .post("/auth/reset-password")
+          .post("/api/v1/auth/reset-password")
           .send({
             token: resetToken,
             password: newPassword,
@@ -456,12 +489,12 @@ describe("Auth Module Integration", () => {
         expect(tokensAfter.length).toBe(0);
 
         const oldLoginRes = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({ email, password });
         expect(oldLoginRes.status).toBe(400);
 
         const newLoginRes = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({ email, password: newPassword });
         expect(newLoginRes.status).toBe(200);
         const newLoginBody = newLoginRes.body as unknown as ApiResponse;
@@ -471,7 +504,7 @@ describe("Auth Module Integration", () => {
       it("should prevent password reset token reuse by rejecting duplicate reset attempts", async () => {
         const email = "forgot.reuse@example.com";
 
-        await request(getHttpServer()).post("/auth/register").send({
+        await request(getHttpServer()).post("/api/v1/auth/register").send({
           email,
           fullName: "Reuse User",
           phoneNumber: "0987654322",
@@ -486,7 +519,7 @@ describe("Auth Module Integration", () => {
           .where(eq(users.email, email));
 
         await request(getHttpServer())
-          .post("/auth/forgot-password")
+          .post("/api/v1/auth/forgot-password")
           .send({ email });
 
         const [resetEvent] = await db
@@ -506,7 +539,7 @@ describe("Auth Module Integration", () => {
         const token = (resetEvent.payload as { token: string }).token;
         if (!token) throw new Error("token is null");
         const firstReset = await request(getHttpServer())
-          .post("/auth/reset-password")
+          .post("/api/v1/auth/reset-password")
           .send({
             token,
             password: "NewPassword123!",
@@ -515,7 +548,7 @@ describe("Auth Module Integration", () => {
         expect(firstReset.status).toBe(200);
 
         const secondReset = await request(getHttpServer())
-          .post("/auth/reset-password")
+          .post("/api/v1/auth/reset-password")
           .send({
             token,
             password: "AnotherNewPassword123!",
@@ -527,7 +560,7 @@ describe("Auth Module Integration", () => {
       it("should return generic success when email does not exist to prevent user enumeration", async () => {
         const nonExistentEmail = "doesnotexist@example.com";
         const res = await request(getHttpServer())
-          .post("/auth/forgot-password")
+          .post("/api/v1/auth/forgot-password")
           .send({ email: nonExistentEmail });
         expect(res.status).toBe(200);
         const body = res.body as unknown as ApiResponse;
@@ -536,18 +569,18 @@ describe("Auth Module Integration", () => {
 
       it("should reject forgot password request with 400 Bad Request when email format is invalid", async () => {
         const res = await request(getHttpServer())
-          .post("/auth/forgot-password")
+          .post("/api/v1/auth/forgot-password")
           .send({ email: "not-an-email" });
         expect(res.status).toBe(400);
       });
     });
   });
 
-  describe("POST /auth/change-password", () => {
+  describe("POST /api/v1/auth/change-password", () => {
     describe("when changing password", () => {
       it("should successfully change password, revoke all refresh tokens, and allow login with new password", async () => {
         const registerRes = await request(getHttpServer())
-          .post("/auth/register")
+          .post("/api/v1/auth/register")
           .send({
             email: "change-pwd-user@example.com",
             fullName: "Change Password User",
@@ -564,7 +597,7 @@ describe("Auth Module Integration", () => {
           .where(eq(users.email, "change-pwd-user@example.com"));
 
         const loginRes = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({
             email: "change-pwd-user@example.com",
             password: "OldPassword123!",
@@ -581,7 +614,7 @@ describe("Auth Module Integration", () => {
         expect(activeTokensBefore.length).toBeGreaterThan(0);
 
         const changePwdRes = await request(getHttpServer())
-          .post("/auth/change-password")
+          .post("/api/v1/auth/change-password")
           .set("Authorization", `Bearer ${accessToken}`)
           .send({
             currentPassword: "OldPassword123!",
@@ -598,7 +631,7 @@ describe("Auth Module Integration", () => {
         expect(activeTokensAfter.length).toBe(0);
 
         const failedLoginRes = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({
             email: "change-pwd-user@example.com",
             password: "OldPassword123!",
@@ -606,7 +639,7 @@ describe("Auth Module Integration", () => {
         expect(failedLoginRes.status).toBeGreaterThanOrEqual(400);
 
         const newLoginRes = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({
             email: "change-pwd-user@example.com",
             password: "NewSecurePassword456!",
@@ -618,7 +651,7 @@ describe("Auth Module Integration", () => {
 
       it("should reject change password request with 401 Unauthorized when Authorization token is missing", async () => {
         const res = await request(getHttpServer())
-          .post("/auth/change-password")
+          .post("/api/v1/auth/change-password")
           .send({
             currentPassword: "OldPassword123!",
             newPassword: "NewSecurePassword456!",
@@ -628,7 +661,7 @@ describe("Auth Module Integration", () => {
 
       it("should reject change password request with 401 Unauthorized when Authorization token is invalid", async () => {
         const res = await request(getHttpServer())
-          .post("/auth/change-password")
+          .post("/api/v1/auth/change-password")
           .set("Authorization", "Bearer invalid-jwt-token")
           .send({
             currentPassword: "OldPassword123!",
@@ -639,7 +672,7 @@ describe("Auth Module Integration", () => {
 
       it("should reject change password request with 401 Unauthorized when current password is wrong", async () => {
         const regRes = await request(getHttpServer())
-          .post("/auth/register")
+          .post("/api/v1/auth/register")
           .send({
             email: "wrong-pwd-user@example.com",
             fullName: "Wrong Password User",
@@ -656,7 +689,7 @@ describe("Auth Module Integration", () => {
           .where(eq(users.email, "wrong-pwd-user@example.com"));
 
         const loginRes = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({
             email: "wrong-pwd-user@example.com",
             password: "RealPassword123!",
@@ -666,7 +699,7 @@ describe("Auth Module Integration", () => {
           .accessToken;
 
         const changePwdRes = await request(getHttpServer())
-          .post("/auth/change-password")
+          .post("/api/v1/auth/change-password")
           .set("Authorization", `Bearer ${accessToken}`)
           .send({
             currentPassword: "IncorrectOldPassword123!",
@@ -676,7 +709,7 @@ describe("Auth Module Integration", () => {
       }, 15000);
 
       it("should reject change password request with 400 Bad Request when new password is identical to current password", async () => {
-        await request(getHttpServer()).post("/auth/register").send({
+        await request(getHttpServer()).post("/api/v1/auth/register").send({
           email: "same-pwd-user@example.com",
           fullName: "Same Password User",
           phoneNumber: "0912345680",
@@ -691,7 +724,7 @@ describe("Auth Module Integration", () => {
           .where(eq(users.email, "same-pwd-user@example.com"));
 
         const loginRes = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({
             email: "same-pwd-user@example.com",
             password: "SamePassword123!",
@@ -700,7 +733,7 @@ describe("Auth Module Integration", () => {
           .accessToken;
 
         const changePwdRes = await request(getHttpServer())
-          .post("/auth/change-password")
+          .post("/api/v1/auth/change-password")
           .set("Authorization", `Bearer ${accessToken}`)
           .send({
             currentPassword: "SamePassword123!",
@@ -711,10 +744,10 @@ describe("Auth Module Integration", () => {
     });
   });
 
-  describe("POST /auth/logout-all", () => {
+  describe("POST /api/v1/auth/logout-all", () => {
     describe("when revoking all user sessions", () => {
       it("should successfully revoke all refresh tokens for the authenticated user", async () => {
-        await request(getHttpServer()).post("/auth/register").send({
+        await request(getHttpServer()).post("/api/v1/auth/register").send({
           email: "logout-all-user@example.com",
           fullName: "Logout All User",
           phoneNumber: "0912345681",
@@ -729,7 +762,7 @@ describe("Auth Module Integration", () => {
           .where(eq(users.email, "logout-all-user@example.com"));
 
         const loginRes1 = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({
             email: "logout-all-user@example.com",
             password: "LogoutPassword123!",
@@ -737,7 +770,7 @@ describe("Auth Module Integration", () => {
         const authData1 = (loginRes1.body as unknown as AuthResponse).data;
 
         const loginRes2 = await request(getHttpServer())
-          .post("/auth/login")
+          .post("/api/v1/auth/login")
           .send({
             email: "logout-all-user@example.com",
             password: "LogoutPassword123!",
@@ -745,23 +778,25 @@ describe("Auth Module Integration", () => {
         const authData2 = (loginRes2.body as unknown as AuthResponse).data;
 
         const logoutAllRes = await request(getHttpServer())
-          .post("/auth/logout-all")
+          .post("/api/v1/auth/logout-all")
           .set("Authorization", `Bearer ${authData1.accessToken}`);
         expect(logoutAllRes.status).toBe(200);
 
         const refreshRes1 = await request(getHttpServer())
-          .post("/auth/refresh")
+          .post("/api/v1/auth/refresh")
           .send({ refreshToken: authData1.refreshToken });
         expect(refreshRes1.status).toBe(401);
 
         const refreshRes2 = await request(getHttpServer())
-          .post("/auth/refresh")
+          .post("/api/v1/auth/refresh")
           .send({ refreshToken: authData2.refreshToken });
         expect(refreshRes2.status).toBe(401);
       }, 15000);
 
       it("should reject logout-all request with 401 Unauthorized when Authorization token is missing", async () => {
-        const res = await request(getHttpServer()).post("/auth/logout-all");
+        const res = await request(getHttpServer()).post(
+          "/api/v1/auth/logout-all",
+        );
         expect(res.status).toBe(401);
       });
     });

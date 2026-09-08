@@ -19,7 +19,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/auth/register": {
+  "/api/v1/auth/register": {
     parameters: {
       query?: never;
       header?: never;
@@ -32,14 +32,14 @@ export interface paths {
      * Register new user account
      * @description Creates an unverified account and enqueues an email verification link.
      */
-    post: operations["AuthController_register"];
+    post: operations["AuthController_register_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/auth/verify-email": {
+  "/api/v1/auth/verify-email": {
     parameters: {
       query?: never;
       header?: never;
@@ -52,14 +52,14 @@ export interface paths {
      * Verify account email
      * @description Validates a 64-character verification token and activates the user account.
      */
-    post: operations["AuthController_verifyEmail"];
+    post: operations["AuthController_verifyEmail_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/auth/resend-verification": {
+  "/api/v1/auth/resend-verification": {
     parameters: {
       query?: never;
       header?: never;
@@ -72,14 +72,14 @@ export interface paths {
      * Resend email verification link
      * @description Generates a fresh verification token and dispatches an activation email.
      */
-    post: operations["AuthController_resendVerification"];
+    post: operations["AuthController_resendVerification_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/auth/login": {
+  "/api/v1/auth/login": {
     parameters: {
       query?: never;
       header?: never;
@@ -92,14 +92,14 @@ export interface paths {
      * Authenticate user and issue tokens
      * @description Verifies credentials and returns a short-lived access token and refresh token.
      */
-    post: operations["AuthController_login"];
+    post: operations["AuthController_login_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/auth/refresh": {
+  "/api/v1/auth/refresh": {
     parameters: {
       query?: never;
       header?: never;
@@ -112,14 +112,14 @@ export interface paths {
      * Rotate refresh token and renew access token
      * @description Validates single-use refresh token, revokes it, and issues a new token pair.
      */
-    post: operations["AuthController_refresh"];
+    post: operations["AuthController_refresh_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/auth/logout": {
+  "/api/v1/auth/logout": {
     parameters: {
       query?: never;
       header?: never;
@@ -132,14 +132,14 @@ export interface paths {
      * Revoke current refresh session
      * @description Revokes the provided refresh token to end the active device session.
      */
-    post: operations["AuthController_logout"];
+    post: operations["AuthController_logout_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/auth/logout-all": {
+  "/api/v1/auth/logout-all": {
     parameters: {
       query?: never;
       header?: never;
@@ -152,14 +152,14 @@ export interface paths {
      * Revoke all active user sessions
      * @description Revokes all refresh tokens across every device for the authenticated user.
      */
-    post: operations["AuthController_logoutAll"];
+    post: operations["AuthController_logoutAll_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/auth/forgot-password": {
+  "/api/v1/auth/forgot-password": {
     parameters: {
       query?: never;
       header?: never;
@@ -172,14 +172,14 @@ export interface paths {
      * Request password reset email
      * @description Generates a time-limited password reset token and enqueues a recovery email.
      */
-    post: operations["AuthController_forgotPassword"];
+    post: operations["AuthController_forgotPassword_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/auth/reset-password": {
+  "/api/v1/auth/reset-password": {
     parameters: {
       query?: never;
       header?: never;
@@ -192,14 +192,14 @@ export interface paths {
      * Reset password with token
      * @description Applies new password using valid reset token and invalidates all existing sessions.
      */
-    post: operations["AuthController_resetPassword"];
+    post: operations["AuthController_resetPassword_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/auth/change-password": {
+  "/api/v1/auth/change-password": {
     parameters: {
       query?: never;
       header?: never;
@@ -212,14 +212,14 @@ export interface paths {
      * Change account password
      * @description Updates password for authenticated user and revokes all active refresh tokens.
      */
-    post: operations["AuthController_changePassword"];
+    post: operations["AuthController_changePassword_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/users/me": {
+  "/api/v1/users/me": {
     parameters: {
       query?: never;
       header?: never;
@@ -230,7 +230,7 @@ export interface paths {
      * Get authenticated user profile
      * @description Returns profile details and account status for the currently authenticated user.
      */
-    get: operations["UsersController_getMe"];
+    get: operations["UsersController_getMe_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -239,7 +239,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/dealer-tiers": {
+  "/api/v1/dealer-tiers": {
     parameters: {
       query?: never;
       header?: never;
@@ -250,7 +250,7 @@ export interface paths {
      * List all dealer discount tiers
      * @description Returns all configured B2B dealer tiers with their minimum spend and discount percentages.
      */
-    get: operations["DealerTiersController_getAll"];
+    get: operations["DealerTiersController_getAll_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -259,7 +259,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/dealer-tiers/{id}": {
+  "/api/v1/dealer-tiers/{id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -270,7 +270,7 @@ export interface paths {
      * Get dealer tier by ID
      * @description Returns details of a specific dealer tier by UUID.
      */
-    get: operations["DealerTiersController_getById"];
+    get: operations["DealerTiersController_getById_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -279,7 +279,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/leads": {
+  "/api/v1/leads": {
     parameters: {
       query?: never;
       header?: never;
@@ -290,20 +290,20 @@ export interface paths {
      * List all leads (CMS Admin & Sales)
      * @description Returns all leads and quote requests ordered by latest submission date.
      */
-    get: operations["LeadsController_getAll"];
+    get: operations["LeadsController_getAll_v1"];
     put?: never;
     /**
      * Submit Request for Quote (Storefront RFQ)
      * @description Public endpoint allowing customers and B2B buyers to request quotes for products without signing up.
      */
-    post: operations["LeadsController_submitRfq"];
+    post: operations["LeadsController_submitRfq_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/leads/{id}": {
+  "/api/v1/leads/{id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -314,7 +314,7 @@ export interface paths {
      * Get lead by ID (CMS Admin & Sales)
      * @description Returns full lead information and list of requested items.
      */
-    get: operations["LeadsController_getById"];
+    get: operations["LeadsController_getById_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -323,7 +323,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/leads/{id}/status": {
+  "/api/v1/leads/{id}/status": {
     parameters: {
       query?: never;
       header?: never;
@@ -340,10 +340,10 @@ export interface paths {
      * Update lead status (CMS Admin & Sales)
      * @description Updates lead status in sales pipeline (CONTACTING, SURVEY_SCHEDULED, QUOTED, LOST, etc.).
      */
-    patch: operations["LeadsController_updateStatus"];
+    patch: operations["LeadsController_updateStatus_v1"];
     trace?: never;
   };
-  "/leads/{id}/assign": {
+  "/api/v1/leads/{id}/assign": {
     parameters: {
       query?: never;
       header?: never;
@@ -360,10 +360,10 @@ export interface paths {
      * Assign sales representative to lead (Admin only)
      * @description Assigns a designated sales user ID to manage this lead.
      */
-    patch: operations["LeadsController_assignSales"];
+    patch: operations["LeadsController_assignSales_v1"];
     trace?: never;
   };
-  "/categories": {
+  "/api/v1/categories": {
     parameters: {
       query?: never;
       header?: never;
@@ -374,20 +374,20 @@ export interface paths {
      * List all categories
      * @description Returns a flat list of all active categories ordered by name.
      */
-    get: operations["CategoriesController_getAll"];
+    get: operations["CategoriesController_getAll_v1"];
     put?: never;
     /**
      * Create category (Admin only)
      * @description Creates a new category in the catalog.
      */
-    post: operations["CategoriesController_create"];
+    post: operations["CategoriesController_create_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/categories/tree": {
+  "/api/v1/categories/tree": {
     parameters: {
       query?: never;
       header?: never;
@@ -398,7 +398,7 @@ export interface paths {
      * Get category tree
      * @description Returns recursive hierarchical tree of categories.
      */
-    get: operations["CategoriesController_getTree"];
+    get: operations["CategoriesController_getTree_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -407,7 +407,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/categories/{id}": {
+  "/api/v1/categories/{id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -418,24 +418,24 @@ export interface paths {
      * Get category by ID
      * @description Returns details of a specific category by UUID.
      */
-    get: operations["CategoriesController_getById"];
+    get: operations["CategoriesController_getById_v1"];
     /**
      * Update category (Admin only)
      * @description Updates an existing category by UUID.
      */
-    put: operations["CategoriesController_update"];
+    put: operations["CategoriesController_update_v1"];
     post?: never;
     /**
      * Delete category (Admin only)
      * @description Deletes an existing category by UUID.
      */
-    delete: operations["CategoriesController_delete"];
+    delete: operations["CategoriesController_delete_v1"];
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/brands": {
+  "/api/v1/brands": {
     parameters: {
       query?: never;
       header?: never;
@@ -446,20 +446,20 @@ export interface paths {
      * List all brands
      * @description Returns a list of all active brands ordered by name.
      */
-    get: operations["BrandsController_getAll"];
+    get: operations["BrandsController_getAll_v1"];
     put?: never;
     /**
      * Create brand (Admin only)
      * @description Creates a new brand in the catalog.
      */
-    post: operations["BrandsController_create"];
+    post: operations["BrandsController_create_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/brands/{id}": {
+  "/api/v1/brands/{id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -470,24 +470,24 @@ export interface paths {
      * Get brand by ID
      * @description Returns details of a specific brand by UUID.
      */
-    get: operations["BrandsController_getById"];
+    get: operations["BrandsController_getById_v1"];
     /**
      * Update brand (Admin only)
      * @description Updates an existing brand by UUID.
      */
-    put: operations["BrandsController_update"];
+    put: operations["BrandsController_update_v1"];
     post?: never;
     /**
      * Delete brand (Admin only)
      * @description Deletes an existing brand by UUID.
      */
-    delete: operations["BrandsController_delete"];
+    delete: operations["BrandsController_delete_v1"];
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/products": {
+  "/api/v1/products": {
     parameters: {
       query?: never;
       header?: never;
@@ -498,20 +498,20 @@ export interface paths {
      * List products with hybrid faceted search and pagination
      * @description Returns a paginated list of products matching filter criteria (power, price, brand, category, specs).
      */
-    get: operations["ProductsController_getProducts"];
+    get: operations["ProductsController_getProducts_v1"];
     put?: never;
     /**
      * Create product (Admin only)
      * @description Creates a new product with technical specifications and images.
      */
-    post: operations["ProductsController_create"];
+    post: operations["ProductsController_create_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/products/metadata": {
+  "/api/v1/products/metadata": {
     parameters: {
       query?: never;
       header?: never;
@@ -522,7 +522,7 @@ export interface paths {
      * Get faceted filter metadata
      * @description Returns available filter ranges (price, power) and facet counts for brands, categories, fuel types, and phases.
      */
-    get: operations["ProductsController_getMetadata"];
+    get: operations["ProductsController_getMetadata_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -531,7 +531,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/products/{id}": {
+  "/api/v1/products/{id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -542,24 +542,24 @@ export interface paths {
      * Get product by ID or slug
      * @description Returns full product details by UUID or URL slug.
      */
-    get: operations["ProductsController_getById"];
+    get: operations["ProductsController_getById_v1"];
     /**
      * Update product (Admin only)
      * @description Updates an existing product by UUID.
      */
-    put: operations["ProductsController_update"];
+    put: operations["ProductsController_update_v1"];
     post?: never;
     /**
      * Delete product (Admin only)
      * @description Soft deletes an existing product by UUID.
      */
-    delete: operations["ProductsController_delete"];
+    delete: operations["ProductsController_delete_v1"];
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/warehouses": {
+  "/api/v1/warehouses": {
     parameters: {
       query?: never;
       header?: never;
@@ -567,17 +567,17 @@ export interface paths {
       cookie?: never;
     };
     /** List all physical warehouses */
-    get: operations["WarehouseController_getAll"];
+    get: operations["WarehouseController_getAll_v1"];
     put?: never;
     /** Create a new physical warehouse (Admin Only) */
-    post: operations["WarehouseController_create"];
+    post: operations["WarehouseController_create_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/warehouses/stock/product/{productId}": {
+  "/api/v1/warehouses/stock/product/{productId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -585,7 +585,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get stock distribution across all warehouses for a product */
-    get: operations["WarehouseController_getProductStocks"];
+    get: operations["WarehouseController_getProductStocks_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -594,7 +594,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/warehouses/{id}/stock": {
+  "/api/v1/warehouses/{id}/stock": {
     parameters: {
       query?: never;
       header?: never;
@@ -602,9 +602,9 @@ export interface paths {
       cookie?: never;
     };
     /** Get all product inventory stocks located in a warehouse */
-    get: operations["WarehouseController_getWarehouseStocks"];
+    get: operations["WarehouseController_getWarehouseStocks_v1"];
     /** Update product stock in a warehouse and atomically sync totalStockCache (Admin Only) */
-    put: operations["WarehouseController_updateStock"];
+    put: operations["WarehouseController_updateStock_v1"];
     post?: never;
     delete?: never;
     options?: never;
@@ -612,7 +612,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/warehouses/{id}": {
+  "/api/v1/warehouses/{id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -620,18 +620,18 @@ export interface paths {
       cookie?: never;
     };
     /** Get warehouse details by UUID */
-    get: operations["WarehouseController_getById"];
+    get: operations["WarehouseController_getById_v1"];
     /** Update warehouse details (Admin Only) */
-    put: operations["WarehouseController_update"];
+    put: operations["WarehouseController_update_v1"];
     post?: never;
     /** Deactivate warehouse (Admin Only) */
-    delete: operations["WarehouseController_delete"];
+    delete: operations["WarehouseController_delete_v1"];
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/cart": {
+  "/api/v1/cart": {
     parameters: {
       query?: never;
       header?: never;
@@ -639,7 +639,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get current authenticated user shopping cart */
-    get: operations["CartController_getCart"];
+    get: operations["CartController_getCart_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -648,7 +648,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/cart/items": {
+  "/api/v1/cart/items": {
     parameters: {
       query?: never;
       header?: never;
@@ -658,14 +658,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Add item to cart or increment quantity */
-    post: operations["CartController_addItem"];
+    post: operations["CartController_addItem_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/cart/items/{id}": {
+  "/api/v1/cart/items/{id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -674,16 +674,16 @@ export interface paths {
     };
     get?: never;
     /** Update quantity of a cart item */
-    put: operations["CartController_updateItemQuantity"];
+    put: operations["CartController_updateItemQuantity_v1"];
     post?: never;
     /** Remove item from cart */
-    delete: operations["CartController_removeItem"];
+    delete: operations["CartController_removeItem_v1"];
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/cart/merge": {
+  "/api/v1/cart/merge": {
     parameters: {
       query?: never;
       header?: never;
@@ -693,14 +693,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Merge guest cart items into authenticated user cart with inventory stock clamping */
-    post: operations["CartController_mergeGuestCart"];
+    post: operations["CartController_mergeGuestCart_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/quotes": {
+  "/api/v1/quotes": {
     parameters: {
       query?: never;
       header?: never;
@@ -708,17 +708,17 @@ export interface paths {
       cookie?: never;
     };
     /** List quotes with filtering and pagination */
-    get: operations["QuotesController_listQuotes"];
+    get: operations["QuotesController_listQuotes_v1"];
     put?: never;
     /** Submit customer Request For Quotation (RFQ) */
-    post: operations["QuotesController_submitRfq"];
+    post: operations["QuotesController_submitRfq_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/quotes/admin": {
+  "/api/v1/quotes/admin": {
     parameters: {
       query?: never;
       header?: never;
@@ -728,14 +728,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Create official B2B quotation (Admin only) */
-    post: operations["QuotesController_createAdminQuote"];
+    post: operations["QuotesController_createAdminQuote_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/quotes/{id}": {
+  "/api/v1/quotes/{id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -743,7 +743,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get detailed quote by ID */
-    get: operations["QuotesController_getQuoteById"];
+    get: operations["QuotesController_getQuoteById_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -752,7 +752,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/quotes/{id}/status": {
+  "/api/v1/quotes/{id}/status": {
     parameters: {
       query?: never;
       header?: never;
@@ -766,10 +766,10 @@ export interface paths {
     options?: never;
     head?: never;
     /** Update quote status along the state machine (Admin only) */
-    patch: operations["QuotesController_updateStatus"];
+    patch: operations["QuotesController_updateStatus_v1"];
     trace?: never;
   };
-  "/quotes/{id}/items/{itemId}/price": {
+  "/api/v1/quotes/{id}/items/{itemId}/price": {
     parameters: {
       query?: never;
       header?: never;
@@ -778,7 +778,7 @@ export interface paths {
     };
     get?: never;
     /** Update negotiated price for a quote line item (Admin only) */
-    put: operations["QuotesController_updateItemPrice"];
+    put: operations["QuotesController_updateItemPrice_v1"];
     post?: never;
     delete?: never;
     options?: never;
@@ -786,7 +786,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/quotes/{id}/messages": {
+  "/api/v1/quotes/{id}/messages": {
     parameters: {
       query?: never;
       header?: never;
@@ -796,14 +796,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Post a message to quote negotiation timeline */
-    post: operations["QuotesController_sendMessage"];
+    post: operations["QuotesController_sendMessage_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/quotes/{id}/approve-to-order": {
+  "/api/v1/quotes/{id}/approve-to-order": {
     parameters: {
       query?: never;
       header?: never;
@@ -813,14 +813,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Approve quote and convert to order (Admin only) */
-    post: operations["QuotesController_approveToOrder"];
+    post: operations["QuotesController_approveToOrder_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/quotes/{id}/export-excel": {
+  "/api/v1/quotes/{id}/export-excel": {
     parameters: {
       query?: never;
       header?: never;
@@ -828,7 +828,7 @@ export interface paths {
       cookie?: never;
     };
     /** Download B2B quote Excel (.xlsx) spreadsheet */
-    get: operations["QuotesController_exportExcel"];
+    get: operations["QuotesController_exportExcel_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -837,7 +837,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/orders/checkout": {
+  "/api/v1/orders/checkout": {
     parameters: {
       query?: never;
       header?: never;
@@ -847,14 +847,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Guest checkout for storefront retail customers */
-    post: operations["OrdersController_checkout"];
+    post: operations["OrdersController_checkout_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/orders/admin": {
+  "/api/v1/orders/admin": {
     parameters: {
       query?: never;
       header?: never;
@@ -864,14 +864,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Create official B2B order (Admin/Sales) */
-    post: operations["OrdersController_createB2bOrder"];
+    post: operations["OrdersController_createB2bOrder_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/orders": {
+  "/api/v1/orders": {
     parameters: {
       query?: never;
       header?: never;
@@ -879,7 +879,7 @@ export interface paths {
       cookie?: never;
     };
     /** List orders with filtering and pagination */
-    get: operations["OrdersController_listOrders"];
+    get: operations["OrdersController_listOrders_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -888,7 +888,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/orders/{id}": {
+  "/api/v1/orders/{id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -896,7 +896,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get detailed order by ID */
-    get: operations["OrdersController_getOrderById"];
+    get: operations["OrdersController_getOrderById_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -905,7 +905,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/orders/{id}/status": {
+  "/api/v1/orders/{id}/status": {
     parameters: {
       query?: never;
       header?: never;
@@ -919,10 +919,10 @@ export interface paths {
     options?: never;
     head?: never;
     /** Update order status along state machine */
-    patch: operations["OrdersController_updateStatus"];
+    patch: operations["OrdersController_updateStatus_v1"];
     trace?: never;
   };
-  "/orders/{id}/cancel": {
+  "/api/v1/orders/{id}/cancel": {
     parameters: {
       query?: never;
       header?: never;
@@ -932,14 +932,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Cancel order and release reserved stock */
-    post: operations["OrdersController_cancelOrder"];
+    post: operations["OrdersController_cancelOrder_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/orders/cron/expire": {
+  "/api/v1/orders/cron/expire": {
     parameters: {
       query?: never;
       header?: never;
@@ -949,14 +949,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Auto-expire pending unpaid orders and restock inventory (Cron) */
-    post: operations["OrdersController_expireOrders"];
+    post: operations["OrdersController_expireOrders_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/payments/checkout-link": {
+  "/api/v1/payments/checkout-link": {
     parameters: {
       query?: never;
       header?: never;
@@ -966,14 +966,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Create PayOS checkout link and VietQR code */
-    post: operations["PaymentsController_createCheckoutLink"];
+    post: operations["PaymentsController_createCheckoutLink_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/payments/payos-webhook": {
+  "/api/v1/payments/payos-webhook": {
     parameters: {
       query?: never;
       header?: never;
@@ -983,14 +983,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Receive and cryptographically verify PayOS payment webhook */
-    post: operations["PaymentsController_handleWebhook"];
+    post: operations["PaymentsController_handleWebhook_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/payments/{id}/verify-cash": {
+  "/api/v1/payments/{id}/verify-cash": {
     parameters: {
       query?: never;
       header?: never;
@@ -1000,14 +1000,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Verify offline cash payment (Admin/Accountant) */
-    post: operations["PaymentsController_verifyCashPayment"];
+    post: operations["PaymentsController_verifyCashPayment_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/payments/repay-debt": {
+  "/api/v1/payments/repay-debt": {
     parameters: {
       query?: never;
       header?: never;
@@ -1017,14 +1017,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Repay B2B dealer debt via PayOS gateway or cash */
-    post: operations["PaymentsController_repayDebt"];
+    post: operations["PaymentsController_repayDebt_v1"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/payments/order/{orderId}": {
+  "/api/v1/payments/order/{orderId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -1032,7 +1032,7 @@ export interface paths {
       cookie?: never;
     };
     /** Get order payment status and transactions */
-    get: operations["PaymentsController_getOrderPaymentSummary"];
+    get: operations["PaymentsController_getOrderPaymentSummary_v1"];
     put?: never;
     post?: never;
     delete?: never;
@@ -3235,7 +3235,7 @@ export interface operations {
       };
     };
   };
-  AuthController_register: {
+  AuthController_register_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3326,7 +3326,7 @@ export interface operations {
       };
     };
   };
-  AuthController_verifyEmail: {
+  AuthController_verifyEmail_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3397,7 +3397,7 @@ export interface operations {
       };
     };
   };
-  AuthController_resendVerification: {
+  AuthController_resendVerification_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3468,7 +3468,7 @@ export interface operations {
       };
     };
   };
-  AuthController_login: {
+  AuthController_login_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3538,7 +3538,7 @@ export interface operations {
       };
     };
   };
-  AuthController_refresh: {
+  AuthController_refresh_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3628,7 +3628,7 @@ export interface operations {
       };
     };
   };
-  AuthController_logout: {
+  AuthController_logout_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3699,7 +3699,7 @@ export interface operations {
       };
     };
   };
-  AuthController_logoutAll: {
+  AuthController_logoutAll_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3761,7 +3761,7 @@ export interface operations {
       };
     };
   };
-  AuthController_forgotPassword: {
+  AuthController_forgotPassword_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3832,7 +3832,7 @@ export interface operations {
       };
     };
   };
-  AuthController_resetPassword: {
+  AuthController_resetPassword_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3903,7 +3903,7 @@ export interface operations {
       };
     };
   };
-  AuthController_changePassword: {
+  AuthController_changePassword_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -3994,7 +3994,7 @@ export interface operations {
       };
     };
   };
-  UsersController_getMe: {
+  UsersController_getMe_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4095,7 +4095,7 @@ export interface operations {
       };
     };
   };
-  DealerTiersController_getAll: {
+  DealerTiersController_getAll_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4136,7 +4136,7 @@ export interface operations {
       };
     };
   };
-  DealerTiersController_getById: {
+  DealerTiersController_getById_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4199,7 +4199,7 @@ export interface operations {
       };
     };
   };
-  LeadsController_getAll: {
+  LeadsController_getAll_v1: {
     parameters: {
       query?: {
         page?: components["schemas"]["Object"];
@@ -4275,7 +4275,7 @@ export interface operations {
       };
     };
   };
-  LeadsController_submitRfq: {
+  LeadsController_submitRfq_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4345,7 +4345,7 @@ export interface operations {
       };
     };
   };
-  LeadsController_getById: {
+  LeadsController_getById_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4428,7 +4428,7 @@ export interface operations {
       };
     };
   };
-  LeadsController_updateStatus: {
+  LeadsController_updateStatus_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4540,7 +4540,7 @@ export interface operations {
       };
     };
   };
-  LeadsController_assignSales: {
+  LeadsController_assignSales_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4623,7 +4623,7 @@ export interface operations {
       };
     };
   };
-  CategoriesController_getAll: {
+  CategoriesController_getAll_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4664,7 +4664,7 @@ export interface operations {
       };
     };
   };
-  CategoriesController_create: {
+  CategoriesController_create_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4774,7 +4774,7 @@ export interface operations {
       };
     };
   };
-  CategoriesController_getTree: {
+  CategoriesController_getTree_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4815,7 +4815,7 @@ export interface operations {
       };
     };
   };
-  CategoriesController_getById: {
+  CategoriesController_getById_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -4878,7 +4878,7 @@ export interface operations {
       };
     };
   };
-  CategoriesController_update: {
+  CategoriesController_update_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -5010,7 +5010,7 @@ export interface operations {
       };
     };
   };
-  CategoriesController_delete: {
+  CategoriesController_delete_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -5093,7 +5093,7 @@ export interface operations {
       };
     };
   };
-  BrandsController_getAll: {
+  BrandsController_getAll_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -5134,7 +5134,7 @@ export interface operations {
       };
     };
   };
-  BrandsController_create: {
+  BrandsController_create_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -5244,7 +5244,7 @@ export interface operations {
       };
     };
   };
-  BrandsController_getById: {
+  BrandsController_getById_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -5307,7 +5307,7 @@ export interface operations {
       };
     };
   };
-  BrandsController_update: {
+  BrandsController_update_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -5439,7 +5439,7 @@ export interface operations {
       };
     };
   };
-  BrandsController_delete: {
+  BrandsController_delete_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -5522,7 +5522,7 @@ export interface operations {
       };
     };
   };
-  ProductsController_getProducts: {
+  ProductsController_getProducts_v1: {
     parameters: {
       query?: {
         /** @description Page number */
@@ -5607,7 +5607,7 @@ export interface operations {
       };
     };
   };
-  ProductsController_create: {
+  ProductsController_create_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -5717,7 +5717,7 @@ export interface operations {
       };
     };
   };
-  ProductsController_getMetadata: {
+  ProductsController_getMetadata_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -5758,7 +5758,7 @@ export interface operations {
       };
     };
   };
-  ProductsController_getById: {
+  ProductsController_getById_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -5821,7 +5821,7 @@ export interface operations {
       };
     };
   };
-  ProductsController_update: {
+  ProductsController_update_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -5953,7 +5953,7 @@ export interface operations {
       };
     };
   };
-  ProductsController_delete: {
+  ProductsController_delete_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6036,7 +6036,7 @@ export interface operations {
       };
     };
   };
-  WarehouseController_getAll: {
+  WarehouseController_getAll_v1: {
     parameters: {
       query?: {
         /** @description Whether to include deactivated warehouses */
@@ -6060,7 +6060,7 @@ export interface operations {
       };
     };
   };
-  WarehouseController_create: {
+  WarehouseController_create_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6170,7 +6170,7 @@ export interface operations {
       };
     };
   };
-  WarehouseController_getProductStocks: {
+  WarehouseController_getProductStocks_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6214,7 +6214,7 @@ export interface operations {
       };
     };
   };
-  WarehouseController_getWarehouseStocks: {
+  WarehouseController_getWarehouseStocks_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6258,7 +6258,7 @@ export interface operations {
       };
     };
   };
-  WarehouseController_updateStock: {
+  WarehouseController_updateStock_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6371,7 +6371,7 @@ export interface operations {
       };
     };
   };
-  WarehouseController_getById: {
+  WarehouseController_getById_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6415,7 +6415,7 @@ export interface operations {
       };
     };
   };
-  WarehouseController_update: {
+  WarehouseController_update_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6548,7 +6548,7 @@ export interface operations {
       };
     };
   };
-  WarehouseController_delete: {
+  WarehouseController_delete_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6632,7 +6632,7 @@ export interface operations {
       };
     };
   };
-  CartController_getCart: {
+  CartController_getCart_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6673,7 +6673,7 @@ export interface operations {
       };
     };
   };
-  CartController_addItem: {
+  CartController_addItem_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6763,7 +6763,7 @@ export interface operations {
       };
     };
   };
-  CartController_updateItemQuantity: {
+  CartController_updateItemQuantity_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6856,7 +6856,7 @@ export interface operations {
       };
     };
   };
-  CartController_removeItem: {
+  CartController_removeItem_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6920,7 +6920,7 @@ export interface operations {
       };
     };
   };
-  CartController_mergeGuestCart: {
+  CartController_mergeGuestCart_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -6990,7 +6990,7 @@ export interface operations {
       };
     };
   };
-  QuotesController_listQuotes: {
+  QuotesController_listQuotes_v1: {
     parameters: {
       query?: {
         /** @description Pagination page number (1-based) */
@@ -7094,7 +7094,7 @@ export interface operations {
       };
     };
   };
-  QuotesController_submitRfq: {
+  QuotesController_submitRfq_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -7144,7 +7144,7 @@ export interface operations {
       };
     };
   };
-  QuotesController_createAdminQuote: {
+  QuotesController_createAdminQuote_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -7234,7 +7234,7 @@ export interface operations {
       };
     };
   };
-  QuotesController_getQuoteById: {
+  QuotesController_getQuoteById_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -7318,7 +7318,7 @@ export interface operations {
       };
     };
   };
-  QuotesController_updateStatus: {
+  QuotesController_updateStatus_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -7431,7 +7431,7 @@ export interface operations {
       };
     };
   };
-  QuotesController_updateItemPrice: {
+  QuotesController_updateItemPrice_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -7546,7 +7546,7 @@ export interface operations {
       };
     };
   };
-  QuotesController_sendMessage: {
+  QuotesController_sendMessage_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -7639,7 +7639,7 @@ export interface operations {
       };
     };
   };
-  QuotesController_approveToOrder: {
+  QuotesController_approveToOrder_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -7748,7 +7748,7 @@ export interface operations {
       };
     };
   };
-  QuotesController_exportExcel: {
+  QuotesController_exportExcel_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -7829,7 +7829,7 @@ export interface operations {
       };
     };
   };
-  OrdersController_checkout: {
+  OrdersController_checkout_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -7899,7 +7899,7 @@ export interface operations {
       };
     };
   };
-  OrdersController_createB2bOrder: {
+  OrdersController_createB2bOrder_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -8009,7 +8009,7 @@ export interface operations {
       };
     };
   };
-  OrdersController_listOrders: {
+  OrdersController_listOrders_v1: {
     parameters: {
       query?: {
         page?: number;
@@ -8109,7 +8109,7 @@ export interface operations {
       };
     };
   };
-  OrdersController_getOrderById: {
+  OrdersController_getOrderById_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -8193,7 +8193,7 @@ export interface operations {
       };
     };
   };
-  OrdersController_updateStatus: {
+  OrdersController_updateStatus_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -8306,7 +8306,7 @@ export interface operations {
       };
     };
   };
-  OrdersController_cancelOrder: {
+  OrdersController_cancelOrder_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -8415,7 +8415,7 @@ export interface operations {
       };
     };
   };
-  OrdersController_expireOrders: {
+  OrdersController_expireOrders_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -8457,7 +8457,7 @@ export interface operations {
       };
     };
   };
-  PaymentsController_createCheckoutLink: {
+  PaymentsController_createCheckoutLink_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -8527,7 +8527,7 @@ export interface operations {
       };
     };
   };
-  PaymentsController_handleWebhook: {
+  PaymentsController_handleWebhook_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -8577,7 +8577,7 @@ export interface operations {
       };
     };
   };
-  PaymentsController_verifyCashPayment: {
+  PaymentsController_verifyCashPayment_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -8690,7 +8690,7 @@ export interface operations {
       };
     };
   };
-  PaymentsController_repayDebt: {
+  PaymentsController_repayDebt_v1: {
     parameters: {
       query?: never;
       header?: never;
@@ -8780,7 +8780,7 @@ export interface operations {
       };
     };
   };
-  PaymentsController_getOrderPaymentSummary: {
+  PaymentsController_getOrderPaymentSummary_v1: {
     parameters: {
       query?: never;
       header?: never;

@@ -104,7 +104,7 @@ describe("Orders Module Integration", () => {
 
       // 2. Guest places retail order for 2 units
       const checkoutRes = await request(getHttpServer())
-        .post("/orders/checkout")
+        .post("/api/v1/orders/checkout")
         .send({
           customerName: "Nguyễn Văn Khách",
           customerPhone: "0901234567",
@@ -165,7 +165,7 @@ describe("Orders Module Integration", () => {
       const productId = product?.id ?? "";
 
       const checkoutRes = await request(getHttpServer())
-        .post("/orders/checkout")
+        .post("/api/v1/orders/checkout")
         .send({
           customerName: "Khách Mua Nhiều",
           customerPhone: "0909888777",
@@ -238,7 +238,7 @@ describe("Orders Module Integration", () => {
 
       // 3. Admin creates B2B corporate order linked to lead with TRADE_CREDIT
       const b2bRes = await request(getHttpServer())
-        .post("/orders/admin")
+        .post("/api/v1/orders/admin")
         .set(adminAuth)
         .send({
           userId: adminUser.id,
@@ -285,7 +285,7 @@ describe("Orders Module Integration", () => {
 
       // 3. Update status along state machine: PENDING -> PROCESSING
       const updateRes = await request(getHttpServer())
-        .patch(`/orders/${b2bOrder.id}/status`)
+        .patch(`/api/v1/orders/${b2bOrder.id}/status`)
         .set(adminAuth)
         .send({
           status: "PROCESSING",
@@ -300,7 +300,7 @@ describe("Orders Module Integration", () => {
 
       // 4. Cancel order and verify atomic restocking
       const cancelRes = await request(getHttpServer())
-        .post(`/orders/${b2bOrder.id}/cancel`)
+        .post(`/api/v1/orders/${b2bOrder.id}/cancel`)
         .set(adminAuth);
 
       expect(cancelRes.status).toBe(200);
@@ -341,7 +341,7 @@ describe("Orders Module Integration", () => {
 
       // 2. Create pending order via checkout (stock becomes 0)
       const checkoutRes = await request(getHttpServer())
-        .post("/orders/checkout")
+        .post("/api/v1/orders/checkout")
         .send({
           customerName: "Khách Chờ Thanh Toán",
           customerPhone: "0905556667",
@@ -370,7 +370,7 @@ describe("Orders Module Integration", () => {
 
       // 4. Trigger auto-expiration cron endpoint
       const cronRes = await request(getHttpServer())
-        .post("/orders/cron/expire")
+        .post("/api/v1/orders/cron/expire")
         .set(
           "x-cron-secret",
           env.CRON_SECRET ?? "dev-cron-secret-change-in-production",

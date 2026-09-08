@@ -45,7 +45,7 @@ import {
 } from "./dto";
 
 @ApiTags(WAREHOUSE_ROUTES.TAG)
-@Controller(WAREHOUSE_ROUTES.ROOT)
+@Controller({ path: WAREHOUSE_ROUTES.ROOT, version: "1" })
 export class WarehouseController {
   constructor(private readonly warehouseService: WarehouseService) {}
 

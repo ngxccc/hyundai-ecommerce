@@ -119,7 +119,7 @@ describe("Warehouse & Cart Modules Integration", () => {
 
       // 2. Create Warehouse A (Hanoi) and Warehouse B (Danang)
       const resWhA = await request(getHttpServer())
-        .post("/warehouses")
+        .post("/api/v1/warehouses")
         .set(authHeader)
         .send({
           nameVi: "Kho Tổng Hà Nội",
@@ -134,7 +134,7 @@ describe("Warehouse & Cart Modules Integration", () => {
       ).data.id;
 
       const resWhB = await request(getHttpServer())
-        .post("/warehouses")
+        .post("/api/v1/warehouses")
         .set(authHeader)
         .send({
           nameVi: "Kho Miền Trung Đà Nẵng",
@@ -150,7 +150,7 @@ describe("Warehouse & Cart Modules Integration", () => {
 
       // 3. Update stock in Warehouse A: 5 units
       const stockResA = await request(getHttpServer())
-        .put(`/warehouses/${whAId}/stock`)
+        .put(`/api/v1/warehouses/${whAId}/stock`)
         .set(authHeader)
         .send({
           productId,
@@ -166,7 +166,7 @@ describe("Warehouse & Cart Modules Integration", () => {
 
       // 4. Update stock in Warehouse B: 10 units -> totalStockCache should become 15
       const stockResB = await request(getHttpServer())
-        .put(`/warehouses/${whBId}/stock`)
+        .put(`/api/v1/warehouses/${whBId}/stock`)
         .set(authHeader)
         .send({
           productId,
@@ -211,7 +211,7 @@ describe("Warehouse & Cart Modules Integration", () => {
 
       // 1. Get initial empty cart
       const getCartRes = await request(getHttpServer())
-        .get("/cart")
+        .get("/api/v1/cart")
         .set(authHeader);
 
       expect(getCartRes.status).toBe(200);
@@ -222,7 +222,7 @@ describe("Warehouse & Cart Modules Integration", () => {
 
       // 2. Add 2 items (valid: 2 <= 5)
       const addRes = await request(getHttpServer())
-        .post("/cart/items")
+        .post("/api/v1/cart/items")
         .set(authHeader)
         .send({
           productId,
@@ -240,7 +240,7 @@ describe("Warehouse & Cart Modules Integration", () => {
 
       // 3. Attempt to add 10 more items -> (2 + 10 = 12 > 5) -> should reject with 400
       const overflowRes = await request(getHttpServer())
-        .post("/cart/items")
+        .post("/api/v1/cart/items")
         .set(authHeader)
         .send({
           productId,
@@ -251,7 +251,7 @@ describe("Warehouse & Cart Modules Integration", () => {
 
       // 4. Update quantity to 4 (valid: 4 <= 5)
       const updateRes = await request(getHttpServer())
-        .put(`/cart/items/${cartItemId}`)
+        .put(`/api/v1/cart/items/${cartItemId}`)
         .set(authHeader)
         .send({
           quantity: 4,
@@ -266,7 +266,7 @@ describe("Warehouse & Cart Modules Integration", () => {
 
       // 5. Delete item from cart
       const deleteRes = await request(getHttpServer())
-        .delete(`/cart/items/${cartItemId}`)
+        .delete(`/api/v1/cart/items/${cartItemId}`)
         .set(authHeader);
 
       expect(deleteRes.status).toBe(200);
@@ -298,15 +298,18 @@ describe("Warehouse & Cart Modules Integration", () => {
       const productId = product ? product.id : "";
 
       // 1. User already has 4 units in their cart
-      await request(getHttpServer()).post("/cart/items").set(authHeader).send({
-        productId,
-        quantity: 4,
-      });
+      await request(getHttpServer())
+        .post("/api/v1/cart/items")
+        .set(authHeader)
+        .send({
+          productId,
+          quantity: 4,
+        });
 
       // 2. Guest session merges 20 units (4 + 20 = 24 > stock 10)
       // Clamping logic MUST cap the final quantity at 10!
       const mergeRes = await request(getHttpServer())
-        .post("/cart/merge")
+        .post("/api/v1/cart/merge")
         .set(authHeader)
         .send({
           items: [

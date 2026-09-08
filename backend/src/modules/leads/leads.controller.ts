@@ -39,7 +39,7 @@ import { LeadsService } from "./leads.service";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 
 @ApiTags(LEADS_ROUTES.TAG)
-@Controller(LEADS_ROUTES.PREFIX)
+@Controller({ path: LEADS_ROUTES.PREFIX, version: "1" })
 @UseGuards(CustomThrottlerGuard)
 export class LeadsController {
   constructor(private readonly leadsService: LeadsService) {}
