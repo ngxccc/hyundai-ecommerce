@@ -33,7 +33,7 @@ export default async function AdminCustomersPage() {
   const tCustomers = await getTranslations("adminCustomers");
 
   const users: AdminUser[] = [];
-  const { data: tierRes } = await api.GET("/dealer-tiers");
+  const { data: tierRes } = await api.GET("/api/v1/dealer-tiers");
   const dealerTiers = tierRes?.data ?? [];
 
   return (

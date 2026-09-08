@@ -13,11 +13,11 @@ export default async function EditProductPage({
   const { id } = await params;
 
   const [productRes, t, tNav, categoriesRes, brandsRes] = await Promise.all([
-    api.GET("/products/{id}", { params: { path: { id } } }),
+    api.GET("/api/v1/products/{id}", { params: { path: { id } } }),
     getTranslations("adminProductForm"),
     getTranslations("adminDashboard.nav"),
-    api.GET("/categories"),
-    api.GET("/brands"),
+    api.GET("/api/v1/categories"),
+    api.GET("/api/v1/brands"),
   ]);
   const product = productRes.data?.data;
   const categories = categoriesRes.data?.data ?? [];

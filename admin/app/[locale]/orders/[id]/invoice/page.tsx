@@ -26,7 +26,7 @@ export default async function AdminInvoicePage({
 }) {
   const { id } = await params;
 
-  const { data: res } = await api.GET("/orders/{id}", {
+  const { data: res } = await api.GET("/api/v1/orders/{id}", {
     params: { path: { id } },
   });
   const order = res?.data;

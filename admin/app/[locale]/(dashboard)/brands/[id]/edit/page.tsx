@@ -33,7 +33,7 @@ export default async function AdminEditBrandPage({
   const tNav = await getTranslations("adminDashboard.nav");
   const tForm = await getTranslations("adminBrandForm");
 
-  const { data: res } = await api.GET("/brands/{id}", {
+  const { data: res } = await api.GET("/api/v1/brands/{id}", {
     params: { path: { id } },
   });
   const brand = res?.data;

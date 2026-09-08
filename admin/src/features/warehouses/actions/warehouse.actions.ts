@@ -28,7 +28,7 @@ export const createWarehouseAction = async (input: CreateWarehouseInput) => {
       return {
         success: false as const,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-        fieldErrors: formatValidationErrors(parsed.error, (k) => t(k as never)),
+        fieldErrors: formatValidationErrors(parsed.error, (k) => t(k)),
       };
     }
 
@@ -44,7 +44,7 @@ export const createWarehouseAction = async (input: CreateWarehouseInput) => {
       isActive: validatedData.isActive,
     };
 
-    const { data, error } = await api.POST("/warehouses", {
+    const { data, error } = await api.POST("/api/v1/warehouses", {
       body: payload as never,
     });
     if (error) {
@@ -82,7 +82,7 @@ export async function updateWarehouseAction(
     if (!parsed.success) {
       return {
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
-        fieldErrors: formatValidationErrors(parsed.error, (k) => t(k as never)),
+        fieldErrors: formatValidationErrors(parsed.error, (k) => t(k)),
       };
     }
 
@@ -102,7 +102,7 @@ export async function updateWarehouseAction(
     if (validatedData.isActive !== undefined)
       updatePayload.isActive = validatedData.isActive;
 
-    const { data, error } = await api.PUT("/warehouses/{id}", {
+    const { data, error } = await api.PUT("/api/v1/warehouses/{id}", {
       params: { path: { id } },
       body: updatePayload as never,
     });
@@ -134,7 +134,7 @@ export async function deleteWarehouseAction(id: string) {
   }
   try {
     await requireAuth();
-    const { error } = await api.DELETE("/warehouses/{id}", {
+    const { error } = await api.DELETE("/api/v1/warehouses/{id}", {
       params: { path: { id } },
     });
     if (error) {

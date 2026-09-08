@@ -35,7 +35,7 @@ export default async function AdminWarehousesPage({
 }) {
   const tNav = await getTranslations("adminDashboard.nav");
   const tHeader = await getTranslations("adminWarehouses.header");
-  const { data: res } = await api.GET("/warehouses");
+  const { data: res } = await api.GET("/api/v1/warehouses");
   const warehouses: AdminWarehouse[] = res?.data ?? [];
 
   const resolvedSearchParams = await searchParams;

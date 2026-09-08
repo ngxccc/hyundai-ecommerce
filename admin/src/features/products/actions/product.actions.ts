@@ -228,7 +228,7 @@ export const createProductAction = async (formData: FormData) => {
     }
 
     const { data: createRes, error: createError } = await api.POST(
-      "/products",
+      "/api/v1/products",
       {
         body: toCreateProductDto(validatedData),
       },
@@ -249,7 +249,7 @@ export const createProductAction = async (formData: FormData) => {
               if (url) uploadedUrls.push(url);
             }
             if (uploadedUrls.length > 0) {
-              await api.PUT("/products/{id}", {
+              await api.PUT("/api/v1/products/{id}", {
                 params: { path: { id: newProduct.id } },
                 body: {
                   images: [...validatedData.images, ...uploadedUrls],
@@ -310,7 +310,7 @@ export async function updateProductAction(id: string, formData: FormData) {
 
     const validatedData = parsed.data;
 
-    const { data: getRes } = await api.GET("/products/{id}", {
+    const { data: getRes } = await api.GET("/api/v1/products/{id}", {
       params: { path: { id } },
     });
     const existingProduct = getRes?.data;
@@ -332,7 +332,7 @@ export async function updateProductAction(id: string, formData: FormData) {
     }
 
     const { data: updateRes, error: updateError } = await api.PUT(
-      "/products/{id}",
+      "/api/v1/products/{id}",
       {
         params: { path: { id } },
         body: toUpdateProductDto(validatedData),
@@ -358,7 +358,7 @@ export async function updateProductAction(id: string, formData: FormData) {
             if (url) uploadedUrls.push(url);
           }
           if (uploadedUrls.length > 0) {
-            await api.PUT("/products/{id}", {
+            await api.PUT("/api/v1/products/{id}", {
               params: { path: { id } },
               body: {
                 images: [...(validatedData.images ?? []), ...uploadedUrls],
@@ -401,7 +401,7 @@ export async function deleteProductAction(id: string) {
   try {
     await requireAuth();
     const t = await getTranslations("errors");
-    const { error: deleteError } = await api.DELETE("/products/{id}", {
+    const { error: deleteError } = await api.DELETE("/api/v1/products/{id}", {
       params: { path: { id } },
     });
     if (deleteError) {
@@ -446,7 +446,7 @@ export async function searchProductsAction(query: string, limit = 10) {
       return { success: true as const, data: [] };
     }
 
-    const { data: listRes } = await api.GET("/products", {
+    const { data: listRes } = await api.GET("/api/v1/products", {
       params: {
         query: {
           search: cleanQuery,

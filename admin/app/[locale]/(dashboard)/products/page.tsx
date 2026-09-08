@@ -82,11 +82,11 @@ export default async function AdminProductsPage({
   const [t, tNav, productsRes, categoriesRes, brandsRes] = await Promise.all([
     getTranslations("adminProducts.header"),
     getTranslations("adminDashboard.nav"),
-    api.GET("/products", {
+    api.GET("/api/v1/products", {
       params: { query: { limit: 20, ...options } as never },
     }),
-    api.GET("/categories"),
-    api.GET("/brands"),
+    api.GET("/api/v1/categories"),
+    api.GET("/api/v1/brands"),
   ]);
   const categories = categoriesRes.data?.data ?? [];
   const brands = brandsRes.data?.data ?? [];

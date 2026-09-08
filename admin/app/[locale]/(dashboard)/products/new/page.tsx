@@ -8,8 +8,8 @@ export default async function CreateProductPage() {
   const [t, tNav, categoriesRes, brandsRes] = await Promise.all([
     getTranslations("adminProductForm"),
     getTranslations("adminDashboard.nav"),
-    api.GET("/categories"),
-    api.GET("/brands"),
+    api.GET("/api/v1/categories"),
+    api.GET("/api/v1/brands"),
   ]);
   const categories = categoriesRes.data?.data ?? [];
   const brands = brandsRes.data?.data ?? [];

@@ -34,8 +34,8 @@ export default async function AdminEditCategoryPage({
   const tForm = await getTranslations("adminCategoryForm");
 
   const [categoriesRes, categoryRes] = await Promise.all([
-    api.GET("/categories"),
-    api.GET("/categories/{id}", { params: { path: { id } } }),
+    api.GET("/api/v1/categories"),
+    api.GET("/api/v1/categories/{id}", { params: { path: { id } } }),
   ]);
   const categories = categoriesRes.data?.data ?? [];
   const category = categoryRes.data?.data;

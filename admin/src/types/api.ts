@@ -58,7 +58,7 @@ export type BusinessType = NonNullable<
 
 // Query Parameters derived from OpenAPI Contract
 export type ProductQueryParams = NonNullable<
-  ApiPaths["/products"]["get"]["parameters"]["query"]
+  ApiPaths["/api/v1/products"]["get"]["parameters"]["query"]
 >;
 export type ProductPhase = ProductQueryParams["phase"];
 export type ProductFuelType = ProductQueryParams["fuelType"];

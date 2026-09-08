@@ -33,7 +33,7 @@ export default async function AdminOrderDetailPage({
   const tHeader = await getTranslations("adminOrders");
 
   const [orderRes, session] = await Promise.all([
-    api.GET("/orders/{id}", { params: { path: { id } } }),
+    api.GET("/api/v1/orders/{id}", { params: { path: { id } } }),
     getCachedSession(),
   ]);
   const order = orderRes.data?.data;

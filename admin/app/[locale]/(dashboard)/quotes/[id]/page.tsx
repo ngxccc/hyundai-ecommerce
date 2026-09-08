@@ -33,7 +33,7 @@ export default async function AdminQuoteDetailPage({
   const tNav = await getTranslations("adminDashboard.nav");
   const tHeader = await getTranslations("adminQuotes");
 
-  const { data: quoteRes } = await api.GET("/quotes/{id}", {
+  const { data: quoteRes } = await api.GET("/api/v1/quotes/{id}", {
     params: { path: { id } },
   });
   const quote = quoteRes?.data;

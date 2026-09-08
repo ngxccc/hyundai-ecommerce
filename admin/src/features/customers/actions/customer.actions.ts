@@ -20,7 +20,7 @@ export const createDealerTierAction = async (formData: FormData) => {
     JSON.parse(payloadStr as string);
 
     // Backend handles creation of dealer tier
-    const { data: tierRes } = await api.GET("/dealer-tiers");
+    const { data: tierRes } = await api.GET("/api/v1/dealer-tiers");
     const tierData = tierRes?.data ?? [];
 
     revalidatePath("/customers/tiers");

@@ -33,7 +33,7 @@ export default async function AdminBrandsPage({
 }) {
   const tNav = await getTranslations("adminDashboard.nav");
   const tHeader = await getTranslations("adminBrands.header");
-  const { data: res } = await api.GET("/brands");
+  const { data: res } = await api.GET("/api/v1/brands");
   const brands = res?.data ?? [];
 
   const resolvedSearchParams = await searchParams;

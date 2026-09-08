@@ -41,7 +41,7 @@ export const adminLoginAction = async (data: AdminLoginForm) => {
   }
 
   try {
-    const { data: res, error } = await api.POST("/auth/login", {
+    const { data: res, error } = await api.POST("/api/v1/auth/login", {
       body: parsed.data,
     });
 

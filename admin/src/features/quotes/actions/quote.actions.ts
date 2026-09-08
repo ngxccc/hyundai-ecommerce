@@ -18,9 +18,12 @@ export async function approveAndConvertToOrderAction(quoteId: string) {
     return { success: false as const, error: t("default") };
   }
   try {
-    const { data, error } = await api.POST("/quotes/{id}/approve-to-order", {
-      params: { path: { id: quoteId } },
-    });
+    const { data, error } = await api.POST(
+      "/api/v1/quotes/{id}/approve-to-order",
+      {
+        params: { path: { id: quoteId } },
+      },
+    );
     const res = data?.data;
     if (error || !res) {
       throw new ApiClientError(
@@ -58,7 +61,7 @@ export async function updateQuoteStatusAction(
     return { success: false as const, error: t("default") };
   }
   try {
-    const { data, error } = await api.PATCH("/quotes/{id}/status", {
+    const { data, error } = await api.PATCH("/api/v1/quotes/{id}/status", {
       params: { path: { id: quoteId } },
       body: { status: parsedStatus.data.status },
     });
@@ -95,10 +98,13 @@ export async function updateQuoteItemPriceAction(
     return { success: false as const, error: t("default") };
   }
   try {
-    const { data, error } = await api.PUT("/quotes/{id}/items/{itemId}/price", {
-      params: { path: { id: quoteId, itemId } },
-      body: { agreedPrice },
-    });
+    const { data, error } = await api.PUT(
+      "/api/v1/quotes/{id}/items/{itemId}/price",
+      {
+        params: { path: { id: quoteId, itemId } },
+        body: { agreedPrice },
+      },
+    );
     const res = data?.data;
     if (error || !res) {
       throw new ApiClientError(
@@ -130,7 +136,7 @@ export async function sendAdminNegotiationMessageAction(
     return { success: false as const, error: t("default") };
   }
   try {
-    const { data, error } = await api.POST("/quotes/{id}/messages", {
+    const { data, error } = await api.POST("/api/v1/quotes/{id}/messages", {
       params: { path: { id: quoteId } },
       body: { message },
     });
@@ -172,7 +178,7 @@ export async function createAdminQuoteAction(rawInput: CreateAdminQuoteInput) {
   }
   const dto = parsed.data;
   try {
-    const { data, error } = await api.POST("/quotes/admin", {
+    const { data, error } = await api.POST("/api/v1/quotes/admin", {
       body: {
         userId: dto.userId ?? undefined,
         customerName: dto.customerName,
