@@ -33,7 +33,7 @@ export class LeadResponseDto {
   @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
   public id!: string;
 
-  @ApiProperty({ example: "RFQ-20260904-001" })
+  @ApiProperty({ example: "RFQ-20260908-JDHC005DCA75" })
   public leadCode!: string;
 
   @ApiProperty({ example: "Nguyễn Văn An" })

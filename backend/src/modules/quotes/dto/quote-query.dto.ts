@@ -39,7 +39,7 @@ export class QuoteQueryDto implements QuoteQueryDtoType {
   public userId?: string;
 
   @ApiPropertyOptional({
-    example: "PENDING",
+    example: QUOTE_STATUSES[1],
     enum: QUOTE_STATUSES,
     description: "Filter quotes by status",
   })

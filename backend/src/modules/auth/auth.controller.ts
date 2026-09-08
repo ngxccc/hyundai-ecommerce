@@ -19,6 +19,7 @@ import {
   ApiOkResponseGeneric,
   ApiBadRequestResponseRfc9457,
   ApiUnauthorizedResponseRfc9457,
+  ApiForbiddenResponseRfc9457,
   ApiConflictResponseRfc9457,
   ApiInternalServerErrorResponseRfc9457,
 } from "@/common/decorators";
@@ -103,6 +104,8 @@ export class AuthController {
   })
   @ApiOkResponseGeneric(LoginResponseDto)
   @ApiBadRequestResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   @ApiInternalServerErrorResponseRfc9457()
   async login(
     @Body() dto: LoginDto,
@@ -145,6 +148,7 @@ export class AuthController {
   })
   @ApiOkResponseGeneric()
   @ApiBadRequestResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
   @ApiInternalServerErrorResponseRfc9457()
   async logout(@Body() dto: RefreshTokenDto): Promise<ApiResponse<null>> {
     await this.authService.logout(dto);

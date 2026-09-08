@@ -47,6 +47,7 @@ import {
   OrderResponseDto,
   OrderQueryDto,
   UpdateOrderStatusDto,
+  ExpireOrdersResponseDto,
 } from "./dto";
 
 @ApiTags(ORDER_ROUTES.TAG)
@@ -228,7 +229,7 @@ export class OrdersController {
   @ApiOperation({
     summary: "Auto-expire pending unpaid orders and restock inventory (Cron)",
   })
-  @ApiOkResponseGeneric()
+  @ApiOkResponseGeneric(ExpireOrdersResponseDto)
   @ApiUnauthorizedResponseRfc9457()
   async expireOrders() {
     const expiredCount = await this.ordersService.expirePendingOrders();

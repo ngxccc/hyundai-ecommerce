@@ -149,7 +149,9 @@ describe("LeadsController", () => {
   describe("PATCH /leads/:id/assign", () => {
     describe("when admin assigns sales representative", () => {
       test("should return apiSuccess wrapped lead with assigned sales", async () => {
-        const result = await controller.assignSales("lead-1", "sales-uuid");
+        const result = await controller.assignSales("lead-1", {
+          salesId: "sales-uuid",
+        });
 
         expect(mockLeadsService.assignSales).toHaveBeenCalledWith(
           "lead-1",

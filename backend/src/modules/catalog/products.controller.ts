@@ -143,7 +143,7 @@ export class ProductsController {
     summary: "Delete product (Admin only)",
     description: "Soft deletes an existing product by UUID.",
   })
-  @ApiOkResponseGeneric(Object)
+  @ApiOkResponseGeneric()
   @ApiNotFoundResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()
   @ApiForbiddenResponseRfc9457()

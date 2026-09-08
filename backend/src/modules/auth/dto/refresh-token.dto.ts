@@ -22,8 +22,8 @@ export class RefreshTokenDto implements RefreshTokenDtoType {
   public static readonly zodSchema = refreshTokenSchema;
 
   @ApiProperty({
-    example: "d9b2e8a1-3c5f-4a7b-8e9d-1f2a3b4c5d6e",
-    description: "Active refresh token string",
+    example: "7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069",
+    description: "Active 64-character hex refresh token string",
   })
   public refreshToken!: string;
 }
@@ -32,6 +32,8 @@ export class RefreshResponseDto {
   @ApiProperty({ example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." })
   public accessToken!: string;
 
-  @ApiProperty({ example: "d9b2e8a1-3c5f-4a7b-8e9d-1f2a3b4c5d6e" })
+  @ApiProperty({
+    example: "7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069",
+  })
   public refreshToken!: string;
 }

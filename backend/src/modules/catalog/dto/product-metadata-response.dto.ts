@@ -48,10 +48,18 @@ export class ProductMetadataResponseDto {
   @ApiProperty({ type: [CategoryFacetItem] })
   public categories!: CategoryFacetItem[];
 
-  @ApiProperty({ type: RangeFacet })
+  @ApiProperty({
+    type: RangeFacet,
+    example: { min: 10, max: 2500 },
+    description: "Power range in kVA",
+  })
   public powerRange!: RangeFacet;
 
-  @ApiProperty({ type: RangeFacet })
+  @ApiProperty({
+    type: RangeFacet,
+    example: { min: 15000000, max: 850000000 },
+    description: "Price range in VND",
+  })
   public priceRange!: RangeFacet;
 
   @ApiProperty({ type: [ValueCountFacetItem] })

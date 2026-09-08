@@ -248,6 +248,7 @@ export class QuotesController {
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async sendMessage(
     @Param("id", ParseUUIDPipe) quoteId: string,
     @CurrentUser() currentUser: JwtPayload,
@@ -308,7 +309,15 @@ export class QuotesController {
   @ApiParam({ name: "id", description: "Quote UUID" })
   @SwaggerResponse({
     status: 200,
-    description: "Excel workbook stream",
+    description: "Excel workbook stream (.xlsx)",
+    content: {
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+        schema: {
+          type: "string",
+          format: "binary",
+        },
+      },
+    },
   })
   @ApiNotFoundResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()

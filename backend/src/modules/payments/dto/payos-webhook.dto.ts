@@ -62,6 +62,24 @@ export class PayOSWebhookDataClass implements PayOSWebhookDataDto {
 
   @ApiPropertyOptional({ example: "Success" })
   public desc?: string;
+
+  @ApiPropertyOptional({ example: "970422", nullable: true })
+  public counterAccountBankId?: string | null;
+
+  @ApiPropertyOptional({ example: "MBBank", nullable: true })
+  public counterAccountBankName?: string | null;
+
+  @ApiPropertyOptional({ example: "NGUYEN VAN A", nullable: true })
+  public counterAccountName?: string | null;
+
+  @ApiPropertyOptional({ example: "0901234567", nullable: true })
+  public counterAccountNumber?: string | null;
+
+  @ApiPropertyOptional({ example: "HYUNDAI ECOM", nullable: true })
+  public virtualAccountName?: string | null;
+
+  @ApiPropertyOptional({ example: "VA12345678", nullable: true })
+  public virtualAccountNumber?: string | null;
 }
 
 export class PayOSWebhookDto implements PayOSWebhookDtoType {

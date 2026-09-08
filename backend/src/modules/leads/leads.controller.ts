@@ -28,6 +28,7 @@ import {
 } from "@/common/decorators";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import {
+  AssignSalesDto,
   CreateLeadDto,
   LeadQueryDto,
   LeadResponseDto,
@@ -150,13 +151,14 @@ export class LeadsController {
   })
   @ApiOkResponseGeneric(LeadResponseDto)
   @ApiNotFoundResponseRfc9457()
+  @ApiBadRequestResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()
   @ApiForbiddenResponseRfc9457()
   async assignSales(
     @Param("id", ParseUUIDPipe) id: string,
-    @Body("salesId", ParseUUIDPipe) salesId: string,
+    @Body() dto: AssignSalesDto,
   ): Promise<ApiResponse<LeadResponseDto>> {
-    const updated = await this.leadsService.assignSales(id, salesId);
+    const updated = await this.leadsService.assignSales(id, dto.salesId);
     return apiSuccess(updated);
   }
 }

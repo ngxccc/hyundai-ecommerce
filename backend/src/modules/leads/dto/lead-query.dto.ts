@@ -14,11 +14,21 @@ export type LeadQueryDtoType = z.infer<typeof leadQuerySchema>;
 export class LeadQueryDto implements LeadQueryDtoType {
   public static readonly zodSchema = leadQuerySchema;
 
-  @ApiPropertyOptional({ example: 1, default: 1 })
-  page = 1;
+  @ApiPropertyOptional({
+    type: Number,
+    example: 1,
+    default: 1,
+    description: "Pagination page number (1-based)",
+  })
+  public page = 1;
 
-  @ApiPropertyOptional({ example: 20, default: 20 })
-  limit = 20;
+  @ApiPropertyOptional({
+    type: Number,
+    example: 20,
+    default: 20,
+    description: "Number of records per page (max 100)",
+  })
+  public limit = 20;
 
   @ApiPropertyOptional({
     enum: leadStatusEnum.enumValues,

@@ -59,7 +59,10 @@ export class OrderItemResponseDto {
   @ApiProperty({ example: "245000000.00" })
   public unitPrice!: string;
 
-  @ApiPropertyOptional({ type: () => OrderItemProductSummaryDto })
+  @ApiPropertyOptional({
+    type: () => OrderItemProductSummaryDto,
+    nullable: true,
+  })
   public product?: OrderItemProductSummaryDto | null;
 
   @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
@@ -90,30 +93,35 @@ export class OrderResponseDto {
   @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb92" })
   public id!: string;
 
-  @ApiPropertyOptional({ example: "ORD-20260904-4821" })
+  @ApiPropertyOptional({ example: "ORD-20260904-4821", nullable: true })
   public orderNumber?: string | null;
 
   @ApiPropertyOptional({
     example: "019fa8bc-8f4d-7000-b366-e691f45cfb90",
+    nullable: true,
   })
   public userId?: string | null;
 
   @ApiPropertyOptional({
     example: "019fa8bc-8f4d-7000-b366-e691f45cfb91",
+    nullable: true,
   })
   public leadId?: string | null;
-  @ApiPropertyOptional({ example: "Nguyễn Văn A" })
+
+  @ApiPropertyOptional({ example: "Nguyễn Văn A", nullable: true })
   public customerName?: string | null;
 
-  @ApiPropertyOptional({ example: "0901234567" })
+  @ApiPropertyOptional({ example: "0901234567", nullable: true })
   public customerPhone?: string | null;
 
-  @ApiPropertyOptional({ example: "nguyenvana@example.com" })
+  @ApiPropertyOptional({ example: "nguyenvana@example.com", nullable: true })
   public customerEmail?: string | null;
 
-  @ApiPropertyOptional({ example: "Công ty Cổ phần Xây Dựng Số 1" })
+  @ApiPropertyOptional({
+    example: "Công ty Cổ phần Xây Dựng Số 1",
+    nullable: true,
+  })
   public companyName?: string | null;
-
   @ApiProperty({
     example: "PENDING",
     enum: ORDER_STATUSES,
@@ -129,12 +137,11 @@ export class OrderResponseDto {
   @ApiProperty({ example: "245500000.00" })
   public totalAmount!: string;
 
-  @ApiPropertyOptional({ example: "50000000.00" })
+  @ApiPropertyOptional({ example: "50000000.00", nullable: true })
   public depositAmount?: string | null;
 
-  @ApiPropertyOptional({ example: "195500000.00" })
+  @ApiPropertyOptional({ example: "195500000.00", nullable: true })
   public remainingAmount?: string | null;
-
   @ApiProperty({
     example: "PAYOS",
     enum: PAYMENT_METHODS,
@@ -155,12 +162,12 @@ export class OrderResponseDto {
 
   @ApiPropertyOptional({
     example: "019fa8bc-8f4d-7000-b366-e691f45cfb9c",
+    nullable: true,
   })
   public approvedBy?: string | null;
 
-  @ApiPropertyOptional({ example: "Giao trong giờ hành chính" })
+  @ApiPropertyOptional({ example: "Giao trong giờ hành chính", nullable: true })
   public note?: string | null;
-
   @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
   public createdAt!: Date;
 
@@ -170,7 +177,7 @@ export class OrderResponseDto {
   @ApiProperty({ type: [OrderItemResponseDto] })
   public items!: OrderItemResponseDto[];
 
-  @ApiPropertyOptional({ type: () => OrderUserSummaryDto })
+  @ApiPropertyOptional({ type: () => OrderUserSummaryDto, nullable: true })
   public user?: OrderUserSummaryDto | null;
 }
 
@@ -186,4 +193,12 @@ export class PaginatedOrderResponseDto {
 
   @ApiProperty({ example: 20 })
   public limit!: number;
+}
+
+export class ExpireOrdersResponseDto {
+  @ApiProperty({
+    example: 3,
+    description: "Number of pending unpaid orders auto-expired",
+  })
+  public expiredCount!: number;
 }

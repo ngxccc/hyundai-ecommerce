@@ -137,6 +137,7 @@ export class PaymentsController {
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
   async repayDebt(
     @Body() dto: RepayDebtDto,
     @CurrentUser() currentUser: JwtPayload,
@@ -161,6 +162,7 @@ export class PaymentsController {
   @ApiOperation({ summary: "Get order payment status and transactions" })
   @ApiParam({ name: "orderId", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderPaymentSummaryDto)
+  @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()
   async getOrderPaymentSummary(

@@ -366,6 +366,44 @@
               }
             }
           },
+          "401": {
+            "description": "Authentication required or invalid token (Unauthorized)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/unauthorized",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "Unauthorized access",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal server error",
             "content": {
@@ -551,6 +589,25 @@
                       "reason": "Invalid email address format"
                     }
                   ],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or invalid token (Unauthorized)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/unauthorized",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "Unauthorized access",
+                  "instance": "/api/example",
+                  "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
                 }
               }
@@ -1014,7 +1071,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -1141,6 +1198,30 @@
               }
             }
           },
+          "400": {
+            "description": "Validation failure (Bad Request)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/bad-request",
+                  "title": "Bad Request",
+                  "status": 400,
+                  "detail": "Submitted data format is invalid",
+                  "instance": "/api/example",
+                  "invalidParams": [
+                    {
+                      "name": "email",
+                      "reason": "Invalid email address format"
+                    }
+                  ],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Resource not found (Not Found)",
             "content": {
@@ -1152,7 +1233,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Dealer tier not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -1276,28 +1357,22 @@
             "name": "page",
             "required": false,
             "in": "query",
+            "description": "Pagination page number (1-based)",
             "schema": {
               "default": 1,
               "example": 1,
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/Object"
-                }
-              ]
+              "type": "number"
             }
           },
           {
             "name": "limit",
             "required": false,
             "in": "query",
+            "description": "Number of records per page (max 100)",
             "schema": {
               "default": 20,
               "example": 20,
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/Object"
-                }
-              ]
+              "type": "number"
             }
           },
           {
@@ -1489,7 +1564,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -1626,7 +1701,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -1658,6 +1733,16 @@
             }
           }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignSalesDto"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "",
@@ -1676,6 +1761,30 @@
                       }
                     }
                   ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failure (Bad Request)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/bad-request",
+                  "title": "Bad Request",
+                  "status": 400,
+                  "detail": "Submitted data format is invalid",
+                  "instance": "/api/example",
+                  "invalidParams": [
+                    {
+                      "name": "email",
+                      "reason": "Invalid email address format"
+                    }
+                  ],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
                 }
               }
             }
@@ -1729,7 +1838,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -2028,7 +2137,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -2177,7 +2286,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -2239,7 +2348,8 @@
                     {
                       "properties": {
                         "data": {
-                          "$ref": "#/components/schemas/Object"
+                          "type": ["object", "null"],
+                          "default": null
                         }
                       }
                     }
@@ -2297,7 +2407,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -2542,7 +2652,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -2691,7 +2801,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -2753,7 +2863,8 @@
                     {
                       "properties": {
                         "data": {
-                          "$ref": "#/components/schemas/Object"
+                          "type": ["object", "null"],
+                          "default": null
                         }
                       }
                     }
@@ -2811,7 +2922,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -3316,7 +3427,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -3465,7 +3576,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -3527,7 +3638,8 @@
                     {
                       "properties": {
                         "data": {
-                          "$ref": "#/components/schemas/Object"
+                          "type": ["object", "null"],
+                          "default": null
                         }
                       }
                     }
@@ -3585,7 +3697,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -3822,7 +3934,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -3885,7 +3997,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4015,7 +4127,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4080,7 +4192,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4210,7 +4322,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4330,7 +4442,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4493,7 +4605,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4611,7 +4723,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4693,7 +4805,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4905,7 +5017,7 @@
             "in": "query",
             "description": "Filter quotes by status",
             "schema": {
-              "example": "PENDING",
+              "example": "SUBMITTED",
               "type": "string",
               "enum": [
                 "DRAFT",
@@ -5221,7 +5333,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5358,7 +5470,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5504,7 +5616,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5611,6 +5723,25 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Resource not found (Not Found)",
             "content": {
@@ -5622,7 +5753,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5749,7 +5880,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5783,7 +5914,15 @@
         ],
         "responses": {
           "200": {
-            "description": "Excel workbook stream"
+            "description": "Excel workbook stream (.xlsx)",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
           },
           "401": {
             "description": "Authentication required or invalid token (Unauthorized)",
@@ -5834,7 +5973,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5923,7 +6062,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6045,7 +6184,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6359,7 +6498,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6496,7 +6635,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6623,7 +6762,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6658,8 +6797,7 @@
                     {
                       "properties": {
                         "data": {
-                          "type": ["object", "null"],
-                          "default": null
+                          "$ref": "#/components/schemas/ExpireOrdersResponseDto"
                         }
                       }
                     }
@@ -6763,7 +6901,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6960,7 +7098,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7057,6 +7195,25 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Resource not found (Not Found)",
             "content": {
@@ -7068,7 +7225,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7122,6 +7279,30 @@
               }
             }
           },
+          "400": {
+            "description": "Validation failure (Bad Request)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/bad-request",
+                  "title": "Bad Request",
+                  "status": 400,
+                  "detail": "Submitted data format is invalid",
+                  "instance": "/api/example",
+                  "invalidParams": [
+                    {
+                      "name": "email",
+                      "reason": "Invalid email address format"
+                    }
+                  ],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Authentication required or invalid token (Unauthorized)",
             "content": {
@@ -7152,7 +7333,7 @@
                   "type": "http://localhost:3000/errors/not-found",
                   "title": "Not Found",
                   "status": 404,
-                  "detail": "User profile not found",
+                  "detail": "Requested resource not found",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7431,7 +7612,7 @@
           },
           "refreshToken": {
             "type": "string",
-            "example": "d9b2e8a1-3c5f-4a7b-8e9d-1f2a3b4c5d6e"
+            "example": "7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069"
           },
           "user": {
             "$ref": "#/components/schemas/UserInfoDto"
@@ -7464,7 +7645,7 @@
           },
           "refreshToken": {
             "type": "string",
-            "example": "d9b2e8a1-3c5f-4a7b-8e9d-1f2a3b4c5d6e"
+            "example": "7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069"
           }
         },
         "required": ["accessToken", "refreshToken"]
@@ -7474,8 +7655,8 @@
         "properties": {
           "refreshToken": {
             "type": "string",
-            "example": "d9b2e8a1-3c5f-4a7b-8e9d-1f2a3b4c5d6e",
-            "description": "Active refresh token string"
+            "example": "7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069",
+            "description": "Active 64-character hex refresh token string"
           }
         },
         "required": ["refreshToken"]
@@ -7762,7 +7943,7 @@
           },
           "leadCode": {
             "type": "string",
-            "example": "RFQ-20260904-001"
+            "example": "RFQ-20260908-JDHC005DCA75"
           },
           "fullName": {
             "type": "string",
@@ -7973,10 +8154,6 @@
         },
         "required": ["success", "meta"]
       },
-      "Object": {
-        "type": "object",
-        "properties": {}
-      },
       "UpdateLeadStatusDto": {
         "type": "object",
         "properties": {
@@ -8001,6 +8178,17 @@
           }
         },
         "required": ["status"]
+      },
+      "AssignSalesDto": {
+        "type": "object",
+        "properties": {
+          "salesId": {
+            "type": "string",
+            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90",
+            "description": "UUID of the sales representative to assign"
+          }
+        },
+        "required": ["salesId"]
       },
       "CategoryResponseDto": {
         "type": "object",
@@ -8547,10 +8735,28 @@
             }
           },
           "powerRange": {
-            "$ref": "#/components/schemas/RangeFacet"
+            "example": {
+              "min": 10,
+              "max": 2500
+            },
+            "description": "Power range in kVA",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RangeFacet"
+              }
+            ]
           },
           "priceRange": {
-            "$ref": "#/components/schemas/RangeFacet"
+            "example": {
+              "min": 15000000,
+              "max": 850000000
+            },
+            "description": "Price range in VND",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RangeFacet"
+              }
+            ]
           },
           "fuelTypes": {
             "type": "array",
@@ -9131,6 +9337,10 @@
             "example": true
           }
         }
+      },
+      "Object": {
+        "type": "object",
+        "properties": {}
       },
       "CartProductSummaryDto": {
         "type": "object",
@@ -10174,7 +10384,14 @@
             "example": "245000000.00"
           },
           "product": {
-            "$ref": "#/components/schemas/OrderItemProductSummaryDto"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderItemProductSummaryDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "createdAt": {
             "format": "date-time",
@@ -10233,31 +10450,31 @@
             "example": "019fa8bc-8f4d-7000-b366-e691f45cfb92"
           },
           "orderNumber": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "ORD-20260904-4821"
           },
           "userId": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90"
           },
           "leadId": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91"
           },
           "customerName": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "Nguyễn Văn A"
           },
           "customerPhone": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "0901234567"
           },
           "customerEmail": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "nguyenvana@example.com"
           },
           "companyName": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "Công ty Cổ phần Xây Dựng Số 1"
           },
           "status": {
@@ -10284,11 +10501,11 @@
             "example": "245500000.00"
           },
           "depositAmount": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "50000000.00"
           },
           "remainingAmount": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "195500000.00"
           },
           "paymentMethod": {
@@ -10313,11 +10530,11 @@
             "enum": ["PENDING", "APPROVED", "REJECTED"]
           },
           "approvedBy": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9c"
           },
           "note": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "Giao trong giờ hành chính"
           },
           "createdAt": {
@@ -10337,7 +10554,14 @@
             }
           },
           "user": {
-            "$ref": "#/components/schemas/OrderUserSummaryDto"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderUserSummaryDto"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -10546,7 +10770,7 @@
         "properties": {
           "status": {
             "type": "string",
-            "example": "CONFIRMED",
+            "example": "PROCESSING",
             "enum": [
               "PENDING",
               "PROCESSING",
@@ -10563,6 +10787,17 @@
           }
         },
         "required": ["status"]
+      },
+      "ExpireOrdersResponseDto": {
+        "type": "object",
+        "properties": {
+          "expiredCount": {
+            "type": "number",
+            "example": 3,
+            "description": "Number of pending unpaid orders auto-expired"
+          }
+        },
+        "required": ["expiredCount"]
       },
       "CheckoutLinkResponseDto": {
         "type": "object",
@@ -10686,6 +10921,30 @@
           "desc": {
             "type": "string",
             "example": "Success"
+          },
+          "counterAccountBankId": {
+            "type": ["string", "null"],
+            "example": "970422"
+          },
+          "counterAccountBankName": {
+            "type": ["string", "null"],
+            "example": "MBBank"
+          },
+          "counterAccountName": {
+            "type": ["string", "null"],
+            "example": "NGUYEN VAN A"
+          },
+          "counterAccountNumber": {
+            "type": ["string", "null"],
+            "example": "0901234567"
+          },
+          "virtualAccountName": {
+            "type": ["string", "null"],
+            "example": "HYUNDAI ECOM"
+          },
+          "virtualAccountNumber": {
+            "type": ["string", "null"],
+            "example": "VA12345678"
           }
         },
         "required": ["orderCode", "amount", "description"]
@@ -10741,7 +11000,7 @@
           },
           "paymentMethod": {
             "type": "string",
-            "example": "PAYOS",
+            "example": "CASH",
             "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
           },
           "transactionType": {
@@ -10755,15 +11014,15 @@
             "enum": ["PENDING", "COMPLETED", "FAILED", "CANCELLED"]
           },
           "orderCode": {
-            "type": "number",
+            "type": ["number", "null"],
             "example": 1725451234567
           },
           "referenceCode": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "REF-123456"
           },
           "verifiedBy": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "019fa8bc-8f4d-7000-b366-e691f45cfb93"
           },
           "createdAt": {
@@ -10796,7 +11055,7 @@
             "example": "019fa8bc-8f4d-7000-b366-e691f45cfb92"
           },
           "orderNumber": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "ORD-20260904-4821"
           },
           "totalAmount": {
@@ -10804,20 +11063,28 @@
             "example": "490000000.00"
           },
           "depositAmount": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "0.00"
           },
           "remainingAmount": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "0.00"
           },
           "paymentMethod": {
             "type": "string",
-            "example": "PAYOS"
+            "example": "CASH",
+            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
           },
           "paymentStatus": {
             "type": "string",
-            "example": "FULLY_PAID"
+            "example": "FULLY_PAID",
+            "enum": [
+              "PENDING",
+              "DEPOSIT_PAID",
+              "FULLY_PAID",
+              "REFUNDED",
+              "FAILED"
+            ]
           },
           "transactions": {
             "description": "List of related payment transactions",
@@ -10875,7 +11142,7 @@
           },
           "paymentMethod": {
             "type": "string",
-            "example": "PAYOS",
+            "example": "CASH",
             "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
           },
           "status": {
@@ -10884,23 +11151,23 @@
             "enum": ["PENDING", "COMPLETED", "FAILED"]
           },
           "orderCode": {
-            "type": "number",
+            "type": ["number", "null"],
             "example": 1725451234568
           },
           "referenceCode": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "REPAY-REF-789"
           },
           "verifiedBy": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "019fa8bc-8f4d-7000-b366-e691f45cfb93"
           },
           "checkoutUrl": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "https://pay.payos.vn/web/6c9b3a6e7a2e7b56b74c419b4eb14b9a"
           },
           "qrCode": {
-            "type": "string",
+            "type": ["string", "null"],
             "example": "00020101021238540010A00000072701260006970422..."
           },
           "createdAt": {
