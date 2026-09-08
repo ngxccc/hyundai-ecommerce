@@ -47,7 +47,7 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/products", {
+      const { data: res } = await api.GET("/api/v1/products", {
         params: {
           query: {
             limit,
@@ -97,7 +97,7 @@ export const productService = {
     "use cache";
     cacheLife("days");
     try {
-      const { data: res } = await api.GET("/products", {
+      const { data: res } = await api.GET("/api/v1/products", {
         params: {
           query: { limit: 100 },
         },
@@ -116,7 +116,7 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/products/{id}", {
+      const { data: res } = await api.GET("/api/v1/products/{id}", {
         params: {
           path: { id: slug },
         },
@@ -136,7 +136,7 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/products/metadata");
+      const { data: res } = await api.GET("/api/v1/products/metadata");
       const metadata = res?.data;
       if (!metadata) return [];
       const isEn = locale === "en";

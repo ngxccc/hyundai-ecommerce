@@ -47,8 +47,9 @@ const authMiddleware: Middleware = {
     // Next.js 16 "use cache" forbids accessing dynamic cookies() inside cached functions.
     // Public catalog and lead routes never require authorization headers.
     const url = new URL(request.url);
+    const normalizedPath = url.pathname.replace(/^\/api\/v1/, "");
     const isPublic = PUBLIC_PREFIXES.some((prefix) =>
-      url.pathname.startsWith(prefix),
+      normalizedPath.startsWith(prefix),
     );
     if (isPublic) {
       return request;

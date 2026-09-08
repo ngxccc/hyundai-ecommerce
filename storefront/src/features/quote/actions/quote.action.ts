@@ -31,7 +31,7 @@ export async function submitQuoteRequestAction(rawInput: SubmitQuoteInput) {
   const data = parsed.data;
 
   try {
-    const res = await api.POST("/quotes", {
+    const res = await api.POST("/api/v1/quotes", {
       body: {
         customerName: data.customerName,
         customerPhone: data.customerPhone,
