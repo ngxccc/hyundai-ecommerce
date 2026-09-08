@@ -46,7 +46,7 @@ import {
 } from "./dto";
 
 @ApiTags(PAYMENT_ROUTES.TAG)
-@Controller(PAYMENT_ROUTES.ROOT)
+@Controller({ path: PAYMENT_ROUTES.ROOT, version: "1" })
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 

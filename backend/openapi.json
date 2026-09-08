@@ -28,10 +28,10 @@
         "tags": ["app"]
       }
     },
-    "/auth/register": {
+    "/api/v1/auth/register": {
       "post": {
         "description": "Creates an unverified account and enqueues an email verification link.",
-        "operationId": "AuthController_register",
+        "operationId": "AuthController_register_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -133,10 +133,10 @@
         "tags": ["auth"]
       }
     },
-    "/auth/verify-email": {
+    "/api/v1/auth/verify-email": {
       "post": {
         "description": "Validates a 64-character verification token and activates the user account.",
-        "operationId": "AuthController_verifyEmail",
+        "operationId": "AuthController_verifyEmail_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -219,10 +219,10 @@
         "tags": ["auth"]
       }
     },
-    "/auth/resend-verification": {
+    "/api/v1/auth/resend-verification": {
       "post": {
         "description": "Generates a fresh verification token and dispatches an activation email.",
-        "operationId": "AuthController_resendVerification",
+        "operationId": "AuthController_resendVerification_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -305,10 +305,10 @@
         "tags": ["auth"]
       }
     },
-    "/auth/login": {
+    "/api/v1/auth/login": {
       "post": {
         "description": "Verifies credentials and returns a short-lived access token and refresh token.",
-        "operationId": "AuthController_login",
+        "operationId": "AuthController_login_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -390,10 +390,10 @@
         "tags": ["auth"]
       }
     },
-    "/auth/refresh": {
+    "/api/v1/auth/refresh": {
       "post": {
         "description": "Validates single-use refresh token, revokes it, and issues a new token pair.",
-        "operationId": "AuthController_refresh",
+        "operationId": "AuthController_refresh_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -494,10 +494,10 @@
         "tags": ["auth"]
       }
     },
-    "/auth/logout": {
+    "/api/v1/auth/logout": {
       "post": {
         "description": "Revokes the provided refresh token to end the active device session.",
-        "operationId": "AuthController_logout",
+        "operationId": "AuthController_logout_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -580,10 +580,10 @@
         "tags": ["auth"]
       }
     },
-    "/auth/logout-all": {
+    "/api/v1/auth/logout-all": {
       "post": {
         "description": "Revokes all refresh tokens across every device for the authenticated user.",
-        "operationId": "AuthController_logoutAll",
+        "operationId": "AuthController_logoutAll_v1",
         "parameters": [],
         "responses": {
           "200": {
@@ -656,10 +656,10 @@
         "tags": ["auth"]
       }
     },
-    "/auth/forgot-password": {
+    "/api/v1/auth/forgot-password": {
       "post": {
         "description": "Generates a time-limited password reset token and enqueues a recovery email.",
-        "operationId": "AuthController_forgotPassword",
+        "operationId": "AuthController_forgotPassword_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -742,10 +742,10 @@
         "tags": ["auth"]
       }
     },
-    "/auth/reset-password": {
+    "/api/v1/auth/reset-password": {
       "post": {
         "description": "Applies new password using valid reset token and invalidates all existing sessions.",
-        "operationId": "AuthController_resetPassword",
+        "operationId": "AuthController_resetPassword_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -828,10 +828,10 @@
         "tags": ["auth"]
       }
     },
-    "/auth/change-password": {
+    "/api/v1/auth/change-password": {
       "post": {
         "description": "Updates password for authenticated user and revokes all active refresh tokens.",
-        "operationId": "AuthController_changePassword",
+        "operationId": "AuthController_changePassword_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -938,10 +938,10 @@
         "tags": ["auth"]
       }
     },
-    "/users/me": {
+    "/api/v1/users/me": {
       "get": {
         "description": "Returns profile details and account status for the currently authenticated user.",
-        "operationId": "UsersController_getMe",
+        "operationId": "UsersController_getMe_v1",
         "parameters": [],
         "responses": {
           "200": {
@@ -1051,10 +1051,10 @@
         "tags": ["users"]
       }
     },
-    "/dealer-tiers": {
+    "/api/v1/dealer-tiers": {
       "get": {
         "description": "Returns all configured B2B dealer tiers with their minimum spend and discount percentages.",
-        "operationId": "DealerTiersController_getAll",
+        "operationId": "DealerTiersController_getAll_v1",
         "parameters": [],
         "responses": {
           "200": {
@@ -1105,10 +1105,10 @@
         "tags": ["dealer-tiers"]
       }
     },
-    "/dealer-tiers/{id}": {
+    "/api/v1/dealer-tiers/{id}": {
       "get": {
         "description": "Returns details of a specific dealer tier by UUID.",
-        "operationId": "DealerTiersController_getById",
+        "operationId": "DealerTiersController_getById_v1",
         "parameters": [
           {
             "name": "id",
@@ -1184,10 +1184,10 @@
         "tags": ["dealer-tiers"]
       }
     },
-    "/leads": {
+    "/api/v1/leads": {
       "post": {
         "description": "Public endpoint allowing customers and B2B buyers to request quotes for products without signing up.",
-        "operationId": "LeadsController_submitRfq",
+        "operationId": "LeadsController_submitRfq_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1270,7 +1270,7 @@
       },
       "get": {
         "description": "Returns all leads and quote requests ordered by latest submission date.",
-        "operationId": "LeadsController_getAll",
+        "operationId": "LeadsController_getAll_v1",
         "parameters": [
           {
             "name": "page",
@@ -1404,10 +1404,10 @@
         "tags": ["leads"]
       }
     },
-    "/leads/{id}": {
+    "/api/v1/leads/{id}": {
       "get": {
         "description": "Returns full lead information and list of requested items.",
-        "operationId": "LeadsController_getById",
+        "operationId": "LeadsController_getById_v1",
         "parameters": [
           {
             "name": "id",
@@ -1507,10 +1507,10 @@
         "tags": ["leads"]
       }
     },
-    "/leads/{id}/status": {
+    "/api/v1/leads/{id}/status": {
       "patch": {
         "description": "Updates lead status in sales pipeline (CONTACTING, SURVEY_SCHEDULED, QUOTED, LOST, etc.).",
-        "operationId": "LeadsController_updateStatus",
+        "operationId": "LeadsController_updateStatus_v1",
         "parameters": [
           {
             "name": "id",
@@ -1644,10 +1644,10 @@
         "tags": ["leads"]
       }
     },
-    "/leads/{id}/assign": {
+    "/api/v1/leads/{id}/assign": {
       "patch": {
         "description": "Assigns a designated sales user ID to manage this lead.",
-        "operationId": "LeadsController_assignSales",
+        "operationId": "LeadsController_assignSales_v1",
         "parameters": [
           {
             "name": "id",
@@ -1747,10 +1747,10 @@
         "tags": ["leads"]
       }
     },
-    "/categories": {
+    "/api/v1/categories": {
       "get": {
         "description": "Returns a flat list of all active categories ordered by name.",
-        "operationId": "CategoriesController_getAll",
+        "operationId": "CategoriesController_getAll_v1",
         "parameters": [],
         "responses": {
           "200": {
@@ -1802,7 +1802,7 @@
       },
       "post": {
         "description": "Creates a new category in the catalog.",
-        "operationId": "CategoriesController_create",
+        "operationId": "CategoriesController_create_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1927,10 +1927,10 @@
         "tags": ["categories"]
       }
     },
-    "/categories/tree": {
+    "/api/v1/categories/tree": {
       "get": {
         "description": "Returns recursive hierarchical tree of categories.",
-        "operationId": "CategoriesController_getTree",
+        "operationId": "CategoriesController_getTree_v1",
         "parameters": [],
         "responses": {
           "200": {
@@ -1981,10 +1981,10 @@
         "tags": ["categories"]
       }
     },
-    "/categories/{id}": {
+    "/api/v1/categories/{id}": {
       "get": {
         "description": "Returns details of a specific category by UUID.",
-        "operationId": "CategoriesController_getById",
+        "operationId": "CategoriesController_getById_v1",
         "parameters": [
           {
             "name": "id",
@@ -2061,7 +2061,7 @@
       },
       "put": {
         "description": "Updates an existing category by UUID.",
-        "operationId": "CategoriesController_update",
+        "operationId": "CategoriesController_update_v1",
         "parameters": [
           {
             "name": "id",
@@ -2215,7 +2215,7 @@
       },
       "delete": {
         "description": "Deletes an existing category by UUID.",
-        "operationId": "CategoriesController_delete",
+        "operationId": "CategoriesController_delete_v1",
         "parameters": [
           {
             "name": "id",
@@ -2315,10 +2315,10 @@
         "tags": ["categories"]
       }
     },
-    "/brands": {
+    "/api/v1/brands": {
       "get": {
         "description": "Returns a list of all active brands ordered by name.",
-        "operationId": "BrandsController_getAll",
+        "operationId": "BrandsController_getAll_v1",
         "parameters": [],
         "responses": {
           "200": {
@@ -2370,7 +2370,7 @@
       },
       "post": {
         "description": "Creates a new brand in the catalog.",
-        "operationId": "BrandsController_create",
+        "operationId": "BrandsController_create_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2495,10 +2495,10 @@
         "tags": ["brands"]
       }
     },
-    "/brands/{id}": {
+    "/api/v1/brands/{id}": {
       "get": {
         "description": "Returns details of a specific brand by UUID.",
-        "operationId": "BrandsController_getById",
+        "operationId": "BrandsController_getById_v1",
         "parameters": [
           {
             "name": "id",
@@ -2575,7 +2575,7 @@
       },
       "put": {
         "description": "Updates an existing brand by UUID.",
-        "operationId": "BrandsController_update",
+        "operationId": "BrandsController_update_v1",
         "parameters": [
           {
             "name": "id",
@@ -2729,7 +2729,7 @@
       },
       "delete": {
         "description": "Deletes an existing brand by UUID.",
-        "operationId": "BrandsController_delete",
+        "operationId": "BrandsController_delete_v1",
         "parameters": [
           {
             "name": "id",
@@ -2829,10 +2829,10 @@
         "tags": ["brands"]
       }
     },
-    "/products": {
+    "/api/v1/products": {
       "get": {
         "description": "Returns a paginated list of products matching filter criteria (power, price, brand, category, specs).",
-        "operationId": "ProductsController_getProducts",
+        "operationId": "ProductsController_getProducts_v1",
         "parameters": [
           {
             "name": "page",
@@ -3093,7 +3093,7 @@
       },
       "post": {
         "description": "Creates a new product with technical specifications and images.",
-        "operationId": "ProductsController_create",
+        "operationId": "ProductsController_create_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -3218,10 +3218,10 @@
         "tags": ["products"]
       }
     },
-    "/products/metadata": {
+    "/api/v1/products/metadata": {
       "get": {
         "description": "Returns available filter ranges (price, power) and facet counts for brands, categories, fuel types, and phases.",
-        "operationId": "ProductsController_getMetadata",
+        "operationId": "ProductsController_getMetadata_v1",
         "parameters": [],
         "responses": {
           "200": {
@@ -3269,10 +3269,10 @@
         "tags": ["products"]
       }
     },
-    "/products/{id}": {
+    "/api/v1/products/{id}": {
       "get": {
         "description": "Returns full product details by UUID or URL slug.",
-        "operationId": "ProductsController_getById",
+        "operationId": "ProductsController_getById_v1",
         "parameters": [
           {
             "name": "id",
@@ -3349,7 +3349,7 @@
       },
       "put": {
         "description": "Updates an existing product by UUID.",
-        "operationId": "ProductsController_update",
+        "operationId": "ProductsController_update_v1",
         "parameters": [
           {
             "name": "id",
@@ -3503,7 +3503,7 @@
       },
       "delete": {
         "description": "Soft deletes an existing product by UUID.",
-        "operationId": "ProductsController_delete",
+        "operationId": "ProductsController_delete_v1",
         "parameters": [
           {
             "name": "id",
@@ -3603,9 +3603,9 @@
         "tags": ["products"]
       }
     },
-    "/warehouses": {
+    "/api/v1/warehouses": {
       "get": {
-        "operationId": "WarehouseController_getAll",
+        "operationId": "WarehouseController_getAll_v1",
         "parameters": [
           {
             "name": "includeInactive",
@@ -3647,7 +3647,7 @@
         "tags": ["warehouses"]
       },
       "post": {
-        "operationId": "WarehouseController_create",
+        "operationId": "WarehouseController_create_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -3772,9 +3772,9 @@
         "tags": ["warehouses"]
       }
     },
-    "/warehouses/stock/product/{productId}": {
+    "/api/v1/warehouses/stock/product/{productId}": {
       "get": {
-        "operationId": "WarehouseController_getProductStocks",
+        "operationId": "WarehouseController_getProductStocks_v1",
         "parameters": [
           {
             "name": "productId",
@@ -3835,9 +3835,9 @@
         "tags": ["warehouses"]
       }
     },
-    "/warehouses/{id}/stock": {
+    "/api/v1/warehouses/{id}/stock": {
       "get": {
-        "operationId": "WarehouseController_getWarehouseStocks",
+        "operationId": "WarehouseController_getWarehouseStocks_v1",
         "parameters": [
           {
             "name": "id",
@@ -3898,7 +3898,7 @@
         "tags": ["warehouses"]
       },
       "put": {
-        "operationId": "WarehouseController_updateStock",
+        "operationId": "WarehouseController_updateStock_v1",
         "parameters": [
           {
             "name": "id",
@@ -4033,9 +4033,9 @@
         "tags": ["warehouses"]
       }
     },
-    "/warehouses/{id}": {
+    "/api/v1/warehouses/{id}": {
       "get": {
-        "operationId": "WarehouseController_getById",
+        "operationId": "WarehouseController_getById_v1",
         "parameters": [
           {
             "name": "id",
@@ -4093,7 +4093,7 @@
         "tags": ["warehouses"]
       },
       "put": {
-        "operationId": "WarehouseController_update",
+        "operationId": "WarehouseController_update_v1",
         "parameters": [
           {
             "name": "id",
@@ -4247,7 +4247,7 @@
         "tags": ["warehouses"]
       },
       "delete": {
-        "operationId": "WarehouseController_delete",
+        "operationId": "WarehouseController_delete_v1",
         "parameters": [
           {
             "name": "id",
@@ -4348,9 +4348,9 @@
         "tags": ["warehouses"]
       }
     },
-    "/cart": {
+    "/api/v1/cart": {
       "get": {
-        "operationId": "CartController_getCart",
+        "operationId": "CartController_getCart_v1",
         "parameters": [],
         "responses": {
           "200": {
@@ -4403,9 +4403,9 @@
         "tags": ["cart"]
       }
     },
-    "/cart/items": {
+    "/api/v1/cart/items": {
       "post": {
-        "operationId": "CartController_addItem",
+        "operationId": "CartController_addItem_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -4511,9 +4511,9 @@
         "tags": ["cart"]
       }
     },
-    "/cart/items/{id}": {
+    "/api/v1/cart/items/{id}": {
       "put": {
-        "operationId": "CartController_updateItemQuantity",
+        "operationId": "CartController_updateItemQuantity_v1",
         "parameters": [
           {
             "name": "id",
@@ -4629,7 +4629,7 @@
         "tags": ["cart"]
       },
       "delete": {
-        "operationId": "CartController_removeItem",
+        "operationId": "CartController_removeItem_v1",
         "parameters": [
           {
             "name": "id",
@@ -4711,9 +4711,9 @@
         "tags": ["cart"]
       }
     },
-    "/cart/merge": {
+    "/api/v1/cart/merge": {
       "post": {
-        "operationId": "CartController_mergeGuestCart",
+        "operationId": "CartController_mergeGuestCart_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -4800,9 +4800,9 @@
         "tags": ["cart"]
       }
     },
-    "/quotes": {
+    "/api/v1/quotes": {
       "post": {
-        "operationId": "QuotesController_submitRfq",
+        "operationId": "QuotesController_submitRfq_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -4865,7 +4865,7 @@
         "tags": ["quotes"]
       },
       "get": {
-        "operationId": "QuotesController_listQuotes",
+        "operationId": "QuotesController_listQuotes_v1",
         "parameters": [
           {
             "name": "page",
@@ -5028,9 +5028,9 @@
         "tags": ["quotes"]
       }
     },
-    "/quotes/admin": {
+    "/api/v1/quotes/admin": {
       "post": {
-        "operationId": "QuotesController_createAdminQuote",
+        "operationId": "QuotesController_createAdminQuote_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -5136,9 +5136,9 @@
         "tags": ["quotes"]
       }
     },
-    "/quotes/{id}": {
+    "/api/v1/quotes/{id}": {
       "get": {
-        "operationId": "QuotesController_getQuoteById",
+        "operationId": "QuotesController_getQuoteById_v1",
         "parameters": [
           {
             "name": "id",
@@ -5239,9 +5239,9 @@
         "tags": ["quotes"]
       }
     },
-    "/quotes/{id}/status": {
+    "/api/v1/quotes/{id}/status": {
       "patch": {
-        "operationId": "QuotesController_updateStatus",
+        "operationId": "QuotesController_updateStatus_v1",
         "parameters": [
           {
             "name": "id",
@@ -5376,9 +5376,9 @@
         "tags": ["quotes"]
       }
     },
-    "/quotes/{id}/items/{itemId}/price": {
+    "/api/v1/quotes/{id}/items/{itemId}/price": {
       "put": {
-        "operationId": "QuotesController_updateItemPrice",
+        "operationId": "QuotesController_updateItemPrice_v1",
         "parameters": [
           {
             "name": "id",
@@ -5522,9 +5522,9 @@
         "tags": ["quotes"]
       }
     },
-    "/quotes/{id}/messages": {
+    "/api/v1/quotes/{id}/messages": {
       "post": {
-        "operationId": "QuotesController_sendMessage",
+        "operationId": "QuotesController_sendMessage_v1",
         "parameters": [
           {
             "name": "id",
@@ -5640,9 +5640,9 @@
         "tags": ["quotes"]
       }
     },
-    "/quotes/{id}/approve-to-order": {
+    "/api/v1/quotes/{id}/approve-to-order": {
       "post": {
-        "operationId": "QuotesController_approveToOrder",
+        "operationId": "QuotesController_approveToOrder_v1",
         "parameters": [
           {
             "name": "id",
@@ -5767,9 +5767,9 @@
         "tags": ["quotes"]
       }
     },
-    "/quotes/{id}/export-excel": {
+    "/api/v1/quotes/{id}/export-excel": {
       "get": {
-        "operationId": "QuotesController_exportExcel",
+        "operationId": "QuotesController_exportExcel_v1",
         "parameters": [
           {
             "name": "id",
@@ -5852,9 +5852,9 @@
         "tags": ["quotes"]
       }
     },
-    "/orders/checkout": {
+    "/api/v1/orders/checkout": {
       "post": {
-        "operationId": "OrdersController_checkout",
+        "operationId": "OrdersController_checkout_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -5936,9 +5936,9 @@
         "tags": ["orders"]
       }
     },
-    "/orders/admin": {
+    "/api/v1/orders/admin": {
       "post": {
-        "operationId": "OrdersController_createB2bOrder",
+        "operationId": "OrdersController_createB2bOrder_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -6063,9 +6063,9 @@
         "tags": ["orders"]
       }
     },
-    "/orders": {
+    "/api/v1/orders": {
       "get": {
-        "operationId": "OrdersController_listOrders",
+        "operationId": "OrdersController_listOrders_v1",
         "parameters": [
           {
             "name": "page",
@@ -6274,9 +6274,9 @@
         "tags": ["orders"]
       }
     },
-    "/orders/{id}": {
+    "/api/v1/orders/{id}": {
       "get": {
-        "operationId": "OrdersController_getOrderById",
+        "operationId": "OrdersController_getOrderById_v1",
         "parameters": [
           {
             "name": "id",
@@ -6377,9 +6377,9 @@
         "tags": ["orders"]
       }
     },
-    "/orders/{id}/status": {
+    "/api/v1/orders/{id}/status": {
       "patch": {
-        "operationId": "OrdersController_updateStatus",
+        "operationId": "OrdersController_updateStatus_v1",
         "parameters": [
           {
             "name": "id",
@@ -6514,9 +6514,9 @@
         "tags": ["orders"]
       }
     },
-    "/orders/{id}/cancel": {
+    "/api/v1/orders/{id}/cancel": {
       "post": {
-        "operationId": "OrdersController_cancelOrder",
+        "operationId": "OrdersController_cancelOrder_v1",
         "parameters": [
           {
             "name": "id",
@@ -6641,9 +6641,9 @@
         "tags": ["orders"]
       }
     },
-    "/orders/cron/expire": {
+    "/api/v1/orders/cron/expire": {
       "post": {
-        "operationId": "OrdersController_expireOrders",
+        "operationId": "OrdersController_expireOrders_v1",
         "parameters": [],
         "responses": {
           "200": {
@@ -6692,9 +6692,9 @@
         "tags": ["orders"]
       }
     },
-    "/payments/checkout-link": {
+    "/api/v1/payments/checkout-link": {
       "post": {
-        "operationId": "PaymentsController_createCheckoutLink",
+        "operationId": "PaymentsController_createCheckoutLink_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -6776,9 +6776,9 @@
         "tags": ["payments"]
       }
     },
-    "/payments/payos-webhook": {
+    "/api/v1/payments/payos-webhook": {
       "post": {
-        "operationId": "PaymentsController_handleWebhook",
+        "operationId": "PaymentsController_handleWebhook_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -6841,9 +6841,9 @@
         "tags": ["payments"]
       }
     },
-    "/payments/{id}/verify-cash": {
+    "/api/v1/payments/{id}/verify-cash": {
       "post": {
-        "operationId": "PaymentsController_verifyCashPayment",
+        "operationId": "PaymentsController_verifyCashPayment_v1",
         "parameters": [
           {
             "name": "id",
@@ -6978,9 +6978,9 @@
         "tags": ["payments"]
       }
     },
-    "/payments/repay-debt": {
+    "/api/v1/payments/repay-debt": {
       "post": {
-        "operationId": "PaymentsController_repayDebt",
+        "operationId": "PaymentsController_repayDebt_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -7086,9 +7086,9 @@
         "tags": ["payments"]
       }
     },
-    "/payments/order/{orderId}": {
+    "/api/v1/payments/order/{orderId}": {
       "get": {
-        "operationId": "PaymentsController_getOrderPaymentSummary",
+        "operationId": "PaymentsController_getOrderPaymentSummary_v1",
         "parameters": [
           {
             "name": "orderId",

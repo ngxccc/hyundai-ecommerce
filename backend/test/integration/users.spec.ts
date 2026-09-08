@@ -50,7 +50,7 @@ describe("Users Module Integration", () => {
     await teardownTestApp(setup);
   });
 
-  describe("GET /users/me", () => {
+  describe("GET /api/v1/users/me", () => {
     it("should return 200 OK with user profile payload when authenticated", async () => {
       const email = "test.user@example.com";
       const { user, authHeader } = await createAuthenticatedUser(
@@ -60,7 +60,7 @@ describe("Users Module Integration", () => {
       );
 
       const profileRes = await request(getHttpServer())
-        .get("/users/me")
+        .get("/api/v1/users/me")
         .set(authHeader);
 
       expect(profileRes.status).toBe(200);
@@ -74,13 +74,13 @@ describe("Users Module Integration", () => {
     });
 
     it("should return 401 Unauthorized in RFC 9457 format when Bearer token is missing", async () => {
-      const res = await request(getHttpServer()).get("/users/me");
+      const res = await request(getHttpServer()).get("/api/v1/users/me");
 
       expect(res.status).toBe(401);
       const body = res.body as unknown as Rfc9457ErrorResponse;
       expect(body.status).toBe(401);
       expect(body.title).toBe("Unauthorized");
-      expect(body.instance).toBe("/users/me");
+      expect(body.instance).toBe("/api/v1/users/me");
     });
 
     it("should return 403 Forbidden in RFC 9457 format when account status is suspended", async () => {
@@ -91,14 +91,14 @@ describe("Users Module Integration", () => {
       });
 
       const profileRes = await request(getHttpServer())
-        .get("/users/me")
+        .get("/api/v1/users/me")
         .set(authHeader);
 
       expect(profileRes.status).toBe(403);
       const body = profileRes.body as unknown as Rfc9457ErrorResponse;
       expect(body.status).toBe(403);
       expect(body.title).toBe("Forbidden");
-      expect(body.instance).toBe("/users/me");
+      expect(body.instance).toBe("/api/v1/users/me");
     });
   });
 });

@@ -86,42 +86,42 @@ describe("OpenAPI Specification & Scalar Documentation", () => {
       const paths = Object.keys(document.paths);
 
       // Auth & User paths
-      expect(paths).toContain("/auth/login");
-      expect(paths).toContain("/auth/register");
-      expect(paths).toContain("/auth/refresh");
-      expect(paths).toContain("/users/me");
+      expect(paths).toContain("/api/v1/auth/login");
+      expect(paths).toContain("/api/v1/auth/register");
+      expect(paths).toContain("/api/v1/auth/refresh");
+      expect(paths).toContain("/api/v1/users/me");
 
       // Dealer Tiers & Leads
-      expect(paths).toContain("/dealer-tiers");
-      expect(paths).toContain("/leads");
+      expect(paths).toContain("/api/v1/dealer-tiers");
+      expect(paths).toContain("/api/v1/leads");
 
       // Catalog
-      expect(paths).toContain("/products");
-      expect(paths).toContain("/categories");
-      expect(paths).toContain("/brands");
+      expect(paths).toContain("/api/v1/products");
+      expect(paths).toContain("/api/v1/categories");
+      expect(paths).toContain("/api/v1/brands");
 
       // Warehouse
-      expect(paths).toContain("/warehouses");
-      expect(paths).toContain("/warehouses/stock/product/{productId}");
+      expect(paths).toContain("/api/v1/warehouses");
+      expect(paths).toContain("/api/v1/warehouses/stock/product/{productId}");
 
       // Cart
-      expect(paths).toContain("/cart");
-      expect(paths).toContain("/cart/items");
-      expect(paths).toContain("/cart/merge");
+      expect(paths).toContain("/api/v1/cart");
+      expect(paths).toContain("/api/v1/cart/items");
+      expect(paths).toContain("/api/v1/cart/merge");
 
       // Quotes
-      expect(paths).toContain("/quotes");
-      expect(paths).toContain("/quotes/admin");
+      expect(paths).toContain("/api/v1/quotes");
+      expect(paths).toContain("/api/v1/quotes/admin");
 
       // Orders
-      expect(paths).toContain("/orders");
-      expect(paths).toContain("/orders/checkout");
+      expect(paths).toContain("/api/v1/orders");
+      expect(paths).toContain("/api/v1/orders/checkout");
 
       // Payments
-      expect(paths).toContain("/payments/checkout-link");
-      expect(paths).toContain("/payments/payos-webhook");
-      expect(paths).toContain("/payments/{id}/verify-cash");
-      expect(paths).toContain("/payments/repay-debt");
+      expect(paths).toContain("/api/v1/payments/checkout-link");
+      expect(paths).toContain("/api/v1/payments/payos-webhook");
+      expect(paths).toContain("/api/v1/payments/{id}/verify-cash");
+      expect(paths).toContain("/api/v1/payments/repay-debt");
     });
 
     it("should ensure every path operation has valid tags, summary, and responses", () => {

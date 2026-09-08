@@ -17,7 +17,7 @@ import { UsersService } from "./users.service";
 import { UserResponseDto } from "./dto/user-response.dto";
 
 @ApiTags(USERS_ROUTES.BASE)
-@Controller(USERS_ROUTES.BASE)
+@Controller({ path: USERS_ROUTES.BASE, version: "1" })
 @UseGuards(CustomThrottlerGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

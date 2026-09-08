@@ -121,7 +121,7 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
     await db.delete(leads);
   }, 15000);
 
-  describe("POST /leads (Public Storefront RFQ)", () => {
+  describe("POST /api/v1/leads (Public Storefront RFQ)", () => {
     describe("when visitor submits valid quote request without authentication", () => {
       it("should return 201 Created with leadCode and snapshot items", async () => {
         const payload = {
@@ -136,7 +136,9 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
           items: [{ productId: testProductId, quantity: 1 }],
         };
 
-        const res = await request(getHttpServer()).post("/leads").send(payload);
+        const res = await request(getHttpServer())
+          .post("/api/v1/leads")
+          .send(payload);
 
         expect(res.status).toBe(201);
         const body =
@@ -174,7 +176,9 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
           ],
         };
 
-        const res = await request(getHttpServer()).post("/leads").send(payload);
+        const res = await request(getHttpServer())
+          .post("/api/v1/leads")
+          .send(payload);
 
         expect(res.status).toBe(404);
         const body = res.body as unknown as Rfc9457ErrorResponse;
@@ -193,7 +197,9 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
           items: [{ productId: testProductId, quantity: 1 }],
         };
 
-        const res = await request(getHttpServer()).post("/leads").send(payload);
+        const res = await request(getHttpServer())
+          .post("/api/v1/leads")
+          .send(payload);
 
         expect(res.status).toBe(400);
         const body = res.body as unknown as Rfc9457ErrorResponse;
@@ -203,10 +209,10 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
     });
   });
 
-  describe("GET /leads (CMS Internal)", () => {
+  describe("GET /api/v1/leads (CMS Internal)", () => {
     describe("when unauthenticated", () => {
       it("should return 401 Unauthorized in RFC 9457 format", async () => {
-        const res = await request(getHttpServer()).get("/leads");
+        const res = await request(getHttpServer()).get("/api/v1/leads");
 
         expect(res.status).toBe(401);
         const body = res.body as unknown as Rfc9457ErrorResponse;
@@ -224,7 +230,7 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
 
         // Submit one lead
         await request(getHttpServer())
-          .post("/leads")
+          .post("/api/v1/leads")
           .send({
             fullName: "Công ty ABC",
             phoneNumber: "0909112233",
@@ -234,7 +240,7 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
           });
 
         const res = await request(getHttpServer())
-          .get("/leads")
+          .get("/api/v1/leads")
           .set(authHeader);
 
         expect(res.status).toBe(200);
@@ -249,7 +255,7 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
     });
   });
 
-  describe("PATCH /leads/:id/status (CMS Sales Pipeline)", () => {
+  describe("PATCH /api/v1/leads/:id/status (CMS Sales Pipeline)", () => {
     describe("when sales updates status to CONTACTING", () => {
       it("should update status and return refreshed lead", async () => {
         const { authHeader } = await createAuthenticatedUser(db, jwtService, {
@@ -258,7 +264,7 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
         });
 
         const createdRes = await request(getHttpServer())
-          .post("/leads")
+          .post("/api/v1/leads")
           .send({
             fullName: "Khách hàng Test",
             phoneNumber: "0911223344",
@@ -272,7 +278,7 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
         ).data.id;
 
         const res = await request(getHttpServer())
-          .patch(`/leads/${leadId}/status`)
+          .patch(`/api/v1/leads/${leadId}/status`)
           .set(authHeader)
           .send({ status: "CONTACTING" });
 

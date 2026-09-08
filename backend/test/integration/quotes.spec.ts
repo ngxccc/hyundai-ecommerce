@@ -91,7 +91,7 @@ describe("Quotes Module Integration", () => {
 
       // 2. Submit customer RFQ
       const rfqRes = await request(getHttpServer())
-        .post("/quotes")
+        .post("/api/v1/quotes")
         .send({
           customerName: "Trần Văn Doanh",
           customerPhone: "0987654321",
@@ -119,7 +119,7 @@ describe("Quotes Module Integration", () => {
 
       // 3. Admin creates formal B2B quote with custom ATS item and discount
       const adminQuoteRes = await request(getHttpServer())
-        .post("/quotes/admin")
+        .post("/api/v1/quotes/admin")
         .set(adminAuth)
         .send({
           customerName: "Tập đoàn Xây Dựng Số 1",
@@ -174,7 +174,7 @@ describe("Quotes Module Integration", () => {
 
       // 1. Submit RFQ (status: SUBMITTED)
       const rfqRes = await request(getHttpServer())
-        .post("/quotes")
+        .post("/api/v1/quotes")
         .send({
           customerName: "Lê Thị B",
           customerPhone: "0912345678",
@@ -198,7 +198,7 @@ describe("Quotes Module Integration", () => {
 
       // 2. Admin sends negotiation message -> Quote MUST transition to NEGOTIATING
       const msgRes = await request(getHttpServer())
-        .post(`/quotes/${quoteId}/messages`)
+        .post(`/api/v1/quotes/${quoteId}/messages`)
         .set(adminAuth)
         .send({
           message: "Chào chị, chúng tôi có thể hỗ trợ mức giá 14.500.000 VNĐ.",
@@ -212,7 +212,7 @@ describe("Quotes Module Integration", () => {
 
       // Verify quote status is now NEGOTIATING
       const quoteDetailRes = await request(getHttpServer())
-        .get(`/quotes/${quoteId}`)
+        .get(`/api/v1/quotes/${quoteId}`)
         .set(adminAuth);
 
       const detailedQuote = (
@@ -223,7 +223,7 @@ describe("Quotes Module Integration", () => {
 
       // 3. Admin updates agreed price for line item to 14,500,000
       const updatePriceRes = await request(getHttpServer())
-        .put(`/quotes/${quoteId}/items/${itemId}/price`)
+        .put(`/api/v1/quotes/${quoteId}/items/${itemId}/price`)
         .set(adminAuth)
         .send({
           agreedPrice: "14500000.00",
@@ -239,7 +239,7 @@ describe("Quotes Module Integration", () => {
 
       // 4. Test Excel Export stream
       const excelRes = await request(getHttpServer())
-        .get(`/quotes/${quoteId}/export-excel`)
+        .get(`/api/v1/quotes/${quoteId}/export-excel`)
         .set(adminAuth);
 
       expect(excelRes.status).toBe(200);
@@ -283,7 +283,7 @@ describe("Quotes Module Integration", () => {
 
       // 2. Admin creates quote for registered customer
       const quoteRes = await request(getHttpServer())
-        .post("/quotes/admin")
+        .post("/api/v1/quotes/admin")
         .set(adminAuth)
         .send({
           userId: customerUser.id,
@@ -313,7 +313,7 @@ describe("Quotes Module Integration", () => {
 
       // 3. Admin approves and converts quote to order
       const convertRes = await request(getHttpServer())
-        .post(`/quotes/${quoteId}/approve-to-order`)
+        .post(`/api/v1/quotes/${quoteId}/approve-to-order`)
         .set(adminAuth);
 
       expect(convertRes.status).toBe(200);
@@ -326,7 +326,7 @@ describe("Quotes Module Integration", () => {
 
       // 4. Verify quote is now APPROVED and linked to orderId
       const finalQuoteRes = await request(getHttpServer())
-        .get(`/quotes/${quoteId}`)
+        .get(`/api/v1/quotes/${quoteId}`)
         .set(adminAuth);
 
       const finalQuote = (
@@ -337,7 +337,7 @@ describe("Quotes Module Integration", () => {
 
       // 5. Verify that attempting to adjust price on approved quote is rejected
       const adjustRejectedRes = await request(getHttpServer())
-        .put(`/quotes/${quoteId}/items/${itemId}/price`)
+        .put(`/api/v1/quotes/${quoteId}/items/${itemId}/price`)
         .set(adminAuth)
         .send({
           agreedPrice: "100000000.00",
@@ -347,7 +347,7 @@ describe("Quotes Module Integration", () => {
 
       // 6. Verify that trying to convert an already-approved quote is rejected
       const doubleConvertRes = await request(getHttpServer())
-        .post(`/quotes/${quoteId}/approve-to-order`)
+        .post(`/api/v1/quotes/${quoteId}/approve-to-order`)
         .set(adminAuth);
 
       expect(doubleConvertRes.status).toBe(400);

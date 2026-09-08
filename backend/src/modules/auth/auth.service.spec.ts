@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, mock } from "bun:test";
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   UnauthorizedException,
 } from "@nestjs/common";
 import type { JwtService } from "@nestjs/jwt";
@@ -374,6 +375,87 @@ describe("AuthService", () => {
         expect(err).toBeInstanceOf(BadRequestException);
         expect((err as BadRequestException).message).toBe(
           "auth.EMAIL_NOT_VERIFIED",
+        );
+      }
+      expect(thrown).toBe(true);
+    });
+
+    it("should throw ForbiddenException if user account is SUSPENDED", async () => {
+      const passwordHash = await hashPassword("Password123");
+      mockDb.setSelectResult([
+        {
+          id: "user-uuid",
+          email: "test@example.com",
+          status: "SUSPENDED",
+          passwordHash,
+        },
+      ]);
+
+      let thrown = false;
+      try {
+        await service.login({
+          email: "test@example.com",
+          password: "Password123",
+        });
+      } catch (err) {
+        thrown = true;
+        expect(err).toBeInstanceOf(ForbiddenException);
+        expect((err as ForbiddenException).message).toBe(
+          "users.ACCOUNT_SUSPENDED_OR_INACTIVE",
+        );
+      }
+      expect(thrown).toBe(true);
+    });
+
+    it("should throw ForbiddenException if user account is INACTIVE", async () => {
+      const passwordHash = await hashPassword("Password123");
+      mockDb.setSelectResult([
+        {
+          id: "user-uuid",
+          email: "test@example.com",
+          status: "INACTIVE",
+          passwordHash,
+        },
+      ]);
+
+      let thrown = false;
+      try {
+        await service.login({
+          email: "test@example.com",
+          password: "Password123",
+        });
+      } catch (err) {
+        thrown = true;
+        expect(err).toBeInstanceOf(ForbiddenException);
+        expect((err as ForbiddenException).message).toBe(
+          "users.ACCOUNT_SUSPENDED_OR_INACTIVE",
+        );
+      }
+      expect(thrown).toBe(true);
+    });
+
+    it("should throw BadRequestException if account is SUSPENDED but password is wrong (prevent enumeration)", async () => {
+      const passwordHash = await hashPassword("Password123");
+      mockDb.setSelectResult([
+        {
+          id: "user-uuid",
+          email: "test@example.com",
+          status: "SUSPENDED",
+          passwordHash,
+        },
+      ]);
+
+      let thrown = false;
+      try {
+        await service.login({
+          email: "test@example.com",
+          password: "WrongPassword",
+        });
+      } catch (err) {
+        thrown = true;
+        expect(err).toBeInstanceOf(BadRequestException);
+        expect((err as BadRequestException).message).toBe(
+          "auth.INVALID_CREDENTIALS",
         );
       }
       expect(thrown).toBe(true);

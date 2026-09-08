@@ -50,7 +50,7 @@ import {
 } from "./dto";
 
 @ApiTags(ORDER_ROUTES.TAG)
-@Controller(ORDER_ROUTES.ROOT)
+@Controller({ path: ORDER_ROUTES.ROOT, version: "1" })
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 

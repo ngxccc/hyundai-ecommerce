@@ -23,6 +23,7 @@ import { PAYMENT_GATEWAY_TOKEN } from "@/modules/payments/interfaces/payment-gat
 import { MockPaymentGateway } from "@/modules/payments/gateways/mock-payment.gateway";
 import { MAIL_TRANSPORT_TOKEN } from "@/modules/mail/interfaces/mail-transport.interface";
 import { LogMailTransport } from "@/modules/mail/transports/log-mail.transport";
+import { setupGlobalPrefix } from "@/common/config/api-prefix.config";
 
 /**
  * Encapsulates the runtime application and isolated resources provisioned for a test suite.
@@ -142,6 +143,7 @@ export async function createTestApp(
     .compile();
 
   const app = moduleFixture.createNestApplication();
+  setupGlobalPrefix(app);
   app.useGlobalPipes(new ZodValidationPipe());
   if (options?.configureApp) {
     options.configureApp(app);

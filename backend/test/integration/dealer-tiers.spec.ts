@@ -61,7 +61,7 @@ describe("Dealer Tiers Module Integration", () => {
     await db.delete(dealerTiers);
   }, 15000);
 
-  describe("GET /dealer-tiers", () => {
+  describe("GET /api/v1/dealer-tiers", () => {
     describe("when dealer tiers exist in database", () => {
       it("should return 200 OK with tiers ordered by minimumSpend ascending", async () => {
         const tier1Id = randomUUID();
@@ -84,7 +84,7 @@ describe("Dealer Tiers Module Integration", () => {
           },
         ]);
 
-        const res = await request(getHttpServer()).get("/dealer-tiers");
+        const res = await request(getHttpServer()).get("/api/v1/dealer-tiers");
 
         expect(res.status).toBe(200);
         const body = res.body as unknown as GenericSuccessResponse<
@@ -103,7 +103,7 @@ describe("Dealer Tiers Module Integration", () => {
 
     describe("when no dealer tiers exist", () => {
       it("should return 200 OK with an empty array", async () => {
-        const res = await request(getHttpServer()).get("/dealer-tiers");
+        const res = await request(getHttpServer()).get("/api/v1/dealer-tiers");
 
         expect(res.status).toBe(200);
         const body = res.body as unknown as GenericSuccessResponse<
@@ -115,7 +115,7 @@ describe("Dealer Tiers Module Integration", () => {
     });
   });
 
-  describe("GET /dealer-tiers/:id", () => {
+  describe("GET /api/v1/dealer-tiers/:id", () => {
     describe("when requesting an existing tier by UUID", () => {
       it("should return 200 OK with the corresponding tier payload", async () => {
         const tierId = randomUUID();
@@ -128,7 +128,7 @@ describe("Dealer Tiers Module Integration", () => {
         });
 
         const res = await request(getHttpServer()).get(
-          `/dealer-tiers/${tierId}`,
+          `/api/v1/dealer-tiers/${tierId}`,
         );
 
         expect(res.status).toBe(200);
@@ -144,9 +144,9 @@ describe("Dealer Tiers Module Integration", () => {
     describe("when tier does not exist", () => {
       it("should return 404 Not Found in RFC 9457 format", async () => {
         const nonExistentId = randomUUID();
-        const res = await request(getHttpServer()).get(
-          `/dealer-tiers/${nonExistentId}`,
-        );
+        const res = await request(getHttpServer())
+          .get(`/api/v1/dealer-tiers/${nonExistentId}`)
+          .set("accept-language", "en");
 
         expect(res.status).toBe(404);
         const body = res.body as unknown as Rfc9457ErrorResponse;
@@ -161,7 +161,7 @@ describe("Dealer Tiers Module Integration", () => {
     describe("when ID parameter is malformed", () => {
       it("should return 400 Bad Request when id is not a valid UUID", async () => {
         const res = await request(getHttpServer()).get(
-          "/dealer-tiers/invalid-uuid-123",
+          "/api/v1/dealer-tiers/invalid-uuid-123",
         );
 
         expect(res.status).toBe(400);

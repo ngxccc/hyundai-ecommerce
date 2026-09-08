@@ -19,7 +19,7 @@ import { DealerTiersService } from "./dealer-tiers.service";
 import { DealerTierResponseDto } from "./dto/dealer-tier-response.dto";
 
 @ApiTags(DEALER_TIERS_ROUTES.BASE)
-@Controller(DEALER_TIERS_ROUTES.BASE)
+@Controller({ path: DEALER_TIERS_ROUTES.BASE, version: "1" })
 @UseGuards(CustomThrottlerGuard)
 export class DealerTiersController {
   constructor(private readonly dealerTiersService: DealerTiersService) {}

@@ -39,7 +39,7 @@ import { ProductResponseDto } from "./dto/product-response.dto";
 import { ProductMetadataResponseDto } from "./dto/product-metadata-response.dto";
 
 @ApiTags(CATALOG_ROUTES.PRODUCTS.TAG)
-@Controller(CATALOG_ROUTES.PRODUCTS.PREFIX)
+@Controller({ path: CATALOG_ROUTES.PRODUCTS.PREFIX, version: "1" })
 @UseGuards(CustomThrottlerGuard)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

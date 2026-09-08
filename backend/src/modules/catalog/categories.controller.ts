@@ -35,7 +35,7 @@ import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { CategoryResponseDto } from "./dto/category-response.dto";
 
 @ApiTags(CATALOG_ROUTES.CATEGORIES.TAG)
-@Controller(CATALOG_ROUTES.CATEGORIES.PREFIX)
+@Controller({ path: CATALOG_ROUTES.CATEGORIES.PREFIX, version: "1" })
 @UseGuards(CustomThrottlerGuard)
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
