@@ -1167,7 +1167,7 @@ export interface components {
     LoginResponseDto: {
       /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
       accessToken: string;
-      /** @example d9b2e8a1-3c5f-4a7b-8e9d-1f2a3b4c5d6e */
+      /** @example 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069 */
       refreshToken: string;
       user: components["schemas"]["UserInfoDto"];
     };
@@ -1186,13 +1186,13 @@ export interface components {
     RefreshResponseDto: {
       /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
       accessToken: string;
-      /** @example d9b2e8a1-3c5f-4a7b-8e9d-1f2a3b4c5d6e */
+      /** @example 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069 */
       refreshToken: string;
     };
     RefreshTokenDto: {
       /**
-       * @description Active refresh token string
-       * @example d9b2e8a1-3c5f-4a7b-8e9d-1f2a3b4c5d6e
+       * @description Active 64-character hex refresh token string
+       * @example 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
        */
       refreshToken: string;
     };
@@ -1335,7 +1335,7 @@ export interface components {
     LeadResponseDto: {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
       id: string;
-      /** @example RFQ-20260904-001 */
+      /** @example RFQ-20260908-JDHC005DCA75 */
       leadCode: string;
       /** @example Nguyễn Văn An */
       fullName: string;
@@ -1470,7 +1470,6 @@ export interface components {
       success: boolean;
       meta: components["schemas"]["PaginationMetaDto"];
     };
-    Object: Record<string, never>;
     UpdateLeadStatusDto: {
       /**
        * @description New pipeline status of the lead
@@ -1490,6 +1489,13 @@ export interface components {
        * @example Khách chê giá đắt, đã chọn phương án thuê máy cũ
        */
       lostReason?: string;
+    };
+    AssignSalesDto: {
+      /**
+       * @description UUID of the sales representative to assign
+       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb90
+       */
+      salesId: string;
     };
     CategoryResponseDto: {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
@@ -1787,7 +1793,21 @@ export interface components {
     ProductMetadataResponseDto: {
       brands: components["schemas"]["BrandFacetItem"][];
       categories: components["schemas"]["CategoryFacetItem"][];
+      /**
+       * @description Power range in kVA
+       * @example {
+       *       "min": 10,
+       *       "max": 2500
+       *     }
+       */
       powerRange: components["schemas"]["RangeFacet"];
+      /**
+       * @description Price range in VND
+       * @example {
+       *       "min": 15000000,
+       *       "max": 850000000
+       *     }
+       */
       priceRange: components["schemas"]["RangeFacet"];
       fuelTypes: components["schemas"]["ValueCountFacetItem"][];
       phases: components["schemas"]["ValueCountFacetItem"][];
@@ -2142,6 +2162,7 @@ export interface components {
       /** @example true */
       isActive?: boolean;
     };
+    Object: Record<string, never>;
     CartProductSummaryDto: {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
       id: string;
@@ -2723,7 +2744,7 @@ export interface components {
       quantity: number;
       /** @example 245000000.00 */
       unitPrice: string;
-      product?: components["schemas"]["OrderItemProductSummaryDto"];
+      product?: components["schemas"]["OrderItemProductSummaryDto"] | null;
       /**
        * Format: date-time
        * @example 2026-09-04T08:00:00.000Z
@@ -2751,19 +2772,19 @@ export interface components {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb92 */
       id: string;
       /** @example ORD-20260904-4821 */
-      orderNumber?: string;
+      orderNumber?: string | null;
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
-      userId?: string;
+      userId?: string | null;
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
-      leadId?: string;
+      leadId?: string | null;
       /** @example Nguyễn Văn A */
-      customerName?: string;
+      customerName?: string | null;
       /** @example 0901234567 */
-      customerPhone?: string;
+      customerPhone?: string | null;
       /** @example nguyenvana@example.com */
-      customerEmail?: string;
+      customerEmail?: string | null;
       /** @example Công ty Cổ phần Xây Dựng Số 1 */
-      companyName?: string;
+      companyName?: string | null;
       /**
        * @example PENDING
        * @enum {string}
@@ -2776,9 +2797,9 @@ export interface components {
       /** @example 245500000.00 */
       totalAmount: string;
       /** @example 50000000.00 */
-      depositAmount?: string;
+      depositAmount?: string | null;
       /** @example 195500000.00 */
-      remainingAmount?: string;
+      remainingAmount?: string | null;
       /**
        * @example PAYOS
        * @enum {string}
@@ -2796,9 +2817,9 @@ export interface components {
        */
       approvalStatus: "PENDING" | "APPROVED" | "REJECTED";
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9c */
-      approvedBy?: string;
+      approvedBy?: string | null;
       /** @example Giao trong giờ hành chính */
-      note?: string;
+      note?: string | null;
       /**
        * Format: date-time
        * @example 2026-09-04T08:00:00.000Z
@@ -2810,7 +2831,7 @@ export interface components {
        */
       updatedAt: string;
       items: components["schemas"]["OrderItemResponseDto"][];
-      user?: components["schemas"]["OrderUserSummaryDto"];
+      user?: components["schemas"]["OrderUserSummaryDto"] | null;
     };
     GuestOrderItemInputDto: {
       /**
@@ -2943,7 +2964,7 @@ export interface components {
     UpdateOrderStatusDto: {
       /**
        * @description New order status along the state machine
-       * @example CONFIRMED
+       * @example PROCESSING
        * @enum {string}
        */
       status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
@@ -2952,6 +2973,13 @@ export interface components {
        * @example Đã xác nhận thanh toán chuyển khoản và sẵn sàng đóng gói
        */
       note?: string;
+    };
+    ExpireOrdersResponseDto: {
+      /**
+       * @description Number of pending unpaid orders auto-expired
+       * @example 3
+       */
+      expiredCount: number;
     };
     CheckoutLinkResponseDto: {
       /**
@@ -3037,6 +3065,18 @@ export interface components {
       code?: string;
       /** @example Success */
       desc?: string;
+      /** @example 970422 */
+      counterAccountBankId?: string | null;
+      /** @example MBBank */
+      counterAccountBankName?: string | null;
+      /** @example NGUYEN VAN A */
+      counterAccountName?: string | null;
+      /** @example 0901234567 */
+      counterAccountNumber?: string | null;
+      /** @example HYUNDAI ECOM */
+      virtualAccountName?: string | null;
+      /** @example VA12345678 */
+      virtualAccountNumber?: string | null;
     };
     PayOSWebhookDto: {
       /**
@@ -3070,7 +3110,7 @@ export interface components {
       /** @example 490000000.00 */
       amount: string;
       /**
-       * @example PAYOS
+       * @example CASH
        * @enum {string}
        */
       paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
@@ -3086,11 +3126,11 @@ export interface components {
        */
       status: "PENDING" | "COMPLETED" | "FAILED" | "CANCELLED";
       /** @example 1725451234567 */
-      orderCode?: number;
+      orderCode?: number | null;
       /** @example REF-123456 */
-      referenceCode?: string;
+      referenceCode?: string | null;
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb93 */
-      verifiedBy?: string;
+      verifiedBy?: string | null;
       /**
        * Format: date-time
        * @example 2026-09-04T08:00:00.000Z
@@ -3106,17 +3146,24 @@ export interface components {
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb92 */
       orderId: string;
       /** @example ORD-20260904-4821 */
-      orderNumber?: string;
+      orderNumber?: string | null;
       /** @example 490000000.00 */
       totalAmount: string;
       /** @example 0.00 */
-      depositAmount?: string;
+      depositAmount?: string | null;
       /** @example 0.00 */
-      remainingAmount?: string;
-      /** @example PAYOS */
-      paymentMethod: string;
-      /** @example FULLY_PAID */
-      paymentStatus: string;
+      remainingAmount?: string | null;
+      /**
+       * @example CASH
+       * @enum {string}
+       */
+      paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+      /**
+       * @example FULLY_PAID
+       * @enum {string}
+       */
+      paymentStatus:
+        "PENDING" | "DEPOSIT_PAID" | "FULLY_PAID" | "REFUNDED" | "FAILED";
       /** @description List of related payment transactions */
       transactions: components["schemas"]["PaymentTransactionResponseDto"][];
     };
@@ -3140,7 +3187,7 @@ export interface components {
       /** @example 50000000.00 */
       amount: string;
       /**
-       * @example PAYOS
+       * @example CASH
        * @enum {string}
        */
       paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
@@ -3150,15 +3197,15 @@ export interface components {
        */
       status: "PENDING" | "COMPLETED" | "FAILED";
       /** @example 1725451234568 */
-      orderCode?: number;
+      orderCode?: number | null;
       /** @example REPAY-REF-789 */
-      referenceCode?: string;
+      referenceCode?: string | null;
       /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb93 */
-      verifiedBy?: string;
+      verifiedBy?: string | null;
       /** @example https://pay.payos.vn/web/6c9b3a6e7a2e7b56b74c419b4eb14b9a */
-      checkoutUrl?: string;
+      checkoutUrl?: string | null;
       /** @example 00020101021238540010A00000072701260006970422... */
-      qrCode?: string;
+      qrCode?: string | null;
       /**
        * Format: date-time
        * @example 2026-09-04T08:00:00.000Z
@@ -3490,6 +3537,42 @@ export interface operations {
           "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Internal server error */
       500: {
         headers: Record<string, unknown>;
@@ -3631,6 +3714,24 @@ export interface operations {
            *           "reason": "Invalid email address format"
            *         }
            *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
            *     }
            */
@@ -3988,7 +4089,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4073,6 +4174,29 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Resource not found (Not Found) */
       404: {
         headers: Record<string, unknown>;
@@ -4082,7 +4206,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Dealer tier not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4114,8 +4238,10 @@ export interface operations {
   LeadsController_getAll_v1: {
     parameters: {
       query?: {
-        page?: components["schemas"]["Object"];
-        limit?: components["schemas"]["Object"];
+        /** @description Pagination page number (1-based) */
+        page?: number;
+        /** @description Number of records per page (max 100) */
+        limit?: number;
         /** @description Filter leads by operational status */
         status?:
           | "NEW"
@@ -4309,7 +4435,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4411,7 +4537,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4431,7 +4557,11 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AssignSalesDto"];
+      };
+    };
     responses: {
       200: {
         headers: Record<string, unknown>;
@@ -4439,6 +4569,29 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["LeadResponseDto"];
           };
+        };
+      };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
       /** @description Authentication required or invalid token (Unauthorized) */
@@ -4486,7 +4639,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4699,7 +4852,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4819,7 +4972,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -4863,7 +5016,8 @@ export interface operations {
         headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["Object"];
+            /** @default null */
+            data: Record<string, never> | null;
           };
         };
       };
@@ -4912,7 +5066,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5088,7 +5242,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5208,7 +5362,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5252,7 +5406,8 @@ export interface operations {
         headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["Object"];
+            /** @default null */
+            data: Record<string, never> | null;
           };
         };
       };
@@ -5301,7 +5456,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5558,7 +5713,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5678,7 +5833,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5722,7 +5877,8 @@ export interface operations {
         headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["Object"];
+            /** @default null */
+            data: Record<string, never> | null;
           };
         };
       };
@@ -5771,7 +5927,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5933,7 +6089,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5973,7 +6129,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6076,7 +6232,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6116,7 +6272,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6219,7 +6375,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6313,7 +6469,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6432,7 +6588,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6517,7 +6673,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6575,7 +6731,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -6939,7 +7095,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7042,7 +7198,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7147,7 +7303,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7223,6 +7379,24 @@ export interface operations {
           "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Resource not found (Not Found) */
       404: {
         headers: Record<string, unknown>;
@@ -7232,7 +7406,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7331,7 +7505,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7354,10 +7528,12 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      /** @description Excel workbook stream */
+      /** @description Excel workbook stream (.xlsx) */
       200: {
         headers: Record<string, unknown>;
-        content?: never;
+        content: {
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
+        };
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
@@ -7404,7 +7580,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7468,7 +7644,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7568,7 +7744,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7736,7 +7912,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7839,7 +8015,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7938,7 +8114,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -7962,8 +8138,7 @@ export interface operations {
         headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
-            /** @default null */
-            data: Record<string, never> | null;
+            data?: components["schemas"]["ExpireOrdersResponseDto"];
           };
         };
       };
@@ -8040,7 +8215,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -8189,7 +8364,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -8262,6 +8437,24 @@ export interface operations {
           "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Resource not found (Not Found) */
       404: {
         headers: Record<string, unknown>;
@@ -8271,7 +8464,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -8302,6 +8495,29 @@ export interface operations {
           };
         };
       };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: Record<string, unknown>;
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
         headers: Record<string, unknown>;
@@ -8329,7 +8545,7 @@ export interface operations {
            *       "type": "http://localhost:3000/errors/not-found",
            *       "title": "Not Found",
            *       "status": 404,
-           *       "detail": "User profile not found",
+           *       "detail": "Requested resource not found",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
