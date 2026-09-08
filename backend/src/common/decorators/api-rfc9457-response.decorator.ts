@@ -87,7 +87,7 @@ export function ApiNotFoundResponseRfc9457(options?: { detail?: string }) {
     status: HttpStatus.NOT_FOUND,
     description: "Resource not found (Not Found)",
     title: "Not Found",
-    detail: options?.detail ?? "User profile not found",
+    detail: options?.detail ?? "Requested resource not found",
   });
 }
 

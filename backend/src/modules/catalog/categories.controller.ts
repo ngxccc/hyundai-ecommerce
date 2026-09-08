@@ -135,7 +135,7 @@ export class CategoriesController {
     summary: "Delete category (Admin only)",
     description: "Deletes an existing category by UUID.",
   })
-  @ApiOkResponseGeneric(Object)
+  @ApiOkResponseGeneric()
   @ApiNotFoundResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()
   @ApiForbiddenResponseRfc9457()

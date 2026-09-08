@@ -14,7 +14,7 @@ export class UpdateOrderStatusDto implements UpdateOrderStatusDtoType {
   public static readonly zodSchema = updateOrderStatusSchema;
 
   @ApiProperty({
-    example: "CONFIRMED",
+    example: ORDER_STATUSES[1],
     enum: ORDER_STATUSES,
     description: "New order status along the state machine",
   })

@@ -10,6 +10,7 @@ import { Throttle } from "@nestjs/throttler";
 import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
 import {
   ApiOkResponseGeneric,
+  ApiBadRequestResponseRfc9457,
   ApiNotFoundResponseRfc9457,
   ApiTooManyRequestsResponseRfc9457,
 } from "@/common/decorators";
@@ -49,7 +50,8 @@ export class DealerTiersController {
     description: "Returns details of a specific dealer tier by UUID.",
   })
   @ApiOkResponseGeneric(DealerTierResponseDto)
-  @ApiNotFoundResponseRfc9457()
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457({ detail: "Dealer tier not found" })
   @ApiTooManyRequestsResponseRfc9457()
   async getById(
     @Param("id", ParseUUIDPipe) id: string,

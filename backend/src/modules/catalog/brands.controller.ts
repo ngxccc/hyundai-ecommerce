@@ -121,7 +121,7 @@ export class BrandsController {
     summary: "Delete brand (Admin only)",
     description: "Deletes an existing brand by UUID.",
   })
-  @ApiOkResponseGeneric(Object)
+  @ApiOkResponseGeneric()
   @ApiNotFoundResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()
   @ApiForbiddenResponseRfc9457()
