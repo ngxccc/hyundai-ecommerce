@@ -55,7 +55,7 @@ export const createCategoryAction = async (formData: FormData) => {
     }
 
     const { data: createRes, error: createError } = await api.POST(
-      "/categories",
+      "/api/v1/categories",
       {
         body: validatedData as never,
       },
@@ -71,7 +71,7 @@ export const createCategoryAction = async (formData: FormData) => {
         try {
           const url = await uploadToCloudinary(imageFile, "categories");
           if (url) {
-            await api.PUT("/categories/{id}", {
+            await api.PUT("/api/v1/categories/{id}", {
               params: { path: { id: categoryData.id } },
               body: { image: url },
             });
@@ -138,7 +138,7 @@ export async function updateCategoryAction(id: string, formData: FormData) {
     }
 
     const { data: updateRes, error: updateError } = await api.PUT(
-      "/categories/{id}",
+      "/api/v1/categories/{id}",
       {
         params: { path: { id } },
         body: validatedData as never,
@@ -155,7 +155,7 @@ export async function updateCategoryAction(id: string, formData: FormData) {
         try {
           const url = await uploadToCloudinary(imageFile, "categories");
           if (url) {
-            await api.PUT("/categories/{id}", {
+            await api.PUT("/api/v1/categories/{id}", {
               params: { path: { id } },
               body: { image: url },
             });
@@ -191,7 +191,7 @@ export async function deleteCategoryAction(id: string) {
   }
   try {
     await requireAuth();
-    const { error: deleteError } = await api.DELETE("/categories/{id}", {
+    const { error: deleteError } = await api.DELETE("/api/v1/categories/{id}", {
       params: { path: { id } },
     });
     if (deleteError) {

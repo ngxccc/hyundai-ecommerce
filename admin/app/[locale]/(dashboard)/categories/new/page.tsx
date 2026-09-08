@@ -32,7 +32,7 @@ export default async function AdminNewCategoryPage() {
   const tNav = await getTranslations("adminDashboard.nav");
   const tForm = await getTranslations("adminCategoryForm");
 
-  const { data: res } = await api.GET("/categories");
+  const { data: res } = await api.GET("/api/v1/categories");
   const categories = res?.data ?? [];
 
   return (

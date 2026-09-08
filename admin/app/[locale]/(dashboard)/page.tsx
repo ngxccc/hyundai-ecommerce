@@ -42,7 +42,7 @@ export const AdminDashboard = async () => {
     }),
     Promise.resolve([]),
     Promise.resolve([]),
-    api.GET("/orders", { params: { query: { limit: 5 } } }),
+    api.GET("/api/v1/orders", { params: { query: { limit: 5 } } }),
   ]);
 
   const ordersList: AdminOrder[] = allOrders.data?.data ?? [];

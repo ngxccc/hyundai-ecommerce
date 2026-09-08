@@ -30,7 +30,7 @@ export default async function AdminQuoteExportPage({
   const { id } = await params;
   await requireAuth();
 
-  const { data: res } = await api.GET("/quotes/{id}", {
+  const { data: res } = await api.GET("/api/v1/quotes/{id}", {
     params: { path: { id } },
   });
   const quote = res?.data;

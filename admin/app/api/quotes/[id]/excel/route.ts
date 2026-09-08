@@ -11,7 +11,7 @@ export async function GET(
     await requireAuth();
     const { id } = await params;
 
-    const { response } = await api.GET("/quotes/{id}/export-excel", {
+    const { response } = await api.GET("/api/v1/quotes/{id}/export-excel", {
       params: { path: { id } },
       parseAs: "arrayBuffer",
     });

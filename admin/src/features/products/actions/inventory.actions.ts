@@ -30,7 +30,7 @@ export async function setProductStockAction(data: {
 
     const validatedData = parsed.data;
 
-    const { data: result } = await api.PUT("/warehouses/{id}/stock", {
+    const { data: result } = await api.PUT("/api/v1/warehouses/{id}/stock", {
       params: { path: { id: validatedData.warehouseId } },
       body: {
         productId: validatedData.productId,

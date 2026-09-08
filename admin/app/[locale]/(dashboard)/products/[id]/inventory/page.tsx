@@ -21,11 +21,11 @@ export default async function ProductInventoryPage({
 
   const [productRes, t, tNav, warehousesRes, warehouseStocksRes] =
     await Promise.all([
-      api.GET("/products/{id}", { params: { path: { id } } }),
+      api.GET("/api/v1/products/{id}", { params: { path: { id } } }),
       getTranslations("adminInventory"),
       getTranslations("adminDashboard.nav"),
-      api.GET("/warehouses"),
-      api.GET("/warehouses/stock/product/{productId}", {
+      api.GET("/api/v1/warehouses"),
+      api.GET("/api/v1/warehouses/stock/product/{productId}", {
         params: { path: { productId: id } },
       }),
     ]);

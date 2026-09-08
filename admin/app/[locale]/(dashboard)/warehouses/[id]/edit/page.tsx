@@ -34,7 +34,7 @@ export default async function EditWarehousePage({
 }) {
   const { id } = await params;
 
-  const { data: res } = await api.GET("/warehouses/{id}", {
+  const { data: res } = await api.GET("/api/v1/warehouses/{id}", {
     params: { path: { id } },
   });
   const warehouse = res?.data;

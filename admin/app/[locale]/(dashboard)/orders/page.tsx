@@ -53,7 +53,7 @@ export default async function AdminOrdersPage({
       : undefined;
 
   // Fetch filtered orders
-  const { data: ordersRes } = await api.GET("/orders", {
+  const { data: ordersRes } = await api.GET("/api/v1/orders", {
     params: {
       query: status ? { status: status as never } : undefined,
     },

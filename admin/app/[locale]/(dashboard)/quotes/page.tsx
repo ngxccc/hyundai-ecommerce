@@ -51,7 +51,7 @@ export default async function AdminQuotesPage({
       ? statusParam
       : undefined;
 
-  const { data: quotesRes } = await api.GET("/quotes", {
+  const { data: quotesRes } = await api.GET("/api/v1/quotes", {
     params: {
       query: status ? { status: status as never } : undefined,
     },

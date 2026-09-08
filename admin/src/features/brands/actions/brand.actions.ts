@@ -53,9 +53,12 @@ export const createBrandAction = async (formData: FormData) => {
       }
     }
 
-    const { data: createRes, error: createError } = await api.POST("/brands", {
-      body: validatedData as never,
-    });
+    const { data: createRes, error: createError } = await api.POST(
+      "/api/v1/brands",
+      {
+        body: validatedData as never,
+      },
+    );
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create brand");
     }
@@ -67,7 +70,7 @@ export const createBrandAction = async (formData: FormData) => {
         try {
           const url = await uploadToCloudinary(logoFile, "brands");
           if (url) {
-            await api.PUT("/brands/{id}", {
+            await api.PUT("/api/v1/brands/{id}", {
               params: { path: { id: brandData.id } },
               body: { logo: url },
             });
@@ -134,7 +137,7 @@ export async function updateBrandAction(id: string, formData: FormData) {
     }
 
     const { data: updateRes, error: updateError } = await api.PUT(
-      "/brands/{id}",
+      "/api/v1/brands/{id}",
       {
         params: { path: { id } },
         body: validatedData as never,
@@ -151,7 +154,7 @@ export async function updateBrandAction(id: string, formData: FormData) {
         try {
           const url = await uploadToCloudinary(logoFile, "brands");
           if (url) {
-            await api.PUT("/brands/{id}", {
+            await api.PUT("/api/v1/brands/{id}", {
               params: { path: { id } },
               body: { logo: url },
             });
@@ -187,7 +190,7 @@ export async function deleteBrandAction(id: string) {
   }
   try {
     await requireAuth();
-    const { error: deleteError } = await api.DELETE("/brands/{id}", {
+    const { error: deleteError } = await api.DELETE("/api/v1/brands/{id}", {
       params: { path: { id } },
     });
     if (deleteError) {
