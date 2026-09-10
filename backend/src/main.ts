@@ -1,6 +1,5 @@
 import "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import { Logger } from "nestjs-pino";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import { initSentry } from "./common/services/sentry.service";
 import { setupOpenApiAndScalar } from "./common/config/openapi.config";
@@ -11,6 +10,9 @@ import { AppModule } from "./app.module";
 initSentry();
 
 async function bootstrap() {
+  // Workaround for Bun module-loader race condition (Bun issue #33180 / PR #37185):
+  // Static import of CJS nestjs-pino races with concurrent ESM evaluation of @nestjs/core.
+  const { Logger } = await import("nestjs-pino");
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
   });
