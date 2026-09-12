@@ -2274,148 +2274,18 @@ export interface components {
       /** @description List of guest cart items to merge into authenticated user cart */
       items: components["schemas"]["GuestCartItemDto"][];
     };
-    QuoteCommercialTermsDto: {
-      /**
-       * @default 15
-       * @example 15
-       */
-      validityDays: number;
-      /** @example Tạm ứng 30%, 70% sau khi bàn giao */
-      paymentSchedule?: string | null;
-      /** @example 12 tháng hoặc 1000 giờ chạy */
-      warrantyTerms?: string | null;
-      /** @example 3-5 ngày làm việc */
-      deliveryTime?: string | null;
-      /** @example Tại chân công trình bên mua */
-      deliveryLocation?: string | null;
-    };
-    QuoteItemProductSummaryDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      id: string;
-      /** @example Máy phát điện Hyundai 50kVA */
-      nameVi: string;
-      /** @example Hyundai 50kVA Generator */
-      nameEn: string | null;
-      /** @example may-phat-dien-hyundai-50kva */
-      slug: string;
-      /** @example 180000000.00 */
-      price: string;
-      /**
-       * @example [
-       *       "https://res.cloudinary.com/hyundai/image1.jpg"
-       *     ]
-       */
-      images: string[];
-      /** @example 5 */
-      totalStockCache: number;
-    };
-    QuoteItemResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9a */
-      id: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9b */
-      quoteId: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      productId: string | null;
-      /** @example false */
-      isCustomItem: boolean;
-      /** @example Máy phát điện Hyundai 50kVA */
-      itemName: string | null;
-      /** @example DHY50KSE */
-      itemModel: string | null;
-      /** @example 50kVA 3 Pha Diesel */
-      itemSpecs: string | null;
-      /** @example 1 */
-      quantity: number;
-      /** @example 180000000.00 */
-      unitPrice: string | null;
-      /** @example 10.00 */
-      discountPercent: string | null;
-      /** @example 162000000.00 */
-      finalUnitPrice: string | null;
-      /** @example 162000000.00 */
-      totalPrice: string | null;
-      /** @example 175000000.00 */
-      requestedPrice: string | null;
-      /** @example 162000000.00 */
-      agreedPrice: string | null;
-      product: components["schemas"]["QuoteItemProductSummaryDto"] | null;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      updatedAt: string;
-    };
-    QuoteMessageSenderDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9c */
-      id: string;
-      /** @example Nguyễn Văn Admin */
-      fullName: string;
-      /** @example admin@hyundai-nhatnang.vn */
-      email: string;
-      /** @example ADMIN */
-      role: string;
-    };
-    QuoteMessageResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9d */
-      id: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9b */
-      quoteId: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9c */
-      senderId: string;
-      /** @example Chào chị, chúng tôi có thể hỗ trợ mức giá 14.500.000 VNĐ. */
-      message: string;
-      sender: components["schemas"]["QuoteMessageSenderDto"] | null;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      updatedAt: string;
-    };
-    QuoteUserSummaryDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9e */
-      id: string;
-      /** @example Trần Văn Đại Lý */
-      fullName: string;
-      /** @example dealer@gmail.com */
-      email: string;
-      /** @example 0911223344 */
-      phoneNumber: string;
-      /** @example SALES */
-      role: string;
-    };
     QuoteResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9b */
+      /** Format: uuid */
       id: string;
-      /** @example QT-20260904-5892 */
       quoteNumber: string | null;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9e */
       userId: string | null;
-      /** @example Trần Văn Doanh */
       customerName: string | null;
-      /** @example 0987654321 */
       customerPhone: string | null;
-      /** @example doanh.tv@gmail.com */
       customerEmail: string | null;
-      /** @example Tập đoàn Xây Dựng Số 1 */
       companyName: string | null;
-      /** @example 0312345678 */
       taxId: string | null;
-      /** @example Chân công trình Nhà ga T3 */
       shippingAddress: string | null;
-      /**
-       * @example SUBMITTED
-       * @enum {string}
-       */
+      /** @enum {string} */
       status:
         | "DRAFT"
         | "SUBMITTED"
@@ -2423,253 +2293,141 @@ export interface components {
         | "APPROVED"
         | "REJECTED"
         | "EXPIRED";
-      /** @example 180000000.00 */
       subtotalPrice: string | null;
-      /** @example 10 */
       vatRate: number | null;
-      /** @example 18000000.00 */
       vatAmount: string | null;
-      /** @example 198000000.00 */
       totalQuotedPrice: string | null;
-      commercialTerms: components["schemas"]["QuoteCommercialTermsDto"] | null;
-      /**
-       * Format: date-time
-       * @example 2026-09-24T08:00:00.000Z
-       */
+      commercialTerms?: {
+        /** @default 15 */
+        validityDays: number;
+        paymentSchedule?: string | null;
+        warrantyTerms?: string | null;
+        deliveryTime?: string | null;
+        deliveryLocation?: string | null;
+      } | null;
       expirationDate: string | null;
-      /** @example Ghi chú báo giá */
       note: string | null;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9f */
       orderId: string | null;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9c */
       createdByAdminId: string | null;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       updatedAt: string;
-      items: components["schemas"]["QuoteItemResponseDto"][];
-      messages?: components["schemas"]["QuoteMessageResponseDto"][];
-      user: components["schemas"]["QuoteUserSummaryDto"] | null;
-    };
-    CreateQuoteItemDto: {
-      /**
-       * @description Catalog product UUID, or null for bespoke custom item
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
-       */
-      productId?: string;
-      /**
-       * @description Whether this is a bespoke line item not in catalog
-       * @default false
-       * @example false
-       */
-      isCustomItem: boolean;
-      /**
-       * @description Item name or description
-       * @example Máy phát điện Hyundai DHY6000SE
-       */
-      itemName: string;
-      /**
-       * @description Manufacturer model code
-       * @example DHY6000SE
-       */
-      itemModel?: string;
-      /**
-       * @description Technical specifications summary
-       * @example 5.0kVA - 230V / 50Hz - Chống ồn
-       */
-      itemSpecs?: string;
-      /**
-       * @description Requested quantity
-       * @example 2
-       */
-      quantity: number;
-      /**
-       * @description Customer target/requested unit price
-       * @example 25000000.00
-       */
-      requestedPrice?: string;
+      items: {
+        /** Format: uuid */
+        id: string;
+        /** Format: uuid */
+        quoteId: string;
+        productId: string | null;
+        isCustomItem: boolean;
+        itemName: string | null;
+        itemModel: string | null;
+        itemSpecs: string | null;
+        quantity: number;
+        unitPrice: string | null;
+        discountPercent: string | null;
+        finalUnitPrice: string | null;
+        totalPrice: string | null;
+        requestedPrice: string | null;
+        agreedPrice: string | null;
+        product?: {
+          /** Format: uuid */
+          id: string;
+          nameVi: string;
+          nameEn: string | null;
+          slug: string;
+          price: string;
+          images: string[];
+          totalStockCache: number;
+        } | null;
+        /** Format: date-time */
+        createdAt: string;
+        /** Format: date-time */
+        updatedAt: string;
+      }[];
+      messages?: {
+        /** Format: uuid */
+        id: string;
+        /** Format: uuid */
+        quoteId: string;
+        /** Format: uuid */
+        senderId: string;
+        message: string;
+        sender?: {
+          /** Format: uuid */
+          id: string;
+          fullName: string;
+          email: string;
+          role: string;
+        } | null;
+        /** Format: date-time */
+        createdAt: string;
+        /** Format: date-time */
+        updatedAt: string;
+      }[];
+      user?: {
+        /** Format: uuid */
+        id: string;
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+        role: string;
+      } | null;
     };
     CreateQuoteDto: {
-      /**
-       * @description Customer or company contact name
-       * @example Công ty Cổ phần Xây dựng Nam Á
-       */
       customerName: string;
-      /**
-       * @description Customer contact phone number
-       * @example 0901234567
-       */
       customerPhone: string;
-      /**
-       * @description Customer contact email
-       * @example contact@nama.vn
-       */
-      customerEmail?: string;
-      /**
-       * @description Full registered company name
-       * @example Công ty Cổ phần Xây dựng Nam Á
-       */
-      companyName?: string;
-      /**
-       * @description Corporate enterprise tax ID
-       * @example 0312345678
-       */
-      taxId?: string;
-      /**
-       * @description Project or delivery site destination
-       * @example Số 45 Lê Duẩn, Quận 1, TP. Hồ Chí Minh
-       */
-      shippingAddress?: string;
-      /**
-       * @description Customer special requirements or notes
-       * @example Yêu cầu giao hàng trước ngày 15/10
-       */
-      note?: string;
-      /** @description List of requested quote items */
-      items: components["schemas"]["CreateQuoteItemDto"][];
-    };
-    CommercialTermsDto: {
-      /**
-       * @description Quote validity duration in days
-       * @default 15
-       * @example 15
-       */
-      validityDays: number;
-      /**
-       * @description Commercial payment schedule and terms
-       * @example Tạm ứng 30%, thanh toán 70% trước khi giao hàng
-       */
-      paymentSchedule?: string;
-      /**
-       * @description Commercial warranty terms
-       * @example Bảo hành chính hãng Hyundai 24 tháng hoặc 2000 giờ chạy
-       */
-      warrantyTerms?: string;
-      /**
-       * @description Estimated lead time and delivery schedule
-       * @example Trong vòng 03 ngày làm việc kể từ ngày nhận tạm ứng
-       */
-      deliveryTime?: string;
-      /**
-       * @description Delivery destination or handover site
-       * @example Giao tại chân công trình bên mua
-       */
-      deliveryLocation?: string;
-    };
-    AdminQuoteItemInputDto: {
-      /**
-       * @description Catalog product UUID, or null for bespoke custom item
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
-       */
-      productId?: string;
-      /**
-       * @description Whether this is a bespoke line item not in catalog
-       * @default false
-       * @example false
-       */
-      isCustomItem: boolean;
-      /**
-       * @description Item name or description
-       * @example Máy phát điện Hyundai DHY6000SE
-       */
-      itemName: string;
-      /**
-       * @description Manufacturer model code
-       * @example DHY6000SE
-       */
-      itemModel?: string;
-      /**
-       * @description Technical specifications summary
-       * @example 5.0kVA - 230V / 50Hz - Chống ồn
-       */
-      itemSpecs?: string;
-      /**
-       * @description Item quantity
-       * @example 1
-       */
-      quantity: number;
-      /**
-       * @description Unit price quoted to customer (VND)
-       * @example 28000000
-       */
-      unitPrice: number | string;
-      /**
-       * @description Line item discount percentage (0 - 100)
-       * @default 0
-       * @example 5
-       */
-      discountPercent: number | string;
+      customerEmail?: string | null;
+      companyName?: string | null;
+      taxId?: string | null;
+      shippingAddress?: string | null;
+      note?: string | null;
+      items: {
+        productId?: string | null;
+        /** @default false */
+        isCustomItem: boolean;
+        itemName: string;
+        itemModel?: string | null;
+        itemSpecs?: string | null;
+        quantity: number;
+        requestedPrice?: string | null;
+      }[];
     };
     CreateAdminQuoteDto: {
-      /**
-       * @description Dealer or customer UUID if registered account
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb90
-       */
-      userId?: string;
-      /**
-       * @description Customer or enterprise primary contact
-       * @example Công ty TNHH Kỹ Thuật Điện Quang
-       */
+      userId?: string | null;
       customerName: string;
-      /**
-       * @description Customer contact phone number
-       * @example 0918123456
-       */
       customerPhone: string;
-      /**
-       * @description Customer contact email
-       * @example sales@dienquang.com.vn
-       */
-      customerEmail?: string;
-      /**
-       * @description Enterprise registered corporate entity
-       * @example Công ty TNHH Kỹ Thuật Điện Quang
-       */
-      companyName?: string;
-      /**
-       * @description Corporate enterprise tax ID
-       * @example 0309988776
-       */
-      taxId?: string;
-      /**
-       * @description Project handover destination
-       * @example Khu Công Nghiệp Sóng Thần 2, Dĩ An, Bình Dương
-       */
-      shippingAddress?: string;
-      /**
-       * @description VAT percentage rate (e.g. 10 or 8)
-       * @default 10
-       * @example 10
-       */
+      customerEmail?: string | null;
+      companyName?: string | null;
+      taxId?: string | null;
+      shippingAddress?: string | null;
+      /** @default 10 */
       vatRate: number;
-      /** @description Structured commercial, warranty, and delivery terms */
-      commercialTerms?: components["schemas"]["CommercialTermsDto"];
-      /**
-       * @description Internal sales or admin remarks
-       * @example Báo giá áp dụng theo chính sách đại lý cấp 1
-       */
-      note?: string;
-      /**
-       * Format: date-time
-       * @description Explicit quote expiration timestamp
-       * @example 2026-09-30T00:00:00.000Z
-       */
-      expirationDate?: string;
-      /** @description Quotation line items with pricing and discounts */
-      items: components["schemas"]["AdminQuoteItemInputDto"][];
+      commercialTerms?: {
+        /** @default 15 */
+        validityDays: number;
+        paymentSchedule?: string | null;
+        warrantyTerms?: string | null;
+        deliveryTime?: string | null;
+        deliveryLocation?: string | null;
+      } | null;
+      note?: string | null;
+      expirationDate?: string | null;
+      items: {
+        productId?: string | null;
+        /** @default false */
+        isCustomItem: boolean;
+        itemName: string;
+        itemModel?: string | null;
+        itemSpecs?: string | null;
+        quantity: number;
+        unitPrice: number | string;
+        /** @default 0 */
+        discountPercent: number | string;
+      }[];
     };
     UpdateQuoteStatusDto: {
-      /**
-       * @description Target quotation workflow status
-       * @example APPROVED
-       * @enum {string}
-       */
+      /** @enum {string} */
       status:
         | "DRAFT"
         | "SUBMITTED"
@@ -2679,28 +2437,37 @@ export interface components {
         | "EXPIRED";
     };
     UpdateQuoteItemPriceDto: {
-      /**
-       * @description Agreed renegotiated unit price for quote line item (VND)
-       * @example 26500000.00
-       */
       agreedPrice: string;
     };
+    QuoteMessageResponseDto: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      quoteId: string;
+      /** Format: uuid */
+      senderId: string;
+      message: string;
+      sender?: {
+        /** Format: uuid */
+        id: string;
+        fullName: string;
+        email: string;
+        role: string;
+      } | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
     SendQuoteMessageDto: {
-      /**
-       * @description Negotiation message content
-       * @example Chúng tôi đề xuất chiết khấu thêm 2% nếu quý khách lấy số lượng từ 5 máy trở lên.
-       */
       message: string;
     };
     ApproveToOrderResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9f */
+      /** Format: uuid */
       orderId: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9b */
+      /** Format: uuid */
       quoteId: string;
-      /**
-       * @example APPROVED
-       * @enum {string}
-       */
+      /** @enum {string} */
       status:
         | "DRAFT"
         | "SUBMITTED"
@@ -2709,545 +2476,236 @@ export interface components {
         | "REJECTED"
         | "EXPIRED";
     };
-    OrderItemProductSummaryDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      id: string;
-      /** @example Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha */
-      nameVi: string;
-      /** @example Hyundai DHY65KSE 60kVA 3 Phase Diesel Generator */
-      nameEn?: string;
-      /** @example may-phat-dien-diesel-hyundai-dhy65kse-60kva-3-pha */
-      slug: string;
-      /** @example 245000000.00 */
-      price: string;
-      /**
-       * @example [
-       *       "https://res.cloudinary.com/hyundai/image.jpg"
-       *     ]
-       */
-      images: string[];
-      /** @example 5 */
-      totalStockCache: number;
-    };
-    OrderItemResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
-      id: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb92 */
-      orderId: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      productId: string;
-      /** @example Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha */
-      productName: string;
-      /** @example DHY65KSE */
-      productSku: string;
-      /** @example 1 */
-      quantity: number;
-      /** @example 245000000.00 */
-      unitPrice: string;
-      product?: components["schemas"]["OrderItemProductSummaryDto"] | null;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      updatedAt: string;
-    };
-    OrderUserSummaryDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
-      id: string;
-      /** @example Nguyễn Văn Đại Lý */
-      fullName: string;
-      /** @example dealer@example.com */
-      email: string;
-      /** @example 0911223344 */
-      phoneNumber: string;
-      /** @example SALES */
-      role: string;
-    };
     OrderResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb92 */
+      /** Format: uuid */
       id: string;
-      /** @example ORD-20260904-4821 */
       orderNumber?: string | null;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
       userId?: string | null;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
       leadId?: string | null;
-      /** @example Nguyễn Văn A */
       customerName?: string | null;
-      /** @example 0901234567 */
       customerPhone?: string | null;
-      /** @example nguyenvana@example.com */
       customerEmail?: string | null;
-      /** @example Công ty Cổ phần Xây Dựng Số 1 */
       companyName?: string | null;
-      /**
-       * @example PENDING
-       * @enum {string}
-       */
+      /** @enum {string} */
       status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
-      /** @example 500000.00 */
       shippingFee: string;
-      /** @example Kho số 4, Cảng Tiên Sa, TP. Đà Nẵng */
       shippingAddress: string;
-      /** @example 245500000.00 */
       totalAmount: string;
-      /** @example 50000000.00 */
       depositAmount?: string | null;
-      /** @example 195500000.00 */
       remainingAmount?: string | null;
-      /**
-       * @example PAYOS
-       * @enum {string}
-       */
+      /** @enum {string} */
       paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
-      /**
-       * @example PENDING
-       * @enum {string}
-       */
+      /** @enum {string} */
       paymentStatus:
         "PENDING" | "DEPOSIT_PAID" | "FULLY_PAID" | "REFUNDED" | "FAILED";
-      /**
-       * @example APPROVED
-       * @enum {string}
-       */
+      /** @enum {string} */
       approvalStatus: "PENDING" | "APPROVED" | "REJECTED";
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb9c */
       approvedBy?: string | null;
-      /** @example Giao trong giờ hành chính */
       note?: string | null;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       updatedAt: string;
-      items: components["schemas"]["OrderItemResponseDto"][];
-      user?: components["schemas"]["OrderUserSummaryDto"] | null;
-    };
-    GuestOrderItemInputDto: {
-      /**
-       * @description Product UUID to purchase
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
-       */
-      productId: string;
-      /**
-       * @description Item quantity
-       * @example 1
-       */
-      quantity: number;
+      items: {
+        /** Format: uuid */
+        id: string;
+        /** Format: uuid */
+        orderId: string;
+        /** Format: uuid */
+        productId: string;
+        productName: string;
+        productSku: string;
+        quantity: number;
+        unitPrice: string;
+        product?: {
+          /** Format: uuid */
+          id: string;
+          nameVi: string;
+          nameEn?: string | null;
+          slug: string;
+          price: string;
+          images: string[];
+          totalStockCache: number;
+        } | null;
+        /** Format: date-time */
+        createdAt: string;
+        /** Format: date-time */
+        updatedAt: string;
+      }[];
+      user?: {
+        /** Format: uuid */
+        id: string;
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+        role: string;
+      } | null;
     };
     CreateGuestOrderDto: {
-      /**
-       * @description Customer full name
-       * @example Nguyễn Văn A
-       */
       customerName: string;
-      /**
-       * @description Customer Vietnamese contact phone number
-       * @example 0901234567
-       */
       customerPhone: string;
-      /**
-       * @description Customer email address for notifications
-       * @example nguyenvana@example.com
-       */
-      customerEmail?: string;
-      /**
-       * @description Delivery destination street address
-       * @example Số 123 Đường Nguyễn Trãi, Phường 2, Quận 5, TP. Hồ Chí Minh
-       */
+      customerEmail?: string | null;
       shippingAddress: string;
       /**
-       * @description Checkout payment method
        * @default PAYOS
-       * @example PAYOS
        * @enum {string}
        */
       paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
-      /**
-       * @description Customer delivery notes
-       * @example Giao hàng trong giờ hành chính
-       */
-      note?: string;
-      /** @description Order line items */
-      items: components["schemas"]["GuestOrderItemInputDto"][];
-    };
-    B2bOrderItemInputDto: {
-      /**
-       * @description Product UUID to purchase
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
-       */
-      productId: string;
-      /**
-       * @description Item quantity
-       * @example 2
-       */
-      quantity: number;
-      /**
-       * @description Custom agreed unit price overriding catalog price
-       * @example 120000000.00
-       */
-      unitPrice?: string | number;
+      note?: string | null;
+      items: {
+        /** Format: uuid */
+        productId: string;
+        quantity: number;
+      }[];
     };
     CreateB2bOrderDto: {
-      /**
-       * @description Linked customer/dealer user UUID if registered
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb90
-       */
-      userId?: string;
-      /**
-       * @description Linked CRM Lead UUID for sales attribution & tracking
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb91
-       */
-      leadId?: string;
-      /**
-       * @description Customer or representative name
-       * @example Nguyễn Văn Đại Lý
-       */
+      userId?: string | null;
+      leadId?: string | null;
       customerName: string;
-      /**
-       * @description Contact phone number
-       * @example 0911223344
-       */
       customerPhone: string;
-      /**
-       * @description Contact email
-       * @example dealer@example.com
-       */
-      customerEmail?: string;
-      /**
-       * @description Corporate company name
-       * @example Công ty Cổ phần Năng Lượng Miền Trung
-       */
-      companyName?: string;
-      /**
-       * @description Shipping destination address
-       * @example Kho số 4, Cảng Tiên Sa, TP. Đà Nẵng
-       */
+      customerEmail?: string | null;
+      companyName?: string | null;
       shippingAddress: string;
       /**
-       * @description B2B Payment method (TRADE_CREDIT, BANK_TRANSFER, CASH)
        * @default BANK_TRANSFER
-       * @example TRADE_CREDIT
        * @enum {string}
        */
       paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
-      /**
-       * @description Freight / shipping fee
-       * @default 0
-       * @example 500000.00
-       */
-      shippingFee: string | number;
-      /**
-       * @description Initial deposit amount paid
-       * @default 0
-       * @example 50000000.00
-       */
-      depositAmount: string | number;
-      /**
-       * @description Internal order notes
-       * @example Giao tại công trình kèm biên bản nghiệm thu
-       */
-      note?: string;
-      /** @description Order line items */
-      items: components["schemas"]["B2bOrderItemInputDto"][];
+      /** @default 0 */
+      shippingFee: number | string;
+      /** @default 0 */
+      depositAmount: number | string;
+      note?: string | null;
+      items: {
+        /** Format: uuid */
+        productId: string;
+        quantity: number;
+        unitPrice?: (number | string) | null;
+      }[];
     };
     UpdateOrderStatusDto: {
-      /**
-       * @description New order status along the state machine
-       * @example PROCESSING
-       * @enum {string}
-       */
+      /** @enum {string} */
       status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
-      /**
-       * @description Reason or operational note for status change
-       * @example Đã xác nhận thanh toán chuyển khoản và sẵn sàng đóng gói
-       */
-      note?: string;
+      note?: string | null;
     };
     ExpireOrdersResponseDto: {
-      /**
-       * @description Number of pending unpaid orders auto-expired
-       * @example 3
-       */
       expiredCount: number;
     };
     CheckoutLinkResponseDto: {
-      /**
-       * @description PayOS checkout redirect web URL
-       * @example https://pay.payos.vn/web/6c9b3a6e7a2e7b56b74c419b4eb14b9a
-       */
       checkoutUrl: string;
-      /**
-       * @description VietQR EMV payload or QR code data string
-       * @example 00020101021238540010A00000072701260006970422...
-       */
       qrCode: string;
-      /**
-       * @description Unique PayOS order code identifier
-       * @example 1725451234567
-       */
       orderCode: number;
-      /**
-       * @description Payable amount in VND
-       * @example 490000000
-       */
       amount: number;
-      /**
-       * @description PayOS payment link ID
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb91
-       */
       paymentLinkId: string;
     };
     CreateCheckoutLinkDto: {
-      /**
-       * @description Order UUID identifier to create payment link for
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb91
-       */
+      /** Format: uuid */
       orderId: string;
       /**
-       * @description Transaction type (FULL_PAYMENT or DEPOSIT percentage)
-       * @example FULL_PAYMENT
-       * @enum {string}
-       */
-      transactionType?:
-        "FULL_PAYMENT" | "DEPOSIT" | "REMAINING" | "DEBT_REPAYMENT";
-      /**
-       * @description URL redirect after customer successfully completes payment
-       * @example https://hyundai-nhatnang.vn/checkout/success
-       */
-      returnUrl?: string;
-      /**
-       * @description URL redirect if customer cancels payment on gateway
-       * @example https://hyundai-nhatnang.vn/checkout/cancel
-       */
-      cancelUrl?: string;
-    };
-    PayOSWebhookResponseDto: {
-      /**
-       * @description Indicates whether the payment transaction was successfully processed into database records
-       * @example true
-       */
-      processed: boolean;
-      /**
-       * @description Informational reason when webhook processing was skipped or acknowledged idempotently
-       * @example Non-success code acknowledged
-       */
-      reason?: string;
-    };
-    PayOSWebhookDataClass: {
-      /** @example 1725451234567 */
-      orderCode: number;
-      /** @example 490000000 */
-      amount: number;
-      /** @example ORD-20260904-4821 */
-      description: string;
-      /** @example 123456789 */
-      accountNumber?: string;
-      /** @example FT24248123456789 */
-      reference?: string;
-      /** @example 2026-09-04 15:30:00 */
-      transactionDateTime?: string;
-      /** @example VND */
-      currency?: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
-      paymentLinkId?: string;
-      /** @example 00 */
-      code?: string;
-      /** @example Success */
-      desc?: string;
-      /** @example 970422 */
-      counterAccountBankId?: string | null;
-      /** @example MBBank */
-      counterAccountBankName?: string | null;
-      /** @example NGUYEN VAN A */
-      counterAccountName?: string | null;
-      /** @example 0901234567 */
-      counterAccountNumber?: string | null;
-      /** @example HYUNDAI ECOM */
-      virtualAccountName?: string | null;
-      /** @example VA12345678 */
-      virtualAccountNumber?: string | null;
-    };
-    PayOSWebhookDto: {
-      /**
-       * @description Response status code
-       * @example 00
-       */
-      code: string;
-      /**
-       * @description Response description
-       * @example Success
-       */
-      desc: string;
-      /**
-       * @description Success status flag
-       * @example true
-       */
-      success: boolean;
-      /** @description Transaction data payload */
-      data: components["schemas"]["PayOSWebhookDataClass"];
-      /**
-       * @description HMAC-SHA256 signature calculated with PayOS Checksum Key
-       * @example 6c9b3a6e7a2e7b56b74c419b4eb14b9a...
-       */
-      signature: string;
-    };
-    PaymentTransactionResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
-      id: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb92 */
-      orderId: string;
-      /** @example 490000000.00 */
-      amount: string;
-      /**
-       * @example CASH
-       * @enum {string}
-       */
-      paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
-      /**
-       * @example FULL_PAYMENT
+       * @default FULL_PAYMENT
        * @enum {string}
        */
       transactionType:
         "FULL_PAYMENT" | "DEPOSIT" | "REMAINING" | "DEBT_REPAYMENT";
-      /**
-       * @example PENDING
-       * @enum {string}
-       */
-      status: "PENDING" | "COMPLETED" | "FAILED" | "CANCELLED";
-      /** @example 1725451234567 */
-      orderCode?: number | null;
-      /** @example REF-123456 */
-      referenceCode?: string | null;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb93 */
-      verifiedBy?: string | null;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      updatedAt: string;
+      returnUrl?: string;
+      cancelUrl?: string;
+    };
+    PayOSWebhookResponseDto: {
+      processed: boolean;
+      reason?: string;
+    };
+    PayOSWebhookDto: {
+      code: string;
+      desc: string;
+      success: boolean;
+      data: {
+        orderCode: number;
+        amount: number;
+        description: string;
+        accountNumber?: string;
+        reference?: string;
+        transactionDateTime?: string;
+        currency?: string;
+        paymentLinkId?: string;
+        code?: string;
+        desc?: string;
+        counterAccountBankId?: string | null;
+        counterAccountBankName?: string | null;
+        counterAccountName?: string | null;
+        counterAccountNumber?: string | null;
+        virtualAccountName?: string | null;
+        virtualAccountNumber?: string | null;
+      };
+      signature: string;
     };
     OrderPaymentSummaryDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb92 */
+      /** Format: uuid */
       orderId: string;
-      /** @example ORD-20260904-4821 */
       orderNumber?: string | null;
-      /** @example 490000000.00 */
       totalAmount: string;
-      /** @example 0.00 */
       depositAmount?: string | null;
-      /** @example 0.00 */
       remainingAmount?: string | null;
-      /**
-       * @example CASH
-       * @enum {string}
-       */
+      /** @enum {string} */
       paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
-      /**
-       * @example FULLY_PAID
-       * @enum {string}
-       */
+      /** @enum {string} */
       paymentStatus:
         "PENDING" | "DEPOSIT_PAID" | "FULLY_PAID" | "REFUNDED" | "FAILED";
-      /** @description List of related payment transactions */
-      transactions: components["schemas"]["PaymentTransactionResponseDto"][];
+      transactions: {
+        /** Format: uuid */
+        id: string;
+        /** Format: uuid */
+        orderId: string;
+        amount: string;
+        /** @enum {string} */
+        paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+        /** @enum {string} */
+        transactionType:
+          "FULL_PAYMENT" | "DEPOSIT" | "REMAINING" | "DEBT_REPAYMENT";
+        /** @enum {string} */
+        status: "PENDING" | "COMPLETED" | "FAILED" | "CANCELLED";
+        orderCode?: number | null;
+        referenceCode?: string | null;
+        verifiedBy?: string | null;
+        /** Format: date-time */
+        createdAt: string;
+        /** Format: date-time */
+        updatedAt: string;
+      }[];
     };
     VerifyCashPaymentDto: {
-      /**
-       * @description Actual cash amount collected by accountant/cashier
-       * @example 490000000
-       */
       amount: number | string;
-      /**
-       * @description Optional verification notes or internal receipt code
-       * @example Đã thu đủ tiền mặt tại văn phòng Hà Nội ngày 04/09
-       */
-      note?: string;
+      note?: string | null;
     };
     DebtRepaymentResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb91 */
+      /** Format: uuid */
       id: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
+      /** Format: uuid */
       userId: string;
-      /** @example 50000000.00 */
       amount: string;
-      /**
-       * @example CASH
-       * @enum {string}
-       */
+      /** @enum {string} */
       paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
-      /**
-       * @example PENDING
-       * @enum {string}
-       */
+      /** @enum {string} */
       status: "PENDING" | "COMPLETED" | "FAILED";
-      /** @example 1725451234568 */
       orderCode?: number | null;
-      /** @example REPAY-REF-789 */
       referenceCode?: string | null;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb93 */
       verifiedBy?: string | null;
-      /** @example https://pay.payos.vn/web/6c9b3a6e7a2e7b56b74c419b4eb14b9a */
       checkoutUrl?: string | null;
-      /** @example 00020101021238540010A00000072701260006970422... */
       qrCode?: string | null;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       updatedAt: string;
     };
     RepayDebtDto: {
-      /**
-       * @description Target dealer user UUID if processed by Admin/Sales
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb90
-       */
-      userId?: string;
-      /**
-       * @description Repayment amount (VND)
-       * @example 50000000
-       */
+      userId?: string | null;
       amount: number | string;
       /**
-       * @description Payment method used for repayment (PAYOS, CASH, BANK_TRANSFER)
-       * @example PAYOS
+       * @default PAYOS
        * @enum {string}
        */
-      paymentMethod?: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
-      /**
-       * @description Repayment note or reference
-       * @example Thanh toán công nợ lô máy phát điện tháng 08
-       */
-      note?: string;
-      /**
-       * @description Return URL after online payment completes
-       * @example https://hyundai-nhatnang.vn/portal/debt?repaymentSuccess=true
-       */
+      paymentMethod: "CASH" | "TRADE_CREDIT" | "PAYOS" | "BANK_TRANSFER";
+      note?: string | null;
       returnUrl?: string;
-      /**
-       * @description Cancel URL if customer cancels payment
-       * @example https://hyundai-nhatnang.vn/portal/debt?repaymentCancel=true
-       */
       cancelUrl?: string;
     };
   };
@@ -7159,13 +6617,9 @@ export interface operations {
   QuotesController_listQuotes_v1: {
     parameters: {
       query?: {
-        /** @description Pagination page number (1-based) */
         page?: number;
-        /** @description Number of records per page (max 100) */
         limit?: number;
-        /** @description Filter quotes by customer/dealer user UUID */
         userId?: string;
-        /** @description Filter quotes by status */
         status?:
           | "DRAFT"
           | "SUBMITTED"
@@ -7173,7 +6627,6 @@ export interface operations {
           | "APPROVED"
           | "REJECTED"
           | "EXPIRED";
-        /** @description Search keyword matching quoteNumber, customer, or company */
         search?: string;
       };
       header?: never;

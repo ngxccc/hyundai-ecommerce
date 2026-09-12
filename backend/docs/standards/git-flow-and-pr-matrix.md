@@ -29,11 +29,13 @@ All commit messages MUST follow the format: `<type>(<scope>): <summary>`
 
 ## 2.1. Issue Linking & Closing Protocol
 
+- **Pull Request Descriptions (Primary Linking Mechanism)**:
+  - Issue tracking belongs at the Pull Request level, NOT in individual atomic commits.
+  - Declare `Resolves #<child_id>` and `Closes #<parent_id>` under `## Linked Issues` in the PR description for automated GitHub tracking and auto-closure upon merge.
 - **Atomic Commit Messages**:
-  - NEVER use auto-closing keywords (`Fixes:`, `Closes:`, `Resolves:`) in commit footers.
-  - Always use `Ref: #<id>` in commit footers to maintain traceability without prematurely closing issues prior to PR review and merge.
-- **Pull Request Descriptions**:
-  - Declare `Resolves #<child_id>` and `Closes #<parent_id>` under `## Linked Issues` for automated GitHub tracking and auto-closure on merge.
+  - Focus exclusively on technical context and rationale; do NOT mandate issue references or `Ref: #<id>` in atomic commit footers.
+  - NEVER use auto-closing keywords (`Fixes:`, `Closes:`, `Resolves:`) in commit messages.
+  - Footers are strictly reserved for `BREAKING CHANGE:` or standalone bugfix trailers (`Fixes: <hash>` per Linux kernel conventions), keeping commit logs clean and noise-free.
 
 ## 3. Adaptive 3-Tier PR Matrix
 

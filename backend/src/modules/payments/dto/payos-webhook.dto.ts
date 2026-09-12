@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import { i18nZodMsg } from "@/common/utils/i18n-message.util";
 
 export const payosWebhookDataSchema = z.object({
@@ -29,96 +29,21 @@ export const payosWebhookSchema = z.object({
   signature: z.string({ message: i18nZodMsg("validation.isNotEmpty") }),
 });
 
+export const payosWebhookResponseSchema = z.object({
+  processed: z.boolean(),
+  reason: z.string().optional(),
+});
+
 export type PayOSWebhookDataDto = z.infer<typeof payosWebhookDataSchema>;
 export type PayOSWebhookDtoType = z.infer<typeof payosWebhookSchema>;
+export type PayOSWebhookResponseDtoType = z.infer<
+  typeof payosWebhookResponseSchema
+>;
 
-export class PayOSWebhookDataClass implements PayOSWebhookDataDto {
-  @ApiProperty({ example: 1725451234567 })
-  public orderCode!: number;
-
-  @ApiProperty({ example: 490000000 })
-  public amount!: number;
-
-  @ApiProperty({ example: "ORD-20260904-4821" })
-  public description!: string;
-
-  @ApiPropertyOptional({ example: "123456789" })
-  public accountNumber?: string;
-
-  @ApiPropertyOptional({ example: "FT24248123456789" })
-  public reference?: string;
-
-  @ApiPropertyOptional({ example: "2026-09-04 15:30:00" })
-  public transactionDateTime?: string;
-
-  @ApiPropertyOptional({ example: "VND" })
-  public currency?: string;
-
-  @ApiPropertyOptional({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb91" })
-  public paymentLinkId?: string;
-
-  @ApiPropertyOptional({ example: "00" })
-  public code?: string;
-
-  @ApiPropertyOptional({ example: "Success" })
-  public desc?: string;
-
-  @ApiPropertyOptional({ example: "970422", nullable: true })
-  public counterAccountBankId?: string | null;
-
-  @ApiPropertyOptional({ example: "MBBank", nullable: true })
-  public counterAccountBankName?: string | null;
-
-  @ApiPropertyOptional({ example: "NGUYEN VAN A", nullable: true })
-  public counterAccountName?: string | null;
-
-  @ApiPropertyOptional({ example: "0901234567", nullable: true })
-  public counterAccountNumber?: string | null;
-
-  @ApiPropertyOptional({ example: "HYUNDAI ECOM", nullable: true })
-  public virtualAccountName?: string | null;
-
-  @ApiPropertyOptional({ example: "VA12345678", nullable: true })
-  public virtualAccountNumber?: string | null;
-}
-
-export class PayOSWebhookDto implements PayOSWebhookDtoType {
-  public static readonly zodSchema = payosWebhookSchema;
-
-  @ApiProperty({ example: "00", description: "Response status code" })
-  public code!: string;
-
-  @ApiProperty({ example: "Success", description: "Response description" })
-  public desc!: string;
-
-  @ApiProperty({ example: true, description: "Success status flag" })
-  public success!: boolean;
-
-  @ApiProperty({
-    type: () => PayOSWebhookDataClass,
-    description: "Transaction data payload",
-  })
-  public data!: PayOSWebhookDataClass;
-
-  @ApiProperty({
-    example: "6c9b3a6e7a2e7b56b74c419b4eb14b9a...",
-    description: "HMAC-SHA256 signature calculated with PayOS Checksum Key",
-  })
-  public signature!: string;
-}
-
-export class PayOSWebhookResponseDto {
-  @ApiProperty({
-    example: true,
-    description:
-      "Indicates whether the payment transaction was successfully processed into database records",
-  })
-  public processed!: boolean;
-
-  @ApiPropertyOptional({
-    example: "Non-success code acknowledged",
-    description:
-      "Informational reason when webhook processing was skipped or acknowledged idempotently",
-  })
-  public reason?: string;
-}
+export class PayOSWebhookDataClass extends createZodDto(
+  payosWebhookDataSchema,
+) {}
+export class PayOSWebhookDto extends createZodDto(payosWebhookSchema) {}
+export class PayOSWebhookResponseDto extends createZodDto(
+  payosWebhookResponseSchema,
+) {}

@@ -40,14 +40,16 @@ export type AdminBrand = ApiSchemas["BrandResponseDto"];
 export type AdminWarehouse = ApiSchemas["WarehouseResponseDto"];
 export type AdminWarehouseStock = ApiSchemas["WarehouseStockResponseDto"];
 export type AdminOrder = ApiSchemas["OrderResponseDto"];
-export type AdminOrderItem = ApiSchemas["OrderItemResponseDto"];
+export type AdminOrderItem = AdminOrder["items"][number];
 export type AdminQuote = ApiSchemas["QuoteResponseDto"];
-export type AdminQuoteItem = ApiSchemas["QuoteItemResponseDto"];
-export type AdminQuoteMessage = ApiSchemas["QuoteMessageResponseDto"];
+export type AdminQuoteItem = AdminQuote["items"][number];
+export type AdminQuoteMessage = NonNullable<AdminQuote["messages"]>[number];
 export type AdminUser = ApiSchemas["UserResponseDto"];
 export type AdminDealerTier = ApiSchemas["DealerTierResponseDto"];
-export type CommercialTerms = ApiSchemas["CommercialTermsDto"];
-export type QuoteCommercialTerms = ApiSchemas["QuoteCommercialTermsDto"];
+export type CommercialTerms = NonNullable<
+  ApiSchemas["CreateAdminQuoteDto"]["commercialTerms"]
+>;
+export type QuoteCommercialTerms = NonNullable<AdminQuote["commercialTerms"]>;
 
 export type QuoteStatus = ApiSchemas["QuoteResponseDto"]["status"];
 export type OrderStatus = ApiSchemas["OrderResponseDto"]["status"];

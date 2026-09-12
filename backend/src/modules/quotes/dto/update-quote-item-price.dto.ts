@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import { i18nZodMsg } from "@/common/utils/i18n-message.util";
 
 export const updateQuoteItemPriceSchema = z.object({
@@ -12,12 +12,6 @@ export type UpdateQuoteItemPriceDtoType = z.infer<
   typeof updateQuoteItemPriceSchema
 >;
 
-export class UpdateQuoteItemPriceDto implements UpdateQuoteItemPriceDtoType {
-  public static readonly zodSchema = updateQuoteItemPriceSchema;
-
-  @ApiProperty({
-    example: "26500000.00",
-    description: "Agreed renegotiated unit price for quote line item (VND)",
-  })
-  public agreedPrice!: string;
-}
+export class UpdateQuoteItemPriceDto extends createZodDto(
+  updateQuoteItemPriceSchema,
+) {}

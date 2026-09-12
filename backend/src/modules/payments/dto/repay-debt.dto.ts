@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import { zSanitizedString } from "@/common/schemas/zod-primitives";
 import { i18nZodMsg } from "@/common/utils/i18n-message.util";
 import { PAYMENT_METHODS } from "@/database/schemas/enums.schema";
@@ -25,45 +25,4 @@ export const repayDebtSchema = z.object({
 
 export type RepayDebtDtoType = z.infer<typeof repayDebtSchema>;
 
-export class RepayDebtDto implements RepayDebtDtoType {
-  public static readonly zodSchema = repayDebtSchema;
-
-  @ApiPropertyOptional({
-    example: "019fa8bc-8f4d-7000-b366-e691f45cfb90",
-    description: "Target dealer user UUID if processed by Admin/Sales",
-  })
-  public userId?: string | null;
-
-  @ApiProperty({
-    example: 50000000,
-    description: "Repayment amount (VND)",
-    oneOf: [{ type: "number" }, { type: "string" }],
-  })
-  public amount!: number | string;
-
-  @ApiPropertyOptional({
-    example: "PAYOS",
-    enum: PAYMENT_METHODS,
-    description:
-      "Payment method used for repayment (PAYOS, CASH, BANK_TRANSFER)",
-  })
-  public paymentMethod: (typeof PAYMENT_METHODS)[number] = "PAYOS";
-
-  @ApiPropertyOptional({
-    example: "Thanh toán công nợ lô máy phát điện tháng 08",
-    description: "Repayment note or reference",
-  })
-  public note?: string | null;
-
-  @ApiPropertyOptional({
-    example: "https://hyundai-nhatnang.vn/portal/debt?repaymentSuccess=true",
-    description: "Return URL after online payment completes",
-  })
-  public returnUrl?: string;
-
-  @ApiPropertyOptional({
-    example: "https://hyundai-nhatnang.vn/portal/debt?repaymentCancel=true",
-    description: "Cancel URL if customer cancels payment",
-  })
-  public cancelUrl?: string;
-}
+export class RepayDebtDto extends createZodDto(repayDebtSchema) {}

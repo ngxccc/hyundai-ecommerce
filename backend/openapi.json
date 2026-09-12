@@ -4983,10 +4983,10 @@
             "name": "page",
             "required": false,
             "in": "query",
-            "description": "Pagination page number (1-based)",
             "schema": {
+              "maximum": 9007199254740991,
+              "exclusiveMinimum": 0,
               "default": 1,
-              "example": 1,
               "type": "number"
             }
           },
@@ -4994,10 +4994,10 @@
             "name": "limit",
             "required": false,
             "in": "query",
-            "description": "Number of records per page (max 100)",
             "schema": {
+              "maximum": 100,
+              "exclusiveMinimum": 0,
               "default": 20,
-              "example": 20,
               "type": "number"
             }
           },
@@ -5005,9 +5005,9 @@
             "name": "userId",
             "required": false,
             "in": "query",
-            "description": "Filter quotes by customer/dealer user UUID",
             "schema": {
-              "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
               "type": "string"
             }
           },
@@ -5015,9 +5015,7 @@
             "name": "status",
             "required": false,
             "in": "query",
-            "description": "Filter quotes by status",
             "schema": {
-              "example": "SUBMITTED",
               "type": "string",
               "enum": [
                 "DRAFT",
@@ -5033,9 +5031,7 @@
             "name": "search",
             "required": false,
             "in": "query",
-            "description": "Search keyword matching quoteNumber, customer, or company",
             "schema": {
-              "example": "Nam Á",
               "type": "string"
             }
           }
@@ -6211,8 +6207,9 @@
             "required": false,
             "in": "query",
             "schema": {
+              "minimum": 1,
+              "maximum": 9007199254740991,
               "default": 1,
-              "example": 1,
               "type": "number"
             }
           },
@@ -6221,8 +6218,9 @@
             "required": false,
             "in": "query",
             "schema": {
+              "minimum": 1,
+              "maximum": 100,
               "default": 20,
-              "example": 20,
               "type": "number"
             }
           },
@@ -6270,7 +6268,8 @@
             "required": false,
             "in": "query",
             "schema": {
-              "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
               "type": "string"
             }
           },
@@ -6279,7 +6278,6 @@
             "required": false,
             "in": "query",
             "schema": {
-              "example": "0901234567",
               "type": "string"
             }
           },
@@ -6288,7 +6286,6 @@
             "required": false,
             "in": "query",
             "schema": {
-              "example": "ORD-20260904",
               "type": "string"
             }
           },
@@ -6298,7 +6295,6 @@
             "in": "query",
             "schema": {
               "format": "date-time",
-              "example": "2026-09-01T00:00:00.000Z",
               "type": "string"
             }
           },
@@ -6308,7 +6304,6 @@
             "in": "query",
             "schema": {
               "format": "date-time",
-              "example": "2026-09-30T23:59:59.000Z",
               "type": "string"
             }
           }
@@ -9560,318 +9555,49 @@
         },
         "required": ["items"]
       },
-      "QuoteCommercialTermsDto": {
-        "type": "object",
-        "properties": {
-          "validityDays": {
-            "type": "number",
-            "example": 15,
-            "default": 15
-          },
-          "paymentSchedule": {
-            "type": ["string", "null"],
-            "example": "Tạm ứng 30%, 70% sau khi bàn giao"
-          },
-          "warrantyTerms": {
-            "type": ["string", "null"],
-            "example": "12 tháng hoặc 1000 giờ chạy"
-          },
-          "deliveryTime": {
-            "type": ["string", "null"],
-            "example": "3-5 ngày làm việc"
-          },
-          "deliveryLocation": {
-            "type": ["string", "null"],
-            "example": "Tại chân công trình bên mua"
-          }
-        },
-        "required": ["validityDays"]
-      },
-      "QuoteItemProductSummaryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
-          },
-          "nameVi": {
-            "type": "string",
-            "example": "Máy phát điện Hyundai 50kVA"
-          },
-          "nameEn": {
-            "type": ["string", "null"],
-            "example": "Hyundai 50kVA Generator"
-          },
-          "slug": {
-            "type": "string",
-            "example": "may-phat-dien-hyundai-50kva"
-          },
-          "price": {
-            "type": "string",
-            "example": "180000000.00"
-          },
-          "images": {
-            "example": ["https://res.cloudinary.com/hyundai/image1.jpg"],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "totalStockCache": {
-            "type": "number",
-            "example": 5
-          }
-        },
-        "required": [
-          "id",
-          "nameVi",
-          "nameEn",
-          "slug",
-          "price",
-          "images",
-          "totalStockCache"
-        ]
-      },
-      "QuoteItemResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9a"
-          },
-          "quoteId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9b"
-          },
-          "productId": {
-            "type": ["string", "null"],
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
-          },
-          "isCustomItem": {
-            "type": "boolean",
-            "example": false
-          },
-          "itemName": {
-            "type": ["string", "null"],
-            "example": "Máy phát điện Hyundai 50kVA"
-          },
-          "itemModel": {
-            "type": ["string", "null"],
-            "example": "DHY50KSE"
-          },
-          "itemSpecs": {
-            "type": ["string", "null"],
-            "example": "50kVA 3 Pha Diesel"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 1
-          },
-          "unitPrice": {
-            "type": ["string", "null"],
-            "example": "180000000.00"
-          },
-          "discountPercent": {
-            "type": ["string", "null"],
-            "example": "10.00"
-          },
-          "finalUnitPrice": {
-            "type": ["string", "null"],
-            "example": "162000000.00"
-          },
-          "totalPrice": {
-            "type": ["string", "null"],
-            "example": "162000000.00"
-          },
-          "requestedPrice": {
-            "type": ["string", "null"],
-            "example": "175000000.00"
-          },
-          "agreedPrice": {
-            "type": ["string", "null"],
-            "example": "162000000.00"
-          },
-          "product": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/QuoteItemProductSummaryDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
-          }
-        },
-        "required": [
-          "id",
-          "quoteId",
-          "productId",
-          "isCustomItem",
-          "itemName",
-          "itemModel",
-          "itemSpecs",
-          "quantity",
-          "unitPrice",
-          "discountPercent",
-          "finalUnitPrice",
-          "totalPrice",
-          "requestedPrice",
-          "agreedPrice",
-          "product",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "QuoteMessageSenderDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9c"
-          },
-          "fullName": {
-            "type": "string",
-            "example": "Nguyễn Văn Admin"
-          },
-          "email": {
-            "type": "string",
-            "example": "admin@hyundai-nhatnang.vn"
-          },
-          "role": {
-            "type": "string",
-            "example": "ADMIN"
-          }
-        },
-        "required": ["id", "fullName", "email", "role"]
-      },
-      "QuoteMessageResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9d"
-          },
-          "quoteId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9b"
-          },
-          "senderId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9c"
-          },
-          "message": {
-            "type": "string",
-            "example": "Chào chị, chúng tôi có thể hỗ trợ mức giá 14.500.000 VNĐ."
-          },
-          "sender": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/QuoteMessageSenderDto"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
-          }
-        },
-        "required": [
-          "id",
-          "quoteId",
-          "senderId",
-          "message",
-          "sender",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "QuoteUserSummaryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9e"
-          },
-          "fullName": {
-            "type": "string",
-            "example": "Trần Văn Đại Lý"
-          },
-          "email": {
-            "type": "string",
-            "example": "dealer@gmail.com"
-          },
-          "phoneNumber": {
-            "type": "string",
-            "example": "0911223344"
-          },
-          "role": {
-            "type": "string",
-            "example": "SALES"
-          }
-        },
-        "required": ["id", "fullName", "email", "phoneNumber", "role"]
-      },
       "QuoteResponseDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9b"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "quoteNumber": {
-            "type": ["string", "null"],
-            "example": "QT-20260904-5892"
+            "type": ["string", "null"]
           },
           "userId": {
-            "type": ["string", "null"],
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9e"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "customerName": {
-            "type": ["string", "null"],
-            "example": "Trần Văn Doanh"
+            "type": ["string", "null"]
           },
           "customerPhone": {
-            "type": ["string", "null"],
-            "example": "0987654321"
+            "type": ["string", "null"]
           },
           "customerEmail": {
-            "type": ["string", "null"],
-            "example": "doanh.tv@gmail.com"
+            "type": ["string", "null"]
           },
           "companyName": {
-            "type": ["string", "null"],
-            "example": "Tập đoàn Xây Dựng Số 1"
+            "type": ["string", "null"]
           },
           "taxId": {
-            "type": ["string", "null"],
-            "example": "0312345678"
+            "type": ["string", "null"]
           },
           "shippingAddress": {
-            "type": ["string", "null"],
-            "example": "Chân công trình Nhà ga T3"
+            "type": ["string", "null"]
           },
           "status": {
             "type": "string",
-            "example": "SUBMITTED",
             "enum": [
               "DRAFT",
               "SUBMITTED",
@@ -9882,25 +9608,41 @@
             ]
           },
           "subtotalPrice": {
-            "type": ["string", "null"],
-            "example": "180000000.00"
+            "type": ["string", "null"]
           },
           "vatRate": {
-            "type": ["number", "null"],
-            "example": 10
+            "type": ["number", "null"]
           },
           "vatAmount": {
-            "type": ["string", "null"],
-            "example": "18000000.00"
+            "type": ["string", "null"]
           },
           "totalQuotedPrice": {
-            "type": ["string", "null"],
-            "example": "198000000.00"
+            "type": ["string", "null"]
           },
           "commercialTerms": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/QuoteCommercialTermsDto"
+                "type": "object",
+                "properties": {
+                  "validityDays": {
+                    "default": 15,
+                    "type": "integer",
+                    "minimum": -9007199254740991,
+                    "maximum": 9007199254740991
+                  },
+                  "paymentSchedule": {
+                    "type": ["string", "null"]
+                  },
+                  "warrantyTerms": {
+                    "type": ["string", "null"]
+                  },
+                  "deliveryTime": {
+                    "type": ["string", "null"]
+                  },
+                  "deliveryLocation": {
+                    "type": ["string", "null"]
+                  }
+                }
               },
               {
                 "type": "null"
@@ -9908,48 +9650,284 @@
             ]
           },
           "expirationDate": {
-            "format": "date-time",
-            "type": ["string", "null"],
-            "example": "2026-09-24T08:00:00.000Z"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "note": {
-            "type": ["string", "null"],
-            "example": "Ghi chú báo giá"
+            "type": ["string", "null"]
           },
           "orderId": {
-            "type": ["string", "null"],
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9f"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "createdByAdminId": {
-            "type": ["string", "null"],
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9c"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "createdAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "updatedAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/QuoteItemResponseDto"
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "quoteId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "productId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "isCustomItem": {
+                  "type": "boolean"
+                },
+                "itemName": {
+                  "type": ["string", "null"]
+                },
+                "itemModel": {
+                  "type": ["string", "null"]
+                },
+                "itemSpecs": {
+                  "type": ["string", "null"]
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "unitPrice": {
+                  "type": ["string", "null"]
+                },
+                "discountPercent": {
+                  "type": ["string", "null"]
+                },
+                "finalUnitPrice": {
+                  "type": ["string", "null"]
+                },
+                "totalPrice": {
+                  "type": ["string", "null"]
+                },
+                "requestedPrice": {
+                  "type": ["string", "null"]
+                },
+                "agreedPrice": {
+                  "type": ["string", "null"]
+                },
+                "product": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "nameVi": {
+                          "type": "string"
+                        },
+                        "nameEn": {
+                          "type": ["string", "null"]
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "string"
+                        },
+                        "images": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "totalStockCache": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "nameVi",
+                        "nameEn",
+                        "slug",
+                        "price",
+                        "images",
+                        "totalStockCache"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "id",
+                "quoteId",
+                "productId",
+                "isCustomItem",
+                "itemName",
+                "itemModel",
+                "itemSpecs",
+                "quantity",
+                "unitPrice",
+                "discountPercent",
+                "finalUnitPrice",
+                "totalPrice",
+                "requestedPrice",
+                "agreedPrice",
+                "createdAt",
+                "updatedAt"
+              ]
             }
           },
           "messages": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/QuoteMessageResponseDto"
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "quoteId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "senderId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "sender": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "fullName": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "role": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["id", "fullName", "email", "role"]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "id",
+                "quoteId",
+                "senderId",
+                "message",
+                "createdAt",
+                "updatedAt"
+              ]
             }
           },
           "user": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/QuoteUserSummaryDto"
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "fullName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                },
+                "required": ["id", "fullName", "email", "phoneNumber", "role"]
               },
               {
                 "type": "null"
@@ -9972,270 +9950,242 @@
           "vatRate",
           "vatAmount",
           "totalQuotedPrice",
-          "commercialTerms",
           "expirationDate",
           "note",
           "orderId",
           "createdByAdminId",
           "createdAt",
           "updatedAt",
-          "items",
-          "user"
+          "items"
         ]
-      },
-      "CreateQuoteItemDto": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-            "description": "Catalog product UUID, or null for bespoke custom item"
-          },
-          "isCustomItem": {
-            "type": "boolean",
-            "example": false,
-            "default": false,
-            "description": "Whether this is a bespoke line item not in catalog"
-          },
-          "itemName": {
-            "type": "string",
-            "example": "Máy phát điện Hyundai DHY6000SE",
-            "description": "Item name or description"
-          },
-          "itemModel": {
-            "type": "string",
-            "example": "DHY6000SE",
-            "description": "Manufacturer model code"
-          },
-          "itemSpecs": {
-            "type": "string",
-            "example": "5.0kVA - 230V / 50Hz - Chống ồn",
-            "description": "Technical specifications summary"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 2,
-            "minimum": 1,
-            "description": "Requested quantity"
-          },
-          "requestedPrice": {
-            "type": "string",
-            "example": "25000000.00",
-            "description": "Customer target/requested unit price"
-          }
-        },
-        "required": ["itemName", "quantity"]
       },
       "CreateQuoteDto": {
         "type": "object",
         "properties": {
           "customerName": {
-            "type": "string",
-            "example": "Công ty Cổ phần Xây dựng Nam Á",
-            "description": "Customer or company contact name"
+            "type": "string"
           },
           "customerPhone": {
             "type": "string",
-            "example": "0901234567",
-            "description": "Customer contact phone number"
+            "pattern": "^(0[35789])\\d{8}$"
           },
           "customerEmail": {
-            "type": "string",
-            "example": "contact@nama.vn",
-            "description": "Customer contact email"
+            "type": ["string", "null"]
           },
           "companyName": {
-            "type": "string",
-            "example": "Công ty Cổ phần Xây dựng Nam Á",
-            "description": "Full registered company name"
+            "type": ["string", "null"]
           },
           "taxId": {
-            "type": "string",
-            "example": "0312345678",
-            "description": "Corporate enterprise tax ID"
+            "type": ["string", "null"]
           },
           "shippingAddress": {
-            "type": "string",
-            "example": "Số 45 Lê Duẩn, Quận 1, TP. Hồ Chí Minh",
-            "description": "Project or delivery site destination"
+            "type": ["string", "null"]
           },
           "note": {
-            "type": "string",
-            "example": "Yêu cầu giao hàng trước ngày 15/10",
-            "description": "Customer special requirements or notes"
+            "type": ["string", "null"]
           },
           "items": {
-            "description": "List of requested quote items",
+            "minItems": 1,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateQuoteItemDto"
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "isCustomItem": {
+                  "default": false,
+                  "type": "boolean"
+                },
+                "itemName": {
+                  "type": "string"
+                },
+                "itemModel": {
+                  "type": ["string", "null"]
+                },
+                "itemSpecs": {
+                  "type": ["string", "null"]
+                },
+                "quantity": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "requestedPrice": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^\\d+(\\.\\d{1,2})?$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": ["itemName", "quantity"]
             }
           }
         },
         "required": ["customerName", "customerPhone", "items"]
       },
-      "CommercialTermsDto": {
-        "type": "object",
-        "properties": {
-          "validityDays": {
-            "type": "number",
-            "example": 15,
-            "default": 15,
-            "description": "Quote validity duration in days"
-          },
-          "paymentSchedule": {
-            "type": "string",
-            "example": "Tạm ứng 30%, thanh toán 70% trước khi giao hàng",
-            "description": "Commercial payment schedule and terms"
-          },
-          "warrantyTerms": {
-            "type": "string",
-            "example": "Bảo hành chính hãng Hyundai 24 tháng hoặc 2000 giờ chạy",
-            "description": "Commercial warranty terms"
-          },
-          "deliveryTime": {
-            "type": "string",
-            "example": "Trong vòng 03 ngày làm việc kể từ ngày nhận tạm ứng",
-            "description": "Estimated lead time and delivery schedule"
-          },
-          "deliveryLocation": {
-            "type": "string",
-            "example": "Giao tại chân công trình bên mua",
-            "description": "Delivery destination or handover site"
-          }
-        }
-      },
-      "AdminQuoteItemInputDto": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-            "description": "Catalog product UUID, or null for bespoke custom item"
-          },
-          "isCustomItem": {
-            "type": "boolean",
-            "example": false,
-            "default": false,
-            "description": "Whether this is a bespoke line item not in catalog"
-          },
-          "itemName": {
-            "type": "string",
-            "example": "Máy phát điện Hyundai DHY6000SE",
-            "description": "Item name or description"
-          },
-          "itemModel": {
-            "type": "string",
-            "example": "DHY6000SE",
-            "description": "Manufacturer model code"
-          },
-          "itemSpecs": {
-            "type": "string",
-            "example": "5.0kVA - 230V / 50Hz - Chống ồn",
-            "description": "Technical specifications summary"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 1,
-            "minimum": 1,
-            "description": "Item quantity"
-          },
-          "unitPrice": {
-            "example": 28000000,
-            "description": "Unit price quoted to customer (VND)",
-            "oneOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "string"
-              }
-            ]
-          },
-          "discountPercent": {
-            "example": 5,
-            "default": 0,
-            "description": "Line item discount percentage (0 - 100)",
-            "oneOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "string"
-              }
-            ]
-          }
-        },
-        "required": ["itemName", "quantity", "unitPrice"]
-      },
       "CreateAdminQuoteDto": {
         "type": "object",
         "properties": {
           "userId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90",
-            "description": "Dealer or customer UUID if registered account"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "customerName": {
-            "type": "string",
-            "example": "Công ty TNHH Kỹ Thuật Điện Quang",
-            "description": "Customer or enterprise primary contact"
+            "type": "string"
           },
           "customerPhone": {
             "type": "string",
-            "example": "0918123456",
-            "description": "Customer contact phone number"
+            "pattern": "^(0[35789])\\d{8}$"
           },
           "customerEmail": {
-            "type": "string",
-            "example": "sales@dienquang.com.vn",
-            "description": "Customer contact email"
+            "type": ["string", "null"]
           },
           "companyName": {
-            "type": "string",
-            "example": "Công ty TNHH Kỹ Thuật Điện Quang",
-            "description": "Enterprise registered corporate entity"
+            "type": ["string", "null"]
           },
           "taxId": {
-            "type": "string",
-            "example": "0309988776",
-            "description": "Corporate enterprise tax ID"
+            "type": ["string", "null"]
           },
           "shippingAddress": {
-            "type": "string",
-            "example": "Khu Công Nghiệp Sóng Thần 2, Dĩ An, Bình Dương",
-            "description": "Project handover destination"
+            "type": ["string", "null"]
           },
           "vatRate": {
-            "type": "number",
-            "example": 10,
             "default": 10,
-            "description": "VAT percentage rate (e.g. 10 or 8)"
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
           },
           "commercialTerms": {
-            "description": "Structured commercial, warranty, and delivery terms",
-            "allOf": [
+            "anyOf": [
               {
-                "$ref": "#/components/schemas/CommercialTermsDto"
+                "type": "object",
+                "properties": {
+                  "validityDays": {
+                    "default": 15,
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "paymentSchedule": {
+                    "type": ["string", "null"]
+                  },
+                  "warrantyTerms": {
+                    "type": ["string", "null"]
+                  },
+                  "deliveryTime": {
+                    "type": ["string", "null"]
+                  },
+                  "deliveryLocation": {
+                    "type": ["string", "null"]
+                  }
+                }
+              },
+              {
+                "type": "null"
               }
             ]
           },
           "note": {
-            "type": "string",
-            "example": "Báo giá áp dụng theo chính sách đại lý cấp 1",
-            "description": "Internal sales or admin remarks"
+            "type": ["string", "null"]
           },
           "expirationDate": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-09-30T00:00:00.000Z",
-            "description": "Explicit quote expiration timestamp"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "items": {
-            "description": "Quotation line items with pricing and discounts",
+            "minItems": 1,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/AdminQuoteItemInputDto"
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "isCustomItem": {
+                  "default": false,
+                  "type": "boolean"
+                },
+                "itemName": {
+                  "type": "string"
+                },
+                "itemModel": {
+                  "type": ["string", "null"]
+                },
+                "itemSpecs": {
+                  "type": ["string", "null"]
+                },
+                "quantity": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "unitPrice": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^\\d+(\\.\\d{1,2})?$"
+                    }
+                  ]
+                },
+                "discountPercent": {
+                  "default": 0,
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^\\d+(\\.\\d{1,2})?$"
+                    }
+                  ]
+                }
+              },
+              "required": ["itemName", "quantity", "unitPrice"]
             }
           }
         },
@@ -10246,7 +10196,6 @@
         "properties": {
           "status": {
             "type": "string",
-            "example": "APPROVED",
             "enum": [
               "DRAFT",
               "SUBMITTED",
@@ -10254,8 +10203,7 @@
               "APPROVED",
               "REJECTED",
               "EXPIRED"
-            ],
-            "description": "Target quotation workflow status"
+            ]
           }
         },
         "required": ["status"]
@@ -10265,19 +10213,82 @@
         "properties": {
           "agreedPrice": {
             "type": "string",
-            "example": "26500000.00",
-            "description": "Agreed renegotiated unit price for quote line item (VND)"
+            "pattern": "^\\d+(\\.\\d{1,2})?$"
           }
         },
         "required": ["agreedPrice"]
+      },
+      "QuoteMessageResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "quoteId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "senderId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "message": {
+            "type": "string"
+          },
+          "sender": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "fullName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                },
+                "required": ["id", "fullName", "email", "role"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "quoteId",
+          "senderId",
+          "message",
+          "createdAt",
+          "updatedAt"
+        ]
       },
       "SendQuoteMessageDto": {
         "type": "object",
         "properties": {
           "message": {
-            "type": "string",
-            "example": "Chúng tôi đề xuất chiết khấu thêm 2% nếu quý khách lấy số lượng từ 5 máy trở lên.",
-            "description": "Negotiation message content"
+            "type": "string"
           }
         },
         "required": ["message"]
@@ -10287,15 +10298,16 @@
         "properties": {
           "orderId": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9f"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "quoteId": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9b"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "status": {
             "type": "string",
-            "example": "APPROVED",
             "enum": [
               "DRAFT",
               "SUBMITTED",
@@ -10308,178 +10320,55 @@
         },
         "required": ["orderId", "quoteId", "status"]
       },
-      "OrderItemProductSummaryDto": {
+      "OrderResponseDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
-          "nameVi": {
-            "type": "string",
-            "example": "Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha"
+          "orderNumber": {
+            "type": ["string", "null"]
           },
-          "nameEn": {
-            "type": "string",
-            "example": "Hyundai DHY65KSE 60kVA 3 Phase Diesel Generator"
-          },
-          "slug": {
-            "type": "string",
-            "example": "may-phat-dien-diesel-hyundai-dhy65kse-60kva-3-pha"
-          },
-          "price": {
-            "type": "string",
-            "example": "245000000.00"
-          },
-          "images": {
-            "example": ["https://res.cloudinary.com/hyundai/image.jpg"],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "totalStockCache": {
-            "type": "number",
-            "example": 5
-          }
-        },
-        "required": [
-          "id",
-          "nameVi",
-          "slug",
-          "price",
-          "images",
-          "totalStockCache"
-        ]
-      },
-      "OrderItemResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91"
-          },
-          "orderId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb92"
-          },
-          "productId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
-          },
-          "productName": {
-            "type": "string",
-            "example": "Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha"
-          },
-          "productSku": {
-            "type": "string",
-            "example": "DHY65KSE"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 1
-          },
-          "unitPrice": {
-            "type": "string",
-            "example": "245000000.00"
-          },
-          "product": {
+          "userId": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/OrderItemProductSummaryDto"
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
               },
               {
                 "type": "null"
               }
             ]
           },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
-          }
-        },
-        "required": [
-          "id",
-          "orderId",
-          "productId",
-          "productName",
-          "productSku",
-          "quantity",
-          "unitPrice",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "OrderUserSummaryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90"
-          },
-          "fullName": {
-            "type": "string",
-            "example": "Nguyễn Văn Đại Lý"
-          },
-          "email": {
-            "type": "string",
-            "example": "dealer@example.com"
-          },
-          "phoneNumber": {
-            "type": "string",
-            "example": "0911223344"
-          },
-          "role": {
-            "type": "string",
-            "example": "SALES"
-          }
-        },
-        "required": ["id", "fullName", "email", "phoneNumber", "role"]
-      },
-      "OrderResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb92"
-          },
-          "orderNumber": {
-            "type": ["string", "null"],
-            "example": "ORD-20260904-4821"
-          },
-          "userId": {
-            "type": ["string", "null"],
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90"
-          },
           "leadId": {
-            "type": ["string", "null"],
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "customerName": {
-            "type": ["string", "null"],
-            "example": "Nguyễn Văn A"
+            "type": ["string", "null"]
           },
           "customerPhone": {
-            "type": ["string", "null"],
-            "example": "0901234567"
+            "type": ["string", "null"]
           },
           "customerEmail": {
-            "type": ["string", "null"],
-            "example": "nguyenvana@example.com"
+            "type": ["string", "null"]
           },
           "companyName": {
-            "type": ["string", "null"],
-            "example": "Công ty Cổ phần Xây Dựng Số 1"
+            "type": ["string", "null"]
           },
           "status": {
             "type": "string",
-            "example": "PENDING",
             "enum": [
               "PENDING",
               "PROCESSING",
@@ -10489,33 +10378,26 @@
             ]
           },
           "shippingFee": {
-            "type": "string",
-            "example": "500000.00"
+            "type": "string"
           },
           "shippingAddress": {
-            "type": "string",
-            "example": "Kho số 4, Cảng Tiên Sa, TP. Đà Nẵng"
+            "type": "string"
           },
           "totalAmount": {
-            "type": "string",
-            "example": "245500000.00"
+            "type": "string"
           },
           "depositAmount": {
-            "type": ["string", "null"],
-            "example": "50000000.00"
+            "type": ["string", "null"]
           },
           "remainingAmount": {
-            "type": ["string", "null"],
-            "example": "195500000.00"
+            "type": ["string", "null"]
           },
           "paymentMethod": {
             "type": "string",
-            "example": "PAYOS",
             "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
           },
           "paymentStatus": {
             "type": "string",
-            "example": "PENDING",
             "enum": [
               "PENDING",
               "DEPOSIT_PAID",
@@ -10526,37 +10408,159 @@
           },
           "approvalStatus": {
             "type": "string",
-            "example": "APPROVED",
             "enum": ["PENDING", "APPROVED", "REJECTED"]
           },
           "approvedBy": {
-            "type": ["string", "null"],
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb9c"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "note": {
-            "type": ["string", "null"],
-            "example": "Giao trong giờ hành chính"
+            "type": ["string", "null"]
           },
           "createdAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "updatedAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderItemResponseDto"
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "orderId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "productId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "productName": {
+                  "type": "string"
+                },
+                "productSku": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "unitPrice": {
+                  "type": "string"
+                },
+                "product": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                        },
+                        "nameVi": {
+                          "type": "string"
+                        },
+                        "nameEn": {
+                          "type": ["string", "null"]
+                        },
+                        "slug": {
+                          "type": "string"
+                        },
+                        "price": {
+                          "type": "string"
+                        },
+                        "images": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "totalStockCache": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "nameVi",
+                        "slug",
+                        "price",
+                        "images",
+                        "totalStockCache"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "id",
+                "orderId",
+                "productId",
+                "productName",
+                "productSku",
+                "quantity",
+                "unitPrice",
+                "createdAt",
+                "updatedAt"
+              ]
             }
           },
           "user": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/OrderUserSummaryDto"
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "fullName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                },
+                "required": ["id", "fullName", "email", "phoneNumber", "role"]
               },
               {
                 "type": "null"
@@ -10578,63 +10582,48 @@
           "items"
         ]
       },
-      "GuestOrderItemInputDto": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-            "description": "Product UUID to purchase"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 1,
-            "description": "Item quantity",
-            "minimum": 1
-          }
-        },
-        "required": ["productId", "quantity"]
-      },
       "CreateGuestOrderDto": {
         "type": "object",
         "properties": {
           "customerName": {
-            "type": "string",
-            "example": "Nguyễn Văn A",
-            "description": "Customer full name"
+            "type": "string"
           },
           "customerPhone": {
             "type": "string",
-            "example": "0901234567",
-            "description": "Customer Vietnamese contact phone number"
+            "pattern": "^(0[35789])\\d{8}$"
           },
           "customerEmail": {
-            "type": "string",
-            "example": "nguyenvana@example.com",
-            "description": "Customer email address for notifications"
+            "type": ["string", "null"]
           },
           "shippingAddress": {
-            "type": "string",
-            "example": "Số 123 Đường Nguyễn Trãi, Phường 2, Quận 5, TP. Hồ Chí Minh",
-            "description": "Delivery destination street address"
+            "type": "string"
           },
           "paymentMethod": {
-            "type": "string",
-            "example": "PAYOS",
-            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"],
             "default": "PAYOS",
-            "description": "Checkout payment method"
+            "type": "string",
+            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
           },
           "note": {
-            "type": "string",
-            "example": "Giao hàng trong giờ hành chính",
-            "description": "Customer delivery notes"
+            "type": ["string", "null"]
           },
           "items": {
-            "description": "Order line items",
+            "minItems": 1,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GuestOrderItemInputDto"
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": ["productId", "quantity"]
             }
           }
         },
@@ -10645,116 +10634,120 @@
           "items"
         ]
       },
-      "B2bOrderItemInputDto": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-            "description": "Product UUID to purchase"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 2,
-            "description": "Item quantity",
-            "minimum": 1
-          },
-          "unitPrice": {
-            "example": "120000000.00",
-            "description": "Custom agreed unit price overriding catalog price",
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              }
-            ]
-          }
-        },
-        "required": ["productId", "quantity"]
-      },
       "CreateB2bOrderDto": {
         "type": "object",
         "properties": {
           "userId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90",
-            "description": "Linked customer/dealer user UUID if registered"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "leadId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91",
-            "description": "Linked CRM Lead UUID for sales attribution & tracking"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "customerName": {
-            "type": "string",
-            "example": "Nguyễn Văn Đại Lý",
-            "description": "Customer or representative name"
+            "type": "string"
           },
           "customerPhone": {
             "type": "string",
-            "example": "0911223344",
-            "description": "Contact phone number"
+            "pattern": "^(0[35789])\\d{8}$"
           },
           "customerEmail": {
-            "type": "string",
-            "example": "dealer@example.com",
-            "description": "Contact email"
+            "type": ["string", "null"]
           },
           "companyName": {
-            "type": "string",
-            "example": "Công ty Cổ phần Năng Lượng Miền Trung",
-            "description": "Corporate company name"
+            "type": ["string", "null"]
           },
           "shippingAddress": {
-            "type": "string",
-            "example": "Kho số 4, Cảng Tiên Sa, TP. Đà Nẵng",
-            "description": "Shipping destination address"
+            "type": "string"
           },
           "paymentMethod": {
-            "type": "string",
-            "example": "TRADE_CREDIT",
-            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"],
             "default": "BANK_TRANSFER",
-            "description": "B2B Payment method (TRADE_CREDIT, BANK_TRANSFER, CASH)"
+            "type": "string",
+            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
           },
           "shippingFee": {
-            "example": "500000.00",
             "default": 0,
-            "description": "Freight / shipping fee",
-            "oneOf": [
+            "anyOf": [
               {
-                "type": "string"
+                "type": "number",
+                "minimum": 0
               },
               {
-                "type": "number"
+                "type": "string",
+                "pattern": "^\\d+(\\.\\d{1,2})?$"
               }
             ]
           },
           "depositAmount": {
-            "example": "50000000.00",
             "default": 0,
-            "description": "Initial deposit amount paid",
-            "oneOf": [
+            "anyOf": [
               {
-                "type": "string"
+                "type": "number",
+                "minimum": 0
               },
               {
-                "type": "number"
+                "type": "string",
+                "pattern": "^\\d+(\\.\\d{1,2})?$"
               }
             ]
           },
           "note": {
-            "type": "string",
-            "example": "Giao tại công trình kèm biên bản nghiệm thu",
-            "description": "Internal order notes"
+            "type": ["string", "null"]
           },
           "items": {
-            "description": "Order line items",
+            "minItems": 1,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/B2bOrderItemInputDto"
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "unitPrice": {
+                  "anyOf": [
+                    {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\d+(\\.\\d{1,2})?$"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": ["productId", "quantity"]
             }
           }
         },
@@ -10770,20 +10763,16 @@
         "properties": {
           "status": {
             "type": "string",
-            "example": "PROCESSING",
             "enum": [
               "PENDING",
               "PROCESSING",
               "SHIPPED",
               "DELIVERED",
               "CANCELLED"
-            ],
-            "description": "New order status along the state machine"
+            ]
           },
           "note": {
-            "type": "string",
-            "example": "Đã xác nhận thanh toán chuyển khoản và sẵn sàng đóng gói",
-            "description": "Reason or operational note for status change"
+            "type": ["string", "null"]
           }
         },
         "required": ["status"]
@@ -10792,9 +10781,9 @@
         "type": "object",
         "properties": {
           "expiredCount": {
-            "type": "number",
-            "example": 3,
-            "description": "Number of pending unpaid orders auto-expired"
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
           }
         },
         "required": ["expiredCount"]
@@ -10803,29 +10792,19 @@
         "type": "object",
         "properties": {
           "checkoutUrl": {
-            "type": "string",
-            "example": "https://pay.payos.vn/web/6c9b3a6e7a2e7b56b74c419b4eb14b9a",
-            "description": "PayOS checkout redirect web URL"
+            "type": "string"
           },
           "qrCode": {
-            "type": "string",
-            "example": "00020101021238540010A00000072701260006970422...",
-            "description": "VietQR EMV payload or QR code data string"
+            "type": "string"
           },
           "orderCode": {
-            "type": "number",
-            "example": 1725451234567,
-            "description": "Unique PayOS order code identifier"
+            "type": "number"
           },
           "amount": {
-            "type": "number",
-            "example": 490000000,
-            "description": "Payable amount in VND"
+            "type": "number"
           },
           "paymentLinkId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91",
-            "description": "PayOS payment link ID"
+            "type": "string"
           }
         },
         "required": [
@@ -10841,24 +10820,19 @@
         "properties": {
           "orderId": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91",
-            "description": "Order UUID identifier to create payment link for"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "transactionType": {
+            "default": "FULL_PAYMENT",
             "type": "string",
-            "example": "FULL_PAYMENT",
-            "enum": ["FULL_PAYMENT", "DEPOSIT", "REMAINING", "DEBT_REPAYMENT"],
-            "description": "Transaction type (FULL_PAYMENT or DEPOSIT percentage)"
+            "enum": ["FULL_PAYMENT", "DEPOSIT", "REMAINING", "DEBT_REPAYMENT"]
           },
           "returnUrl": {
-            "type": "string",
-            "example": "https://hyundai-nhatnang.vn/checkout/success",
-            "description": "URL redirect after customer successfully completes payment"
+            "type": "string"
           },
           "cancelUrl": {
-            "type": "string",
-            "example": "https://hyundai-nhatnang.vn/checkout/cancel",
-            "description": "URL redirect if customer cancels payment on gateway"
+            "type": "string"
           }
         },
         "required": ["orderId"]
@@ -10867,217 +10841,112 @@
         "type": "object",
         "properties": {
           "processed": {
-            "type": "boolean",
-            "example": true,
-            "description": "Indicates whether the payment transaction was successfully processed into database records"
+            "type": "boolean"
           },
           "reason": {
-            "type": "string",
-            "example": "Non-success code acknowledged",
-            "description": "Informational reason when webhook processing was skipped or acknowledged idempotently"
+            "type": "string"
           }
         },
         "required": ["processed"]
-      },
-      "PayOSWebhookDataClass": {
-        "type": "object",
-        "properties": {
-          "orderCode": {
-            "type": "number",
-            "example": 1725451234567
-          },
-          "amount": {
-            "type": "number",
-            "example": 490000000
-          },
-          "description": {
-            "type": "string",
-            "example": "ORD-20260904-4821"
-          },
-          "accountNumber": {
-            "type": "string",
-            "example": "123456789"
-          },
-          "reference": {
-            "type": "string",
-            "example": "FT24248123456789"
-          },
-          "transactionDateTime": {
-            "type": "string",
-            "example": "2026-09-04 15:30:00"
-          },
-          "currency": {
-            "type": "string",
-            "example": "VND"
-          },
-          "paymentLinkId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91"
-          },
-          "code": {
-            "type": "string",
-            "example": "00"
-          },
-          "desc": {
-            "type": "string",
-            "example": "Success"
-          },
-          "counterAccountBankId": {
-            "type": ["string", "null"],
-            "example": "970422"
-          },
-          "counterAccountBankName": {
-            "type": ["string", "null"],
-            "example": "MBBank"
-          },
-          "counterAccountName": {
-            "type": ["string", "null"],
-            "example": "NGUYEN VAN A"
-          },
-          "counterAccountNumber": {
-            "type": ["string", "null"],
-            "example": "0901234567"
-          },
-          "virtualAccountName": {
-            "type": ["string", "null"],
-            "example": "HYUNDAI ECOM"
-          },
-          "virtualAccountNumber": {
-            "type": ["string", "null"],
-            "example": "VA12345678"
-          }
-        },
-        "required": ["orderCode", "amount", "description"]
       },
       "PayOSWebhookDto": {
         "type": "object",
         "properties": {
           "code": {
-            "type": "string",
-            "example": "00",
-            "description": "Response status code"
+            "type": "string"
           },
           "desc": {
-            "type": "string",
-            "example": "Success",
-            "description": "Response description"
+            "type": "string"
           },
           "success": {
-            "type": "boolean",
-            "example": true,
-            "description": "Success status flag"
+            "type": "boolean"
           },
           "data": {
-            "description": "Transaction data payload",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PayOSWebhookDataClass"
+            "type": "object",
+            "properties": {
+              "orderCode": {
+                "type": "number"
+              },
+              "amount": {
+                "type": "number"
+              },
+              "description": {
+                "type": "string"
+              },
+              "accountNumber": {
+                "type": "string"
+              },
+              "reference": {
+                "type": "string"
+              },
+              "transactionDateTime": {
+                "type": "string"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "paymentLinkId": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "desc": {
+                "type": "string"
+              },
+              "counterAccountBankId": {
+                "type": ["string", "null"]
+              },
+              "counterAccountBankName": {
+                "type": ["string", "null"]
+              },
+              "counterAccountName": {
+                "type": ["string", "null"]
+              },
+              "counterAccountNumber": {
+                "type": ["string", "null"]
+              },
+              "virtualAccountName": {
+                "type": ["string", "null"]
+              },
+              "virtualAccountNumber": {
+                "type": ["string", "null"]
               }
-            ]
+            },
+            "required": ["orderCode", "amount", "description"]
           },
           "signature": {
-            "type": "string",
-            "example": "6c9b3a6e7a2e7b56b74c419b4eb14b9a...",
-            "description": "HMAC-SHA256 signature calculated with PayOS Checksum Key"
+            "type": "string"
           }
         },
         "required": ["code", "desc", "success", "data", "signature"]
-      },
-      "PaymentTransactionResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91"
-          },
-          "orderId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb92"
-          },
-          "amount": {
-            "type": "string",
-            "example": "490000000.00"
-          },
-          "paymentMethod": {
-            "type": "string",
-            "example": "CASH",
-            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
-          },
-          "transactionType": {
-            "type": "string",
-            "example": "FULL_PAYMENT",
-            "enum": ["FULL_PAYMENT", "DEPOSIT", "REMAINING", "DEBT_REPAYMENT"]
-          },
-          "status": {
-            "type": "string",
-            "example": "PENDING",
-            "enum": ["PENDING", "COMPLETED", "FAILED", "CANCELLED"]
-          },
-          "orderCode": {
-            "type": ["number", "null"],
-            "example": 1725451234567
-          },
-          "referenceCode": {
-            "type": ["string", "null"],
-            "example": "REF-123456"
-          },
-          "verifiedBy": {
-            "type": ["string", "null"],
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb93"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
-          }
-        },
-        "required": [
-          "id",
-          "orderId",
-          "amount",
-          "paymentMethod",
-          "transactionType",
-          "status",
-          "createdAt",
-          "updatedAt"
-        ]
       },
       "OrderPaymentSummaryDto": {
         "type": "object",
         "properties": {
           "orderId": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb92"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "orderNumber": {
-            "type": ["string", "null"],
-            "example": "ORD-20260904-4821"
+            "type": ["string", "null"]
           },
           "totalAmount": {
-            "type": "string",
-            "example": "490000000.00"
+            "type": "string"
           },
           "depositAmount": {
-            "type": ["string", "null"],
-            "example": "0.00"
+            "type": ["string", "null"]
           },
           "remainingAmount": {
-            "type": ["string", "null"],
-            "example": "0.00"
+            "type": ["string", "null"]
           },
           "paymentMethod": {
             "type": "string",
-            "example": "CASH",
             "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
           },
           "paymentStatus": {
             "type": "string",
-            "example": "FULLY_PAID",
             "enum": [
               "PENDING",
               "DEPOSIT_PAID",
@@ -11087,10 +10956,77 @@
             ]
           },
           "transactions": {
-            "description": "List of related payment transactions",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/PaymentTransactionResponseDto"
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "orderId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "paymentMethod": {
+                  "type": "string",
+                  "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
+                },
+                "transactionType": {
+                  "type": "string",
+                  "enum": [
+                    "FULL_PAYMENT",
+                    "DEPOSIT",
+                    "REMAINING",
+                    "DEBT_REPAYMENT"
+                  ]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["PENDING", "COMPLETED", "FAILED", "CANCELLED"]
+                },
+                "orderCode": {
+                  "type": ["number", "null"]
+                },
+                "referenceCode": {
+                  "type": ["string", "null"]
+                },
+                "verifiedBy": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "id",
+                "orderId",
+                "amount",
+                "paymentMethod",
+                "transactionType",
+                "status",
+                "createdAt",
+                "updatedAt"
+              ]
             }
           }
         },
@@ -11106,21 +11042,19 @@
         "type": "object",
         "properties": {
           "amount": {
-            "example": 490000000,
-            "description": "Actual cash amount collected by accountant/cashier",
-            "oneOf": [
+            "anyOf": [
               {
-                "type": "number"
+                "type": "number",
+                "exclusiveMinimum": 0
               },
               {
-                "type": "string"
+                "type": "string",
+                "pattern": "^\\d+(\\.\\d{1,2})?$"
               }
             ]
           },
           "note": {
-            "type": "string",
-            "example": "Đã thu đủ tiền mặt tại văn phòng Hà Nội ngày 04/09",
-            "description": "Optional verification notes or internal receipt code"
+            "type": ["string", "null"]
           }
         },
         "required": ["amount"]
@@ -11130,55 +11064,56 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb91"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "userId": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "amount": {
-            "type": "string",
-            "example": "50000000.00"
+            "type": "string"
           },
           "paymentMethod": {
             "type": "string",
-            "example": "CASH",
             "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
           },
           "status": {
             "type": "string",
-            "example": "PENDING",
             "enum": ["PENDING", "COMPLETED", "FAILED"]
           },
           "orderCode": {
-            "type": ["number", "null"],
-            "example": 1725451234568
+            "type": ["number", "null"]
           },
           "referenceCode": {
-            "type": ["string", "null"],
-            "example": "REPAY-REF-789"
+            "type": ["string", "null"]
           },
           "verifiedBy": {
-            "type": ["string", "null"],
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb93"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "checkoutUrl": {
-            "type": ["string", "null"],
-            "example": "https://pay.payos.vn/web/6c9b3a6e7a2e7b56b74c419b4eb14b9a"
+            "type": ["string", "null"]
           },
           "qrCode": {
-            "type": ["string", "null"],
-            "example": "00020101021238540010A00000072701260006970422..."
+            "type": ["string", "null"]
           },
           "createdAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "updatedAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           }
         },
         "required": [
@@ -11195,42 +11130,42 @@
         "type": "object",
         "properties": {
           "userId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90",
-            "description": "Target dealer user UUID if processed by Admin/Sales"
-          },
-          "amount": {
-            "example": 50000000,
-            "description": "Repayment amount (VND)",
-            "oneOf": [
+            "anyOf": [
               {
-                "type": "number"
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
               },
               {
-                "type": "string"
+                "type": "null"
+              }
+            ]
+          },
+          "amount": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "string",
+                "pattern": "^\\d+(\\.\\d{1,2})?$"
               }
             ]
           },
           "paymentMethod": {
+            "default": "PAYOS",
             "type": "string",
-            "example": "PAYOS",
-            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"],
-            "description": "Payment method used for repayment (PAYOS, CASH, BANK_TRANSFER)"
+            "enum": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"]
           },
           "note": {
-            "type": "string",
-            "example": "Thanh toán công nợ lô máy phát điện tháng 08",
-            "description": "Repayment note or reference"
+            "type": ["string", "null"]
           },
           "returnUrl": {
-            "type": "string",
-            "example": "https://hyundai-nhatnang.vn/portal/debt?repaymentSuccess=true",
-            "description": "Return URL after online payment completes"
+            "type": "string"
           },
           "cancelUrl": {
-            "type": "string",
-            "example": "https://hyundai-nhatnang.vn/portal/debt?repaymentCancel=true",
-            "description": "Cancel URL if customer cancels payment"
+            "type": "string"
           }
         },
         "required": ["amount"]
