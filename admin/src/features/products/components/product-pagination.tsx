@@ -1,58 +1,12 @@
 "use client";
 
-import { Link } from "@/i18n/routing";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+  OffsetPagination,
+  type OffsetPaginationProps,
+} from "@/shared/components/offset-pagination";
 
-interface ProductPaginationProps {
-  nextCursor?: string | undefined;
-  prevCursor?: string | undefined;
-}
+export type ProductPaginationProps = OffsetPaginationProps;
 
-export const ProductPagination = ({
-  nextCursor,
-  prevCursor,
-}: ProductPaginationProps) => {
-  // const t = useTranslations("adminProducts.pagination");
-
-  return (
-    <div className="border-border/50 flex flex-col items-center justify-between gap-4 border-t pt-6">
-      {/* We do not know total count with cursor pagination, so we can just show a simplified message */}
-      {/* <p className="text-muted-foreground text-center text-sm sm:text-left">
-        {t("showingCursor")}
-      </p> */}
-
-      <Pagination className="mx-0 w-auto">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              asChild
-              className={!prevCursor ? "pointer-events-none opacity-50" : ""}
-            >
-              <Link
-                href={prevCursor ? `?before=${prevCursor}` : ""}
-                scroll={false}
-              />
-            </PaginationPrevious>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext
-              asChild
-              className={!nextCursor ? "pointer-events-none opacity-50" : ""}
-            >
-              <Link
-                href={nextCursor ? `?after=${nextCursor}` : ""}
-                scroll={false}
-              />
-            </PaginationNext>
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
-    </div>
-  );
+export const ProductPagination = (props: ProductPaginationProps) => {
+  return <OffsetPagination label="sản phẩm" {...props} />;
 };

@@ -638,7 +638,11 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Get current authenticated user shopping cart */
+    /**
+     * Get current authenticated user shopping cart
+     * @deprecated
+     * @description Legacy B2C cart endpoint. Retained dormant for potential future retail flows.
+     */
     get: operations["CartController_getCart_v1"];
     put?: never;
     post?: never;
@@ -657,7 +661,10 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Add item to cart or increment quantity */
+    /**
+     * Add item to cart or increment quantity
+     * @deprecated
+     */
     post: operations["CartController_addItem_v1"];
     delete?: never;
     options?: never;
@@ -673,10 +680,16 @@ export interface paths {
       cookie?: never;
     };
     get?: never;
-    /** Update quantity of a cart item */
+    /**
+     * Update quantity of a cart item
+     * @deprecated
+     */
     put: operations["CartController_updateItemQuantity_v1"];
     post?: never;
-    /** Remove item from cart */
+    /**
+     * Remove item from cart
+     * @deprecated
+     */
     delete: operations["CartController_removeItem_v1"];
     options?: never;
     head?: never;
@@ -692,7 +705,10 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Merge guest cart items into authenticated user cart with inventory stock clamping */
+    /**
+     * Merge guest cart items into authenticated user cart with inventory stock clamping
+     * @deprecated
+     */
     post: operations["CartController_mergeGuestCart_v1"];
     delete?: never;
     options?: never;

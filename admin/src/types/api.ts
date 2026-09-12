@@ -15,14 +15,7 @@ export interface ApiResponse<T> {
   timestamp?: string;
 }
 
-export interface PaginationMeta {
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  hasNext: boolean;
-  hasPrev: boolean;
-}
+export type PaginationMeta = ApiSchemas["PaginationMetaDto"];
 
 export interface PaginatedResponse<T> {
   items: T[];

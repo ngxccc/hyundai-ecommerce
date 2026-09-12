@@ -39,6 +39,7 @@ export const ProductFilters = ({ categories, brands }: ProductFiltersProps) => {
         params.set(key, value);
       }
 
+      params.delete("page");
       params.delete("before");
       params.delete("after");
 

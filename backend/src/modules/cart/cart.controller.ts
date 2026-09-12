@@ -37,6 +37,9 @@ import {
   UpdateCartItemDto,
 } from "./dto";
 
+/**
+ * Legacy B2C cart controller, currently dormant as the platform transitioned to a B2B RFQ model.
+ */
 @ApiTags(CART_ROUTES.TAG)
 @Controller({ path: CART_ROUTES.ROOT, version: "1" })
 @UseGuards(JwtAuthGuard)
@@ -45,7 +48,12 @@ export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   @Get()
-  @ApiOperation({ summary: "Get current authenticated user shopping cart" })
+  @ApiOperation({
+    summary: "Get current authenticated user shopping cart",
+    deprecated: true,
+    description:
+      "Legacy B2C cart endpoint. Retained dormant for potential future retail flows.",
+  })
   @ApiOkResponseGeneric(CartResponseDto)
   @ApiUnauthorizedResponseRfc9457()
   async getCart(@CurrentUser("sub") userId: string) {
@@ -55,7 +63,10 @@ export class CartController {
 
   @Post(CART_ROUTES.ITEMS)
   @Throttle({ default: { limit: 60, ttl: 60000 } })
-  @ApiOperation({ summary: "Add item to cart or increment quantity" })
+  @ApiOperation({
+    summary: "Add item to cart or increment quantity",
+    deprecated: true,
+  })
   @ApiCreatedResponseGeneric(CartResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
@@ -70,7 +81,7 @@ export class CartController {
 
   @Put(CART_ROUTES.ITEM_BY_ID)
   @Throttle({ default: { limit: 60, ttl: 60000 } })
-  @ApiOperation({ summary: "Update quantity of a cart item" })
+  @ApiOperation({ summary: "Update quantity of a cart item", deprecated: true })
   @ApiParam({ name: "id", description: "Cart item UUID" })
   @ApiOkResponseGeneric(CartResponseDto)
   @ApiBadRequestResponseRfc9457()
@@ -87,7 +98,7 @@ export class CartController {
 
   @Delete(CART_ROUTES.ITEM_BY_ID)
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Remove item from cart" })
+  @ApiOperation({ summary: "Remove item from cart", deprecated: true })
   @ApiParam({ name: "id", description: "Cart item UUID" })
   @ApiOkResponseGeneric(CartResponseDto)
   @ApiNotFoundResponseRfc9457()
@@ -100,12 +111,13 @@ export class CartController {
     return apiSuccess(data);
   }
 
-  @Post(CART_ROUTES.MERGE)
   @HttpCode(HttpStatus.OK)
+  @Post(CART_ROUTES.MERGE)
   @Throttle({ default: { limit: 20, ttl: 60000 } })
   @ApiOperation({
     summary:
       "Merge guest cart items into authenticated user cart with inventory stock clamping",
+    deprecated: true,
   })
   @ApiOkResponseGeneric(CartResponseDto)
   @ApiBadRequestResponseRfc9457()

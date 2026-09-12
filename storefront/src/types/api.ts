@@ -15,14 +15,7 @@ export interface ApiResponse<T> {
   timestamp?: string;
 }
 
-export interface PaginationMeta {
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  hasNext: boolean;
-  hasPrev: boolean;
-}
+export type PaginationMeta = ApiSchemas["PaginationMetaDto"];
 
 export interface PaginatedResponse<T> {
   items: T[];
@@ -45,9 +38,6 @@ export type ApiQuoteMessage = NonNullable<ApiQuote["messages"]>[number];
 export type ApiUser = ApiSchemas["UserResponseDto"];
 export type ApiDealerTier = ApiSchemas["DealerTierResponseDto"];
 export type ApiCreateQuote = ApiSchemas["CreateQuoteDto"];
-export type ApiMergeCart = ApiSchemas["MergeCartDto"];
-export type ApiAddCartItem = ApiSchemas["AddCartItemDto"];
-export type ApiUpdateCartItem = ApiSchemas["UpdateCartItemDto"];
 export type CommercialTerms = NonNullable<
   ApiSchemas["CreateAdminQuoteDto"]["commercialTerms"]
 >;
