@@ -162,8 +162,19 @@ function mapProductRow(
     upsBatteryType: product.upsBatteryType ?? null,
     specSheet: product.specSheet ?? [],
     specs: (product.specs as ProductResponseDto["specs"] | undefined) ?? {},
-    brand: brand?.id ? brand : null,
-    category: category?.id ? category : null,
+    brand: brand?.id
+      ? {
+          ...brand,
+          description: brand.descriptionVi ?? null,
+        }
+      : null,
+    category: category?.id
+      ? {
+          ...category,
+          name: category.nameVi,
+          description: category.descriptionVi ?? null,
+        }
+      : null,
   };
 }
 /**

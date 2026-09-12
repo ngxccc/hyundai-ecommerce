@@ -2,16 +2,25 @@ import { z } from "zod";
 import { createZodDto } from "@/common/dto";
 import { zDate } from "@/common/schemas/zod-primitives";
 
+export const categoryTranslationResponseSchema = z.object({
+  locale: z.string(),
+  name: z.string(),
+  description: z.string().nullable(),
+});
+
 const baseCategoryResponseSchema = z.object({
   id: z.uuid(),
-  nameVi: z.string(),
-  nameEn: z.string().nullable(),
   slug: z.string(),
   parentId: z.uuid().nullable(),
-  descriptionVi: z.string().nullable(),
-  descriptionEn: z.string().nullable(),
   image: z.string().nullable(),
   isActive: z.boolean(),
+  name: z.string(),
+  description: z.string().nullable(),
+  translations: z.array(categoryTranslationResponseSchema).optional(),
+  nameVi: z.string().optional(),
+  nameEn: z.string().nullable().optional(),
+  descriptionVi: z.string().nullable().optional(),
+  descriptionEn: z.string().nullable().optional(),
   createdAt: zDate(),
   updatedAt: zDate(),
 });

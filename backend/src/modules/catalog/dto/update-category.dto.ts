@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { createZodDto } from "@/common/dto";
-import { createCategorySchema } from "./create-category.dto";
+import { createCategoryBaseSchema } from "./create-category.dto";
 
-export const updateCategorySchema = createCategorySchema
+export const updateCategorySchema = createCategoryBaseSchema
   .partial()
   .extend({
     isActive: z.boolean().optional(),

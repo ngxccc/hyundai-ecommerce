@@ -8187,12 +8187,6 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
           "slug": {
             "type": "string"
           },
@@ -8208,17 +8202,47 @@
               }
             ]
           },
-          "descriptionVi": {
-            "type": ["string", "null"]
-          },
-          "descriptionEn": {
-            "type": ["string", "null"]
-          },
           "image": {
             "type": ["string", "null"]
           },
           "isActive": {
             "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": ["string", "null"]
+          },
+          "translations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["locale", "name", "description"]
+            }
+          },
+          "nameVi": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": ["string", "null"]
+          },
+          "descriptionVi": {
+            "type": ["string", "null"]
+          },
+          "descriptionEn": {
+            "type": ["string", "null"]
           },
           "createdAt": {
             "type": "string",
@@ -8237,14 +8261,12 @@
         },
         "required": [
           "id",
-          "nameVi",
-          "nameEn",
           "slug",
           "parentId",
-          "descriptionVi",
-          "descriptionEn",
           "image",
           "isActive",
+          "name",
+          "description",
           "createdAt",
           "updatedAt"
         ]
@@ -8252,12 +8274,6 @@
       "CreateCategoryDto": {
         "type": "object",
         "properties": {
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
           "slug": {
             "type": "string",
             "minLength": 2,
@@ -8275,12 +8291,6 @@
                 "type": "null"
               }
             ]
-          },
-          "descriptionVi": {
-            "type": ["string", "null"]
-          },
-          "descriptionEn": {
-            "type": ["string", "null"]
           },
           "image": {
             "type": ["string", "null"]
@@ -8288,20 +8298,46 @@
           "isActive": {
             "default": true,
             "type": "boolean"
-          }
-        },
-        "required": ["nameVi", "slug"],
-        "additionalProperties": false
-      },
-      "UpdateCategoryDto": {
-        "type": "object",
-        "properties": {
+          },
+          "translations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 8
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["locale", "name"]
+            }
+          },
           "nameVi": {
             "type": "string"
           },
           "nameEn": {
             "type": ["string", "null"]
           },
+          "descriptionVi": {
+            "type": ["string", "null"]
+          },
+          "descriptionEn": {
+            "type": ["string", "null"]
+          }
+        },
+        "required": ["slug"],
+        "additionalProperties": false
+      },
+      "UpdateCategoryDto": {
+        "type": "object",
+        "properties": {
           "slug": {
             "type": "string",
             "minLength": 2,
@@ -8320,17 +8356,43 @@
               }
             ]
           },
-          "descriptionVi": {
-            "type": ["string", "null"]
-          },
-          "descriptionEn": {
-            "type": ["string", "null"]
-          },
           "image": {
             "type": ["string", "null"]
           },
           "isActive": {
             "type": "boolean"
+          },
+          "translations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 8
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["locale", "name"]
+            }
+          },
+          "nameVi": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": ["string", "null"]
+          },
+          "descriptionVi": {
+            "type": ["string", "null"]
+          },
+          "descriptionEn": {
+            "type": ["string", "null"]
           }
         },
         "additionalProperties": false
@@ -8351,6 +8413,24 @@
           },
           "logo": {
             "type": ["string", "null"]
+          },
+          "description": {
+            "type": ["string", "null"]
+          },
+          "translations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["locale", "description"]
+            }
           },
           "descriptionVi": {
             "type": ["string", "null"]
@@ -8375,8 +8455,7 @@
           "name",
           "slug",
           "logo",
-          "descriptionVi",
-          "descriptionEn",
+          "description",
           "isActive",
           "createdAt",
           "updatedAt"
@@ -8396,6 +8475,23 @@
           },
           "logo": {
             "type": ["string", "null"]
+          },
+          "translations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 8
+                },
+                "description": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["locale"]
+            }
           },
           "descriptionVi": {
             "type": ["string", "null"]
@@ -8425,6 +8521,23 @@
           },
           "logo": {
             "type": ["string", "null"]
+          },
+          "translations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 8
+                },
+                "description": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["locale"]
+            }
           },
           "descriptionVi": {
             "type": ["string", "null"]
@@ -8491,12 +8604,6 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
           "slug": {
             "type": "string"
           },
@@ -8512,17 +8619,47 @@
               }
             ]
           },
-          "descriptionVi": {
-            "type": ["string", "null"]
-          },
-          "descriptionEn": {
-            "type": ["string", "null"]
-          },
           "image": {
             "type": ["string", "null"]
           },
           "isActive": {
             "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": ["string", "null"]
+          },
+          "translations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["locale", "name", "description"]
+            }
+          },
+          "nameVi": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": ["string", "null"]
+          },
+          "descriptionVi": {
+            "type": ["string", "null"]
+          },
+          "descriptionEn": {
+            "type": ["string", "null"]
           },
           "createdAt": {
             "type": "string",
@@ -8541,14 +8678,12 @@
         },
         "required": [
           "id",
-          "nameVi",
-          "nameEn",
           "slug",
           "parentId",
-          "descriptionVi",
-          "descriptionEn",
           "image",
           "isActive",
+          "name",
+          "description",
           "createdAt",
           "updatedAt"
         ]
@@ -8858,6 +8993,24 @@
                   "logo": {
                     "type": ["string", "null"]
                   },
+                  "description": {
+                    "type": ["string", "null"]
+                  },
+                  "translations": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "locale": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": ["string", "null"]
+                        }
+                      },
+                      "required": ["locale", "description"]
+                    }
+                  },
                   "descriptionVi": {
                     "type": ["string", "null"]
                   },
@@ -8881,8 +9034,7 @@
                   "name",
                   "slug",
                   "logo",
-                  "descriptionVi",
-                  "descriptionEn",
+                  "description",
                   "isActive",
                   "createdAt",
                   "updatedAt"

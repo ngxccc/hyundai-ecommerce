@@ -13,6 +13,7 @@ describe("BrandsController", () => {
     name: "Hyundai Power",
     slug: "hyundai-power",
     logo: null,
+    description: null,
     descriptionVi: null,
     descriptionEn: null,
     isActive: true,

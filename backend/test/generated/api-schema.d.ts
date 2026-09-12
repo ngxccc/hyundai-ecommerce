@@ -1323,14 +1323,21 @@ export interface components {
     CategoryResponseDto: {
       /** Format: uuid */
       id: string;
-      nameVi: string;
-      nameEn: string | null;
       slug: string;
       parentId: string | null;
-      descriptionVi: string | null;
-      descriptionEn: string | null;
       image: string | null;
       isActive: boolean;
+      name: string;
+      description: string | null;
+      translations?: {
+        locale: string;
+        name: string;
+        description: string | null;
+      }[];
+      nameVi?: string;
+      nameEn?: string | null;
+      descriptionVi?: string | null;
+      descriptionEn?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -1338,25 +1345,35 @@ export interface components {
       children?: components["schemas"]["CategoryResponseDto"][];
     };
     CreateCategoryDto: {
-      nameVi: string;
-      nameEn?: string | null;
       slug: string;
       parentId?: string | null;
-      descriptionVi?: string | null;
-      descriptionEn?: string | null;
       image?: string | null;
       /** @default true */
       isActive: boolean;
-    };
-    UpdateCategoryDto: {
+      translations?: {
+        locale: string;
+        name: string;
+        description?: string | null;
+      }[];
       nameVi?: string;
       nameEn?: string | null;
-      slug?: string;
-      parentId?: string | null;
       descriptionVi?: string | null;
       descriptionEn?: string | null;
+    };
+    UpdateCategoryDto: {
+      slug?: string;
+      parentId?: string | null;
       image?: string | null;
       isActive?: boolean;
+      translations?: {
+        locale: string;
+        name: string;
+        description?: string | null;
+      }[];
+      nameVi?: string;
+      nameEn?: string | null;
+      descriptionVi?: string | null;
+      descriptionEn?: string | null;
     };
     BrandResponseDto: {
       /** Format: uuid */
@@ -1364,8 +1381,13 @@ export interface components {
       name: string;
       slug: string;
       logo: string | null;
-      descriptionVi: string | null;
-      descriptionEn: string | null;
+      description: string | null;
+      translations?: {
+        locale: string;
+        description: string | null;
+      }[];
+      descriptionVi?: string | null;
+      descriptionEn?: string | null;
       isActive: boolean;
       /** Format: date-time */
       createdAt: string;
@@ -1376,6 +1398,10 @@ export interface components {
       name: string;
       slug: string;
       logo?: string | null;
+      translations?: {
+        locale: string;
+        description?: string | null;
+      }[];
       descriptionVi?: string | null;
       descriptionEn?: string | null;
       /** @default true */
@@ -1385,6 +1411,10 @@ export interface components {
       name?: string;
       slug?: string;
       logo?: string | null;
+      translations?: {
+        locale: string;
+        description?: string | null;
+      }[];
       descriptionVi?: string | null;
       descriptionEn?: string | null;
       isActive?: boolean;
@@ -1410,14 +1440,21 @@ export interface components {
     ProductResponseDto__schema1: {
       /** Format: uuid */
       id: string;
-      nameVi: string;
-      nameEn: string | null;
       slug: string;
       parentId: string | null;
-      descriptionVi: string | null;
-      descriptionEn: string | null;
       image: string | null;
       isActive: boolean;
+      name: string;
+      description: string | null;
+      translations?: {
+        locale: string;
+        name: string;
+        description: string | null;
+      }[];
+      nameVi?: string;
+      nameEn?: string | null;
+      descriptionVi?: string | null;
+      descriptionEn?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -1509,8 +1546,13 @@ export interface components {
         name: string;
         slug: string;
         logo: string | null;
-        descriptionVi: string | null;
-        descriptionEn: string | null;
+        description: string | null;
+        translations?: {
+          locale: string;
+          description: string | null;
+        }[];
+        descriptionVi?: string | null;
+        descriptionEn?: string | null;
         isActive: boolean;
         /** Format: date-time */
         createdAt: string;

@@ -53,9 +53,33 @@ export const createCategoryAction = async (formData: FormData) => {
         };
       }
     }
-
     const { data: createRes, error: createError } =
-      await categoriesApi.create(validatedData);
+      await categoriesApi.create({
+        slug: validatedData.slug,
+        parentId: validatedData.parentId,
+        image: validatedData.image,
+        isActive: validatedData.isActive,
+        translations: [
+          {
+            locale: "vi",
+            name: validatedData.nameVi,
+            description: validatedData.descriptionVi,
+          },
+          ...(validatedData.nameEn
+            ? [
+                {
+                  locale: "en",
+                  name: validatedData.nameEn,
+                  description: validatedData.descriptionEn,
+                },
+              ]
+            : []),
+        ],
+        nameVi: validatedData.nameVi,
+        nameEn: validatedData.nameEn,
+        descriptionVi: validatedData.descriptionVi,
+        descriptionEn: validatedData.descriptionEn,
+      });
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create category");
     }
@@ -131,16 +155,42 @@ export async function updateCategoryAction(id: string, formData: FormData) {
       }
     }
 
-    const { data: updateRes, error: updateError } = await categoriesApi.update(
-      id,
-      validatedData,
-    );
+    const { data: updateRes, error: updateError } =
+      await categoriesApi.update(id, {
+        slug: validatedData.slug,
+        parentId: validatedData.parentId,
+        image: validatedData.image,
+        isActive: validatedData.isActive,
+        ...(validatedData.nameVi !== undefined
+          ? {
+              translations: [
+                {
+                  locale: "vi",
+                  name: validatedData.nameVi,
+                  description: validatedData.descriptionVi,
+                },
+                ...(validatedData.nameEn
+                  ? [
+                      {
+                        locale: "en",
+                        name: validatedData.nameEn,
+                        description: validatedData.descriptionEn,
+                      },
+                    ]
+                  : []),
+              ],
+            }
+          : {}),
+        nameVi: validatedData.nameVi,
+        nameEn: validatedData.nameEn,
+        descriptionVi: validatedData.descriptionVi,
+        descriptionEn: validatedData.descriptionEn,
+      });
     if (updateError || !updateRes.data) {
       throw new Error(updateError?.detail ?? "Failed to update category");
     }
     const updatedCategory = updateRes.data;
 
-    // Background Image Upload
     if (imageFile) {
       after(async () => {
         try {
@@ -153,7 +203,6 @@ export async function updateCategoryAction(id: string, formData: FormData) {
         }
       });
     }
-
     revalidatePath("/categories");
     return { success: true, data: updatedCategory };
   } catch (error) {
