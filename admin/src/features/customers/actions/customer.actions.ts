@@ -1,7 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { api, ApiClientError } from "@/lib/api-client";
 import {
   assertFinanceRole,
   getAuthErrorMessage,
@@ -12,45 +10,37 @@ import {
   updateCustomerTierSchema,
   type UpdateCustomerTierInput,
 } from "@/shared/validators";
-export const createDealerTierAction = async (formData: FormData) => {
+
+export const createDealerTierAction = async (_formData: FormData) => {
+  const t = await getTranslations("errors");
   try {
     await assertFinanceRole();
-
-    const payloadStr = formData.get("payload");
-    JSON.parse(payloadStr as string);
-
-    // Backend handles creation of dealer tier
-    const { data: tierRes } = await api.GET("/api/v1/dealer-tiers");
-    const tierData = tierRes?.data ?? [];
-
-    revalidatePath("/customers/tiers");
-    return { success: true as const, data: tierData };
+    return {
+      success: false as const,
+      error: t("createDealerTierFailed"),
+    };
   } catch (error) {
-    const t = await getTranslations("errors");
     if (error instanceof AuthError) {
       return { success: false as const, error: getAuthErrorMessage(error, t) };
     }
-    console.error("[createDealerTierAction]", error);
-    if (error instanceof ApiClientError && error.problem?.detail) {
-      return { success: false as const, error: error.problem.detail };
-    }
     return {
       success: false as const,
-      error: "Không thể tạo hạng đại lý.",
+      error: t("createDealerTierFailed"),
     };
   }
 };
 
-export const updateCustomerTierAction = (
+export const updateCustomerTierAction = async (
   _userId: string,
   payload: UpdateCustomerTierInput,
 ) => {
+  const t = await getTranslations("errors");
   const parsed = updateCustomerTierSchema.safeParse(payload);
   if (!parsed.success) {
-    return Promise.resolve({
+    return {
       success: false as const,
-      error: "Dữ liệu không hợp lệ.",
-    });
+      error: t("validationError"),
+    };
   }
-  return Promise.resolve({ success: true as const });
+  return { success: true as const };
 };

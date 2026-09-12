@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import { ProductForm } from "@/features/products/components/product-form";
-import { api } from "@/lib/api-client";
+import { productsApi } from "@/features/products/api/products.api";
+import { categoriesApi } from "@/features/categories/api/categories.api";
+import { brandsApi } from "@/features/brands/api/brands.api";
 import { notFound } from "next/navigation";
 import { ProductHeader } from "@/features/products/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
@@ -13,11 +15,11 @@ export default async function EditProductPage({
   const { id } = await params;
 
   const [productRes, t, tNav, categoriesRes, brandsRes] = await Promise.all([
-    api.GET("/api/v1/products/{id}", { params: { path: { id } } }),
+    productsApi.getById(id),
     getTranslations("adminProductForm"),
     getTranslations("adminDashboard.nav"),
-    api.GET("/api/v1/categories"),
-    api.GET("/api/v1/brands"),
+    categoriesApi.list(),
+    brandsApi.list(),
   ]);
   const product = productRes.data?.data;
   const categories = categoriesRes.data?.data ?? [];

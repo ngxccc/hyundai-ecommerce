@@ -1,18 +1,21 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { connection } from "next/server";
+import { z } from "zod";
 
-export interface SessionUser {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  phoneNumber?: string | null;
-  creditLimit?: string;
-  currentDebt?: string;
-  companyName?: string | null;
-  taxId?: string | null;
-}
+const sessionUserSchema = z.object({
+  id: z.string(),
+  email: z.string(),
+  name: z.string(),
+  role: z.string(),
+  phoneNumber: z.string().nullish(),
+  creditLimit: z.string().optional(),
+  currentDebt: z.string().optional(),
+  companyName: z.string().nullish(),
+  taxId: z.string().nullish(),
+});
+
+export type SessionUser = z.infer<typeof sessionUserSchema>;
 
 export interface Session {
   user: SessionUser;
@@ -34,11 +37,13 @@ export const getCachedSession = cache(async (): Promise<Session | null> => {
       return null;
     }
 
-    const parsedUser = JSON.parse(
-      decodeURIComponent(userCookie),
-    ) as SessionUser;
+    const rawUser: unknown = JSON.parse(decodeURIComponent(userCookie));
+    const parsed = sessionUserSchema.safeParse(rawUser);
+    if (!parsed.success) {
+      return null;
+    }
     return {
-      user: parsedUser,
+      user: parsed.data,
       accessToken: token,
     };
   } catch (error) {

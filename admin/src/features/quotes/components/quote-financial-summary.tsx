@@ -22,11 +22,7 @@ export const QuoteFinancialSummary = ({
   isSubmitting = false,
   onSubmitQuote,
 }: QuoteFinancialSummaryProps) => {
-  const t = useTranslations("adminQuotes");
-  const translate = t as unknown as (
-    key: string,
-    params?: Record<string, unknown>,
-  ) => string;
+  const t = useTranslations("adminQuotes.composer.summary");
 
   const items = useQuoteDraftStore((state) => state.items);
   const vatRate = useQuoteDraftStore((state) => state.commercialTerms.vatRate);
@@ -57,25 +53,22 @@ export const QuoteFinancialSummary = ({
       <CardHeader className="bg-muted/20 border-b p-4 pb-3">
         <CardTitle>
           <Calculator />
-          {translate("composer.summary.title")}
+          {t("title")}
         </CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-3 p-4 text-xs">
         {/* Total Items & Units */}
         <div className="text-muted-foreground flex items-center justify-between">
-          <span>{translate("composer.summary.totalItems")}</span>
+          <span>{t("totalItems")}</span>
           <span className="text-foreground font-semibold">
-            {items.length} {translate("composer.summary.lineItemsUnit")} (
-            {totalUnits} {translate("composer.summary.unitsCount")})
+            {items.length} {t("lineItemsUnit")} ({totalUnits} {t("unitsCount")})
           </span>
         </div>
 
         {/* Subtotal */}
         <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">
-            {translate("composer.summary.subtotal")}
-          </span>
+          <span className="text-muted-foreground">{t("subtotal")}</span>
           <span className="text-foreground font-mono text-sm font-semibold">
             {formatVND(subtotal)}
           </span>
@@ -84,7 +77,7 @@ export const QuoteFinancialSummary = ({
         {/* VAT Amount */}
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground">
-            {translate("composer.summary.vat")} ({vatRate}%)
+            {t("vat")} ({vatRate}%)
           </span>
           <span className="text-foreground font-mono font-semibold">
             {formatVND(vatAmount)}
@@ -96,14 +89,14 @@ export const QuoteFinancialSummary = ({
         {/* Grand Total */}
         <div className="flex items-baseline justify-between pt-1">
           <span className="text-foreground text-sm font-bold">
-            {translate("composer.summary.grandTotal")}
+            {t("grandTotal")}
           </span>
           <div className="text-right">
             <span className="text-primary block font-mono text-lg font-bold">
               {formatVND(grandTotal)}
             </span>
             <span className="text-muted-foreground text-[10px]">
-              {translate("composer.summary.vatInclusiveNotice")}
+              {t("vatInclusiveNotice")}
             </span>
           </div>
         </div>
@@ -119,12 +112,12 @@ export const QuoteFinancialSummary = ({
           {isSubmitting ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              {translate("composer.summary.submitting")}
+              {t("submitting")}
             </>
           ) : (
             <>
               <Save className="h-4 w-4" />
-              {translate("composer.summary.submitButton")}
+              {t("submitButton")}
             </>
           )}
         </Button>
@@ -135,16 +128,14 @@ export const QuoteFinancialSummary = ({
           size="sm"
           disabled={isSubmitting || items.length === 0}
           onClick={() => {
-            if (
-              window.confirm(translate("composer.summary.confirmResetDraft"))
-            ) {
+            if (window.confirm(t("confirmResetDraft"))) {
               resetDraft();
             }
           }}
           className="text-muted-foreground hover:text-destructive w-full gap-1.5 text-xs"
         >
           <RotateCcw className="h-3.5 w-3.5" />
-          {translate("composer.summary.resetDraftButton")}
+          {t("resetDraftButton")}
         </Button>
       </CardFooter>
     </Card>

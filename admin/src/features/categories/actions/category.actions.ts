@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { api } from "@/lib/api-client";
+import { categoriesApi } from "../api/categories.api";
 import {
   createCategorySchema,
   updateCategorySchema,
@@ -54,12 +54,8 @@ export const createCategoryAction = async (formData: FormData) => {
       }
     }
 
-    const { data: createRes, error: createError } = await api.POST(
-      "/api/v1/categories",
-      {
-        body: validatedData as never,
-      },
-    );
+    const { data: createRes, error: createError } =
+      await categoriesApi.create(validatedData);
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create category");
     }
@@ -71,10 +67,7 @@ export const createCategoryAction = async (formData: FormData) => {
         try {
           const url = await uploadToCloudinary(imageFile, "categories");
           if (url) {
-            await api.PUT("/api/v1/categories/{id}", {
-              params: { path: { id: categoryData.id } },
-              body: { image: url },
-            });
+            await categoriesApi.update(categoryData.id, { image: url });
           }
         } catch (e) {
           console.error("[Background Category Image Upload Failed]", e);
@@ -102,8 +95,9 @@ export const createCategoryAction = async (formData: FormData) => {
 };
 
 export async function updateCategoryAction(id: string, formData: FormData) {
+  const t = await getTranslations("errors");
   if (!isValidIdentifier(id)) {
-    return { success: false, error: "Invalid category identifier" };
+    return { success: false, error: t("categoryNotFound") };
   }
   try {
     await requireAuth();
@@ -137,12 +131,9 @@ export async function updateCategoryAction(id: string, formData: FormData) {
       }
     }
 
-    const { data: updateRes, error: updateError } = await api.PUT(
-      "/api/v1/categories/{id}",
-      {
-        params: { path: { id } },
-        body: validatedData as never,
-      },
+    const { data: updateRes, error: updateError } = await categoriesApi.update(
+      id,
+      validatedData,
     );
     if (updateError || !updateRes.data) {
       throw new Error(updateError?.detail ?? "Failed to update category");
@@ -155,10 +146,7 @@ export async function updateCategoryAction(id: string, formData: FormData) {
         try {
           const url = await uploadToCloudinary(imageFile, "categories");
           if (url) {
-            await api.PUT("/api/v1/categories/{id}", {
-              params: { path: { id } },
-              body: { image: url },
-            });
+            await categoriesApi.update(id, { image: url });
           }
         } catch (e) {
           console.error("[Background Category Update Upload Failed]", e);
@@ -186,14 +174,13 @@ export async function updateCategoryAction(id: string, formData: FormData) {
 }
 
 export async function deleteCategoryAction(id: string) {
+  const t = await getTranslations("errors");
   if (!isValidIdentifier(id)) {
-    return { success: false, error: "Invalid category identifier" };
+    return { success: false, error: t("categoryNotFound") };
   }
   try {
     await requireAuth();
-    const { error: deleteError } = await api.DELETE("/api/v1/categories/{id}", {
-      params: { path: { id } },
-    });
+    const { error: deleteError } = await categoriesApi.delete(id);
     if (deleteError) {
       throw new Error(deleteError.detail);
     }

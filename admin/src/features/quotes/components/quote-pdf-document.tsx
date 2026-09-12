@@ -740,10 +740,15 @@ export const QuotePdfDocument = ({
             const unitPrice = parseFloat(item.unitPrice ?? "0");
             const discountPercent = parseFloat(item.discountPercent ?? "0");
             const finalUnitPrice =
-              discountPercent > 0
-                ? unitPrice * (1 - discountPercent / 100)
-                : unitPrice;
-            const totalPrice = finalUnitPrice * item.quantity;
+              item.finalUnitPrice != null
+                ? parseFloat(item.finalUnitPrice)
+                : discountPercent > 0
+                  ? unitPrice * (1 - discountPercent / 100)
+                  : unitPrice;
+            const totalPrice =
+              item.totalPrice != null
+                ? parseFloat(item.totalPrice)
+                : finalUnitPrice * item.quantity;
             const model = deduceModel(
               item.itemName,
               item.itemModel,

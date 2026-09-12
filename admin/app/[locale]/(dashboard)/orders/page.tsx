@@ -1,9 +1,9 @@
 import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { OrderList } from "@/features/orders/components";
-import { api } from "@/lib/api-client";
+import { ordersApi } from "@/features/orders/api/orders.api";
 import { orderStatusEnum } from "@/shared/constants";
-import type { AdminOrder } from "@/types/api";
+import type { AdminOrder, OrderStatus } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -45,38 +45,18 @@ export default async function AdminOrdersPage({
       ? resolvedSearchParams.status
       : undefined;
 
-  // Validate status parameter
+  // Validate status parameter with type guard
+  const isOrderStatus = (val: string): val is OrderStatus =>
+    (orderStatusEnum.enumValues as readonly string[]).includes(val);
   const status =
-    statusParam &&
-    (orderStatusEnum.enumValues as readonly string[]).includes(statusParam)
-      ? statusParam
-      : undefined;
+    statusParam && isOrderStatus(statusParam) ? statusParam : undefined;
 
-  // Fetch filtered orders
-  const { data: ordersRes } = await api.GET("/api/v1/orders", {
-    params: {
-      query: status ? { status: status as never } : undefined,
-    },
+  // Fetch filtered orders with backend SQL search
+  const { data: ordersRes } = await ordersApi.list({
+    status,
+    search,
   });
   const orders: AdminOrder[] = ordersRes?.data ?? [];
-
-  // In-memory search filtering (ID, user name, email, company)
-  const filteredOrders = search
-    ? orders.filter(
-        (o) =>
-          o.id.toLowerCase().includes(search.toLowerCase()) ||
-          (o.orderNumber?.toLowerCase().includes(search.toLowerCase()) ??
-            false) ||
-          (o.customerName?.toLowerCase().includes(search.toLowerCase()) ??
-            false) ||
-          (o.user?.fullName.toLowerCase().includes(search.toLowerCase()) ??
-            false) ||
-          (o.user?.email.toLowerCase().includes(search.toLowerCase()) ??
-            false) ||
-          (o.companyName?.toLowerCase().includes(search.toLowerCase()) ??
-            false),
-      )
-    : orders;
 
   return (
     <>
@@ -93,7 +73,7 @@ export default async function AdminOrdersPage({
             { label: tNav("orders") },
           ]}
         />
-        <OrderList orders={filteredOrders} />
+        <OrderList orders={orders} />
       </div>
     </>
   );

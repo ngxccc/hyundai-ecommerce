@@ -1,12 +1,15 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
+import { z } from "zod";
 
-export interface AdminUser {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-}
+const adminUserSchema = z.object({
+  id: z.string(),
+  email: z.string(),
+  name: z.string(),
+  role: z.string(),
+});
+
+export type AdminUser = z.infer<typeof adminUserSchema>;
 
 export interface AdminSession {
   user: AdminUser;
@@ -27,9 +30,13 @@ export function parseSessionFromCookieStore(cookieStore: {
       return null;
     }
 
-    const user = JSON.parse(decodeURIComponent(userCookie)) as AdminUser;
+    const rawUser: unknown = JSON.parse(decodeURIComponent(userCookie));
+    const parsed = adminUserSchema.safeParse(rawUser);
+    if (!parsed.success) {
+      return null;
+    }
     return {
-      user,
+      user: parsed.data,
       accessToken: token,
     };
   } catch {

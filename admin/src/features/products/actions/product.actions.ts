@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { api } from "@/lib/api-client";
+import { productsApi } from "../api/products.api";
 import type { AdminCreateProduct, AdminUpdateProduct } from "@/types/api";
 import {
   createProductSchema,
@@ -226,11 +226,8 @@ export const createProductAction = async (formData: FormData) => {
       }
     }
 
-    const { data: createRes, error: createError } = await api.POST(
-      "/api/v1/products",
-      {
-        body: toCreateProductDto(validatedData),
-      },
+    const { data: createRes, error: createError } = await productsApi.create(
+      toCreateProductDto(validatedData),
     );
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create product");
@@ -248,11 +245,8 @@ export const createProductAction = async (formData: FormData) => {
               if (url) uploadedUrls.push(url);
             }
             if (uploadedUrls.length > 0) {
-              await api.PUT("/api/v1/products/{id}", {
-                params: { path: { id: newProduct.id } },
-                body: {
-                  images: [...validatedData.images, ...uploadedUrls],
-                },
+              await productsApi.update(newProduct.id, {
+                images: [...validatedData.images, ...uploadedUrls],
               });
             }
           } catch (e) {
@@ -285,8 +279,9 @@ export const createProductAction = async (formData: FormData) => {
 };
 
 export async function updateProductAction(id: string, formData: FormData) {
+  const t = await getTranslations("errors");
   if (!isValidIdentifier(id)) {
-    return { success: false, error: "Invalid product identifier" };
+    return { success: false, error: t("productNotFound") };
   }
   try {
     await requireAuth();
@@ -309,9 +304,7 @@ export async function updateProductAction(id: string, formData: FormData) {
 
     const validatedData = parsed.data;
 
-    const { data: getRes } = await api.GET("/api/v1/products/{id}", {
-      params: { path: { id } },
-    });
+    const { data: getRes } = await productsApi.getById(id);
     const existingProduct = getRes?.data;
     const existingImages = existingProduct ? existingProduct.images : [];
     const imagesToDelete = existingImages.filter(
@@ -330,12 +323,9 @@ export async function updateProductAction(id: string, formData: FormData) {
       }
     }
 
-    const { data: updateRes, error: updateError } = await api.PUT(
-      "/api/v1/products/{id}",
-      {
-        params: { path: { id } },
-        body: toUpdateProductDto(validatedData),
-      },
+    const { data: updateRes, error: updateError } = await productsApi.update(
+      id,
+      toUpdateProductDto(validatedData),
     );
     if (updateError || !updateRes.data) {
       throw new Error(updateError?.detail ?? "Failed to update product");
@@ -357,11 +347,8 @@ export async function updateProductAction(id: string, formData: FormData) {
             if (url) uploadedUrls.push(url);
           }
           if (uploadedUrls.length > 0) {
-            await api.PUT("/api/v1/products/{id}", {
-              params: { path: { id } },
-              body: {
-                images: [...(validatedData.images ?? []), ...uploadedUrls],
-              } as never,
+            await productsApi.update(id, {
+              images: [...(validatedData.images ?? []), ...uploadedUrls],
             });
           }
         } catch (e) {
@@ -394,15 +381,13 @@ export async function updateProductAction(id: string, formData: FormData) {
 }
 
 export async function deleteProductAction(id: string) {
+  const t = await getTranslations("errors");
   if (!isValidIdentifier(id)) {
-    return { success: false, error: "Invalid product identifier" };
+    return { success: false, error: t("productNotFound") };
   }
   try {
     await requireAuth();
-    const t = await getTranslations("errors");
-    const { error: deleteError } = await api.DELETE("/api/v1/products/{id}", {
-      params: { path: { id } },
-    });
+    const { error: deleteError } = await productsApi.delete(id);
     if (deleteError) {
       return {
         success: false as const,
@@ -445,13 +430,9 @@ export async function searchProductsAction(query: string, limit = 10) {
       return { success: true as const, data: [] };
     }
 
-    const { data: listRes } = await api.GET("/api/v1/products", {
-      params: {
-        query: {
-          search: cleanQuery,
-          limit,
-        },
-      },
+    const { data: listRes } = await productsApi.list({
+      search: cleanQuery,
+      limit,
     });
     const data = listRes?.data ?? [];
 

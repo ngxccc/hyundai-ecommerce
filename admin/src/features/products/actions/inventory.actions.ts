@@ -1,6 +1,6 @@
 "use server";
 
-import { api } from "@/lib/api-client";
+import { warehousesApi } from "@/features/warehouses/api/warehouses.api";
 import { updateWarehouseStockSchema } from "@/shared/validators";
 import { revalidatePath } from "next/cache";
 import { AuthError } from "@/shared/lib/action-auth";
@@ -16,6 +16,7 @@ export async function setProductStockAction(data: {
 }) {
   try {
     await requireAuth();
+    const t = await getTranslations("errors");
 
     // Validate
     const parsed = await updateWarehouseStockSchema.safeParseAsync(data);
@@ -23,21 +24,21 @@ export async function setProductStockAction(data: {
     if (!parsed.success) {
       return {
         success: false as const,
-        error: "Validation failed",
+        error: t("validationError"),
         fieldErrors: z.flattenError(parsed.error).fieldErrors,
       };
     }
 
     const validatedData = parsed.data;
 
-    const { data: result } = await api.PUT("/api/v1/warehouses/{id}/stock", {
-      params: { path: { id: validatedData.warehouseId } },
-      body: {
+    const { data: result } = await warehousesApi.updateStock(
+      validatedData.warehouseId,
+      {
         productId: validatedData.productId,
         stock: validatedData.stock ?? 0,
         minStockWarning: validatedData.minStockWarning ?? 2,
       },
-    });
+    );
 
     revalidatePath(`/products`);
     revalidatePath(`/products/${data.productId}/inventory`);

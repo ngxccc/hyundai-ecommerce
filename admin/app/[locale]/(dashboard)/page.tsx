@@ -6,7 +6,7 @@ import { RecentOrdersTable } from "@/features/dashboard/components/recent-orders
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
-import { api } from "@/lib/api-client";
+import { ordersApi } from "@/features/orders/api/orders.api";
 import type { AdminOrder } from "@/types/api";
 import type { Metadata } from "next";
 
@@ -42,7 +42,7 @@ export const AdminDashboard = async () => {
     }),
     Promise.resolve([]),
     Promise.resolve([]),
-    api.GET("/api/v1/orders", { params: { query: { limit: 5 } } }),
+    ordersApi.list({ limit: 5 }),
   ]);
 
   const ordersList: AdminOrder[] = allOrders.data?.data ?? [];

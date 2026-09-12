@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { HTTP_STATUS } from "@/shared/constants";
-import { api } from "@/lib/api-client";
+import { quotesApi } from "@/features/quotes/api/quotes.api";
 import { requireAuth } from "@/shared/lib/action-auth";
 
 export async function GET(
@@ -11,10 +11,7 @@ export async function GET(
     await requireAuth();
     const { id } = await params;
 
-    const { response } = await api.GET("/api/v1/quotes/{id}/export-excel", {
-      params: { path: { id } },
-      parseAs: "arrayBuffer",
-    });
+    const { response } = await quotesApi.exportExcel(id);
     if (!response.ok) {
       return NextResponse.json(
         {

@@ -11,7 +11,13 @@ export const submitQuoteItemSchema = z.object({
     .number()
     .int(i18nZodMsg("Quote.quantityPositive"))
     .positive(i18nZodMsg("Quote.quantityPositive")),
-  requestedPrice: z.string().trim().nullable().optional(),
+  requestedPrice: z
+    .string()
+    .trim()
+    .regex(/^\d+(\.\d{1,2})?$/, i18nZodMsg("validation.isNumberString"))
+    .nullable()
+    .optional()
+    .or(z.literal("")),
 });
 
 export const submitQuoteSchema = z.object({

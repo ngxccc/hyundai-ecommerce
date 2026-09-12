@@ -1,6 +1,6 @@
 import { CategoryHeader } from "@/features/categories/components";
 import { CategoryForm } from "@/features/categories/components/category-form";
-import { api } from "@/lib/api-client";
+import { categoriesApi } from "@/features/categories/api/categories.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -32,7 +32,7 @@ export default async function AdminNewCategoryPage() {
   const tNav = await getTranslations("adminDashboard.nav");
   const tForm = await getTranslations("adminCategoryForm");
 
-  const { data: res } = await api.GET("/api/v1/categories");
+  const { data: res } = await categoriesApi.list();
   const categories = res?.data ?? [];
 
   return (

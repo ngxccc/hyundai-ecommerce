@@ -13,10 +13,6 @@ import { createAdminQuoteAction } from "../actions/quote.actions";
 
 export const QuoteComposer = () => {
   const t = useTranslations("adminQuotes");
-  const translate = t as unknown as (
-    key: string,
-    params?: Record<string, unknown>,
-  ) => string;
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -32,21 +28,21 @@ export const QuoteComposer = () => {
 
     // Client-side prerequisite check
     if (items.length === 0) {
-      toast.error(translate("composer.errors.emptyItems"));
+      toast.error(t("composer.errors.emptyItems"));
       return;
     }
 
     const fieldErrors: Record<string, string> = {};
     if (!customerInfo.customerName.trim()) {
-      fieldErrors.customerName = translate("composer.errors.nameRequired");
+      fieldErrors.customerName = t("composer.errors.nameRequired");
     }
     if (!customerInfo.customerPhone.trim()) {
-      fieldErrors.customerPhone = translate("composer.errors.phoneRequired");
+      fieldErrors.customerPhone = t("composer.errors.phoneRequired");
     }
 
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
-      toast.error(translate("composer.errors.formIncomplete"));
+      toast.error(t("composer.errors.formIncomplete"));
       return;
     }
 
@@ -84,8 +80,8 @@ export const QuoteComposer = () => {
 
       if (response.success) {
         toast.success(
-          translate("composer.successToast", {
-            quoteNumber: response.data.quoteNumber,
+          t("composer.successToast", {
+            quoteNumber: String(response.data.quoteNumber ?? ""),
           }),
         );
         resetDraft();

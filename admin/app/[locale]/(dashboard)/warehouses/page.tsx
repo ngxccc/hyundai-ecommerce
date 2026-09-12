@@ -3,7 +3,7 @@ import {
   WarehouseGrid,
 } from "@/features/warehouses/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
-import { api } from "@/lib/api-client";
+import { warehousesApi } from "@/features/warehouses/api/warehouses.api";
 import type { AdminWarehouse } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
@@ -35,7 +35,7 @@ export default async function AdminWarehousesPage({
 }) {
   const tNav = await getTranslations("adminDashboard.nav");
   const tHeader = await getTranslations("adminWarehouses.header");
-  const { data: res } = await api.GET("/api/v1/warehouses");
+  const { data: res } = await warehousesApi.list();
   const warehouses: AdminWarehouse[] = res?.data ?? [];
 
   const resolvedSearchParams = await searchParams;
@@ -44,13 +44,12 @@ export default async function AdminWarehousesPage({
       ? resolvedSearchParams.search
       : undefined;
 
-  const filteredWarehouses = search
-    ? warehouses.filter(
-        (w) =>
-          w.nameVi.toLowerCase().includes(search.toLowerCase()) ||
-          (w.nameEn?.toLowerCase().includes(search.toLowerCase()) ?? false) ||
-          w.city.toLowerCase().includes(search.toLowerCase()) ||
-          w.district.toLowerCase().includes(search.toLowerCase()),
+  const searchLower = search?.trim().toLowerCase();
+  const filteredWarehouses = searchLower
+    ? warehouses.filter((w) =>
+        [w.nameVi, w.nameEn, w.city, w.district].some((field) =>
+          field?.toLowerCase().includes(searchLower),
+        ),
       )
     : warehouses;
 

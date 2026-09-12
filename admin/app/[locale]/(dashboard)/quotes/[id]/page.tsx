@@ -1,7 +1,7 @@
 import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { QuoteHeader, QuotePricingCockpit } from "@/features/quotes/components";
-import { api } from "@/lib/api-client";
+import { quotesApi } from "@/features/quotes/api/quotes.api";
 import { requireAuth } from "@/shared/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -33,9 +33,7 @@ export default async function AdminQuoteDetailPage({
   const tNav = await getTranslations("adminDashboard.nav");
   const tHeader = await getTranslations("adminQuotes");
 
-  const { data: quoteRes } = await api.GET("/api/v1/quotes/{id}", {
-    params: { path: { id } },
-  });
+  const { data: quoteRes } = await quotesApi.getById(id);
   const quote = quoteRes?.data;
   if (!quote) {
     notFound();

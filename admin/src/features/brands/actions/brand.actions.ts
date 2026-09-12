@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { api } from "@/lib/api-client";
+import { brandsApi } from "../api/brands.api";
 import {
   createBrandSchema,
   updateBrandSchema,
@@ -53,12 +53,8 @@ export const createBrandAction = async (formData: FormData) => {
       }
     }
 
-    const { data: createRes, error: createError } = await api.POST(
-      "/api/v1/brands",
-      {
-        body: validatedData as never,
-      },
-    );
+    const { data: createRes, error: createError } =
+      await brandsApi.create(validatedData);
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create brand");
     }
@@ -70,10 +66,7 @@ export const createBrandAction = async (formData: FormData) => {
         try {
           const url = await uploadToCloudinary(logoFile, "brands");
           if (url) {
-            await api.PUT("/api/v1/brands/{id}", {
-              params: { path: { id: brandData.id } },
-              body: { logo: url },
-            });
+            await brandsApi.update(brandData.id, { logo: url });
           }
         } catch (e) {
           console.error("[Background Brand Logo Upload Failed]", e);
@@ -101,8 +94,9 @@ export const createBrandAction = async (formData: FormData) => {
 };
 
 export async function updateBrandAction(id: string, formData: FormData) {
+  const t = await getTranslations("errors");
   if (!isValidIdentifier(id)) {
-    return { success: false, error: "Invalid brand identifier" };
+    return { success: false, error: t("brandNotFound") };
   }
   try {
     await requireAuth();
@@ -136,12 +130,9 @@ export async function updateBrandAction(id: string, formData: FormData) {
       }
     }
 
-    const { data: updateRes, error: updateError } = await api.PUT(
-      "/api/v1/brands/{id}",
-      {
-        params: { path: { id } },
-        body: validatedData as never,
-      },
+    const { data: updateRes, error: updateError } = await brandsApi.update(
+      id,
+      validatedData,
     );
     if (updateError || !updateRes.data) {
       throw new Error(updateError?.detail ?? "Failed to update brand");
@@ -154,10 +145,7 @@ export async function updateBrandAction(id: string, formData: FormData) {
         try {
           const url = await uploadToCloudinary(logoFile, "brands");
           if (url) {
-            await api.PUT("/api/v1/brands/{id}", {
-              params: { path: { id } },
-              body: { logo: url },
-            });
+            await brandsApi.update(id, { logo: url });
           }
         } catch (e) {
           console.error("[Background Brand Update Upload Failed]", e);
@@ -185,14 +173,13 @@ export async function updateBrandAction(id: string, formData: FormData) {
 }
 
 export async function deleteBrandAction(id: string) {
+  const t = await getTranslations("errors");
   if (!isValidIdentifier(id)) {
-    return { success: false, error: "Invalid brand identifier" };
+    return { success: false, error: t("brandNotFound") };
   }
   try {
     await requireAuth();
-    const { error: deleteError } = await api.DELETE("/api/v1/brands/{id}", {
-      params: { path: { id } },
-    });
+    const { error: deleteError } = await brandsApi.delete(id);
     if (deleteError) {
       throw new Error(deleteError.detail);
     }

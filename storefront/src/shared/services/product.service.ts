@@ -1,5 +1,5 @@
 import { cacheLife } from "next/cache";
-import { api } from "@/lib/api-client";
+import { catalogApi } from "../api/catalog.api";
 import type {
   ProductQueryParams,
   ProductPhase,
@@ -47,24 +47,25 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/api/v1/products", {
-        params: {
-          query: {
-            limit,
-            page: options?.page ?? 1,
-            search: options?.search,
-            brandId: options?.brandId,
-            categoryId: options?.categoryId,
-            priceMin: options?.priceMin,
-            priceMax: options?.priceMax,
-            phase: options?.phase as ProductPhase,
-            fuelType: options?.fuelType as ProductFuelType,
-            canopyType: options?.canopyType as ProductCanopyType,
-            sort: options?.sort as ProductSort,
-            voltage:
-              options?.voltage != null ? String(options.voltage) : undefined,
-          },
-        },
+      const { data: res } = await catalogApi.products.list({
+        limit,
+        page: options?.page ?? 1,
+        search: options?.search,
+        brandId: options?.brandId ?? options?.brandIds?.[0],
+        categoryId: options?.categoryId ?? options?.categoryIds?.[0],
+        priceMin: options?.priceMin,
+        priceMax: options?.priceMax,
+        minPower: options?.minPower,
+        maxPower: options?.maxPower,
+        phase: options?.phase as ProductPhase,
+        fuelType: options?.fuelType as ProductFuelType,
+        canopyType: options?.canopyType as ProductCanopyType,
+        sort: options?.sort as ProductSort,
+        voltage: options?.voltage != null ? String(options.voltage) : undefined,
+        engineBrand: options?.engineBrand,
+        alternatorBrand: options?.alternatorBrand,
+        status: options?.status,
+        isQuoteOnly: options?.isQuoteOnly,
       });
 
       const items = res?.data ?? [];
@@ -97,12 +98,27 @@ export const productService = {
     "use cache";
     cacheLife("days");
     try {
-      const { data: res } = await api.GET("/api/v1/products", {
-        params: {
-          query: { limit: 100 },
-        },
-      });
-      return (res?.data ?? []).map((p) => p.slug);
+      const allSlugs: string[] = [];
+      let page = 1;
+      let hasMore = true;
+
+      while (hasMore && page <= 10) {
+        const { data: res } = await catalogApi.products.list({
+          page,
+          limit: 100,
+        });
+        const items = res?.data ?? [];
+        allSlugs.push(...items.map((p) => p.slug));
+
+        const totalPages = res?.meta ? res.meta.totalPages : 1;
+        if (page >= totalPages || items.length === 0) {
+          hasMore = false;
+        } else {
+          page++;
+        }
+      }
+
+      return allSlugs;
     } catch (error) {
       console.error("Failed to fetch product slugs:", error);
       return [];
@@ -116,11 +132,7 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/api/v1/products/{id}", {
-        params: {
-          path: { id: slug },
-        },
-      });
+      const { data: res } = await catalogApi.products.getById(slug);
       const product = res?.data;
       if (!product) return null;
       return mapProductToStorefront(product, locale);
@@ -136,7 +148,7 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/api/v1/products/metadata");
+      const { data: res } = await catalogApi.products.getMetadata();
       const metadata = res?.data;
       if (!metadata) return [];
       const isEn = locale === "en";

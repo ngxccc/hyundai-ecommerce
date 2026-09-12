@@ -35,17 +35,48 @@ export async function POST(request: NextRequest) {
     if (!limitResult.success) {
       return jsonError({
         status: HTTP_STATUS.TOO_MANY_REQUESTS,
-        detail: t("rateLimitExceeded" as never),
+        detail: t("rateLimitExceeded"),
         instance: "/api/cloudinary/sign",
       });
     }
-    const body = (await request.json()) as {
-      paramsToSign: Record<string, string>;
+    const body = (await request.json().catch(() => ({}))) as {
+      paramsToSign?: Record<string, unknown>;
     };
     const { paramsToSign } = body;
 
+    if (!paramsToSign || typeof paramsToSign !== "object") {
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail: "Invalid signing parameters",
+        instance: "/api/cloudinary/sign",
+      });
+    }
+
+    const ALLOWED_SIGN_KEYS: Record<string, true | undefined> = {
+      timestamp: true,
+      folder: true,
+      public_id: true,
+      upload_preset: true,
+      transformation: true,
+      format: true,
+    };
+    const sanitizedParams: Record<string, string> = {};
+    for (const [key, value] of Object.entries(paramsToSign)) {
+      if (ALLOWED_SIGN_KEYS[key] && typeof value === "string") {
+        sanitizedParams[key] = value;
+      }
+    }
+
+    if (!sanitizedParams.timestamp) {
+      return jsonError({
+        status: HTTP_STATUS.BAD_REQUEST,
+        detail: "Missing timestamp parameter",
+        instance: "/api/cloudinary/sign",
+      });
+    }
+
     const signature = cloudinary.utils.api_sign_request(
-      paramsToSign,
+      sanitizedParams,
       env.CLOUDINARY_API_SECRET,
     );
 

@@ -2,7 +2,7 @@ import { BrandHeader } from "@/features/brands/components";
 import { DataTableSearchInput } from "@/shared/components/data-table-search-input";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { BrandGrid } from "@/features/brands/components/brand-grid";
-import { api } from "@/lib/api-client";
+import { brandsApi } from "@/features/brands/api/brands.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -33,7 +33,7 @@ export default async function AdminBrandsPage({
 }) {
   const tNav = await getTranslations("adminDashboard.nav");
   const tHeader = await getTranslations("adminBrands.header");
-  const { data: res } = await api.GET("/api/v1/brands");
+  const { data: res } = await brandsApi.list();
   const brands = res?.data ?? [];
 
   const resolvedSearchParams = await searchParams;
@@ -42,14 +42,12 @@ export default async function AdminBrandsPage({
       ? resolvedSearchParams.search
       : undefined;
 
-  const filteredBrands = search
-    ? brands.filter(
-        (b) =>
-          b.name.toLowerCase().includes(search.toLowerCase()) ||
-          (b.descriptionVi?.toLowerCase().includes(search.toLowerCase()) ??
-            false) ||
-          (b.descriptionEn?.toLowerCase().includes(search.toLowerCase()) ??
-            false),
+  const searchLower = search?.trim().toLowerCase();
+  const filteredBrands = searchLower
+    ? brands.filter((b) =>
+        [b.name, b.descriptionVi, b.descriptionEn].some((field) =>
+          field?.toLowerCase().includes(searchLower),
+        ),
       )
     : brands;
 

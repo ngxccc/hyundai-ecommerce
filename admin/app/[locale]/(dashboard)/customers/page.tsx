@@ -3,7 +3,7 @@ import {
   CustomerDirectory,
 } from "@/features/customers/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
-import { api } from "@/lib/api-client";
+import { customersApi } from "@/features/customers/api/customers.api";
 import type { AdminUser } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
@@ -33,7 +33,7 @@ export default async function AdminCustomersPage() {
   const tCustomers = await getTranslations("adminCustomers");
 
   const users: AdminUser[] = [];
-  const { data: tierRes } = await api.GET("/api/v1/dealer-tiers");
+  const { data: tierRes } = await customersApi.listTiers();
   const dealerTiers = tierRes?.data ?? [];
 
   return (

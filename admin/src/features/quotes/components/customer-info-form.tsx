@@ -25,8 +25,7 @@ export interface CustomerInfoFormProps {
 }
 
 export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
-  const t = useTranslations("adminQuotes");
-  const translate = t as unknown as (key: string) => string;
+  const t = useTranslations("adminQuotes.composer.customer");
   const customerInfo = useQuoteDraftStore((state) => state.customerInfo);
   const setCustomerInfo = useQuoteDraftStore((state) => state.setCustomerInfo);
 
@@ -35,10 +34,10 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
       <CardHeader className="bg-muted/20 border-b p-4 pb-3">
         <CardTitle>
           <User />
-          {translate("composer.customer.title")}
+          {t("title")}
         </CardTitle>
         <CardDescription className="text-xs">
-          {translate("composer.customer.description")}
+          {t("description")}
         </CardDescription>
       </CardHeader>
 
@@ -49,8 +48,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
             htmlFor="customerName"
             className="flex items-center gap-1 text-xs font-semibold"
           >
-            {translate("composer.customer.nameLabel")}{" "}
-            <span className="text-destructive">*</span>
+            {t("nameLabel")} <span className="text-destructive">*</span>
           </Label>
           <div className="relative">
             <User className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -60,7 +58,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
               onChange={(e) =>
                 setCustomerInfo({ customerName: e.target.value })
               }
-              placeholder={translate("composer.customer.namePlaceholder")}
+              placeholder={t("namePlaceholder")}
               className={`h-9 pl-8 text-sm ${errors.customerName ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
           </div>
@@ -77,8 +75,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
             htmlFor="customerPhone"
             className="flex items-center gap-1 text-xs font-semibold"
           >
-            {translate("composer.customer.phoneLabel")}{" "}
-            <span className="text-destructive">*</span>
+            {t("phoneLabel")} <span className="text-destructive">*</span>
           </Label>
           <div className="relative">
             <Phone className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -88,7 +85,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
               onChange={(e) =>
                 setCustomerInfo({ customerPhone: e.target.value })
               }
-              placeholder={translate("composer.customer.phonePlaceholder")}
+              placeholder={t("phonePlaceholder")}
               className={`h-9 pl-8 text-sm ${errors.customerPhone ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
           </div>
@@ -102,7 +99,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
         {/* Customer Email */}
         <div className="space-y-1.5">
           <Label htmlFor="customerEmail" className="text-xs font-semibold">
-            {translate("composer.customer.emailLabel")}
+            {t("emailLabel")}
           </Label>
           <div className="relative">
             <Mail className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -113,7 +110,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
               onChange={(e) =>
                 setCustomerInfo({ customerEmail: e.target.value || null })
               }
-              placeholder={translate("composer.customer.emailPlaceholder")}
+              placeholder={t("emailPlaceholder")}
               className={`h-9 pl-8 text-sm ${errors.customerEmail ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
           </div>
@@ -127,7 +124,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
         {/* Company Name */}
         <div className="space-y-1.5">
           <Label htmlFor="companyName" className="text-xs font-semibold">
-            {translate("composer.customer.companyLabel")}
+            {t("companyLabel")}
           </Label>
           <div className="relative">
             <Building2 className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -137,7 +134,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
               onChange={(e) =>
                 setCustomerInfo({ companyName: e.target.value || null })
               }
-              placeholder={translate("composer.customer.companyPlaceholder")}
+              placeholder={t("companyPlaceholder")}
               className="h-9 pl-8 text-sm"
             />
           </div>
@@ -146,7 +143,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
         {/* Tax Identification Number */}
         <div className="space-y-1.5">
           <Label htmlFor="taxId" className="text-xs font-semibold">
-            {translate("composer.customer.taxIdLabel")}
+            {t("taxIdLabel")}
           </Label>
           <div className="relative">
             <FileSpreadsheet className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -156,7 +153,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
               onChange={(e) =>
                 setCustomerInfo({ taxId: e.target.value || null })
               }
-              placeholder={translate("composer.customer.taxIdPlaceholder")}
+              placeholder={t("taxIdPlaceholder")}
               className="h-9 pl-8 font-mono text-sm"
             />
           </div>
@@ -165,7 +162,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
         {/* Shipping / Installation Address */}
         <div className="space-y-1.5">
           <Label htmlFor="shippingAddress" className="text-xs font-semibold">
-            {translate("composer.customer.addressLabel")}
+            {t("addressLabel")}
           </Label>
           <div className="relative">
             <MapPin className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -175,7 +172,7 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
               onChange={(e) =>
                 setCustomerInfo({ shippingAddress: e.target.value || null })
               }
-              placeholder={translate("composer.customer.addressPlaceholder")}
+              placeholder={t("addressPlaceholder")}
               className="h-9 pl-8 text-sm"
             />
           </div>
