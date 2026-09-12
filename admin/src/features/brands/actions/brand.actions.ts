@@ -7,8 +7,25 @@ import {
   updateBrandSchema,
   type CreateBrandInput,
   type UpdateBrandInput,
+  type BrandTranslationInput,
   isValidIdentifier,
 } from "@/shared/validators";
+
+function formatBrandTranslations(translations?: BrandTranslationInput[]) {
+  if (!translations) return undefined;
+  return translations
+    .filter(
+      (t) =>
+        t.locale === "vi" ||
+        (t.description !== null &&
+          t.description !== undefined &&
+          t.description.trim().length > 0),
+    )
+    .map((t) => ({
+      locale: t.locale,
+      description: t.description?.trim() ? t.description.trim() : null,
+    }));
+}
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@/shared/constants";
 import {
@@ -53,13 +70,17 @@ export const createBrandAction = async (formData: FormData) => {
       }
     }
 
+    const formattedTranslations = formatBrandTranslations(
+      validatedData.translations,
+    );
+
     const { data: createRes, error: createError } =
       await brandsApi.create({
         name: validatedData.name,
         slug: validatedData.slug,
         logo: validatedData.logo,
         isActive: validatedData.isActive,
-        translations: validatedData.translations,
+        translations: formattedTranslations,
       });
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create brand");
@@ -136,14 +157,17 @@ export async function updateBrandAction(id: string, formData: FormData) {
       }
     }
 
+    const formattedTranslations = formatBrandTranslations(
+      validatedData.translations,
+    );
+
     const { data: updateRes, error: updateError } = await brandsApi.update(
       id,
       {
         name: validatedData.name,
         slug: validatedData.slug,
         logo: validatedData.logo,
-        isActive: validatedData.isActive,
-        translations: validatedData.translations,
+        translations: formattedTranslations,
       },
     );
     if (updateError || !updateRes.data) {
