@@ -1,10 +1,12 @@
 import {
   boolean,
   index,
+  primaryKey,
   snakeCase,
   text,
   uniqueIndex,
   uuid,
+  varchar,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 import { baseEntity } from "./helpers.schema";
@@ -33,3 +35,25 @@ export const categories = snakeCase.table(
 
 export type Category = typeof categories.$inferSelect;
 export type NewCategory = typeof categories.$inferInsert;
+
+export const categoryTranslations = snakeCase.table(
+  "category_translation",
+  {
+    categoryId: uuid()
+      .notNull()
+      .references(() => categories.id, { onDelete: "cascade" }),
+    locale: varchar({ length: 8 }).notNull(),
+    name: text().notNull(),
+    description: text(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.categoryId, table.locale] }),
+    index("category_translation_category_locale_idx").on(
+      table.categoryId,
+      table.locale,
+    ),
+  ],
+);
+
+export type CategoryTranslation = typeof categoryTranslations.$inferSelect;
+export type NewCategoryTranslation = typeof categoryTranslations.$inferInsert;
