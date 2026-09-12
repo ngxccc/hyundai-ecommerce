@@ -11,7 +11,12 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
 import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
@@ -67,10 +72,13 @@ export class ProductsController {
     description:
       "Returns available filter ranges (price, power) and facet counts for brands, categories, fuel types, and phases.",
   })
+  @ApiQuery({ name: "locale", required: false, type: String })
   @ApiOkResponseGeneric(ProductMetadataResponseDto)
   @ApiTooManyRequestsResponseRfc9457()
-  async getMetadata(): Promise<ApiResponse<ProductMetadataResponseDto>> {
-    const metadata = await this.productsService.getMetadata();
+  async getMetadata(
+    @Query("locale") locale = "vi",
+  ): Promise<ApiResponse<ProductMetadataResponseDto>> {
+    const metadata = await this.productsService.getMetadata(locale);
     return apiSuccess(metadata);
   }
 
@@ -80,13 +88,15 @@ export class ProductsController {
     summary: "Get product by ID or slug",
     description: "Returns full product details by UUID or URL slug.",
   })
+  @ApiQuery({ name: "locale", required: false, type: String })
   @ApiOkResponseGeneric(ProductResponseDto)
   @ApiNotFoundResponseRfc9457()
   @ApiTooManyRequestsResponseRfc9457()
   async getById(
     @Param("id") id: string,
+    @Query("locale") locale = "vi",
   ): Promise<ApiResponse<ProductResponseDto>> {
-    const product = await this.productsService.findById(id);
+    const product = await this.productsService.findById(id, locale);
     return apiSuccess(product);
   }
 

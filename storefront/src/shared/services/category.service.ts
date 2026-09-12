@@ -13,7 +13,7 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await catalogApi.categories.list();
+      const { data: res } = await catalogApi.categories.list({ locale });
       const categories = res?.data;
       if (!Array.isArray(categories)) {
         return [];
@@ -31,7 +31,7 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await catalogApi.categories.getTree();
+      const { data: res } = await catalogApi.categories.getTree({ locale });
       const tree = res?.data;
       if (!Array.isArray(tree)) {
         return [];

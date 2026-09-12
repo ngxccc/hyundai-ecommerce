@@ -48,6 +48,7 @@ export const productService = {
     cacheLife("hours");
     try {
       const { data: res } = await catalogApi.products.list({
+        locale,
         limit,
         page: options?.page ?? 1,
         search: options?.search,
@@ -132,7 +133,9 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await catalogApi.products.getById(slug);
+      const { data: res } = await catalogApi.products.getById(slug, {
+        locale,
+      });
       const product = res?.data;
       if (!product) return null;
       return mapProductToStorefront(product, locale);
@@ -148,13 +151,14 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await catalogApi.products.getMetadata();
+      const { data: res } = await catalogApi.products.getMetadata({
+        locale,
+      });
       const metadata = res?.data;
       if (!metadata) return [];
-      const isEn = locale === "en";
       return metadata.categories.map((c) => ({
         id: c.id,
-        name: isEn && c.nameEn ? c.nameEn : c.nameVi,
+        name: c.name,
         categoryId: c.id,
         brandId: null,
         specs: null,

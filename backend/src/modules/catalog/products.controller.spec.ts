@@ -11,11 +11,14 @@ describe("ProductsController", () => {
 
   const mockProduct: ProductResponseDto = {
     id: "prod-1",
+    name: "Máy phát điện Hyundai 60kVA",
     nameVi: "Máy phát điện Hyundai 60kVA",
     nameEn: "Hyundai 60kVA Generator",
     slug: "may-phat-dien-hyundai-60kva",
     price: "245000000.00",
     isQuoteOnly: false,
+    description: null,
+    shortDescription: null,
     descriptionVi: null,
     descriptionEn: null,
     shortDescriptionVi: null,
@@ -50,7 +53,13 @@ describe("ProductsController", () => {
   const mockMetadata: ProductMetadataResponseDto = {
     brands: [{ id: "brand-1", name: "Hyundai Power", count: 10 }],
     categories: [
-      { id: "cat-1", nameVi: "Máy phát điện", nameEn: "Generators", count: 12 },
+      {
+        id: "cat-1",
+        name: "Máy phát điện",
+        nameVi: "Máy phát điện",
+        nameEn: "Generators",
+        count: 12,
+      },
     ],
     powerRange: { min: 10, max: 2500 },
     priceRange: { min: 10000000, max: 5000000000 },
@@ -131,7 +140,10 @@ describe("ProductsController", () => {
       test("should return wrapped product details", async () => {
         const result = await controller.getById("prod-1");
 
-        expect(mockProductsService.findById).toHaveBeenCalledWith("prod-1");
+        expect(mockProductsService.findById).toHaveBeenCalledWith(
+          "prod-1",
+          "vi",
+        );
         expect(result.data.id).toBe("prod-1");
       });
     });

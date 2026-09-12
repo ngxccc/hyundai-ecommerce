@@ -9,9 +9,15 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
 import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
@@ -46,29 +52,32 @@ export class BrandsController {
     summary: "List all brands",
     description: "Returns a list of all active brands ordered by name.",
   })
+  @ApiQuery({ name: "locale", required: false, type: String })
   @ApiOkResponseGeneric(BrandResponseDto, { isArray: true })
   @ApiTooManyRequestsResponseRfc9457()
-  async getAll(): Promise<ApiResponse<BrandResponseDto[]>> {
-    const brands = await this.brandsService.findAll();
+  async getAll(
+    @Query("locale") locale = "vi",
+  ): Promise<ApiResponse<BrandResponseDto[]>> {
+    const brands = await this.brandsService.findAll(locale);
     return apiSuccess(brands);
   }
-
   @Get(CATALOG_ROUTES.BRANDS.FIND_BY_ID)
   @Throttle({ public: { limit: 60, ttl: 60000 } })
   @ApiOperation({
     summary: "Get brand by ID",
     description: "Returns details of a specific brand by UUID.",
   })
+  @ApiQuery({ name: "locale", required: false, type: String })
   @ApiOkResponseGeneric(BrandResponseDto)
   @ApiNotFoundResponseRfc9457()
   @ApiTooManyRequestsResponseRfc9457()
   async getById(
     @Param("id", ParseUUIDPipe) id: string,
+    @Query("locale") locale = "vi",
   ): Promise<ApiResponse<BrandResponseDto>> {
-    const brand = await this.brandsService.findById(id);
+    const brand = await this.brandsService.findById(id, locale);
     return apiSuccess(brand);
   }
-
   @Post(CATALOG_ROUTES.BRANDS.CREATE)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")

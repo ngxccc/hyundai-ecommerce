@@ -62,7 +62,10 @@ describe("BrandsController", () => {
       test("should return wrapped brand details", async () => {
         const result = await controller.getById("brand-1");
 
-        expect(mockBrandsService.findById).toHaveBeenCalledWith("brand-1");
+        expect(mockBrandsService.findById).toHaveBeenCalledWith(
+          "brand-1",
+          "vi",
+        );
         expect(result.data.id).toBe("brand-1");
       });
     });

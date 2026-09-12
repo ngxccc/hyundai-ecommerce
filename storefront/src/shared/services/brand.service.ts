@@ -8,7 +8,7 @@ export const brandService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await catalogApi.brands.list();
+      const { data: res } = await catalogApi.brands.list({ locale });
       const brands = res?.data;
       if (!Array.isArray(brands)) {
         return [];

@@ -69,52 +69,84 @@ export const baseProductSpecsSchema = z
 
 export const productSpecsSchema = baseProductSpecsSchema.default({});
 
-export const createProductSchema = z
-  .object({
-    nameVi: zSanitizedString({ min: 2, max: 255 }),
-    nameEn: zSanitizedString({ max: 255 }).nullish(),
-    slug: z
-      .string(i18nZodMsg("validation.isString"))
-      .min(2, { message: i18nZodMsg("validation.minLength", { "0": 2 }) })
-      .max(255, { message: i18nZodMsg("validation.maxLength", { "0": 255 }) })
-      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
-        message: i18nZodMsg("validation.matches"),
-      }),
-    price: z
-      .number()
-      .min(0, {
-        message: i18nZodMsg("validation.isNonNegative", { property: "price" }),
-      })
-      .default(0),
-    descriptionVi: jsonContentSchema.nullish(),
-    descriptionEn: jsonContentSchema.nullish(),
-    shortDescriptionVi: zSanitizedString({ max: 1000 }).nullish(),
-    shortDescriptionEn: zSanitizedString({ max: 1000 }).nullish(),
-    images: z.array(zSanitizedString({ max: 500 })).default([]),
-    brandId: z.uuid({ message: i18nZodMsg("validation.isUuid") }).nullish(),
-    categoryId: z.uuid({ message: i18nZodMsg("validation.isUuid") }).nullish(),
-    productType: z.enum(PRODUCT_TYPES).default("generator"),
-    powerKva: z.number().positive().nullish(),
-    powerKw: z.number().positive().nullish(),
-    standbyPowerKva: z.number().positive().nullish(),
-    standbyPowerKw: z.number().positive().nullish(),
-    phase: z.enum(POWER_PHASES).nullish(),
-    voltage: zSanitizedString({ max: 50 }).nullish(),
-    frequency: z.number().int().positive().default(50),
-    fuelType: z.enum(FUEL_TYPES).nullish(),
-    canopyType: z.enum(CANOPY_TYPES).nullish(),
-    startMethod: z.enum(START_METHODS).nullish(),
-    engineBrand: zSanitizedString({ max: 100 }).nullish(),
-    alternatorBrand: zSanitizedString({ max: 100 }).nullish(),
-    upsTopology: z.enum(UPS_TOPOLOGIES).nullish(),
-    upsBatteryType: z.enum(UPS_BATTERY_TYPES).nullish(),
-    specSheet: productSpecSheetSchema.default([]),
-    specs: productSpecsSchema,
-    totalStockCache: z.number().int().min(0).default(0),
-    isQuoteOnly: z.boolean().default(false),
-    isActive: z.boolean().default(true),
-  })
-  .strict();
+export const productTranslationInputSchema = z.object({
+  locale: z.string().min(2).max(8),
+  name: zSanitizedString({ min: 2, max: 255 }),
+  shortDescription: zSanitizedString({ max: 1000 }).nullish(),
+  description: jsonContentSchema.nullish(),
+  seoTitle: zSanitizedString({ max: 255 }).nullish(),
+  seoDescription: zSanitizedString({ max: 500 }).nullish(),
+});
+
+export const productTranslationResponseSchema = z.object({
+  locale: z.string(),
+  name: z.string(),
+  shortDescription: z.string().nullable(),
+  description: jsonContentSchema.nullable().optional(),
+  seoTitle: z.string().nullable().optional(),
+  seoDescription: z.string().nullable().optional(),
+});
+
+export const createProductBaseSchema = z.object({
+  slug: z
+    .string(i18nZodMsg("validation.isString"))
+    .min(2, { message: i18nZodMsg("validation.minLength", { "0": 2 }) })
+    .max(255, { message: i18nZodMsg("validation.maxLength", { "0": 255 }) })
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+      message: i18nZodMsg("validation.matches"),
+    }),
+  price: z
+    .number()
+    .min(0, {
+      message: i18nZodMsg("validation.isNonNegative", { property: "price" }),
+    })
+    .default(0),
+  translations: z.array(productTranslationInputSchema).optional(),
+  nameVi: zSanitizedString({ min: 2, max: 255 }).optional(),
+  nameEn: zSanitizedString({ max: 255 }).nullish(),
+  descriptionVi: jsonContentSchema.nullish(),
+  descriptionEn: jsonContentSchema.nullish(),
+  shortDescriptionVi: zSanitizedString({ max: 1000 }).nullish(),
+  shortDescriptionEn: zSanitizedString({ max: 1000 }).nullish(),
+  images: z.array(zSanitizedString({ max: 500 })).default([]),
+  brandId: z.uuid({ message: i18nZodMsg("validation.isUuid") }).nullish(),
+  categoryId: z.uuid({ message: i18nZodMsg("validation.isUuid") }).nullish(),
+  productType: z.enum(PRODUCT_TYPES).default("generator"),
+  powerKva: z.number().positive().nullish(),
+  powerKw: z.number().positive().nullish(),
+  standbyPowerKva: z.number().positive().nullish(),
+  standbyPowerKw: z.number().positive().nullish(),
+  phase: z.enum(POWER_PHASES).nullish(),
+  voltage: zSanitizedString({ max: 50 }).nullish(),
+  frequency: z.number().int().positive().default(50),
+  fuelType: z.enum(FUEL_TYPES).nullish(),
+  canopyType: z.enum(CANOPY_TYPES).nullish(),
+  startMethod: z.enum(START_METHODS).nullish(),
+  engineBrand: zSanitizedString({ max: 100 }).nullish(),
+  alternatorBrand: zSanitizedString({ max: 100 }).nullish(),
+  upsTopology: z.enum(UPS_TOPOLOGIES).nullish(),
+  upsBatteryType: z.enum(UPS_BATTERY_TYPES).nullish(),
+  specSheet: productSpecSheetSchema.default([]),
+  specs: productSpecsSchema,
+  totalStockCache: z.number().int().min(0).default(0),
+  isQuoteOnly: z.boolean().default(false),
+  isActive: z.boolean().default(true),
+});
+
+export const createProductSchema = createProductBaseSchema.strict().refine(
+  (data) => {
+    const hasViTranslation = data.translations?.some(
+      (t) => t.locale === "vi" && t.name.trim().length > 0,
+    );
+    const hasLegacyVi =
+      typeof data.nameVi === "string" && data.nameVi.trim().length > 0;
+    return (hasViTranslation ?? false) || hasLegacyVi;
+  },
+  {
+    message: "Vietnamese (vi) translation or nameVi is required",
+    path: ["translations"],
+  },
+);
 
 export type CreateProductDtoType = z.infer<typeof createProductSchema>;
 

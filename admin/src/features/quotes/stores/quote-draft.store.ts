@@ -136,7 +136,7 @@ export const useQuoteDraftStore = create<AdminQuoteDraftState>()(
             id: crypto.randomUUID(),
             productId: product.id,
             isCustomItem: false,
-            itemName: product.nameVi,
+            itemName: product.name,
             itemModel: model ?? product.slug,
             itemSpecs: specsSummary || null,
             quantity,

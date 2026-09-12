@@ -4,7 +4,7 @@ import {
   I18nConflictException,
   I18nNotFoundException,
 } from "@/common/exceptions";
-import { and, asc, count, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
   type DrizzleDB,
@@ -13,9 +13,11 @@ import {
   brands,
   categories,
   products,
+  productTranslations,
   type Brand,
   type Category,
   type Product,
+  type ProductTranslation,
 } from "@/database/schemas";
 import {
   buildPaginationMeta,
@@ -41,15 +43,27 @@ import { productFilters } from "./filters";
 function toProductInsertValues(
   dto: CreateProductDto,
 ): typeof products.$inferInsert {
+  const viTranslation = dto.translations?.find((t) => t.locale === "vi");
+  const enTranslation = dto.translations?.find((t) => t.locale === "en");
+
+  const nameVi = viTranslation?.name ?? dto.nameVi ?? "";
+  const nameEn = enTranslation?.name ?? dto.nameEn ?? null;
+  const shortDescriptionVi =
+    viTranslation?.shortDescription ?? dto.shortDescriptionVi ?? null;
+  const shortDescriptionEn =
+    enTranslation?.shortDescription ?? dto.shortDescriptionEn ?? null;
+  const descriptionVi = viTranslation?.description ?? dto.descriptionVi ?? null;
+  const descriptionEn = enTranslation?.description ?? dto.descriptionEn ?? null;
+
   return {
-    nameVi: dto.nameVi,
-    nameEn: dto.nameEn ?? null,
+    nameVi,
+    nameEn,
     slug: dto.slug,
     price: String(dto.price),
-    descriptionVi: dto.descriptionVi ?? null,
-    descriptionEn: dto.descriptionEn ?? null,
-    shortDescriptionVi: dto.shortDescriptionVi ?? null,
-    shortDescriptionEn: dto.shortDescriptionEn ?? null,
+    descriptionVi,
+    descriptionEn,
+    shortDescriptionVi,
+    shortDescriptionEn,
     images: dto.images,
     brandId: dto.brandId ?? null,
     categoryId: dto.categoryId ?? null,
@@ -85,20 +99,46 @@ function toProductUpdateValues(
   dto: UpdateProductDto,
 ): Partial<typeof products.$inferInsert> {
   const updateValues: Partial<typeof products.$inferInsert> = {};
-  if (dto.nameVi !== undefined) updateValues.nameVi = dto.nameVi;
-  if (dto.nameEn !== undefined) updateValues.nameEn = dto.nameEn;
+
+  const viTranslation = dto.translations?.find((t) => t.locale === "vi");
+  const enTranslation = dto.translations?.find((t) => t.locale === "en");
+
+  if (viTranslation) {
+    updateValues.nameVi = viTranslation.name;
+    if (viTranslation.shortDescription !== undefined) {
+      updateValues.shortDescriptionVi = viTranslation.shortDescription;
+    }
+    if (viTranslation.description !== undefined) {
+      updateValues.descriptionVi = viTranslation.description;
+    }
+  } else {
+    if (dto.nameVi !== undefined) updateValues.nameVi = dto.nameVi;
+    if (dto.shortDescriptionVi !== undefined)
+      updateValues.shortDescriptionVi = dto.shortDescriptionVi;
+    if (dto.descriptionVi !== undefined)
+      updateValues.descriptionVi = dto.descriptionVi;
+  }
+
+  if (enTranslation) {
+    updateValues.nameEn = enTranslation.name;
+    if (enTranslation.shortDescription !== undefined) {
+      updateValues.shortDescriptionEn = enTranslation.shortDescription;
+    }
+    if (enTranslation.description !== undefined) {
+      updateValues.descriptionEn = enTranslation.description;
+    }
+  } else {
+    if (dto.nameEn !== undefined) updateValues.nameEn = dto.nameEn;
+    if (dto.shortDescriptionEn !== undefined)
+      updateValues.shortDescriptionEn = dto.shortDescriptionEn;
+    if (dto.descriptionEn !== undefined)
+      updateValues.descriptionEn = dto.descriptionEn;
+  }
+
   if (dto.slug !== undefined) updateValues.slug = dto.slug;
   if (dto.price !== undefined) {
     updateValues.price = String(dto.price);
   }
-  if (dto.descriptionVi !== undefined)
-    updateValues.descriptionVi = dto.descriptionVi;
-  if (dto.descriptionEn !== undefined)
-    updateValues.descriptionEn = dto.descriptionEn;
-  if (dto.shortDescriptionVi !== undefined)
-    updateValues.shortDescriptionVi = dto.shortDescriptionVi;
-  if (dto.shortDescriptionEn !== undefined)
-    updateValues.shortDescriptionEn = dto.shortDescriptionEn;
   if (dto.images !== undefined) updateValues.images = dto.images;
   if (dto.brandId !== undefined) updateValues.brandId = dto.brandId;
   if (dto.categoryId !== undefined) updateValues.categoryId = dto.categoryId;
@@ -141,9 +181,41 @@ function mapProductRow(
   product: Product,
   brand?: Brand | null,
   category?: Category | null,
+  translationsMap?: Map<string, ProductTranslation>,
+  allTranslations?: ProductTranslation[],
+  requestedLocale = "vi",
 ): ProductResponseDto {
+  const t =
+    translationsMap?.get(requestedLocale) ?? translationsMap?.get("vi") ?? null;
+
+  const name = t?.name ?? product.nameVi;
+  const shortDescription =
+    t?.shortDescription ?? product.shortDescriptionVi ?? null;
+  const description = t?.description ?? product.descriptionVi ?? null;
+  const seoTitle = t?.seoTitle ?? null;
+  const seoDescription = t?.seoDescription ?? null;
+
   return {
     ...product,
+    name,
+    shortDescription,
+    description,
+    seoTitle,
+    seoDescription,
+    translations: allTranslations?.map((tr) => ({
+      locale: tr.locale,
+      name: tr.name,
+      shortDescription: tr.shortDescription,
+      description: tr.description,
+      seoTitle: tr.seoTitle,
+      seoDescription: tr.seoDescription,
+    })),
+    nameVi: product.nameVi,
+    nameEn: product.nameEn,
+    shortDescriptionVi: product.shortDescriptionVi,
+    shortDescriptionEn: product.shortDescriptionEn,
+    descriptionVi: product.descriptionVi,
+    descriptionEn: product.descriptionEn,
     isQuoteOnly: product.isQuoteOnly,
     productType: product.productType ?? "generator",
     powerKva: product.powerKva ?? null,
@@ -177,6 +249,7 @@ function mapProductRow(
       : null,
   };
 }
+
 /**
  * Core service managing product catalog operations, hybrid faceted search, and metadata aggregation.
  */
@@ -196,6 +269,7 @@ export class ProductsService {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const offset = (page - 1) * limit;
+    const locale = query.locale ?? "vi";
 
     const whereClause = and(
       productFilters.isAvailable(),
@@ -252,8 +326,46 @@ export class ProductsService {
       .limit(limit)
       .offset(offset);
 
+    if (records.length === 0) {
+      return {
+        items: [],
+        meta: buildPaginationMeta(total, page, limit),
+      };
+    }
+
+    const productIds = records.map((r) => r.product.id);
+    const translationRows = await this.db
+      .select()
+      .from(productTranslations)
+      .where(inArray(productTranslations.productId, productIds));
+
+    const transMap = new Map<string, Map<string, ProductTranslation>>();
+    const allTransMap = new Map<string, ProductTranslation[]>();
+
+    for (const row of translationRows) {
+      let pMap = transMap.get(row.productId);
+      let pList = allTransMap.get(row.productId);
+      if (!pMap) {
+        pMap = new Map();
+        transMap.set(row.productId, pMap);
+      }
+      if (!pList) {
+        pList = [];
+        allTransMap.set(row.productId, pList);
+      }
+      pMap.set(row.locale, row);
+      pList.push(row);
+    }
+
     const items = records.map((r) =>
-      mapProductRow(r.product, r.brand, r.category),
+      mapProductRow(
+        r.product,
+        r.brand,
+        r.category,
+        transMap.get(r.product.id),
+        allTransMap.get(r.product.id),
+        locale,
+      ),
     );
 
     return {
@@ -265,7 +377,7 @@ export class ProductsService {
   /**
    * Retrieves aggregated faceted metadata and available filter ranges.
    */
-  async getMetadata(): Promise<ProductMetadataResponseDto> {
+  async getMetadata(locale = "vi"): Promise<ProductMetadataResponseDto> {
     const baseCondition = productFilters.isAvailable();
 
     const [
@@ -315,7 +427,7 @@ export class ProductsService {
           count: count(products.id),
         })
         .from(products)
-        .where(and(baseCondition, sql`${products.fuelType} is not null`))
+        .where(baseCondition)
         .groupBy(products.fuelType),
 
       this.db
@@ -324,7 +436,7 @@ export class ProductsService {
           count: count(products.id),
         })
         .from(products)
-        .where(and(baseCondition, sql`${products.phase} is not null`))
+        .where(baseCondition)
         .groupBy(products.phase),
 
       this.db
@@ -333,11 +445,19 @@ export class ProductsService {
           count: count(products.id),
         })
         .from(products)
-        .where(and(baseCondition, sql`${products.canopyType} is not null`))
+        .where(baseCondition)
         .groupBy(products.canopyType),
     ]);
 
     return {
+      powerRange: {
+        min: Number(ranges?.minPower) || 0,
+        max: Number(ranges?.maxPower) || 0,
+      },
+      priceRange: {
+        min: Number(ranges?.minPrice) || 0,
+        max: Number(ranges?.maxPrice) || 0,
+      },
       brands: brandCounts.map((b): BrandFacetItem => ({
         id: b.id,
         name: b.name,
@@ -345,18 +465,11 @@ export class ProductsService {
       })),
       categories: categoryCounts.map((c): CategoryFacetItem => ({
         id: c.id,
+        name: locale === "en" && c.nameEn ? c.nameEn : c.nameVi,
         nameVi: c.nameVi,
         nameEn: c.nameEn,
         count: c.count,
       })),
-      powerRange: {
-        min: Number(ranges?.minPower ?? 0),
-        max: Number(ranges?.maxPower ?? 2500),
-      },
-      priceRange: {
-        min: Number(ranges?.minPrice ?? 0),
-        max: Number(ranges?.maxPrice ?? 10000000000),
-      },
       fuelTypes: fuelTypeCounts.map((f): ValueCountFacetItem => ({
         value: f.value ?? "",
         count: f.count,
@@ -373,9 +486,9 @@ export class ProductsService {
   }
 
   /**
-   * Retrieves a single product by UUID or slug.
+   * Retrieves a single product by UUID or slug with localized fallback.
    */
-  async findById(idOrSlug: string): Promise<ProductResponseDto> {
+  async findById(idOrSlug: string, locale = "vi"): Promise<ProductResponseDto> {
     const isUuid =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
         idOrSlug,
@@ -404,10 +517,28 @@ export class ProductsService {
       });
     }
 
-    return mapProductRow(record.product, record.brand, record.category);
+    const translationRows = await this.db
+      .select()
+      .from(productTranslations)
+      .where(eq(productTranslations.productId, record.product.id));
+
+    const transMap = new Map<string, ProductTranslation>();
+    for (const row of translationRows) {
+      transMap.set(row.locale, row);
+    }
+
+    return mapProductRow(
+      record.product,
+      record.brand,
+      record.category,
+      transMap,
+      translationRows,
+      locale,
+    );
   }
+
   /**
-   * Creates a new product.
+   * Creates a new product along with its localized translations.
    */
   async create(dto: CreateProductDto): Promise<ProductResponseDto> {
     if (dto.price < 0) {
@@ -454,20 +585,79 @@ export class ProductsService {
       }
     }
 
-    const [newProduct] = await this.db
-      .insert(products)
-      .values(toProductInsertValues(dto))
-      .returning();
+    return await this.db.transaction(async (tx) => {
+      const [newProduct] = await tx
+        .insert(products)
+        .values(toProductInsertValues(dto))
+        .returning();
 
-    if (!newProduct) {
-      throw new I18nBadRequestException("catalog.PRODUCT_CREATE_FAILED");
-    }
+      if (!newProduct) {
+        throw new I18nBadRequestException("catalog.PRODUCT_CREATE_FAILED");
+      }
 
-    return mapProductRow(newProduct);
+      const rowsToInsert: (typeof productTranslations.$inferInsert)[] = [];
+
+      if (dto.translations && dto.translations.length > 0) {
+        for (const t of dto.translations) {
+          if (t.name && t.name.trim().length > 0) {
+            rowsToInsert.push({
+              productId: newProduct.id,
+              locale: t.locale,
+              name: t.name.trim(),
+              shortDescription: t.shortDescription ?? null,
+              description: t.description ?? null,
+              seoTitle: t.seoTitle ?? null,
+              seoDescription: t.seoDescription ?? null,
+            });
+          }
+        }
+      } else {
+        if (dto.nameVi) {
+          rowsToInsert.push({
+            productId: newProduct.id,
+            locale: "vi",
+            name: dto.nameVi,
+            shortDescription: dto.shortDescriptionVi ?? null,
+            description: dto.descriptionVi ?? null,
+          });
+        }
+        if (dto.nameEn) {
+          rowsToInsert.push({
+            productId: newProduct.id,
+            locale: "en",
+            name: dto.nameEn,
+            shortDescription: dto.shortDescriptionEn ?? null,
+            description: dto.descriptionEn ?? null,
+          });
+        }
+      }
+
+      let createdTranslations: ProductTranslation[] = [];
+      if (rowsToInsert.length > 0) {
+        createdTranslations = await tx
+          .insert(productTranslations)
+          .values(rowsToInsert)
+          .returning();
+      }
+
+      const transMap = new Map<string, ProductTranslation>();
+      for (const t of createdTranslations) {
+        transMap.set(t.locale, t);
+      }
+
+      return mapProductRow(
+        newProduct,
+        null,
+        null,
+        transMap,
+        createdTranslations,
+        "vi",
+      );
+    });
   }
 
   /**
-   * Updates an existing product.
+   * Updates an existing product along with full-sync translation upsert and prune.
    */
   async update(id: string, dto: UpdateProductDto): Promise<ProductResponseDto> {
     if (dto.price !== undefined && dto.price < 0) {
@@ -524,18 +714,84 @@ export class ProductsService {
         });
       }
     }
-    const updatePayload = toProductUpdateValues(dto);
 
-    const [updatedProduct] = await this.db
-      .update(products)
-      .set(updatePayload)
-      .where(eq(products.id, id))
-      .returning();
-    if (!updatedProduct) {
-      throw new I18nNotFoundException("catalog.PRODUCT_NOT_FOUND", { id });
-    }
+    return await this.db.transaction(async (tx) => {
+      const updatePayload = toProductUpdateValues(dto);
 
-    return mapProductRow(updatedProduct);
+      const [updatedProduct] = await tx
+        .update(products)
+        .set(updatePayload)
+        .where(eq(products.id, id))
+        .returning();
+      if (!updatedProduct) {
+        throw new I18nNotFoundException("catalog.PRODUCT_NOT_FOUND", { id });
+      }
+
+      if (dto.translations) {
+        const validTranslations = dto.translations.filter(
+          (t) => t.name && t.name.trim().length > 0,
+        );
+        const activeLocales = validTranslations.map((t) => t.locale);
+
+        for (const t of validTranslations) {
+          await tx
+            .insert(productTranslations)
+            .values({
+              productId: id,
+              locale: t.locale,
+              name: t.name.trim(),
+              shortDescription: t.shortDescription ?? null,
+              description: t.description ?? null,
+              seoTitle: t.seoTitle ?? null,
+              seoDescription: t.seoDescription ?? null,
+            })
+            .onConflictDoUpdate({
+              target: [
+                productTranslations.productId,
+                productTranslations.locale,
+              ],
+              set: {
+                name: t.name.trim(),
+                shortDescription: t.shortDescription ?? null,
+                description: t.description ?? null,
+                seoTitle: t.seoTitle ?? null,
+                seoDescription: t.seoDescription ?? null,
+              },
+            });
+        }
+
+        if (activeLocales.length > 0) {
+          await tx.delete(productTranslations).where(
+            and(
+              eq(productTranslations.productId, id),
+              sql`${productTranslations.locale} NOT IN (${sql.join(
+                activeLocales.map((l) => sql`${l}`),
+                sql`, `,
+              )})`,
+            ),
+          );
+        }
+      }
+
+      const allTrans = await tx
+        .select()
+        .from(productTranslations)
+        .where(eq(productTranslations.productId, id));
+
+      const transMap = new Map<string, ProductTranslation>();
+      for (const t of allTrans) {
+        transMap.set(t.locale, t);
+      }
+
+      return mapProductRow(
+        updatedProduct,
+        null,
+        null,
+        transMap,
+        allTrans,
+        "vi",
+      );
+    });
   }
 
   /**
@@ -554,10 +810,7 @@ export class ProductsService {
 
     await this.db
       .update(products)
-      .set({
-        deletedAt: new Date(),
-        isActive: false,
-      })
+      .set({ deletedAt: new Date() })
       .where(eq(products.id, id));
   }
 }
