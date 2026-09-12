@@ -13,7 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { LocaleTabs } from "@/shared/components/locale-tabs";
 import { formatNumberInput } from "@/shared/lib/utils";
 import type { CreateProductInput } from "@/shared/validators";
 
@@ -38,26 +39,11 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
           </CardTitle>
 
           {/* Language Switcher Tabs */}
-          <Tabs
-            value={langTab}
-            onValueChange={(val) => setLangTab(val as "vi" | "en")}
-            className="w-auto"
-          >
-            <TabsList className="h-8 p-0.5">
-              <TabsTrigger value="vi" className="h-7 px-2.5 text-xs">
-                🇻🇳 {t("tabs.vi")}
-                {nameViError && (
-                  <span className="bg-destructive ml-1.5 size-1.5 rounded-full" />
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="en" className="h-7 px-2.5 text-xs">
-                🇬🇧 {t("tabs.en")}
-                {nameEnError && (
-                  <span className="bg-destructive ml-1.5 size-1.5 rounded-full" />
-                )}
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <LocaleTabs
+            activeLocale={langTab}
+            onLocaleChange={setLangTab}
+            hasErrors={{ vi: nameViError, en: nameEnError }}
+          />
         </div>
       </CardHeader>
 
