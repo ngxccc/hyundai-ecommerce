@@ -1,93 +1,43 @@
-import { ApiProperty } from "@nestjs/swagger";
-import {
-  USER_ROLES,
-  USER_STATUSES,
-  BUSINESS_TYPES,
-  type UserRole,
-  type UserStatus,
-  type BusinessType,
-} from "@/database/schemas";
+import { z } from "zod";
+import { createZodDto } from "@/common/dto";
+import { zEmail } from "@/common/schemas/zod-primitives";
+import { USER_ROLES, USER_STATUSES, BUSINESS_TYPES } from "@/database/schemas";
 
-export class DealerTierInfoDto {
-  @ApiProperty({ example: "123e4567-e89b-12d3-a456-426614174000" })
-  id!: string;
+export const dealerTierInfoSchema = z.object({
+  id: z.uuid(),
+  nameVi: z.string(),
+  nameEn: z.string().nullable(),
+  discountPercentage: z.string(),
+});
 
-  @ApiProperty({ example: "Đại lý Vàng" })
-  nameVi!: string;
+export const dealerCompanySchema = z.object({
+  companyName: z.string().nullable(),
+  taxId: z.string().nullable(),
+  businessType: z.enum(BUSINESS_TYPES).nullable(),
+  province: z.string().nullable(),
+  creditLimit: z.string(),
+  currentDebt: z.string(),
+  availableCredit: z.string(),
+  parentId: z.uuid().nullable(),
+  tier: dealerTierInfoSchema.nullable(),
+});
 
-  @ApiProperty({ example: "Gold Dealer", nullable: true })
-  nameEn!: string | null;
+export const userResponseSchema = z.object({
+  id: z.uuid(),
+  email: zEmail(),
+  fullName: z.string(),
+  phoneNumber: z.string(),
+  avatarUrl: z.string().nullable(),
+  role: z.enum(USER_ROLES),
+  status: z.enum(USER_STATUSES),
+  isVerified: z.boolean(),
+  dealerCompany: dealerCompanySchema.nullable(),
+});
 
-  @ApiProperty({ example: "15.00" })
-  discountPercentage!: string;
-}
+export type DealerTierInfoDtoType = z.infer<typeof dealerTierInfoSchema>;
+export type DealerCompanyDtoType = z.infer<typeof dealerCompanySchema>;
+export type UserResponseDtoType = z.infer<typeof userResponseSchema>;
 
-export class DealerCompanyDto {
-  @ApiProperty({ example: "Công ty Cổ phần Cơ điện Miền Nam", nullable: true })
-  companyName!: string | null;
-
-  @ApiProperty({ example: "0314567890", nullable: true })
-  taxId!: string | null;
-
-  @ApiProperty({ example: "DEALER", enum: BUSINESS_TYPES, nullable: true })
-  businessType!: BusinessType | null;
-
-  @ApiProperty({ example: "Thành phố Hồ Chí Minh", nullable: true })
-  province!: string | null;
-
-  @ApiProperty({ example: "500000000.00" })
-  creditLimit!: string;
-
-  @ApiProperty({ example: "50000000.00" })
-  currentDebt!: string;
-
-  @ApiProperty({ example: "450000000.00" })
-  availableCredit!: string;
-
-  @ApiProperty({
-    example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-    nullable: true,
-  })
-  parentId!: string | null;
-
-  @ApiProperty({ type: DealerTierInfoDto, nullable: true })
-  tier!: DealerTierInfoDto | null;
-}
-
-export class UserResponseDto {
-  @ApiProperty({ example: "123e4567-e89b-12d3-a456-426614174000" })
-  id!: string;
-
-  @ApiProperty({ example: "user@example.com" })
-  email!: string;
-
-  @ApiProperty({ example: "John Doe" })
-  fullName!: string;
-
-  @ApiProperty({ example: "0912345678" })
-  phoneNumber!: string;
-
-  @ApiProperty({ example: "https://cloudinary.com/avatar.jpg", nullable: true })
-  avatarUrl!: string | null;
-
-  @ApiProperty({
-    example: "SALES",
-    enum: USER_ROLES,
-  })
-  role!: UserRole;
-
-  @ApiProperty({
-    example: "ACTIVE",
-    enum: USER_STATUSES,
-  })
-  status!: UserStatus;
-
-  @ApiProperty({
-    example: true,
-    description: "True if user email is verified",
-  })
-  isVerified!: boolean;
-
-  @ApiProperty({ type: DealerCompanyDto, nullable: true })
-  dealerCompany!: DealerCompanyDto | null;
-}
+export class DealerTierInfoDto extends createZodDto(dealerTierInfoSchema) {}
+export class DealerCompanyDto extends createZodDto(dealerCompanySchema) {}
+export class UserResponseDto extends createZodDto(userResponseSchema) {}

@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import { i18nZodMsg } from "@/common/utils/i18n-message.util";
 
 /**
@@ -18,12 +18,6 @@ export type VerifyEmailDtoType = z.infer<typeof verifyEmailSchema>;
 /**
  * Data Transfer Object for verifying registered user email.
  */
-export class VerifyEmailDto implements VerifyEmailDtoType {
+export class VerifyEmailDto extends createZodDto(verifyEmailSchema) {
   public static readonly zodSchema = verifyEmailSchema;
-
-  @ApiProperty({
-    example: "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
-    description: "64-character hexadecimal email verification token",
-  })
-  public token!: string;
 }

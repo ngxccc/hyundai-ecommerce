@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 
 export const assignSalesSchema = z
   .object({
@@ -9,12 +9,6 @@ export const assignSalesSchema = z
 
 export type AssignSalesDtoType = z.infer<typeof assignSalesSchema>;
 
-export class AssignSalesDto implements AssignSalesDtoType {
+export class AssignSalesDto extends createZodDto(assignSalesSchema) {
   public static readonly zodSchema = assignSalesSchema;
-
-  @ApiProperty({
-    example: "019fa8bc-8f4d-7000-b366-e691f45cfb90",
-    description: "UUID of the sales representative to assign",
-  })
-  public salesId!: string;
 }

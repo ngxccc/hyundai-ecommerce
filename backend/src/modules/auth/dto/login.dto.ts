@@ -1,13 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import { zEmail } from "@/common/schemas/zod-primitives";
 import { i18nZodMsg } from "@/common/utils/i18n-message.util";
-import {
-  USER_ROLES,
-  USER_STATUSES,
-  type UserRole,
-  type UserStatus,
-} from "@/database/schemas";
+import { USER_ROLES, USER_STATUSES } from "@/database/schemas";
 
 /**
  * Zod validation schema for user login authentication requests.
@@ -21,55 +16,30 @@ export const loginSchema = z
   })
   .strict();
 
+export const userInfoSchema = z.object({
+  id: z.uuid(),
+  email: zEmail(),
+  fullName: z.string(),
+  role: z.enum(USER_ROLES),
+  status: z.enum(USER_STATUSES),
+});
+
+export const loginResponseSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+  user: userInfoSchema,
+});
+
 export type LoginDtoType = z.infer<typeof loginSchema>;
+export type UserInfoDtoType = z.infer<typeof userInfoSchema>;
+export type LoginResponseDtoType = z.infer<typeof loginResponseSchema>;
 
 /**
  * Data Transfer Object for user login request.
  */
-export class LoginDto implements LoginDtoType {
+export class LoginDto extends createZodDto(loginSchema) {
   public static readonly zodSchema = loginSchema;
-
-  @ApiProperty({
-    example: "user@example.com",
-    description: "Registered user email address",
-  })
-  public email!: string;
-
-  @ApiProperty({ example: "Password123!", description: "Account password" })
-  public password!: string;
 }
 
-export class UserInfoDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
-
-  @ApiProperty({ example: "user@example.com" })
-  public email!: string;
-
-  @ApiProperty({ example: "John Doe" })
-  public fullName!: string;
-
-  @ApiProperty({
-    example: "SALES",
-    enum: USER_ROLES,
-  })
-  public role!: UserRole;
-
-  @ApiProperty({
-    example: "ACTIVE",
-    enum: USER_STATUSES,
-  })
-  public status!: UserStatus;
-}
-export class LoginResponseDto {
-  @ApiProperty({ example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." })
-  public accessToken!: string;
-
-  @ApiProperty({
-    example: "7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069",
-  })
-  public refreshToken!: string;
-
-  @ApiProperty({ type: UserInfoDto })
-  public user!: UserInfoDto;
-}
+export class UserInfoDto extends createZodDto(userInfoSchema) {}
+export class LoginResponseDto extends createZodDto(loginResponseSchema) {}

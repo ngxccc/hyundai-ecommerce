@@ -1,89 +1,38 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { LEAD_STATUSES, type LeadStatus } from "@/database/schemas";
+import { z } from "zod";
+import { createZodDto } from "@/common/dto";
+import { zDate } from "@/common/schemas/zod-primitives";
+import { LEAD_STATUSES } from "@/database/schemas";
 
-export class LeadItemResponseDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
+export const leadItemResponseSchema = z.object({
+  id: z.uuid(),
+  productId: z.uuid(),
+  quantity: z.number(),
+  productNameVi: z.string(),
+  productNameEn: z.string().nullable(),
+  productModel: z.string().nullable(),
+  productSku: z.string().nullable(),
+});
 
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb99" })
-  public productId!: string;
+export const leadResponseSchema = z.object({
+  id: z.uuid(),
+  leadCode: z.string(),
+  fullName: z.string(),
+  phoneNumber: z.string(),
+  email: z.string().nullable(),
+  companyName: z.string().nullable(),
+  city: z.string(),
+  ward: z.string(),
+  streetAddress: z.string().nullable(),
+  notes: z.string().nullable(),
+  status: z.enum(LEAD_STATUSES),
+  assignedSalesId: z.uuid().nullable(),
+  lostReason: z.string().nullable(),
+  createdAt: zDate(),
+  items: z.array(leadItemResponseSchema).optional(),
+});
 
-  @ApiProperty({ example: 1 })
-  public quantity!: number;
+export type LeadItemResponseDtoType = z.infer<typeof leadItemResponseSchema>;
+export type LeadResponseDtoType = z.infer<typeof leadResponseSchema>;
 
-  @ApiProperty({
-    example: "Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha",
-  })
-  public productNameVi!: string;
-
-  @ApiProperty({
-    example: "Hyundai DHY65KSE 60kVA 3-Phase Diesel Generator",
-    nullable: true,
-  })
-  public productNameEn!: string | null;
-
-  @ApiProperty({ example: "DHY65KSE", nullable: true })
-  public productModel!: string | null;
-
-  @ApiProperty({ example: "GEN-DHY65KSE", nullable: true })
-  public productSku!: string | null;
-}
-
-export class LeadResponseDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
-
-  @ApiProperty({ example: "RFQ-20260908-JDHC005DCA75" })
-  public leadCode!: string;
-
-  @ApiProperty({ example: "Nguyễn Văn An" })
-  public fullName!: string;
-
-  @ApiProperty({ example: "0912345678" })
-  public phoneNumber!: string;
-
-  @ApiProperty({ example: "an.nguyen@example.com", nullable: true })
-  public email!: string | null;
-
-  @ApiProperty({
-    example: "Công ty TNHH Cơ điện Bình Dương",
-    nullable: true,
-  })
-  public companyName!: string | null;
-
-  @ApiProperty({ example: "Bình Dương" })
-  public city!: string;
-
-  @ApiProperty({ example: "Phường Dĩ An" })
-  public ward!: string;
-
-  @ApiProperty({
-    example: "Khu công nghiệp Sóng Thần 1, Đường số 3",
-    nullable: true,
-  })
-  public streetAddress!: string | null;
-
-  @ApiProperty({
-    example: "Cần tư vấn máy phát điện diesel 60kVA kèm tủ ATS cho nhà máy may",
-    nullable: true,
-  })
-  public notes!: string | null;
-
-  @ApiProperty({ example: "NEW", enum: LEAD_STATUSES })
-  public status!: LeadStatus;
-
-  @ApiProperty({
-    example: "019fa8bc-8f4d-7000-b366-e691f45cfb11",
-    nullable: true,
-  })
-  public assignedSalesId!: string | null;
-
-  @ApiProperty({ example: null, nullable: true })
-  public lostReason!: string | null;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public createdAt!: Date;
-
-  @ApiProperty({ type: [LeadItemResponseDto] })
-  public items?: LeadItemResponseDto[];
-}
+export class LeadItemResponseDto extends createZodDto(leadItemResponseSchema) {}
+export class LeadResponseDto extends createZodDto(leadResponseSchema) {}
