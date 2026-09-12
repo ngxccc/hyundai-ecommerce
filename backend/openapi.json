@@ -8302,18 +8302,6 @@
               "required": ["locale", "name", "description"]
             }
           },
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
-          "descriptionVi": {
-            "type": ["string", "null"]
-          },
-          "descriptionEn": {
-            "type": ["string", "null"]
-          },
           "createdAt": {
             "type": "string",
             "format": "date-time"
@@ -8370,6 +8358,7 @@
             "type": "boolean"
           },
           "translations": {
+            "minItems": 1,
             "type": "array",
             "items": {
               "type": "object",
@@ -8388,21 +8377,9 @@
               },
               "required": ["locale", "name"]
             }
-          },
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
-          "descriptionVi": {
-            "type": ["string", "null"]
-          },
-          "descriptionEn": {
-            "type": ["string", "null"]
           }
         },
-        "required": ["slug"],
+        "required": ["slug", "translations"],
         "additionalProperties": false
       },
       "UpdateCategoryDto": {
@@ -8433,6 +8410,7 @@
             "type": "boolean"
           },
           "translations": {
+            "minItems": 1,
             "type": "array",
             "items": {
               "type": "object",
@@ -8451,18 +8429,6 @@
               },
               "required": ["locale", "name"]
             }
-          },
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
-          "descriptionVi": {
-            "type": ["string", "null"]
-          },
-          "descriptionEn": {
-            "type": ["string", "null"]
           }
         },
         "additionalProperties": false
@@ -8501,12 +8467,6 @@
               },
               "required": ["locale", "description"]
             }
-          },
-          "descriptionVi": {
-            "type": ["string", "null"]
-          },
-          "descriptionEn": {
-            "type": ["string", "null"]
           },
           "isActive": {
             "type": "boolean"
@@ -8563,12 +8523,6 @@
               "required": ["locale"]
             }
           },
-          "descriptionVi": {
-            "type": ["string", "null"]
-          },
-          "descriptionEn": {
-            "type": ["string", "null"]
-          },
           "isActive": {
             "default": true,
             "type": "boolean"
@@ -8608,12 +8562,6 @@
               },
               "required": ["locale"]
             }
-          },
-          "descriptionVi": {
-            "type": ["string", "null"]
-          },
-          "descriptionEn": {
-            "type": ["string", "null"]
           },
           "isActive": {
             "type": "boolean"
@@ -8719,18 +8667,6 @@
               "required": ["locale", "name", "description"]
             }
           },
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
-          "descriptionVi": {
-            "type": ["string", "null"]
-          },
-          "descriptionEn": {
-            "type": ["string", "null"]
-          },
           "createdAt": {
             "type": "string",
             "format": "date-time"
@@ -8830,38 +8766,6 @@
               },
               "required": ["locale", "name", "shortDescription"]
             }
-          },
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
-          "descriptionVi": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/ProductResponseDto__schema0"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "descriptionEn": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/ProductResponseDto__schema0"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "shortDescriptionVi": {
-            "type": ["string", "null"]
-          },
-          "shortDescriptionEn": {
-            "type": ["string", "null"]
           },
           "images": {
             "type": "array",
@@ -9137,12 +9041,6 @@
                       "required": ["locale", "description"]
                     }
                   },
-                  "descriptionVi": {
-                    "type": ["string", "null"]
-                  },
-                  "descriptionEn": {
-                    "type": ["string", "null"]
-                  },
                   "isActive": {
                     "type": "boolean"
                   },
@@ -9250,12 +9148,6 @@
                 },
                 "name": {
                   "type": "string"
-                },
-                "nameVi": {
-                  "type": "string"
-                },
-                "nameEn": {
-                  "type": ["string", "null"]
                 },
                 "count": {
                   "type": "number"
@@ -9404,6 +9296,7 @@
             "minimum": 0
           },
           "translations": {
+            "minItems": 1,
             "type": "array",
             "items": {
               "type": "object",
@@ -9438,38 +9331,6 @@
               },
               "required": ["locale", "name"]
             }
-          },
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
-          "descriptionVi": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateProductDto__schema0"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "descriptionEn": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateProductDto__schema0"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "shortDescriptionVi": {
-            "type": ["string", "null"]
-          },
-          "shortDescriptionEn": {
-            "type": ["string", "null"]
           },
           "images": {
             "type": "array",
@@ -9743,7 +9604,7 @@
             "type": "boolean"
           }
         },
-        "required": ["slug"],
+        "required": ["slug", "translations"],
         "additionalProperties": false
       },
       "UpdateProductDto__schema0": {
@@ -9805,6 +9666,7 @@
             "minimum": 0
           },
           "translations": {
+            "minItems": 1,
             "type": "array",
             "items": {
               "type": "object",
@@ -9839,38 +9701,6 @@
               },
               "required": ["locale", "name"]
             }
-          },
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
-          "descriptionVi": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/UpdateProductDto__schema0"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "descriptionEn": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/UpdateProductDto__schema0"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "shortDescriptionVi": {
-            "type": ["string", "null"]
-          },
-          "shortDescriptionEn": {
-            "type": ["string", "null"]
           },
           "images": {
             "type": "array",
