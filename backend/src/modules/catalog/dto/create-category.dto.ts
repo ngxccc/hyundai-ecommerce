@@ -20,27 +20,21 @@ export const createCategoryBaseSchema = z.object({
   parentId: z.uuid({ message: i18nZodMsg("validation.isUuid") }).nullish(),
   image: zSanitizedString({ max: 500 }).nullish(),
   isActive: z.boolean().default(true),
-  translations: z.array(categoryTranslationInputSchema).optional(),
-  nameVi: zSanitizedString({ min: 2, max: 255 }).optional(),
-  nameEn: zSanitizedString({ max: 255 }).nullish(),
-  descriptionVi: zSanitizedString({ max: 2000 }).nullish(),
-  descriptionEn: zSanitizedString({ max: 2000 }).nullish(),
+  translations: z.array(categoryTranslationInputSchema).min(1),
 });
 
-export const createCategorySchema = createCategoryBaseSchema.strict().refine(
-  (data) => {
-    const hasViTranslation = data.translations?.some(
-      (t) => t.locale === "vi" && t.name.trim().length > 0,
-    );
-    const hasLegacyVi =
-      typeof data.nameVi === "string" && data.nameVi.trim().length > 0;
-    return (hasViTranslation ?? false) || hasLegacyVi;
-  },
-  {
-    message: "Vietnamese (vi) translation or nameVi is required",
-    path: ["translations"],
-  },
-);
+export const createCategorySchema = createCategoryBaseSchema
+  .strict()
+  .refine(
+    (data) =>
+      data.translations.some(
+        (t) => t.locale === "vi" && t.name.trim().length > 0,
+      ),
+    {
+      message: "Vietnamese (vi) translation is required",
+      path: ["translations"],
+    },
+  );
 
 export type CreateCategoryDtoType = z.infer<typeof createCategorySchema>;
 

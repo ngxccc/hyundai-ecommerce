@@ -147,21 +147,6 @@ export class BrandsService {
             });
           }
         }
-      } else {
-        if (dto.descriptionVi !== undefined) {
-          rowsToInsert.push({
-            brandId: newBrand.id,
-            locale: "vi",
-            description: dto.descriptionVi ?? null,
-          });
-        }
-        if (dto.descriptionEn !== undefined) {
-          rowsToInsert.push({
-            brandId: newBrand.id,
-            locale: "en",
-            description: dto.descriptionEn ?? null,
-          });
-        }
       }
 
       let createdTranslations: BrandTranslation[] = [];
@@ -224,25 +209,12 @@ export class BrandsService {
     }
 
     return await this.db.transaction(async (tx) => {
-      const viTranslation = dto.translations?.find((t) => t.locale === "vi");
-      const enTranslation = dto.translations?.find((t) => t.locale === "en");
-
       const [updated] = await tx
         .update(brands)
         .set({
           ...(dto.name !== undefined ? { name: dto.name } : {}),
           ...(dto.slug !== undefined ? { slug: dto.slug } : {}),
           ...(dto.logo !== undefined ? { logo: dto.logo } : {}),
-          ...(viTranslation
-            ? { descriptionVi: viTranslation.description ?? null }
-            : dto.descriptionVi !== undefined
-              ? { descriptionVi: dto.descriptionVi }
-              : {}),
-          ...(enTranslation
-            ? { descriptionEn: enTranslation.description ?? null }
-            : dto.descriptionEn !== undefined
-              ? { descriptionEn: dto.descriptionEn }
-              : {}),
           ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
         })
         .where(eq(brands.id, id))
@@ -252,9 +224,8 @@ export class BrandsService {
         throw new I18nNotFoundException("catalog.BRAND_NOT_FOUND", { id });
       }
 
-      if (dto.translations) {
+      if (dto.translations && dto.translations.length > 0) {
         const activeLocales = dto.translations.map((t) => t.locale);
-
         for (const t of dto.translations) {
           await tx
             .insert(brandTranslations)

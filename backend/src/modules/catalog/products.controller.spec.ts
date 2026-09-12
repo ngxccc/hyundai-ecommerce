@@ -50,8 +50,6 @@ describe("ProductsController", () => {
       {
         id: "cat-1",
         name: "Máy phát điện",
-        nameVi: "Máy phát điện",
-        nameEn: "Generators",
         count: 12,
       },
     ],

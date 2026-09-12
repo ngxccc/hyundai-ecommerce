@@ -275,10 +275,16 @@ export class ProductsService {
     }
 
     const productIds = records.map((r) => r.product.id);
+    const neededLocales = locale === "vi" ? ["vi"] : [locale, "vi"];
     const translationRows = await this.db
       .select()
       .from(productTranslations)
-      .where(inArray(productTranslations.productId, productIds));
+      .where(
+        and(
+          inArray(productTranslations.productId, productIds),
+          inArray(productTranslations.locale, neededLocales),
+        ),
+      );
 
     const transMap = new Map<string, Map<string, ProductTranslation>>();
     const allTransMap = new Map<string, ProductTranslation[]>();
@@ -542,19 +548,17 @@ export class ProductsService {
 
       const rowsToInsert: (typeof productTranslations.$inferInsert)[] = [];
 
-      if (dto.translations && dto.translations.length > 0) {
-        for (const t of dto.translations) {
-          if (t.name && t.name.trim().length > 0) {
-            rowsToInsert.push({
-              productId: newProduct.id,
-              locale: t.locale,
-              name: t.name.trim(),
-              shortDescription: t.shortDescription ?? null,
-              description: t.description ?? null,
-              seoTitle: t.seoTitle ?? null,
-              seoDescription: t.seoDescription ?? null,
-            });
-          }
+      for (const t of dto.translations) {
+        if (t.name && t.name.trim().length > 0) {
+          rowsToInsert.push({
+            productId: newProduct.id,
+            locale: t.locale,
+            name: t.name.trim(),
+            shortDescription: t.shortDescription ?? null,
+            description: t.description ?? null,
+            seoTitle: t.seoTitle ?? null,
+            seoDescription: t.seoDescription ?? null,
+          });
         }
       }
       let createdTranslations: ProductTranslation[] = [];
