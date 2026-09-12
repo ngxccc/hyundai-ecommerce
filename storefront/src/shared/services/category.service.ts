@@ -18,7 +18,7 @@ export const categoryService = {
       if (!Array.isArray(categories)) {
         return [];
       }
-      return categories.map((c) => mapCategoryToStorefront(c, locale));
+      return categories.map((c) => mapCategoryToStorefront(c));
     } catch (error) {
       console.error("Failed to fetch categories from backend:", error);
       return [];
@@ -36,7 +36,7 @@ export const categoryService = {
       if (!Array.isArray(tree)) {
         return [];
       }
-      return tree.map((node) => mapCategoryTreeToStorefront(node, locale));
+      return tree.map((node) => mapCategoryTreeToStorefront(node));
     } catch (error) {
       console.error("Failed to fetch category tree from backend:", error);
       return [];

@@ -17,7 +17,7 @@ import type {
   StorefrontBrand,
   StorefrontFilterMetadata,
 } from "@/shared/services";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useDebounce } from "@/shared/hooks/use-debounce";
 import { computeFacets } from "../utils/facet-engine";
@@ -82,10 +82,11 @@ export function ProductFilters({
     });
     return params;
   }, [searchParamsProp]);
-  // Fetch metadata once on mount
+  // Fetch metadata once on mount or when locale changes
+  const locale = useLocale();
   const [metadata, setMetadata] = useState<StorefrontFilterMetadata[]>([]);
   useEffect(() => {
-    fetch("/api/products/metadata")
+    fetch(`/api/products/metadata?locale=${locale}`)
       .then(
         (res) =>
           res.json() as Promise<{
@@ -101,7 +102,7 @@ export function ProductFilters({
       .catch((err) => {
         console.error("Failed to fetch filters metadata:", err);
       });
-  }, []);
+  }, [locale]);
 
   // Use pending state for display when in sheet mode, otherwise use real URL
   const effectiveSearchParams =
