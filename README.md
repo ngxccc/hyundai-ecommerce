@@ -64,6 +64,76 @@ The repository adopts a **Decoupled Standalone Multi-Application Architecture (P
 └── .github/workflows/  # Thin Monorepo CI/CD orchestrators with path filtering
 ```
 
+### System Data Flow Architecture
+
+```mermaid
+flowchart TD
+    %% 1. CLIENT TIER
+    subgraph ClientTier ["1. Client Tier (Browser)"]
+        StorefrontUI["Storefront Web App<br/>Customer Catalog, RFQ & Cart"]
+        AdminUI["Admin Backoffice Portal<br/>Quote Negotiation & Stock Control"]
+    end
+
+    %% 2. FRONTEND APPLICATION LAYER
+    subgraph FrontendTier ["2. Frontend Application Layer (Next.js 16 App Router)"]
+        RSC["React Server Components (RSC)<br/>Streaming SSR & Fast First Paint"]
+        ServerActions["Server Actions<br/>Mutations & Server-Only Boundaries"]
+        OpenAPIFetch["openapi-fetch Client<br/>Compile-Time Type-Safe Transport"]
+    end
+
+    %% 3. BACKEND GATEWAY & PIPELINE
+    subgraph GatewayTier ["3. Backend Gateway & Pipeline (NestJS 12)"]
+        direction TB
+        MW["Middlewares (CORS, Logger, Compression)"]
+        Guards["Guards (JWT Session & RBAC)"]
+        Pipes["Validation Pipes (Zod DTO Parsing)"]
+        Controllers["REST Controllers (Standard Envelopes)"]
+        MW --> Guards --> Pipes --> Controllers
+    end
+
+    %% 4. DOMAIN SERVICES LAYER
+    subgraph DomainTier ["4. Domain Services Layer"]
+        CatalogSvc["Catalog & i18n Service"]
+        QuoteSvc["B2B RFQ Negotiation Engine"]
+        OrderSvc["Order State Machine"]
+        WarehouseSvc["Warehouse Stock Manager"]
+        OutboxSvc["Transactional Outbox Relay"]
+    end
+
+    %% 5. PERSISTENCE & CACHE INFRASTRUCTURE
+    subgraph DataTier ["5. Persistence & Cache Infrastructure"]
+        Drizzle["Drizzle ORM (Type-Safe SQL Builder)"]
+        Postgres[("PostgreSQL 18 (ACID, Row Locks)")]
+        Redis[("Redis 8 (Redlock, Cache, TTL)")]
+    end
+
+    %% CONNECTIONS
+    StorefrontUI --> RSC
+    StorefrontUI --> ServerActions
+    AdminUI --> RSC
+    AdminUI --> ServerActions
+
+    RSC --> OpenAPIFetch
+    ServerActions --> OpenAPIFetch
+
+    OpenAPIFetch -- "HTTP/REST (OpenAPI 3.1 Spec)" --> MW
+
+    Controllers --> CatalogSvc
+    Controllers --> QuoteSvc
+    Controllers --> OrderSvc
+    Controllers --> WarehouseSvc
+
+    CatalogSvc --> Drizzle
+    QuoteSvc --> Drizzle
+    OrderSvc --> Drizzle
+    WarehouseSvc --> Drizzle
+    OutboxSvc --> Drizzle
+
+    Drizzle --> Postgres
+    WarehouseSvc -. "Distributed Lock" .-> Redis
+    CatalogSvc -. "Cache-Aside" .-> Redis
+```
+
 ### Architectural Pillars
 
 1. **Decoupled Standalone Applications**:
@@ -79,6 +149,30 @@ The repository adopts a **Decoupled Standalone Multi-Application Architecture (P
 4. **B2B Industrial Quotation Engine**:
    - High-value industrial machinery is sold via quote negotiation (`REQUESTED` → `REVIEWING` → `APPROVED` → `REJECTED` → `EXPIRED`).
    - DIN/ISO-compliant B2B commercial print documents and Excel export (`exceljs`).
+
+---
+
+## Key Engineering Trade-offs & Decisions
+
+The platform architecture is designed with **Systems Thinking**, prioritizing data correctness, horizontal scalability, and low latency through 3 foundational trade-offs:
+
+### 1. Zod Single Source of Truth (SSOT) vs Contract Drift
+
+- **Problem**: In decoupled architectures, manually maintaining backend DTOs and frontend TypeScript interfaces inevitably creates contract drift, triggering unexpected 400/500 runtime errors during refactoring.
+- **Decision**: Adopt Zod as the single source of truth (`createZodDto`). A single Zod schema defines the backend NestJS validation pipe, controller Swagger metadata, and generates the OpenAPI 3.1 contract (`backend/openapi.json`). Frontend applications consume synchronized typed definitions via `openapi-typescript` and `openapi-fetch`.
+- **Trade-off**: Requires strict schema definition discipline and rigorous handling of nullable/optional fields up front, in exchange for **0% contract drift** and guaranteed compile-time detection of breaking API changes (`bun run check-types`).
+
+### 2. Normalized Localization Table (1-N) vs Denormalized JSONB Storage
+
+- **Problem**: Heavy industrial machinery requires multi-language support (`vi`, `en`) for localized names, SEO slugs, and large TipTap rich-text technical specifications. Hardcoding columns (`nameVi`, `nameEn`) does not scale with new locales, while storing the entire product schema in `jsonb` breaks relational integrity and hampers B-Tree indexing.
+- **Decision**: Decouple translations into a dedicated `product_translations` table (1-N with `products`). Product names and slugs are normalized columns protected by composite unique indexes `(product_id, locale)` and `(slug, locale)`. Rich-text description AST is stored as `jsonb` within its corresponding translation record.
+- **Trade-off**: Incurs `LEFT JOIN` overhead on catalog queries in exchange for third normal form (3NF) compliance, relational foreign key constraints, and seamless addition of future locales without schema migrations (`ALTER TABLE`).
+
+### 3. Bidirectional Cursor Pagination vs Offset Pagination
+
+- **Problem**: High-volume B2B orders, quotation revisions, and warehouse batch tracking lead to large tables. Traditional offset queries (`OFFSET 100000 LIMIT 20`) force the database engine to perform sequential scans over prior rows, resulting in high I/O latency and page drift (duplicate/skipped records) during active inserts.
+- **Decision**: Implement bidirectional keyset/cursor-based pagination using composite ordering on `(created_at, id)` with UUIDv7 (`WHERE (created_at, id) < (:cursor_time, :cursor_id)`). Cursors are opaque base64 tokens encoding timestamp, record ID, and pagination direction (`next` / `prev`).
+- **Trade-off**: Sacrifices random page jumping (e.g. jumping directly to page 47) in exchange for deterministic **$O(1)$ query time** (<10ms latency at arbitrary dataset depths) and complete immunity to page drift.
 
 ---
 
