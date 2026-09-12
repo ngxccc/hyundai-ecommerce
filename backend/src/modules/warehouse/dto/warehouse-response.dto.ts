@@ -1,32 +1,21 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { z } from "zod";
+import { createZodDto } from "@/common/dto";
+import { zDate } from "@/common/schemas/zod-primitives";
 
-export class WarehouseResponseDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
+export const warehouseResponseSchema = z.object({
+  id: z.uuid(),
+  nameVi: z.string(),
+  nameEn: z.string().nullable(),
+  streetAddress: z.string(),
+  district: z.string(),
+  city: z.string(),
+  isActive: z.boolean(),
+  createdAt: zDate(),
+  updatedAt: zDate(),
+});
 
-  @ApiProperty({ example: "Kho Tổng Hà Nội" })
-  public nameVi!: string;
+export type WarehouseResponseDtoType = z.infer<typeof warehouseResponseSchema>;
 
-  @ApiPropertyOptional({ example: "Hanoi Central Warehouse", nullable: true })
-  public nameEn!: string | null;
-
-  @ApiProperty({
-    example: "Lô CN-01, Khu Công Nghiệp Đài Tư, 386 Nguyễn Văn Linh",
-  })
-  public streetAddress!: string;
-
-  @ApiProperty({ example: "Long Biên" })
-  public district!: string;
-
-  @ApiProperty({ example: "Hà Nội" })
-  public city!: string;
-
-  @ApiProperty({ example: true })
-  public isActive!: boolean;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public createdAt!: Date;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public updatedAt!: Date;
-}
+export class WarehouseResponseDto extends createZodDto(
+  warehouseResponseSchema,
+) {}

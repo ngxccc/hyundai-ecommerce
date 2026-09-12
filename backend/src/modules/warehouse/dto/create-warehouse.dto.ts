@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import { zSanitizedString } from "@/common/schemas/zod-primitives";
 
 export const createWarehouseSchema = z
@@ -15,43 +15,6 @@ export const createWarehouseSchema = z
 
 export type CreateWarehouseDtoType = z.infer<typeof createWarehouseSchema>;
 
-export class CreateWarehouseDto implements CreateWarehouseDtoType {
+export class CreateWarehouseDto extends createZodDto(createWarehouseSchema) {
   public static readonly zodSchema = createWarehouseSchema;
-
-  @ApiProperty({
-    example: "Kho Tổng Hà Nội",
-    description: "Warehouse name in Vietnamese",
-  })
-  public nameVi!: string;
-
-  @ApiPropertyOptional({
-    example: "Hanoi Central Warehouse",
-    description: "Warehouse name in English",
-  })
-  public nameEn?: string | null;
-
-  @ApiProperty({
-    example: "Lô CN-01, Khu Công Nghiệp Đài Tư, 386 Nguyễn Văn Linh",
-    description: "Street address",
-  })
-  public streetAddress!: string;
-
-  @ApiProperty({
-    example: "Long Biên",
-    description: "District / County",
-  })
-  public district!: string;
-
-  @ApiProperty({
-    example: "Hà Nội",
-    description: "City / Province",
-  })
-  public city!: string;
-
-  @ApiPropertyOptional({
-    example: true,
-    default: true,
-    description: "Active status",
-  })
-  public isActive!: boolean;
 }

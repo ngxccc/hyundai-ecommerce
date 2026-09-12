@@ -1,52 +1,43 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { z } from "zod";
+import { createZodDto } from "@/common/dto";
+import { zDate } from "@/common/schemas/zod-primitives";
 
-export class StockProductItemDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
+export const stockProductItemSchema = z.object({
+  id: z.uuid(),
+  nameVi: z.string(),
+  slug: z.string(),
+  totalStockCache: z.number(),
+});
 
-  @ApiProperty({ example: "Máy phát điện Diesel Hyundai DHY65KSE" })
-  public nameVi!: string;
+export const stockWarehouseItemSchema = z.object({
+  id: z.uuid(),
+  nameVi: z.string(),
+  city: z.string(),
+});
 
-  @ApiProperty({ example: "may-phat-dien-diesel-hyundai-dhy65kse" })
-  public slug!: string;
+export const warehouseStockResponseSchema = z.object({
+  warehouseId: z.uuid(),
+  productId: z.uuid(),
+  stock: z.number(),
+  minStockWarning: z.number(),
+  createdAt: zDate(),
+  updatedAt: zDate(),
+  product: stockProductItemSchema.nullable().optional(),
+  warehouse: stockWarehouseItemSchema.nullable().optional(),
+});
 
-  @ApiProperty({ example: 15 })
-  public totalStockCache!: number;
-}
+export type StockProductItemDtoType = z.infer<typeof stockProductItemSchema>;
+export type StockWarehouseItemDtoType = z.infer<
+  typeof stockWarehouseItemSchema
+>;
+export type WarehouseStockResponseDtoType = z.infer<
+  typeof warehouseStockResponseSchema
+>;
 
-export class StockWarehouseItemDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
-
-  @ApiProperty({ example: "Kho Tổng Hà Nội" })
-  public nameVi!: string;
-
-  @ApiProperty({ example: "Hà Nội" })
-  public city!: string;
-}
-
-export class WarehouseStockResponseDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public warehouseId!: string;
-
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb90" })
-  public productId!: string;
-
-  @ApiProperty({ example: 10 })
-  public stock!: number;
-
-  @ApiProperty({ example: 2 })
-  public minStockWarning!: number;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public createdAt!: Date;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public updatedAt!: Date;
-
-  @ApiPropertyOptional({ type: () => StockProductItemDto })
-  public product?: StockProductItemDto | null;
-
-  @ApiPropertyOptional({ type: () => StockWarehouseItemDto })
-  public warehouse?: StockWarehouseItemDto | null;
-}
+export class StockProductItemDto extends createZodDto(stockProductItemSchema) {}
+export class StockWarehouseItemDto extends createZodDto(
+  stockWarehouseItemSchema,
+) {}
+export class WarehouseStockResponseDto extends createZodDto(
+  warehouseStockResponseSchema,
+) {}

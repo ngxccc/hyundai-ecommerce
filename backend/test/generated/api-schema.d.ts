@@ -1498,781 +1498,542 @@ export interface components {
       salesId: string;
     };
     CategoryResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
+      /** Format: uuid */
       id: string;
-      /** @example Máy phát điện công nghiệp */
       nameVi: string;
-      /** @example Industrial Generators */
-      nameEn?: string | null;
-      /** @example may-phat-dien-cong-nghiep */
+      nameEn: string | null;
       slug: string;
-      /**
-       * @description Parent category ID or null if root
-       * @example null
-       */
-      parentId?: string | null;
-      /** @example Mô tả danh mục */
-      descriptionVi?: string | null;
-      /** @example Category description */
-      descriptionEn?: string | null;
-      /** @example https://res.cloudinary.com/hyundai/image/upload/cat.jpg */
-      image?: string | null;
-      /** @example true */
+      parentId: string | null;
+      descriptionVi: string | null;
+      descriptionEn: string | null;
+      image: string | null;
       isActive: boolean;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       updatedAt: string;
-      /** @description Recursive child categories tree */
       children?: components["schemas"]["CategoryResponseDto"][];
     };
     CreateCategoryDto: {
-      /**
-       * @description Category name in Vietnamese
-       * @example Máy phát điện công nghiệp
-       */
       nameVi: string;
-      /**
-       * @description Category name in English
-       * @example Industrial Generators
-       */
-      nameEn?: string;
-      /**
-       * @description Unique URL slug
-       * @example may-phat-dien-cong-nghiep
-       */
+      nameEn?: string | null;
       slug: string;
-      /**
-       * @description Parent category UUID for hierarchical trees
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
-       */
-      parentId?: string;
-      /** @example Dòng máy phát điện công suất lớn từ 20kVA đến 2500kVA */
-      descriptionVi?: string;
-      /** @example Heavy-duty industrial generator sets from 20kVA to 2500kVA */
-      descriptionEn?: string;
-      /** @example https://res.cloudinary.com/hyundai/image/upload/category.jpg */
-      image?: string;
-      /**
-       * @default true
-       * @example true
-       */
+      parentId?: string | null;
+      descriptionVi?: string | null;
+      descriptionEn?: string | null;
+      image?: string | null;
+      /** @default true */
       isActive: boolean;
     };
     UpdateCategoryDto: {
-      /** @example Máy phát điện công nghiệp cập nhật */
       nameVi?: string;
-      /** @example Updated Industrial Generators */
-      nameEn?: string;
-      /** @example may-phat-dien-cong-nghiep-moi */
+      nameEn?: string | null;
       slug?: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      parentId?: string;
-      /** @example Mô tả mới */
-      descriptionVi?: string;
-      /** @example New description */
-      descriptionEn?: string;
-      /** @example https://example.com/new-image.jpg */
-      image?: string;
-      /** @example true */
+      parentId?: string | null;
+      descriptionVi?: string | null;
+      descriptionEn?: string | null;
+      image?: string | null;
       isActive?: boolean;
     };
     BrandResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
+      /** Format: uuid */
       id: string;
-      /** @example Hyundai Power */
       name: string;
-      /** @example hyundai-power */
       slug: string;
-      /** @example https://res.cloudinary.com/hyundai/image/upload/logo.png */
-      logo?: string | null;
-      /** @example Thương hiệu thiết bị năng lượng hàng đầu */
-      descriptionVi?: string | null;
-      /** @example Leading power equipment brand */
-      descriptionEn?: string | null;
-      /** @example true */
+      logo: string | null;
+      descriptionVi: string | null;
+      descriptionEn: string | null;
       isActive: boolean;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       updatedAt: string;
     };
     CreateBrandDto: {
-      /**
-       * @description Brand name
-       * @example Hyundai Power
-       */
       name: string;
-      /**
-       * @description Brand URL slug
-       * @example hyundai-power
-       */
       slug: string;
-      /** @example https://res.cloudinary.com/hyundai/image/upload/logo.png */
-      logo?: string;
-      /** @example Thương hiệu thiết bị năng lượng và máy phát điện hàng đầu Hàn Quốc */
-      descriptionVi?: string;
-      /** @example Leading Korean power equipment and generator manufacturer */
-      descriptionEn?: string;
-      /**
-       * @default true
-       * @example true
-       */
+      logo?: string | null;
+      descriptionVi?: string | null;
+      descriptionEn?: string | null;
+      /** @default true */
       isActive: boolean;
     };
     UpdateBrandDto: {
-      /** @example Hyundai Power Vietnam */
       name?: string;
-      /** @example hyundai-power-vietnam */
       slug?: string;
-      /** @example https://example.com/new-logo.png */
-      logo?: string;
-      /** @example Mô tả thương hiệu mới */
-      descriptionVi?: string;
-      /** @example New brand description */
-      descriptionEn?: string;
-      /** @example true */
+      logo?: string | null;
+      descriptionVi?: string | null;
+      descriptionEn?: string | null;
       isActive?: boolean;
     };
-    ProductResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      id: string;
-      /** @example Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha */
-      nameVi: string;
-      /** @example Hyundai DHY65KSE 60kVA 3-Phase Diesel Generator */
-      nameEn?: string | null;
-      /** @example may-phat-dien-diesel-hyundai-dhy65kse */
-      slug: string;
-      /** @example 245000000.00 */
-      price: string;
-      /**
-       * @description Whether the product requires quotation request (price <= 0)
-       * @example false
-       */
-      isQuoteOnly: boolean;
-      /** @example null */
-      descriptionVi?: Record<string, never> | null;
-      /** @example null */
-      descriptionEn?: Record<string, never> | null;
-      /** @example Máy phát điện 60kVA vỏ chống ồn */
-      shortDescriptionVi?: string | null;
-      /** @example 60kVA diesel generator */
-      shortDescriptionEn?: string | null;
-      /**
-       * @example [
-       *       "https://res.cloudinary.com/hyundai/image/upload/dhy65kse.jpg"
-       *     ]
-       */
-      images: string[];
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      brandId?: string | null;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
-      categoryId?: string | null;
-      /**
-       * @example generator
-       * @enum {string}
-       */
-      productType?: "generator" | "ups" | "ats" | "accessory";
-      /** @example 60.00 */
-      powerKva?: string | null;
-      /** @example 48.00 */
-      powerKw?: string | null;
-      /** @example 66.00 */
-      standbyPowerKva?: string | null;
-      /** @example 52.80 */
-      standbyPowerKw?: string | null;
-      /**
-       * @example 3phase
-       * @enum {string|null}
-       */
-      phase?: "1phase" | "3phase" | "multi_phase" | null;
-      /** @example 230/400V */
-      voltage?: string | null;
-      /** @example 50 */
-      frequency?: number | null;
-      /**
-       * @example diesel
-       * @enum {string|null}
-       */
-      fuelType?: "diesel" | "gasoline" | "gas" | null;
-      /**
-       * @example silent
-       * @enum {string|null}
-       */
-      canopyType?:
-        | "silent"
-        | "super_silent"
-        | "open_frame"
-        | "closed_case"
-        | "tower"
-        | "rackmount"
-        | null;
-      /**
-       * @example electric
-       * @enum {string|null}
-       */
-      startMethod?: "electric" | "recoil" | "remote" | "auto_ats" | null;
-      /** @example Hyundai */
-      engineBrand?: string | null;
-      /** @example Hyundai */
-      alternatorBrand?: string | null;
-      /** @enum {string|null} */
-      upsTopology?:
-        "offline" | "line_interactive" | "online_double_conversion" | null;
-      /** @enum {string|null} */
-      upsBatteryType?: "internal" | "external" | null;
-      /** @example [] */
-      specSheet: Record<string, never>;
-      /**
-       * @example {
-       *       "model": "DHY65KSE"
-       *     }
-       */
-      specs: Record<string, never>;
-      /** @example 5 */
-      totalStockCache: number;
-      /** @example 0 */
-      totalSalesCache: number;
-      /** @example true */
-      isActive: boolean;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      updatedAt: string;
-      brand?: components["schemas"]["BrandResponseDto"] | null;
-      category?: components["schemas"]["CategoryResponseDto"] | null;
+    ProductResponseDto__schema0: {
+      type?: string;
+      attrs?: {
+        [key: string]: unknown;
+      };
+      content?: components["schemas"]["ProductResponseDto__schema0"][];
+      marks?: ({
+        type: string;
+        attrs?: {
+          [key: string]: unknown;
+        };
+      } & {
+        [key: string]: unknown;
+      })[];
+      text?: string;
+    } & {
+      [key: string]: unknown;
     };
-    BrandFacetItem: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
+    ProductResponseDto__schema1: {
+      /** Format: uuid */
       id: string;
-      /** @example Hyundai Power */
-      name: string;
-      /** @example 42 */
-      count: number;
-    };
-    CategoryFacetItem: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
-      id: string;
-      /** @example Máy phát điện */
       nameVi: string;
-      /** @example Generators */
       nameEn: string | null;
-      /** @example 35 */
-      count: number;
+      slug: string;
+      parentId: string | null;
+      descriptionVi: string | null;
+      descriptionEn: string | null;
+      image: string | null;
+      isActive: boolean;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      children?: components["schemas"]["ProductResponseDto__schema1"][];
     };
-    RangeFacet: {
-      /** @example 10 */
-      min: number;
-      /** @example 2500 */
-      max: number;
-    };
-    ValueCountFacetItem: {
-      /** @example diesel */
-      value: string;
-      /** @example 28 */
-      count: number;
+    ProductResponseDto: {
+      /** Format: uuid */
+      id: string;
+      nameVi: string;
+      nameEn: string | null;
+      slug: string;
+      price: string;
+      isQuoteOnly: boolean;
+      descriptionVi?:
+        components["schemas"]["ProductResponseDto__schema0"] | null;
+      descriptionEn?:
+        components["schemas"]["ProductResponseDto__schema0"] | null;
+      shortDescriptionVi: string | null;
+      shortDescriptionEn: string | null;
+      images: string[];
+      brandId: string | null;
+      categoryId: string | null;
+      /** @enum {string} */
+      productType: "generator" | "ups" | "ats" | "accessory";
+      powerKva: string | null;
+      powerKw: string | null;
+      standbyPowerKva: string | null;
+      standbyPowerKw: string | null;
+      phase: ("1phase" | "3phase" | "multi_phase") | null;
+      voltage: string | null;
+      frequency: number | null;
+      fuelType: ("diesel" | "gasoline" | "gas") | null;
+      canopyType:
+        | (
+            | "silent"
+            | "super_silent"
+            | "open_frame"
+            | "closed_case"
+            | "tower"
+            | "rackmount"
+          )
+        | null;
+      startMethod: ("electric" | "recoil" | "remote" | "auto_ats") | null;
+      engineBrand: string | null;
+      alternatorBrand: string | null;
+      upsTopology:
+        ("offline" | "line_interactive" | "online_double_conversion") | null;
+      upsBatteryType: ("internal" | "external") | null;
+      specSheet: {
+        groupKey: string;
+        titleVi: string;
+        titleEn?: string;
+        /** @default 0 */
+        order: number;
+        items: {
+          key: string;
+          nameVi: string;
+          nameEn?: string;
+          value: string;
+          unit?: string | null;
+        }[];
+      }[];
+      /** @default {} */
+      specs: {
+        model?: string;
+        origin?: string;
+        engineModel?: string;
+        alternatorModel?: string;
+        controller?: string;
+        dimensions?: string;
+        weight?: string;
+        noiseLevel?: string;
+        fuelConsumption?: string;
+        warranty?: string;
+      } & {
+        [key: string]: unknown;
+      };
+      totalStockCache: number;
+      totalSalesCache: number;
+      isActive: boolean;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      brand?: {
+        /** Format: uuid */
+        id: string;
+        name: string;
+        slug: string;
+        logo: string | null;
+        descriptionVi: string | null;
+        descriptionEn: string | null;
+        isActive: boolean;
+        /** Format: date-time */
+        createdAt: string;
+        /** Format: date-time */
+        updatedAt: string;
+      } | null;
+      category?: components["schemas"]["ProductResponseDto__schema1"] | null;
     };
     ProductMetadataResponseDto: {
-      brands: components["schemas"]["BrandFacetItem"][];
-      categories: components["schemas"]["CategoryFacetItem"][];
-      /**
-       * @description Power range in kVA
-       * @example {
-       *       "min": 10,
-       *       "max": 2500
-       *     }
-       */
-      powerRange: components["schemas"]["RangeFacet"];
-      /**
-       * @description Price range in VND
-       * @example {
-       *       "min": 15000000,
-       *       "max": 850000000
-       *     }
-       */
-      priceRange: components["schemas"]["RangeFacet"];
-      fuelTypes: components["schemas"]["ValueCountFacetItem"][];
-      phases: components["schemas"]["ValueCountFacetItem"][];
-      canopyTypes: components["schemas"]["ValueCountFacetItem"][];
+      brands: {
+        /** Format: uuid */
+        id: string;
+        name: string;
+        count: number;
+      }[];
+      categories: {
+        /** Format: uuid */
+        id: string;
+        nameVi: string;
+        nameEn: string | null;
+        count: number;
+      }[];
+      powerRange: {
+        min: number;
+        max: number;
+      };
+      priceRange: {
+        min: number;
+        max: number;
+      };
+      fuelTypes: {
+        value: string;
+        count: number;
+      }[];
+      phases: {
+        value: string;
+        count: number;
+      }[];
+      canopyTypes: {
+        value: string;
+        count: number;
+      }[];
+    };
+    CreateProductDto__schema0: {
+      type?: string;
+      attrs?: {
+        [key: string]: unknown;
+      };
+      content?: components["schemas"]["CreateProductDto__schema0"][];
+      marks?: ({
+        type: string;
+        attrs?: {
+          [key: string]: unknown;
+        };
+      } & {
+        [key: string]: unknown;
+      })[];
+      text?: string;
+    } & {
+      [key: string]: unknown;
     };
     CreateProductDto: {
-      /** @example Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha */
       nameVi: string;
-      /** @example Hyundai DHY65KSE 60kVA 3-Phase Diesel Generator */
-      nameEn?: string;
-      /** @example may-phat-dien-diesel-hyundai-dhy65kse */
+      nameEn?: string | null;
       slug: string;
-      /** @example 245000000 */
+      /** @default 0 */
       price: number;
-      /**
-       * @example {
-       *       "type": "doc",
-       *       "content": []
-       *     }
-       */
-      descriptionVi?: Record<string, never>;
-      /**
-       * @example {
-       *       "type": "doc",
-       *       "content": []
-       *     }
-       */
-      descriptionEn?: Record<string, never>;
-      /** @example Máy phát điện 60kVA vỏ chống ồn đồng bộ */
-      shortDescriptionVi?: string;
-      /** @example 60kVA diesel generator with soundproof canopy */
-      shortDescriptionEn?: string;
-      /**
-       * @default []
-       * @example [
-       *       "https://res.cloudinary.com/hyundai/image/upload/dhy65kse.jpg"
-       *     ]
-       */
-      images: string[];
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      brandId?: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
-      categoryId?: string;
+      descriptionVi?: components["schemas"]["CreateProductDto__schema0"] | null;
+      descriptionEn?: components["schemas"]["CreateProductDto__schema0"] | null;
+      shortDescriptionVi?: string | null;
+      shortDescriptionEn?: string | null;
+      images?: string[];
+      brandId?: string | null;
+      categoryId?: string | null;
       /**
        * @default generator
        * @enum {string}
        */
       productType: "generator" | "ups" | "ats" | "accessory";
-      /** @example 60 */
-      powerKva?: number;
-      /** @example 48 */
-      powerKw?: number;
-      /** @example 66 */
-      standbyPowerKva?: number;
-      /** @example 52.8 */
-      standbyPowerKw?: number;
-      /**
-       * @example 3phase
-       * @enum {string}
-       */
-      phase?: "1phase" | "3phase" | "multi_phase";
-      /** @example 230/400V */
-      voltage?: string;
-      /**
-       * @default 50
-       * @example 50
-       */
+      powerKva?: number | null;
+      powerKw?: number | null;
+      standbyPowerKva?: number | null;
+      standbyPowerKw?: number | null;
+      phase?: ("1phase" | "3phase" | "multi_phase") | null;
+      voltage?: string | null;
+      /** @default 50 */
       frequency: number;
-      /**
-       * @example diesel
-       * @enum {string}
-       */
-      fuelType?: "diesel" | "gasoline" | "gas";
-      /**
-       * @example silent
-       * @enum {string}
-       */
+      fuelType?: ("diesel" | "gasoline" | "gas") | null;
       canopyType?:
-        | "silent"
-        | "super_silent"
-        | "open_frame"
-        | "closed_case"
-        | "tower"
-        | "rackmount";
-      /**
-       * @example electric
-       * @enum {string}
-       */
-      startMethod?: "electric" | "recoil" | "remote" | "auto_ats";
-      /** @example Hyundai */
-      engineBrand?: string;
-      /** @example Hyundai */
-      alternatorBrand?: string;
-      /** @enum {string} */
-      upsTopology?: "offline" | "line_interactive" | "online_double_conversion";
-      /** @enum {string} */
-      upsBatteryType?: "internal" | "external";
-      /**
-       * @example [
-       *       {
-       *         "groupKey": "general",
-       *         "titleVi": "Thông số chung",
-       *         "order": 1,
-       *         "items": [
-       *           {
-       *             "key": "model",
-       *             "nameVi": "Model",
-       *             "value": "DHY65KSE"
-       *           }
-       *         ]
-       *       }
-       *     ]
-       */
-      specSheet?: Record<string, never>;
-      /**
-       * @example {
-       *       "model": "DHY65KSE",
-       *       "origin": "Hàn Quốc",
-       *       "dimensions": "2250 x 950 x 1300 mm",
-       *       "weight": "1150 kg"
-       *     }
-       */
-      specs?: Record<string, never>;
-      /**
-       * @default 0
-       * @example 5
-       */
+        | (
+            | "silent"
+            | "super_silent"
+            | "open_frame"
+            | "closed_case"
+            | "tower"
+            | "rackmount"
+          )
+        | null;
+      startMethod?: ("electric" | "recoil" | "remote" | "auto_ats") | null;
+      engineBrand?: string | null;
+      alternatorBrand?: string | null;
+      upsTopology?:
+        ("offline" | "line_interactive" | "online_double_conversion") | null;
+      upsBatteryType?: ("internal" | "external") | null;
+      /** @default [] */
+      specSheet: {
+        groupKey: string;
+        titleVi: string;
+        titleEn?: string;
+        /** @default 0 */
+        order: number;
+        items: {
+          key: string;
+          nameVi: string;
+          nameEn?: string;
+          value: string;
+          unit?: string | null;
+        }[];
+      }[];
+      /** @default {} */
+      specs: {
+        model?: string;
+        origin?: string;
+        engineModel?: string;
+        alternatorModel?: string;
+        controller?: string;
+        dimensions?: string;
+        weight?: string;
+        noiseLevel?: string;
+        fuelConsumption?: string;
+        warranty?: string;
+      } & {
+        [key: string]: unknown;
+      };
+      /** @default 0 */
       totalStockCache: number;
-      /**
-       * @default true
-       * @example true
-       */
-      isActive: boolean;
-      /**
-       * @default false
-       * @example false
-       */
+      /** @default false */
       isQuoteOnly: boolean;
+      /** @default true */
+      isActive: boolean;
+    };
+    UpdateProductDto__schema0: {
+      type?: string;
+      attrs?: {
+        [key: string]: unknown;
+      };
+      content?: components["schemas"]["UpdateProductDto__schema0"][];
+      marks?: ({
+        type: string;
+        attrs?: {
+          [key: string]: unknown;
+        };
+      } & {
+        [key: string]: unknown;
+      })[];
+      text?: string;
+    } & {
+      [key: string]: unknown;
     };
     UpdateProductDto: {
-      /** @example Máy phát điện cập nhật */
       nameVi?: string;
-      /** @example Updated Generator */
-      nameEn?: string;
-      /** @example may-phat-dien-cap-nhat */
+      nameEn?: string | null;
       slug?: string;
-      /** @example 250000000 */
       price?: number;
-      /**
-       * @example {
-       *       "type": "doc",
-       *       "content": []
-       *     }
-       */
-      descriptionVi?: Record<string, never>;
-      /**
-       * @example {
-       *       "type": "doc",
-       *       "content": []
-       *     }
-       */
-      descriptionEn?: Record<string, never>;
-      /** @example Mô tả ngắn mới */
-      shortDescriptionVi?: string;
-      /** @example New short description */
-      shortDescriptionEn?: string;
-      /** @example [] */
+      descriptionVi?: components["schemas"]["UpdateProductDto__schema0"] | null;
+      descriptionEn?: components["schemas"]["UpdateProductDto__schema0"] | null;
+      shortDescriptionVi?: string | null;
+      shortDescriptionEn?: string | null;
       images?: string[];
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      brandId?: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
-      categoryId?: string;
+      brandId?: string | null;
+      categoryId?: string | null;
       /** @enum {string} */
       productType?: "generator" | "ups" | "ats" | "accessory";
-      /** @example 65 */
-      powerKva?: number;
-      /** @example 52 */
-      powerKw?: number;
-      /** @example 70 */
-      standbyPowerKva?: number;
-      /** @example 56 */
-      standbyPowerKw?: number;
-      /** @enum {string} */
-      phase?: "1phase" | "3phase" | "multi_phase";
-      /** @example 230/400V */
-      voltage?: string;
-      /** @example 50 */
+      powerKva?: number | null;
+      powerKw?: number | null;
+      standbyPowerKva?: number | null;
+      standbyPowerKw?: number | null;
+      phase?: ("1phase" | "3phase" | "multi_phase") | null;
+      voltage?: string | null;
       frequency?: number;
-      /** @enum {string} */
-      fuelType?: "diesel" | "gasoline" | "gas";
-      /** @enum {string} */
+      fuelType?: ("diesel" | "gasoline" | "gas") | null;
       canopyType?:
-        | "silent"
-        | "super_silent"
-        | "open_frame"
-        | "closed_case"
-        | "tower"
-        | "rackmount";
-      /** @enum {string} */
-      startMethod?: "electric" | "recoil" | "remote" | "auto_ats";
-      /** @example Hyundai */
-      engineBrand?: string;
-      /** @example Hyundai */
-      alternatorBrand?: string;
-      /** @enum {string} */
-      upsTopology?: "offline" | "line_interactive" | "online_double_conversion";
-      /** @enum {string} */
-      upsBatteryType?: "internal" | "external";
-      /** @example [] */
-      specSheet?: Record<string, never>;
-      /**
-       * @example {
-       *       "model": "DHY65KSE"
-       *     }
-       */
-      specs?: Record<string, never>;
-      /** @example 10 */
+        | (
+            | "silent"
+            | "super_silent"
+            | "open_frame"
+            | "closed_case"
+            | "tower"
+            | "rackmount"
+          )
+        | null;
+      startMethod?: ("electric" | "recoil" | "remote" | "auto_ats") | null;
+      engineBrand?: string | null;
+      alternatorBrand?: string | null;
+      upsTopology?:
+        ("offline" | "line_interactive" | "online_double_conversion") | null;
+      upsBatteryType?: ("internal" | "external") | null;
+      specSheet?: {
+        groupKey: string;
+        titleVi: string;
+        titleEn?: string;
+        /** @default 0 */
+        order: number;
+        items: {
+          key: string;
+          nameVi: string;
+          nameEn?: string;
+          value: string;
+          unit?: string | null;
+        }[];
+      }[];
+      specs?: {
+        model?: string;
+        origin?: string;
+        engineModel?: string;
+        alternatorModel?: string;
+        controller?: string;
+        dimensions?: string;
+        weight?: string;
+        noiseLevel?: string;
+        fuelConsumption?: string;
+        warranty?: string;
+      } & {
+        [key: string]: unknown;
+      };
       totalStockCache?: number;
-      /** @example true */
-      isActive?: boolean;
-      /** @example false */
       isQuoteOnly?: boolean;
+      isActive?: boolean;
     };
     WarehouseResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
+      /** Format: uuid */
       id: string;
-      /** @example Kho Tổng Hà Nội */
       nameVi: string;
-      /** @example Hanoi Central Warehouse */
-      nameEn?: string | null;
-      /** @example Lô CN-01, Khu Công Nghiệp Đài Tư, 386 Nguyễn Văn Linh */
+      nameEn: string | null;
       streetAddress: string;
-      /** @example Long Biên */
       district: string;
-      /** @example Hà Nội */
       city: string;
-      /** @example true */
       isActive: boolean;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       updatedAt: string;
-    };
-    StockProductItemDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      id: string;
-      /** @example Máy phát điện Diesel Hyundai DHY65KSE */
-      nameVi: string;
-      /** @example may-phat-dien-diesel-hyundai-dhy65kse */
-      slug: string;
-      /** @example 15 */
-      totalStockCache: number;
-    };
-    StockWarehouseItemDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      id: string;
-      /** @example Kho Tổng Hà Nội */
-      nameVi: string;
-      /** @example Hà Nội */
-      city: string;
     };
     WarehouseStockResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
+      /** Format: uuid */
       warehouseId: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
+      /** Format: uuid */
       productId: string;
-      /** @example 10 */
       stock: number;
-      /** @example 2 */
       minStockWarning: number;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       updatedAt: string;
-      product?: components["schemas"]["StockProductItemDto"];
-      warehouse?: components["schemas"]["StockWarehouseItemDto"];
+      product?: {
+        /** Format: uuid */
+        id: string;
+        nameVi: string;
+        slug: string;
+        totalStockCache: number;
+      } | null;
+      warehouse?: {
+        /** Format: uuid */
+        id: string;
+        nameVi: string;
+        city: string;
+      } | null;
     };
     CreateWarehouseDto: {
-      /**
-       * @description Warehouse name in Vietnamese
-       * @example Kho Tổng Hà Nội
-       */
       nameVi: string;
-      /**
-       * @description Warehouse name in English
-       * @example Hanoi Central Warehouse
-       */
-      nameEn?: string;
-      /**
-       * @description Street address
-       * @example Lô CN-01, Khu Công Nghiệp Đài Tư, 386 Nguyễn Văn Linh
-       */
+      nameEn?: string | null;
       streetAddress: string;
-      /**
-       * @description District / County
-       * @example Long Biên
-       */
       district: string;
-      /**
-       * @description City / Province
-       * @example Hà Nội
-       */
       city: string;
-      /**
-       * @description Active status
-       * @default true
-       * @example true
-       */
+      /** @default true */
       isActive: boolean;
     };
     UpdateStockDto: {
-      /**
-       * @description Product UUID
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
-       */
+      /** Format: uuid */
       productId: string;
-      /**
-       * @description Physical stock quantity available in this warehouse
-       * @example 10
-       */
       stock: number;
-      /**
-       * @description Threshold quantity to trigger low-stock warning
-       * @default 2
-       * @example 2
-       */
+      /** @default 2 */
       minStockWarning: number;
     };
     UpdateWarehouseDto: {
-      /** @example Kho Tổng Hà Nội Cập Nhật */
       nameVi?: string;
-      /** @example Hanoi Main Warehouse Updated */
-      nameEn?: string;
-      /** @example 386 Nguyễn Văn Linh */
+      nameEn?: string | null;
       streetAddress?: string;
-      /** @example Long Biên */
       district?: string;
-      /** @example Hà Nội */
       city?: string;
-      /** @example true */
       isActive?: boolean;
     };
     Object: Record<string, never>;
-    CartProductSummaryDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      id: string;
-      /** @example Máy phát điện Diesel Hyundai DHY65KSE 60kVA */
-      nameVi: string;
-      /** @example Hyundai DHY65KSE 60kVA Generator */
-      nameEn?: string | null;
-      /** @example may-phat-dien-diesel-hyundai-dhy65kse */
-      slug: string;
-      /** @example 245000000.00 */
-      price: string;
-      /**
-       * @example [
-       *       "https://res.cloudinary.com/hyundai/image/upload/dhy65kse.jpg"
-       *     ]
-       */
-      images: string[];
-      /** @example 10 */
-      totalStockCache: number;
-      /** @example true */
-      isActive: boolean;
-      /** @example false */
-      isOutOfStock: boolean;
-    };
-    CartItemResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      id: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
-      productId: string;
-      /** @example 2 */
-      quantity: number;
-      /** @example 490000000.00 */
-      lineTotal: string;
-      product: components["schemas"]["CartProductSummaryDto"];
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
-      updatedAt: string;
-    };
-    CartSummaryDto: {
-      /**
-       * @description Total quantity of items in cart
-       * @example 3
-       */
-      totalItems: number;
-      /**
-       * @description Total monetary amount of cart items
-       * @example 735000000.00
-       */
-      totalAmount: string;
-    };
     CartResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
+      /** Format: uuid */
       id: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb90 */
+      /** Format: uuid */
       userId: string;
-      items: components["schemas"]["CartItemResponseDto"][];
-      summary: components["schemas"]["CartSummaryDto"];
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      items: {
+        /** Format: uuid */
+        id: string;
+        /** Format: uuid */
+        productId: string;
+        quantity: number;
+        lineTotal: string;
+        product: {
+          /** Format: uuid */
+          id: string;
+          nameVi: string;
+          nameEn: string | null;
+          slug: string;
+          price: string;
+          images: string[];
+          totalStockCache: number;
+          isActive: boolean;
+          isOutOfStock: boolean;
+        };
+        /** Format: date-time */
+        createdAt: string;
+        /** Format: date-time */
+        updatedAt: string;
+      }[];
+      summary: {
+        totalItems: number;
+        totalAmount: string;
+      };
+      /** Format: date-time */
       createdAt: string;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       updatedAt: string;
     };
     AddCartItemDto: {
-      /**
-       * @description Product UUID to add to cart
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
-       */
+      /** Format: uuid */
       productId: string;
-      /**
-       * @description Quantity of items to add (min 1)
-       * @default 1
-       * @example 1
-       */
+      /** @default 1 */
       quantity: number;
     };
     UpdateCartItemDto: {
-      /**
-       * @description New desired item quantity (min 1, max 1000)
-       * @example 3
-       */
-      quantity: number;
-    };
-    GuestCartItemDto: {
-      /**
-       * @description Product UUID from guest session
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
-       */
-      productId: string;
-      /**
-       * @description Item quantity accumulated in guest session
-       * @example 2
-       */
       quantity: number;
     };
     MergeCartDto: {
-      /** @description List of guest cart items to merge into authenticated user cart */
-      items: components["schemas"]["GuestCartItemDto"][];
+      items: {
+        /** Format: uuid */
+        productId: string;
+        quantity: number;
+      }[];
     };
     QuoteResponseDto: {
       /** Format: uuid */
@@ -5148,48 +4909,36 @@ export interface operations {
   ProductsController_getProducts_v1: {
     parameters: {
       query?: {
-        /** @description Page number */
-        page?: number;
-        /** @description Items per page (max 100) */
-        limit?: number;
-        /** @description Search keyword */
-        search?: string;
-        /** @description Filter by brand UUID */
-        brandId?: string;
-        /** @description Filter by category UUID */
-        categoryId?: string;
-        /** @description Minimum price in VND */
-        priceMin?: number;
-        /** @description Maximum price in VND */
-        priceMax?: number;
-        /** @description Minimum power rating in kVA */
-        powerKvaMin?: number;
-        /** @description Maximum power rating in kVA */
-        powerKvaMax?: number;
-        /** @description Filter by voltage string */
-        voltage?: string;
-        phase?: "1phase" | "3phase" | "multi_phase";
-        fuelType?: "diesel" | "gasoline" | "gas";
+        page?: unknown;
+        limit?: unknown;
+        search?: unknown;
+        brandId?: string | null;
+        categoryId?: string | null;
+        priceMin?: unknown;
+        priceMax?: unknown;
+        powerKvaMin?: unknown;
+        powerKvaMax?: unknown;
+        minPower?: unknown;
+        maxPower?: unknown;
+        voltage?: unknown;
+        phase?: ("1phase" | "3phase" | "multi_phase") | null;
+        fuelType?: ("diesel" | "gasoline" | "gas") | null;
         canopyType?:
-          | "silent"
-          | "super_silent"
-          | "open_frame"
-          | "closed_case"
-          | "tower"
-          | "rackmount";
+          | (
+              | "silent"
+              | "super_silent"
+              | "open_frame"
+              | "closed_case"
+              | "tower"
+              | "rackmount"
+            )
+          | null;
+        engineBrand?: unknown;
+        alternatorBrand?: unknown;
+        status?:
+          ("active" | "outOfStock" | "all" | "ACTIVE" | "INACTIVE") | null;
+        isQuoteOnly?: unknown;
         sort?: "newest" | "priceAsc" | "priceDesc";
-        /** @description Minimum power in kVA (alias for powerKvaMin) */
-        minPower?: number;
-        /** @description Maximum power in kVA (alias for powerKvaMax) */
-        maxPower?: number;
-        /** @description Filter by engine brand */
-        engineBrand?: string;
-        /** @description Filter by alternator brand */
-        alternatorBrand?: string;
-        /** @description Stock/lifecycle status */
-        status?: "active" | "outOfStock" | "all";
-        /** @description Filter products marked for quote only */
-        isQuoteOnly?: boolean;
       };
       header?: never;
       path?: never;

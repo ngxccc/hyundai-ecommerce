@@ -1,49 +1,30 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { z } from "zod";
+import { createZodDto } from "@/common/dto";
+import { zDate } from "@/common/schemas/zod-primitives";
 
-export class CategoryResponseDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
+const baseCategoryResponseSchema = z.object({
+  id: z.uuid(),
+  nameVi: z.string(),
+  nameEn: z.string().nullable(),
+  slug: z.string(),
+  parentId: z.uuid().nullable(),
+  descriptionVi: z.string().nullable(),
+  descriptionEn: z.string().nullable(),
+  image: z.string().nullable(),
+  isActive: z.boolean(),
+  createdAt: zDate(),
+  updatedAt: zDate(),
+});
 
-  @ApiProperty({ example: "Máy phát điện công nghiệp" })
-  public nameVi!: string;
+export type CategoryResponseDtoType = z.infer<
+  typeof baseCategoryResponseSchema
+> & {
+  children?: CategoryResponseDtoType[];
+};
 
-  @ApiPropertyOptional({ example: "Industrial Generators", nullable: true })
-  public nameEn!: string | null;
+export const categoryResponseSchema: z.ZodType<CategoryResponseDtoType> =
+  baseCategoryResponseSchema.extend({
+    children: z.lazy(() => categoryResponseSchema.array()).optional(),
+  });
 
-  @ApiProperty({ example: "may-phat-dien-cong-nghiep" })
-  public slug!: string;
-
-  @ApiPropertyOptional({
-    example: null,
-    nullable: true,
-    description: "Parent category ID or null if root",
-  })
-  public parentId!: string | null;
-
-  @ApiPropertyOptional({ example: "Mô tả danh mục", nullable: true })
-  public descriptionVi!: string | null;
-
-  @ApiPropertyOptional({ example: "Category description", nullable: true })
-  public descriptionEn!: string | null;
-
-  @ApiPropertyOptional({
-    example: "https://res.cloudinary.com/hyundai/image/upload/cat.jpg",
-    nullable: true,
-  })
-  public image!: string | null;
-
-  @ApiProperty({ example: true })
-  public isActive!: boolean;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public createdAt!: Date;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public updatedAt!: Date;
-
-  @ApiPropertyOptional({
-    type: () => [CategoryResponseDto],
-    description: "Recursive child categories tree",
-  })
-  public children?: CategoryResponseDto[];
-}
+export class CategoryResponseDto extends createZodDto(categoryResponseSchema) {}

@@ -1,39 +1,19 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { z } from "zod";
+import { createZodDto } from "@/common/dto";
+import { zDate } from "@/common/schemas/zod-primitives";
 
-export class BrandResponseDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
+export const brandResponseSchema = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  slug: z.string(),
+  logo: z.string().nullable(),
+  descriptionVi: z.string().nullable(),
+  descriptionEn: z.string().nullable(),
+  isActive: z.boolean(),
+  createdAt: zDate(),
+  updatedAt: zDate(),
+});
 
-  @ApiProperty({ example: "Hyundai Power" })
-  public name!: string;
+export type BrandResponseDtoType = z.infer<typeof brandResponseSchema>;
 
-  @ApiProperty({ example: "hyundai-power" })
-  public slug!: string;
-
-  @ApiPropertyOptional({
-    example: "https://res.cloudinary.com/hyundai/image/upload/logo.png",
-    nullable: true,
-  })
-  public logo!: string | null;
-
-  @ApiPropertyOptional({
-    example: "Thương hiệu thiết bị năng lượng hàng đầu",
-    nullable: true,
-  })
-  public descriptionVi!: string | null;
-
-  @ApiPropertyOptional({
-    example: "Leading power equipment brand",
-    nullable: true,
-  })
-  public descriptionEn!: string | null;
-
-  @ApiProperty({ example: true })
-  public isActive!: boolean;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public createdAt!: Date;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public updatedAt!: Date;
-}
+export class BrandResponseDto extends createZodDto(brandResponseSchema) {}

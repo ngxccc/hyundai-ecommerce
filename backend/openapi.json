@@ -2949,112 +2949,142 @@
             "name": "page",
             "required": false,
             "in": "query",
-            "description": "Page number",
             "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
+              "items": {
+                "type": "number"
+              }
             }
           },
           {
             "name": "limit",
             "required": false,
             "in": "query",
-            "description": "Items per page (max 100)",
             "schema": {
-              "default": 20,
-              "example": 20,
-              "type": "number"
+              "items": {
+                "type": "number"
+              }
             }
           },
           {
             "name": "search",
             "required": false,
             "in": "query",
-            "description": "Search keyword",
-            "schema": {
-              "example": "Hyundai",
-              "type": "string"
-            }
+            "schema": {}
           },
           {
             "name": "brandId",
             "required": false,
             "in": "query",
-            "description": "Filter by brand UUID",
             "schema": {
-              "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           },
           {
             "name": "categoryId",
             "required": false,
             "in": "query",
-            "description": "Filter by category UUID",
             "schema": {
-              "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90",
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           },
           {
             "name": "priceMin",
             "required": false,
             "in": "query",
-            "description": "Minimum price in VND",
             "schema": {
-              "example": 10000000,
-              "type": "number"
+              "items": {
+                "type": "number"
+              }
             }
           },
           {
             "name": "priceMax",
             "required": false,
             "in": "query",
-            "description": "Maximum price in VND",
             "schema": {
-              "example": 500000000,
-              "type": "number"
+              "items": {
+                "type": "number"
+              }
             }
           },
           {
             "name": "powerKvaMin",
             "required": false,
             "in": "query",
-            "description": "Minimum power rating in kVA",
             "schema": {
-              "example": 20,
-              "type": "number"
+              "items": {
+                "type": "number"
+              }
             }
           },
           {
             "name": "powerKvaMax",
             "required": false,
             "in": "query",
-            "description": "Maximum power rating in kVA",
             "schema": {
-              "example": 100,
-              "type": "number"
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          {
+            "name": "minPower",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          {
+            "name": "maxPower",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "items": {
+                "type": "number"
+              }
             }
           },
           {
             "name": "voltage",
             "required": false,
             "in": "query",
-            "description": "Filter by voltage string",
-            "schema": {
-              "example": "230V",
-              "type": "string"
-            }
+            "schema": {}
           },
           {
             "name": "phase",
             "required": false,
             "in": "query",
             "schema": {
-              "example": "3phase",
-              "type": "string",
-              "enum": ["1phase", "3phase", "multi_phase"]
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": ["1phase", "3phase", "multi_phase"]
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           },
           {
@@ -3062,9 +3092,15 @@
             "required": false,
             "in": "query",
             "schema": {
-              "example": "diesel",
-              "type": "string",
-              "enum": ["diesel", "gasoline", "gas"]
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": ["diesel", "gasoline", "gas"]
+                },
+                {
+                  "type": "null"
+                }
+              ]
             }
           },
           {
@@ -3072,17 +3108,57 @@
             "required": false,
             "in": "query",
             "schema": {
-              "example": "silent",
-              "type": "string",
-              "enum": [
-                "silent",
-                "super_silent",
-                "open_frame",
-                "closed_case",
-                "tower",
-                "rackmount"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "silent",
+                    "super_silent",
+                    "open_frame",
+                    "closed_case",
+                    "tower",
+                    "rackmount"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
               ]
             }
+          },
+          {
+            "name": "engineBrand",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "alternatorBrand",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": ["active", "outOfStock", "all", "ACTIVE", "INACTIVE"]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "name": "isQuoteOnly",
+            "required": false,
+            "in": "query",
+            "schema": {}
           },
           {
             "name": "sort",
@@ -3090,64 +3166,8 @@
             "in": "query",
             "schema": {
               "default": "newest",
-              "example": "newest",
               "type": "string",
               "enum": ["newest", "priceAsc", "priceDesc"]
-            }
-          },
-          {
-            "name": "minPower",
-            "required": false,
-            "in": "query",
-            "description": "Minimum power in kVA (alias for powerKvaMin)",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "maxPower",
-            "required": false,
-            "in": "query",
-            "description": "Maximum power in kVA (alias for powerKvaMax)",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "engineBrand",
-            "required": false,
-            "in": "query",
-            "description": "Filter by engine brand",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "alternatorBrand",
-            "required": false,
-            "in": "query",
-            "description": "Filter by alternator brand",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "description": "Stock/lifecycle status",
-            "schema": {
-              "type": "string",
-              "enum": ["active", "outOfStock", "all"]
-            }
-          },
-          {
-            "name": "isQuoteOnly",
-            "required": false,
-            "in": "query",
-            "description": "Filter products marked for quote only",
-            "schema": {
-              "type": "boolean"
             }
           }
         ],
@@ -8190,53 +8210,51 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "nameVi": {
-            "type": "string",
-            "example": "Máy phát điện công nghiệp"
+            "type": "string"
           },
           "nameEn": {
-            "type": ["string", "null"],
-            "example": "Industrial Generators"
+            "type": ["string", "null"]
           },
           "slug": {
-            "type": "string",
-            "example": "may-phat-dien-cong-nghiep"
+            "type": "string"
           },
           "parentId": {
-            "type": ["string", "null"],
-            "example": null,
-            "description": "Parent category ID or null if root"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "descriptionVi": {
-            "type": ["string", "null"],
-            "example": "Mô tả danh mục"
+            "type": ["string", "null"]
           },
           "descriptionEn": {
-            "type": ["string", "null"],
-            "example": "Category description"
+            "type": ["string", "null"]
           },
           "image": {
-            "type": ["string", "null"],
-            "example": "https://res.cloudinary.com/hyundai/image/upload/cat.jpg"
+            "type": ["string", "null"]
           },
           "isActive": {
-            "type": "boolean",
-            "example": true
+            "type": "boolean"
           },
           "createdAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "updatedAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "children": {
-            "description": "Recursive child categories tree",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CategoryResponseDto"
@@ -8246,7 +8264,12 @@
         "required": [
           "id",
           "nameVi",
+          "nameEn",
           "slug",
+          "parentId",
+          "descriptionVi",
+          "descriptionEn",
+          "image",
           "isActive",
           "createdAt",
           "updatedAt"
@@ -8256,363 +8279,640 @@
         "type": "object",
         "properties": {
           "nameVi": {
-            "type": "string",
-            "example": "Máy phát điện công nghiệp",
-            "description": "Category name in Vietnamese"
+            "type": "string"
           },
           "nameEn": {
-            "type": "string",
-            "example": "Industrial Generators",
-            "description": "Category name in English"
+            "type": ["string", "null"]
           },
           "slug": {
             "type": "string",
-            "example": "may-phat-dien-cong-nghiep",
-            "description": "Unique URL slug"
+            "minLength": 2,
+            "maxLength": 255,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
           },
           "parentId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-            "description": "Parent category UUID for hierarchical trees"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "descriptionVi": {
-            "type": "string",
-            "example": "Dòng máy phát điện công suất lớn từ 20kVA đến 2500kVA"
+            "type": ["string", "null"]
           },
           "descriptionEn": {
-            "type": "string",
-            "example": "Heavy-duty industrial generator sets from 20kVA to 2500kVA"
+            "type": ["string", "null"]
           },
           "image": {
-            "type": "string",
-            "example": "https://res.cloudinary.com/hyundai/image/upload/category.jpg"
+            "type": ["string", "null"]
           },
           "isActive": {
-            "type": "boolean",
-            "example": true,
-            "default": true
+            "default": true,
+            "type": "boolean"
           }
         },
-        "required": ["nameVi", "slug"]
+        "required": ["nameVi", "slug"],
+        "additionalProperties": false
       },
       "UpdateCategoryDto": {
         "type": "object",
         "properties": {
           "nameVi": {
-            "type": "string",
-            "example": "Máy phát điện công nghiệp cập nhật"
+            "type": "string"
           },
           "nameEn": {
-            "type": "string",
-            "example": "Updated Industrial Generators"
+            "type": ["string", "null"]
           },
           "slug": {
             "type": "string",
-            "example": "may-phat-dien-cong-nghiep-moi"
+            "minLength": 2,
+            "maxLength": 255,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
           },
           "parentId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "descriptionVi": {
-            "type": "string",
-            "example": "Mô tả mới"
+            "type": ["string", "null"]
           },
           "descriptionEn": {
-            "type": "string",
-            "example": "New description"
+            "type": ["string", "null"]
           },
           "image": {
-            "type": "string",
-            "example": "https://example.com/new-image.jpg"
+            "type": ["string", "null"]
           },
           "isActive": {
-            "type": "boolean",
-            "example": true
+            "type": "boolean"
           }
-        }
+        },
+        "additionalProperties": false
       },
       "BrandResponseDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "name": {
-            "type": "string",
-            "example": "Hyundai Power"
+            "type": "string"
           },
           "slug": {
-            "type": "string",
-            "example": "hyundai-power"
+            "type": "string"
           },
           "logo": {
-            "type": ["string", "null"],
-            "example": "https://res.cloudinary.com/hyundai/image/upload/logo.png"
+            "type": ["string", "null"]
           },
           "descriptionVi": {
-            "type": ["string", "null"],
-            "example": "Thương hiệu thiết bị năng lượng hàng đầu"
+            "type": ["string", "null"]
           },
           "descriptionEn": {
-            "type": ["string", "null"],
-            "example": "Leading power equipment brand"
+            "type": ["string", "null"]
           },
           "isActive": {
-            "type": "boolean",
-            "example": true
+            "type": "boolean"
           },
           "createdAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "updatedAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           }
         },
-        "required": ["id", "name", "slug", "isActive", "createdAt", "updatedAt"]
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "logo",
+          "descriptionVi",
+          "descriptionEn",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ]
       },
       "CreateBrandDto": {
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "example": "Hyundai Power",
-            "description": "Brand name"
+            "type": "string"
           },
           "slug": {
             "type": "string",
-            "example": "hyundai-power",
-            "description": "Brand URL slug"
+            "minLength": 2,
+            "maxLength": 255,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
           },
           "logo": {
-            "type": "string",
-            "example": "https://res.cloudinary.com/hyundai/image/upload/logo.png"
+            "type": ["string", "null"]
           },
           "descriptionVi": {
-            "type": "string",
-            "example": "Thương hiệu thiết bị năng lượng và máy phát điện hàng đầu Hàn Quốc"
+            "type": ["string", "null"]
           },
           "descriptionEn": {
-            "type": "string",
-            "example": "Leading Korean power equipment and generator manufacturer"
+            "type": ["string", "null"]
           },
           "isActive": {
-            "type": "boolean",
-            "example": true,
-            "default": true
+            "default": true,
+            "type": "boolean"
           }
         },
-        "required": ["name", "slug"]
+        "required": ["name", "slug"],
+        "additionalProperties": false
       },
       "UpdateBrandDto": {
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "example": "Hyundai Power Vietnam"
+            "type": "string"
           },
           "slug": {
             "type": "string",
-            "example": "hyundai-power-vietnam"
+            "minLength": 2,
+            "maxLength": 255,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
           },
           "logo": {
-            "type": "string",
-            "example": "https://example.com/new-logo.png"
+            "type": ["string", "null"]
           },
           "descriptionVi": {
-            "type": "string",
-            "example": "Mô tả thương hiệu mới"
+            "type": ["string", "null"]
           },
           "descriptionEn": {
-            "type": "string",
-            "example": "New brand description"
+            "type": ["string", "null"]
           },
           "isActive": {
-            "type": "boolean",
-            "example": true
+            "type": "boolean"
           }
-        }
+        },
+        "additionalProperties": false
+      },
+      "ProductResponseDto__schema0": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "attrs": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductResponseDto__schema0"
+            }
+          },
+          "marks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "attrs": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {}
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": {}
+            }
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {}
+      },
+      "ProductResponseDto__schema1": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "nameVi": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": ["string", "null"]
+          },
+          "slug": {
+            "type": "string"
+          },
+          "parentId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "descriptionVi": {
+            "type": ["string", "null"]
+          },
+          "descriptionEn": {
+            "type": ["string", "null"]
+          },
+          "image": {
+            "type": ["string", "null"]
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductResponseDto__schema1"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "nameVi",
+          "nameEn",
+          "slug",
+          "parentId",
+          "descriptionVi",
+          "descriptionEn",
+          "image",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ]
       },
       "ProductResponseDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "nameVi": {
-            "type": "string",
-            "example": "Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha"
+            "type": "string"
           },
           "nameEn": {
-            "type": ["string", "null"],
-            "example": "Hyundai DHY65KSE 60kVA 3-Phase Diesel Generator"
+            "type": ["string", "null"]
           },
           "slug": {
-            "type": "string",
-            "example": "may-phat-dien-diesel-hyundai-dhy65kse"
+            "type": "string"
           },
           "price": {
-            "type": "string",
-            "example": "245000000.00"
+            "type": "string"
           },
           "isQuoteOnly": {
-            "type": "boolean",
-            "example": false,
-            "description": "Whether the product requires quotation request (price <= 0)"
+            "type": "boolean"
           },
           "descriptionVi": {
-            "type": ["object", "null"],
-            "example": null
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProductResponseDto__schema0"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "descriptionEn": {
-            "type": ["object", "null"],
-            "example": null
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProductResponseDto__schema0"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "shortDescriptionVi": {
-            "type": ["string", "null"],
-            "example": "Máy phát điện 60kVA vỏ chống ồn"
+            "type": ["string", "null"]
           },
           "shortDescriptionEn": {
-            "type": ["string", "null"],
-            "example": "60kVA diesel generator"
+            "type": ["string", "null"]
           },
           "images": {
-            "example": [
-              "https://res.cloudinary.com/hyundai/image/upload/dhy65kse.jpg"
-            ],
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "brandId": {
-            "type": ["string", "null"],
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "categoryId": {
-            "type": ["string", "null"],
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "productType": {
             "type": "string",
-            "enum": ["generator", "ups", "ats", "accessory"],
-            "example": "generator"
+            "enum": ["generator", "ups", "ats", "accessory"]
           },
           "powerKva": {
-            "type": ["string", "null"],
-            "example": "60.00"
+            "type": ["string", "null"]
           },
           "powerKw": {
-            "type": ["string", "null"],
-            "example": "48.00"
+            "type": ["string", "null"]
           },
           "standbyPowerKva": {
-            "type": ["string", "null"],
-            "example": "66.00"
+            "type": ["string", "null"]
           },
           "standbyPowerKw": {
-            "type": ["string", "null"],
-            "example": "52.80"
+            "type": ["string", "null"]
           },
           "phase": {
-            "type": ["string", "null"],
-            "enum": ["1phase", "3phase", "multi_phase", null],
-            "example": "3phase"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["1phase", "3phase", "multi_phase"]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "voltage": {
-            "type": ["string", "null"],
-            "example": "230/400V"
+            "type": ["string", "null"]
           },
           "frequency": {
-            "type": ["number", "null"],
-            "example": 50
+            "type": ["number", "null"]
           },
           "fuelType": {
-            "type": ["string", "null"],
-            "enum": ["diesel", "gasoline", "gas", null],
-            "example": "diesel"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["diesel", "gasoline", "gas"]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "canopyType": {
-            "type": ["string", "null"],
-            "enum": [
-              "silent",
-              "super_silent",
-              "open_frame",
-              "closed_case",
-              "tower",
-              "rackmount",
-              null
-            ],
-            "example": "silent"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "silent",
+                  "super_silent",
+                  "open_frame",
+                  "closed_case",
+                  "tower",
+                  "rackmount"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "startMethod": {
-            "type": ["string", "null"],
-            "enum": ["electric", "recoil", "remote", "auto_ats", null],
-            "example": "electric"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["electric", "recoil", "remote", "auto_ats"]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "engineBrand": {
-            "type": ["string", "null"],
-            "example": "Hyundai"
+            "type": ["string", "null"]
           },
           "alternatorBrand": {
-            "type": ["string", "null"],
-            "example": "Hyundai"
+            "type": ["string", "null"]
           },
           "upsTopology": {
-            "type": ["string", "null"],
-            "enum": [
-              "offline",
-              "line_interactive",
-              "online_double_conversion",
-              null
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "offline",
+                  "line_interactive",
+                  "online_double_conversion"
+                ]
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "upsBatteryType": {
-            "type": ["string", "null"],
-            "enum": ["internal", "external", null]
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["internal", "external"]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "specSheet": {
-            "type": "object",
-            "example": []
-          },
-          "specs": {
-            "type": "object",
-            "example": {
-              "model": "DHY65KSE"
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "groupKey": {
+                  "type": "string"
+                },
+                "titleVi": {
+                  "type": "string"
+                },
+                "titleEn": {
+                  "type": "string"
+                },
+                "order": {
+                  "default": 0,
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "nameVi": {
+                        "type": "string"
+                      },
+                      "nameEn": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "unit": {
+                        "type": ["string", "null"]
+                      }
+                    },
+                    "required": ["key", "nameVi", "value"]
+                  }
+                }
+              },
+              "required": ["groupKey", "titleVi", "items"]
             }
           },
+          "specs": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "model": {
+                "type": "string"
+              },
+              "origin": {
+                "type": "string"
+              },
+              "engineModel": {
+                "type": "string"
+              },
+              "alternatorModel": {
+                "type": "string"
+              },
+              "controller": {
+                "type": "string"
+              },
+              "dimensions": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "string"
+              },
+              "noiseLevel": {
+                "type": "string"
+              },
+              "fuelConsumption": {
+                "type": "string"
+              },
+              "warranty": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": {}
+          },
           "totalStockCache": {
-            "type": "number",
-            "example": 5
+            "type": "number"
           },
           "totalSalesCache": {
-            "type": "number",
-            "example": 0
+            "type": "number"
           },
           "isActive": {
-            "type": "boolean",
-            "example": true
+            "type": "boolean"
           },
           "createdAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "updatedAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "brand": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/BrandResponseDto"
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "slug": {
+                    "type": "string"
+                  },
+                  "logo": {
+                    "type": ["string", "null"]
+                  },
+                  "descriptionVi": {
+                    "type": ["string", "null"]
+                  },
+                  "descriptionEn": {
+                    "type": ["string", "null"]
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "slug",
+                  "logo",
+                  "descriptionVi",
+                  "descriptionEn",
+                  "isActive",
+                  "createdAt",
+                  "updatedAt"
+                ]
               },
               {
                 "type": "null"
@@ -8622,7 +8922,7 @@
           "category": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CategoryResponseDto"
+                "$ref": "#/components/schemas/ProductResponseDto__schema1"
               },
               {
                 "type": "null"
@@ -8633,12 +8933,31 @@
         "required": [
           "id",
           "nameVi",
+          "nameEn",
           "slug",
           "price",
           "isQuoteOnly",
+          "shortDescriptionVi",
+          "shortDescriptionEn",
           "images",
+          "brandId",
+          "categoryId",
+          "productType",
+          "powerKva",
+          "powerKw",
+          "standbyPowerKva",
+          "standbyPowerKw",
+          "phase",
+          "voltage",
+          "frequency",
+          "fuelType",
+          "canopyType",
+          "startMethod",
+          "engineBrand",
+          "alternatorBrand",
+          "upsTopology",
+          "upsBatteryType",
           "specSheet",
-          "specs",
           "totalStockCache",
           "totalSalesCache",
           "isActive",
@@ -8646,129 +8965,119 @@
           "updatedAt"
         ]
       },
-      "BrandFacetItem": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
-          },
-          "name": {
-            "type": "string",
-            "example": "Hyundai Power"
-          },
-          "count": {
-            "type": "number",
-            "example": 42
-          }
-        },
-        "required": ["id", "name", "count"]
-      },
-      "CategoryFacetItem": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90"
-          },
-          "nameVi": {
-            "type": "string",
-            "example": "Máy phát điện"
-          },
-          "nameEn": {
-            "type": ["string", "null"],
-            "example": "Generators"
-          },
-          "count": {
-            "type": "number",
-            "example": 35
-          }
-        },
-        "required": ["id", "nameVi", "nameEn", "count"]
-      },
-      "RangeFacet": {
-        "type": "object",
-        "properties": {
-          "min": {
-            "type": "number",
-            "example": 10
-          },
-          "max": {
-            "type": "number",
-            "example": 2500
-          }
-        },
-        "required": ["min", "max"]
-      },
-      "ValueCountFacetItem": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string",
-            "example": "diesel"
-          },
-          "count": {
-            "type": "number",
-            "example": 28
-          }
-        },
-        "required": ["value", "count"]
-      },
       "ProductMetadataResponseDto": {
         "type": "object",
         "properties": {
           "brands": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/BrandFacetItem"
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "number"
+                }
+              },
+              "required": ["id", "name", "count"]
             }
           },
           "categories": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CategoryFacetItem"
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "nameVi": {
+                  "type": "string"
+                },
+                "nameEn": {
+                  "type": ["string", "null"]
+                },
+                "count": {
+                  "type": "number"
+                }
+              },
+              "required": ["id", "nameVi", "nameEn", "count"]
             }
           },
           "powerRange": {
-            "example": {
-              "min": 10,
-              "max": 2500
-            },
-            "description": "Power range in kVA",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/RangeFacet"
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
               }
-            ]
+            },
+            "required": ["min", "max"]
           },
           "priceRange": {
-            "example": {
-              "min": 15000000,
-              "max": 850000000
-            },
-            "description": "Price range in VND",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/RangeFacet"
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
               }
-            ]
+            },
+            "required": ["min", "max"]
           },
           "fuelTypes": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ValueCountFacetItem"
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "number"
+                }
+              },
+              "required": ["value", "count"]
             }
           },
           "phases": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ValueCountFacetItem"
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "number"
+                }
+              },
+              "required": ["value", "count"]
             }
           },
           "canopyTypes": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ValueCountFacetItem"
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "number"
+                }
+              },
+              "required": ["value", "count"]
             }
           }
         },
@@ -8782,374 +9091,768 @@
           "canopyTypes"
         ]
       },
+      "CreateProductDto__schema0": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "attrs": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateProductDto__schema0"
+            }
+          },
+          "marks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "attrs": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {}
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": {}
+            }
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {}
+      },
       "CreateProductDto": {
         "type": "object",
         "properties": {
           "nameVi": {
-            "type": "string",
-            "example": "Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha"
+            "type": "string"
           },
           "nameEn": {
-            "type": "string",
-            "example": "Hyundai DHY65KSE 60kVA 3-Phase Diesel Generator"
+            "type": ["string", "null"]
           },
           "slug": {
             "type": "string",
-            "example": "may-phat-dien-diesel-hyundai-dhy65kse"
+            "minLength": 2,
+            "maxLength": 255,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
           },
           "price": {
+            "default": 0,
             "type": "number",
-            "example": 245000000
+            "minimum": 0
           },
           "descriptionVi": {
-            "type": "object",
-            "example": {
-              "type": "doc",
-              "content": []
-            }
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateProductDto__schema0"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "descriptionEn": {
-            "type": "object",
-            "example": {
-              "type": "doc",
-              "content": []
-            }
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateProductDto__schema0"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "shortDescriptionVi": {
-            "type": "string",
-            "example": "Máy phát điện 60kVA vỏ chống ồn đồng bộ"
+            "type": ["string", "null"]
           },
           "shortDescriptionEn": {
-            "type": "string",
-            "example": "60kVA diesel generator with soundproof canopy"
+            "type": ["string", "null"]
           },
           "images": {
-            "example": [
-              "https://res.cloudinary.com/hyundai/image/upload/dhy65kse.jpg"
-            ],
-            "default": [],
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "brandId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
-          },
-          "categoryId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90"
-          },
-          "productType": {
-            "type": "string",
-            "enum": ["generator", "ups", "ats", "accessory"],
-            "default": "generator"
-          },
-          "powerKva": {
-            "type": "number",
-            "example": 60
-          },
-          "powerKw": {
-            "type": "number",
-            "example": 48
-          },
-          "standbyPowerKva": {
-            "type": "number",
-            "example": 66
-          },
-          "standbyPowerKw": {
-            "type": "number",
-            "example": 52.8
-          },
-          "phase": {
-            "type": "string",
-            "enum": ["1phase", "3phase", "multi_phase"],
-            "example": "3phase"
-          },
-          "voltage": {
-            "type": "string",
-            "example": "230/400V"
-          },
-          "frequency": {
-            "type": "number",
-            "example": 50,
-            "default": 50
-          },
-          "fuelType": {
-            "type": "string",
-            "enum": ["diesel", "gasoline", "gas"],
-            "example": "diesel"
-          },
-          "canopyType": {
-            "type": "string",
-            "enum": [
-              "silent",
-              "super_silent",
-              "open_frame",
-              "closed_case",
-              "tower",
-              "rackmount"
-            ],
-            "example": "silent"
-          },
-          "startMethod": {
-            "type": "string",
-            "enum": ["electric", "recoil", "remote", "auto_ats"],
-            "example": "electric"
-          },
-          "engineBrand": {
-            "type": "string",
-            "example": "Hyundai"
-          },
-          "alternatorBrand": {
-            "type": "string",
-            "example": "Hyundai"
-          },
-          "upsTopology": {
-            "type": "string",
-            "enum": ["offline", "line_interactive", "online_double_conversion"]
-          },
-          "upsBatteryType": {
-            "type": "string",
-            "enum": ["internal", "external"]
-          },
-          "specSheet": {
-            "type": "object",
-            "example": [
+            "anyOf": [
               {
-                "groupKey": "general",
-                "titleVi": "Thông số chung",
-                "order": 1,
-                "items": [
-                  {
-                    "key": "model",
-                    "nameVi": "Model",
-                    "value": "DHY65KSE"
-                  }
-                ]
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
               }
             ]
           },
-          "specs": {
-            "type": "object",
-            "example": {
-              "model": "DHY65KSE",
-              "origin": "Hàn Quốc",
-              "dimensions": "2250 x 950 x 1300 mm",
-              "weight": "1150 kg"
+          "categoryId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "productType": {
+            "default": "generator",
+            "type": "string",
+            "enum": ["generator", "ups", "ats", "accessory"]
+          },
+          "powerKva": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "powerKw": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "standbyPowerKva": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "standbyPowerKw": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "phase": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["1phase", "3phase", "multi_phase"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "voltage": {
+            "type": ["string", "null"]
+          },
+          "frequency": {
+            "default": 50,
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "fuelType": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["diesel", "gasoline", "gas"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "canopyType": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "silent",
+                  "super_silent",
+                  "open_frame",
+                  "closed_case",
+                  "tower",
+                  "rackmount"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "startMethod": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["electric", "recoil", "remote", "auto_ats"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "engineBrand": {
+            "type": ["string", "null"]
+          },
+          "alternatorBrand": {
+            "type": ["string", "null"]
+          },
+          "upsTopology": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "offline",
+                  "line_interactive",
+                  "online_double_conversion"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "upsBatteryType": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["internal", "external"]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "specSheet": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "groupKey": {
+                  "type": "string"
+                },
+                "titleVi": {
+                  "type": "string"
+                },
+                "titleEn": {
+                  "type": "string"
+                },
+                "order": {
+                  "default": 0,
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "nameVi": {
+                        "type": "string"
+                      },
+                      "nameEn": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "unit": {
+                        "type": ["string", "null"]
+                      }
+                    },
+                    "required": ["key", "nameVi", "value"]
+                  }
+                }
+              },
+              "required": ["groupKey", "titleVi", "items"]
             }
           },
-          "totalStockCache": {
-            "type": "number",
-            "example": 5,
-            "default": 0
+          "specs": {
+            "default": {},
+            "type": "object",
+            "properties": {
+              "model": {
+                "type": "string"
+              },
+              "origin": {
+                "type": "string"
+              },
+              "engineModel": {
+                "type": "string"
+              },
+              "alternatorModel": {
+                "type": "string"
+              },
+              "controller": {
+                "type": "string"
+              },
+              "dimensions": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "string"
+              },
+              "noiseLevel": {
+                "type": "string"
+              },
+              "fuelConsumption": {
+                "type": "string"
+              },
+              "warranty": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": {}
           },
-          "isActive": {
-            "type": "boolean",
-            "example": true,
-            "default": true
+          "totalStockCache": {
+            "default": 0,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
           },
           "isQuoteOnly": {
-            "type": "boolean",
-            "example": false,
-            "default": false
+            "default": false,
+            "type": "boolean"
+          },
+          "isActive": {
+            "default": true,
+            "type": "boolean"
           }
         },
-        "required": ["nameVi", "slug", "price"]
+        "required": ["nameVi", "slug"],
+        "additionalProperties": false
+      },
+      "UpdateProductDto__schema0": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "attrs": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpdateProductDto__schema0"
+            }
+          },
+          "marks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "attrs": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
+                  "additionalProperties": {}
+                }
+              },
+              "required": ["type"],
+              "additionalProperties": {}
+            }
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {}
       },
       "UpdateProductDto": {
         "type": "object",
         "properties": {
           "nameVi": {
-            "type": "string",
-            "example": "Máy phát điện cập nhật"
+            "type": "string"
           },
           "nameEn": {
-            "type": "string",
-            "example": "Updated Generator"
+            "type": ["string", "null"]
           },
           "slug": {
             "type": "string",
-            "example": "may-phat-dien-cap-nhat"
+            "minLength": 2,
+            "maxLength": 255,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
           },
           "price": {
             "type": "number",
-            "example": 250000000
+            "minimum": 0
           },
           "descriptionVi": {
-            "type": "object",
-            "example": {
-              "type": "doc",
-              "content": []
-            }
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UpdateProductDto__schema0"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "descriptionEn": {
-            "type": "object",
-            "example": {
-              "type": "doc",
-              "content": []
-            }
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UpdateProductDto__schema0"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "shortDescriptionVi": {
-            "type": "string",
-            "example": "Mô tả ngắn mới"
+            "type": ["string", "null"]
           },
           "shortDescriptionEn": {
-            "type": "string",
-            "example": "New short description"
+            "type": ["string", "null"]
           },
           "images": {
-            "example": [],
             "type": "array",
             "items": {
               "type": "string"
             }
           },
           "brandId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "categoryId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "productType": {
             "type": "string",
             "enum": ["generator", "ups", "ats", "accessory"]
           },
           "powerKva": {
-            "type": "number",
-            "example": 65
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "powerKw": {
-            "type": "number",
-            "example": 52
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "standbyPowerKva": {
-            "type": "number",
-            "example": 70
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "standbyPowerKw": {
-            "type": "number",
-            "example": 56
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "phase": {
-            "type": "string",
-            "enum": ["1phase", "3phase", "multi_phase"]
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["1phase", "3phase", "multi_phase"]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "voltage": {
-            "type": "string",
-            "example": "230/400V"
+            "type": ["string", "null"]
           },
           "frequency": {
-            "type": "number",
-            "example": 50
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
           },
           "fuelType": {
-            "type": "string",
-            "enum": ["diesel", "gasoline", "gas"]
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["diesel", "gasoline", "gas"]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "canopyType": {
-            "type": "string",
-            "enum": [
-              "silent",
-              "super_silent",
-              "open_frame",
-              "closed_case",
-              "tower",
-              "rackmount"
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "silent",
+                  "super_silent",
+                  "open_frame",
+                  "closed_case",
+                  "tower",
+                  "rackmount"
+                ]
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "startMethod": {
-            "type": "string",
-            "enum": ["electric", "recoil", "remote", "auto_ats"]
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["electric", "recoil", "remote", "auto_ats"]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "engineBrand": {
-            "type": "string",
-            "example": "Hyundai"
+            "type": ["string", "null"]
           },
           "alternatorBrand": {
-            "type": "string",
-            "example": "Hyundai"
+            "type": ["string", "null"]
           },
           "upsTopology": {
-            "type": "string",
-            "enum": ["offline", "line_interactive", "online_double_conversion"]
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "offline",
+                  "line_interactive",
+                  "online_double_conversion"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "upsBatteryType": {
-            "type": "string",
-            "enum": ["internal", "external"]
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["internal", "external"]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "specSheet": {
-            "type": "object",
-            "example": []
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "groupKey": {
+                  "type": "string"
+                },
+                "titleVi": {
+                  "type": "string"
+                },
+                "titleEn": {
+                  "type": "string"
+                },
+                "order": {
+                  "default": 0,
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "nameVi": {
+                        "type": "string"
+                      },
+                      "nameEn": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "unit": {
+                        "type": ["string", "null"]
+                      }
+                    },
+                    "required": ["key", "nameVi", "value"]
+                  }
+                }
+              },
+              "required": ["groupKey", "titleVi", "items"]
+            }
           },
           "specs": {
             "type": "object",
-            "example": {
-              "model": "DHY65KSE"
-            }
+            "properties": {
+              "model": {
+                "type": "string"
+              },
+              "origin": {
+                "type": "string"
+              },
+              "engineModel": {
+                "type": "string"
+              },
+              "alternatorModel": {
+                "type": "string"
+              },
+              "controller": {
+                "type": "string"
+              },
+              "dimensions": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "string"
+              },
+              "noiseLevel": {
+                "type": "string"
+              },
+              "fuelConsumption": {
+                "type": "string"
+              },
+              "warranty": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": {}
           },
           "totalStockCache": {
-            "type": "number",
-            "example": 10
-          },
-          "isActive": {
-            "type": "boolean",
-            "example": true
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
           },
           "isQuoteOnly": {
-            "type": "boolean",
-            "example": false
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
           }
-        }
+        },
+        "additionalProperties": false
       },
       "WarehouseResponseDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "nameVi": {
-            "type": "string",
-            "example": "Kho Tổng Hà Nội"
+            "type": "string"
           },
           "nameEn": {
-            "type": ["string", "null"],
-            "example": "Hanoi Central Warehouse"
+            "type": ["string", "null"]
           },
           "streetAddress": {
-            "type": "string",
-            "example": "Lô CN-01, Khu Công Nghiệp Đài Tư, 386 Nguyễn Văn Linh"
+            "type": "string"
           },
           "district": {
-            "type": "string",
-            "example": "Long Biên"
+            "type": "string"
           },
           "city": {
-            "type": "string",
-            "example": "Hà Nội"
+            "type": "string"
           },
           "isActive": {
-            "type": "boolean",
-            "example": true
+            "type": "boolean"
           },
           "createdAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "updatedAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           }
         },
         "required": [
           "id",
           "nameVi",
+          "nameEn",
           "streetAddress",
           "district",
           "city",
@@ -9158,80 +9861,83 @@
           "updatedAt"
         ]
       },
-      "StockProductItemDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
-          },
-          "nameVi": {
-            "type": "string",
-            "example": "Máy phát điện Diesel Hyundai DHY65KSE"
-          },
-          "slug": {
-            "type": "string",
-            "example": "may-phat-dien-diesel-hyundai-dhy65kse"
-          },
-          "totalStockCache": {
-            "type": "number",
-            "example": 15
-          }
-        },
-        "required": ["id", "nameVi", "slug", "totalStockCache"]
-      },
-      "StockWarehouseItemDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
-          },
-          "nameVi": {
-            "type": "string",
-            "example": "Kho Tổng Hà Nội"
-          },
-          "city": {
-            "type": "string",
-            "example": "Hà Nội"
-          }
-        },
-        "required": ["id", "nameVi", "city"]
-      },
       "WarehouseStockResponseDto": {
         "type": "object",
         "properties": {
           "warehouseId": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "productId": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "stock": {
-            "type": "number",
-            "example": 10
+            "type": "number"
           },
           "minStockWarning": {
-            "type": "number",
-            "example": 2
+            "type": "number"
           },
           "createdAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "updatedAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "product": {
-            "$ref": "#/components/schemas/StockProductItemDto"
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "nameVi": {
+                    "type": "string"
+                  },
+                  "slug": {
+                    "type": "string"
+                  },
+                  "totalStockCache": {
+                    "type": "number"
+                  }
+                },
+                "required": ["id", "nameVi", "slug", "totalStockCache"]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "warehouse": {
-            "$ref": "#/components/schemas/StockWarehouseItemDto"
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  },
+                  "nameVi": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  }
+                },
+                "required": ["id", "nameVi", "city"]
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -9247,240 +9953,200 @@
         "type": "object",
         "properties": {
           "nameVi": {
-            "type": "string",
-            "example": "Kho Tổng Hà Nội",
-            "description": "Warehouse name in Vietnamese"
+            "type": "string"
           },
           "nameEn": {
-            "type": "string",
-            "example": "Hanoi Central Warehouse",
-            "description": "Warehouse name in English"
+            "type": ["string", "null"]
           },
           "streetAddress": {
-            "type": "string",
-            "example": "Lô CN-01, Khu Công Nghiệp Đài Tư, 386 Nguyễn Văn Linh",
-            "description": "Street address"
+            "type": "string"
           },
           "district": {
-            "type": "string",
-            "example": "Long Biên",
-            "description": "District / County"
+            "type": "string"
           },
           "city": {
-            "type": "string",
-            "example": "Hà Nội",
-            "description": "City / Province"
+            "type": "string"
           },
           "isActive": {
-            "type": "boolean",
-            "example": true,
             "default": true,
-            "description": "Active status"
+            "type": "boolean"
           }
         },
-        "required": ["nameVi", "streetAddress", "district", "city"]
+        "required": ["nameVi", "streetAddress", "district", "city"],
+        "additionalProperties": false
       },
       "UpdateStockDto": {
         "type": "object",
         "properties": {
           "productId": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-            "description": "Product UUID"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "stock": {
-            "type": "number",
-            "example": 10,
-            "description": "Physical stock quantity available in this warehouse",
-            "minimum": 0
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
           },
           "minStockWarning": {
-            "type": "number",
-            "example": 2,
             "default": 2,
-            "description": "Threshold quantity to trigger low-stock warning",
-            "minimum": 0
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
           }
         },
-        "required": ["productId", "stock"]
+        "required": ["productId", "stock"],
+        "additionalProperties": false
       },
       "UpdateWarehouseDto": {
         "type": "object",
         "properties": {
           "nameVi": {
-            "type": "string",
-            "example": "Kho Tổng Hà Nội Cập Nhật"
+            "type": "string"
           },
           "nameEn": {
-            "type": "string",
-            "example": "Hanoi Main Warehouse Updated"
+            "type": ["string", "null"]
           },
           "streetAddress": {
-            "type": "string",
-            "example": "386 Nguyễn Văn Linh"
+            "type": "string"
           },
           "district": {
-            "type": "string",
-            "example": "Long Biên"
+            "type": "string"
           },
           "city": {
-            "type": "string",
-            "example": "Hà Nội"
+            "type": "string"
           },
           "isActive": {
-            "type": "boolean",
-            "example": true
+            "type": "boolean"
           }
-        }
+        },
+        "additionalProperties": false
       },
       "Object": {
         "type": "object",
         "properties": {}
-      },
-      "CartProductSummaryDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
-          },
-          "nameVi": {
-            "type": "string",
-            "example": "Máy phát điện Diesel Hyundai DHY65KSE 60kVA"
-          },
-          "nameEn": {
-            "type": ["string", "null"],
-            "example": "Hyundai DHY65KSE 60kVA Generator"
-          },
-          "slug": {
-            "type": "string",
-            "example": "may-phat-dien-diesel-hyundai-dhy65kse"
-          },
-          "price": {
-            "type": "string",
-            "example": "245000000.00"
-          },
-          "images": {
-            "example": [
-              "https://res.cloudinary.com/hyundai/image/upload/dhy65kse.jpg"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "totalStockCache": {
-            "type": "number",
-            "example": 10
-          },
-          "isActive": {
-            "type": "boolean",
-            "example": true
-          },
-          "isOutOfStock": {
-            "type": "boolean",
-            "example": false
-          }
-        },
-        "required": [
-          "id",
-          "nameVi",
-          "slug",
-          "price",
-          "images",
-          "totalStockCache",
-          "isActive",
-          "isOutOfStock"
-        ]
-      },
-      "CartItemResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
-          },
-          "productId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 2
-          },
-          "lineTotal": {
-            "type": "string",
-            "example": "490000000.00"
-          },
-          "product": {
-            "$ref": "#/components/schemas/CartProductSummaryDto"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
-          }
-        },
-        "required": [
-          "id",
-          "productId",
-          "quantity",
-          "lineTotal",
-          "product",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "CartSummaryDto": {
-        "type": "object",
-        "properties": {
-          "totalItems": {
-            "type": "number",
-            "example": 3,
-            "description": "Total quantity of items in cart"
-          },
-          "totalAmount": {
-            "type": "string",
-            "example": "735000000.00",
-            "description": "Total monetary amount of cart items"
-          }
-        },
-        "required": ["totalItems", "totalAmount"]
       },
       "CartResponseDto": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "userId": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb90"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "items": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CartItemResponseDto"
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "productId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "quantity": {
+                  "type": "number"
+                },
+                "lineTotal": {
+                  "type": "string"
+                },
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "nameVi": {
+                      "type": "string"
+                    },
+                    "nameEn": {
+                      "type": ["string", "null"]
+                    },
+                    "slug": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "string"
+                    },
+                    "images": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "totalStockCache": {
+                      "type": "number"
+                    },
+                    "isActive": {
+                      "type": "boolean"
+                    },
+                    "isOutOfStock": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "nameVi",
+                    "nameEn",
+                    "slug",
+                    "price",
+                    "images",
+                    "totalStockCache",
+                    "isActive",
+                    "isOutOfStock"
+                  ]
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "id",
+                "productId",
+                "quantity",
+                "lineTotal",
+                "product",
+                "createdAt",
+                "updatedAt"
+              ]
             }
           },
           "summary": {
-            "$ref": "#/components/schemas/CartSummaryDto"
+            "type": "object",
+            "properties": {
+              "totalItems": {
+                "type": "number"
+              },
+              "totalAmount": {
+                "type": "string"
+              }
+            },
+            "required": ["totalItems", "totalAmount"]
           },
           "createdAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           },
           "updatedAt": {
-            "format": "date-time",
             "type": "string",
-            "example": "2026-09-04T08:00:00.000Z"
+            "format": "date-time"
           }
         },
         "required": [
@@ -9497,63 +10163,58 @@
         "properties": {
           "productId": {
             "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-            "description": "Product UUID to add to cart"
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "quantity": {
-            "type": "number",
-            "example": 1,
             "default": 1,
-            "description": "Quantity of items to add (min 1)",
+            "type": "integer",
             "minimum": 1,
             "maximum": 1000
           }
         },
-        "required": ["productId", "quantity"]
+        "required": ["productId"],
+        "additionalProperties": false
       },
       "UpdateCartItemDto": {
         "type": "object",
         "properties": {
           "quantity": {
-            "type": "number",
-            "example": 3,
-            "description": "New desired item quantity (min 1, max 1000)",
+            "type": "integer",
             "minimum": 1,
             "maximum": 1000
           }
         },
-        "required": ["quantity"]
-      },
-      "GuestCartItemDto": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "string",
-            "example": "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-            "description": "Product UUID from guest session"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 2,
-            "description": "Item quantity accumulated in guest session",
-            "minimum": 1,
-            "maximum": 1000
-          }
-        },
-        "required": ["productId", "quantity"]
+        "required": ["quantity"],
+        "additionalProperties": false
       },
       "MergeCartDto": {
         "type": "object",
         "properties": {
           "items": {
-            "description": "List of guest cart items to merge into authenticated user cart",
+            "maxItems": 50,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GuestCartItemDto"
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000
+                }
+              },
+              "required": ["productId", "quantity"],
+              "additionalProperties": false
             }
           }
         },
-        "required": ["items"]
+        "required": ["items"],
+        "additionalProperties": false
       },
       "QuoteResponseDto": {
         "type": "object",
