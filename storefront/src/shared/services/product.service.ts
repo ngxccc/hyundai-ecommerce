@@ -73,7 +73,7 @@ export const productService = {
       const meta = res?.meta;
 
       return {
-        data: items.map((p) => mapProductToStorefront(p, locale)),
+        data: items.map((p) => mapProductToStorefront(p)),
         total: meta?.total ?? 0,
         page: meta?.page ?? 1,
         totalPages: meta?.totalPages ?? 0,
@@ -138,7 +138,7 @@ export const productService = {
       });
       const product = res?.data;
       if (!product) return null;
-      return mapProductToStorefront(product, locale);
+      return mapProductToStorefront(product);
     } catch (error) {
       console.error("Failed to fetch product by slug:", error);
       return null;

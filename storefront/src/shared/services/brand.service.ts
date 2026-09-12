@@ -13,7 +13,7 @@ export const brandService = {
       if (!Array.isArray(brands)) {
         return [];
       }
-      return brands.map((b) => mapBrandToStorefront(b, locale));
+      return brands.map((b) => mapBrandToStorefront(b));
     } catch (error) {
       console.error("Failed to fetch brands from backend:", error);
       return [];

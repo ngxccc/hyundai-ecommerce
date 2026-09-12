@@ -1,5 +1,4 @@
 export type JSONContent = Record<string, unknown>;
-import type { Locale } from "next-intl";
 import type { ApiProduct, ApiCategory, ApiBrand } from "@/types/api";
 import type { ProductSpecSheet } from "@/types/product-spec";
 
@@ -56,7 +55,6 @@ export interface StorefrontBrand {
 
 export function mapProductToStorefront(
   dto: ApiProduct,
-  _locale: Locale,
 ): StorefrontProduct {
   return {
     id: dto.id,
@@ -77,7 +75,6 @@ export function mapProductToStorefront(
 
 export function mapCategoryToStorefront(
   dto: ApiCategory,
-  _locale: Locale,
 ): StorefrontCategory {
   return {
     id: dto.id,
@@ -94,29 +91,24 @@ export function mapCategoryToStorefront(
 
 export function mapCategoryTreeToStorefront(
   node: ApiCategory,
-  locale: Locale,
 ): StorefrontCategoryWithChildren {
   return {
-    ...mapCategoryToStorefront(node, locale),
+    ...mapCategoryToStorefront(node),
     children: (node.children ?? []).map((c) =>
-      mapCategoryTreeToStorefront(c, locale),
+      mapCategoryTreeToStorefront(c),
     ),
   };
 }
 
 export function mapBrandToStorefront(
   dto: ApiBrand,
-  locale: Locale,
 ): StorefrontBrand {
-  const isEn = locale === "en";
   return {
     id: dto.id,
     name: dto.name,
     slug: dto.slug,
     logo: dto.logo ?? null,
-    description:
-      (isEn && dto.descriptionEn ? dto.descriptionEn : dto.descriptionVi) ??
-      null,
+    description: dto.description ?? null,
     website: null,
     sortOrder: 0,
     isActive: dto.isActive,
