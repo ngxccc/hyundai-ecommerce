@@ -1,4 +1,6 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { z } from "zod";
+import { createZodDto } from "@/common/dto";
+import { zDate } from "@/common/schemas/zod-primitives";
 import {
   APPROVAL_STATUSES,
   ORDER_PAYMENT_STATUSES,
@@ -10,195 +12,87 @@ import {
   type PaymentMethod,
 } from "@/database/schemas/enums.schema";
 
-export class OrderItemProductSummaryDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
+export const orderItemProductSummarySchema = z.object({
+  id: z.uuid(),
+  nameVi: z.string(),
+  nameEn: z.string().nullable().optional(),
+  slug: z.string(),
+  price: z.string(),
+  images: z.array(z.string()),
+  totalStockCache: z.number().int(),
+});
 
-  @ApiProperty({ example: "Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha" })
-  public nameVi!: string;
+export const orderItemResponseSchema = z.object({
+  id: z.uuid(),
+  orderId: z.uuid(),
+  productId: z.uuid(),
+  productName: z.string(),
+  productSku: z.string(),
+  quantity: z.number().int(),
+  unitPrice: z.string(),
+  product: orderItemProductSummarySchema.nullable().optional(),
+  createdAt: zDate(),
+  updatedAt: zDate(),
+});
 
-  @ApiPropertyOptional({
-    example: "Hyundai DHY65KSE 60kVA 3 Phase Diesel Generator",
-  })
-  public nameEn?: string | null;
+export const orderUserSummarySchema = z.object({
+  id: z.uuid(),
+  fullName: z.string(),
+  email: z.string(),
+  phoneNumber: z.string(),
+  role: z.string(),
+});
 
-  @ApiProperty({
-    example: "may-phat-dien-diesel-hyundai-dhy65kse-60kva-3-pha",
-  })
-  public slug!: string;
+export const orderResponseSchema = z.object({
+  id: z.uuid(),
+  orderNumber: z.string().nullable().optional(),
+  userId: z.uuid().nullable().optional(),
+  leadId: z.uuid().nullable().optional(),
+  customerName: z.string().nullable().optional(),
+  customerPhone: z.string().nullable().optional(),
+  customerEmail: z.string().nullable().optional(),
+  companyName: z.string().nullable().optional(),
+  status: z.enum(ORDER_STATUSES),
+  shippingFee: z.string(),
+  shippingAddress: z.string(),
+  totalAmount: z.string(),
+  depositAmount: z.string().nullable().optional(),
+  remainingAmount: z.string().nullable().optional(),
+  paymentMethod: z.enum(PAYMENT_METHODS),
+  paymentStatus: z.enum(ORDER_PAYMENT_STATUSES),
+  approvalStatus: z.enum(APPROVAL_STATUSES),
+  approvedBy: z.uuid().nullable().optional(),
+  note: z.string().nullable().optional(),
+  createdAt: zDate(),
+  updatedAt: zDate(),
+  items: z.array(orderItemResponseSchema),
+  user: orderUserSummarySchema.nullable().optional(),
+});
 
-  @ApiProperty({ example: "245000000.00" })
-  public price!: string;
+export const paginatedOrderResponseSchema = z.object({
+  items: z.array(orderResponseSchema),
+  total: z.number().int(),
+  page: z.number().int(),
+  limit: z.number().int(),
+});
 
-  @ApiProperty({ example: ["https://res.cloudinary.com/hyundai/image.jpg"] })
-  public images!: string[];
+export const expireOrdersResponseSchema = z.object({
+  expiredCount: z.number().int(),
+});
 
-  @ApiProperty({ example: 5 })
-  public totalStockCache!: number;
-}
+export type { ApprovalStatus, OrderPaymentStatus, OrderStatus, PaymentMethod };
 
-export class OrderItemResponseDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb91" })
-  public id!: string;
-
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb92" })
-  public orderId!: string;
-
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public productId!: string;
-
-  @ApiProperty({ example: "Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha" })
-  public productName!: string;
-
-  @ApiProperty({ example: "DHY65KSE" })
-  public productSku!: string;
-
-  @ApiProperty({ example: 1 })
-  public quantity!: number;
-
-  @ApiProperty({ example: "245000000.00" })
-  public unitPrice!: string;
-
-  @ApiPropertyOptional({
-    type: () => OrderItemProductSummaryDto,
-    nullable: true,
-  })
-  public product?: OrderItemProductSummaryDto | null;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public createdAt!: Date;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public updatedAt!: Date;
-}
-
-export class OrderUserSummaryDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb90" })
-  public id!: string;
-
-  @ApiProperty({ example: "Nguyễn Văn Đại Lý" })
-  public fullName!: string;
-
-  @ApiProperty({ example: "dealer@example.com" })
-  public email!: string;
-
-  @ApiProperty({ example: "0911223344" })
-  public phoneNumber!: string;
-
-  @ApiProperty({ example: "SALES" })
-  public role!: string;
-}
-
-export class OrderResponseDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb92" })
-  public id!: string;
-
-  @ApiPropertyOptional({ example: "ORD-20260904-4821", nullable: true })
-  public orderNumber?: string | null;
-
-  @ApiPropertyOptional({
-    example: "019fa8bc-8f4d-7000-b366-e691f45cfb90",
-    nullable: true,
-  })
-  public userId?: string | null;
-
-  @ApiPropertyOptional({
-    example: "019fa8bc-8f4d-7000-b366-e691f45cfb91",
-    nullable: true,
-  })
-  public leadId?: string | null;
-
-  @ApiPropertyOptional({ example: "Nguyễn Văn A", nullable: true })
-  public customerName?: string | null;
-
-  @ApiPropertyOptional({ example: "0901234567", nullable: true })
-  public customerPhone?: string | null;
-
-  @ApiPropertyOptional({ example: "nguyenvana@example.com", nullable: true })
-  public customerEmail?: string | null;
-
-  @ApiPropertyOptional({
-    example: "Công ty Cổ phần Xây Dựng Số 1",
-    nullable: true,
-  })
-  public companyName?: string | null;
-  @ApiProperty({
-    example: "PENDING",
-    enum: ORDER_STATUSES,
-  })
-  public status!: OrderStatus;
-
-  @ApiProperty({ example: "500000.00" })
-  public shippingFee!: string;
-
-  @ApiProperty({ example: "Kho số 4, Cảng Tiên Sa, TP. Đà Nẵng" })
-  public shippingAddress!: string;
-
-  @ApiProperty({ example: "245500000.00" })
-  public totalAmount!: string;
-
-  @ApiPropertyOptional({ example: "50000000.00", nullable: true })
-  public depositAmount?: string | null;
-
-  @ApiPropertyOptional({ example: "195500000.00", nullable: true })
-  public remainingAmount?: string | null;
-  @ApiProperty({
-    example: "PAYOS",
-    enum: PAYMENT_METHODS,
-  })
-  public paymentMethod!: PaymentMethod;
-
-  @ApiProperty({
-    example: "PENDING",
-    enum: ORDER_PAYMENT_STATUSES,
-  })
-  public paymentStatus!: OrderPaymentStatus;
-
-  @ApiProperty({
-    example: "APPROVED",
-    enum: APPROVAL_STATUSES,
-  })
-  public approvalStatus!: ApprovalStatus;
-
-  @ApiPropertyOptional({
-    example: "019fa8bc-8f4d-7000-b366-e691f45cfb9c",
-    nullable: true,
-  })
-  public approvedBy?: string | null;
-
-  @ApiPropertyOptional({ example: "Giao trong giờ hành chính", nullable: true })
-  public note?: string | null;
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public createdAt!: Date;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public updatedAt!: Date;
-
-  @ApiProperty({ type: [OrderItemResponseDto] })
-  public items!: OrderItemResponseDto[];
-
-  @ApiPropertyOptional({ type: () => OrderUserSummaryDto, nullable: true })
-  public user?: OrderUserSummaryDto | null;
-}
-
-export class PaginatedOrderResponseDto {
-  @ApiProperty({ type: [OrderResponseDto] })
-  public items!: OrderResponseDto[];
-
-  @ApiProperty({ example: 10 })
-  public total!: number;
-
-  @ApiProperty({ example: 1 })
-  public page!: number;
-
-  @ApiProperty({ example: 20 })
-  public limit!: number;
-}
-
-export class ExpireOrdersResponseDto {
-  @ApiProperty({
-    example: 3,
-    description: "Number of pending unpaid orders auto-expired",
-  })
-  public expiredCount!: number;
-}
+export class OrderItemProductSummaryDto extends createZodDto(
+  orderItemProductSummarySchema,
+) {}
+export class OrderItemResponseDto extends createZodDto(
+  orderItemResponseSchema,
+) {}
+export class OrderUserSummaryDto extends createZodDto(orderUserSummarySchema) {}
+export class OrderResponseDto extends createZodDto(orderResponseSchema) {}
+export class PaginatedOrderResponseDto extends createZodDto(
+  paginatedOrderResponseSchema,
+) {}
+export class ExpireOrdersResponseDto extends createZodDto(
+  expireOrdersResponseSchema,
+) {}

@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import { zSanitizedString } from "@/common/schemas/zod-primitives";
 import { ORDER_STATUSES } from "@/database/schemas/enums.schema";
 
@@ -10,19 +10,6 @@ export const updateOrderStatusSchema = z.object({
 
 export type UpdateOrderStatusDtoType = z.infer<typeof updateOrderStatusSchema>;
 
-export class UpdateOrderStatusDto implements UpdateOrderStatusDtoType {
-  public static readonly zodSchema = updateOrderStatusSchema;
-
-  @ApiProperty({
-    example: ORDER_STATUSES[1],
-    enum: ORDER_STATUSES,
-    description: "New order status along the state machine",
-  })
-  public status!: (typeof ORDER_STATUSES)[number];
-
-  @ApiPropertyOptional({
-    example: "Đã xác nhận thanh toán chuyển khoản và sẵn sàng đóng gói",
-    description: "Reason or operational note for status change",
-  })
-  public note?: string | null;
-}
+export class UpdateOrderStatusDto extends createZodDto(
+  updateOrderStatusSchema,
+) {}

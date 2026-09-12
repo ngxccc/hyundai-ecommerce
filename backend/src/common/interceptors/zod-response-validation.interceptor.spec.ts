@@ -315,13 +315,13 @@ describe("ZodResponseValidationInterceptor", () => {
           err as InternalServerErrorException
         ).getResponse() as {
           message: string;
-          issues?: unknown[];
+          invalidParams?: unknown[];
         };
         expect(response.message).toContain(
           "API response contract validation failed",
         );
-        expect(Array.isArray(response.issues)).toBe(true);
-        expect((response.issues ?? []).length).toBeGreaterThan(0);
+        expect(Array.isArray(response.invalidParams)).toBe(true);
+        expect((response.invalidParams ?? []).length).toBeGreaterThan(0);
       }
     });
   });

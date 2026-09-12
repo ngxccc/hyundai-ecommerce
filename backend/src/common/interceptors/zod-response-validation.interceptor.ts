@@ -124,8 +124,8 @@ export class ZodResponseValidationInterceptor implements NestInterceptor {
         ) {
           valueToValidate = payload.data;
         }
-        const parseResult = targetSchema.safeParse(valueToValidate);
 
+        const parseResult = targetSchema.safeParse(valueToValidate);
         if (!parseResult.success) {
           const formattedIssues = parseResult.error.issues.map((issue) => ({
             path: issue.path.join("."),
@@ -137,7 +137,10 @@ export class ZodResponseValidationInterceptor implements NestInterceptor {
           throw new InternalServerErrorException({
             message: `API response contract validation failed for ${handlerName}`,
             handler: handlerName,
-            issues: formattedIssues,
+            invalidParams: formattedIssues.map((issue) => ({
+              name: issue.path,
+              reason: issue.message,
+            })),
           });
         }
 

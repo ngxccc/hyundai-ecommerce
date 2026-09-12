@@ -64,6 +64,18 @@ export function zEmail() {
 }
 
 /**
+ * Builds an optional and nullable email schema that normalizes empty string inputs into null.
+ *
+ * @returns Zod optional email parsing schema
+ */
+export function zOptionalEmail() {
+  return z.preprocess((val) => {
+    if (typeof val === "string" && val.trim() === "") return null;
+    return val;
+  }, zEmail().nullable().optional());
+}
+
+/**
  * Builds a strict password schema enforcing length and complexity criteria.
  *
  * @returns Zod password complexity validation schema
@@ -170,5 +182,53 @@ export function zNumericString(options?: {
     });
   }
 
+  return schema;
+}
+
+/**
+ * Builds a Date schema that represents an ISO 8601 date-time string in OpenAPI/JSON Schema
+ * while inferring as a JavaScript Date instance in TypeScript.
+ *
+ * @returns Zod Date schema with OpenAPI string date-time representation
+ */
+export function zDate() {
+  const schema = z.date();
+  (
+    schema as unknown as {
+      _zod: {
+        processJSONSchema?: (
+          ctx: unknown,
+          json: Record<string, unknown>,
+        ) => void;
+      };
+    }
+  )._zod.processJSONSchema = (_ctx, json) => {
+    json["type"] = "string";
+    json["format"] = "date-time";
+  };
+  return schema;
+}
+
+/**
+ * Builds a coerced Date schema for query parameters and request bodies,
+ * representing an ISO 8601 date-time string in OpenAPI/JSON Schema while parsing strings into Date instances.
+ *
+ * @returns Coerced Zod Date schema with OpenAPI string date-time representation
+ */
+export function zCoerceDate() {
+  const schema = z.coerce.date();
+  (
+    schema as unknown as {
+      _zod: {
+        processJSONSchema?: (
+          ctx: unknown,
+          json: Record<string, unknown>,
+        ) => void;
+      };
+    }
+  )._zod.processJSONSchema = (_ctx, json) => {
+    json["type"] = "string";
+    json["format"] = "date-time";
+  };
   return schema;
 }
