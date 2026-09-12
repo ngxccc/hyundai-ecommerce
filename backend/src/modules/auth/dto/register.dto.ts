@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import {
   zEmail,
   zPassword,
@@ -33,36 +33,6 @@ export type RegisterDtoType = z.infer<typeof registerSchema>;
 /**
  * Data Transfer Object for user registration endpoint.
  */
-export class RegisterDto implements RegisterDtoType {
+export class RegisterDto extends createZodDto(registerSchema) {
   public static readonly zodSchema = registerSchema;
-
-  @ApiProperty({
-    example: "user@example.com",
-    description: "User email address",
-  })
-  public email!: string;
-
-  @ApiProperty({ example: "John Doe", description: "User full name" })
-  public fullName!: string;
-
-  @ApiProperty({
-    example: "0912345678",
-    description: "Valid 10-digit Vietnamese phone number",
-  })
-  public phoneNumber!: string;
-
-  @ApiProperty({
-    example: "Password123!",
-    description: "Strong password with letters, numbers, and symbols",
-  })
-  public password!: string;
-
-  @ApiProperty({
-    example: "Password123!",
-    description: "Must match password exactly",
-  })
-  public confirmPassword!: string;
-
-  @ApiProperty({ example: true, description: "Must accept terms of service" })
-  public agreeTerms!: true;
 }

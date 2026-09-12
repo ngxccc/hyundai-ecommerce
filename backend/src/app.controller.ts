@@ -1,5 +1,6 @@
 import { Controller, Get } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { HealthResponseDto } from "./app.dto";
 
 @ApiTags("app")
 @Controller()
@@ -11,14 +12,9 @@ export class AppController {
   })
   @ApiOkResponse({
     description: "Service is operational",
-    schema: {
-      type: "object",
-      properties: {
-        status: { type: "string", example: "ok" },
-      },
-    },
+    type: HealthResponseDto,
   })
-  getHealth() {
+  getHealth(): HealthResponseDto {
     return { status: "ok" };
   }
 }

@@ -1045,6 +1045,9 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    HealthResponseDto: {
+      status: string;
+    };
     InvalidParamDto: {
       /**
        * @description Invalid field name
@@ -1101,262 +1104,110 @@ export interface components {
       success: boolean;
     };
     RegisterDto: {
-      /**
-       * @description User email address
-       * @example user@example.com
-       */
       email: string;
-      /**
-       * @description User full name
-       * @example John Doe
-       */
       fullName: string;
-      /**
-       * @description Valid 10-digit Vietnamese phone number
-       * @example 0912345678
-       */
       phoneNumber: string;
-      /**
-       * @description Strong password with letters, numbers, and symbols
-       * @example Password123!
-       */
-      password: string;
-      /**
-       * @description Must match password exactly
-       * @example Password123!
-       */
+      password: unknown & unknown & unknown;
       confirmPassword: string;
-      /**
-       * @description Must accept terms of service
-       * @example true
-       */
-      agreeTerms: boolean;
+      /** @constant */
+      agreeTerms: true;
     };
     VerifyEmailDto: {
-      /**
-       * @description 64-character hexadecimal email verification token
-       * @example a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2
-       */
       token: string;
     };
     ResendVerificationDto: {
-      /**
-       * @description Email address awaiting verification
-       * @example user@example.com
-       */
       email: string;
-    };
-    UserInfoDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      id: string;
-      /** @example user@example.com */
-      email: string;
-      /** @example John Doe */
-      fullName: string;
-      /**
-       * @example SALES
-       * @enum {string}
-       */
-      role: "ADMIN" | "SALES";
-      /**
-       * @example ACTIVE
-       * @enum {string}
-       */
-      status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING_VERIFICATION";
     };
     LoginResponseDto: {
-      /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
       accessToken: string;
-      /** @example 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069 */
       refreshToken: string;
-      user: components["schemas"]["UserInfoDto"];
+      user: {
+        /** Format: uuid */
+        id: string;
+        email: string;
+        fullName: string;
+        /** @enum {string} */
+        role: "ADMIN" | "SALES";
+        /** @enum {string} */
+        status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING_VERIFICATION";
+      };
     };
     LoginDto: {
-      /**
-       * @description Registered user email address
-       * @example user@example.com
-       */
       email: string;
-      /**
-       * @description Account password
-       * @example Password123!
-       */
       password: string;
     };
     RefreshResponseDto: {
-      /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
       accessToken: string;
-      /** @example 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069 */
       refreshToken: string;
     };
     RefreshTokenDto: {
-      /**
-       * @description Active 64-character hex refresh token string
-       * @example 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
-       */
       refreshToken: string;
     };
     ForgotPasswordDto: {
-      /**
-       * @description Email address associated with account
-       * @example user@example.com
-       */
       email: string;
     };
     ResetPasswordDto: {
-      /**
-       * @description 64-character password reset token received via email
-       * @example a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2
-       */
       token: string;
-      /**
-       * @description New strong password
-       * @example NewPassword123!
-       */
-      password: string;
-      /**
-       * @description Must match new password
-       * @example NewPassword123!
-       */
+      password: unknown & unknown & unknown;
       confirmPassword: string;
     };
     ChangePasswordDto: {
-      /**
-       * @description Current account password
-       * @example CurrentPassword123!
-       */
       currentPassword: string;
-      /**
-       * @description New account password (must differ from current)
-       * @example NewSecurePassword456!
-       */
-      newPassword: string;
-    };
-    DealerTierInfoDto: {
-      /** @example 123e4567-e89b-12d3-a456-426614174000 */
-      id: string;
-      /** @example Đại lý Vàng */
-      nameVi: string;
-      /** @example Gold Dealer */
-      nameEn: string | null;
-      /** @example 15.00 */
-      discountPercentage: string;
-    };
-    DealerCompanyDto: {
-      /** @example Công ty Cổ phần Cơ điện Miền Nam */
-      companyName: string | null;
-      /** @example 0314567890 */
-      taxId: string | null;
-      /**
-       * @example DEALER
-       * @enum {string|null}
-       */
-      businessType:
-        | "CONTRACTOR"
-        | "COMMERCIAL"
-        | "GOVERNMENT"
-        | "END_USER"
-        | "DEALER"
-        | null;
-      /** @example Thành phố Hồ Chí Minh */
-      province: string | null;
-      /** @example 500000000.00 */
-      creditLimit: string;
-      /** @example 50000000.00 */
-      currentDebt: string;
-      /** @example 450000000.00 */
-      availableCredit: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      parentId: string | null;
-      tier: components["schemas"]["DealerTierInfoDto"] | null;
+      newPassword: unknown & unknown & unknown;
     };
     UserResponseDto: {
-      /** @example 123e4567-e89b-12d3-a456-426614174000 */
+      /** Format: uuid */
       id: string;
-      /** @example user@example.com */
       email: string;
-      /** @example John Doe */
       fullName: string;
-      /** @example 0912345678 */
       phoneNumber: string;
-      /** @example https://cloudinary.com/avatar.jpg */
       avatarUrl: string | null;
-      /**
-       * @example SALES
-       * @enum {string}
-       */
+      /** @enum {string} */
       role: "ADMIN" | "SALES";
-      /**
-       * @example ACTIVE
-       * @enum {string}
-       */
+      /** @enum {string} */
       status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING_VERIFICATION";
-      /**
-       * @description True if user email is verified
-       * @example true
-       */
       isVerified: boolean;
-      dealerCompany: components["schemas"]["DealerCompanyDto"] | null;
+      dealerCompany: {
+        companyName: string | null;
+        taxId: string | null;
+        businessType:
+          | ("CONTRACTOR" | "COMMERCIAL" | "GOVERNMENT" | "END_USER" | "DEALER")
+          | null;
+        province: string | null;
+        creditLimit: string;
+        currentDebt: string;
+        availableCredit: string;
+        parentId: string | null;
+        tier: {
+          /** Format: uuid */
+          id: string;
+          nameVi: string;
+          nameEn: string | null;
+          discountPercentage: string;
+        } | null;
+      } | null;
     };
     DealerTierResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
+      /** Format: uuid */
       id: string;
-      /** @example Hạng Vàng */
       nameVi: string;
-      /** @example Gold Tier */
       nameEn: string | null;
-      /**
-       * @description Discount percentage applied to wholesale catalog prices
-       * @example 15.00
-       */
       discountPercentage: string;
-      /**
-       * @description Minimum spend requirement to qualify for this tier
-       * @example 500000000.00
-       */
       minimumSpend: string;
     };
-    LeadItemResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
-      id: string;
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb99 */
-      productId: string;
-      /** @example 1 */
-      quantity: number;
-      /** @example Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha */
-      productNameVi: string;
-      /** @example Hyundai DHY65KSE 60kVA 3-Phase Diesel Generator */
-      productNameEn: string | null;
-      /** @example DHY65KSE */
-      productModel: string | null;
-      /** @example GEN-DHY65KSE */
-      productSku: string | null;
-    };
     LeadResponseDto: {
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f */
+      /** Format: uuid */
       id: string;
-      /** @example RFQ-20260908-JDHC005DCA75 */
       leadCode: string;
-      /** @example Nguyễn Văn An */
       fullName: string;
-      /** @example 0912345678 */
       phoneNumber: string;
-      /** @example an.nguyen@example.com */
       email: string | null;
-      /** @example Công ty TNHH Cơ điện Bình Dương */
       companyName: string | null;
-      /** @example Bình Dương */
       city: string;
-      /** @example Phường Dĩ An */
       ward: string;
-      /** @example Khu công nghiệp Sóng Thần 1, Đường số 3 */
       streetAddress: string | null;
-      /** @example Cần tư vấn máy phát điện diesel 60kVA kèm tủ ATS cho nhà máy may */
       notes: string | null;
-      /**
-       * @example NEW
-       * @enum {string}
-       */
+      /** @enum {string} */
       status:
         | "NEW"
         | "CONTACTING"
@@ -1365,73 +1216,37 @@ export interface components {
         | "CONVERTED"
         | "REJECTED"
         | "LOST";
-      /** @example 019fa8bc-8f4d-7000-b366-e691f45cfb11 */
       assignedSalesId: string | null;
-      /** @example null */
       lostReason: string | null;
-      /**
-       * Format: date-time
-       * @example 2026-09-04T08:00:00.000Z
-       */
+      /** Format: date-time */
       createdAt: string;
-      items: components["schemas"]["LeadItemResponseDto"][];
-    };
-    CreateLeadItemDto: {
-      /**
-       * @description UUID of the requested product
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb8f
-       */
-      productId: string;
-      /**
-       * @description Requested quantity
-       * @default 1
-       * @example 1
-       */
-      quantity: number;
+      items?: {
+        /** Format: uuid */
+        id: string;
+        /** Format: uuid */
+        productId: string;
+        quantity: number;
+        productNameVi: string;
+        productNameEn: string | null;
+        productModel: string | null;
+        productSku: string | null;
+      }[];
     };
     CreateLeadDto: {
-      /**
-       * @description Full name of the contact person
-       * @example Nguyễn Văn An
-       */
       fullName: string;
-      /**
-       * @description 10-digit Vietnamese mobile phone number
-       * @example 0912345678
-       */
       phoneNumber: string;
-      /**
-       * @description Optional email for formal PDF quote dispatch
-       * @example an.nguyen@example.com
-       */
       email?: string;
-      /**
-       * @description Optional company name for B2B/project quotes
-       * @example Công ty TNHH Cơ điện Bình Dương
-       */
       companyName?: string;
-      /**
-       * @description Province / Municipality (Cấp 1)
-       * @example Bình Dương
-       */
       city: string;
-      /**
-       * @description Ward / Commune (Cấp 2 tinh gọn)
-       * @example Phường Dĩ An
-       */
       ward: string;
-      /**
-       * @description Detailed street address, factory, or project site
-       * @example Khu công nghiệp Sóng Thần 1, Đường số 3
-       */
       streetAddress?: string;
-      /**
-       * @description Customer power load notes or project description
-       * @example Cần tư vấn máy phát điện diesel 60kVA kèm tủ ATS cho nhà máy may
-       */
       notes?: string;
-      /** @description List of requested products and quantities */
-      items: components["schemas"]["CreateLeadItemDto"][];
+      items: {
+        /** Format: uuid */
+        productId: string;
+        /** @default 1 */
+        quantity: number;
+      }[];
     };
     PaginationMetaDto: {
       /**
@@ -1471,11 +1286,7 @@ export interface components {
       meta: components["schemas"]["PaginationMetaDto"];
     };
     UpdateLeadStatusDto: {
-      /**
-       * @description New pipeline status of the lead
-       * @example CONTACTING
-       * @enum {string}
-       */
+      /** @enum {string} */
       status:
         | "NEW"
         | "CONTACTING"
@@ -1484,17 +1295,10 @@ export interface components {
         | "CONVERTED"
         | "REJECTED"
         | "LOST";
-      /**
-       * @description Reason when status is REJECTED or LOST
-       * @example Khách chê giá đắt, đã chọn phương án thuê máy cũ
-       */
       lostReason?: string;
     };
     AssignSalesDto: {
-      /**
-       * @description UUID of the sales representative to assign
-       * @example 019fa8bc-8f4d-7000-b366-e691f45cfb90
-       */
+      /** Format: uuid */
       salesId: string;
     };
     CategoryResponseDto: {
@@ -2493,10 +2297,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            /** @example ok */
-            status?: string;
-          };
+          "application/json": components["schemas"]["HealthResponseDto"];
         };
       };
     };
@@ -3553,11 +3354,8 @@ export interface operations {
   LeadsController_getAll_v1: {
     parameters: {
       query?: {
-        /** @description Pagination page number (1-based) */
         page?: number;
-        /** @description Number of records per page (max 100) */
         limit?: number;
-        /** @description Filter leads by operational status */
         status?:
           | "NEW"
           | "CONTACTING"
@@ -3566,7 +3364,6 @@ export interface operations {
           | "CONVERTED"
           | "REJECTED"
           | "LOST";
-        /** @description Search across customerName, phoneNumber, companyName, notes */
         search?: string;
       };
       header?: never;

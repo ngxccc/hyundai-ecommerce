@@ -1,7 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import { zSanitizedString } from "@/common/schemas/zod-primitives";
-import { LEAD_STATUSES, type LeadStatus } from "@/database/schemas";
+import { LEAD_STATUSES } from "@/database/schemas";
 
 export const updateLeadStatusSchema = z
   .object({
@@ -12,20 +12,6 @@ export const updateLeadStatusSchema = z
 
 export type UpdateLeadStatusDtoType = z.infer<typeof updateLeadStatusSchema>;
 
-export class UpdateLeadStatusDto implements UpdateLeadStatusDtoType {
+export class UpdateLeadStatusDto extends createZodDto(updateLeadStatusSchema) {
   public static readonly zodSchema = updateLeadStatusSchema;
-
-  @ApiProperty({
-    example: "CONTACTING",
-    enum: LEAD_STATUSES,
-    description: "New pipeline status of the lead",
-  })
-  public status!: LeadStatus;
-
-  @ApiProperty({
-    example: "Khách chê giá đắt, đã chọn phương án thuê máy cũ",
-    description: "Reason when status is REJECTED or LOST",
-    required: false,
-  })
-  public lostReason?: string;
 }

@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import { zPassword } from "@/common/schemas/zod-primitives";
 import { i18nZodMsg } from "@/common/utils/i18n-message.util";
 
@@ -27,24 +27,6 @@ export type ResetPasswordDtoType = z.infer<typeof resetPasswordSchema>;
 /**
  * Data Transfer Object for resetting forgotten account password.
  */
-export class ResetPasswordDto implements ResetPasswordDtoType {
+export class ResetPasswordDto extends createZodDto(resetPasswordSchema) {
   public static readonly zodSchema = resetPasswordSchema;
-
-  @ApiProperty({
-    example: "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
-    description: "64-character password reset token received via email",
-  })
-  public token!: string;
-
-  @ApiProperty({
-    example: "NewPassword123!",
-    description: "New strong password",
-  })
-  public password!: string;
-
-  @ApiProperty({
-    example: "NewPassword123!",
-    description: "Must match new password",
-  })
-  public confirmPassword!: string;
 }

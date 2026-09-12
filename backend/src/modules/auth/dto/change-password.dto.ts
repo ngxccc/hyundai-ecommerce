@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import { zPassword } from "@/common/schemas/zod-primitives";
 import { i18nZodMsg } from "@/common/utils/i18n-message.util";
 
@@ -21,18 +21,6 @@ export type ChangePasswordDtoType = z.infer<typeof changePasswordSchema>;
 /**
  * Data Transfer Object for changing account password.
  */
-export class ChangePasswordDto implements ChangePasswordDtoType {
+export class ChangePasswordDto extends createZodDto(changePasswordSchema) {
   public static readonly zodSchema = changePasswordSchema;
-
-  @ApiProperty({
-    example: "CurrentPassword123!",
-    description: "Current account password",
-  })
-  public currentPassword!: string;
-
-  @ApiProperty({
-    example: "NewSecurePassword456!",
-    description: "New account password (must differ from current)",
-  })
-  public newPassword!: string;
 }
