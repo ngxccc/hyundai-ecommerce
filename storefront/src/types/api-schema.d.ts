@@ -1334,10 +1334,6 @@ export interface components {
         name: string;
         description: string | null;
       }[];
-      nameVi?: string;
-      nameEn?: string | null;
-      descriptionVi?: string | null;
-      descriptionEn?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -1350,15 +1346,11 @@ export interface components {
       image?: string | null;
       /** @default true */
       isActive: boolean;
-      translations?: {
+      translations: {
         locale: string;
         name: string;
         description?: string | null;
       }[];
-      nameVi?: string;
-      nameEn?: string | null;
-      descriptionVi?: string | null;
-      descriptionEn?: string | null;
     };
     UpdateCategoryDto: {
       slug?: string;
@@ -1370,10 +1362,6 @@ export interface components {
         name: string;
         description?: string | null;
       }[];
-      nameVi?: string;
-      nameEn?: string | null;
-      descriptionVi?: string | null;
-      descriptionEn?: string | null;
     };
     BrandResponseDto: {
       /** Format: uuid */
@@ -1386,8 +1374,6 @@ export interface components {
         locale: string;
         description: string | null;
       }[];
-      descriptionVi?: string | null;
-      descriptionEn?: string | null;
       isActive: boolean;
       /** Format: date-time */
       createdAt: string;
@@ -1402,8 +1388,6 @@ export interface components {
         locale: string;
         description?: string | null;
       }[];
-      descriptionVi?: string | null;
-      descriptionEn?: string | null;
       /** @default true */
       isActive: boolean;
     };
@@ -1415,8 +1399,6 @@ export interface components {
         locale: string;
         description?: string | null;
       }[];
-      descriptionVi?: string | null;
-      descriptionEn?: string | null;
       isActive?: boolean;
     };
     ProductResponseDto__schema0: {
@@ -1451,10 +1433,6 @@ export interface components {
         name: string;
         description: string | null;
       }[];
-      nameVi?: string;
-      nameEn?: string | null;
-      descriptionVi?: string | null;
-      descriptionEn?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -1481,14 +1459,6 @@ export interface components {
         seoTitle?: string | null;
         seoDescription?: string | null;
       }[];
-      nameVi?: string;
-      nameEn?: string | null;
-      descriptionVi?:
-        components["schemas"]["ProductResponseDto__schema0"] | null;
-      descriptionEn?:
-        components["schemas"]["ProductResponseDto__schema0"] | null;
-      shortDescriptionVi?: string | null;
-      shortDescriptionEn?: string | null;
       images: string[];
       brandId: string | null;
       categoryId: string | null;
@@ -1565,8 +1535,6 @@ export interface components {
           locale: string;
           description: string | null;
         }[];
-        descriptionVi?: string | null;
-        descriptionEn?: string | null;
         isActive: boolean;
         /** Format: date-time */
         createdAt: string;
@@ -1586,8 +1554,6 @@ export interface components {
         /** Format: uuid */
         id: string;
         name: string;
-        nameVi?: string;
-        nameEn?: string | null;
         count: number;
       }[];
       powerRange: {
@@ -1633,7 +1599,7 @@ export interface components {
       slug: string;
       /** @default 0 */
       price: number;
-      translations?: {
+      translations: {
         locale: string;
         name: string;
         shortDescription?: string | null;
@@ -1641,12 +1607,6 @@ export interface components {
         seoTitle?: string | null;
         seoDescription?: string | null;
       }[];
-      nameVi?: string;
-      nameEn?: string | null;
-      descriptionVi?: components["schemas"]["CreateProductDto__schema0"] | null;
-      descriptionEn?: components["schemas"]["CreateProductDto__schema0"] | null;
-      shortDescriptionVi?: string | null;
-      shortDescriptionEn?: string | null;
       images?: string[];
       brandId?: string | null;
       categoryId?: string | null;
@@ -1746,12 +1706,6 @@ export interface components {
         seoTitle?: string | null;
         seoDescription?: string | null;
       }[];
-      nameVi?: string;
-      nameEn?: string | null;
-      descriptionVi?: components["schemas"]["UpdateProductDto__schema0"] | null;
-      descriptionEn?: components["schemas"]["UpdateProductDto__schema0"] | null;
-      shortDescriptionVi?: string | null;
-      shortDescriptionEn?: string | null;
       images?: string[];
       brandId?: string | null;
       categoryId?: string | null;
