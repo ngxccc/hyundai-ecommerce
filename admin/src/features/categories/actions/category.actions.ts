@@ -7,8 +7,22 @@ import {
   updateCategorySchema,
   type CreateCategoryInput,
   type UpdateCategoryInput,
+  type CategoryTranslationInput,
   isValidIdentifier,
 } from "@/shared/validators";
+
+function formatCategoryTranslations(
+  translations?: CategoryTranslationInput[],
+) {
+  if (!translations) return undefined;
+  return translations
+    .filter((t) => t.locale === "vi" || t.name.trim().length > 0)
+    .map((t) => ({
+      locale: t.locale,
+      name: t.name.trim(),
+      description: t.description?.trim() ? t.description.trim() : null,
+    }));
+}
 import { formatValidationErrors } from "@/shared/utils/validation";
 import { SYSTEM_ERROR_CODES } from "@/shared/constants";
 import {
@@ -53,13 +67,17 @@ export const createCategoryAction = async (formData: FormData) => {
         };
       }
     }
+    const formattedTranslations = formatCategoryTranslations(
+      validatedData.translations,
+    );
+
     const { data: createRes, error: createError } =
       await categoriesApi.create({
         slug: validatedData.slug,
         parentId: validatedData.parentId,
         image: validatedData.image,
         isActive: validatedData.isActive,
-        translations: validatedData.translations,
+        translations: formattedTranslations ?? [],
       });
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create category");
@@ -135,6 +153,9 @@ export async function updateCategoryAction(id: string, formData: FormData) {
         };
       }
     }
+    const formattedTranslations = formatCategoryTranslations(
+      validatedData.translations,
+    );
 
     const { data: updateRes, error: updateError } =
       await categoriesApi.update(id, {
@@ -142,7 +163,7 @@ export async function updateCategoryAction(id: string, formData: FormData) {
         parentId: validatedData.parentId,
         image: validatedData.image,
         isActive: validatedData.isActive,
-        translations: validatedData.translations,
+        translations: formattedTranslations,
       });
     if (updateError || !updateRes.data) {
       throw new Error(updateError?.detail ?? "Failed to update category");

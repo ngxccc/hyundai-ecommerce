@@ -10,7 +10,9 @@ export const brandTranslationInputSchema = z.object({
   locale: z.string().min(2).max(8),
   description: z.string().nullable().optional(),
 });
-
+export type BrandTranslationInput = z.infer<
+  typeof brandTranslationInputSchema
+>;
 export const createBrandSchema = z.object({
   name: z.string().min(1, "validation.nameRequired"),
   slug: z.string().min(1, "validation.slugRequired"),
@@ -25,14 +27,17 @@ export const updateBrandSchema = createBrandSchema.partial();
 
 export type CreateBrandInput = z.infer<typeof createBrandSchema>;
 export type UpdateBrandInput = z.infer<typeof updateBrandSchema>;
+
 // Category Validators
 export const categoryTranslationInputSchema = z.object({
   locale: z.string().min(2).max(8),
-  name: z.string().min(1, "validation.nameRequired"),
+  name: z.string().default(""),
   description: z.string().nullable().optional(),
 });
-
-export const createCategorySchema = z.object({
+export type CategoryTranslationInput = z.infer<
+  typeof categoryTranslationInputSchema
+>;
+export const baseCreateCategorySchema = z.object({
   slug: z.string().min(1, "validation.slugRequired"),
   icon: z.string().nullable().optional(),
   image: z.string().nullable().optional(),
@@ -44,15 +49,29 @@ export const createCategorySchema = z.object({
     .min(1, "validation.translationsRequired"),
 });
 
-export const updateCategorySchema = createCategorySchema.partial();
+export const createCategorySchema = baseCreateCategorySchema.superRefine(
+  (data, ctx) => {
+    const vi = data.translations.find((t) => t.locale === "vi");
+    if (!vi?.name.trim()) {
+      const viIndex = data.translations.findIndex((t) => t.locale === "vi");
+      ctx.addIssue({
+        code: "custom",
+        message: "validation.nameRequired",
+        path: ["translations", viIndex >= 0 ? viIndex : 0, "name"],
+      });
+    }
+  },
+);
 
-export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
+export const updateCategorySchema = baseCreateCategorySchema.partial();
+
+export type CreateCategoryInput = z.infer<typeof baseCreateCategorySchema>;
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
 
 // Product Translation Validator
 export const productTranslationInputSchema = z.object({
   locale: z.string().min(2).max(8),
-  name: z.string().min(1, "validation.nameRequired"),
+  name: z.string().default(""),
   shortDescription: z.string().nullable().optional(),
   description: z.unknown().nullable().optional(),
   seoTitle: z.string().nullable().optional(),
@@ -96,7 +115,7 @@ export const productSpecsSchema = z
   })
   .catchall(z.unknown());
 
-export const createProductSchema = z.object({
+export const baseCreateProductSchema = z.object({
   slug: z.string().min(1, "validation.slugRequired"),
   price: z.string().min(1, "validation.priceRequired"),
   translations: z
@@ -149,10 +168,24 @@ export const createProductSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-export const updateProductSchema = createProductSchema.partial();
+export const createProductSchema = baseCreateProductSchema.superRefine(
+  (data, ctx) => {
+    const vi = data.translations.find((t) => t.locale === "vi");
+    if (!vi?.name.trim()) {
+      const viIndex = data.translations.findIndex((t) => t.locale === "vi");
+      ctx.addIssue({
+        code: "custom",
+        message: "validation.nameRequired",
+        path: ["translations", viIndex >= 0 ? viIndex : 0, "name"],
+      });
+    }
+  },
+);
+
+export const updateProductSchema = baseCreateProductSchema.partial();
 
 export type ProductSpecs = z.infer<typeof productSpecsSchema>;
-export type CreateProductInput = z.infer<typeof createProductSchema>;
+export type CreateProductInput = z.infer<typeof baseCreateProductSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 
 // Warehouse Validators

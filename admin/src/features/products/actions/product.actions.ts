@@ -8,6 +8,7 @@ import {
   updateProductSchema,
   type CreateProductInput,
   type UpdateProductInput,
+  type ProductTranslationInput,
   isValidIdentifier,
 } from "@/shared/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
@@ -67,26 +68,34 @@ function toTipTapJson(
   return undefined;
 }
 
+function formatProductTranslations(
+  translations?: ProductTranslationInput[],
+): AdminCreateProduct["translations"] | undefined {
+  if (!translations) return undefined;
+  return translations
+    .filter((t) => t.locale === "vi" || t.name.trim().length > 0)
+    .map((t) => ({
+      locale: t.locale,
+      name: t.name.trim(),
+      shortDescription: t.shortDescription?.trim()
+        ? t.shortDescription.trim()
+        : null,
+      description: toTipTapJson(t.description) ?? null,
+      seoTitle: t.seoTitle?.trim() ? t.seoTitle.trim() : null,
+      seoDescription: t.seoDescription?.trim()
+        ? t.seoDescription.trim()
+        : null,
+    }));
+}
+
 function toCreateProductDto(input: CreateProductInput): AdminCreateProduct {
   const rawPrice =
     typeof input.price === "string"
       ? Number(input.price.replace(/[.,]/g, "").trim())
       : Number(input.price);
-  const formattedTranslations = input.translations.map((t) => ({
-    locale: t.locale,
-    name: t.name.trim(),
-    shortDescription: t.shortDescription?.trim()
-      ? t.shortDescription.trim()
-      : undefined,
-    description: toTipTapJson(t.description),
-    seoTitle: t.seoTitle?.trim() ? t.seoTitle.trim() : undefined,
-    seoDescription: t.seoDescription?.trim()
-      ? t.seoDescription.trim()
-      : undefined,
-  }));
 
   return {
-    translations: formattedTranslations,
+    translations: formatProductTranslations(input.translations) ?? [],
     slug: input.slug.trim(),
     price: isNaN(rawPrice) ? 0 : rawPrice,
     images: input.images,
@@ -123,18 +132,7 @@ function toUpdateProductDto(input: UpdateProductInput): AdminUpdateProduct {
   const result: AdminUpdateProduct = {};
 
   if (input.translations !== undefined) {
-    result.translations = input.translations.map((t) => ({
-      locale: t.locale,
-      name: t.name.trim(),
-      shortDescription: t.shortDescription?.trim()
-        ? t.shortDescription.trim()
-        : undefined,
-      description: toTipTapJson(t.description),
-      seoTitle: t.seoTitle?.trim() ? t.seoTitle.trim() : undefined,
-      seoDescription: t.seoDescription?.trim()
-        ? t.seoDescription.trim()
-        : undefined,
-    }));
+    result.translations = formatProductTranslations(input.translations);
   }
   if (input.slug !== undefined) result.slug = input.slug.trim();
   if (input.price !== undefined) {
