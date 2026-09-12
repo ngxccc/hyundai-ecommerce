@@ -5,9 +5,6 @@ import {
   ORDER_PAYMENT_STATUSES,
   ORDER_STATUSES,
   PAYMENT_METHODS,
-  type OrderStatus,
-  type OrderPaymentStatus,
-  type PaymentMethod,
 } from "@/database/schemas/enums.schema";
 
 export const orderQuerySchema = z.object({
@@ -24,6 +21,4 @@ export const orderQuerySchema = z.object({
 });
 
 export type OrderQueryDtoType = z.infer<typeof orderQuerySchema>;
-export type { OrderStatus, OrderPaymentStatus, PaymentMethod };
-
 export class OrderQueryDto extends createZodDto(orderQuerySchema) {}

@@ -7540,17 +7540,13 @@
             "pattern": "^(0[35789])\\d{8}$"
           },
           "password": {
-            "minLength": 8,
-            "maxLength": 128,
+            "format": "password",
             "allOf": [
               {
                 "pattern": "[A-Z]"
               },
               {
                 "pattern": "[0-9]"
-              },
-              {
-                "pattern": "[^a-zA-Z0-9]"
               }
             ]
           },
@@ -7691,17 +7687,13 @@
             "minLength": 1
           },
           "password": {
-            "minLength": 8,
-            "maxLength": 128,
+            "format": "password",
             "allOf": [
               {
                 "pattern": "[A-Z]"
               },
               {
                 "pattern": "[0-9]"
-              },
-              {
-                "pattern": "[^a-zA-Z0-9]"
               }
             ]
           },
@@ -7722,17 +7714,13 @@
             "maxLength": 256
           },
           "newPassword": {
-            "minLength": 8,
-            "maxLength": 128,
+            "format": "password",
             "allOf": [
               {
                 "pattern": "[A-Z]"
               },
               {
                 "pattern": "[0-9]"
-              },
-              {
-                "pattern": "[^a-zA-Z0-9]"
               }
             ]
           }

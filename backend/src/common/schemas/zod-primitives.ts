@@ -81,7 +81,7 @@ export function zOptionalEmail() {
  * @returns Zod password complexity validation schema
  */
 export function zPassword() {
-  return z
+  const schema = z
     .string({
       error: i18nZodMsg("validation.isString"),
     })
@@ -96,6 +96,23 @@ export function zPassword() {
     .regex(/[^a-zA-Z0-9]/, {
       message: i18nZodMsg("validation.passwordMustContainSpecialChar"),
     });
+
+  (
+    schema as unknown as {
+      _zod: {
+        processJSONSchema?: (
+          ctx: unknown,
+          json: Record<string, unknown>,
+        ) => void;
+      };
+    }
+  )._zod.processJSONSchema = (_ctx, json) => {
+    json["type"] = "string";
+    json["format"] = "password";
+    delete json["allOf"];
+  };
+
+  return schema;
 }
 
 /**

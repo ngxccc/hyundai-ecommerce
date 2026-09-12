@@ -1107,7 +1107,8 @@ export interface components {
       email: string;
       fullName: string;
       phoneNumber: string;
-      password: unknown & unknown & unknown;
+      /** Format: password */
+      password: unknown & unknown;
       confirmPassword: string;
       /** @constant */
       agreeTerms: true;
@@ -1148,12 +1149,14 @@ export interface components {
     };
     ResetPasswordDto: {
       token: string;
-      password: unknown & unknown & unknown;
+      /** Format: password */
+      password: unknown & unknown;
       confirmPassword: string;
     };
     ChangePasswordDto: {
       currentPassword: string;
-      newPassword: unknown & unknown & unknown;
+      /** Format: password */
+      newPassword: unknown & unknown;
     };
     UserResponseDto: {
       /** Format: uuid */
