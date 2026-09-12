@@ -75,7 +75,7 @@ export const ProductSearchModal = ({
       onSelectProduct(product);
     } else {
       addProductToDraft(product);
-      toast.success(t("productAddedToast", { name: product.nameVi }));
+      toast.success(t("productAddedToast", { name: product.name }));
     }
 
     setRecentlyAddedId(product.id);
@@ -172,7 +172,7 @@ export const ProductSearchModal = ({
                       {image && canUseCldImage(image) ? (
                         <CldImage
                           src={image}
-                          alt={product.nameVi}
+                          alt={product.name}
                           width={56}
                           height={56}
                           className="h-full w-full object-cover"
@@ -180,7 +180,7 @@ export const ProductSearchModal = ({
                       ) : image ? (
                         <Image
                           src={image}
-                          alt={product.nameVi}
+                          alt={product.name}
                           width={56}
                           height={56}
                           unoptimized
@@ -196,7 +196,7 @@ export const ProductSearchModal = ({
                     <div className="flex min-w-0 flex-col gap-0.5">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-foreground max-w-xs truncate text-sm font-semibold">
-                          {product.nameVi}
+                          {product.name}
                         </span>
                         {model && (
                           <Badge

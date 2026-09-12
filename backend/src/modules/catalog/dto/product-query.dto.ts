@@ -21,6 +21,7 @@ export type ProductSortOption = (typeof PRODUCT_SORT_OPTIONS)[number];
 export const productQuerySchema = z.object({
   page: zNumericString({ min: 1 }).default(1),
   limit: zNumericString({ min: 1, max: 100 }).default(20),
+  locale: z.string().min(2).max(8).optional(),
   search: zSanitizedString({ max: 255 }).nullish(),
   brandId: z.uuid({ message: i18nZodMsg("validation.isUuid") }).nullish(),
   categoryId: z.uuid({ message: i18nZodMsg("validation.isUuid") }).nullish(),

@@ -78,7 +78,10 @@ describe("CategoriesController", () => {
       test("should return wrapped category details", async () => {
         const result = await controller.getById("cat-1");
 
-        expect(mockCategoriesService.findById).toHaveBeenCalledWith("cat-1");
+        expect(mockCategoriesService.findById).toHaveBeenCalledWith(
+          "cat-1",
+          "vi",
+        );
         expect(result.data.id).toBe("cat-1");
       });
     });

@@ -32,7 +32,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
 
     addProductToDraft(product);
 
-    toast.success(t("actions.addedToQuoteSuccess", { name: product.nameVi }), {
+    toast.success(t("actions.addedToQuoteSuccess", { name: product.name }), {
       action: {
         label: t("actions.viewQuoteDraft"),
         onClick: () => router.push("/quotes/new"),
@@ -58,7 +58,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
         {canUseCldImage(image) ? (
           <CldImage
             src={image}
-            alt={product.nameVi}
+            alt={product.name}
             width={400}
             height={300}
             className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
@@ -66,7 +66,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
         ) : (
           <Image
             src={image}
-            alt={product.nameVi}
+            alt={product.name}
             width={400}
             height={300}
             unoptimized
@@ -80,7 +80,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
           {product.slug}
         </p>
         <h3 className="text-primary mb-1 line-clamp-2 text-base font-semibold">
-          {product.nameVi}
+          {product.name}
         </h3>
         <p className="text-muted-foreground mb-4 text-sm">
           {product.categoryId ?? "Khác"}
@@ -130,7 +130,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
             </Link>
             <DeleteProductButton
               productId={product.id}
-              productName={product.nameVi}
+              productName={product.name}
             />
           </div>
         </div>

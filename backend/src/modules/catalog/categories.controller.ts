@@ -9,9 +9,15 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
 import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
@@ -47,10 +53,13 @@ export class CategoriesController {
     description:
       "Returns a flat list of all active categories ordered by name.",
   })
+  @ApiQuery({ name: "locale", required: false, type: String })
   @ApiOkResponseGeneric(CategoryResponseDto, { isArray: true })
   @ApiTooManyRequestsResponseRfc9457()
-  async getAll(): Promise<ApiResponse<CategoryResponseDto[]>> {
-    const categories = await this.categoriesService.findAll();
+  async getAll(
+    @Query("locale") locale = "vi",
+  ): Promise<ApiResponse<CategoryResponseDto[]>> {
+    const categories = await this.categoriesService.findAll(locale);
     return apiSuccess(categories);
   }
 
@@ -60,10 +69,13 @@ export class CategoriesController {
     summary: "Get category tree",
     description: "Returns recursive hierarchical tree of categories.",
   })
+  @ApiQuery({ name: "locale", required: false, type: String })
   @ApiOkResponseGeneric(CategoryResponseDto, { isArray: true })
   @ApiTooManyRequestsResponseRfc9457()
-  async getTree(): Promise<ApiResponse<CategoryResponseDto[]>> {
-    const tree = await this.categoriesService.getTree();
+  async getTree(
+    @Query("locale") locale = "vi",
+  ): Promise<ApiResponse<CategoryResponseDto[]>> {
+    const tree = await this.categoriesService.getTree(locale);
     return apiSuccess(tree);
   }
 
@@ -73,13 +85,15 @@ export class CategoriesController {
     summary: "Get category by ID",
     description: "Returns details of a specific category by UUID.",
   })
+  @ApiQuery({ name: "locale", required: false, type: String })
   @ApiOkResponseGeneric(CategoryResponseDto)
   @ApiNotFoundResponseRfc9457()
   @ApiTooManyRequestsResponseRfc9457()
   async getById(
     @Param("id", ParseUUIDPipe) id: string,
+    @Query("locale") locale = "vi",
   ): Promise<ApiResponse<CategoryResponseDto>> {
-    const category = await this.categoriesService.findById(id);
+    const category = await this.categoriesService.findById(id, locale);
     return apiSuccess(category);
   }
 

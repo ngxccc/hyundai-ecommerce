@@ -99,6 +99,76 @@ describe("ProductsService", () => {
         expect(result.items[0]?.nameVi).toBe("Máy phát điện Hyundai 60kVA");
         expect(result.items[0]?.brand?.name).toBe("Hyundai Power");
       });
+
+      test("should resolve English translation when locale is en", async () => {
+        const mockTranslation = {
+          productId: "prod-1",
+          locale: "en",
+          name: "Hyundai 60kVA Generator EN",
+          shortDescription: "English short description",
+          description: null,
+          seoTitle: "Hyundai Generator",
+          seoDescription: "SEO description in English",
+        };
+
+        mockDb.setSelectResultsQueue([
+          [{ total: 1 }],
+          [
+            {
+              product: mockProduct,
+              brand: null,
+              category: null,
+            },
+          ],
+          [mockTranslation],
+        ]);
+        const result = await service.findProducts({
+          page: 1,
+          limit: 10,
+          locale: "en",
+          sort: "newest",
+        });
+
+        expect(result.items.length).toBe(1);
+        expect(result.items[0]?.name).toBe("Hyundai 60kVA Generator EN");
+        expect(result.items[0]?.shortDescription).toBe(
+          "English short description",
+        );
+      });
+
+      test("should fallback to Vietnamese translation when requested locale translation is missing", async () => {
+        const mockViTranslation = {
+          productId: "prod-1",
+          locale: "vi",
+          name: "Máy phát điện Hyundai 60kVA Gốc",
+          shortDescription: "Mô tả ngắn tiếng Việt",
+          description: null,
+          seoTitle: null,
+          seoDescription: null,
+        };
+
+        mockDb.setSelectResultsQueue([
+          [{ total: 1 }],
+          [
+            {
+              product: mockProduct,
+              brand: null,
+              category: null,
+            },
+          ],
+          [mockViTranslation],
+        ]);
+        const result = await service.findProducts({
+          page: 1,
+          limit: 10,
+          locale: "en",
+          sort: "newest",
+        });
+
+        expect(result.items.length).toBe(1);
+        expect(result.items[0]?.name).toBe("Máy phát điện Hyundai 60kVA Gốc");
+        expect(result.items[0]?.shortDescription).toBe("Mô tả ngắn tiếng Việt");
+      });
     });
 
     describe("when no products match criteria", () => {

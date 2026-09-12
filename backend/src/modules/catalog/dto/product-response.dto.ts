@@ -14,21 +14,28 @@ import {
   jsonContentSchema,
   productSpecSheetSchema,
   productSpecsSchema,
+  productTranslationResponseSchema,
 } from "./create-product.dto";
 import { brandResponseSchema } from "./brand-response.dto";
 import { categoryResponseSchema } from "./category-response.dto";
 
 export const productResponseSchema = z.object({
   id: z.uuid(),
-  nameVi: z.string(),
-  nameEn: z.string().nullable(),
   slug: z.string(),
   price: z.string(),
   isQuoteOnly: z.boolean(),
+  name: z.string(),
+  shortDescription: z.string().nullable(),
+  description: jsonContentSchema.nullable().optional(),
+  seoTitle: z.string().nullable().optional(),
+  seoDescription: z.string().nullable().optional(),
+  translations: z.array(productTranslationResponseSchema).optional(),
+  nameVi: z.string().optional(),
+  nameEn: z.string().nullable().optional(),
   descriptionVi: jsonContentSchema.nullable().optional(),
   descriptionEn: jsonContentSchema.nullable().optional(),
-  shortDescriptionVi: z.string().nullable(),
-  shortDescriptionEn: z.string().nullable(),
+  shortDescriptionVi: z.string().nullable().optional(),
+  shortDescriptionEn: z.string().nullable().optional(),
   images: z.array(z.string()),
   brandId: z.uuid().nullable(),
   categoryId: z.uuid().nullable(),

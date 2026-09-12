@@ -1852,7 +1852,16 @@
       "get": {
         "description": "Returns a flat list of all active categories ordered by name.",
         "operationId": "CategoriesController_getAll_v1",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "locale",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -2032,7 +2041,16 @@
       "get": {
         "description": "Returns recursive hierarchical tree of categories.",
         "operationId": "CategoriesController_getTree_v1",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "locale",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -2091,6 +2109,14 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "required": false,
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -2421,7 +2447,16 @@
       "get": {
         "description": "Returns a list of all active brands ordered by name.",
         "operationId": "BrandsController_getAll_v1",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "locale",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -2606,6 +2641,14 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "required": false,
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -2955,6 +2998,16 @@
               "items": {
                 "type": "number"
               }
+            }
+          },
+          {
+            "name": "locale",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minLength": 2,
+              "maxLength": 8,
+              "type": "string"
             }
           },
           {
@@ -3345,7 +3398,16 @@
       "get": {
         "description": "Returns available filter ranges (price, power) and facet counts for brands, categories, fuel types, and phases.",
         "operationId": "ProductsController_getMetadata_v1",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "locale",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -3401,6 +3463,14 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "required": false,
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -8696,12 +8766,6 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
           "slug": {
             "type": "string"
           },
@@ -8710,6 +8774,68 @@
           },
           "isQuoteOnly": {
             "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "shortDescription": {
+            "type": ["string", "null"]
+          },
+          "description": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProductResponseDto__schema0"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "seoTitle": {
+            "type": ["string", "null"]
+          },
+          "seoDescription": {
+            "type": ["string", "null"]
+          },
+          "translations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "shortDescription": {
+                  "type": ["string", "null"]
+                },
+                "description": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ProductResponseDto__schema0"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "seoTitle": {
+                  "type": ["string", "null"]
+                },
+                "seoDescription": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["locale", "name", "shortDescription"]
+            }
+          },
+          "nameVi": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": ["string", "null"]
           },
           "descriptionVi": {
             "anyOf": [
@@ -9058,13 +9184,11 @@
         },
         "required": [
           "id",
-          "nameVi",
-          "nameEn",
           "slug",
           "price",
           "isQuoteOnly",
-          "shortDescriptionVi",
-          "shortDescriptionEn",
+          "name",
+          "shortDescription",
           "images",
           "brandId",
           "categoryId",
@@ -9124,6 +9248,9 @@
                   "format": "uuid",
                   "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
                 },
+                "name": {
+                  "type": "string"
+                },
                 "nameVi": {
                   "type": "string"
                 },
@@ -9134,7 +9261,7 @@
                   "type": "number"
                 }
               },
-              "required": ["id", "nameVi", "nameEn", "count"]
+              "required": ["id", "name", "count"]
             }
           },
           "powerRange": {
@@ -9265,12 +9392,6 @@
       "CreateProductDto": {
         "type": "object",
         "properties": {
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
           "slug": {
             "type": "string",
             "minLength": 2,
@@ -9281,6 +9402,48 @@
             "default": 0,
             "type": "number",
             "minimum": 0
+          },
+          "translations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 8
+                },
+                "name": {
+                  "type": "string"
+                },
+                "shortDescription": {
+                  "type": ["string", "null"]
+                },
+                "description": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/CreateProductDto__schema0"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "seoTitle": {
+                  "type": ["string", "null"]
+                },
+                "seoDescription": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["locale", "name"]
+            }
+          },
+          "nameVi": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": ["string", "null"]
           },
           "descriptionVi": {
             "anyOf": [
@@ -9580,7 +9743,7 @@
             "type": "boolean"
           }
         },
-        "required": ["nameVi", "slug"],
+        "required": ["slug"],
         "additionalProperties": false
       },
       "UpdateProductDto__schema0": {
@@ -9631,12 +9794,6 @@
       "UpdateProductDto": {
         "type": "object",
         "properties": {
-          "nameVi": {
-            "type": "string"
-          },
-          "nameEn": {
-            "type": ["string", "null"]
-          },
           "slug": {
             "type": "string",
             "minLength": 2,
@@ -9646,6 +9803,48 @@
           "price": {
             "type": "number",
             "minimum": 0
+          },
+          "translations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "locale": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 8
+                },
+                "name": {
+                  "type": "string"
+                },
+                "shortDescription": {
+                  "type": ["string", "null"]
+                },
+                "description": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/UpdateProductDto__schema0"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "seoTitle": {
+                  "type": ["string", "null"]
+                },
+                "seoDescription": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["locale", "name"]
+            }
+          },
+          "nameVi": {
+            "type": "string"
+          },
+          "nameEn": {
+            "type": ["string", "null"]
           },
           "descriptionVi": {
             "anyOf": [

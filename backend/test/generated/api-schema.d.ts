@@ -1464,17 +1464,31 @@ export interface components {
     ProductResponseDto: {
       /** Format: uuid */
       id: string;
-      nameVi: string;
-      nameEn: string | null;
       slug: string;
       price: string;
       isQuoteOnly: boolean;
+      name: string;
+      shortDescription: string | null;
+      description?: components["schemas"]["ProductResponseDto__schema0"] | null;
+      seoTitle?: string | null;
+      seoDescription?: string | null;
+      translations?: {
+        locale: string;
+        name: string;
+        shortDescription: string | null;
+        description?:
+          components["schemas"]["ProductResponseDto__schema0"] | null;
+        seoTitle?: string | null;
+        seoDescription?: string | null;
+      }[];
+      nameVi?: string;
+      nameEn?: string | null;
       descriptionVi?:
         components["schemas"]["ProductResponseDto__schema0"] | null;
       descriptionEn?:
         components["schemas"]["ProductResponseDto__schema0"] | null;
-      shortDescriptionVi: string | null;
-      shortDescriptionEn: string | null;
+      shortDescriptionVi?: string | null;
+      shortDescriptionEn?: string | null;
       images: string[];
       brandId: string | null;
       categoryId: string | null;
@@ -1571,8 +1585,9 @@ export interface components {
       categories: {
         /** Format: uuid */
         id: string;
-        nameVi: string;
-        nameEn: string | null;
+        name: string;
+        nameVi?: string;
+        nameEn?: string | null;
         count: number;
       }[];
       powerRange: {
@@ -1615,11 +1630,19 @@ export interface components {
       [key: string]: unknown;
     };
     CreateProductDto: {
-      nameVi: string;
-      nameEn?: string | null;
       slug: string;
       /** @default 0 */
       price: number;
+      translations?: {
+        locale: string;
+        name: string;
+        shortDescription?: string | null;
+        description?: components["schemas"]["CreateProductDto__schema0"] | null;
+        seoTitle?: string | null;
+        seoDescription?: string | null;
+      }[];
+      nameVi?: string;
+      nameEn?: string | null;
       descriptionVi?: components["schemas"]["CreateProductDto__schema0"] | null;
       descriptionEn?: components["schemas"]["CreateProductDto__schema0"] | null;
       shortDescriptionVi?: string | null;
@@ -1713,10 +1736,18 @@ export interface components {
       [key: string]: unknown;
     };
     UpdateProductDto: {
-      nameVi?: string;
-      nameEn?: string | null;
       slug?: string;
       price?: number;
+      translations?: {
+        locale: string;
+        name: string;
+        shortDescription?: string | null;
+        description?: components["schemas"]["UpdateProductDto__schema0"] | null;
+        seoTitle?: string | null;
+        seoDescription?: string | null;
+      }[];
+      nameVi?: string;
+      nameEn?: string | null;
       descriptionVi?: components["schemas"]["UpdateProductDto__schema0"] | null;
       descriptionEn?: components["schemas"]["UpdateProductDto__schema0"] | null;
       shortDescriptionVi?: string | null;
@@ -3865,7 +3896,9 @@ export interface operations {
   };
   CategoriesController_getAll_v1: {
     parameters: {
-      query?: never;
+      query?: {
+        locale?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -4016,7 +4049,9 @@ export interface operations {
   };
   CategoriesController_getTree_v1: {
     parameters: {
-      query?: never;
+      query?: {
+        locale?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -4057,7 +4092,9 @@ export interface operations {
   };
   CategoriesController_getById_v1: {
     parameters: {
-      query?: never;
+      query?: {
+        locale?: string;
+      };
       header?: never;
       path: {
         id: string;
@@ -4336,7 +4373,9 @@ export interface operations {
   };
   BrandsController_getAll_v1: {
     parameters: {
-      query?: never;
+      query?: {
+        locale?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -4487,7 +4526,9 @@ export interface operations {
   };
   BrandsController_getById_v1: {
     parameters: {
-      query?: never;
+      query?: {
+        locale?: string;
+      };
       header?: never;
       path: {
         id: string;
@@ -4769,6 +4810,7 @@ export interface operations {
       query?: {
         page?: unknown;
         limit?: unknown;
+        locale?: string;
         search?: unknown;
         brandId?: string | null;
         categoryId?: string | null;
@@ -4949,7 +4991,9 @@ export interface operations {
   };
   ProductsController_getMetadata_v1: {
     parameters: {
-      query?: never;
+      query?: {
+        locale?: string;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -4990,7 +5034,9 @@ export interface operations {
   };
   ProductsController_getById_v1: {
     parameters: {
-      query?: never;
+      query?: {
+        locale?: string;
+      };
       header?: never;
       path: {
         id: string;

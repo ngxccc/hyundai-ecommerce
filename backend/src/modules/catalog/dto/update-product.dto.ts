@@ -1,14 +1,14 @@
 import { z } from "zod";
 import { createZodDto } from "@/common/dto";
 import {
-  createProductSchema,
+  createProductBaseSchema,
   productSpecSheetSchema,
   baseProductSpecsSchema,
 } from "./create-product.dto";
 import { PRODUCT_TYPES } from "@/types/product-spec.type";
 import { zSanitizedString } from "@/common/schemas/zod-primitives";
 
-export const updateProductSchema = createProductSchema
+export const updateProductSchema = createProductBaseSchema
   .partial()
   .extend({
     price: z.number().min(0).optional(),

@@ -11,19 +11,28 @@ export const catalogApi = {
     /**
      * Retrieves all active brands.
      */
-    list: () => api.GET("/api/v1/brands"),
+    list: (query?: { locale?: string }) =>
+      query
+        ? api.GET("/api/v1/brands", { params: { query } })
+        : api.GET("/api/v1/brands"),
   },
 
   categories: {
     /**
      * Retrieves flat list of all active categories.
      */
-    list: () => api.GET("/api/v1/categories"),
+    list: (query?: { locale?: string }) =>
+      query
+        ? api.GET("/api/v1/categories", { params: { query } })
+        : api.GET("/api/v1/categories"),
 
     /**
      * Retrieves hierarchical category tree.
      */
-    getTree: () => api.GET("/api/v1/categories/tree"),
+    getTree: (query?: { locale?: string }) =>
+      query
+        ? api.GET("/api/v1/categories/tree", { params: { query } })
+        : api.GET("/api/v1/categories/tree"),
   },
 
   products: {
@@ -33,23 +42,33 @@ export const catalogApi = {
      * @param query Optional search, pagination, and filter parameters
      */
     list: (query?: ProductQueryParams) =>
-      api.GET("/api/v1/products", {
-        params: { query },
-      }),
+      query
+        ? api.GET("/api/v1/products", { params: { query } })
+        : api.GET("/api/v1/products"),
 
     /**
      * Retrieves a single product by unique identifier or URL slug.
      *
      * @param id Product UUID or slug
+     * @param query Optional locale parameter
      */
-    getById: (id: string) =>
-      api.GET("/api/v1/products/{id}", {
-        params: { path: { id } },
-      }),
+    getById: (id: string, query?: { locale?: string }) =>
+      query
+        ? api.GET("/api/v1/products/{id}", {
+            params: { path: { id }, query },
+          })
+        : api.GET("/api/v1/products/{id}", {
+            params: { path: { id } },
+          }),
 
     /**
      * Retrieves aggregated catalog facet metadata.
+     *
+     * @param query Optional locale parameter
      */
-    getMetadata: () => api.GET("/api/v1/products/metadata"),
+    getMetadata: (query?: { locale?: string }) =>
+      query
+        ? api.GET("/api/v1/products/metadata", { params: { query } })
+        : api.GET("/api/v1/products/metadata"),
   },
 };

@@ -56,21 +56,15 @@ export interface StorefrontBrand {
 
 export function mapProductToStorefront(
   dto: ApiProduct,
-  locale: Locale,
+  _locale: Locale,
 ): StorefrontProduct {
-  const isEn = locale === "en";
   return {
     id: dto.id,
-    name: isEn && dto.nameEn ? dto.nameEn : dto.nameVi,
+    name: dto.name,
     slug: dto.slug,
     price: dto.price,
-    description: (isEn && dto.descriptionEn
-      ? dto.descriptionEn
-      : dto.descriptionVi) as JSONContent | null,
-    shortDescription:
-      (isEn && dto.shortDescriptionEn
-        ? dto.shortDescriptionEn
-        : dto.shortDescriptionVi) ?? null,
+    description: (dto.description ?? null),
+    shortDescription: dto.shortDescription ?? null,
     images: dto.images,
     brandId: dto.brandId ?? null,
     categoryId: dto.categoryId ?? null,
