@@ -2,6 +2,7 @@ import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { OrderList } from "@/features/orders/components";
 import { ordersApi } from "@/features/orders/api/orders.api";
+import { OffsetPagination } from "@/shared/components/offset-pagination";
 import { orderStatusEnum } from "@/shared/constants";
 import type { AdminOrder, OrderStatus } from "@/types/api";
 import { getTranslations } from "next-intl/server";
@@ -36,6 +37,10 @@ export default async function AdminOrdersPage({
   const tHeader = await getTranslations("adminOrders");
 
   const resolvedSearchParams = await searchParams;
+  const page =
+    typeof resolvedSearchParams.page === "string"
+      ? Number(resolvedSearchParams.page) || 1
+      : 1;
   const search =
     typeof resolvedSearchParams.search === "string"
       ? resolvedSearchParams.search
@@ -51,12 +56,15 @@ export default async function AdminOrdersPage({
   const status =
     statusParam && isOrderStatus(statusParam) ? statusParam : undefined;
 
-  // Fetch filtered orders with backend SQL search
+  // Fetch filtered orders with backend SQL search and offset pagination
   const { data: ordersRes } = await ordersApi.list({
+    page,
+    limit: 20,
     status,
     search,
   });
   const orders: AdminOrder[] = ordersRes?.data ?? [];
+  const meta = ordersRes?.meta;
 
   return (
     <>
@@ -74,6 +82,14 @@ export default async function AdminOrdersPage({
           ]}
         />
         <OrderList orders={orders} />
+        <OffsetPagination
+          page={meta?.page ?? page}
+          totalPages={meta?.totalPages ?? 1}
+          total={meta?.total}
+          hasNextPage={meta?.hasNextPage}
+          hasPrevPage={meta?.hasPrevPage}
+          label="đơn hàng"
+        />
       </div>
     </>
   );

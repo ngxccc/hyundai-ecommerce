@@ -7,16 +7,25 @@ import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface ProductPaginationProps {
+export interface ProductPaginationProps {
+  page?: number;
+  totalPages?: number;
+  hasMore?: boolean;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
+  /** Backward-compatible legacy props */
   nextCursor?: string | undefined;
   prevCursor?: string | undefined;
-  hasMore: boolean;
 }
 
 export function ProductPagination({
+  page = 1,
+  totalPages = 1,
+  hasNextPage,
+  hasPrevPage,
+  hasMore = false,
   nextCursor,
   prevCursor,
-  hasMore,
 }: ProductPaginationProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -24,32 +33,39 @@ export function ProductPagination({
   const t = useTranslations("Catalog");
   const [, startTransition] = useTransition();
 
-  const isGoingBack = searchParams.has("before");
+  const currentPage =
+    page > 1
+      ? page
+      : Number(searchParams.get("page")) ||
+        (searchParams.get("after") ? Number(searchParams.get("after")) : 1);
+
+  const canGoPrev = hasPrevPage ?? currentPage > 1;
+  const canGoNext =
+    hasNextPage ?? (hasMore || (totalPages > 1 && currentPage < totalPages));
 
   const handlePageChange = (direction: "prev" | "next") => {
     const params = new URLSearchParams(searchParams.toString());
+    params.delete("after");
+    params.delete("before");
 
-    if (direction === "next") {
-      params.delete("before");
-      if (nextCursor) {
-        params.set("after", nextCursor);
-      }
-    } else {
-      params.delete("after");
-      if (prevCursor) {
-        params.set("before", prevCursor);
-      }
-    }
+    const targetPage =
+      direction === "next" ? currentPage + 1 : Math.max(1, currentPage - 1);
+    params.set("page", String(targetPage));
 
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`);
     });
   };
 
-  const canGoPrev = isGoingBack ? hasMore : !!searchParams.get("after");
-  const canGoNext = isGoingBack ? !!searchParams.get("before") : hasMore;
-
-  if (!nextCursor && !prevCursor) return null;
+  if (
+    !canGoPrev &&
+    !canGoNext &&
+    !nextCursor &&
+    !prevCursor &&
+    totalPages <= 1
+  ) {
+    return null;
+  }
 
   return (
     <div className="flex items-center justify-center space-x-4 py-8">
@@ -65,6 +81,13 @@ export function ProductPagination({
         <ChevronLeft className="mr-1.5 h-4 w-4" />
         {t("pagination.previous")}
       </Button>
+
+      {totalPages > 1 && (
+        <span className="text-muted-foreground text-xs font-medium">
+          {currentPage} / {totalPages}
+        </span>
+      )}
+
       <Button
         variant="outline"
         size="sm"

@@ -4474,6 +4474,8 @@
     },
     "/api/v1/cart": {
       "get": {
+        "deprecated": true,
+        "description": "Legacy B2C cart endpoint. Retained dormant for potential future retail flows.",
         "operationId": "CartController_getCart_v1",
         "parameters": [],
         "responses": {
@@ -4529,6 +4531,7 @@
     },
     "/api/v1/cart/items": {
       "post": {
+        "deprecated": true,
         "operationId": "CartController_addItem_v1",
         "parameters": [],
         "requestBody": {
@@ -4637,6 +4640,7 @@
     },
     "/api/v1/cart/items/{id}": {
       "put": {
+        "deprecated": true,
         "operationId": "CartController_updateItemQuantity_v1",
         "parameters": [
           {
@@ -4753,6 +4757,7 @@
         "tags": ["cart"]
       },
       "delete": {
+        "deprecated": true,
         "operationId": "CartController_removeItem_v1",
         "parameters": [
           {
@@ -4837,6 +4842,7 @@
     },
     "/api/v1/cart/merge": {
       "post": {
+        "deprecated": true,
         "operationId": "CartController_mergeGuestCart_v1",
         "parameters": [],
         "requestBody": {

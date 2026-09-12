@@ -62,8 +62,8 @@ export async function CatalogTemplate({
   const brandParam = searchParams.brand;
   const search = searchParams.q;
   const sort = searchParams.sort;
-  const after = searchParams.after;
-  const before = searchParams.before;
+  const pageParam = searchParams.page ?? searchParams.after;
+  const page = pageParam ? Number(pageParam) : 1;
 
   const fuelType = searchParams.fuelType;
   const phase = searchParams.phase;
@@ -111,8 +111,7 @@ export async function CatalogTemplate({
     brandIds,
     search,
     sort,
-    after,
-    before,
+    page,
     fuelType,
     phase,
     voltage,
@@ -226,9 +225,13 @@ export async function CatalogTemplate({
               }
             >
               <ProductPagination
+                page={productsData.page}
+                totalPages={productsData.totalPages}
+                hasMore={hasMore}
+                hasNextPage={hasMore}
+                hasPrevPage={productsData.page > 1}
                 nextCursor={nextCursor}
                 prevCursor={prevCursor}
-                hasMore={hasMore}
               />
             </Suspense>
           </div>

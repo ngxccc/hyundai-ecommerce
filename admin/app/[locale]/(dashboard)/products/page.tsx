@@ -6,12 +6,8 @@ import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { productsApi } from "@/features/products/api/products.api";
 import { categoriesApi } from "@/features/categories/api/categories.api";
 import { brandsApi } from "@/features/brands/api/brands.api";
-import type {
-  AdminProduct,
-  ProductFuelType,
-  ProductPhase,
-  ProductQueryParams,
-} from "@/types/api";
+import { parseProductQueryParams } from "@/features/products/utils/product-query-parser";
+import type { AdminProduct } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -38,63 +34,19 @@ export default async function AdminProductsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const params = await searchParams;
-  const categoryId =
-    typeof params.categoryId === "string" ? params.categoryId : undefined;
-  const brandId =
-    typeof params.brandId === "string" ? params.brandId : undefined;
-  const fuelType =
-    typeof params.fuelType === "string" ? params.fuelType : undefined;
-  const phase = typeof params.phase === "string" ? params.phase : undefined;
-  const status = typeof params.status === "string" ? params.status : undefined;
-  const isQuoteOnly = params.isQuoteOnly === "true";
-  const search = typeof params.search === "string" ? params.search : undefined;
-  const engineBrand =
-    typeof params.engineBrand === "string" ? params.engineBrand : undefined;
-  const alternatorBrand =
-    typeof params.alternatorBrand === "string"
-      ? params.alternatorBrand
-      : undefined;
-  const voltageStr =
-    typeof params.voltage === "string" ? params.voltage : undefined;
-  const minPowerStr =
-    typeof params.minPower === "string" ? params.minPower : undefined;
-  const maxPowerStr =
-    typeof params.maxPower === "string" ? params.maxPower : undefined;
-
-  const voltage = voltageStr ? Number(voltageStr) : undefined;
-  const minPower = minPowerStr ? Number(minPowerStr) : undefined;
-  const maxPower = maxPowerStr ? Number(maxPowerStr) : undefined;
-
-  const options: ProductQueryParams = {
-    categoryId,
-    brandId,
-    fuelType: fuelType as ProductFuelType,
-    phase: phase as ProductPhase,
-    voltage:
-      voltage !== undefined && !isNaN(voltage) ? String(voltage) : undefined,
-    minPower: minPower !== undefined && !isNaN(minPower) ? minPower : undefined,
-    maxPower: maxPower !== undefined && !isNaN(maxPower) ? maxPower : undefined,
-    engineBrand,
-    alternatorBrand,
-    status: status as ProductQueryParams["status"],
-    search,
-    isQuoteOnly: isQuoteOnly ? true : undefined,
-  };
+  const query = parseProductQueryParams(await searchParams);
 
   const [t, tNav, productsRes, categoriesRes, brandsRes] = await Promise.all([
     getTranslations("adminProducts.header"),
     getTranslations("adminDashboard.nav"),
-    productsApi.list({ limit: 20, ...options }),
+    productsApi.list(query),
     categoriesApi.list(),
     brandsApi.list(),
   ]);
   const categories = categoriesRes.data?.data ?? [];
   const brands = brandsRes.data?.data ?? [];
-
   const products: AdminProduct[] = productsRes.data?.data ?? [];
-  const nextCursor = undefined;
-  const prevCursor = undefined;
+  const meta = productsRes.data?.meta;
 
   return (
     <>
@@ -119,7 +71,15 @@ export default async function AdminProductsPage({
           <ProductGrid products={products} />
 
           {/* Pagination */}
-          <ProductPagination nextCursor={nextCursor} prevCursor={prevCursor} />
+          <ProductPagination
+            page={
+              meta?.page ?? (typeof query.page === "number" ? query.page : 1)
+            }
+            totalPages={meta?.totalPages ?? 1}
+            total={meta?.total}
+            hasNextPage={meta?.hasNextPage}
+            hasPrevPage={meta?.hasPrevPage}
+          />
         </div>
       </div>
     </>
