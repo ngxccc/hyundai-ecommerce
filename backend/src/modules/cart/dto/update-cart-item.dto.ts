@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 
 export const updateCartItemSchema = z
   .object({
@@ -9,14 +9,6 @@ export const updateCartItemSchema = z
 
 export type UpdateCartItemDtoType = z.infer<typeof updateCartItemSchema>;
 
-export class UpdateCartItemDto implements UpdateCartItemDtoType {
+export class UpdateCartItemDto extends createZodDto(updateCartItemSchema) {
   public static readonly zodSchema = updateCartItemSchema;
-
-  @ApiProperty({
-    example: 3,
-    description: "New desired item quantity (min 1, max 1000)",
-    minimum: 1,
-    maximum: 1000,
-  })
-  public quantity!: number;
 }

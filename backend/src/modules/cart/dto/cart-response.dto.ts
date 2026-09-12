@@ -1,33 +1,25 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { CartItemResponseDto } from "./cart-item-response.dto";
+import { z } from "zod";
+import { createZodDto } from "@/common/dto";
+import { zDate } from "@/common/schemas/zod-primitives";
+import { cartItemResponseSchema } from "./cart-item-response.dto";
 
-export class CartSummaryDto {
-  @ApiProperty({ example: 3, description: "Total quantity of items in cart" })
-  public totalItems!: number;
+export const cartSummarySchema = z.object({
+  totalItems: z.number(),
+  totalAmount: z.string(),
+});
 
-  @ApiProperty({
-    example: "735000000.00",
-    description: "Total monetary amount of cart items",
-  })
-  public totalAmount!: string;
-}
+export const cartResponseSchema = z.object({
+  id: z.uuid(),
+  userId: z.uuid(),
+  items: z.array(cartItemResponseSchema),
+  summary: cartSummarySchema,
+  createdAt: zDate(),
+  updatedAt: zDate(),
+});
 
-export class CartResponseDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
+export type CartSummaryDtoType = z.infer<typeof cartSummarySchema>;
+export type CartResponseDtoType = z.infer<typeof cartResponseSchema>;
 
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb90" })
-  public userId!: string;
+export class CartSummaryDto extends createZodDto(cartSummarySchema) {}
 
-  @ApiProperty({ type: [CartItemResponseDto] })
-  public items!: CartItemResponseDto[];
-
-  @ApiProperty({ type: () => CartSummaryDto })
-  public summary!: CartSummaryDto;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public createdAt!: Date;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public updatedAt!: Date;
-}
+export class CartResponseDto extends createZodDto(cartResponseSchema) {}

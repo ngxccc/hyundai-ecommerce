@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
 import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 import { i18nZodMsg } from "@/common/utils/i18n-message.util";
 
 export const guestCartItemSchema = z
@@ -9,39 +9,17 @@ export const guestCartItemSchema = z
   })
   .strict();
 
-export type GuestCartItemDtoType = z.infer<typeof guestCartItemSchema>;
-
-export class GuestCartItemDto implements GuestCartItemDtoType {
-  @ApiProperty({
-    example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-    description: "Product UUID from guest session",
-  })
-  public productId!: string;
-
-  @ApiProperty({
-    example: 2,
-    description: "Item quantity accumulated in guest session",
-    minimum: 1,
-    maximum: 1000,
-  })
-  public quantity!: number;
-}
-
 export const mergeCartSchema = z
   .object({
     items: z.array(guestCartItemSchema).max(50),
   })
   .strict();
 
+export type GuestCartItemDtoType = z.infer<typeof guestCartItemSchema>;
 export type MergeCartDtoType = z.infer<typeof mergeCartSchema>;
 
-export class MergeCartDto implements MergeCartDtoType {
-  public static readonly zodSchema = mergeCartSchema;
+export class GuestCartItemDto extends createZodDto(guestCartItemSchema) {}
 
-  @ApiProperty({
-    type: [GuestCartItemDto],
-    description:
-      "List of guest cart items to merge into authenticated user cart",
-  })
-  public items!: GuestCartItemDto[];
+export class MergeCartDto extends createZodDto(mergeCartSchema) {
+  public static readonly zodSchema = mergeCartSchema;
 }

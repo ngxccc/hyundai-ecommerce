@@ -1,73 +1,55 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { z } from "zod";
+import { createZodDto } from "@/common/dto";
 
-export class BrandFacetItem {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
+export const brandFacetItemSchema = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  count: z.number(),
+});
 
-  @ApiProperty({ example: "Hyundai Power" })
-  public name!: string;
+export const categoryFacetItemSchema = z.object({
+  id: z.uuid(),
+  nameVi: z.string(),
+  nameEn: z.string().nullable(),
+  count: z.number(),
+});
 
-  @ApiProperty({ example: 42 })
-  public count!: number;
-}
+export const rangeFacetSchema = z.object({
+  min: z.number(),
+  max: z.number(),
+});
 
-export class CategoryFacetItem {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb90" })
-  public id!: string;
+export const valueCountFacetItemSchema = z.object({
+  value: z.string(),
+  count: z.number(),
+});
 
-  @ApiProperty({ example: "Máy phát điện" })
-  public nameVi!: string;
+export const productMetadataResponseSchema = z.object({
+  brands: z.array(brandFacetItemSchema),
+  categories: z.array(categoryFacetItemSchema),
+  powerRange: rangeFacetSchema,
+  priceRange: rangeFacetSchema,
+  fuelTypes: z.array(valueCountFacetItemSchema),
+  phases: z.array(valueCountFacetItemSchema),
+  canopyTypes: z.array(valueCountFacetItemSchema),
+});
 
-  @ApiProperty({ example: "Generators", nullable: true })
-  public nameEn!: string | null;
+export type BrandFacetItemDtoType = z.infer<typeof brandFacetItemSchema>;
+export type CategoryFacetItemDtoType = z.infer<typeof categoryFacetItemSchema>;
+export type RangeFacetDtoType = z.infer<typeof rangeFacetSchema>;
+export type ValueCountFacetItemDtoType = z.infer<
+  typeof valueCountFacetItemSchema
+>;
+export type ProductMetadataResponseDtoType = z.infer<
+  typeof productMetadataResponseSchema
+>;
 
-  @ApiProperty({ example: 35 })
-  public count!: number;
-}
-
-export class RangeFacet {
-  @ApiProperty({ example: 10 })
-  public min!: number;
-
-  @ApiProperty({ example: 2500 })
-  public max!: number;
-}
-
-export class ValueCountFacetItem {
-  @ApiProperty({ example: "diesel" })
-  public value!: string;
-
-  @ApiProperty({ example: 28 })
-  public count!: number;
-}
-
-export class ProductMetadataResponseDto {
-  @ApiProperty({ type: [BrandFacetItem] })
-  public brands!: BrandFacetItem[];
-
-  @ApiProperty({ type: [CategoryFacetItem] })
-  public categories!: CategoryFacetItem[];
-
-  @ApiProperty({
-    type: RangeFacet,
-    example: { min: 10, max: 2500 },
-    description: "Power range in kVA",
-  })
-  public powerRange!: RangeFacet;
-
-  @ApiProperty({
-    type: RangeFacet,
-    example: { min: 15000000, max: 850000000 },
-    description: "Price range in VND",
-  })
-  public priceRange!: RangeFacet;
-
-  @ApiProperty({ type: [ValueCountFacetItem] })
-  public fuelTypes!: ValueCountFacetItem[];
-
-  @ApiProperty({ type: [ValueCountFacetItem] })
-  public phases!: ValueCountFacetItem[];
-
-  @ApiProperty({ type: [ValueCountFacetItem] })
-  public canopyTypes!: ValueCountFacetItem[];
-}
+export class BrandFacetItem extends createZodDto(brandFacetItemSchema) {}
+export class CategoryFacetItem extends createZodDto(categoryFacetItemSchema) {}
+export class RangeFacet extends createZodDto(rangeFacetSchema) {}
+export class ValueCountFacetItem extends createZodDto(
+  valueCountFacetItemSchema,
+) {}
+export class ProductMetadataResponseDto extends createZodDto(
+  productMetadataResponseSchema,
+) {}

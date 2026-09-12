@@ -1,58 +1,36 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { z } from "zod";
+import { createZodDto } from "@/common/dto";
+import { zDate } from "@/common/schemas/zod-primitives";
 
-export class CartProductSummaryDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
+export const cartProductSummarySchema = z.object({
+  id: z.uuid(),
+  nameVi: z.string(),
+  nameEn: z.string().nullable(),
+  slug: z.string(),
+  price: z.string(),
+  images: z.array(z.string()),
+  totalStockCache: z.number(),
+  isActive: z.boolean(),
+  isOutOfStock: z.boolean(),
+});
 
-  @ApiProperty({ example: "Máy phát điện Diesel Hyundai DHY65KSE 60kVA" })
-  public nameVi!: string;
+export const cartItemResponseSchema = z.object({
+  id: z.uuid(),
+  productId: z.uuid(),
+  quantity: z.number(),
+  lineTotal: z.string(),
+  product: cartProductSummarySchema,
+  createdAt: zDate(),
+  updatedAt: zDate(),
+});
 
-  @ApiPropertyOptional({
-    example: "Hyundai DHY65KSE 60kVA Generator",
-    nullable: true,
-  })
-  public nameEn!: string | null;
+export type CartProductSummaryDtoType = z.infer<
+  typeof cartProductSummarySchema
+>;
+export type CartItemResponseDtoType = z.infer<typeof cartItemResponseSchema>;
 
-  @ApiProperty({ example: "may-phat-dien-diesel-hyundai-dhy65kse" })
-  public slug!: string;
+export class CartProductSummaryDto extends createZodDto(
+  cartProductSummarySchema,
+) {}
 
-  @ApiProperty({ example: "245000000.00" })
-  public price!: string;
-
-  @ApiProperty({
-    example: ["https://res.cloudinary.com/hyundai/image/upload/dhy65kse.jpg"],
-  })
-  public images!: string[];
-
-  @ApiProperty({ example: 10 })
-  public totalStockCache!: number;
-
-  @ApiProperty({ example: true })
-  public isActive!: boolean;
-
-  @ApiProperty({ example: false })
-  public isOutOfStock!: boolean;
-}
-
-export class CartItemResponseDto {
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f" })
-  public id!: string;
-
-  @ApiProperty({ example: "019fa8bc-8f4d-7000-b366-e691f45cfb90" })
-  public productId!: string;
-
-  @ApiProperty({ example: 2 })
-  public quantity!: number;
-
-  @ApiProperty({ example: "490000000.00" })
-  public lineTotal!: string;
-
-  @ApiProperty({ type: () => CartProductSummaryDto })
-  public product!: CartProductSummaryDto;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public createdAt!: Date;
-
-  @ApiProperty({ example: "2026-09-04T08:00:00.000Z" })
-  public updatedAt!: Date;
-}
+export class CartItemResponseDto extends createZodDto(cartItemResponseSchema) {}

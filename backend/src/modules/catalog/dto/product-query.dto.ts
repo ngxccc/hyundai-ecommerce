@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from "@nestjs/swagger";
+import { createZodDto } from "@/common/dto";
 import { z } from "zod";
 import {
   zNumericString,
@@ -9,9 +9,6 @@ import {
   CANOPY_TYPES,
   FUEL_TYPES,
   POWER_PHASES,
-  type CanopyType,
-  type FuelType,
-  type PowerPhase,
 } from "@/types/product-spec.type";
 
 export const PRODUCT_SORT_OPTIONS = [
@@ -58,110 +55,6 @@ export const productQuerySchema = z.object({
 
 export type ProductQueryDtoType = z.infer<typeof productQuerySchema>;
 
-export class ProductQueryDto implements ProductQueryDtoType {
+export class ProductQueryDto extends createZodDto(productQuerySchema) {
   public static readonly zodSchema = productQuerySchema;
-  @ApiPropertyOptional({ example: 1, default: 1, description: "Page number" })
-  public page!: number;
-
-  @ApiPropertyOptional({
-    example: 20,
-    default: 20,
-    description: "Items per page (max 100)",
-  })
-  public limit!: number;
-
-  @ApiPropertyOptional({ example: "Hyundai", description: "Search keyword" })
-  public search?: string | null;
-
-  @ApiPropertyOptional({
-    example: "019fa8bc-8f4d-7000-b366-e691f45cfb8f",
-    description: "Filter by brand UUID",
-  })
-  public brandId?: string | null;
-
-  @ApiPropertyOptional({
-    example: "019fa8bc-8f4d-7000-b366-e691f45cfb90",
-    description: "Filter by category UUID",
-  })
-  public categoryId?: string | null;
-
-  @ApiPropertyOptional({
-    example: 10000000,
-    description: "Minimum price in VND",
-  })
-  public priceMin?: number | null;
-
-  @ApiPropertyOptional({
-    example: 500000000,
-    description: "Maximum price in VND",
-  })
-  public priceMax?: number | null;
-
-  @ApiPropertyOptional({
-    example: 20,
-    description: "Minimum power rating in kVA",
-  })
-  public powerKvaMin?: number | null;
-
-  @ApiPropertyOptional({
-    example: 100,
-    description: "Maximum power rating in kVA",
-  })
-  public powerKvaMax?: number | null;
-
-  @ApiPropertyOptional({
-    example: "230V",
-    description: "Filter by voltage string",
-  })
-  public voltage?: string | null;
-
-  @ApiPropertyOptional({
-    enum: POWER_PHASES,
-    example: "3phase",
-  })
-  public phase?: PowerPhase | null;
-
-  @ApiPropertyOptional({
-    enum: FUEL_TYPES,
-    example: "diesel",
-  })
-  public fuelType?: FuelType | null;
-
-  @ApiPropertyOptional({
-    enum: CANOPY_TYPES,
-    example: "silent",
-  })
-  public canopyType?: CanopyType | null;
-
-  @ApiPropertyOptional({
-    enum: PRODUCT_SORT_OPTIONS,
-    default: "newest",
-    example: "newest",
-  })
-  public sort!: ProductSortOption;
-
-  @ApiPropertyOptional({
-    description: "Minimum power in kVA (alias for powerKvaMin)",
-  })
-  public minPower?: number | null;
-
-  @ApiPropertyOptional({
-    description: "Maximum power in kVA (alias for powerKvaMax)",
-  })
-  public maxPower?: number | null;
-
-  @ApiPropertyOptional({ description: "Filter by engine brand" })
-  public engineBrand?: string | null;
-
-  @ApiPropertyOptional({ description: "Filter by alternator brand" })
-  public alternatorBrand?: string | null;
-
-  @ApiPropertyOptional({
-    enum: ["active", "outOfStock", "all"],
-    description: "Stock/lifecycle status",
-  })
-  public status?: "active" | "outOfStock" | "all" | null;
-
-  @ApiPropertyOptional({ description: "Filter products marked for quote only" })
-  public isQuoteOnly?: boolean | null;
 }

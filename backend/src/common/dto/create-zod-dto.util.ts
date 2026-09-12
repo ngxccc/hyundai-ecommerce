@@ -11,18 +11,21 @@ import { createZodDto as baseCreateZodDto } from "nestjs-zod";
  * @param schema Source canonical Zod schema
  * @param options Optional nestjs-zod creation options
  */
-export const createZodDto: typeof baseCreateZodDto = (schema, options) => {
-  const dtoClass = baseCreateZodDto(schema, options);
+export const createZodDto = ((schema: unknown, options?: unknown) => {
+  const dtoClass = (baseCreateZodDto as (...args: unknown[]) => unknown)(
+    schema,
+    options,
+  );
 
   const origFactory = (
-    dtoClass as unknown as {
+    dtoClass as {
       _OPENAPI_METADATA_FACTORY?: () => Record<string, Record<string, unknown>>;
     }
   )._OPENAPI_METADATA_FACTORY;
 
   if (typeof origFactory === "function") {
     (
-      dtoClass as unknown as {
+      dtoClass as {
         _OPENAPI_METADATA_FACTORY: () => Record<
           string,
           Record<string, unknown>
@@ -45,4 +48,4 @@ export const createZodDto: typeof baseCreateZodDto = (schema, options) => {
   }
 
   return dtoClass;
-};
+}) as typeof baseCreateZodDto;
