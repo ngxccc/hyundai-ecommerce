@@ -14,8 +14,6 @@ export const brandResponseSchema = z.object({
   logo: z.string().nullable(),
   description: z.string().nullable(),
   translations: z.array(brandTranslationResponseSchema).optional(),
-  descriptionVi: z.string().nullable().optional(),
-  descriptionEn: z.string().nullable().optional(),
   isActive: z.boolean(),
   createdAt: zDate(),
   updatedAt: zDate(),

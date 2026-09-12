@@ -19,8 +19,6 @@ export const createBrandBaseSchema = z.object({
     }),
   logo: zSanitizedString({ max: 500 }).nullish(),
   translations: z.array(brandTranslationInputSchema).optional(),
-  descriptionVi: zSanitizedString({ max: 2000 }).nullish(),
-  descriptionEn: zSanitizedString({ max: 2000 }).nullish(),
   isActive: z.boolean().default(true),
 });
 

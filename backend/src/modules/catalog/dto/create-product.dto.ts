@@ -101,13 +101,7 @@ export const createProductBaseSchema = z.object({
       message: i18nZodMsg("validation.isNonNegative", { property: "price" }),
     })
     .default(0),
-  translations: z.array(productTranslationInputSchema).optional(),
-  nameVi: zSanitizedString({ min: 2, max: 255 }).optional(),
-  nameEn: zSanitizedString({ max: 255 }).nullish(),
-  descriptionVi: jsonContentSchema.nullish(),
-  descriptionEn: jsonContentSchema.nullish(),
-  shortDescriptionVi: zSanitizedString({ max: 1000 }).nullish(),
-  shortDescriptionEn: zSanitizedString({ max: 1000 }).nullish(),
+  translations: z.array(productTranslationInputSchema).min(1),
   images: z.array(zSanitizedString({ max: 500 })).default([]),
   brandId: z.uuid({ message: i18nZodMsg("validation.isUuid") }).nullish(),
   categoryId: z.uuid({ message: i18nZodMsg("validation.isUuid") }).nullish(),
@@ -133,20 +127,18 @@ export const createProductBaseSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-export const createProductSchema = createProductBaseSchema.strict().refine(
-  (data) => {
-    const hasViTranslation = data.translations?.some(
-      (t) => t.locale === "vi" && t.name.trim().length > 0,
-    );
-    const hasLegacyVi =
-      typeof data.nameVi === "string" && data.nameVi.trim().length > 0;
-    return (hasViTranslation ?? false) || hasLegacyVi;
-  },
-  {
-    message: "Vietnamese (vi) translation or nameVi is required",
-    path: ["translations"],
-  },
-);
+export const createProductSchema = createProductBaseSchema
+  .strict()
+  .refine(
+    (data) =>
+      data.translations.some(
+        (t) => t.locale === "vi" && t.name.trim().length > 0,
+      ),
+    {
+      message: "Vietnamese (vi) translation is required",
+      path: ["translations"],
+    },
+  );
 
 export type CreateProductDtoType = z.infer<typeof createProductSchema>;
 

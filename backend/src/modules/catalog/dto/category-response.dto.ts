@@ -17,10 +17,6 @@ const baseCategoryResponseSchema = z.object({
   name: z.string(),
   description: z.string().nullable(),
   translations: z.array(categoryTranslationResponseSchema).optional(),
-  nameVi: z.string().optional(),
-  nameEn: z.string().nullable().optional(),
-  descriptionVi: z.string().nullable().optional(),
-  descriptionEn: z.string().nullable().optional(),
   createdAt: zDate(),
   updatedAt: zDate(),
 });

@@ -176,32 +176,13 @@ export class CategoriesService {
 
       const rowsToInsert: (typeof categoryTranslations.$inferInsert)[] = [];
 
-      if (dto.translations && dto.translations.length > 0) {
-        for (const t of dto.translations) {
-          if (t.name && t.name.trim().length > 0) {
-            rowsToInsert.push({
-              categoryId: newCategory.id,
-              locale: t.locale,
-              name: t.name.trim(),
-              description: t.description ?? null,
-            });
-          }
-        }
-      } else {
-        if (dto.nameVi) {
+      for (const t of dto.translations) {
+        if (t.name && t.name.trim().length > 0) {
           rowsToInsert.push({
             categoryId: newCategory.id,
-            locale: "vi",
-            name: dto.nameVi,
-            description: dto.descriptionVi ?? null,
-          });
-        }
-        if (dto.nameEn) {
-          rowsToInsert.push({
-            categoryId: newCategory.id,
-            locale: "en",
-            name: dto.nameEn,
-            description: dto.descriptionEn ?? null,
+            locale: t.locale,
+            name: t.name.trim(),
+            description: t.description ?? null,
           });
         }
       }
@@ -278,38 +259,11 @@ export class CategoriesService {
     }
 
     return await this.db.transaction(async (tx) => {
-      const viTranslation = dto.translations?.find(
-        (t) => t.locale === "vi" && t.name.trim().length > 0,
-      );
-      const enTranslation = dto.translations?.find(
-        (t) => t.locale === "en" && t.name.trim().length > 0,
-      );
-
       const [updated] = await tx
         .update(categories)
         .set({
-          ...(viTranslation
-            ? { nameVi: viTranslation.name }
-            : dto.nameVi !== undefined
-              ? { nameVi: dto.nameVi }
-              : {}),
-          ...(enTranslation
-            ? { nameEn: enTranslation.name }
-            : dto.nameEn !== undefined
-              ? { nameEn: dto.nameEn }
-              : {}),
           ...(dto.slug !== undefined ? { slug: dto.slug } : {}),
           ...(dto.parentId !== undefined ? { parentId: dto.parentId } : {}),
-          ...(viTranslation
-            ? { descriptionVi: viTranslation.description ?? null }
-            : dto.descriptionVi !== undefined
-              ? { descriptionVi: dto.descriptionVi }
-              : {}),
-          ...(enTranslation
-            ? { descriptionEn: enTranslation.description ?? null }
-            : dto.descriptionEn !== undefined
-              ? { descriptionEn: dto.descriptionEn }
-              : {}),
           ...(dto.image !== undefined ? { image: dto.image } : {}),
           ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
         })
@@ -320,12 +274,11 @@ export class CategoriesService {
         throw new I18nNotFoundException("catalog.CATEGORY_NOT_FOUND", { id });
       }
 
-      if (dto.translations) {
+      if (dto.translations && dto.translations.length > 0) {
         const validTranslations = dto.translations.filter(
           (t) => t.name && t.name.trim().length > 0,
         );
         const activeLocales = validTranslations.map((t) => t.locale);
-
         for (const t of validTranslations) {
           await tx
             .insert(categoryTranslations)

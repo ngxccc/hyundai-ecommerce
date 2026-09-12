@@ -10,8 +10,6 @@ export const brandFacetItemSchema = z.object({
 export const categoryFacetItemSchema = z.object({
   id: z.uuid(),
   name: z.string(),
-  nameVi: z.string().optional(),
-  nameEn: z.string().nullable().optional(),
   count: z.number(),
 });
 
