@@ -10,7 +10,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { LocaleTabs } from "@/shared/components/locale-tabs";
 import { type JSONContent } from "@/shared/lib/action-auth";
 import type { CreateProductInput } from "@/shared/validators";
 
@@ -41,20 +42,10 @@ export const ProductDescriptionSection = ({
             {t("fields.description")}
           </CardTitle>
 
-          <Tabs
-            value={langTab}
-            onValueChange={(val) => setLangTab(val as "vi" | "en")}
-            className="w-auto"
-          >
-            <TabsList className="h-8 p-0.5">
-              <TabsTrigger value="vi" className="h-7 px-2.5 text-xs">
-                🇻🇳 {t("tabs.vi")}
-              </TabsTrigger>
-              <TabsTrigger value="en" className="h-7 px-2.5 text-xs">
-                🇬🇧 {t("tabs.en")}
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <LocaleTabs
+            activeLocale={langTab}
+            onLocaleChange={setLangTab}
+          />
         </div>
       </CardHeader>
 

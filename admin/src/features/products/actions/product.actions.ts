@@ -74,6 +74,28 @@ function toCreateProductDto(input: CreateProductInput): AdminCreateProduct {
       ? Number(input.price.replace(/[.,]/g, "").trim())
       : Number(input.price);
   return {
+    translations: [
+      {
+        locale: "vi",
+        name: input.nameVi.trim(),
+        shortDescription: input.shortDescriptionVi?.trim()
+          ? input.shortDescriptionVi.trim()
+          : undefined,
+        description: toTipTapJson(input.descriptionVi),
+      },
+      ...(input.nameEn?.trim()
+        ? [
+            {
+              locale: "en",
+              name: input.nameEn.trim(),
+              shortDescription: input.shortDescriptionEn?.trim()
+                ? input.shortDescriptionEn.trim()
+                : undefined,
+              description: toTipTapJson(input.descriptionEn),
+            },
+          ]
+        : []),
+    ],
     nameVi: input.nameVi.trim(),
     nameEn: input.nameEn?.trim() ? input.nameEn.trim() : undefined,
     slug: input.slug.trim(),
@@ -122,6 +144,34 @@ function toUpdateProductDto(input: UpdateProductInput): AdminUpdateProduct {
   if (input.nameVi !== undefined) result.nameVi = input.nameVi.trim();
   if (input.nameEn !== undefined)
     result.nameEn = input.nameEn?.trim() ? input.nameEn.trim() : undefined;
+
+  if (input.nameVi !== undefined || input.nameEn !== undefined) {
+    const translations = [];
+    if (input.nameVi) {
+      translations.push({
+        locale: "vi",
+        name: input.nameVi.trim(),
+        shortDescription: input.shortDescriptionVi?.trim()
+          ? input.shortDescriptionVi.trim()
+          : undefined,
+        description: toTipTapJson(input.descriptionVi),
+      });
+    }
+    if (input.nameEn) {
+      translations.push({
+        locale: "en",
+        name: input.nameEn.trim(),
+        shortDescription: input.shortDescriptionEn?.trim()
+          ? input.shortDescriptionEn.trim()
+          : undefined,
+        description: toTipTapJson(input.descriptionEn),
+      });
+    }
+    if (translations.length > 0) {
+      result.translations = translations;
+    }
+  }
+
   if (input.slug !== undefined) result.slug = input.slug.trim();
   if (input.price !== undefined) {
     const rawPrice =
