@@ -5,8 +5,9 @@
 ### High-Performance Modern Web Storefront for Industrial Power Equipment & B2B Solutions
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Next.js](https://img.shields.io/badge/Next.js-16.1-000000?logo=next.js&logoColor=white)](https://nextjs.org)
-[![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![Next.js](https://img.shields.io/badge/Next.js-16.3-000000?logo=next.js&logoColor=white)](https://nextjs.org)
+[![React](https://img.shields.io/badge/React-19.3-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![ESLint](https://img.shields.io/badge/ESLint-10.10-4B32C3?logo=eslint&logoColor=white)](https://eslint.org)
 [![Bun](https://img.shields.io/badge/Bun-1.4-000000?logo=bun&logoColor=white)](https://bun.sh)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Radix UI](https://img.shields.io/badge/Radix_UI-Components-161618?logo=radix-ui&logoColor=white)](https://www.radix-ui.com)

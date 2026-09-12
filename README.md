@@ -5,8 +5,9 @@
 ### Enterprise B2B & B2C Industrial Power Equipment & Quotation Negotiation System
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![NestJS](https://img.shields.io/badge/NestJS-11.2-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com)
-[![Next.js](https://img.shields.io/badge/Next.js-16.1-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![NestJS](https://img.shields.io/badge/NestJS-12.0-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com)
+[![Next.js](https://img.shields.io/badge/Next.js-16.3-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![ESLint](https://img.shields.io/badge/ESLint-10.10-4B32C3?logo=eslint&logoColor=white)](https://eslint.org)
 [![Bun](https://img.shields.io/badge/Bun-1.4-000000?logo=bun&logoColor=white)](https://bun.sh)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-316192?logo=postgresql&logoColor=white)](https://www.postgresql.org)
 [![Redis](https://img.shields.io/badge/Redis-8.0-DC382D?logo=redis&logoColor=white)](https://redis.io)
@@ -29,7 +30,7 @@
 
 | Service                 | Technology              | Local Port | Production URL                                                                    | Description                                              |
 | :---------------------- | :---------------------- | :--------: | :-------------------------------------------------------------------------------- | :------------------------------------------------------- |
-| **REST API Server**     | NestJS 11 + Drizzle ORM |  `:3000`   | [hyundai-ecommerce.onrender.com](https://hyundai-ecommerce.onrender.com/api/docs) | Core backend, database queries, and OpenAPI contract     |
+| **REST API Server**     | NestJS 12 + Drizzle ORM |  `:3000`   | [hyundai-ecommerce.onrender.com](https://hyundai-ecommerce.onrender.com/api/docs) | Core backend, database queries, and OpenAPI contract     |
 | **Customer Storefront** | Next.js 16 (App Router) |  `:3001`   | [hyundainhatnang.ngxc.io.vn](https://hyundainhatnang.ngxc.io.vn)                  | Customer catalog, quote submission, and shopping cart    |
 | **Admin Portal**        | Next.js 16 (App Router) |  `:3002`   | [admin.hyundainhatnang.ngxc.io.vn](https://admin.hyundainhatnang.ngxc.io.vn)      | Backoffice dashboard, quote approvals, orders, inventory |
 
@@ -41,7 +42,7 @@ The repository adopts a **Decoupled Standalone Multi-Application Architecture (P
 
 ```text
 .
-├── backend/            # NestJS 11 REST API Service
+├── backend/            # NestJS 12 REST API Service
 │   ├── src/modules/    # Domain modules (catalog, quotes, orders, warehouse, etc.)
 │   ├── openapi.json    # OpenAPI 3.1.0 Contract Specification (Single Source of Truth)
 │   ├── docs/standards/ # 11 Full Operational Engineering Standards
