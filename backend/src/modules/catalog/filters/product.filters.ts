@@ -45,10 +45,13 @@ export const productFilters = {
     }
     const escaped = `%${escapeLikePattern(search.trim())}%`;
     return or(
-      ilike(products.nameVi, escaped),
-      ilike(products.nameEn, escaped),
       ilike(products.slug, escaped),
       sql`${products.specs}->>'model' ILIKE ${escaped}`,
+      sql`EXISTS (
+        SELECT 1 FROM product_translation pt
+        WHERE pt.product_id = ${products.id}
+          AND pt.name ILIKE ${escaped}
+      )`,
     );
   },
 

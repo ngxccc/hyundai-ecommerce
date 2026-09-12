@@ -26,11 +26,11 @@ export const ProductDescriptionSection = ({
   const [langTab, setLangTab] = useState<"vi" | "en">("vi");
 
   const initialDescriptionVi = form.getValues(
-    "descriptionVi",
+    "translations.0.description",
   ) as JSONContent | null;
 
   const initialDescriptionEn = form.getValues(
-    "descriptionEn",
+    "translations.1.description",
   ) as JSONContent | null;
 
   return (
@@ -55,7 +55,7 @@ export const ProductDescriptionSection = ({
           <TabsContent value="vi" forceMount className="p-1">
             <FormField
               control={form.control}
-              name="descriptionVi"
+              name="translations.0.description"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -70,7 +70,7 @@ export const ProductDescriptionSection = ({
                             : ""
                       }
                       onChange={(e) =>
-                        form.setValue("descriptionVi", e.target.value, {
+                        form.setValue("translations.0.description", e.target.value, {
                           shouldValidate: true,
                           shouldDirty: true,
                         })
@@ -87,7 +87,7 @@ export const ProductDescriptionSection = ({
           <TabsContent value="en" forceMount className="p-1">
             <FormField
               control={form.control}
-              name="descriptionEn"
+              name="translations.1.description"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -102,7 +102,7 @@ export const ProductDescriptionSection = ({
                             : ""
                       }
                       onChange={(e) =>
-                        form.setValue("descriptionEn", e.target.value, {
+                        form.setValue("translations.1.description", e.target.value, {
                           shouldValidate: true,
                           shouldDirty: true,
                         })

@@ -51,14 +51,26 @@ export const ProductForm = ({
   );
 
   const emptyFormValues = {
-    nameVi: "",
-    nameEn: "",
     slug: "",
     price: "",
-    descriptionVi: undefined,
-    descriptionEn: undefined,
-    shortDescriptionVi: "",
-    shortDescriptionEn: "",
+    translations: [
+      {
+        locale: "vi",
+        name: "",
+        shortDescription: "",
+        description: undefined,
+        seoTitle: "",
+        seoDescription: "",
+      },
+      {
+        locale: "en",
+        name: "",
+        shortDescription: "",
+        description: undefined,
+        seoTitle: "",
+        seoDescription: "",
+      },
+    ],
     images: [],
     brandId: "",
     categoryId: "",
@@ -87,16 +99,57 @@ export const ProductForm = ({
   const form = useForm<CreateProductInput>({
     resolver: translatedZodResolver(createProductSchema, t),
     defaultValues: {
-      nameVi: initialData?.nameVi ?? "",
-      nameEn: initialData?.nameEn ?? "",
       slug: initialData?.slug ?? "",
       price: initialData?.price
         ? formatNumberInput(String(Number(initialData.price)))
         : "",
-      descriptionVi: initialData?.descriptionVi ?? undefined,
-      descriptionEn: initialData?.descriptionEn ?? undefined,
-      shortDescriptionVi: initialData?.shortDescriptionVi ?? "",
-      shortDescriptionEn: initialData?.shortDescriptionEn ?? "",
+      translations: [
+        {
+          locale: "vi",
+          name:
+            initialData?.translations?.find((t) => t.locale === "vi")?.name ??
+            initialData?.name ??
+            "",
+          shortDescription:
+            initialData?.translations?.find((t) => t.locale === "vi")
+              ?.shortDescription ??
+            initialData?.shortDescription ??
+            "",
+          description:
+            initialData?.translations?.find((t) => t.locale === "vi")
+              ?.description ??
+            initialData?.description ??
+            undefined,
+          seoTitle:
+            initialData?.translations?.find((t) => t.locale === "vi")
+              ?.seoTitle ??
+            initialData?.seoTitle ??
+            "",
+          seoDescription:
+            initialData?.translations?.find((t) => t.locale === "vi")
+              ?.seoDescription ??
+            initialData?.seoDescription ??
+            "",
+        },
+        {
+          locale: "en",
+          name:
+            initialData?.translations?.find((t) => t.locale === "en")?.name ??
+            "",
+          shortDescription:
+            initialData?.translations?.find((t) => t.locale === "en")
+              ?.shortDescription ?? "",
+          description:
+            initialData?.translations?.find((t) => t.locale === "en")
+              ?.description ?? undefined,
+          seoTitle:
+            initialData?.translations?.find((t) => t.locale === "en")
+              ?.seoTitle ?? "",
+          seoDescription:
+            initialData?.translations?.find((t) => t.locale === "en")
+              ?.seoDescription ?? "",
+        },
+      ],
       images: initialData?.images ?? [],
       brandId: initialData?.brandId ?? "",
       categoryId: initialData?.categoryId ?? "",
@@ -116,10 +169,10 @@ export const ProductForm = ({
       upsTopology: initialData?.upsTopology ?? null,
       upsBatteryType: initialData?.upsBatteryType ?? null,
       specSheet: initialData?.specSheet ?? [],
+      specs: initialData?.specs ?? {},
+      totalStockCache: initialData?.totalStockCache ?? 0,
       isQuoteOnly: initialData?.isQuoteOnly ?? false,
       isActive: initialData?.isActive ?? true,
-      totalStockCache: initialData?.totalStockCache ?? 0,
-      specs: initialData?.specs ?? {},
     },
   });
   useEffect(() => {

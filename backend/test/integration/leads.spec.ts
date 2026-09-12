@@ -21,8 +21,10 @@ import {
   leads,
   leadItems,
   products,
+  productTranslations,
   brands,
   categories,
+  categoryTranslations,
 } from "@/database/schemas";
 
 interface LeadItemResponseBody {
@@ -91,23 +93,41 @@ describe("Leads Module Integration (Storefront RFQ)", () => {
     const [category] = await db
       .insert(categories)
       .values({
-        nameVi: "Máy phát điện",
-        nameEn: "Generators",
         slug: "may-phat-dien",
       })
       .returning();
 
+    if (category) {
+      await db.insert(categoryTranslations).values([
+        { categoryId: category.id, locale: "vi", name: "Máy phát điện" },
+        { categoryId: category.id, locale: "en", name: "Generators" },
+      ]);
+    }
+
     const [product] = await db
       .insert(products)
       .values({
-        nameVi: "Máy phát điện Diesel Hyundai DHY65KSE",
-        nameEn: "Hyundai DHY65KSE Diesel Generator",
         slug: "may-phat-dien-diesel-hyundai-dhy65kse",
         price: "245000000.00",
         brandId: brand ? brand.id : null,
         categoryId: category ? category.id : null,
       })
       .returning();
+
+    if (product) {
+      await db.insert(productTranslations).values([
+        {
+          productId: product.id,
+          locale: "vi",
+          name: "Máy phát điện Diesel Hyundai DHY65KSE",
+        },
+        {
+          productId: product.id,
+          locale: "en",
+          name: "Hyundai DHY65KSE Diesel Generator",
+        },
+      ]);
+    }
 
     testProductId = product ? product.id : "";
   }, 30000);

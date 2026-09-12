@@ -168,24 +168,28 @@ describe("CategoriesService", () => {
       test("should return category details matching ID", async () => {
         const mockCategory = {
           id: "cat-find",
-          nameVi: "Bộ lưu điện UPS",
-          nameEn: "UPS",
           slug: "bo-luu-dien-ups",
           parentId: null,
-          descriptionVi: null,
-          descriptionEn: null,
           image: null,
           isActive: true,
           createdAt: new Date(),
           updatedAt: new Date(),
         };
+        const mockTranslations = [
+          {
+            categoryId: "cat-find",
+            locale: "vi",
+            name: "Bộ lưu điện UPS",
+            description: null,
+          },
+        ];
 
-        mockDb.setSelectResult([mockCategory]);
+        mockDb.setSelectResultsQueue([[mockCategory], mockTranslations]);
 
         const result = await service.findById("cat-find");
 
         expect(result.id).toBe("cat-find");
-        expect(result.nameVi).toBe("Bộ lưu điện UPS");
+        expect(result.name).toBe("Bộ lưu điện UPS");
       });
     });
 
@@ -207,9 +211,9 @@ describe("CategoriesService", () => {
 
         expect(
           service.create({
-            nameVi: "Danh mục trùng",
             slug: "danh-muc-trung",
             isActive: true,
+            translations: [{ locale: "vi", name: "Danh mục trùng" }],
           }),
         ).rejects.toThrow(ConflictException);
       });
@@ -220,13 +224,12 @@ describe("CategoriesService", () => {
         // 1st select: slug check (none)
         // 2nd select: parent check (none)
         mockDb.setSelectResultsQueue([[], []]);
-
         expect(
           service.create({
-            nameVi: "Danh mục con",
             slug: "danh-muc-con",
             parentId: "invalid-parent",
             isActive: true,
+            translations: [{ locale: "vi", name: "Danh mục con" }],
           }),
         ).rejects.toThrow(BadRequestException);
       });
@@ -236,12 +239,8 @@ describe("CategoriesService", () => {
       test("should insert and return created category", async () => {
         const newCategory = {
           id: "cat-new",
-          nameVi: "Tủ chuyển nguồn ATS",
-          nameEn: "ATS Panels",
           slug: "tu-chuyen-nguon-ats",
           parentId: null,
-          descriptionVi: null,
-          descriptionEn: null,
           image: null,
           isActive: true,
           createdAt: new Date(),
@@ -253,11 +252,10 @@ describe("CategoriesService", () => {
         mockDb.setSelectResultsQueue([[], [newCategory]]);
 
         const result = await service.create({
-          nameVi: "Tủ chuyển nguồn ATS",
           slug: "tu-chuyen-nguon-ats",
           isActive: true,
+          translations: [{ locale: "vi", name: "Tủ chuyển nguồn ATS" }],
         });
-
         expect(result.id).toBe("cat-new");
         expect(result.slug).toBe("tu-chuyen-nguon-ats");
       });
@@ -270,7 +268,9 @@ describe("CategoriesService", () => {
         mockDb.setSelectResult([]);
 
         expect(
-          service.update("non-existent", { nameVi: "Tên mới" }),
+          service.update("non-existent", {
+            translations: [{ locale: "vi", name: "Tên mới" }],
+          }),
         ).rejects.toThrow(NotFoundException);
       });
     });

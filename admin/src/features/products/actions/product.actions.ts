@@ -39,10 +39,9 @@ function parseOptionalNumber(
 
 function toTipTapJson(
   content: unknown,
-): AdminCreateProduct["descriptionVi"] | undefined {
-  if (!content) return undefined;
+): Record<string, unknown> | undefined {
   if (typeof content === "object") {
-    return content as unknown as AdminCreateProduct["descriptionVi"];
+    return content as Record<string, unknown>;
   }
   if (typeof content === "string") {
     const trimmed = content.trim();
@@ -50,7 +49,7 @@ function toTipTapJson(
     try {
       const parsed: unknown = JSON.parse(trimmed);
       if (typeof parsed === "object" && parsed !== null) {
-        return parsed as unknown as AdminCreateProduct["descriptionVi"];
+        return parsed as Record<string, unknown>;
       }
     } catch {
       // Plain text, wrap into standard TipTap JSONContent structure
@@ -73,41 +72,23 @@ function toCreateProductDto(input: CreateProductInput): AdminCreateProduct {
     typeof input.price === "string"
       ? Number(input.price.replace(/[.,]/g, "").trim())
       : Number(input.price);
+  const formattedTranslations = input.translations.map((t) => ({
+    locale: t.locale,
+    name: t.name.trim(),
+    shortDescription: t.shortDescription?.trim()
+      ? t.shortDescription.trim()
+      : undefined,
+    description: toTipTapJson(t.description),
+    seoTitle: t.seoTitle?.trim() ? t.seoTitle.trim() : undefined,
+    seoDescription: t.seoDescription?.trim()
+      ? t.seoDescription.trim()
+      : undefined,
+  }));
+
   return {
-    translations: [
-      {
-        locale: "vi",
-        name: input.nameVi.trim(),
-        shortDescription: input.shortDescriptionVi?.trim()
-          ? input.shortDescriptionVi.trim()
-          : undefined,
-        description: toTipTapJson(input.descriptionVi),
-      },
-      ...(input.nameEn?.trim()
-        ? [
-            {
-              locale: "en",
-              name: input.nameEn.trim(),
-              shortDescription: input.shortDescriptionEn?.trim()
-                ? input.shortDescriptionEn.trim()
-                : undefined,
-              description: toTipTapJson(input.descriptionEn),
-            },
-          ]
-        : []),
-    ],
-    nameVi: input.nameVi.trim(),
-    nameEn: input.nameEn?.trim() ? input.nameEn.trim() : undefined,
+    translations: formattedTranslations,
     slug: input.slug.trim(),
     price: isNaN(rawPrice) ? 0 : rawPrice,
-    descriptionVi: toTipTapJson(input.descriptionVi),
-    descriptionEn: toTipTapJson(input.descriptionEn),
-    shortDescriptionVi: input.shortDescriptionVi?.trim()
-      ? input.shortDescriptionVi.trim()
-      : undefined,
-    shortDescriptionEn: input.shortDescriptionEn?.trim()
-      ? input.shortDescriptionEn.trim()
-      : undefined,
     images: input.images,
     brandId: input.brandId.trim() ? input.brandId.trim() : undefined,
     categoryId: input.categoryId.trim() ? input.categoryId.trim() : undefined,
@@ -141,37 +122,20 @@ function toCreateProductDto(input: CreateProductInput): AdminCreateProduct {
 function toUpdateProductDto(input: UpdateProductInput): AdminUpdateProduct {
   const result: AdminUpdateProduct = {};
 
-  if (input.nameVi !== undefined) result.nameVi = input.nameVi.trim();
-  if (input.nameEn !== undefined)
-    result.nameEn = input.nameEn?.trim() ? input.nameEn.trim() : undefined;
-
-  if (input.nameVi !== undefined || input.nameEn !== undefined) {
-    const translations = [];
-    if (input.nameVi) {
-      translations.push({
-        locale: "vi",
-        name: input.nameVi.trim(),
-        shortDescription: input.shortDescriptionVi?.trim()
-          ? input.shortDescriptionVi.trim()
-          : undefined,
-        description: toTipTapJson(input.descriptionVi),
-      });
-    }
-    if (input.nameEn) {
-      translations.push({
-        locale: "en",
-        name: input.nameEn.trim(),
-        shortDescription: input.shortDescriptionEn?.trim()
-          ? input.shortDescriptionEn.trim()
-          : undefined,
-        description: toTipTapJson(input.descriptionEn),
-      });
-    }
-    if (translations.length > 0) {
-      result.translations = translations;
-    }
+  if (input.translations !== undefined) {
+    result.translations = input.translations.map((t) => ({
+      locale: t.locale,
+      name: t.name.trim(),
+      shortDescription: t.shortDescription?.trim()
+        ? t.shortDescription.trim()
+        : undefined,
+      description: toTipTapJson(t.description),
+      seoTitle: t.seoTitle?.trim() ? t.seoTitle.trim() : undefined,
+      seoDescription: t.seoDescription?.trim()
+        ? t.seoDescription.trim()
+        : undefined,
+    }));
   }
-
   if (input.slug !== undefined) result.slug = input.slug.trim();
   if (input.price !== undefined) {
     const rawPrice =
@@ -180,18 +144,6 @@ function toUpdateProductDto(input: UpdateProductInput): AdminUpdateProduct {
         : Number(input.price);
     result.price = isNaN(rawPrice) ? 0 : rawPrice;
   }
-  if (input.descriptionVi !== undefined)
-    result.descriptionVi = toTipTapJson(input.descriptionVi);
-  if (input.descriptionEn !== undefined)
-    result.descriptionEn = toTipTapJson(input.descriptionEn);
-  if (input.shortDescriptionVi !== undefined)
-    result.shortDescriptionVi = input.shortDescriptionVi?.trim()
-      ? input.shortDescriptionVi.trim()
-      : undefined;
-  if (input.shortDescriptionEn !== undefined)
-    result.shortDescriptionEn = input.shortDescriptionEn?.trim()
-      ? input.shortDescriptionEn.trim()
-      : undefined;
   if (input.images !== undefined) result.images = input.images;
   if (input.brandId !== undefined)
     result.brandId = input.brandId.trim() ? input.brandId.trim() : undefined;

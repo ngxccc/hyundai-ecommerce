@@ -120,13 +120,6 @@ export class BrandsService {
       });
     }
 
-    const viTranslation = dto.translations?.find((t) => t.locale === "vi");
-    const enTranslation = dto.translations?.find((t) => t.locale === "en");
-    const primaryDescVi =
-      viTranslation?.description ?? dto.descriptionVi ?? null;
-    const primaryDescEn =
-      enTranslation?.description ?? dto.descriptionEn ?? null;
-
     return await this.db.transaction(async (tx) => {
       const [newBrand] = await tx
         .insert(brands)
@@ -134,8 +127,6 @@ export class BrandsService {
           name: dto.name,
           slug: dto.slug,
           logo: dto.logo ?? null,
-          descriptionVi: primaryDescVi,
-          descriptionEn: primaryDescEn,
           isActive: dto.isActive,
         })
         .returning();
@@ -335,8 +326,7 @@ export class BrandsService {
       translationsMap?.get("vi") ??
       null;
 
-    const description =
-      translation?.description ?? record.descriptionVi ?? null;
+    const description = translation?.description ?? null;
 
     return {
       id: record.id,
@@ -348,8 +338,6 @@ export class BrandsService {
         locale: t.locale,
         description: t.description,
       })),
-      descriptionVi: record.descriptionVi,
-      descriptionEn: record.descriptionEn,
       isActive: record.isActive,
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,

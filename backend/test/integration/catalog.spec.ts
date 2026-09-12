@@ -17,7 +17,13 @@ import {
 } from "../helpers/app.helper";
 import { createAuthenticatedUser } from "../helpers/auth.helper";
 import { type DrizzleDB } from "@/database/database.module";
-import { brands, categories, products } from "@/database/schemas";
+import {
+  brands,
+  categories,
+  categoryTranslations,
+  products,
+  productTranslations,
+} from "@/database/schemas";
 
 interface GenericSuccessResponse<T, M = unknown> {
   success: boolean;
@@ -93,16 +99,33 @@ describe("Catalog Module Integration", () => {
         const [parent] = await db
           .insert(categories)
           .values({
-            nameVi: "Máy phát điện",
             slug: "may-phat-dien",
           })
           .returning();
 
-        await db.insert(categories).values({
-          nameVi: "Máy phát điện Diesel",
-          slug: "may-phat-dien-diesel",
-          parentId: parent ? parent.id : null,
-        });
+        if (parent) {
+          await db.insert(categoryTranslations).values({
+            categoryId: parent.id,
+            locale: "vi",
+            name: "Máy phát điện",
+          });
+        }
+
+        const [child] = await db
+          .insert(categories)
+          .values({
+            slug: "may-phat-dien-diesel",
+            parentId: parent ? parent.id : null,
+          })
+          .returning();
+
+        if (child) {
+          await db.insert(categoryTranslations).values({
+            categoryId: child.id,
+            locale: "vi",
+            name: "Máy phát điện Diesel",
+          });
+        }
 
         const res = await request(getHttpServer()).get(
           "/api/v1/categories/tree",
@@ -117,8 +140,8 @@ describe("Catalog Module Integration", () => {
         const [root] = body.data;
         expect(root?.slug).toBe("may-phat-dien");
         expect(root?.children?.length).toBe(1);
-        const [child] = root?.children ?? [];
-        expect(child?.slug).toBe("may-phat-dien-diesel");
+        const [childNode] = root?.children ?? [];
+        expect(childNode?.slug).toBe("may-phat-dien-diesel");
       }, 15000);
     });
 
@@ -192,64 +215,89 @@ describe("Catalog Module Integration", () => {
       const [category] = await db
         .insert(categories)
         .values({
-          nameVi: "Máy phát điện",
           slug: "may-phat-dien",
         })
         .returning();
 
+      if (category) {
+        await db.insert(categoryTranslations).values({
+          categoryId: category.id,
+          locale: "vi",
+          name: "Máy phát điện",
+        });
+      }
+
       brandId = brand ? brand.id : "";
       categoryId = category ? category.id : "";
 
-      // Insert 3 test products for faceted search and pagination tests
-      await db.insert(products).values([
-        {
-          nameVi: "Máy phát điện Diesel Hyundai DHY65KSE 60kVA",
-          slug: "dhy65kse-60kva",
-          price: "245000000.00",
-          brandId,
-          categoryId,
-          powerKva: "60.00",
-          powerKw: "48.00",
-          fuelType: "diesel",
-          phase: "3phase",
-          voltage: "230/400V",
-          canopyType: "silent",
-          totalStockCache: 5,
-          isActive: true,
-        },
-        {
-          nameVi: "Máy phát điện Xăng Hyundai HY3100LE 3kW",
-          slug: "hy3100le-3kw",
-          price: "12500000.00",
-          brandId,
-          categoryId,
-          powerKva: "3.50",
-          powerKw: "3.00",
-          fuelType: "gasoline",
-          phase: "1phase",
-          voltage: "230V",
-          canopyType: "open_frame",
-          totalStockCache: 10,
-          isActive: true,
-        },
-        {
-          nameVi: "Máy phát điện Diesel Hyundai DHY12500SE 10kVA",
-          slug: "dhy12500se-10kva",
-          price: "68000000.00",
-          brandId,
-          categoryId,
-          powerKva: "11.00",
-          powerKw: "10.00",
-          fuelType: "diesel",
-          phase: "1phase",
-          voltage: "230V",
-          canopyType: "silent",
-          totalStockCache: 2,
-          isActive: true,
-        },
-      ]);
-    }, 15000);
+      const [p1, p2, p3] = await db
+        .insert(products)
+        .values([
+          {
+            slug: "dhy65kse-60kva",
+            price: "245000000.00",
+            brandId,
+            categoryId,
+            powerKva: "60.00",
+            powerKw: "48.00",
+            fuelType: "diesel",
+            phase: "3phase",
+            voltage: "230/400V",
+            canopyType: "silent",
+            totalStockCache: 5,
+            isActive: true,
+          },
+          {
+            slug: "hy3100le-3kw",
+            price: "12500000.00",
+            brandId,
+            categoryId,
+            powerKva: "3.50",
+            powerKw: "3.00",
+            fuelType: "gasoline",
+            phase: "1phase",
+            voltage: "230V",
+            canopyType: "open_frame",
+            totalStockCache: 10,
+            isActive: true,
+          },
+          {
+            slug: "dhy12500se-10kva",
+            price: "85000000.00",
+            brandId,
+            categoryId,
+            powerKva: "11.00",
+            powerKw: "10.00",
+            fuelType: "diesel",
+            phase: "1phase",
+            voltage: "230V",
+            canopyType: "silent",
+            totalStockCache: 3,
+            isActive: true,
+          },
+        ])
+        .returning();
 
+      if (p1 && p2 && p3) {
+        await db.insert(productTranslations).values([
+          {
+            productId: p1.id,
+            locale: "vi",
+            name: "Máy phát điện Diesel Hyundai DHY65KSE 60kVA",
+          },
+          {
+            productId: p2.id,
+            locale: "vi",
+            name: "Máy phát điện Xăng Hyundai HY3100LE 3kW",
+          },
+          {
+            productId: p3.id,
+            locale: "vi",
+            name: "Máy phát điện Hyundai DHY12500SE 10kVA",
+          },
+        ]);
+      }
+    });
     describe("GET /products (Offset Pagination & Faceted Search)", () => {
       it("should support offset pagination query params and return structured envelope", async () => {
         const res = await request(getHttpServer())

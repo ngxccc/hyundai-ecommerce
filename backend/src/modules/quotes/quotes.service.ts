@@ -14,6 +14,7 @@ import {
   orderItems,
   orders,
   products,
+  productTranslations,
   quoteItems,
   quoteMessages,
   quotes,
@@ -136,14 +137,20 @@ export class QuotesService {
           ? await tx
               .select({
                 id: products.id,
-                nameVi: products.nameVi,
-                nameEn: products.nameEn,
+                name: sql<string>`coalesce(${productTranslations.name}, '')`,
                 slug: products.slug,
                 price: products.price,
                 images: products.images,
                 totalStockCache: products.totalStockCache,
               })
               .from(products)
+              .leftJoin(
+                productTranslations,
+                and(
+                  eq(products.id, productTranslations.productId),
+                  eq(productTranslations.locale, "vi"),
+                ),
+              )
               .where(inArray(products.id, productIds))
           : [];
 
@@ -289,17 +296,22 @@ export class QuotesService {
           ? await tx
               .select({
                 id: products.id,
-                nameVi: products.nameVi,
-                nameEn: products.nameEn,
+                name: sql<string>`coalesce(${productTranslations.name}, '')`,
                 slug: products.slug,
                 price: products.price,
                 images: products.images,
                 totalStockCache: products.totalStockCache,
               })
               .from(products)
+              .leftJoin(
+                productTranslations,
+                and(
+                  eq(products.id, productTranslations.productId),
+                  eq(productTranslations.locale, "vi"),
+                ),
+              )
               .where(inArray(products.id, productIds))
           : [];
-
       const productsMap = new Map(productRecords.map((p) => [p.id, p]));
 
       let userSummary: {
@@ -420,8 +432,7 @@ export class QuotesService {
           item: quoteItems,
           product: {
             id: products.id,
-            nameVi: products.nameVi,
-            nameEn: products.nameEn,
+            name: sql<string>`coalesce(${productTranslations.name}, '')`,
             slug: products.slug,
             price: products.price,
             images: products.images,
@@ -430,8 +441,14 @@ export class QuotesService {
         })
         .from(quoteItems)
         .leftJoin(products, eq(quoteItems.productId, products.id))
+        .leftJoin(
+          productTranslations,
+          and(
+            eq(products.id, productTranslations.productId),
+            eq(productTranslations.locale, "vi"),
+          ),
+        )
         .where(inArray(quoteItems.quoteId, quoteIds)),
-
       this.db
         .select({
           message: quoteMessages,
@@ -540,8 +557,7 @@ export class QuotesService {
         item: quoteItems,
         product: {
           id: products.id,
-          nameVi: products.nameVi,
-          nameEn: products.nameEn,
+          name: sql<string>`coalesce(${productTranslations.name}, '')`,
           slug: products.slug,
           price: products.price,
           images: products.images,
@@ -550,8 +566,14 @@ export class QuotesService {
       })
       .from(quoteItems)
       .leftJoin(products, eq(quoteItems.productId, products.id))
+      .leftJoin(
+        productTranslations,
+        and(
+          eq(products.id, productTranslations.productId),
+          eq(productTranslations.locale, "vi"),
+        ),
+      )
       .where(eq(quoteItems.quoteId, id));
-
     const items = itemRecords.map(({ item, product }) => ({
       ...item,
       product: product?.id ? product : null,
@@ -826,10 +848,22 @@ export class QuotesService {
       const items = await tx
         .select({
           item: quoteItems,
-          product: products,
+          product: {
+            id: products.id,
+            name: sql<string>`coalesce(${productTranslations.name}, '')`,
+            slug: products.slug,
+            price: products.price,
+          },
         })
         .from(quoteItems)
         .leftJoin(products, eq(quoteItems.productId, products.id))
+        .leftJoin(
+          productTranslations,
+          and(
+            eq(products.id, productTranslations.productId),
+            eq(productTranslations.locale, "vi"),
+          ),
+        )
         .where(eq(quoteItems.quoteId, quoteId));
 
       if (items.length === 0) {
@@ -853,7 +887,7 @@ export class QuotesService {
           orderItemsToInsert.push({
             productId: item.productId,
             productName:
-              item.itemName ?? product?.nameVi ?? "Thiết bị máy phát điện",
+              item.itemName ?? product?.name ?? "Thiết bị máy phát điện",
             productSku: item.itemModel ?? product?.slug ?? "sku-quote-item",
             quantity: item.quantity,
             unitPrice: finalPrice,

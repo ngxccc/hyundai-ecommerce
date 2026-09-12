@@ -20,8 +20,7 @@ describe("CartController", () => {
         lineTotal: "490000000.00",
         product: {
           id: "prod-1",
-          nameVi: "Máy phát điện",
-          nameEn: null,
+          name: "Máy phát điện",
           slug: "may-phat-dien",
           price: "245000000.00",
           images: [],

@@ -59,26 +59,7 @@ export const createCategoryAction = async (formData: FormData) => {
         parentId: validatedData.parentId,
         image: validatedData.image,
         isActive: validatedData.isActive,
-        translations: [
-          {
-            locale: "vi",
-            name: validatedData.nameVi,
-            description: validatedData.descriptionVi,
-          },
-          ...(validatedData.nameEn
-            ? [
-                {
-                  locale: "en",
-                  name: validatedData.nameEn,
-                  description: validatedData.descriptionEn,
-                },
-              ]
-            : []),
-        ],
-        nameVi: validatedData.nameVi,
-        nameEn: validatedData.nameEn,
-        descriptionVi: validatedData.descriptionVi,
-        descriptionEn: validatedData.descriptionEn,
+        translations: validatedData.translations,
       });
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create category");
@@ -161,30 +142,7 @@ export async function updateCategoryAction(id: string, formData: FormData) {
         parentId: validatedData.parentId,
         image: validatedData.image,
         isActive: validatedData.isActive,
-        ...(validatedData.nameVi !== undefined
-          ? {
-              translations: [
-                {
-                  locale: "vi",
-                  name: validatedData.nameVi,
-                  description: validatedData.descriptionVi,
-                },
-                ...(validatedData.nameEn
-                  ? [
-                      {
-                        locale: "en",
-                        name: validatedData.nameEn,
-                        description: validatedData.descriptionEn,
-                      },
-                    ]
-                  : []),
-              ],
-            }
-          : {}),
-        nameVi: validatedData.nameVi,
-        nameEn: validatedData.nameEn,
-        descriptionVi: validatedData.descriptionVi,
-        descriptionEn: validatedData.descriptionEn,
+        translations: validatedData.translations,
       });
     if (updateError || !updateRes.data) {
       throw new Error(updateError?.detail ?? "Failed to update category");

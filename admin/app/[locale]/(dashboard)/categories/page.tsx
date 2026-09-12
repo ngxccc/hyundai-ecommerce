@@ -45,7 +45,7 @@ export default async function AdminCategoriesPage({
   const searchLower = search?.trim().toLowerCase();
   const filteredCategories = searchLower
     ? categories.filter((c) =>
-        [c.nameVi, c.nameEn, c.descriptionVi, c.descriptionEn].some((field) =>
+        [c.name, c.slug, c.description].some((field) =>
           field?.toLowerCase().includes(searchLower),
         ),
       )

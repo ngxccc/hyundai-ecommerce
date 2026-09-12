@@ -4,8 +4,7 @@ import { zDate } from "@/common/schemas/zod-primitives";
 
 export const cartProductSummarySchema = z.object({
   id: z.uuid(),
-  nameVi: z.string(),
-  nameEn: z.string().nullable(),
+  name: z.string(),
   slug: z.string(),
   price: z.string(),
   images: z.array(z.string()),

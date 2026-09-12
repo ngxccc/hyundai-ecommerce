@@ -98,7 +98,7 @@ export const RecentOrdersTable = ({ orders }: RecentOrdersTableProps) => {
             if (items.length > 0) {
               const firstItem = items[0];
               const productName =
-                firstItem.product?.nameVi ?? firstItem.productName;
+                firstItem.product?.name ?? firstItem.productName;
               productText =
                 items.length > 1
                   ? `${productName} + ${items.length - 1}`

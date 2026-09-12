@@ -31,7 +31,7 @@ describe("WarehouseController", () => {
     updatedAt: new Date("2026-09-04T08:00:00.000Z"),
     product: {
       id: "prod-1",
-      nameVi: "Máy phát điện",
+      name: "Máy phát điện",
       slug: "may-phat-dien",
       totalStockCache: 25,
     },

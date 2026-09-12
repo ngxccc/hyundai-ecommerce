@@ -16,7 +16,7 @@ export const CategoryGrid = ({
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
       {categories.map((category) => {
         const parentName = category.parentId
-          ? allCategories.find((c) => c.id === category.parentId)?.nameVi
+          ? allCategories.find((c) => c.id === category.parentId)?.name
           : undefined;
 
         return (

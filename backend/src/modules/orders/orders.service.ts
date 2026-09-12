@@ -16,6 +16,7 @@ import {
   orderItems,
   outboxEvents,
   products,
+  productTranslations,
   users,
   warehouseStocks,
 } from "@/database/schemas";
@@ -74,8 +75,7 @@ export class OrdersService {
         string,
         {
           id: string;
-          nameVi: string;
-          nameEn: string | null;
+          name: string;
           slug: string;
           price: string;
           images: string[];
@@ -141,10 +141,22 @@ export class OrdersService {
             );
         }
 
+        const [productTrans] = await tx
+          .select({ name: productTranslations.name })
+          .from(productTranslations)
+          .where(
+            and(
+              eq(productTranslations.productId, item.productId),
+              eq(productTranslations.locale, "vi"),
+            ),
+          )
+          .limit(1);
+
+        const productName = productTrans?.name ?? product.slug;
+
         productsMap.set(product.id, {
           id: product.id,
-          nameVi: product.nameVi,
-          nameEn: product.nameEn,
+          name: productName,
           slug: product.slug,
           price: product.price,
           images: product.images,
@@ -153,7 +165,7 @@ export class OrdersService {
 
         orderItemsToInsert.push({
           productId: product.id,
-          productName: product.nameVi,
+          productName,
           productSku: product.slug,
           quantity: item.quantity,
           unitPrice: product.price,
@@ -248,8 +260,7 @@ export class OrdersService {
         string,
         {
           id: string;
-          nameVi: string;
-          nameEn: string | null;
+          name: string;
           slug: string;
           price: string;
           images: string[];
@@ -318,10 +329,22 @@ export class OrdersService {
               ),
             );
         }
+        const [productTrans] = await tx
+          .select({ name: productTranslations.name })
+          .from(productTranslations)
+          .where(
+            and(
+              eq(productTranslations.productId, item.productId),
+              eq(productTranslations.locale, "vi"),
+            ),
+          )
+          .limit(1);
+
+        const productName = productTrans?.name ?? product.slug;
+
         productsMap.set(product.id, {
           id: product.id,
-          nameVi: product.nameVi,
-          nameEn: product.nameEn,
+          name: productName,
           slug: product.slug,
           price: product.price,
           images: product.images,
@@ -330,10 +353,10 @@ export class OrdersService {
 
         orderItemsToInsert.push({
           productId: product.id,
-          productName: product.nameVi,
+          productName,
           productSku: product.slug,
           quantity: item.quantity,
-          unitPrice: unitPriceNum.toFixed(2),
+          unitPrice: product.price,
         });
       }
 
@@ -457,8 +480,7 @@ export class OrdersService {
         item: orderItems,
         product: {
           id: products.id,
-          nameVi: products.nameVi,
-          nameEn: products.nameEn,
+          name: sql<string>`coalesce(${productTranslations.name}, ${orderItems.productName})`,
           slug: products.slug,
           price: products.price,
           images: products.images,
@@ -467,6 +489,13 @@ export class OrdersService {
       })
       .from(orderItems)
       .leftJoin(products, eq(orderItems.productId, products.id))
+      .leftJoin(
+        productTranslations,
+        and(
+          eq(products.id, productTranslations.productId),
+          eq(productTranslations.locale, "vi"),
+        ),
+      )
       .where(eq(orderItems.orderId, id));
 
     let userSummary = null;
@@ -595,8 +624,7 @@ export class OrdersService {
           item: orderItems,
           product: {
             id: products.id,
-            nameVi: products.nameVi,
-            nameEn: products.nameEn,
+            name: sql<string>`coalesce(${productTranslations.name}, ${orderItems.productName})`,
             slug: products.slug,
             price: products.price,
             images: products.images,
@@ -605,6 +633,13 @@ export class OrdersService {
         })
         .from(orderItems)
         .leftJoin(products, eq(orderItems.productId, products.id))
+        .leftJoin(
+          productTranslations,
+          and(
+            eq(products.id, productTranslations.productId),
+            eq(productTranslations.locale, "vi"),
+          ),
+        )
         .where(inArray(orderItems.orderId, orderIds)),
 
       userIds.length > 0

@@ -45,7 +45,7 @@ export default async function AdminBrandsPage({
   const searchLower = search?.trim().toLowerCase();
   const filteredBrands = searchLower
     ? brands.filter((b) =>
-        [b.name, b.descriptionVi, b.descriptionEn].some((field) =>
+        [b.name, b.slug, b.description].some((field) =>
           field?.toLowerCase().includes(searchLower),
         ),
       )

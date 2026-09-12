@@ -10,6 +10,7 @@ import {
 } from "@/database/database.module";
 import {
   products,
+  productTranslations,
   warehouses,
   warehouseStocks,
   type Warehouse,
@@ -144,20 +145,27 @@ export class WarehouseService {
         stock: warehouseStocks,
         product: {
           id: products.id,
-          nameVi: products.nameVi,
+          name: sql<string>`coalesce(${productTranslations.name}, '')`,
           slug: products.slug,
           totalStockCache: products.totalStockCache,
         },
       })
       .from(warehouseStocks)
       .innerJoin(products, eq(warehouseStocks.productId, products.id))
+      .leftJoin(
+        productTranslations,
+        and(
+          eq(products.id, productTranslations.productId),
+          eq(productTranslations.locale, "vi"),
+        ),
+      )
       .where(
         and(
           eq(warehouseStocks.warehouseId, warehouseId),
           isNull(products.deletedAt),
         ),
       )
-      .orderBy(asc(products.nameVi));
+      .orderBy(asc(products.slug));
 
     return records.map((r) => ({
       warehouseId: r.stock.warehouseId,
@@ -233,10 +241,17 @@ export class WarehouseService {
     const [product] = await this.db
       .select({
         id: products.id,
-        nameVi: products.nameVi,
+        name: sql<string>`coalesce(${productTranslations.name}, '')`,
         slug: products.slug,
       })
       .from(products)
+      .leftJoin(
+        productTranslations,
+        and(
+          eq(products.id, productTranslations.productId),
+          eq(productTranslations.locale, "vi"),
+        ),
+      )
       .where(and(eq(products.id, dto.productId), isNull(products.deletedAt)))
       .limit(1);
 
@@ -306,7 +321,7 @@ export class WarehouseService {
       updatedAt: updatedStockRecord.updatedAt,
       product: {
         id: product.id,
-        nameVi: product.nameVi,
+        name: product.name,
         slug: product.slug,
         totalStockCache: updatedStockRecord.totalStockCache,
       },

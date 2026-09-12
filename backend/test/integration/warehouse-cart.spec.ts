@@ -22,6 +22,7 @@ import {
   cartItems,
   carts,
   products,
+  productTranslations,
   warehouses,
   warehouseStocks,
 } from "@/database/schemas";
@@ -108,12 +109,19 @@ describe("Warehouse & Cart Modules Integration", () => {
       const [product] = await db
         .insert(products)
         .values({
-          nameVi: "Máy phát điện Hyundai DHY65KSE",
           slug: "may-phat-dien-hyundai-dhy65kse",
           price: "245000000.00",
           totalStockCache: 0,
         })
         .returning();
+
+      if (product) {
+        await db.insert(productTranslations).values({
+          productId: product.id,
+          locale: "vi",
+          name: "Máy phát điện Hyundai DHY65KSE",
+        });
+      }
 
       const productId = product ? product.id : "";
 
@@ -200,12 +208,19 @@ describe("Warehouse & Cart Modules Integration", () => {
       const [product] = await db
         .insert(products)
         .values({
-          nameVi: "Máy phát điện Diesel 5kW",
           slug: "may-phat-dien-diesel-5kw",
           price: "35000000.00",
           totalStockCache: 5,
         })
         .returning();
+
+      if (product) {
+        await db.insert(productTranslations).values({
+          productId: product.id,
+          locale: "vi",
+          name: "Máy phát điện Diesel 5kW",
+        });
+      }
 
       const productId = product ? product.id : "";
 
@@ -288,12 +303,19 @@ describe("Warehouse & Cart Modules Integration", () => {
       const [product] = await db
         .insert(products)
         .values({
-          nameVi: "Máy phát điện Inverter Hyundai",
           slug: "may-phat-dien-inverter-hyundai",
           price: "18000000.00",
           totalStockCache: 10,
         })
         .returning();
+
+      if (product) {
+        await db.insert(productTranslations).values({
+          productId: product.id,
+          locale: "vi",
+          name: "Máy phát điện Inverter Hyundai",
+        });
+      }
 
       const productId = product ? product.id : "";
 

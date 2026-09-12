@@ -11,13 +11,9 @@ describe("CategoriesController", () => {
   const mockCategory: CategoryResponseDto = {
     id: "cat-1",
     name: "Máy phát điện",
-    nameVi: "Máy phát điện",
-    nameEn: "Generators",
     slug: "may-phat-dien",
     parentId: null,
     description: null,
-    descriptionVi: null,
-    descriptionEn: null,
     image: null,
     isActive: true,
     createdAt: new Date("2026-09-04T08:00:00.000Z"),
@@ -91,15 +87,15 @@ describe("CategoriesController", () => {
     describe("when admin creates category", () => {
       test("should return wrapped created category", async () => {
         const dto: CreateCategoryDto = {
-          nameVi: "Máy phát điện",
           slug: "may-phat-dien",
           isActive: true,
+          translations: [{ locale: "vi", name: "Máy phát điện" }],
         };
 
         const result = await controller.create(dto);
 
         expect(mockCategoriesService.create).toHaveBeenCalledWith(dto);
-        expect(result.data.nameVi).toBe("Máy phát điện");
+        expect(result.data.name).toBe("Máy phát điện");
       });
     });
   });
@@ -107,7 +103,9 @@ describe("CategoriesController", () => {
   describe("PUT /categories/:id", () => {
     describe("when admin updates category", () => {
       test("should return wrapped updated category", async () => {
-        const dto: UpdateCategoryDto = { nameVi: "Máy phát điện mới" };
+        const dto: UpdateCategoryDto = {
+          translations: [{ locale: "vi", name: "Máy phát điện mới" }],
+        };
 
         const result = await controller.update("cat-1", dto);
 

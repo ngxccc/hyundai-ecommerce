@@ -16,8 +16,9 @@ export const quoteCommercialTermsSchema = z.object({
 
 export const quoteItemProductSummarySchema = z.object({
   id: z.uuid(),
-  nameVi: z.string(),
-  nameEn: z.string().nullable(),
+  name: z.string(),
+  nameVi: z.string().optional(),
+  nameEn: z.string().nullable().optional(),
   slug: z.string(),
   price: z.string(),
   images: z.array(z.string()),

@@ -176,7 +176,7 @@ describe("Database Seeding Engine Integration", () => {
         expect(allProducts.length).toBeGreaterThanOrEqual(4);
         for (const product of allProducts) {
           expect(Number(product.price)).toBeGreaterThan(0);
-          expect(product.nameVi).toBeTruthy();
+          expect(product.slug).toBeTruthy();
         }
 
         // Assert warehouse stocks link valid product and warehouse IDs

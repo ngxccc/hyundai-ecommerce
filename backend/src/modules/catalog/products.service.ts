@@ -12,6 +12,7 @@ import {
 import {
   brands,
   categories,
+  categoryTranslations,
   products,
   productTranslations,
   type Brand,
@@ -43,27 +44,9 @@ import { productFilters } from "./filters";
 function toProductInsertValues(
   dto: CreateProductDto,
 ): typeof products.$inferInsert {
-  const viTranslation = dto.translations?.find((t) => t.locale === "vi");
-  const enTranslation = dto.translations?.find((t) => t.locale === "en");
-
-  const nameVi = viTranslation?.name ?? dto.nameVi ?? "";
-  const nameEn = enTranslation?.name ?? dto.nameEn ?? null;
-  const shortDescriptionVi =
-    viTranslation?.shortDescription ?? dto.shortDescriptionVi ?? null;
-  const shortDescriptionEn =
-    enTranslation?.shortDescription ?? dto.shortDescriptionEn ?? null;
-  const descriptionVi = viTranslation?.description ?? dto.descriptionVi ?? null;
-  const descriptionEn = enTranslation?.description ?? dto.descriptionEn ?? null;
-
   return {
-    nameVi,
-    nameEn,
     slug: dto.slug,
     price: String(dto.price),
-    descriptionVi,
-    descriptionEn,
-    shortDescriptionVi,
-    shortDescriptionEn,
     images: dto.images,
     brandId: dto.brandId ?? null,
     categoryId: dto.categoryId ?? null,
@@ -99,41 +82,6 @@ function toProductUpdateValues(
   dto: UpdateProductDto,
 ): Partial<typeof products.$inferInsert> {
   const updateValues: Partial<typeof products.$inferInsert> = {};
-
-  const viTranslation = dto.translations?.find((t) => t.locale === "vi");
-  const enTranslation = dto.translations?.find((t) => t.locale === "en");
-
-  if (viTranslation) {
-    updateValues.nameVi = viTranslation.name;
-    if (viTranslation.shortDescription !== undefined) {
-      updateValues.shortDescriptionVi = viTranslation.shortDescription;
-    }
-    if (viTranslation.description !== undefined) {
-      updateValues.descriptionVi = viTranslation.description;
-    }
-  } else {
-    if (dto.nameVi !== undefined) updateValues.nameVi = dto.nameVi;
-    if (dto.shortDescriptionVi !== undefined)
-      updateValues.shortDescriptionVi = dto.shortDescriptionVi;
-    if (dto.descriptionVi !== undefined)
-      updateValues.descriptionVi = dto.descriptionVi;
-  }
-
-  if (enTranslation) {
-    updateValues.nameEn = enTranslation.name;
-    if (enTranslation.shortDescription !== undefined) {
-      updateValues.shortDescriptionEn = enTranslation.shortDescription;
-    }
-    if (enTranslation.description !== undefined) {
-      updateValues.descriptionEn = enTranslation.description;
-    }
-  } else {
-    if (dto.nameEn !== undefined) updateValues.nameEn = dto.nameEn;
-    if (dto.shortDescriptionEn !== undefined)
-      updateValues.shortDescriptionEn = dto.shortDescriptionEn;
-    if (dto.descriptionEn !== undefined)
-      updateValues.descriptionEn = dto.descriptionEn;
-  }
 
   if (dto.slug !== undefined) updateValues.slug = dto.slug;
   if (dto.price !== undefined) {
@@ -188,10 +136,9 @@ function mapProductRow(
   const t =
     translationsMap?.get(requestedLocale) ?? translationsMap?.get("vi") ?? null;
 
-  const name = t?.name ?? product.nameVi;
-  const shortDescription =
-    t?.shortDescription ?? product.shortDescriptionVi ?? null;
-  const description = t?.description ?? product.descriptionVi ?? null;
+  const name = t?.name ?? "";
+  const shortDescription = t?.shortDescription ?? null;
+  const description = t?.description ?? null;
   const seoTitle = t?.seoTitle ?? null;
   const seoDescription = t?.seoDescription ?? null;
 
@@ -210,12 +157,6 @@ function mapProductRow(
       seoTitle: tr.seoTitle,
       seoDescription: tr.seoDescription,
     })),
-    nameVi: product.nameVi,
-    nameEn: product.nameEn,
-    shortDescriptionVi: product.shortDescriptionVi,
-    shortDescriptionEn: product.shortDescriptionEn,
-    descriptionVi: product.descriptionVi,
-    descriptionEn: product.descriptionEn,
     isQuoteOnly: product.isQuoteOnly,
     productType: product.productType ?? "generator",
     powerKva: product.powerKva ?? null,
@@ -237,14 +178,14 @@ function mapProductRow(
     brand: brand?.id
       ? {
           ...brand,
-          description: brand.descriptionVi ?? null,
+          description: null,
         }
       : null,
     category: category?.id
       ? {
           ...category,
-          name: category.nameVi,
-          description: category.descriptionVi ?? null,
+          name: category.slug,
+          description: null,
         }
       : null,
   };
@@ -412,14 +353,20 @@ export class ProductsService {
       this.db
         .select({
           id: categories.id,
-          nameVi: categories.nameVi,
-          nameEn: categories.nameEn,
+          name: sql<string>`coalesce(${categoryTranslations.name}, ${categories.slug})`,
           count: count(products.id),
         })
         .from(products)
         .innerJoin(categories, eq(products.categoryId, categories.id))
+        .leftJoin(
+          categoryTranslations,
+          and(
+            eq(categories.id, categoryTranslations.categoryId),
+            eq(categoryTranslations.locale, locale),
+          ),
+        )
         .where(baseCondition)
-        .groupBy(categories.id, categories.nameVi, categories.nameEn),
+        .groupBy(categories.id, categories.slug, categoryTranslations.name),
 
       this.db
         .select({
@@ -465,9 +412,7 @@ export class ProductsService {
       })),
       categories: categoryCounts.map((c): CategoryFacetItem => ({
         id: c.id,
-        name: locale === "en" && c.nameEn ? c.nameEn : c.nameVi,
-        nameVi: c.nameVi,
-        nameEn: c.nameEn,
+        name: c.name,
         count: c.count,
       })),
       fuelTypes: fuelTypeCounts.map((f): ValueCountFacetItem => ({
@@ -611,27 +556,7 @@ export class ProductsService {
             });
           }
         }
-      } else {
-        if (dto.nameVi) {
-          rowsToInsert.push({
-            productId: newProduct.id,
-            locale: "vi",
-            name: dto.nameVi,
-            shortDescription: dto.shortDescriptionVi ?? null,
-            description: dto.descriptionVi ?? null,
-          });
-        }
-        if (dto.nameEn) {
-          rowsToInsert.push({
-            productId: newProduct.id,
-            locale: "en",
-            name: dto.nameEn,
-            shortDescription: dto.shortDescriptionEn ?? null,
-            description: dto.descriptionEn ?? null,
-          });
-        }
       }
-
       let createdTranslations: ProductTranslation[] = [];
       if (rowsToInsert.length > 0) {
         createdTranslations = await tx

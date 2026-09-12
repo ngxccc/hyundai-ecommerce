@@ -14,14 +14,8 @@ describe("ProductsService", () => {
 
   const mockProduct = {
     id: "prod-1",
-    nameVi: "Máy phát điện Hyundai 60kVA",
-    nameEn: "Hyundai 60kVA Generator",
     slug: "may-phat-dien-hyundai-60kva",
     price: "245000000.00",
-    descriptionVi: null,
-    descriptionEn: null,
-    shortDescriptionVi: null,
-    shortDescriptionEn: null,
     images: [],
     brandId: "brand-1",
     categoryId: "cat-1",
@@ -75,10 +69,16 @@ describe("ProductsService", () => {
               },
               category: {
                 id: "cat-1",
-                nameVi: "Máy phát điện",
-                nameEn: "Generators",
                 slug: "may-phat-dien",
               },
+            },
+          ],
+          [
+            {
+              productId: "prod-1",
+              locale: "vi",
+              name: "Máy phát điện Hyundai 60kVA",
+              description: null,
             },
           ],
         ]);
@@ -96,7 +96,7 @@ describe("ProductsService", () => {
         expect(result.meta.hasNextPage).toBe(false);
         expect(result.meta.hasPrevPage).toBe(false);
         expect(result.items.length).toBe(1);
-        expect(result.items[0]?.nameVi).toBe("Máy phát điện Hyundai 60kVA");
+        expect(result.items[0]?.name).toBe("Máy phát điện Hyundai 60kVA");
         expect(result.items[0]?.brand?.name).toBe("Hyundai Power");
       });
 
@@ -306,7 +306,7 @@ describe("ProductsService", () => {
 
         expect(
           service.create({
-            nameVi: "Máy phát điện",
+            translations: [{ locale: "vi", name: "Máy phát điện" }],
             slug: "dhy65kse",
             price: 245000000,
             images: [],
@@ -330,7 +330,7 @@ describe("ProductsService", () => {
 
         expect(
           service.create({
-            nameVi: "Máy phát điện",
+            translations: [{ locale: "vi", name: "Máy phát điện" }],
             slug: "dhy65kse",
             brandId: "invalid-brand",
             price: 245000000,
@@ -349,7 +349,7 @@ describe("ProductsService", () => {
     describe("when valid payload provided", () => {
       test("should insert product and return mapped response", async () => {
         const dto = {
-          nameVi: "Máy phát điện",
+          translations: [{ locale: "vi", name: "Máy phát điện" }],
           slug: "dhy65kse",
           price: 245000000,
           images: [],
@@ -386,7 +386,7 @@ describe("ProductsService", () => {
     describe("when product does not exist", () => {
       test("should throw NotFoundException", () => {
         mockDb.setSelectResult([]);
-        expect(service.update("prod-1", { nameVi: "Mới" })).rejects.toThrow(
+        expect(service.update("prod-1", { price: 20000000 })).rejects.toThrow(
           NotFoundException,
         );
       });
@@ -417,15 +417,23 @@ describe("ProductsService", () => {
         mockDb.setSelectResultsQueue([
           [{ id: "prod-1", slug: "may-phat-dien-hyundai-60kva" }], // existing check
           [updatedRecord], // update returning
+          [
+            {
+              productId: "prod-1",
+              locale: "vi",
+              name: "Tên Đã Cập Nhật",
+              description: null,
+            },
+          ],
         ]);
 
         const result = await service.update("prod-1", {
-          nameVi: "Tên Đã Cập Nhật",
+          translations: [{ locale: "vi", name: "Tên Đã Cập Nhật" }],
           price: 300000000,
         });
 
         expect(result.id).toBe("prod-1");
-        expect(result.nameVi).toBe("Tên Đã Cập Nhật");
+        expect(result.name).toBe("Tên Đã Cập Nhật");
       });
     });
   });

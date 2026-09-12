@@ -151,7 +151,6 @@ export async function seedTier2Catalog(
     result.categories = await db
       .select({
         id: categories.id,
-        nameVi: categories.nameVi,
         slug: categories.slug,
       })
       .from(categories);
@@ -309,7 +308,6 @@ export async function seedTier2Catalog(
     result.products = await db
       .select({
         id: products.id,
-        nameVi: products.nameVi,
         slug: products.slug,
         price: products.price,
         totalStockCache: products.totalStockCache,

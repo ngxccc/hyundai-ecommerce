@@ -21,6 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { LocaleTabs } from "@/shared/components/locale-tabs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -57,18 +58,38 @@ export const CategoryForm = ({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!initialData;
+  const [langTab, setLangTab] = useState<"vi" | "en">("vi");
 
   const form = useForm<CreateCategoryInput>({
     resolver: translatedZodResolver(createCategorySchema, t),
     defaultValues: {
-      nameVi: initialData?.nameVi ?? "",
-      nameEn: initialData?.nameEn ?? "",
       slug: initialData?.slug ?? "",
       parentId: initialData?.parentId ?? null,
-      descriptionVi: initialData?.descriptionVi ?? "",
-      descriptionEn: initialData?.descriptionEn ?? "",
       image: initialData?.image ?? "",
       isActive: initialData?.isActive ?? true,
+      translations: [
+        {
+          locale: "vi",
+          name:
+            initialData?.translations?.find((t) => t.locale === "vi")?.name ??
+            initialData?.name ??
+            "",
+          description:
+            initialData?.translations?.find((t) => t.locale === "vi")
+              ?.description ??
+            initialData?.description ??
+            "",
+        },
+        {
+          locale: "en",
+          name:
+            initialData?.translations?.find((t) => t.locale === "en")?.name ??
+            "",
+          description:
+            initialData?.translations?.find((t) => t.locale === "en")
+              ?.description ?? "",
+        },
+      ],
     },
   });
 
@@ -161,55 +182,104 @@ export const CategoryForm = ({
         <div className="grid gap-6 md:grid-cols-2">
           <Card size="dense" className="col-span-1">
             <CardHeader bordered size="dense">
-              <CardTitle size="lg">
-                <Info />
-                {t("sections.general")}
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle size="lg">
+                  <Info />
+                  {t("sections.general")}
+                </CardTitle>
+                <LocaleTabs
+                  activeLocale={langTab}
+                  onLocaleChange={setLangTab}
+                />
+              </div>
             </CardHeader>
-            <CardContent size="dense">
-              <FormField
-                control={form.control}
-                name="nameVi"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.name")} (VI)</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("placeholders.name")}
-                        disabled={isPending}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="nameEn"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.name")} (EN)</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("placeholders.name")}
-                        disabled={isPending}
-                        {...field}
-                        value={field.value ?? ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <CardContent size="dense" className="space-y-4">
+              {langTab === "vi" ? (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="translations.0.name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel required>{t("fields.name")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={t("placeholders.name")}
+                            disabled={isPending}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="translations.0.description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("fields.description")}</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder={t("placeholders.description")}
+                            disabled={isPending}
+                            {...field}
+                            value={field.value ?? ""}
+                            className="min-h-0 resize-none"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              ) : (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="translations.1.name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("fields.name")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={t("placeholders.name")}
+                            disabled={isPending}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="translations.1.description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("fields.description")}</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder={t("placeholders.description")}
+                            disabled={isPending}
+                            {...field}
+                            value={field.value ?? ""}
+                            className="min-h-0 resize-none"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
 
               <FormField
                 control={form.control}
                 name="slug"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.slug")}</FormLabel>
+                    <FormLabel required>{t("fields.slug")}</FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t("placeholders.slug")}
@@ -221,7 +291,6 @@ export const CategoryForm = ({
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="parentId"
@@ -246,7 +315,7 @@ export const CategoryForm = ({
                           .filter((c) => c.id !== initialData?.id)
                           .map((category) => (
                             <SelectItem key={category.id} value={category.id}>
-                              {category.nameVi}
+                              {category.name}
                             </SelectItem>
                           ))}
                       </SelectContent>
@@ -256,45 +325,6 @@ export const CategoryForm = ({
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="descriptionVi"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.description")} (VI)</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder={t("placeholders.description")}
-                        disabled={isPending}
-                        {...field}
-                        value={field.value ?? ""}
-                        className="min-h-0 resize-none"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="descriptionEn"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.description")} (EN)</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder={t("placeholders.description")}
-                        disabled={isPending}
-                        {...field}
-                        value={field.value ?? ""}
-                        className="min-h-0 resize-none"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <FormField
                 control={form.control}

@@ -26,6 +26,7 @@ import {
   orders,
   outboxEvents,
   products,
+  productTranslations,
   warehouses,
   warehouseStocks,
 } from "@/database/schemas";
@@ -75,13 +76,19 @@ describe("Orders Module Integration", () => {
       const [product] = await db
         .insert(products)
         .values({
-          nameVi: "Máy phát điện Diesel Hyundai DHY65KSE",
           slug: "may-phat-dien-diesel-hyundai-dhy65kse",
           price: "245000000.00",
           totalStockCache: 5,
         })
         .returning();
 
+      if (product) {
+        await db.insert(productTranslations).values({
+          productId: product.id,
+          locale: "vi",
+          name: "Máy phát điện Diesel Hyundai DHY65KSE",
+        });
+      }
       const [warehouse] = await db
         .insert(warehouses)
         .values({
@@ -155,13 +162,19 @@ describe("Orders Module Integration", () => {
       const [product] = await db
         .insert(products)
         .values({
-          nameVi: "Máy phát điện mini 3kVA",
           slug: "may-phat-dien-mini-3kva",
           price: "15000000.00",
           totalStockCache: 2,
         })
         .returning();
 
+      if (product) {
+        await db.insert(productTranslations).values({
+          productId: product.id,
+          locale: "vi",
+          name: "Máy phát điện mini 3kVA",
+        });
+      }
       const productId = product?.id ?? "";
 
       const checkoutRes = await request(getHttpServer())
@@ -195,13 +208,19 @@ describe("Orders Module Integration", () => {
       const [product] = await db
         .insert(products)
         .values({
-          nameVi: "Máy phát điện Hyundai 100kVA",
           slug: "may-phat-dien-hyundai-100kva",
           price: "320000000.00",
           totalStockCache: 4,
         })
         .returning();
 
+      if (product) {
+        await db.insert(productTranslations).values({
+          productId: product.id,
+          locale: "vi",
+          name: "Máy phát điện Hyundai 100kVA",
+        });
+      }
       const [warehouse] = await db
         .insert(warehouses)
         .values({
@@ -330,13 +349,19 @@ describe("Orders Module Integration", () => {
       const [product] = await db
         .insert(products)
         .values({
-          nameVi: "Máy phát điện xăng 5kW",
           slug: "may-phat-dien-xang-5kw",
           price: "25000000.00",
           totalStockCache: 1,
         })
         .returning();
 
+      if (product) {
+        await db.insert(productTranslations).values({
+          productId: product.id,
+          locale: "vi",
+          name: "Máy phát điện xăng 5kW",
+        });
+      }
       const productId = product?.id ?? "";
 
       // 2. Create pending order via checkout (stock becomes 0)

@@ -12,17 +12,11 @@ describe("ProductsController", () => {
   const mockProduct: ProductResponseDto = {
     id: "prod-1",
     name: "Máy phát điện Hyundai 60kVA",
-    nameVi: "Máy phát điện Hyundai 60kVA",
-    nameEn: "Hyundai 60kVA Generator",
     slug: "may-phat-dien-hyundai-60kva",
     price: "245000000.00",
     isQuoteOnly: false,
     description: null,
     shortDescription: null,
-    descriptionVi: null,
-    descriptionEn: null,
-    shortDescriptionVi: null,
-    shortDescriptionEn: null,
     images: [],
     brandId: null,
     categoryId: null,
@@ -153,9 +147,9 @@ describe("ProductsController", () => {
     describe("when admin creates product", () => {
       test("should return wrapped created product", async () => {
         const dto: CreateProductDto = {
-          nameVi: "Máy phát điện Hyundai",
           slug: "may-phat-dien-hyundai",
           price: 245000000,
+          translations: [{ locale: "vi", name: "Máy phát điện Hyundai" }],
           images: [],
           productType: "generator",
           frequency: 50,
