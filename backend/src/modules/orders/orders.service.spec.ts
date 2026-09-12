@@ -86,6 +86,7 @@ describe("OrdersService", () => {
         mockDb.setSelectResultsQueue([
           [mockProduct], // select product
           [{ warehouseId: "wh-1", stock: 5 }], // select warehouse stock
+          [{ name: "Máy phát điện Hyundai 50kVA" }], // select translation
           [mockOrderRecord], // insert order returning
           [mockOrderRecord], // findById order
           [mockOrderItemRecord], // findById items
@@ -117,8 +118,10 @@ describe("OrdersService", () => {
         mockDb.setSelectResultsQueue([
           [prodA],
           [{ warehouseId: "wh-1", stock: 5 }],
+          [{ name: "Máy phát điện A" }],
           [prodB],
           [{ warehouseId: "wh-1", stock: 5 }],
+          [{ name: "Máy phát điện B" }],
           [mockOrderRecord],
           [mockOrderRecord],
           [mockOrderItemRecord],
@@ -199,6 +202,7 @@ describe("OrdersService", () => {
         mockDb.setSelectResultsQueue([
           [mockProduct], // select product
           [{ warehouseId: "wh-1", stock: 10 }], // select warehouse stock
+          [{ name: "Máy phát điện Hyundai 50kVA" }], // select translation
           [b2bOrderRecord], // insert order returning
           [b2bOrderRecord], // findById order
           [mockOrderItemRecord], // findById items
@@ -232,8 +236,10 @@ describe("OrdersService", () => {
         mockDb.setSelectResultsQueue([
           [prodA],
           [{ warehouseId: "wh-1", stock: 5 }],
+          [{ name: "Máy phát điện A" }],
           [prodB],
           [{ warehouseId: "wh-1", stock: 5 }],
+          [{ name: "Máy phát điện B" }],
           [mockOrderRecord],
           [mockOrderRecord],
           [mockOrderItemRecord],

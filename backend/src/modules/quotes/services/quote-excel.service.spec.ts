@@ -52,8 +52,7 @@ describe("QuoteExcelService", () => {
         agreedPrice: "245000000.00",
         product: {
           id: "prod-1",
-          nameVi: "Máy phát điện Hyundai DHY65KSE",
-          nameEn: null,
+          name: "Máy phát điện Hyundai DHY65KSE",
           slug: "may-phat-dien-hyundai-dhy65kse",
           price: "245000000.00",
           images: [],

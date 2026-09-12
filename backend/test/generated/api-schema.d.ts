@@ -1841,7 +1841,8 @@ export interface components {
       product?: {
         /** Format: uuid */
         id: string;
-        nameVi: string;
+        name: string;
+        nameVi?: string;
         slug: string;
         totalStockCache: number;
       } | null;
@@ -1892,8 +1893,7 @@ export interface components {
         product: {
           /** Format: uuid */
           id: string;
-          nameVi: string;
-          nameEn: string | null;
+          name: string;
           slug: string;
           price: string;
           images: string[];
@@ -1990,8 +1990,9 @@ export interface components {
         product?: {
           /** Format: uuid */
           id: string;
-          nameVi: string;
-          nameEn: string | null;
+          name: string;
+          nameVi?: string;
+          nameEn?: string | null;
           slug: string;
           price: string;
           images: string[];
@@ -2177,7 +2178,8 @@ export interface components {
         product?: {
           /** Format: uuid */
           id: string;
-          nameVi: string;
+          name: string;
+          nameVi?: string;
           nameEn?: string | null;
           slug: string;
           price: string;

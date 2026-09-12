@@ -10223,6 +10223,9 @@
                     "format": "uuid",
                     "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
                   },
+                  "name": {
+                    "type": "string"
+                  },
                   "nameVi": {
                     "type": "string"
                   },
@@ -10233,7 +10236,7 @@
                     "type": "number"
                   }
                 },
-                "required": ["id", "nameVi", "slug", "totalStockCache"]
+                "required": ["id", "name", "slug", "totalStockCache"]
               },
               {
                 "type": "null"
@@ -10393,11 +10396,8 @@
                       "format": "uuid",
                       "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
                     },
-                    "nameVi": {
+                    "name": {
                       "type": "string"
-                    },
-                    "nameEn": {
-                      "type": ["string", "null"]
                     },
                     "slug": {
                       "type": "string"
@@ -10423,8 +10423,7 @@
                   },
                   "required": [
                     "id",
-                    "nameVi",
-                    "nameEn",
+                    "name",
                     "slug",
                     "price",
                     "images",
@@ -10753,6 +10752,9 @@
                           "format": "uuid",
                           "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
                         },
+                        "name": {
+                          "type": "string"
+                        },
                         "nameVi": {
                           "type": "string"
                         },
@@ -10779,8 +10781,7 @@
                       },
                       "required": [
                         "id",
-                        "nameVi",
-                        "nameEn",
+                        "name",
                         "slug",
                         "price",
                         "images",
@@ -11463,6 +11464,9 @@
                           "format": "uuid",
                           "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
                         },
+                        "name": {
+                          "type": "string"
+                        },
                         "nameVi": {
                           "type": "string"
                         },
@@ -11489,7 +11493,7 @@
                       },
                       "required": [
                         "id",
-                        "nameVi",
+                        "name",
                         "slug",
                         "price",
                         "images",

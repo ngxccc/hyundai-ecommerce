@@ -14,8 +14,6 @@ describe("BrandsController", () => {
     slug: "hyundai-power",
     logo: null,
     description: null,
-    descriptionVi: null,
-    descriptionEn: null,
     isActive: true,
     createdAt: new Date("2026-09-04T08:00:00.000Z"),
     updatedAt: new Date("2026-09-04T08:00:00.000Z"),

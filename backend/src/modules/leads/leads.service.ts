@@ -14,7 +14,13 @@ import {
   DATABASE_CONNECTION,
   type DrizzleDB,
 } from "@/database/database.module";
-import { leads, leadItems, products, users } from "@/database/schemas";
+import {
+  leads,
+  leadItems,
+  products,
+  productTranslations,
+  users,
+} from "@/database/schemas";
 import type {
   CreateLeadDto,
   LeadQueryDto,
@@ -41,11 +47,17 @@ export class LeadsService {
     const existingProducts = await this.db
       .select({
         id: products.id,
-        nameVi: products.nameVi,
-        nameEn: products.nameEn,
+        name: sql<string>`coalesce(${productTranslations.name}, '')`,
         slug: products.slug,
       })
       .from(products)
+      .leftJoin(
+        productTranslations,
+        and(
+          eq(products.id, productTranslations.productId),
+          eq(productTranslations.locale, "vi"),
+        ),
+      )
       .where(inArray(products.id, productIds));
 
     if (existingProducts.length !== productIds.length) {
@@ -91,8 +103,8 @@ export class LeadsService {
           leadId: newLead.id,
           productId: item.productId,
           quantity: item.quantity,
-          productNameVi: prod.nameVi,
-          productNameEn: prod.nameEn ?? null,
+          productNameVi: prod.name,
+          productNameEn: null,
           productModel: prod.slug,
           productSku: prod.slug,
         };

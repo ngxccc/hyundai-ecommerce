@@ -3,12 +3,17 @@ import {
   I18nBadRequestException,
   I18nNotFoundException,
 } from "@/common/exceptions";
-import { and, asc, eq, inArray, isNull } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull, sql } from "drizzle-orm";
 import {
   DATABASE_CONNECTION,
   type DrizzleDB,
 } from "@/database/database.module";
-import { cartItems, carts, products } from "@/database/schemas";
+import {
+  cartItems,
+  carts,
+  products,
+  productTranslations,
+} from "@/database/schemas";
 import type {
   AddCartItemDto,
   CartItemResponseDto,
@@ -66,11 +71,18 @@ export class CartService {
     const [product] = await this.db
       .select({
         id: products.id,
-        nameVi: products.nameVi,
+        name: sql<string>`coalesce(${productTranslations.name}, '')`,
         totalStockCache: products.totalStockCache,
         isActive: products.isActive,
       })
       .from(products)
+      .leftJoin(
+        productTranslations,
+        and(
+          eq(products.id, productTranslations.productId),
+          eq(productTranslations.locale, "vi"),
+        ),
+      )
       .where(and(eq(products.id, dto.productId), isNull(products.deletedAt)))
       .limit(1);
 
@@ -82,7 +94,7 @@ export class CartService {
 
     if (product.totalStockCache <= 0) {
       throw new I18nBadRequestException("cart.OUT_OF_STOCK", {
-        name: product.nameVi,
+        name: product.name,
       });
     }
 
@@ -138,7 +150,6 @@ export class CartService {
         item: cartItems,
         product: {
           id: products.id,
-          nameVi: products.nameVi,
           totalStockCache: products.totalStockCache,
           isActive: products.isActive,
         },
@@ -293,8 +304,7 @@ export class CartService {
         item: cartItems,
         product: {
           id: products.id,
-          nameVi: products.nameVi,
-          nameEn: products.nameEn,
+          name: sql<string>`coalesce(${productTranslations.name}, '')`,
           slug: products.slug,
           price: products.price,
           images: products.images,
@@ -304,6 +314,13 @@ export class CartService {
       })
       .from(cartItems)
       .innerJoin(products, eq(cartItems.productId, products.id))
+      .leftJoin(
+        productTranslations,
+        and(
+          eq(products.id, productTranslations.productId),
+          eq(productTranslations.locale, "vi"),
+        ),
+      )
       .where(and(eq(cartItems.cartId, cartId), isNull(products.deletedAt)))
       .orderBy(asc(cartItems.createdAt));
 
@@ -319,8 +336,7 @@ export class CartService {
         lineTotal,
         product: {
           id: r.product.id,
-          nameVi: r.product.nameVi,
-          nameEn: r.product.nameEn,
+          name: r.product.name,
           slug: r.product.slug,
           price: r.product.price,
           images: r.product.images,

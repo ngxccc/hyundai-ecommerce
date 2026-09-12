@@ -15,9 +15,7 @@ export interface MonthlyRevenue {
 
 export interface TopSellingProduct {
   id: string;
-  name?: string;
-  nameVi?: string;
-  nameEn?: string | null;
+  name: string;
   salesCount?: number;
   sold?: number;
   revenue?: string;

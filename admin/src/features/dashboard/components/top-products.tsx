@@ -50,7 +50,7 @@ export const TopProducts = ({ products }: TopProductsProps) => {
                   product.image ??
                   "https://placehold.co/400x300/png?text=No+Image"
                 }
-                alt={product.nameVi ?? product.name ?? ""}
+                alt={product.name}
                 className="h-full w-full object-cover"
                 sizes="48px"
                 fill
@@ -58,7 +58,7 @@ export const TopProducts = ({ products }: TopProductsProps) => {
             </div>
             <div className="min-w-0 flex-1">
               <h4 className="text-foreground truncate text-sm font-medium">
-                {product.nameVi ?? product.name ?? ""}
+                {product.name}
               </h4>
               <p className="text-muted-foreground text-xs">
                 {t("sold", {

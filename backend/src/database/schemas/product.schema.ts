@@ -32,14 +32,8 @@ export const products = snakeCase.table(
   "product",
   {
     ...fullEntity,
-    nameVi: text().notNull(),
-    nameEn: text(),
     slug: text().notNull(),
     price: numeric({ precision: 15, scale: 2 }).notNull(),
-    descriptionVi: jsonb().$type<JSONContent>(),
-    descriptionEn: jsonb().$type<JSONContent>(),
-    shortDescriptionVi: text(),
-    shortDescriptionEn: text(),
     images: text().array().default([]).notNull(),
     brandId: uuid().references(() => brands.id, { onDelete: "set null" }),
     categoryId: uuid().references(() => categories.id, {

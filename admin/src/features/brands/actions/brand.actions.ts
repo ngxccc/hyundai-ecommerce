@@ -59,26 +59,7 @@ export const createBrandAction = async (formData: FormData) => {
         slug: validatedData.slug,
         logo: validatedData.logo,
         isActive: validatedData.isActive,
-        translations: [
-          ...(validatedData.descriptionVi !== undefined
-            ? [
-                {
-                  locale: "vi",
-                  description: validatedData.descriptionVi,
-                },
-              ]
-            : []),
-          ...(validatedData.descriptionEn !== undefined
-            ? [
-                {
-                  locale: "en",
-                  description: validatedData.descriptionEn,
-                },
-              ]
-            : []),
-        ],
-        descriptionVi: validatedData.descriptionVi,
-        descriptionEn: validatedData.descriptionEn,
+        translations: validatedData.translations,
       });
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create brand");
@@ -162,31 +143,7 @@ export async function updateBrandAction(id: string, formData: FormData) {
         slug: validatedData.slug,
         logo: validatedData.logo,
         isActive: validatedData.isActive,
-        ...(validatedData.descriptionVi !== undefined ||
-        validatedData.descriptionEn !== undefined
-          ? {
-              translations: [
-                ...(validatedData.descriptionVi !== undefined
-                  ? [
-                      {
-                        locale: "vi",
-                        description: validatedData.descriptionVi,
-                      },
-                    ]
-                  : []),
-                ...(validatedData.descriptionEn !== undefined
-                  ? [
-                      {
-                        locale: "en",
-                        description: validatedData.descriptionEn,
-                      },
-                    ]
-                  : []),
-              ],
-            }
-          : {}),
-        descriptionVi: validatedData.descriptionVi,
-        descriptionEn: validatedData.descriptionEn,
+        translations: validatedData.translations,
       },
     );
     if (updateError || !updateRes.data) {

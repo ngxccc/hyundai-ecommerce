@@ -26,8 +26,8 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
   const t = useTranslations("adminProductForm");
   const [langTab, setLangTab] = useState<"vi" | "en">("vi");
 
-  const nameViError = Boolean(form.formState.errors.nameVi);
-  const nameEnError = Boolean(form.formState.errors.nameEn);
+  const viError = Boolean(form.formState.errors.translations?.[0]?.name);
+  const enError = Boolean(form.formState.errors.translations?.[1]?.name);
 
   return (
     <Card size="dense" collapsible defaultOpen={true}>
@@ -42,7 +42,7 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
           <LocaleTabs
             activeLocale={langTab}
             onLocaleChange={setLangTab}
-            hasErrors={{ vi: nameViError, en: nameEnError }}
+            hasErrors={{ vi: viError, en: enError }}
           />
         </div>
       </CardHeader>
@@ -54,12 +54,8 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
           <TabsContent value="vi" forceMount className="space-y-4">
             <FormField
               control={form.control}
-              name="nameVi"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<CreateProductInput, "nameVi">;
-              }) => (
+              name="translations.0.name"
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel required>{t("fields.name")}</FormLabel>
                   <FormControl>
@@ -74,15 +70,8 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
             />
             <FormField
               control={form.control}
-              name="shortDescriptionVi"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<
-                  CreateProductInput,
-                  "shortDescriptionVi"
-                >;
-              }) => (
+              name="translations.0.shortDescription"
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.shortDescription")}</FormLabel>
                   <FormControl>
@@ -103,19 +92,14 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
           <TabsContent value="en" forceMount className="space-y-4">
             <FormField
               control={form.control}
-              name="nameEn"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<CreateProductInput, "nameEn">;
-              }) => (
+              name="translations.1.name"
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.name")}</FormLabel>
                   <FormControl>
                     <Input
                       placeholder={t("fields.namePlaceholder")}
                       {...field}
-                      value={field.value ?? ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -124,15 +108,8 @@ export const ProductGeneralInfo = ({ form }: ProductGeneralInfoProps) => {
             />
             <FormField
               control={form.control}
-              name="shortDescriptionEn"
-              render={({
-                field,
-              }: {
-                field: ControllerRenderProps<
-                  CreateProductInput,
-                  "shortDescriptionEn"
-                >;
-              }) => (
+              name="translations.1.shortDescription"
+              render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t("fields.shortDescription")}</FormLabel>
                   <FormControl>

@@ -21,6 +21,7 @@ import {
   orderItems,
   orders,
   products,
+  productTranslations,
   quoteItems,
   quoteMessages,
   quotes,
@@ -80,12 +81,19 @@ describe("Quotes Module Integration", () => {
       const [product] = await db
         .insert(products)
         .values({
-          nameVi: "Máy phát điện Hyundai 50kVA",
           slug: "may-phat-dien-hyundai-50kva",
           price: "180000000.00",
           totalStockCache: 5,
         })
         .returning();
+
+      if (product) {
+        await db.insert(productTranslations).values({
+          productId: product.id,
+          locale: "vi",
+          name: "Máy phát điện Hyundai 50kVA",
+        });
+      }
 
       const productId = product?.id ?? "";
 
@@ -272,12 +280,19 @@ describe("Quotes Module Integration", () => {
       const [product] = await db
         .insert(products)
         .values({
-          nameVi: "Máy phát điện Diesel DHY22KSE",
           slug: "may-phat-dien-diesel-dhy22kse",
           price: "125000000.00",
           totalStockCache: 3,
         })
         .returning();
+
+      if (product) {
+        await db.insert(productTranslations).values({
+          productId: product.id,
+          locale: "vi",
+          name: "Máy phát điện Diesel DHY22KSE",
+        });
+      }
 
       const productId = product?.id ?? "";
 

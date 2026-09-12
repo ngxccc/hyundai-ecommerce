@@ -4,7 +4,8 @@ import { zDate } from "@/common/schemas/zod-primitives";
 
 export const stockProductItemSchema = z.object({
   id: z.uuid(),
-  nameVi: z.string(),
+  name: z.string(),
+  nameVi: z.string().optional(),
   slug: z.string(),
   totalStockCache: z.number(),
 });

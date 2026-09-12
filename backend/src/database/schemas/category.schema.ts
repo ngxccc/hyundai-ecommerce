@@ -15,14 +15,10 @@ export const categories = snakeCase.table(
   "category",
   {
     ...baseEntity,
-    nameVi: text().notNull(),
-    nameEn: text(),
     slug: text().notNull(),
     parentId: uuid().references((): AnyPgColumn => categories.id, {
       onDelete: "set null",
     }),
-    descriptionVi: text(),
-    descriptionEn: text(),
     image: text(),
     isActive: boolean().default(true).notNull(),
   },

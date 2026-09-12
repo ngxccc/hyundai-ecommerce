@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { LocaleTabs } from "@/shared/components/locale-tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminBrand } from "@/types/api";
@@ -43,6 +44,7 @@ export const BrandForm = ({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!initialData;
+  const [langTab, setLangTab] = useState<"vi" | "en">("vi");
 
   const form = useForm<CreateBrandInput>({
     resolver: translatedZodResolver(createBrandSchema, t),
@@ -50,8 +52,22 @@ export const BrandForm = ({
       name: initialData?.name ?? "",
       slug: initialData?.slug ?? "",
       logo: initialData?.logo ?? "",
-      descriptionVi: initialData?.descriptionVi ?? "",
-      descriptionEn: initialData?.descriptionEn ?? "",
+      translations: [
+        {
+          locale: "vi",
+          description:
+            initialData?.translations?.find((t) => t.locale === "vi")
+              ?.description ??
+            initialData?.description ??
+            "",
+        },
+        {
+          locale: "en",
+          description:
+            initialData?.translations?.find((t) => t.locale === "en")
+              ?.description ?? "",
+        },
+      ],
       isActive: initialData?.isActive ?? true,
     },
   });
@@ -186,46 +202,53 @@ export const BrandForm = ({
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="descriptionVi"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.description")} (VI)</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder={t("placeholders.description")}
-                        disabled={isPending}
-                        {...field}
-                        value={field.value ?? ""}
-                        className="min-h-0 resize-none"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="flex items-center justify-between">
+                <FormLabel>{t("fields.description")}</FormLabel>
+                <LocaleTabs
+                  activeLocale={langTab}
+                  onLocaleChange={setLangTab}
+                />
+              </div>
 
-              <FormField
-                control={form.control}
-                name="descriptionEn"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.description")} (EN)</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder={t("placeholders.description")}
-                        disabled={isPending}
-                        {...field}
-                        value={field.value ?? ""}
-                        className="min-h-0 resize-none"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
+              {langTab === "vi" ? (
+                <FormField
+                  control={form.control}
+                  name="translations.0.description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea
+                          placeholder={t("placeholders.description")}
+                          disabled={isPending}
+                          {...field}
+                          value={field.value ?? ""}
+                          className="min-h-0 resize-none"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : (
+                <FormField
+                  control={form.control}
+                  name="translations.1.description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea
+                          placeholder={t("placeholders.description")}
+                          disabled={isPending}
+                          {...field}
+                          value={field.value ?? ""}
+                          className="min-h-0 resize-none"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
               <FormField
                 control={form.control}
                 name="isActive"

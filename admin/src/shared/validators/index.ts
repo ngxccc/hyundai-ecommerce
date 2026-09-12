@@ -6,12 +6,16 @@ export const isValidIdentifier = (id: unknown): id is string => {
 };
 
 // Brand Validators
+export const brandTranslationInputSchema = z.object({
+  locale: z.string().min(2).max(8),
+  description: z.string().nullable().optional(),
+});
+
 export const createBrandSchema = z.object({
   name: z.string().min(1, "validation.nameRequired"),
   slug: z.string().min(1, "validation.slugRequired"),
   logo: z.string().nullable().optional(),
-  descriptionVi: z.string().nullable().optional(),
-  descriptionEn: z.string().nullable().optional(),
+  translations: z.array(brandTranslationInputSchema).default([]),
   website: z.string().nullable().optional(),
   sortOrder: z.coerce.number().default(0),
   isActive: z.boolean().default(true),
@@ -21,19 +25,23 @@ export const updateBrandSchema = createBrandSchema.partial();
 
 export type CreateBrandInput = z.infer<typeof createBrandSchema>;
 export type UpdateBrandInput = z.infer<typeof updateBrandSchema>;
-
 // Category Validators
+export const categoryTranslationInputSchema = z.object({
+  locale: z.string().min(2).max(8),
+  name: z.string().min(1, "validation.nameRequired"),
+  description: z.string().nullable().optional(),
+});
+
 export const createCategorySchema = z.object({
-  nameVi: z.string().min(1, "validation.nameRequired"),
-  nameEn: z.string().nullable().optional(),
   slug: z.string().min(1, "validation.slugRequired"),
-  descriptionVi: z.string().nullable().optional(),
-  descriptionEn: z.string().nullable().optional(),
   icon: z.string().nullable().optional(),
   image: z.string().nullable().optional(),
   parentId: z.string().nullable().optional(),
   sortOrder: z.coerce.number().default(0),
   isActive: z.boolean().default(true),
+  translations: z
+    .array(categoryTranslationInputSchema)
+    .min(1, "validation.translationsRequired"),
 });
 
 export const updateCategorySchema = createCategorySchema.partial();
@@ -41,6 +49,19 @@ export const updateCategorySchema = createCategorySchema.partial();
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
 
+// Product Translation Validator
+export const productTranslationInputSchema = z.object({
+  locale: z.string().min(2).max(8),
+  name: z.string().min(1, "validation.nameRequired"),
+  shortDescription: z.string().nullable().optional(),
+  description: z.unknown().nullable().optional(),
+  seoTitle: z.string().nullable().optional(),
+  seoDescription: z.string().nullable().optional(),
+});
+
+export type ProductTranslationInput = z.infer<
+  typeof productTranslationInputSchema
+>;
 // Product Validators
 export const specItemSchema = z.object({
   key: z.string().min(1),
@@ -76,14 +97,11 @@ export const productSpecsSchema = z
   .catchall(z.unknown());
 
 export const createProductSchema = z.object({
-  nameVi: z.string().min(1, "validation.nameRequired"),
-  nameEn: z.string().nullable().optional(),
   slug: z.string().min(1, "validation.slugRequired"),
   price: z.string().min(1, "validation.priceRequired"),
-  descriptionVi: z.unknown().nullable().optional(),
-  descriptionEn: z.unknown().nullable().optional(),
-  shortDescriptionVi: z.string().nullable().optional(),
-  shortDescriptionEn: z.string().nullable().optional(),
+  translations: z
+    .array(productTranslationInputSchema)
+    .min(1, "validation.translationsRequired"),
   images: z.array(z.string()).min(1, "validation.imagesRequired"),
   brandId: z.string().min(1, "validation.brandRequired"),
   categoryId: z.string().min(1, "validation.categoryRequired"),

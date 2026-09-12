@@ -14,7 +14,8 @@ import {
 
 export const orderItemProductSummarySchema = z.object({
   id: z.uuid(),
-  nameVi: z.string(),
+  name: z.string(),
+  nameVi: z.string().optional(),
   nameEn: z.string().nullable().optional(),
   slug: z.string(),
   price: z.string(),

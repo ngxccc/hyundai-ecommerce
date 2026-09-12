@@ -51,11 +51,11 @@ export interface Tier1SeedResult {
 
 export type SeededBrandRef = Pick<Brand, "id" | "name" | "slug">;
 
-export type SeededCategoryRef = Pick<Category, "id" | "nameVi" | "slug">;
+export type SeededCategoryRef = Pick<Category, "id" | "slug">;
 
 export type SeededProductRef = Pick<
   Product,
-  "id" | "nameVi" | "slug" | "price" | "totalStockCache"
+  "id" | "slug" | "price" | "totalStockCache"
 >;
 
 export type SeededWarehouseRef = Pick<Warehouse, "id" | "nameVi" | "city">;

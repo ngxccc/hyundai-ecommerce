@@ -160,35 +160,16 @@ export class CategoriesService {
       }
     }
 
-    const viTranslation = dto.translations?.find(
-      (t) => t.locale === "vi" && t.name.trim().length > 0,
-    );
-    const primaryNameVi = viTranslation?.name ?? dto.nameVi ?? "";
-    const primaryDescVi =
-      viTranslation?.description ?? dto.descriptionVi ?? null;
-
-    const enTranslation = dto.translations?.find(
-      (t) => t.locale === "en" && t.name.trim().length > 0,
-    );
-    const primaryNameEn = enTranslation?.name ?? dto.nameEn ?? null;
-    const primaryDescEn =
-      enTranslation?.description ?? dto.descriptionEn ?? null;
-
     return await this.db.transaction(async (tx) => {
       const [newCategory] = await tx
         .insert(categories)
         .values({
-          nameVi: primaryNameVi,
-          nameEn: primaryNameEn,
           slug: dto.slug,
           parentId: dto.parentId ?? null,
-          descriptionVi: primaryDescVi,
-          descriptionEn: primaryDescEn,
           image: dto.image ?? null,
           isActive: dto.isActive,
         })
         .returning();
-
       if (!newCategory) {
         throw new I18nBadRequestException("catalog.CATEGORY_CREATE_FAILED");
       }
@@ -421,9 +402,8 @@ export class CategoriesService {
       translationsMap?.get("vi") ??
       null;
 
-    const name = translation?.name ?? record.nameVi;
-    const description =
-      translation?.description ?? record.descriptionVi ?? null;
+    const name = translation?.name ?? "";
+    const description = translation?.description ?? null;
 
     return {
       id: record.id,
@@ -438,10 +418,6 @@ export class CategoriesService {
         name: t.name,
         description: t.description,
       })),
-      nameVi: record.nameVi,
-      nameEn: record.nameEn,
-      descriptionVi: record.descriptionVi,
-      descriptionEn: record.descriptionEn,
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
     };
