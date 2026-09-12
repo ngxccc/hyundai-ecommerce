@@ -3,6 +3,7 @@ import {
   SwaggerModule,
   type OpenAPIObject,
 } from "@nestjs/swagger";
+import { cleanupOpenApiDoc } from "nestjs-zod";
 import type { INestApplication } from "@nestjs/common";
 import type { Request, Response } from "express";
 import { apiReference } from "@scalar/nestjs-api-reference";
@@ -78,7 +79,9 @@ export function createOpenApiDocument(app: INestApplication): OpenAPIObject {
     )
     .build();
 
-  return SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config);
+  // Post-process document for OpenAPI 3.1: resolves Zod schemas, nullable unions, and cleans empty types.
+  return cleanupOpenApiDoc(document, { version: "3.1" });
 }
 
 /**

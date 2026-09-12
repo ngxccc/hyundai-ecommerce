@@ -76,9 +76,9 @@ To catch contract drift before code reaches production, we introduce a global re
 Migration proceeds in four discrete domain waves:
 
 1. **Wave 1 — Infrastructure & Foundation**:
-   - Install and configure `nestjs-zod`.
-   - Update Swagger bootstrapping in `main.ts` and `generate-openapi-types.ts` to register the `patchNestJsSwagger()` hook.
-   - Implement `ZodResponseValidationInterceptor` for dev/test environments.
+   - Install and configure `nestjs-zod` (v5+ with native Zod 4 & OpenAPI 3.1 support).
+   - Configure `cleanupOpenApiDoc(document, { version: "3.1" })` in `openapi.config.ts` and `generate-openapi-types.ts` (modernized replacement for deprecated `patchNestJsSwagger`).
+   - Implement `ZodResponseValidationInterceptor` for dev/test environments with automated schema extraction from `@Api*ResponseGeneric`, `@ApiOkResponsePaginated`, and `nestjs-zod`'s `@ZodResponse`.
 2. **Wave 2 — Financial & Transactional Domains**:
    - Migrate `quotes`, `orders`, and `payments` modules to `createZodDto`.
 3. **Wave 3 — Catalog & Inventory Domains**:

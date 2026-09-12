@@ -1,5 +1,6 @@
-import { applyDecorators } from "@nestjs/common";
+import { applyDecorators, SetMetadata } from "@nestjs/common";
 import type { Type } from "@nestjs/common";
+import { ZOD_RESPONSE_METADATA } from "../interceptors/zod-response-validation.interceptor";
 import {
   ApiCreatedResponse,
   ApiExtraModels,
@@ -66,6 +67,11 @@ const createApiResponseGeneric = (
 
   return applyDecorators(
     ApiExtraModels(ApiResponseDto, model),
+    SetMetadata(ZOD_RESPONSE_METADATA, {
+      model,
+      isArray,
+      isPaginated: false,
+    }),
     responseDecorator({
       schema: {
         allOf: [
@@ -97,6 +103,11 @@ const createApiPaginatedResponse = (
 ) => {
   return applyDecorators(
     ApiExtraModels(PaginatedApiResponseDto, PaginationMetaDto, model),
+    SetMetadata(ZOD_RESPONSE_METADATA, {
+      model,
+      isArray: false,
+      isPaginated: true,
+    }),
     responseDecorator({
       schema: {
         allOf: [
