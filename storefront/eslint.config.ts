@@ -14,6 +14,7 @@ export default defineConfig([
     "src/components/ui/**",
     "postcss.config.mjs",
     "next.config.ts",
+    "src/types/api-schema.d.ts",
   ]),
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.mjs"],

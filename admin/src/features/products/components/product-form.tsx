@@ -115,9 +115,7 @@ export const ProductForm = ({
       alternatorBrand: initialData?.alternatorBrand ?? "",
       upsTopology: initialData?.upsTopology ?? null,
       upsBatteryType: initialData?.upsBatteryType ?? null,
-      specSheet:
-        (initialData?.specSheet as unknown as
-          CreateProductInput["specSheet"] | undefined) ?? [],
+      specSheet: initialData?.specSheet ?? [],
       isQuoteOnly: initialData?.isQuoteOnly ?? false,
       isActive: initialData?.isActive ?? true,
       totalStockCache: initialData?.totalStockCache ?? 0,

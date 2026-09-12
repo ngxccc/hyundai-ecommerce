@@ -178,7 +178,7 @@ export class PaymentsService {
     webhookDto: PayOSWebhookDto,
   ): Promise<PayOSWebhookResponseDto> {
     const isAuthentic = verifyPayOSSignature(
-      webhookDto.data as unknown as Record<string, unknown>,
+      webhookDto.data,
       webhookDto.signature,
       env.PAYOS_CHECKSUM_KEY,
     );

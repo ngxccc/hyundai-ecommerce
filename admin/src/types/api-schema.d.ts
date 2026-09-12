@@ -1107,7 +1107,8 @@ export interface components {
       email: string;
       fullName: string;
       phoneNumber: string;
-      password: unknown;
+      /** Format: password */
+      password: unknown & unknown;
       confirmPassword: string;
       /** @constant */
       agreeTerms: true;
@@ -1148,12 +1149,14 @@ export interface components {
     };
     ResetPasswordDto: {
       token: string;
-      password: unknown;
+      /** Format: password */
+      password: unknown & unknown;
       confirmPassword: string;
     };
     ChangePasswordDto: {
       currentPassword: string;
-      newPassword: unknown;
+      /** Format: password */
+      newPassword: unknown & unknown;
     };
     UserResponseDto: {
       /** Format: uuid */
@@ -1372,14 +1375,22 @@ export interface components {
     };
     ProductResponseDto__schema0: {
       type?: string;
-      attrs?: Record<string, unknown>;
+      attrs?: {
+        [key: string]: unknown;
+      };
       content?: components["schemas"]["ProductResponseDto__schema0"][];
       marks?: ({
         type: string;
-        attrs?: Record<string, unknown>;
-      } & Record<string, unknown>)[];
+        attrs?: {
+          [key: string]: unknown;
+        };
+      } & {
+        [key: string]: unknown;
+      })[];
       text?: string;
-    } & Record<string, unknown>;
+    } & {
+      [key: string]: unknown;
+    };
     ProductResponseDto__schema1: {
       /** Format: uuid */
       id: string;
@@ -1466,7 +1477,9 @@ export interface components {
         noiseLevel?: string;
         fuelConsumption?: string;
         warranty?: string;
-      } & Record<string, unknown>;
+      } & {
+        [key: string]: unknown;
+      };
       totalStockCache: number;
       totalSalesCache: number;
       isActive: boolean;
@@ -1527,14 +1540,22 @@ export interface components {
     };
     CreateProductDto__schema0: {
       type?: string;
-      attrs?: Record<string, unknown>;
+      attrs?: {
+        [key: string]: unknown;
+      };
       content?: components["schemas"]["CreateProductDto__schema0"][];
       marks?: ({
         type: string;
-        attrs?: Record<string, unknown>;
-      } & Record<string, unknown>)[];
+        attrs?: {
+          [key: string]: unknown;
+        };
+      } & {
+        [key: string]: unknown;
+      })[];
       text?: string;
-    } & Record<string, unknown>;
+    } & {
+      [key: string]: unknown;
+    };
     CreateProductDto: {
       nameVi: string;
       nameEn?: string | null;
@@ -1605,7 +1626,9 @@ export interface components {
         noiseLevel?: string;
         fuelConsumption?: string;
         warranty?: string;
-      } & Record<string, unknown>;
+      } & {
+        [key: string]: unknown;
+      };
       /** @default 0 */
       totalStockCache: number;
       /** @default false */
@@ -1615,14 +1638,22 @@ export interface components {
     };
     UpdateProductDto__schema0: {
       type?: string;
-      attrs?: Record<string, unknown>;
+      attrs?: {
+        [key: string]: unknown;
+      };
       content?: components["schemas"]["UpdateProductDto__schema0"][];
       marks?: ({
         type: string;
-        attrs?: Record<string, unknown>;
-      } & Record<string, unknown>)[];
+        attrs?: {
+          [key: string]: unknown;
+        };
+      } & {
+        [key: string]: unknown;
+      })[];
       text?: string;
-    } & Record<string, unknown>;
+    } & {
+      [key: string]: unknown;
+    };
     UpdateProductDto: {
       nameVi?: string;
       nameEn?: string | null;
@@ -1686,7 +1717,9 @@ export interface components {
         noiseLevel?: string;
         fuelConsumption?: string;
         warranty?: string;
-      } & Record<string, unknown>;
+      } & {
+        [key: string]: unknown;
+      };
       totalStockCache?: number;
       isQuoteOnly?: boolean;
       isActive?: boolean;
@@ -2263,7 +2296,9 @@ export interface operations {
     responses: {
       /** @description Service is operational */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["HealthResponseDto"];
         };
@@ -2284,7 +2319,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             /** @default null */
@@ -2294,7 +2331,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2317,7 +2356,9 @@ export interface operations {
       };
       /** @description Resource conflict (Conflict) */
       409: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2335,7 +2376,9 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2367,7 +2410,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             /** @default null */
@@ -2377,7 +2422,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2400,7 +2447,9 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2432,7 +2481,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             /** @default null */
@@ -2442,7 +2493,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2465,7 +2518,9 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2497,7 +2552,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["LoginResponseDto"];
@@ -2506,7 +2563,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2529,7 +2588,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2547,7 +2608,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2565,7 +2628,9 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2597,7 +2662,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["RefreshResponseDto"];
@@ -2606,7 +2673,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2629,7 +2698,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2647,7 +2718,9 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2679,7 +2752,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             /** @default null */
@@ -2689,7 +2764,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2712,7 +2789,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2730,7 +2809,9 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2758,7 +2839,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             /** @default null */
@@ -2768,7 +2851,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2786,7 +2871,9 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2818,7 +2905,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             /** @default null */
@@ -2828,7 +2917,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2851,7 +2942,9 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2883,7 +2976,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             /** @default null */
@@ -2893,7 +2988,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2916,7 +3013,9 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2948,7 +3047,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             /** @default null */
@@ -2958,7 +3059,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2981,7 +3084,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -2999,7 +3104,9 @@ export interface operations {
       };
       /** @description Internal server error */
       500: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3027,7 +3134,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["UserResponseDto"];
@@ -3036,7 +3145,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3054,7 +3165,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3072,7 +3185,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3090,7 +3205,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3118,7 +3235,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["DealerTierResponseDto"][];
@@ -3127,7 +3246,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3157,7 +3278,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["DealerTierResponseDto"];
@@ -3166,7 +3289,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3189,7 +3314,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3207,7 +3334,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3247,7 +3376,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["PaginatedApiResponseDto"] & {
             data?: components["schemas"]["LeadResponseDto"][];
@@ -3257,7 +3388,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3275,7 +3408,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3307,7 +3442,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["LeadResponseDto"];
@@ -3316,7 +3453,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3339,7 +3478,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3369,7 +3510,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["LeadResponseDto"];
@@ -3378,7 +3521,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3396,7 +3541,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3414,7 +3561,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3448,7 +3597,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["LeadResponseDto"];
@@ -3457,7 +3608,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3480,7 +3633,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3498,7 +3653,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3516,7 +3673,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3550,7 +3709,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["LeadResponseDto"];
@@ -3559,7 +3720,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3582,7 +3745,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3600,7 +3765,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3618,7 +3785,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3646,7 +3815,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CategoryResponseDto"][];
@@ -3655,7 +3826,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3687,7 +3860,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CategoryResponseDto"];
@@ -3696,7 +3871,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3719,7 +3896,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3737,7 +3916,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3755,7 +3936,9 @@ export interface operations {
       };
       /** @description Resource conflict (Conflict) */
       409: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3783,7 +3966,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CategoryResponseDto"][];
@@ -3792,7 +3977,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3822,7 +4009,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CategoryResponseDto"];
@@ -3831,7 +4020,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3849,7 +4040,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3883,7 +4076,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CategoryResponseDto"];
@@ -3892,7 +4087,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3915,7 +4112,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3933,7 +4132,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3951,7 +4152,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3969,7 +4172,9 @@ export interface operations {
       };
       /** @description Resource conflict (Conflict) */
       409: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -3999,7 +4204,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             /** @default null */
@@ -4009,7 +4216,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4027,7 +4236,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4045,7 +4256,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4073,7 +4286,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["BrandResponseDto"][];
@@ -4082,7 +4297,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4114,7 +4331,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["BrandResponseDto"];
@@ -4123,7 +4342,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4146,7 +4367,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4164,7 +4387,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4182,7 +4407,9 @@ export interface operations {
       };
       /** @description Resource conflict (Conflict) */
       409: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4212,7 +4439,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["BrandResponseDto"];
@@ -4221,7 +4450,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4239,7 +4470,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4273,7 +4506,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["BrandResponseDto"];
@@ -4282,7 +4517,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4305,7 +4542,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4323,7 +4562,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4341,7 +4582,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4359,7 +4602,9 @@ export interface operations {
       };
       /** @description Resource conflict (Conflict) */
       409: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4389,7 +4634,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             /** @default null */
@@ -4399,7 +4646,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4417,7 +4666,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4435,7 +4686,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4494,7 +4747,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["PaginatedApiResponseDto"] & {
             data?: components["schemas"]["ProductResponseDto"][];
@@ -4504,7 +4759,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4536,7 +4793,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["ProductResponseDto"];
@@ -4545,7 +4804,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4568,7 +4829,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4586,7 +4849,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4604,7 +4869,9 @@ export interface operations {
       };
       /** @description Resource conflict (Conflict) */
       409: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4632,7 +4899,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["ProductMetadataResponseDto"];
@@ -4641,7 +4910,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4671,7 +4942,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["ProductResponseDto"];
@@ -4680,7 +4953,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4698,7 +4973,9 @@ export interface operations {
       };
       /** @description Rate limit exceeded (Too Many Requests) */
       429: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4732,7 +5009,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["ProductResponseDto"];
@@ -4741,7 +5020,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4764,7 +5045,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4782,7 +5065,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4800,7 +5085,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4818,7 +5105,9 @@ export interface operations {
       };
       /** @description Resource conflict (Conflict) */
       409: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4848,7 +5137,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             /** @default null */
@@ -4858,7 +5149,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4876,7 +5169,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4894,7 +5189,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4925,7 +5222,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["WarehouseResponseDto"][];
@@ -4948,7 +5247,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["WarehouseResponseDto"];
@@ -4957,7 +5258,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4980,7 +5283,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -4998,7 +5303,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5016,7 +5323,9 @@ export interface operations {
       };
       /** @description Resource conflict (Conflict) */
       409: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5047,7 +5356,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["WarehouseStockResponseDto"][];
@@ -5056,7 +5367,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5087,7 +5400,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["WarehouseStockResponseDto"][];
@@ -5096,7 +5411,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5131,7 +5448,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["WarehouseStockResponseDto"];
@@ -5140,7 +5459,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5163,7 +5484,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5181,7 +5504,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5199,7 +5524,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5230,7 +5557,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["WarehouseResponseDto"];
@@ -5239,7 +5568,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5274,7 +5605,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["WarehouseResponseDto"];
@@ -5283,7 +5616,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5306,7 +5641,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5324,7 +5661,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5342,7 +5681,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5360,7 +5701,9 @@ export interface operations {
       };
       /** @description Resource conflict (Conflict) */
       409: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5391,7 +5734,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["Object"];
@@ -5400,7 +5745,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5418,7 +5765,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5436,7 +5785,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5464,7 +5815,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CartResponseDto"];
@@ -5473,7 +5826,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5505,7 +5860,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CartResponseDto"];
@@ -5514,7 +5871,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5537,7 +5896,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5555,7 +5916,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5590,7 +5953,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CartResponseDto"];
@@ -5599,7 +5964,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5622,7 +5989,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5640,7 +6009,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5671,7 +6042,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CartResponseDto"];
@@ -5680,7 +6053,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5698,7 +6073,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5730,7 +6107,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CartResponseDto"];
@@ -5739,7 +6118,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5762,7 +6143,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5802,7 +6185,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["PaginatedApiResponseDto"] & {
             data?: components["schemas"]["QuoteResponseDto"][];
@@ -5812,7 +6197,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5835,7 +6222,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5853,7 +6242,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5885,7 +6276,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["QuoteResponseDto"];
@@ -5894,7 +6287,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5931,7 +6326,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["QuoteResponseDto"];
@@ -5940,7 +6337,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5963,7 +6362,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -5981,7 +6382,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6012,7 +6415,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["QuoteResponseDto"];
@@ -6021,7 +6426,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6039,7 +6446,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6057,7 +6466,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6092,7 +6503,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["QuoteResponseDto"];
@@ -6101,7 +6514,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6124,7 +6539,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6142,7 +6559,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6160,7 +6579,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6197,7 +6618,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["QuoteResponseDto"];
@@ -6206,7 +6629,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6229,7 +6654,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6247,7 +6674,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6265,7 +6694,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6300,7 +6731,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["QuoteMessageResponseDto"];
@@ -6309,7 +6742,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6332,7 +6767,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6350,7 +6787,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6368,7 +6807,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6399,7 +6840,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["ApproveToOrderResponseDto"];
@@ -6408,7 +6851,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6431,7 +6876,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6449,7 +6896,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6467,7 +6916,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6499,14 +6950,18 @@ export interface operations {
     responses: {
       /** @description Excel workbook stream (.xlsx) */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": string;
         };
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6524,7 +6979,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6542,7 +6999,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6574,7 +7033,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["OrderResponseDto"];
@@ -6583,7 +7044,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6606,7 +7069,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6638,7 +7103,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["OrderResponseDto"];
@@ -6647,7 +7114,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6670,7 +7139,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6688,7 +7159,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6706,7 +7179,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6747,7 +7222,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["PaginatedApiResponseDto"] & {
             data?: components["schemas"]["OrderResponseDto"][];
@@ -6757,7 +7234,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6780,7 +7259,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6798,7 +7279,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6829,7 +7312,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["OrderResponseDto"];
@@ -6838,7 +7323,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6856,7 +7343,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6874,7 +7363,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6909,7 +7400,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["OrderResponseDto"];
@@ -6918,7 +7411,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6941,7 +7436,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6959,7 +7456,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -6977,7 +7476,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7008,7 +7509,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["OrderResponseDto"];
@@ -7017,7 +7520,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7040,7 +7545,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7058,7 +7565,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7076,7 +7585,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7104,7 +7615,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["ExpireOrdersResponseDto"];
@@ -7113,7 +7626,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7145,7 +7660,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["CheckoutLinkResponseDto"];
@@ -7154,7 +7671,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7177,7 +7696,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7209,7 +7730,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["PayOSWebhookResponseDto"];
@@ -7218,7 +7741,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7258,7 +7783,9 @@ export interface operations {
     };
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["OrderPaymentSummaryDto"];
@@ -7267,7 +7794,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7290,7 +7819,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7308,7 +7839,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7326,7 +7859,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7358,7 +7893,9 @@ export interface operations {
     };
     responses: {
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["DebtRepaymentResponseDto"];
@@ -7367,7 +7904,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7390,7 +7929,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7408,7 +7949,9 @@ export interface operations {
       };
       /** @description Forbidden access (Forbidden) */
       403: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7426,7 +7969,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7457,7 +8002,9 @@ export interface operations {
     requestBody?: never;
     responses: {
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["OrderPaymentSummaryDto"];
@@ -7466,7 +8013,9 @@ export interface operations {
       };
       /** @description Validation failure (Bad Request) */
       400: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7489,7 +8038,9 @@ export interface operations {
       };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {
@@ -7507,7 +8058,9 @@ export interface operations {
       };
       /** @description Resource not found (Not Found) */
       404: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           /**
            * @example {

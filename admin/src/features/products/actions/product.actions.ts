@@ -63,7 +63,7 @@ function toTipTapJson(
         type: "paragraph",
         content: [{ type: "text", text: p.trim() }],
       })),
-    } as unknown as AdminCreateProduct["descriptionVi"];
+    };
   }
   return undefined;
 }
@@ -109,7 +109,7 @@ function toCreateProductDto(input: CreateProductInput): AdminCreateProduct {
     upsTopology: input.upsTopology ?? undefined,
     upsBatteryType: input.upsBatteryType ?? undefined,
     specSheet: input.specSheet as unknown as AdminCreateProduct["specSheet"],
-    specs: (input.specs ?? {}) as AdminCreateProduct["specs"],
+    specs: input.specs ?? {},
     totalStockCache: input.totalStockCache,
     isQuoteOnly: input.isQuoteOnly,
     isActive: input.isActive,
@@ -184,8 +184,7 @@ function toUpdateProductDto(input: UpdateProductInput): AdminUpdateProduct {
   if (input.specSheet !== undefined)
     result.specSheet = (input.specSheet ??
       []) as unknown as AdminUpdateProduct["specSheet"];
-  if (input.specs !== undefined)
-    result.specs = (input.specs ?? {}) as AdminUpdateProduct["specs"];
+  if (input.specs !== undefined) result.specs = input.specs ?? {};
   if (input.totalStockCache !== undefined)
     result.totalStockCache = input.totalStockCache;
   if (input.isQuoteOnly !== undefined) result.isQuoteOnly = input.isQuoteOnly;
