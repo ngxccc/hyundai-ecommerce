@@ -105,6 +105,8 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
     });
 
   const calculateTotal = (quote: AdminQuote) => {
+    if (quote.totalQuotedPrice) return parseFloat(quote.totalQuotedPrice);
+    if (quote.subtotalPrice) return parseFloat(quote.subtotalPrice);
     let total = 0;
     for (const line of quote.items) {
       const price = parseFloat(

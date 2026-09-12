@@ -1,5 +1,5 @@
 import { cacheLife } from "next/cache";
-import { api } from "@/lib/api-client";
+import { catalogApi } from "../api/catalog.api";
 import {
   type StorefrontCategory,
   type StorefrontCategoryWithChildren,
@@ -13,7 +13,7 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/api/v1/categories");
+      const { data: res } = await catalogApi.categories.list();
       const categories = res?.data;
       if (!Array.isArray(categories)) {
         return [];
@@ -31,7 +31,7 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/api/v1/categories/tree");
+      const { data: res } = await catalogApi.categories.getTree();
       const tree = res?.data;
       if (!Array.isArray(tree)) {
         return [];
@@ -47,7 +47,7 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/api/v1/categories/tree");
+      const { data: res } = await catalogApi.categories.getTree();
       const tree = res?.data;
       if (!Array.isArray(tree)) {
         return [categoryId];

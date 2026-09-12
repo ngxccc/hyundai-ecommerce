@@ -23,7 +23,6 @@ import { useQuoteDraftStore } from "../stores/quote-draft.store";
 
 export const CommercialTermsEditor = () => {
   const t = useTranslations("adminQuotes");
-  const translate = t as unknown as (key: string) => string;
 
   const commercialTerms = useQuoteDraftStore((state) => state.commercialTerms);
   const setCommercialTerms = useQuoteDraftStore(
@@ -35,10 +34,10 @@ export const CommercialTermsEditor = () => {
       <CardHeader className="bg-muted/20 border-b p-4 pb-3">
         <CardTitle>
           <FileText />
-          {translate("composer.terms.title")}
+          {t("composer.terms.title")}
         </CardTitle>
         <CardDescription className="text-xs">
-          {translate("composer.terms.description")}
+          {t("composer.terms.description")}
         </CardDescription>
       </CardHeader>
 
@@ -51,7 +50,7 @@ export const CommercialTermsEditor = () => {
               className="flex items-center gap-1.5 text-xs font-semibold"
             >
               <Calendar className="text-muted-foreground h-3.5 w-3.5" />
-              {translate("composer.terms.validityLabel")}
+              {t("composer.terms.validityLabel")}
             </Label>
             <div className="flex items-center gap-2">
               <Input
@@ -71,7 +70,7 @@ export const CommercialTermsEditor = () => {
                 className="h-9 w-24 text-center font-medium"
               />
               <span className="text-muted-foreground text-xs">
-                {translate("composer.terms.daysUnit")}
+                {t("composer.terms.daysUnit")}
               </span>
             </div>
           </div>
@@ -83,7 +82,7 @@ export const CommercialTermsEditor = () => {
               className="flex items-center gap-1.5 text-xs font-semibold"
             >
               <CreditCard className="text-muted-foreground h-3.5 w-3.5" />
-              {translate("composer.terms.vatLabel")}
+              {t("composer.terms.vatLabel")}
             </Label>
             <div className="flex items-center gap-2">
               <Input
@@ -111,7 +110,7 @@ export const CommercialTermsEditor = () => {
             className="flex items-center gap-1.5 text-xs font-semibold"
           >
             <CreditCard className="text-muted-foreground h-3.5 w-3.5" />
-            {translate("composer.terms.paymentLabel")}
+            {t("composer.terms.paymentLabel")}
           </Label>
           <Input
             id="paymentSchedule"
@@ -119,7 +118,7 @@ export const CommercialTermsEditor = () => {
             onChange={(e) =>
               setCommercialTerms({ paymentSchedule: e.target.value || null })
             }
-            placeholder={translate("composer.terms.paymentPlaceholder")}
+            placeholder={t("composer.terms.paymentPlaceholder")}
             className="h-9 text-xs"
           />
         </div>
@@ -131,7 +130,7 @@ export const CommercialTermsEditor = () => {
             className="flex items-center gap-1.5 text-xs font-semibold"
           >
             <ShieldCheck className="text-muted-foreground h-3.5 w-3.5" />
-            {translate("composer.terms.warrantyLabel")}
+            {t("composer.terms.warrantyLabel")}
           </Label>
           <Input
             id="warrantyTerms"
@@ -139,7 +138,7 @@ export const CommercialTermsEditor = () => {
             onChange={(e) =>
               setCommercialTerms({ warrantyTerms: e.target.value || null })
             }
-            placeholder={translate("composer.terms.warrantyPlaceholder")}
+            placeholder={t("composer.terms.warrantyPlaceholder")}
             className="h-9 text-xs"
           />
         </div>
@@ -152,7 +151,7 @@ export const CommercialTermsEditor = () => {
               className="flex items-center gap-1.5 text-xs font-semibold"
             >
               <Truck className="text-muted-foreground h-3.5 w-3.5" />
-              {translate("composer.terms.deliveryTimeLabel")}
+              {t("composer.terms.deliveryTimeLabel")}
             </Label>
             <Input
               id="deliveryTime"
@@ -160,7 +159,7 @@ export const CommercialTermsEditor = () => {
               onChange={(e) =>
                 setCommercialTerms({ deliveryTime: e.target.value || null })
               }
-              placeholder={translate("composer.terms.deliveryTimePlaceholder")}
+              placeholder={t("composer.terms.deliveryTimePlaceholder")}
               className="h-9 text-xs"
             />
           </div>
@@ -171,7 +170,7 @@ export const CommercialTermsEditor = () => {
               className="flex items-center gap-1.5 text-xs font-semibold"
             >
               <Truck className="text-muted-foreground h-3.5 w-3.5" />
-              {translate("composer.terms.deliveryLocationLabel")}
+              {t("composer.terms.deliveryLocationLabel")}
             </Label>
             <Input
               id="deliveryLocation"
@@ -179,9 +178,7 @@ export const CommercialTermsEditor = () => {
               onChange={(e) =>
                 setCommercialTerms({ deliveryLocation: e.target.value || null })
               }
-              placeholder={translate(
-                "composer.terms.deliveryLocationPlaceholder",
-              )}
+              placeholder={t("composer.terms.deliveryLocationPlaceholder")}
               className="h-9 text-xs"
             />
           </div>
@@ -194,7 +191,7 @@ export const CommercialTermsEditor = () => {
             className="flex items-center gap-1.5 text-xs font-semibold"
           >
             <FileSignature className="text-muted-foreground h-3.5 w-3.5" />
-            {translate("composer.terms.notesLabel")}
+            {t("composer.terms.notesLabel")}
           </Label>
           <Textarea
             id="note"
@@ -203,7 +200,7 @@ export const CommercialTermsEditor = () => {
             onChange={(e) =>
               setCommercialTerms({ note: e.target.value || null })
             }
-            placeholder={translate("composer.terms.notesPlaceholder")}
+            placeholder={t("composer.terms.notesPlaceholder")}
             className="resize-none text-xs"
           />
         </div>

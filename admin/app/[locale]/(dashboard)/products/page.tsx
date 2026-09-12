@@ -3,8 +3,15 @@ import { ProductGrid } from "@/features/products/components/product-grid";
 import { ProductPagination } from "@/features/products/components/product-pagination";
 import { ProductHeader } from "@/features/products/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
-import { api } from "@/lib/api-client";
-import type { AdminProduct } from "@/types/api";
+import { productsApi } from "@/features/products/api/products.api";
+import { categoriesApi } from "@/features/categories/api/categories.api";
+import { brandsApi } from "@/features/brands/api/brands.api";
+import type {
+  AdminProduct,
+  ProductFuelType,
+  ProductPhase,
+  ProductQueryParams,
+} from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -32,8 +39,6 @@ export default async function AdminProductsPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
-  const after = typeof params.after === "string" ? params.after : undefined;
-  const before = typeof params.before === "string" ? params.before : undefined;
   const categoryId =
     typeof params.categoryId === "string" ? params.categoryId : undefined;
   const brandId =
@@ -61,20 +66,18 @@ export default async function AdminProductsPage({
   const minPower = minPowerStr ? Number(minPowerStr) : undefined;
   const maxPower = maxPowerStr ? Number(maxPowerStr) : undefined;
 
-  const options = {
-    after,
-    before,
+  const options: ProductQueryParams = {
     categoryId,
     brandId,
-    fuelType,
-    phase,
+    fuelType: fuelType as ProductFuelType,
+    phase: phase as ProductPhase,
     voltage:
       voltage !== undefined && !isNaN(voltage) ? String(voltage) : undefined,
     minPower: minPower !== undefined && !isNaN(minPower) ? minPower : undefined,
     maxPower: maxPower !== undefined && !isNaN(maxPower) ? maxPower : undefined,
     engineBrand,
     alternatorBrand,
-    status: status as "active" | "outOfStock" | undefined,
+    status: status as ProductQueryParams["status"],
     search,
     isQuoteOnly: isQuoteOnly ? true : undefined,
   };
@@ -82,11 +85,9 @@ export default async function AdminProductsPage({
   const [t, tNav, productsRes, categoriesRes, brandsRes] = await Promise.all([
     getTranslations("adminProducts.header"),
     getTranslations("adminDashboard.nav"),
-    api.GET("/api/v1/products", {
-      params: { query: { limit: 20, ...options } as never },
-    }),
-    api.GET("/api/v1/categories"),
-    api.GET("/api/v1/brands"),
+    productsApi.list({ limit: 20, ...options }),
+    categoriesApi.list(),
+    brandsApi.list(),
   ]);
   const categories = categoriesRes.data?.data ?? [];
   const brands = brandsRes.data?.data ?? [];

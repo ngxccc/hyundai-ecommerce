@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { api, ApiClientError } from "@/lib/api-client";
+import { ApiClientError } from "@/lib/api-client";
+import { warehousesApi } from "../api/warehouses.api";
 import {
   createWarehouseSchema,
   updateWarehouseSchema,
@@ -44,9 +45,7 @@ export const createWarehouseAction = async (input: CreateWarehouseInput) => {
       isActive: validatedData.isActive,
     };
 
-    const { data, error } = await api.POST("/api/v1/warehouses", {
-      body: payload as never,
-    });
+    const { data, error } = await warehousesApi.create(payload);
     if (error) {
       throw new ApiClientError(error.detail, error.status, error);
     }
@@ -102,10 +101,7 @@ export async function updateWarehouseAction(
     if (validatedData.isActive !== undefined)
       updatePayload.isActive = validatedData.isActive;
 
-    const { data, error } = await api.PUT("/api/v1/warehouses/{id}", {
-      params: { path: { id } },
-      body: updatePayload as never,
-    });
+    const { data, error } = await warehousesApi.update(id, updatePayload);
     if (error) {
       throw new ApiClientError(error.detail, error.status, error);
     }
@@ -134,9 +130,7 @@ export async function deleteWarehouseAction(id: string) {
   }
   try {
     await requireAuth();
-    const { error } = await api.DELETE("/api/v1/warehouses/{id}", {
-      params: { path: { id } },
-    });
+    const { error } = await warehousesApi.delete(id);
     if (error) {
       throw new ApiClientError(error.detail, error.status, error);
     }

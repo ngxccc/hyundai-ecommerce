@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
-import { api } from "@/lib/api-client";
+import { productsApi } from "@/features/products/api/products.api";
+import { warehousesApi } from "@/features/warehouses/api/warehouses.api";
 import { notFound } from "next/navigation";
 import { ProductHeader } from "@/features/products/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
@@ -21,13 +22,11 @@ export default async function ProductInventoryPage({
 
   const [productRes, t, tNav, warehousesRes, warehouseStocksRes] =
     await Promise.all([
-      api.GET("/api/v1/products/{id}", { params: { path: { id } } }),
+      productsApi.getById(id),
       getTranslations("adminInventory"),
       getTranslations("adminDashboard.nav"),
-      api.GET("/api/v1/warehouses"),
-      api.GET("/api/v1/warehouses/stock/product/{productId}", {
-        params: { path: { productId: id } },
-      }),
+      warehousesApi.list(),
+      warehousesApi.getStockByProduct(id),
     ]);
   const product = productRes.data?.data;
   const warehouses = warehousesRes.data?.data ?? [];

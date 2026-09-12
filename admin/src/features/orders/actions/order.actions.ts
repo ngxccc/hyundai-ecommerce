@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { api, ApiClientError } from "@/lib/api-client";
+import { ApiClientError } from "@/lib/api-client";
+import { ordersApi } from "../api/orders.api";
+import { paymentsApi } from "@/features/payments/api/payments.api";
 import type { AdminOrder } from "@/types/api";
 import { isValidIdentifier } from "@/shared/validators";
 import {
@@ -22,13 +24,10 @@ export const updateOrderStatusAction = async (
   }
   try {
     await requireAuth();
-    const { data: updated, error } = await api.PATCH(
-      "/api/v1/orders/{id}/status",
-      {
-        params: { path: { id: orderId } },
-        body: { status, note },
-      },
-    );
+    const { data: updated, error } = await ordersApi.updateStatus(orderId, {
+      status,
+      note,
+    });
     if (error) {
       throw new ApiClientError(error.detail, error.status, error);
     }
@@ -58,13 +57,10 @@ export const approveDealerOrderAction = async (orderId: string) => {
   }
   try {
     await assertSalesOrFinanceRole();
-    const { data: result, error } = await api.PATCH(
-      "/api/v1/orders/{id}/status",
-      {
-        params: { path: { id: orderId } },
-        body: { status: "PROCESSING", note: "Duyệt đơn hàng đại lý" },
-      },
-    );
+    const { data: result, error } = await ordersApi.updateStatus(orderId, {
+      status: "PROCESSING",
+      note: "Duyệt đơn hàng đại lý",
+    });
     if (error) {
       throw new ApiClientError(error.detail, error.status, error);
     }
@@ -98,16 +94,10 @@ export const verifyCashPaymentAction = async (
   }
   try {
     await assertFinanceRole();
-    const { data: result, error } = await api.POST(
-      "/api/v1/payments/{id}/verify-cash",
-      {
-        params: { path: { id: orderId } },
-        body: {
-          amount,
-          note: note ?? "Kế toán xác nhận thu tiền mặt",
-        },
-      },
-    );
+    const { data: result, error } = await paymentsApi.verifyCash(orderId, {
+      amount,
+      note: note ?? "Kế toán xác nhận thu tiền mặt",
+    });
     if (error) {
       throw new ApiClientError(error.detail, error.status, error);
     }
@@ -140,12 +130,7 @@ export const approveOrderCancellationAction = async (
   }
   try {
     await assertSalesOrFinanceRole();
-    const { data: result, error } = await api.POST(
-      "/api/v1/orders/{id}/cancel",
-      {
-        params: { path: { id: orderId } },
-      },
-    );
+    const { data: result, error } = await ordersApi.cancel(orderId);
     if (error) {
       throw new ApiClientError(error.detail, error.status, error);
     }

@@ -4,7 +4,7 @@ import {
   WarehouseForm,
   WarehouseHeader,
 } from "@/features/warehouses/components";
-import { api } from "@/lib/api-client";
+import { warehousesApi } from "@/features/warehouses/api/warehouses.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import type { Metadata } from "next";
@@ -34,9 +34,7 @@ export default async function EditWarehousePage({
 }) {
   const { id } = await params;
 
-  const { data: res } = await api.GET("/api/v1/warehouses/{id}", {
-    params: { path: { id } },
-  });
+  const { data: res } = await warehousesApi.getById(id);
   const warehouse = res?.data;
   if (!warehouse) {
     notFound();

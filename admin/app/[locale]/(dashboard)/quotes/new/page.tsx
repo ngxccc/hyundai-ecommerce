@@ -13,11 +13,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({ locale, namespace: "adminQuotes" });
-  const translate = t as unknown as (key: string) => string;
-
+  const t = await getTranslations({
+    locale,
+    namespace: "adminQuotes.composer",
+  });
   return {
-    title: translate("composer.pageTitle"),
+    title: t("pageTitle"),
   };
 }
 
@@ -25,14 +26,13 @@ export default async function AdminNewQuotePage() {
   await requireAuth();
 
   const tNav = await getTranslations("adminDashboard.nav");
-  const t = await getTranslations("adminQuotes");
-  const translate = t as unknown as (key: string) => string;
+  const t = await getTranslations("adminQuotes.composer");
 
   return (
     <>
       <BrandHeader
-        title={translate("composer.headerTitle")}
-        description={translate("composer.headerDescription")}
+        title={t("headerTitle")}
+        description={t("headerDescription")}
         showAddButton={false}
       />
       <div className="mx-auto flex w-full flex-col gap-6 p-4">
@@ -40,7 +40,7 @@ export default async function AdminNewQuotePage() {
           items={[
             { label: tNav("overview"), href: "/" },
             { label: tNav("quotes"), href: "/quotes" },
-            { label: translate("composer.breadcrumbNew") },
+            { label: t("breadcrumbNew") },
           ]}
         />
 

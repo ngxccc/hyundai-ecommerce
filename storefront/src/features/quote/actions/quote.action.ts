@@ -1,7 +1,7 @@
 "use server";
 
 import { getTranslations } from "next-intl/server";
-import { api } from "@/lib/api-client";
+import { quoteApi } from "../api/quote.api";
 import { translateZodMessage } from "@/shared/lib/i18n-zod";
 import {
   submitQuoteSchema,
@@ -31,25 +31,23 @@ export async function submitQuoteRequestAction(rawInput: SubmitQuoteInput) {
   const data = parsed.data;
 
   try {
-    const res = await api.POST("/api/v1/quotes", {
-      body: {
-        customerName: data.customerName,
-        customerPhone: data.customerPhone,
-        customerEmail: data.customerEmail ?? undefined,
-        companyName: data.companyName ?? undefined,
-        taxId: data.taxId ?? undefined,
-        shippingAddress: data.shippingAddress ?? undefined,
-        note: data.note ?? undefined,
-        items: data.items.map((item) => ({
-          productId: item.productId ?? undefined,
-          isCustomItem: item.isCustomItem ?? false,
-          itemName: item.itemName,
-          itemModel: item.itemModel ?? undefined,
-          itemSpecs: item.itemSpecs ?? undefined,
-          quantity: item.quantity,
-          requestedPrice: item.requestedPrice ?? undefined,
-        })),
-      },
+    const res = await quoteApi.create({
+      customerName: data.customerName,
+      customerPhone: data.customerPhone,
+      customerEmail: data.customerEmail ?? undefined,
+      companyName: data.companyName ?? undefined,
+      taxId: data.taxId ?? undefined,
+      shippingAddress: data.shippingAddress ?? undefined,
+      note: data.note ?? undefined,
+      items: data.items.map((item) => ({
+        productId: item.productId ?? undefined,
+        isCustomItem: item.isCustomItem ?? false,
+        itemName: item.itemName,
+        itemModel: item.itemModel ?? undefined,
+        itemSpecs: item.itemSpecs ?? undefined,
+        quantity: item.quantity,
+        requestedPrice: item.requestedPrice ?? undefined,
+      })),
     });
 
     const errorPayload = res.error;

@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { api, ApiClientError } from "@/lib/api-client";
+import { ApiClientError } from "@/lib/api-client";
+import { quotesApi } from "../api/quotes.api";
 import { getTranslations } from "next-intl/server";
 import { translateZodMessage } from "@/shared/lib/i18n-zod";
 import {
@@ -18,12 +19,7 @@ export async function approveAndConvertToOrderAction(quoteId: string) {
     return { success: false as const, error: t("default") };
   }
   try {
-    const { data, error } = await api.POST(
-      "/api/v1/quotes/{id}/approve-to-order",
-      {
-        params: { path: { id: quoteId } },
-      },
-    );
+    const { data, error } = await quotesApi.approveToOrder(quoteId);
     const res = data?.data;
     if (error || !res) {
       throw new ApiClientError(
@@ -61,9 +57,8 @@ export async function updateQuoteStatusAction(
     return { success: false as const, error: t("default") };
   }
   try {
-    const { data, error } = await api.PATCH("/api/v1/quotes/{id}/status", {
-      params: { path: { id: quoteId } },
-      body: { status: parsedStatus.data.status },
+    const { data, error } = await quotesApi.updateStatus(quoteId, {
+      status: parsedStatus.data.status,
     });
     const res = data?.data;
     if (error || !res) {
@@ -98,13 +93,9 @@ export async function updateQuoteItemPriceAction(
     return { success: false as const, error: t("default") };
   }
   try {
-    const { data, error } = await api.PUT(
-      "/api/v1/quotes/{id}/items/{itemId}/price",
-      {
-        params: { path: { id: quoteId, itemId } },
-        body: { agreedPrice },
-      },
-    );
+    const { data, error } = await quotesApi.updateItemPrice(quoteId, itemId, {
+      agreedPrice,
+    });
     const res = data?.data;
     if (error || !res) {
       throw new ApiClientError(
@@ -136,10 +127,7 @@ export async function sendAdminNegotiationMessageAction(
     return { success: false as const, error: t("default") };
   }
   try {
-    const { data, error } = await api.POST("/api/v1/quotes/{id}/messages", {
-      params: { path: { id: quoteId } },
-      body: { message },
-    });
+    const { data, error } = await quotesApi.sendMessage(quoteId, { message });
     const res = data?.data;
     if (error || !res) {
       throw new ApiClientError(
@@ -178,41 +166,38 @@ export async function createAdminQuoteAction(rawInput: CreateAdminQuoteInput) {
   }
   const dto = parsed.data;
   try {
-    const { data, error } = await api.POST("/api/v1/quotes/admin", {
-      body: {
-        userId: dto.userId ?? undefined,
-        customerName: dto.customerName,
-        customerPhone: dto.customerPhone,
-        customerEmail: dto.customerEmail ?? undefined,
-        companyName: dto.companyName ?? undefined,
-        taxId: dto.taxId ?? undefined,
-        shippingAddress: dto.shippingAddress ?? undefined,
-        vatRate: dto.vatRate,
-        commercialTerms: dto.commercialTerms
-          ? {
-              validityDays: dto.commercialTerms.validityDays,
-              paymentSchedule: dto.commercialTerms.paymentSchedule ?? undefined,
-              warrantyTerms: dto.commercialTerms.warrantyTerms ?? undefined,
-              deliveryTime: dto.commercialTerms.deliveryTime ?? undefined,
-              deliveryLocation:
-                dto.commercialTerms.deliveryLocation ?? undefined,
-            }
-          : undefined,
-        note: dto.note ?? undefined,
-        expirationDate: dto.expirationDate
-          ? dto.expirationDate.toISOString()
-          : undefined,
-        items: dto.items.map((item) => ({
-          productId: item.productId ?? undefined,
-          isCustomItem: item.isCustomItem,
-          itemName: item.itemName,
-          itemModel: item.itemModel ?? undefined,
-          itemSpecs: item.itemSpecs ?? undefined,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          discountPercent: item.discountPercent,
-        })),
-      },
+    const { data, error } = await quotesApi.createAdmin({
+      userId: dto.userId ?? undefined,
+      customerName: dto.customerName,
+      customerPhone: dto.customerPhone,
+      customerEmail: dto.customerEmail ?? undefined,
+      companyName: dto.companyName ?? undefined,
+      taxId: dto.taxId ?? undefined,
+      shippingAddress: dto.shippingAddress ?? undefined,
+      vatRate: dto.vatRate,
+      commercialTerms: dto.commercialTerms
+        ? {
+            validityDays: dto.commercialTerms.validityDays,
+            paymentSchedule: dto.commercialTerms.paymentSchedule ?? undefined,
+            warrantyTerms: dto.commercialTerms.warrantyTerms ?? undefined,
+            deliveryTime: dto.commercialTerms.deliveryTime ?? undefined,
+            deliveryLocation: dto.commercialTerms.deliveryLocation ?? undefined,
+          }
+        : undefined,
+      note: dto.note ?? undefined,
+      expirationDate: dto.expirationDate
+        ? dto.expirationDate.toISOString()
+        : undefined,
+      items: dto.items.map((item) => ({
+        productId: item.productId ?? undefined,
+        isCustomItem: item.isCustomItem,
+        itemName: item.itemName,
+        itemModel: item.itemModel ?? undefined,
+        itemSpecs: item.itemSpecs ?? undefined,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        discountPercent: item.discountPercent,
+      })),
     });
     const res = data?.data;
     if (error || !res) {

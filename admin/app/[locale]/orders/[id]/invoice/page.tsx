@@ -1,5 +1,5 @@
 import { InvoiceClient } from "@/features/orders/components";
-import { api } from "@/lib/api-client";
+import { ordersApi } from "@/features/orders/api/orders.api";
 import { notFound } from "next/navigation";
 import { type Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
@@ -26,9 +26,7 @@ export default async function AdminInvoicePage({
 }) {
   const { id } = await params;
 
-  const { data: res } = await api.GET("/api/v1/orders/{id}", {
-    params: { path: { id } },
-  });
+  const { data: res } = await ordersApi.getById(id);
   const order = res?.data;
   if (!order) {
     notFound();

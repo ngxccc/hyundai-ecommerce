@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
-import { useTranslations, type Locale } from "next-intl";
+import type { Locale } from "next-intl";
 
 export default function GlobalError({
   error,
@@ -25,7 +25,20 @@ export default function GlobalError({
     }
   }
 
-  const t = useTranslations("ErrorPage");
+  const copy =
+    locale === "en"
+      ? {
+          title: "Something went wrong!",
+          description:
+            "An unexpected error occurred. Please try refreshing or try again later.",
+          retryButton: "Try again",
+        }
+      : {
+          title: "Đã xảy ra lỗi không mong muốn",
+          description:
+            "Hệ thống gặp sự cố trong quá trình xử lý. Vui lòng thử lại sau.",
+          retryButton: "Thử lại",
+        };
 
   return (
     <html lang={locale} className="h-full antialiased">
@@ -39,10 +52,10 @@ export default function GlobalError({
 
               <div className="space-y-2">
                 <h1 className="text-xl font-bold tracking-tight text-red-600 dark:text-red-400">
-                  {t("title")}
+                  {copy.title}
                 </h1>
                 <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                  {t("description")}
+                  {copy.description}
                 </p>
               </div>
 
@@ -66,7 +79,7 @@ export default function GlobalError({
                 className="mt-4 flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-700 active:bg-red-800"
               >
                 <RotateCcw className="h-4 w-4" />
-                {t("retryButton")}
+                {copy.retryButton}
               </button>
             </div>
           </div>

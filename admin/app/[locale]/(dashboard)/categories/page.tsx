@@ -1,8 +1,8 @@
 import { CategoryHeader } from "@/features/categories/components";
 import { DataTableSearchInput } from "@/shared/components/data-table-search-input";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { categoriesApi } from "@/features/categories/api/categories.api";
 import { CategoryGrid } from "@/features/categories/components/category-grid";
-import { api } from "@/lib/api-client";
+import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -33,7 +33,7 @@ export default async function AdminCategoriesPage({
 }) {
   const tNav = await getTranslations("adminDashboard.nav");
   const tHeader = await getTranslations("adminCategories.header");
-  const { data: res } = await api.GET("/api/v1/categories");
+  const { data: res } = await categoriesApi.list();
   const categories = res?.data ?? [];
 
   const resolvedSearchParams = await searchParams;
@@ -42,15 +42,12 @@ export default async function AdminCategoriesPage({
       ? resolvedSearchParams.search
       : undefined;
 
-  const filteredCategories = search
-    ? categories.filter(
-        (c) =>
-          c.nameVi.toLowerCase().includes(search.toLowerCase()) ||
-          (c.nameEn?.toLowerCase().includes(search.toLowerCase()) ?? false) ||
-          (c.descriptionVi?.toLowerCase().includes(search.toLowerCase()) ??
-            false) ||
-          (c.descriptionEn?.toLowerCase().includes(search.toLowerCase()) ??
-            false),
+  const searchLower = search?.trim().toLowerCase();
+  const filteredCategories = searchLower
+    ? categories.filter((c) =>
+        [c.nameVi, c.nameEn, c.descriptionVi, c.descriptionEn].some((field) =>
+          field?.toLowerCase().includes(searchLower),
+        ),
       )
     : categories;
 

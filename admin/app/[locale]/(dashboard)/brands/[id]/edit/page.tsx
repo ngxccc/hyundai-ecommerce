@@ -1,6 +1,6 @@
 import { BrandHeader } from "@/features/brands/components";
 import { BrandForm } from "@/features/brands/components/brand-form";
-import { api } from "@/lib/api-client";
+import { brandsApi } from "@/features/brands/api/brands.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
@@ -33,9 +33,7 @@ export default async function AdminEditBrandPage({
   const tNav = await getTranslations("adminDashboard.nav");
   const tForm = await getTranslations("adminBrandForm");
 
-  const { data: res } = await api.GET("/api/v1/brands/{id}", {
-    params: { path: { id } },
-  });
+  const { data: res } = await brandsApi.getById(id);
   const brand = res?.data;
 
   if (!brand) {

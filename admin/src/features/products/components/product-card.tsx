@@ -32,19 +32,12 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
 
     addProductToDraft(product);
 
-    const translate = t as unknown as (
-      key: string,
-      params?: Record<string, unknown>,
-    ) => string;
-    toast.success(
-      translate("actions.addedToQuoteSuccess", { name: product.nameVi }),
-      {
-        action: {
-          label: translate("actions.viewQuoteDraft"),
-          onClick: () => router.push("/quotes/new"),
-        },
+    toast.success(t("actions.addedToQuoteSuccess", { name: product.nameVi }), {
+      action: {
+        label: t("actions.viewQuoteDraft"),
+        onClick: () => router.push("/quotes/new"),
       },
-    );
+    });
   };
   return (
     <Card size="compact" className="group relative">
@@ -111,7 +104,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
               size="icon"
               onClick={handleAddToQuote}
               className="text-muted-foreground hover:bg-muted hover:text-primary h-8 w-8 transition-colors"
-              title={t("actions.addToQuote" as never)}
+              title={t("actions.addToQuote")}
             >
               <FilePlus className="h-4 w-4" />
             </Button>

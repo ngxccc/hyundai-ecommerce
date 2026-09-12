@@ -40,11 +40,7 @@ import {
 } from "../stores/quote-draft.store";
 
 export const QuoteLineItemsTable = () => {
-  const t = useTranslations("adminQuotes");
-  const translate = t as unknown as (
-    key: string,
-    params?: Record<string, unknown>,
-  ) => string;
+  const t = useTranslations("adminQuotes.composer.items");
 
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isCustomItemModalOpen, setIsCustomItemModalOpen] = useState(false);
@@ -108,13 +104,13 @@ export const QuoteLineItemsTable = () => {
           <div>
             <CardTitle>
               <Package />
-              {translate("composer.items.title")}
+              {t("title")}
               <Badge variant="secondary" className="px-1.5 font-mono text-xs">
                 {items.length}
               </Badge>
             </CardTitle>
             <CardDescription className="text-xs">
-              {translate("composer.items.description")}
+              {t("description")}
             </CardDescription>
           </div>
 
@@ -127,7 +123,7 @@ export const QuoteLineItemsTable = () => {
               className="h-8 gap-1.5 text-xs font-medium"
             >
               <Wrench className="h-3.5 w-3.5" />
-              {translate("composer.items.addCustomItem")}
+              {t("addCustomItem")}
             </Button>
             <Button
               type="button"
@@ -136,7 +132,7 @@ export const QuoteLineItemsTable = () => {
               className="h-8 gap-1.5 text-xs font-medium shadow-xs"
             >
               <Search className="h-3.5 w-3.5" />
-              {translate("composer.items.searchCatalog")}
+              {t("searchCatalog")}
             </Button>
           </div>
         </CardHeader>
@@ -147,11 +143,9 @@ export const QuoteLineItemsTable = () => {
               <div className="bg-muted/60 mb-3 flex h-12 w-12 items-center justify-center rounded-full">
                 <Package className="text-muted-foreground h-6 w-6 stroke-1" />
               </div>
-              <h4 className="text-sm font-semibold">
-                {translate("composer.items.emptyTitle")}
-              </h4>
+              <h4 className="text-sm font-semibold">{t("emptyTitle")}</h4>
               <p className="text-muted-foreground mt-1 mb-4 max-w-sm text-xs">
-                {translate("composer.items.emptyDescription")}
+                {t("emptyDescription")}
               </p>
               <div className="flex gap-2">
                 <Button
@@ -160,7 +154,7 @@ export const QuoteLineItemsTable = () => {
                   className="gap-1.5 text-xs"
                 >
                   <Search className="h-3.5 w-3.5" />
-                  {translate("composer.items.searchCatalog")}
+                  {t("searchCatalog")}
                 </Button>
                 <Button
                   variant="outline"
@@ -169,7 +163,7 @@ export const QuoteLineItemsTable = () => {
                   className="gap-1.5 text-xs"
                 >
                   <Plus className="h-3.5 w-3.5" />
-                  {translate("composer.items.addCustomItem")}
+                  {t("addCustomItem")}
                 </Button>
               </div>
             </div>
@@ -179,22 +173,22 @@ export const QuoteLineItemsTable = () => {
                 <TableRow>
                   <TableHead className="w-10 text-center">#</TableHead>
                   <TableHead className="min-w-[240px]">
-                    {translate("composer.items.colItem")}
+                    {t("colItem")}
                   </TableHead>
                   <TableHead className="w-20 text-center">
-                    {translate("composer.items.colQty")}
+                    {t("colQty")}
                   </TableHead>
                   <TableHead className="w-32 text-right">
-                    {translate("composer.items.colUnitPrice")}
+                    {t("colUnitPrice")}
                   </TableHead>
                   <TableHead className="w-24 text-center">
-                    {translate("composer.items.colDiscount")}
+                    {t("colDiscount")}
                   </TableHead>
                   <TableHead className="w-32 text-right">
-                    {translate("composer.items.colFinalPrice")}
+                    {t("colFinalPrice")}
                   </TableHead>
                   <TableHead className="w-36 text-right">
-                    {translate("composer.items.colTotal")}
+                    {t("colTotal")}
                   </TableHead>
                   <TableHead className="w-12 text-center"></TableHead>
                 </TableRow>
@@ -251,7 +245,7 @@ export const QuoteLineItemsTable = () => {
                                   variant="secondary"
                                   className="h-4 bg-amber-100 px-1 py-0 text-[9px] text-amber-800 dark:bg-amber-950 dark:text-amber-300"
                                 >
-                                  {translate("composer.items.customTag")}
+                                  {t("customTag")}
                                 </Badge>
                               ) : item.itemModel ? (
                                 <Badge
@@ -379,26 +373,24 @@ export const QuoteLineItemsTable = () => {
             <DialogHeader className="border-b pb-3">
               <DialogTitle className="flex items-center gap-2 text-base font-semibold">
                 <Wrench className="text-primary h-4 w-4" />
-                {translate("composer.items.customModal.title")}
+                {t("customModal.title")}
               </DialogTitle>
               <DialogDescription className="text-xs">
-                {translate("composer.items.customModal.description")}
+                {t("customModal.description")}
               </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-3 py-4 text-xs">
               <div className="space-y-1">
                 <Label htmlFor="customName" className="text-xs font-semibold">
-                  {translate("composer.items.customModal.nameLabel")}{" "}
+                  {t("customModal.nameLabel")}{" "}
                   <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="customName"
                   value={customName}
                   onChange={(e) => setCustomName(e.target.value)}
-                  placeholder={translate(
-                    "composer.items.customModal.namePlaceholder",
-                  )}
+                  placeholder={t("customModal.namePlaceholder")}
                   className="h-8 text-xs"
                   required
                   autoFocus
@@ -411,7 +403,7 @@ export const QuoteLineItemsTable = () => {
                     htmlFor="customModel"
                     className="text-xs font-semibold"
                   >
-                    {translate("composer.items.customModal.modelLabel")}
+                    {t("customModal.modelLabel")}
                   </Label>
                   <Input
                     id="customModel"
@@ -427,7 +419,7 @@ export const QuoteLineItemsTable = () => {
                     htmlFor="customSpecs"
                     className="text-xs font-semibold"
                   >
-                    {translate("composer.items.customModal.specsLabel")}
+                    {t("customModal.specsLabel")}
                   </Label>
                   <Input
                     id="customSpecs"
@@ -442,7 +434,7 @@ export const QuoteLineItemsTable = () => {
               <div className="grid grid-cols-3 gap-3 pt-1">
                 <div className="col-span-1 space-y-1">
                   <Label htmlFor="customQty" className="text-xs font-semibold">
-                    {translate("composer.items.customModal.qtyLabel")}
+                    {t("customModal.qtyLabel")}
                   </Label>
                   <Input
                     id="customQty"
@@ -459,7 +451,7 @@ export const QuoteLineItemsTable = () => {
                     htmlFor="customPrice"
                     className="text-xs font-semibold"
                   >
-                    {translate("composer.items.customModal.priceLabel")} (VND)
+                    {t("customModal.priceLabel")} (VND)
                   </Label>
                   <Input
                     id="customPrice"
@@ -482,10 +474,10 @@ export const QuoteLineItemsTable = () => {
                 onClick={() => setIsCustomItemModalOpen(false)}
                 className="h-8 text-xs"
               >
-                {translate("composer.items.customModal.cancel")}
+                {t("customModal.cancel")}
               </Button>
               <Button type="submit" size="sm" className="h-8 text-xs">
-                {translate("composer.items.customModal.confirm")}
+                {t("customModal.confirm")}
               </Button>
             </DialogFooter>
           </form>

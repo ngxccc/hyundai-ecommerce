@@ -1,6 +1,6 @@
 import { CategoryHeader } from "@/features/categories/components";
 import { CategoryForm } from "@/features/categories/components/category-form";
-import { api } from "@/lib/api-client";
+import { categoriesApi } from "@/features/categories/api/categories.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
@@ -34,8 +34,8 @@ export default async function AdminEditCategoryPage({
   const tForm = await getTranslations("adminCategoryForm");
 
   const [categoriesRes, categoryRes] = await Promise.all([
-    api.GET("/api/v1/categories"),
-    api.GET("/api/v1/categories/{id}", { params: { path: { id } } }),
+    categoriesApi.list(),
+    categoriesApi.getById(id),
   ]);
   const categories = categoriesRes.data?.data ?? [];
   const category = categoryRes.data?.data;

@@ -33,11 +33,7 @@ export const ProductSearchModal = ({
   onOpenChange,
   onSelectProduct,
 }: ProductSearchModalProps) => {
-  const t = useTranslations("adminQuotes");
-  const translate = t as unknown as (
-    key: string,
-    params?: Record<string, unknown>,
-  ) => string;
+  const t = useTranslations("adminQuotes.searchModal");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<AdminProduct[]>([]);
   const [isSearching, startSearchTransition] = useTransition();
@@ -79,9 +75,7 @@ export const ProductSearchModal = ({
       onSelectProduct(product);
     } else {
       addProductToDraft(product);
-      toast.success(
-        translate("searchModal.productAddedToast", { name: product.nameVi }),
-      );
+      toast.success(t("productAddedToast", { name: product.nameVi }));
     }
 
     setRecentlyAddedId(product.id);
@@ -132,10 +126,10 @@ export const ProductSearchModal = ({
         <DialogHeader className="border-b p-4 pb-3">
           <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
             <Search className="text-primary h-5 w-5" />
-            {translate("searchModal.title")}
+            {t("title")}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground text-xs">
-            {translate("searchModal.description")}
+            {t("description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -145,7 +139,7 @@ export const ProductSearchModal = ({
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={translate("searchModal.inputPlaceholder")}
+              placeholder={t("inputPlaceholder")}
               className="bg-background focus-visible:ring-primary h-11 pr-9 pl-9 text-sm font-medium shadow-xs"
               autoFocus
             />
@@ -159,7 +153,7 @@ export const ProductSearchModal = ({
           {isSearching && results.length === 0 ? (
             <div className="text-muted-foreground flex flex-col items-center justify-center gap-2 py-12">
               <Loader2 className="text-primary h-6 w-6 animate-spin" />
-              <p className="text-xs">{translate("searchModal.searching")}</p>
+              <p className="text-xs">{t("searching")}</p>
             </div>
           ) : results.length > 0 ? (
             results.map((product) => {
@@ -231,10 +225,10 @@ export const ProductSearchModal = ({
                           }`}
                         >
                           {inStock
-                            ? translate("searchModal.inStock", {
-                                count: product.totalStockCache,
+                            ? t("inStock", {
+                                count: String(product.totalStockCache),
                               })
-                            : translate("searchModal.outOfStock")}
+                            : t("outOfStock")}
                         </span>
                       </div>
 
@@ -254,12 +248,12 @@ export const ProductSearchModal = ({
                     {isJustAdded ? (
                       <>
                         <Check className="h-3.5 w-3.5 text-green-600" />
-                        {translate("searchModal.added")}
+                        {t("added")}
                       </>
                     ) : (
                       <>
                         <Plus className="h-3.5 w-3.5" />
-                        {translate("searchModal.select")}
+                        {t("select")}
                       </>
                     )}
                   </Button>
@@ -268,19 +262,13 @@ export const ProductSearchModal = ({
             })
           ) : query.trim() ? (
             <div className="text-muted-foreground flex flex-col items-center justify-center gap-1 py-10">
-              <p className="text-sm font-medium">
-                {translate("searchModal.noResults")}
-              </p>
-              <p className="text-xs">
-                {translate("searchModal.noResultsHint")}
-              </p>
+              <p className="text-sm font-medium">{t("noResults")}</p>
+              <p className="text-xs">{t("noResultsHint")}</p>
             </div>
           ) : (
             <div className="text-muted-foreground flex flex-col items-center justify-center gap-1 py-10">
               <Search className="text-muted-foreground/40 h-8 w-8 stroke-1" />
-              <p className="mt-1 text-xs">
-                {translate("searchModal.emptyPrompt")}
-              </p>
+              <p className="mt-1 text-xs">{t("emptyPrompt")}</p>
             </div>
           )}
         </div>

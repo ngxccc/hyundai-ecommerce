@@ -1,9 +1,9 @@
 import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { QuoteList } from "@/features/quotes/components";
-import { api } from "@/lib/api-client";
+import { quotesApi } from "@/features/quotes/api/quotes.api";
 import { quoteStatusEnum } from "@/shared/constants";
-import type { AdminQuote } from "@/types/api";
+import type { AdminQuote, QuoteStatus } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -45,47 +45,18 @@ export default async function AdminQuotesPage({
       ? resolvedSearchParams.status
       : undefined;
 
+  // Validate status parameter with type guard
+  const isQuoteStatus = (val: string): val is QuoteStatus =>
+    (quoteStatusEnum.enumValues as readonly string[]).includes(val);
   const status =
-    statusParam &&
-    (quoteStatusEnum.enumValues as readonly string[]).includes(statusParam)
-      ? statusParam
-      : undefined;
+    statusParam && isQuoteStatus(statusParam) ? statusParam : undefined;
 
-  const { data: quotesRes } = await api.GET("/api/v1/quotes", {
-    params: {
-      query: status ? { status: status as never } : undefined,
-    },
+  // Fetch filtered quotes with backend SQL search
+  const { data: quotesRes } = await quotesApi.list({
+    status,
+    search,
   });
   const quotes: AdminQuote[] = quotesRes?.data ?? [];
-
-  // In-memory search filtering
-  const searchLower = search?.toLowerCase();
-  const filteredQuotes = searchLower
-    ? quotes.filter((q) => {
-        const idMatch = q.id.toLowerCase().includes(searchLower);
-        const quoteNoMatch =
-          q.quoteNumber?.toLowerCase().includes(searchLower) ?? false;
-        const customerMatch =
-          q.customerName?.toLowerCase().includes(searchLower) ?? false;
-        const emailMatch =
-          q.customerEmail?.toLowerCase().includes(searchLower) ?? false;
-        const companyMatch =
-          q.companyName?.toLowerCase().includes(searchLower) ?? false;
-        const userNameMatch =
-          q.user?.fullName.toLowerCase().includes(searchLower) ?? false;
-        const userEmailMatch =
-          q.user?.email.toLowerCase().includes(searchLower) ?? false;
-        return (
-          idMatch ||
-          quoteNoMatch ||
-          customerMatch ||
-          emailMatch ||
-          companyMatch ||
-          userNameMatch ||
-          userEmailMatch
-        );
-      })
-    : quotes;
 
   return (
     <>
@@ -102,7 +73,7 @@ export default async function AdminQuotesPage({
             { label: tHeader("listTitle") },
           ]}
         />
-        <QuoteList quotes={filteredQuotes} />
+        <QuoteList quotes={quotes} />
       </div>
     </>
   );

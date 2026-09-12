@@ -2,7 +2,7 @@ import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
 import { OrderDetail } from "@/features/orders/components";
 import { getCachedSession } from "@/shared/lib/session";
-import { api } from "@/lib/api-client";
+import { ordersApi } from "@/features/orders/api/orders.api";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { type Locale } from "next-intl";
@@ -33,7 +33,7 @@ export default async function AdminOrderDetailPage({
   const tHeader = await getTranslations("adminOrders");
 
   const [orderRes, session] = await Promise.all([
-    api.GET("/api/v1/orders/{id}", { params: { path: { id } } }),
+    ordersApi.getById(id),
     getCachedSession(),
   ]);
   const order = orderRes.data?.data;

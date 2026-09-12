@@ -1,5 +1,5 @@
 import { cacheLife } from "next/cache";
-import { api } from "@/lib/api-client";
+import { catalogApi } from "../api/catalog.api";
 import { type StorefrontBrand, mapBrandToStorefront } from "./types";
 import type { Locale } from "next-intl";
 
@@ -8,7 +8,7 @@ export const brandService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await api.GET("/api/v1/brands");
+      const { data: res } = await catalogApi.brands.list();
       const brands = res?.data;
       if (!Array.isArray(brands)) {
         return [];

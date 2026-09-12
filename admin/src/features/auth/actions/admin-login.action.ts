@@ -2,7 +2,8 @@
 
 import { cookies, headers } from "next/headers";
 import { checkRateLimitWithQueue } from "@/shared/lib/rate-limiter";
-import { api, ApiClientError } from "@/lib/api-client";
+import { ApiClientError } from "@/lib/api-client";
+import { authApi } from "@/features/auth/api/auth.api";
 import { getTranslations } from "next-intl/server";
 import { adminLoginSchema, type AdminLoginForm } from "@/shared/validators";
 import { formatValidationErrors } from "@/shared/utils/validation";
@@ -41,9 +42,7 @@ export const adminLoginAction = async (data: AdminLoginForm) => {
   }
 
   try {
-    const { data: res, error } = await api.POST("/api/v1/auth/login", {
-      body: parsed.data,
-    });
+    const { data: res, error } = await authApi.login(parsed.data);
 
     if (error || !res.data) {
       return {
