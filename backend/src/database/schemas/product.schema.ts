@@ -5,10 +5,12 @@ import {
   integer,
   jsonb,
   numeric,
+  primaryKey,
   snakeCase,
   text,
   uniqueIndex,
   uuid,
+  varchar,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import type {
@@ -95,3 +97,28 @@ export const products = snakeCase.table(
 
 export type Product = typeof products.$inferSelect;
 export type NewProduct = typeof products.$inferInsert;
+
+export const productTranslations = snakeCase.table(
+  "product_translation",
+  {
+    productId: uuid()
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    locale: varchar({ length: 8 }).notNull(),
+    name: text().notNull(),
+    shortDescription: text(),
+    description: jsonb().$type<JSONContent>(),
+    seoTitle: text(),
+    seoDescription: text(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.productId, table.locale] }),
+    index("product_translation_product_locale_idx").on(
+      table.productId,
+      table.locale,
+    ),
+  ],
+);
+
+export type ProductTranslation = typeof productTranslations.$inferSelect;
+export type NewProductTranslation = typeof productTranslations.$inferInsert;

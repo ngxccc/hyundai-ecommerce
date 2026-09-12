@@ -3,9 +3,9 @@ import { users, refreshTokens } from "./auth.schema";
 import { dealerTiers } from "./dealer-tier.schema";
 import { creditLimitHistory } from "./credit-limit-history.schema";
 import { userAddresses } from "./user-address.schema";
-import { brands } from "./brand.schema";
-import { categories } from "./category.schema";
-import { products } from "./product.schema";
+import { brands, brandTranslations } from "./brand.schema";
+import { categories, categoryTranslations } from "./category.schema";
+import { products, productTranslations } from "./product.schema";
 import { warehouses, warehouseStocks } from "./warehouse.schema";
 import { carts, cartItems } from "./cart.schema";
 import { orders, orderItems, shippingBids } from "./order.schema";
@@ -25,8 +25,11 @@ export const schemaRelations = defineRelations(
     creditLimitHistory,
     userAddresses,
     brands,
+    brandTranslations,
     categories,
+    categoryTranslations,
     products,
+    productTranslations,
     warehouses,
     warehouseStocks,
     carts,
@@ -105,6 +108,15 @@ export const schemaRelations = defineRelations(
 
     brands: {
       products: r.many.products(),
+      translations: r.many.brandTranslations(),
+    },
+
+    brandTranslations: {
+      brand: r.one.brands({
+        from: r.brandTranslations.brandId,
+        to: r.brands.id,
+        optional: false,
+      }),
     },
 
     categories: {
@@ -117,6 +129,15 @@ export const schemaRelations = defineRelations(
         to: r.categories.id,
       }),
       products: r.many.products(),
+      translations: r.many.categoryTranslations(),
+    },
+
+    categoryTranslations: {
+      category: r.one.categories({
+        from: r.categoryTranslations.categoryId,
+        to: r.categories.id,
+        optional: false,
+      }),
     },
 
     products: {
@@ -128,10 +149,19 @@ export const schemaRelations = defineRelations(
         from: r.products.categoryId,
         to: r.categories.id,
       }),
+      translations: r.many.productTranslations(),
       stocks: r.many.warehouseStocks(),
       quoteItems: r.many.quoteItems(),
       orderItems: r.many.orderItems(),
       cartItems: r.many.cartItems(),
+    },
+
+    productTranslations: {
+      product: r.one.products({
+        from: r.productTranslations.productId,
+        to: r.products.id,
+        optional: false,
+      }),
     },
 
     warehouses: {
