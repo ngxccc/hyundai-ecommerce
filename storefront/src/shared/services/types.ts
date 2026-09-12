@@ -83,16 +83,13 @@ export function mapProductToStorefront(
 
 export function mapCategoryToStorefront(
   dto: ApiCategory,
-  locale: Locale,
+  _locale: Locale,
 ): StorefrontCategory {
-  const isEn = locale === "en";
   return {
     id: dto.id,
-    name: isEn && dto.nameEn ? dto.nameEn : dto.nameVi,
+    name: dto.name,
     slug: dto.slug,
-    description:
-      (isEn && dto.descriptionEn ? dto.descriptionEn : dto.descriptionVi) ??
-      null,
+    description: dto.description ?? null,
     icon: null,
     image: dto.image ?? null,
     parentId: dto.parentId ?? null,

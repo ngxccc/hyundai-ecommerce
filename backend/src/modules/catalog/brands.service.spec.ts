@@ -38,6 +38,71 @@ describe("BrandsService", () => {
         expect(result[0]?.name).toBe("Hyundai Power");
       });
     });
+
+    test("should resolve English translation when locale is en", async () => {
+      const mockBrands = [
+        {
+          id: "brand-1",
+          name: "Hyundai Power",
+          slug: "hyundai-power",
+          logo: null,
+          descriptionVi: null,
+          descriptionEn: null,
+          isActive: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ];
+      const mockTranslations = [
+        {
+          brandId: "brand-1",
+          locale: "vi",
+          description: "Thương hiệu Hyundai chính hãng",
+        },
+        {
+          brandId: "brand-1",
+          locale: "en",
+          description: "Official Hyundai Brand",
+        },
+      ];
+
+      mockDb.setSelectResultsQueue([mockBrands, mockTranslations]);
+
+      const result = await service.findAll("en");
+
+      expect(result.length).toBe(1);
+      expect(result[0]?.description).toBe("Official Hyundai Brand");
+    });
+
+    test("should fallback to Vietnamese translation when requested locale translation is missing", async () => {
+      const mockBrands = [
+        {
+          id: "brand-1",
+          name: "Hyundai Power",
+          slug: "hyundai-power",
+          logo: null,
+          descriptionVi: "Thương hiệu Hyundai chính hãng",
+          descriptionEn: null,
+          isActive: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ];
+      const mockTranslations = [
+        {
+          brandId: "brand-1",
+          locale: "vi",
+          description: "Thương hiệu Hyundai chính hãng",
+        },
+      ];
+
+      mockDb.setSelectResultsQueue([mockBrands, mockTranslations]);
+
+      const result = await service.findAll("en");
+
+      expect(result.length).toBe(1);
+      expect(result[0]?.description).toBe("Thương hiệu Hyundai chính hãng");
+    });
   });
 
   describe("findById()", () => {

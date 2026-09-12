@@ -10,10 +10,12 @@ describe("CategoriesController", () => {
 
   const mockCategory: CategoryResponseDto = {
     id: "cat-1",
+    name: "Máy phát điện",
     nameVi: "Máy phát điện",
     nameEn: "Generators",
     slug: "may-phat-dien",
     parentId: null,
+    description: null,
     descriptionVi: null,
     descriptionEn: null,
     image: null,

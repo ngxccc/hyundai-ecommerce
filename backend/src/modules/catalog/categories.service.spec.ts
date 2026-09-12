@@ -43,6 +43,80 @@ describe("CategoriesService", () => {
         expect(result.length).toBe(1);
         expect(result[0]?.slug).toBe("may-phat-dien");
       });
+
+      test("should resolve English translation when locale is en", async () => {
+        const mockCategories = [
+          {
+            id: "cat-1",
+            nameVi: "Máy phát điện",
+            nameEn: "Generators",
+            slug: "may-phat-dien",
+            parentId: null,
+            descriptionVi: null,
+            descriptionEn: null,
+            image: null,
+            isActive: true,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ];
+        const mockTranslations = [
+          {
+            categoryId: "cat-1",
+            locale: "vi",
+            name: "Máy phát điện",
+            description: "Mô tả tiếng Việt",
+          },
+          {
+            categoryId: "cat-1",
+            locale: "en",
+            name: "Generators",
+            description: "English description",
+          },
+        ];
+
+        mockDb.setSelectResultsQueue([mockCategories, mockTranslations]);
+
+        const result = await service.findAll("en");
+
+        expect(result.length).toBe(1);
+        expect(result[0]?.name).toBe("Generators");
+        expect(result[0]?.description).toBe("English description");
+      });
+
+      test("should fallback to Vietnamese translation when requested locale translation is missing", async () => {
+        const mockCategories = [
+          {
+            id: "cat-1",
+            nameVi: "Máy phát điện",
+            nameEn: null,
+            slug: "may-phat-dien",
+            parentId: null,
+            descriptionVi: "Mô tả tiếng Việt",
+            descriptionEn: null,
+            image: null,
+            isActive: true,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ];
+        const mockTranslations = [
+          {
+            categoryId: "cat-1",
+            locale: "vi",
+            name: "Máy phát điện",
+            description: "Mô tả tiếng Việt",
+          },
+        ];
+
+        mockDb.setSelectResultsQueue([mockCategories, mockTranslations]);
+
+        const result = await service.findAll("en");
+
+        expect(result.length).toBe(1);
+        expect(result[0]?.name).toBe("Máy phát điện");
+        expect(result[0]?.description).toBe("Mô tả tiếng Việt");
+      });
     });
   });
 
