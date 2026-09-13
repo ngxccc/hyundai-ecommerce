@@ -65,7 +65,12 @@ export class OrdersController {
   @Post(ORDER_ROUTES.CHECKOUT)
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
-  @ApiOperation({ summary: "Guest checkout for storefront retail customers" })
+  @ApiOperation({
+    summary: "Guest checkout for storefront retail customers",
+    deprecated: true,
+    description:
+      "Legacy B2C retail checkout endpoint. In the B2B industrial machinery domain, orders originate from approved quotations via `/api/v1/quotes/:id/approve-to-order` or official B2B contract creation (`/api/v1/orders/admin`).",
+  })
   @ApiCreatedResponseGeneric(OrderResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
@@ -198,9 +203,12 @@ export class OrdersController {
    */
   @Post(ORDER_ROUTES.CANCEL)
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("ADMIN")
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Cancel order and release reserved stock" })
+  @ApiOperation({
+    summary: "Cancel order and release reserved stock (Admin only)",
+  })
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderResponseDto)
   @ApiBadRequestResponseRfc9457()
@@ -262,6 +270,9 @@ export class OrdersController {
   @UseGuards(CronAuthGuard)
   @ApiOperation({
     summary: "Auto-expire pending unpaid orders and restock inventory (Cron)",
+    deprecated: true,
+    description:
+      "Legacy B2C 15-minute checkout expiration. B2B high-value industrial machinery orders operate on negotiated commercial terms and corporate wire transfers rather than instant payment timeouts.",
   })
   @ApiOkResponseGeneric(ExpireOrdersResponseDto)
   @ApiUnauthorizedResponseRfc9457()

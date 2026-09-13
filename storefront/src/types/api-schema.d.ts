@@ -862,7 +862,11 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Guest checkout for storefront retail customers */
+    /**
+     * Guest checkout for storefront retail customers
+     * @deprecated
+     * @description Legacy B2C retail checkout endpoint. In the B2B industrial machinery domain, orders originate from approved quotations via `/api/v1/quotes/:id/approve-to-order` or official B2B contract creation (`/api/v1/orders/admin`).
+     */
     post: operations["OrdersController_checkout_v1"];
     delete?: never;
     options?: never;
@@ -947,7 +951,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Cancel order and release reserved stock */
+    /** Cancel order and release reserved stock (Admin only) */
     post: operations["OrdersController_cancelOrder_v1"];
     delete?: never;
     options?: never;
@@ -981,7 +985,11 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Auto-expire pending unpaid orders and restock inventory (Cron) */
+    /**
+     * Auto-expire pending unpaid orders and restock inventory (Cron)
+     * @deprecated
+     * @description Legacy B2C 15-minute checkout expiration. B2B high-value industrial machinery orders operate on negotiated commercial terms and corporate wire transfers rather than instant payment timeouts.
+     */
     post: operations["OrdersController_expireOrders_v1"];
     delete?: never;
     options?: never;
@@ -2236,9 +2244,6 @@ export interface components {
     VerifyCashPaymentDto: {
       amount: number | string;
       note?: string | null;
-    };
-    ExpireOrdersResponseDto: {
-      expiredCount: number;
     };
     CheckoutLinkResponseDto: {
       checkoutUrl: string;
@@ -7819,16 +7824,6 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["ExpireOrdersResponseDto"];
-          };
-        };
-      };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
         headers: {

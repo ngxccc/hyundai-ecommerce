@@ -6077,6 +6077,8 @@
     },
     "/api/v1/orders/checkout": {
       "post": {
+        "deprecated": true,
+        "description": "Legacy B2C retail checkout endpoint. In the B2B industrial machinery domain, orders originate from approved quotations via `/api/v1/quotes/:id/approve-to-order` or official B2B contract creation (`/api/v1/orders/admin`).",
         "operationId": "OrdersController_checkout_v1",
         "parameters": [],
         "requestBody": {
@@ -6859,7 +6861,7 @@
             "bearer": []
           }
         ],
-        "summary": "Cancel order and release reserved stock",
+        "summary": "Cancel order and release reserved stock (Admin only)",
         "tags": ["orders"]
       }
     },
@@ -7002,30 +7004,11 @@
     },
     "/api/v1/orders/cron/expire": {
       "post": {
+        "deprecated": true,
+        "description": "Legacy B2C 15-minute checkout expiration. B2B high-value industrial machinery orders operate on negotiated commercial terms and corporate wire transfers rather than instant payment timeouts.",
         "operationId": "OrdersController_expireOrders_v1",
         "parameters": [],
         "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ApiResponseDto"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "$ref": "#/components/schemas/ExpireOrdersResponseDto"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
           "401": {
             "description": "Authentication required or invalid token (Unauthorized)",
             "content": {
@@ -11758,17 +11741,6 @@
           }
         },
         "required": ["amount"]
-      },
-      "ExpireOrdersResponseDto": {
-        "type": "object",
-        "properties": {
-          "expiredCount": {
-            "type": "integer",
-            "minimum": -9007199254740991,
-            "maximum": 9007199254740991
-          }
-        },
-        "required": ["expiredCount"]
       },
       "CheckoutLinkResponseDto": {
         "type": "object",
