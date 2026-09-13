@@ -15,6 +15,8 @@ import {
   orders,
   orderItems,
   outboxEvents,
+  paymentTransactions,
+  payments,
   products,
   productTranslations,
   users,
@@ -34,6 +36,7 @@ import type {
   CreateGuestOrderDto,
   OrderQueryDto,
   OrderResponseDto,
+  VerifyCashPaymentDto,
 } from "./dto";
 
 /**
@@ -880,5 +883,118 @@ export class OrdersService {
     }
 
     return expiredList.length;
+  }
+
+  /**
+   * Confirms offline cash or direct bank transfer payment collected for an order (Admin/Accountant).
+   *
+   * @param orderId - Order UUID identifier.
+   * @param dto - Cash verification payload with collected amount and notes.
+   * @param adminUserId - Authenticated admin/sales user performing verification.
+   * @returns Detailed updated order response.
+   * @throws NotFoundException if order is not found.
+   * @throws BadRequestException if order is cancelled or already fully paid.
+   */
+  async verifyCashPayment(
+    orderId: string,
+    dto: VerifyCashPaymentDto,
+    adminUserId: string,
+  ): Promise<OrderResponseDto> {
+    const [order] = await this.db
+      .select()
+      .from(orders)
+      .where(eq(orders.id, orderId))
+      .limit(1);
+
+    if (!order) {
+      throw new I18nNotFoundException("orders.ORDER_NOT_FOUND");
+    }
+
+    if (order.status === "CANCELLED") {
+      throw new I18nBadRequestException("orders.ORDER_CANNOT_BE_CANCELLED");
+    }
+
+    if (order.paymentStatus === "FULLY_PAID") {
+      throw new I18nBadRequestException("payments.ORDER_ALREADY_PAID");
+    }
+
+    const cashAmountNum = Number(dto.amount);
+    const formattedAmount = cashAmountNum.toFixed(2);
+    const newStatus = order.status === "PENDING" ? "PROCESSING" : order.status;
+
+    await this.db.transaction(async (tx) => {
+      await tx.insert(paymentTransactions).values({
+        orderId: order.id,
+        amount: formattedAmount,
+        paymentMethod: "CASH",
+        transactionType: "FULL_PAYMENT",
+        status: "COMPLETED",
+        verifiedBy: adminUserId,
+      });
+
+      const [existingPayment] = await tx
+        .select()
+        .from(payments)
+        .where(eq(payments.orderId, order.id))
+        .limit(1);
+
+      if (existingPayment) {
+        await tx
+          .update(payments)
+          .set({
+            amount: formattedAmount,
+            method: "CASH",
+            status: "COMPLETED",
+            updatedAt: new Date(),
+          })
+          .where(eq(payments.id, existingPayment.id));
+      } else {
+        await tx.insert(payments).values({
+          orderId: order.id,
+          amount: formattedAmount,
+          method: "CASH",
+          status: "COMPLETED",
+        });
+      }
+
+      const updatedNote = dto.note
+        ? `${order.note ?? ""} [Cash Verified: ${dto.note}]`.trim()
+        : order.note;
+
+      await tx
+        .update(orders)
+        .set({
+          paymentMethod: "CASH",
+          paymentStatus: "FULLY_PAID",
+          status: newStatus,
+          depositAmount: formattedAmount,
+          remainingAmount: "0.00",
+          note: updatedNote,
+          updatedAt: new Date(),
+        })
+        .where(eq(orders.id, order.id));
+
+      if (order.status === "PENDING") {
+        await tx.insert(outboxEvents).values({
+          eventType: OUTBOX_EVENT_TYPE.ORDER_CONFIRMED,
+          payload: {
+            orderId: order.id,
+            orderNumber: order.orderNumber,
+          },
+        });
+      }
+
+      await tx.insert(outboxEvents).values({
+        eventType: OUTBOX_EVENT_TYPE.PAYMENT_COMPLETED,
+        payload: {
+          orderId: order.id,
+          amount: formattedAmount,
+          paymentMethod: "CASH",
+          verifiedBy: adminUserId,
+        },
+      });
+    });
+
+    return this.findById(order.id);
   }
 }

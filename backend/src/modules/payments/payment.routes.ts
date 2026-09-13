@@ -1,5 +1,8 @@
+/**
+ * Legacy retail payment and PayOS routes, dormant after transition to B2B RFQ model.
+ */
 export const PAYMENT_ROUTES = {
-  TAG: "payments",
+  TAG: "payments (deprecated)",
   ROOT: "payments",
   CHECKOUT_LINK: "checkout-link",
   PAYOS_WEBHOOK: "payos-webhook",

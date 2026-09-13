@@ -7,6 +7,7 @@ import type {
   OrderQueryDto,
   OrderResponseDto,
   UpdateOrderStatusDto,
+  VerifyCashPaymentDto,
 } from "./dto";
 
 describe("OrdersController", () => {
@@ -81,6 +82,16 @@ describe("OrdersController", () => {
       ),
     ),
     expirePendingOrders: mock((_windowMinutes?: number) => Promise.resolve(2)),
+    verifyCashPayment: mock(
+      (_id: string, _dto: VerifyCashPaymentDto, _adminId: string) =>
+        Promise.resolve(
+          Object.assign({}, mockOrder, {
+            paymentMethod: "CASH" as const,
+            paymentStatus: "FULLY_PAID" as const,
+            status: "PROCESSING" as const,
+          }),
+        ),
+    ),
     clearAll() {
       this.createGuestOrder.mockClear();
       this.createB2bOrder.mockClear();
@@ -89,6 +100,7 @@ describe("OrdersController", () => {
       this.updateStatus.mockClear();
       this.cancelOrder.mockClear();
       this.expirePendingOrders.mockClear();
+      this.verifyCashPayment.mockClear();
     },
   };
 
@@ -235,6 +247,31 @@ describe("OrdersController", () => {
         expect(mockOrdersService.expirePendingOrders).toHaveBeenCalled();
         expect(result.success).toBe(true);
         expect(result.data.expiredCount).toBe(2);
+      });
+    });
+  });
+
+  describe("POST /orders/:id/verify-cash", () => {
+    describe("when accountant confirms cash payment receipt", () => {
+      test("should return wrapped updated order", async () => {
+        const dto: VerifyCashPaymentDto = {
+          amount: 180000000,
+          note: "Đã nhận tiền mặt",
+        };
+        const result = await controller.verifyCashPayment(
+          mockOrder.id,
+          dto,
+          "admin-123",
+        );
+
+        expect(mockOrdersService.verifyCashPayment).toHaveBeenCalledWith(
+          mockOrder.id,
+          dto,
+          "admin-123",
+        );
+        expect(result.success).toBe(true);
+        expect(result.data.paymentStatus).toBe("FULLY_PAID");
+        expect(result.data.paymentMethod).toBe("CASH");
       });
     });
   });

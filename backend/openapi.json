@@ -4596,7 +4596,7 @@
           }
         ],
         "summary": "Get current authenticated user shopping cart",
-        "tags": ["cart"]
+        "tags": ["cart (deprecated)"]
       }
     },
     "/api/v1/cart/items": {
@@ -4705,7 +4705,7 @@
           }
         ],
         "summary": "Add item to cart or increment quantity",
-        "tags": ["cart"]
+        "tags": ["cart (deprecated)"]
       }
     },
     "/api/v1/cart/items/{id}": {
@@ -4824,7 +4824,7 @@
           }
         ],
         "summary": "Update quantity of a cart item",
-        "tags": ["cart"]
+        "tags": ["cart (deprecated)"]
       },
       "delete": {
         "deprecated": true,
@@ -4907,7 +4907,7 @@
           }
         ],
         "summary": "Remove item from cart",
-        "tags": ["cart"]
+        "tags": ["cart (deprecated)"]
       }
     },
     "/api/v1/cart/merge": {
@@ -4997,7 +4997,7 @@
           }
         ],
         "summary": "Merge guest cart items into authenticated user cart with inventory stock clamping",
-        "tags": ["cart"]
+        "tags": ["cart (deprecated)"]
       }
     },
     "/api/v1/quotes": {
@@ -6863,6 +6863,143 @@
         "tags": ["orders"]
       }
     },
+    "/api/v1/orders/{id}/verify-cash": {
+      "post": {
+        "operationId": "OrdersController_verifyCashPayment_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Order UUID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyCashPaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/OrderResponseDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failure (Bad Request)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/bad-request",
+                  "title": "Bad Request",
+                  "status": 400,
+                  "detail": "Submitted data format is invalid",
+                  "instance": "/api/example",
+                  "invalidParams": [
+                    {
+                      "name": "email",
+                      "reason": "Invalid email address format"
+                    }
+                  ],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or invalid token (Unauthorized)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/unauthorized",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "Unauthorized access",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found (Not Found)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/not-found",
+                  "title": "Not Found",
+                  "status": 404,
+                  "detail": "Requested resource not found",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Verify offline cash payment (Admin/Accountant)",
+        "tags": ["orders"]
+      }
+    },
     "/api/v1/orders/cron/expire": {
       "post": {
         "operationId": "OrdersController_expireOrders_v1",
@@ -6915,6 +7052,7 @@
     },
     "/api/v1/payments/checkout-link": {
       "post": {
+        "deprecated": true,
         "operationId": "PaymentsController_createCheckoutLink_v1",
         "parameters": [],
         "requestBody": {
@@ -6994,11 +7132,12 @@
           }
         },
         "summary": "Create PayOS checkout link and VietQR code",
-        "tags": ["payments"]
+        "tags": ["payments (deprecated)"]
       }
     },
     "/api/v1/payments/payos-webhook": {
       "post": {
+        "deprecated": true,
         "operationId": "PaymentsController_handleWebhook_v1",
         "parameters": [],
         "requestBody": {
@@ -7059,11 +7198,12 @@
           }
         },
         "summary": "Receive and cryptographically verify PayOS payment webhook",
-        "tags": ["payments"]
+        "tags": ["payments (deprecated)"]
       }
     },
     "/api/v1/payments/{id}/verify-cash": {
       "post": {
+        "deprecated": true,
         "operationId": "PaymentsController_verifyCashPayment_v1",
         "parameters": [
           {
@@ -7195,12 +7335,13 @@
             "bearer": []
           }
         ],
-        "summary": "Verify offline cash payment (Admin/Accountant)",
-        "tags": ["payments"]
+        "summary": "Verify offline cash payment (Deprecated: use POST /orders/:id/verify-cash)",
+        "tags": ["payments (deprecated)"]
       }
     },
     "/api/v1/payments/repay-debt": {
       "post": {
+        "deprecated": true,
         "operationId": "PaymentsController_repayDebt_v1",
         "parameters": [],
         "requestBody": {
@@ -7323,18 +7464,18 @@
           }
         ],
         "summary": "Repay B2B dealer debt via PayOS gateway or cash",
-        "tags": ["payments"]
+        "tags": ["payments (deprecated)"]
       }
     },
     "/api/v1/payments/order/{orderId}": {
       "get": {
+        "deprecated": true,
         "operationId": "PaymentsController_getOrderPaymentSummary_v1",
         "parameters": [
           {
             "name": "orderId",
             "required": true,
             "in": "path",
-            "description": "Order UUID",
             "schema": {
               "type": "string"
             }
@@ -7431,7 +7572,7 @@
           }
         ],
         "summary": "Get order payment status and transactions",
-        "tags": ["payments"]
+        "tags": ["payments (deprecated)"]
       }
     }
   },
@@ -11597,6 +11738,27 @@
         },
         "required": ["status"]
       },
+      "VerifyCashPaymentDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "string",
+                "pattern": "^\\d+(\\.\\d{1,2})?$"
+              }
+            ]
+          },
+          "note": {
+            "type": ["string", "null"]
+          }
+        },
+        "required": ["amount"]
+      },
       "ExpireOrdersResponseDto": {
         "type": "object",
         "properties": {
@@ -11857,27 +12019,6 @@
           "paymentStatus",
           "transactions"
         ]
-      },
-      "VerifyCashPaymentDto": {
-        "type": "object",
-        "properties": {
-          "amount": {
-            "anyOf": [
-              {
-                "type": "number",
-                "exclusiveMinimum": 0
-              },
-              {
-                "type": "string",
-                "pattern": "^\\d+(\\.\\d{1,2})?$"
-              }
-            ]
-          },
-          "note": {
-            "type": ["string", "null"]
-          }
-        },
-        "required": ["amount"]
       },
       "DebtRepaymentResponseDto": {
         "type": "object",

@@ -6,5 +6,6 @@ export const ORDER_ROUTES = {
   BY_ID: ":id",
   STATUS: ":id/status",
   CANCEL: ":id/cancel",
+  VERIFY_CASH: ":id/verify-cash",
   EXPIRE_CRON: "cron/expire",
 } as const;

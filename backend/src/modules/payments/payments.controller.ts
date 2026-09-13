@@ -59,7 +59,10 @@ export class PaymentsController {
   @Post(PAYMENT_ROUTES.CHECKOUT_LINK)
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
-  @ApiOperation({ summary: "Create PayOS checkout link and VietQR code" })
+  @ApiOperation({
+    summary: "Create PayOS checkout link and VietQR code",
+    deprecated: true,
+  })
   @ApiCreatedResponseGeneric(CheckoutLinkResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
@@ -78,6 +81,7 @@ export class PaymentsController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: "Receive and cryptographically verify PayOS payment webhook",
+    deprecated: true,
   })
   @ApiOkResponseGeneric(PayOSWebhookResponseDto)
   @ApiBadRequestResponseRfc9457()
@@ -99,7 +103,11 @@ export class PaymentsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Verify offline cash payment (Admin/Accountant)" })
+  @ApiOperation({
+    summary:
+      "Verify offline cash payment (Deprecated: use POST /orders/:id/verify-cash)",
+    deprecated: true,
+  })
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderPaymentSummaryDto)
   @ApiBadRequestResponseRfc9457()
@@ -132,6 +140,7 @@ export class PaymentsController {
   @ApiBearerAuth()
   @ApiOperation({
     summary: "Repay B2B dealer debt via PayOS gateway or cash",
+    deprecated: true,
   })
   @ApiCreatedResponseGeneric(DebtRepaymentResponseDto)
   @ApiBadRequestResponseRfc9457()
@@ -159,8 +168,10 @@ export class PaymentsController {
   @Get(PAYMENT_ROUTES.BY_ORDER_ID)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Get order payment status and transactions" })
-  @ApiParam({ name: "orderId", description: "Order UUID" })
+  @ApiOperation({
+    summary: "Get order payment status and transactions",
+    deprecated: true,
+  })
   @ApiOkResponseGeneric(OrderPaymentSummaryDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()

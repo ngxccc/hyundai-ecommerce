@@ -955,6 +955,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/orders/{id}/verify-cash": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Verify offline cash payment (Admin/Accountant) */
+    post: operations["OrdersController_verifyCashPayment_v1"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/orders/cron/expire": {
     parameters: {
       query?: never;
@@ -981,7 +998,10 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Create PayOS checkout link and VietQR code */
+    /**
+     * Create PayOS checkout link and VietQR code
+     * @deprecated
+     */
     post: operations["PaymentsController_createCheckoutLink_v1"];
     delete?: never;
     options?: never;
@@ -998,7 +1018,10 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Receive and cryptographically verify PayOS payment webhook */
+    /**
+     * Receive and cryptographically verify PayOS payment webhook
+     * @deprecated
+     */
     post: operations["PaymentsController_handleWebhook_v1"];
     delete?: never;
     options?: never;
@@ -1015,7 +1038,10 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Verify offline cash payment (Admin/Accountant) */
+    /**
+     * Verify offline cash payment (Deprecated: use POST /orders/:id/verify-cash)
+     * @deprecated
+     */
     post: operations["PaymentsController_verifyCashPayment_v1"];
     delete?: never;
     options?: never;
@@ -1032,7 +1058,10 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Repay B2B dealer debt via PayOS gateway or cash */
+    /**
+     * Repay B2B dealer debt via PayOS gateway or cash
+     * @deprecated
+     */
     post: operations["PaymentsController_repayDebt_v1"];
     delete?: never;
     options?: never;
@@ -1047,7 +1076,10 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Get order payment status and transactions */
+    /**
+     * Get order payment status and transactions
+     * @deprecated
+     */
     get: operations["PaymentsController_getOrderPaymentSummary_v1"];
     put?: never;
     post?: never;
@@ -2201,6 +2233,10 @@ export interface components {
       status: "PENDING" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
       note?: string | null;
     };
+    VerifyCashPaymentDto: {
+      amount: number | string;
+      note?: string | null;
+    };
     ExpireOrdersResponseDto: {
       expiredCount: number;
     };
@@ -2284,10 +2320,6 @@ export interface components {
         /** Format: date-time */
         updatedAt: string;
       }[];
-    };
-    VerifyCashPaymentDto: {
-      amount: number | string;
-      note?: string | null;
     };
     DebtRepaymentResponseDto: {
       /** Format: uuid */
@@ -7665,6 +7697,119 @@ export interface operations {
       };
     };
   };
+  OrdersController_verifyCashPayment_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Order UUID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["VerifyCashPaymentDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["OrderResponseDto"];
+          };
+        };
+      };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Resource not found (Not Found) */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/not-found",
+           *       "title": "Not Found",
+           *       "status": 404,
+           *       "detail": "Requested resource not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+    };
+  };
   OrdersController_expireOrders_v1: {
     parameters: {
       query?: never;
@@ -8054,7 +8199,6 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        /** @description Order UUID */
         orderId: string;
       };
       cookie?: never;

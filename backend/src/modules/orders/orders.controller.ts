@@ -48,6 +48,7 @@ import {
   OrderQueryDto,
   UpdateOrderStatusDto,
   ExpireOrdersResponseDto,
+  VerifyCashPaymentDto,
 } from "./dto";
 
 @ApiTags(ORDER_ROUTES.TAG)
@@ -216,6 +217,39 @@ export class OrdersController {
       currentUser,
     );
     return apiSuccess(cancelled);
+  }
+
+  /**
+   * Confirms offline cash or direct bank transfer payment collected for an order (Admin/Accountant).
+   *
+   * @param id - Order UUID identifier.
+   * @param dto - Cash verification payload with collected amount and notes.
+   * @param adminUserId - Authenticated admin/sales user performing verification.
+   * @returns Updated order details.
+   */
+  @Post(ORDER_ROUTES.VERIFY_CASH)
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("ADMIN", "SALES")
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Verify offline cash payment (Admin/Accountant)" })
+  @ApiParam({ name: "id", description: "Order UUID" })
+  @ApiOkResponseGeneric(OrderResponseDto)
+  @ApiBadRequestResponseRfc9457()
+  @ApiNotFoundResponseRfc9457()
+  @ApiUnauthorizedResponseRfc9457()
+  @ApiForbiddenResponseRfc9457()
+  async verifyCashPayment(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: VerifyCashPaymentDto,
+    @CurrentUser("sub") adminUserId: string,
+  ) {
+    const result = await this.ordersService.verifyCashPayment(
+      id,
+      dto,
+      adminUserId,
+    );
+    return apiSuccess(result);
   }
 
   /**

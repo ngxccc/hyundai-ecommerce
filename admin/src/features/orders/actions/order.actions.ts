@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { ApiClientError } from "@/lib/api-client";
 import { ordersApi } from "../api/orders.api";
-import { paymentsApi } from "@/features/payments/api/payments.api";
 import type { AdminOrder } from "@/types/api";
 import { isValidIdentifier } from "@/shared/validators";
 import {
@@ -94,7 +93,7 @@ export const verifyCashPaymentAction = async (
   }
   try {
     await assertFinanceRole();
-    const { data: result, error } = await paymentsApi.verifyCash(orderId, {
+    const { data: result, error } = await ordersApi.verifyCash(orderId, {
       amount,
       note: note ?? "Kế toán xác nhận thu tiền mặt",
     });

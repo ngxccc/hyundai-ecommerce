@@ -7,6 +7,7 @@ import { api } from "@/lib/api-client";
 import type {
   AdminCreateB2bOrder,
   AdminUpdateOrderStatus,
+  AdminVerifyCashPayment,
   OrderQueryParams,
 } from "@/types/api";
 
@@ -61,5 +62,17 @@ export const ordersApi = {
   cancel: (id: string) =>
     api.POST("/api/v1/orders/{id}/cancel", {
       params: { path: { id } },
+    }),
+
+  /**
+   * Confirms offline cash or direct bank transfer payment collected for an order.
+   *
+   * @param id Order UUID
+   * @param body Cash verification details
+   */
+  verifyCash: (id: string, body: AdminVerifyCashPayment) =>
+    api.POST("/api/v1/orders/{id}/verify-cash", {
+      params: { path: { id } },
+      body,
     }),
 };
