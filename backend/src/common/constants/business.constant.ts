@@ -7,7 +7,7 @@ export const CODE_PREFIX = {
   /** Sales Order */
   ORDER: "ORD",
   /** B2B Quotation */
-  QUOTE: "BG",
+  QUOTE: "QT",
   /** PayOS Payment Link */
   PAYMENT_LINK: "plink",
 } as const;

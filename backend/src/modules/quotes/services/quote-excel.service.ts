@@ -257,7 +257,7 @@ export class QuoteExcelService {
 
       const row = worksheet.addRow([
         i + 1, // A: Index
-        item.itemName ?? item.product?.nameVi ?? "Thiết bị", // B: Name
+        item.itemName ?? item.product?.name ?? "Thiết bị", // B: Name
         specsText, // C: Specs
         "Bộ", // D: Unit
         item.quantity, // E: Quantity

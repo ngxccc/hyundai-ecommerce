@@ -3,10 +3,11 @@ import type { Response } from "express";
 import { QuotesController } from "./quotes.controller";
 import type { QuotesService } from "./quotes.service";
 import type {
+  AdminQuoteResponseDto,
   CreateAdminQuoteDto,
   CreateQuoteDto,
   QuoteQueryDto,
-  QuoteResponseDto,
+  RfqResponseDto,
   SendQuoteMessageDto,
   UpdateQuoteItemPriceDto,
   UpdateQuoteStatusDto,
@@ -15,7 +16,7 @@ import type {
 describe("QuotesController", () => {
   let controller: QuotesController;
 
-  const mockQuote: QuoteResponseDto = {
+  const mockQuote: AdminQuoteResponseDto = {
     id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9a",
     quoteNumber: "QT-20260904-5892",
     userId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
@@ -34,7 +35,7 @@ describe("QuotesController", () => {
     expirationDate: new Date("2026-09-19T00:00:00.000Z"),
     note: "Ghi chú",
     orderId: null,
-    createdByAdminId: "admin-1",
+    createdByAdminId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9c",
     createdAt: new Date("2026-09-04T08:00:00.000Z"),
     updatedAt: new Date("2026-09-04T08:00:00.000Z"),
     items: [],
@@ -42,8 +43,26 @@ describe("QuotesController", () => {
     user: null,
   };
 
+  const mockAdminId = "018f3a5e-7a2e-7b56-b74c-419b4eb14b9c";
+  const mockUserId = "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b";
+  const mockOrderId = "018f3a5e-7a2e-7b56-b74c-419b4eb14b9f";
+  const mockRfqResponse: RfqResponseDto = {
+    id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9a",
+    quoteNumber: "QT-20260904-5892",
+    status: "SUBMITTED",
+    customerName: "Nguyễn Văn A",
+    customerPhone: "0901234567",
+    customerEmail: "nguyenvana@example.com",
+    companyName: "Công ty ABC",
+    taxId: "0312345678",
+    shippingAddress: "Kho Tân Bình",
+    note: "Ghi chú",
+    items: [],
+    createdAt: new Date("2026-09-04T08:00:00.000Z"),
+  };
+
   const mockQuotesService = {
-    createRfq: mock((_dto: CreateQuoteDto) => Promise.resolve(mockQuote)),
+    createRfq: mock((_dto: CreateQuoteDto) => Promise.resolve(mockRfqResponse)),
     createAdminQuote: mock((_dto: CreateAdminQuoteDto, _adminId: string) =>
       Promise.resolve(mockQuote),
     ),
@@ -72,9 +91,9 @@ describe("QuotesController", () => {
     ),
     sendMessage: mock((_quoteId: string, _senderId: string, _message: string) =>
       Promise.resolve({
-        id: "msg-1",
+        id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9d",
         quoteId: mockQuote.id,
-        senderId: "user-1",
+        senderId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
         message: "Tin nhắn",
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -82,7 +101,7 @@ describe("QuotesController", () => {
     ),
     approveAndConvertToOrder: mock((_quoteId: string, _adminId: string) =>
       Promise.resolve({
-        orderId: "ord-1",
+        orderId: mockOrderId,
         quoteId: mockQuote.id,
         status: "APPROVED" as const,
       }),
@@ -100,7 +119,7 @@ describe("QuotesController", () => {
   };
 
   const mockExcelService = {
-    generateQuoteExcelWorkbook: mock((_quote: QuoteResponseDto) =>
+    generateQuoteExcelWorkbook: mock((_quote: AdminQuoteResponseDto) =>
       Promise.resolve(Buffer.from("excel-binary-data")),
     ),
   };
@@ -134,6 +153,20 @@ describe("QuotesController", () => {
         expect(mockQuotesService.createRfq).toHaveBeenCalledWith(dto);
         expect(result.success).toBe(true);
         expect(result.data.id).toBe("018f3a5e-7a2e-7b56-b74c-419b4eb14b9a");
+        expect(result.data.status).toBe("SUBMITTED");
+        expect(
+          (result.data as unknown as Record<string, unknown>)["userId"],
+        ).toBeUndefined();
+        expect(
+          (result.data as unknown as Record<string, unknown>)[
+            "totalQuotedPrice"
+          ],
+        ).toBeUndefined();
+        expect(
+          (result.data as unknown as Record<string, unknown>)[
+            "createdByAdminId"
+          ],
+        ).toBeUndefined();
       });
     });
   });
@@ -156,11 +189,11 @@ describe("QuotesController", () => {
           ],
         };
 
-        const result = await controller.createAdminQuote(dto, "admin-1");
+        const result = await controller.createAdminQuote(dto, mockAdminId);
 
         expect(mockQuotesService.createAdminQuote).toHaveBeenCalledWith(
           dto,
-          "admin-1",
+          mockAdminId,
         );
         expect(result.success).toBe(true);
         expect(result.data.quoteNumber).toBe("QT-20260904-5892");
@@ -187,7 +220,7 @@ describe("QuotesController", () => {
     describe("when retrieving quote details", () => {
       test("should return wrapped quote", async () => {
         const result = await controller.getQuoteById(mockQuote.id, {
-          sub: "user-1",
+          sub: mockUserId,
           email: "user@example.com",
           role: "ADMIN",
         });
@@ -245,7 +278,7 @@ describe("QuotesController", () => {
         const result = await controller.sendMessage(
           mockQuote.id,
           {
-            sub: "user-1",
+            sub: mockUserId,
             email: "user@example.com",
             role: "ADMIN",
           },
@@ -254,16 +287,16 @@ describe("QuotesController", () => {
 
         expect(mockQuotesService.sendMessage).toHaveBeenCalledWith(
           mockQuote.id,
-          "user-1",
+          mockUserId,
           "Tin nhắn thảo luận",
           {
-            sub: "user-1",
+            sub: mockUserId,
             email: "user@example.com",
             role: "ADMIN",
           },
         );
         expect(result.success).toBe(true);
-        expect(result.data.id).toBe("msg-1");
+        expect(result.data.id).toBe("018f3a5e-7a2e-7b56-b74c-419b4eb14b9d");
       });
     });
   });
@@ -271,15 +304,18 @@ describe("QuotesController", () => {
   describe("POST /quotes/:id/approve-to-order", () => {
     describe("when admin approves quote to order", () => {
       test("should return wrapped conversion confirmation", async () => {
-        const result = await controller.approveToOrder(mockQuote.id, "admin-1");
+        const result = await controller.approveToOrder(
+          mockQuote.id,
+          mockAdminId,
+        );
 
         expect(mockQuotesService.approveAndConvertToOrder).toHaveBeenCalledWith(
           mockQuote.id,
-          "admin-1",
+          mockAdminId,
         );
         expect(result.success).toBe(true);
         expect(result.data.status).toBe("APPROVED");
-        expect(result.data.orderId).toBe("ord-1");
+        expect(result.data.orderId).toBe(mockOrderId);
       });
     });
   });
@@ -294,7 +330,7 @@ describe("QuotesController", () => {
         const result = await controller.exportExcel(
           mockQuote.id,
           {
-            sub: "user-1",
+            sub: mockUserId,
             email: "user@example.com",
             role: "ADMIN",
           },

@@ -30,6 +30,7 @@ import {
   ApiNotFoundResponseRfc9457,
   ApiUnauthorizedResponseRfc9457,
   ApiForbiddenResponseRfc9457,
+  Public,
 } from "@/common/decorators";
 import type { PaginationMetaDto } from "@/common/dto/pagination-meta.dto";
 import { Throttle } from "@nestjs/throttler";
@@ -44,12 +45,13 @@ import { QUOTE_ROUTES } from "./quote.routes";
 import { QuotesService } from "./quotes.service";
 import { QuoteExcelService } from "./services/quote-excel.service";
 import {
+  AdminQuoteResponseDto,
   ApproveToOrderResponseDto,
-  QuoteMessageResponseDto,
-  QuoteResponseDto,
   CreateAdminQuoteDto,
   CreateQuoteDto,
+  QuoteMessageResponseDto,
   QuoteQueryDto,
+  RfqResponseDto,
   SendQuoteMessageDto,
   UpdateQuoteItemPriceDto,
   UpdateQuoteStatusDto,
@@ -64,16 +66,17 @@ export class QuotesController {
   ) {}
 
   /**
-   * Submits a customer Request For Quotation (RFQ).
+   * Submits a customer Request For Quotation (RFQ) from storefront.
    *
    * @param dto - Customer contact information and requested items.
-   * @returns Created quote response with SUBMITTED status.
+   * @returns Newly created RFQ inquiry response with SUBMITTED status.
    */
+  @Public()
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({ summary: "Submit customer Request For Quotation (RFQ)" })
-  @ApiCreatedResponseGeneric(QuoteResponseDto)
+  @ApiCreatedResponseGeneric(RfqResponseDto)
   @ApiBadRequestResponseRfc9457()
   async submitRfq(@Body() dto: CreateQuoteDto) {
     const quote = await this.quotesService.createRfq(dto);
@@ -92,7 +95,7 @@ export class QuotesController {
   @Roles("ADMIN")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create official B2B quotation (Admin only)" })
-  @ApiCreatedResponseGeneric(QuoteResponseDto)
+  @ApiCreatedResponseGeneric(AdminQuoteResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()
   @ApiForbiddenResponseRfc9457()
@@ -105,7 +108,7 @@ export class QuotesController {
   }
 
   /**
-   * Retrieves paginated and filtered list of quotations.
+   * Retrieves paginated and filtered list of quotations (Admin/Sales).
    *
    * @param query - Filtering parameters and pagination options.
    * @returns Paginated list of quotes.
@@ -119,19 +122,19 @@ export class QuotesController {
   @ApiQuery({ name: "userId", required: false, type: String })
   @ApiQuery({ name: "status", required: false, type: String })
   @ApiQuery({ name: "search", required: false, type: String })
-  @ApiOkResponsePaginated(QuoteResponseDto)
+  @ApiOkResponsePaginated(AdminQuoteResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()
   @ApiForbiddenResponseRfc9457()
   async listQuotes(
     @Query() query: QuoteQueryDto,
-  ): Promise<ApiResponse<QuoteResponseDto[], PaginationMetaDto>> {
+  ): Promise<ApiResponse<AdminQuoteResponseDto[], PaginationMetaDto>> {
     const { items, meta } = await this.quotesService.findAll(query);
     return apiSuccess(items, meta);
   }
 
   /**
-   * Retrieves detailed quotation including items, messages, and linked account context.
+   * Retrieves detailed quotation including items, messages, and linked account context (Admin/Sales).
    *
    * @param id - Quote UUID identifier.
    * @returns Full quote details.
@@ -140,7 +143,7 @@ export class QuotesController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get detailed quote by ID" })
   @ApiParam({ name: "id", description: "Quote UUID" })
-  @ApiOkResponseGeneric(QuoteResponseDto)
+  @ApiOkResponseGeneric(AdminQuoteResponseDto)
   @ApiNotFoundResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()
   @ApiForbiddenResponseRfc9457()
@@ -175,7 +178,7 @@ export class QuotesController {
     summary: "Update quote status along the state machine (Admin only)",
   })
   @ApiParam({ name: "id", description: "Quote UUID" })
-  @ApiOkResponseGeneric(QuoteResponseDto)
+  @ApiOkResponseGeneric(AdminQuoteResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()
@@ -204,7 +207,7 @@ export class QuotesController {
   })
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiParam({ name: "itemId", description: "Quote item UUID" })
-  @ApiOkResponseGeneric(QuoteResponseDto)
+  @ApiOkResponseGeneric(AdminQuoteResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
   @ApiUnauthorizedResponseRfc9457()

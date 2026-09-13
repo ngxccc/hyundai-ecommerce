@@ -32,16 +32,16 @@ describe("QuotesService", () => {
     expirationDate: new Date("2026-09-19T00:00:00.000Z"),
     note: "Ghi chú",
     orderId: null,
-    createdByAdminId: "admin-1",
+    createdByAdminId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9c",
     createdAt: new Date("2026-09-04T08:00:00.000Z"),
     updatedAt: new Date("2026-09-04T08:00:00.000Z"),
   };
 
   const mockItemRecord = {
     item: {
-      id: "item-1",
+      id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9d",
       quoteId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9a",
-      productId: "prod-1",
+      productId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9e",
       isCustomItem: false,
       itemName: "Máy phát điện",
       itemModel: "DHY65KSE",
@@ -57,9 +57,8 @@ describe("QuotesService", () => {
       updatedAt: new Date("2026-09-04T08:00:00.000Z"),
     },
     product: {
-      id: "prod-1",
-      nameVi: "Máy phát điện",
-      nameEn: null,
+      id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9e",
+      name: "Máy phát điện",
       slug: "may-phat-dien",
       price: "100000000.00",
       images: [],
@@ -74,7 +73,7 @@ describe("QuotesService", () => {
 
   describe("createRfq()", () => {
     describe("when customer submits valid RFQ", () => {
-      test("should calculate requested subtotal and create quote with SUBMITTED status", async () => {
+      test("should create quote inquiry with SUBMITTED status and null quoted totals", async () => {
         const dto: CreateQuoteDto = {
           customerName: "Nguyễn Văn A",
           customerPhone: "0901234567",
@@ -91,11 +90,23 @@ describe("QuotesService", () => {
         };
 
         mockDb.setSelectResultsQueue([
-          [mockQuoteRecord], // 1. tx.insert(quotes).returning()
-          [mockQuoteRecord], // 2. findById: select quote
-          [mockItemRecord], // 3. findById: select items
-          [], // 4. findById: select messages
-          [], // 5. findById: select user
+          [
+            {
+              id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9c",
+              name: "Máy phát điện",
+            },
+          ], // 1. select products
+          [{ ...mockQuoteRecord, status: "SUBMITTED" as const }], // 2. tx.insert(quotes).returning()
+          [
+            {
+              id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9d",
+              productId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9c",
+              isCustomItem: false,
+              itemName: "Máy phát điện",
+              quantity: 2,
+              requestedPrice: "50000000.00",
+            },
+          ], // 3. tx.insert(quoteItems).returning()
         ]);
 
         const result = await service.createRfq(
@@ -105,6 +116,68 @@ describe("QuotesService", () => {
 
         expect(result).toBeDefined();
         expect(result.id).toBe(mockQuoteRecord.id);
+        expect(result.status).toBe("SUBMITTED");
+        expect(
+          (result as unknown as Record<string, unknown>)["totalQuotedPrice"],
+        ).toBeUndefined();
+      });
+    });
+
+    describe("when customer submits RFQ with non-existent productId", () => {
+      test("should throw NotFoundException when product does not exist in database", () => {
+        const dto: CreateQuoteDto = {
+          customerName: "Nguyễn Văn A",
+          customerPhone: "0901234567",
+          items: [
+            {
+              productId: "018f3a5e-7a2e-7b56-b74c-419b4eb14999",
+              isCustomItem: false,
+              itemName: "Thiết bị không tồn tại",
+              quantity: 1,
+            },
+          ],
+        };
+
+        mockDb.setSelectResultsQueue([
+          [], // products query returns empty
+        ]);
+
+        expect(service.createRfq(dto)).rejects.toThrow(NotFoundException);
+      });
+    });
+
+    describe("when customer submits RFQ with custom item (no productId)", () => {
+      test("should automatically mark isCustomItem as true without querying products table", async () => {
+        const dto: CreateQuoteDto = {
+          customerName: "Nguyễn Văn A",
+          customerPhone: "0901234567",
+          items: [
+            {
+              isCustomItem: false, // auto-normalized to true
+              itemName: "Tủ ATS 250A đặt riêng",
+              quantity: 1,
+            },
+          ],
+        };
+
+        mockDb.setSelectResultsQueue([
+          [{ ...mockQuoteRecord, status: "SUBMITTED" as const }], // 1. tx.insert(quotes).returning()
+          [
+            {
+              id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9d",
+              productId: null,
+              isCustomItem: true,
+              itemName: "Tủ ATS 250A đặt riêng",
+              quantity: 1,
+            },
+          ], // 2. tx.insert(quoteItems).returning()
+        ]);
+
+        const result = await service.createRfq(dto);
+
+        expect(result).toBeDefined();
+        expect(result.items[0]?.isCustomItem).toBe(true);
+        expect(result.items[0]?.productId).toBeNull();
       });
     });
   });
@@ -128,14 +201,14 @@ describe("QuotesService", () => {
         };
 
         mockDb.setSelectResultsQueue([
-          [mockQuoteRecord], // 1. insert returning
-          [mockQuoteRecord], // 2. findById quote
-          [mockItemRecord], // 3. findById items
-          [], // 4. findById messages
-          [], // 5. findById user
+          [mockQuoteRecord], // 1. tx.insert(quotes).returning
+          [mockItemRecord.item], // 2. tx.insert(quoteItems).returning
         ]);
 
-        const result = await service.createAdminQuote(dto, "admin-1");
+        const result = await service.createAdminQuote(
+          dto,
+          "018f3a5e-7a2e-7b56-b74c-419b4eb14b9c",
+        );
 
         expect(result).toBeDefined();
         expect(result.quoteNumber).toBe(mockQuoteRecord.quoteNumber);
@@ -179,14 +252,15 @@ describe("QuotesService", () => {
           [
             {
               message: {
-                id: "msg-1",
+                id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9d",
                 quoteId: mockQuoteRecord.id,
-                senderId: "u-1",
+                senderId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
                 message: "Test message",
                 createdAt: new Date(),
+                updatedAt: new Date(),
               },
               sender: {
-                id: "u-1",
+                id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
                 fullName: "Admin",
                 email: "admin@test.com",
                 role: "ADMIN",
@@ -272,7 +346,7 @@ describe("QuotesService", () => {
 
         const result = await service.updateItemPrice(
           mockQuoteRecord.id,
-          "item-1",
+          "018f3a5e-7a2e-7b56-b74c-419b4eb14b9d",
           "95000000.00",
         );
 
@@ -289,7 +363,11 @@ describe("QuotesService", () => {
           [],
         ]);
         expect(
-          service.updateItemPrice(mockQuoteRecord.id, "item-1", "95000000.00"),
+          service.updateItemPrice(
+            mockQuoteRecord.id,
+            "018f3a5e-7a2e-7b56-b74c-419b4eb14b9d",
+            "95000000.00",
+          ),
         ).rejects.toThrow(BadRequestException);
       });
     });
@@ -299,9 +377,9 @@ describe("QuotesService", () => {
     describe("when sending message on a SUBMITTED quote", () => {
       test("should record message and advance status to NEGOTIATING", async () => {
         const mockMessage = {
-          id: "msg-1",
+          id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9d",
           quoteId: mockQuoteRecord.id,
-          senderId: "user-1",
+          senderId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
           message: "Xin hỏi có chiết khấu thêm không?",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -315,7 +393,7 @@ describe("QuotesService", () => {
           [mockMessage], // insert quoteMessages returning
           [
             {
-              id: "user-1",
+              id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
               fullName: "Nguyễn Văn A",
               email: "a@gmail.com",
               role: "SALES",
@@ -325,7 +403,7 @@ describe("QuotesService", () => {
 
         const result = await service.sendMessage(
           mockQuoteRecord.id,
-          "user-1",
+          "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
           "Xin hỏi có chiết khấu thêm không?",
         );
 
@@ -339,7 +417,7 @@ describe("QuotesService", () => {
     describe("when quote is valid and has registered user", () => {
       test("should atomically convert quote to order and return order confirmation", async () => {
         const mockOrder = {
-          id: "ord-1",
+          id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9f",
           orderNumber: "ORD-20260904-1234",
           userId: mockQuoteRecord.userId,
           status: "PENDING",
@@ -353,12 +431,12 @@ describe("QuotesService", () => {
 
         const result = await service.approveAndConvertToOrder(
           mockQuoteRecord.id,
-          "admin-1",
+          "018f3a5e-7a2e-7b56-b74c-419b4eb14b9c",
         );
 
         expect(result).toBeDefined();
         expect(result.status).toBe("APPROVED");
-        expect(result.orderId).toBe("ord-1");
+        expect(result.orderId).toBe("018f3a5e-7a2e-7b56-b74c-419b4eb14b9f");
       });
     });
 
@@ -368,7 +446,10 @@ describe("QuotesService", () => {
           [{ ...mockQuoteRecord, userId: null }], // quote without user
         ]);
         expect(
-          service.approveAndConvertToOrder(mockQuoteRecord.id, "admin-1"),
+          service.approveAndConvertToOrder(
+            mockQuoteRecord.id,
+            "018f3a5e-7a2e-7b56-b74c-419b4eb14b9c",
+          ),
         ).rejects.toThrow(BadRequestException);
       });
     });

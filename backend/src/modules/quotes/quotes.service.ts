@@ -5,23 +5,33 @@ import {
   I18nNotFoundException,
   I18nUnprocessableEntityException,
 } from "@/common/exceptions";
-import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
+import { DATABASE_CONNECTION } from "@/database/database.module";
+import type { DrizzleDB } from "@/database/database.module";
 import {
-  DATABASE_CONNECTION,
-  type DrizzleDB,
-} from "@/database/database.module";
-import {
-  orderItems,
-  orders,
-  products,
-  productTranslations,
+  quotes,
   quoteItems,
   quoteMessages,
-  quotes,
-  users,
-} from "@/database/schemas";
+} from "@/database/schemas/quotes.schema";
+import {
+  products,
+  productTranslations,
+} from "@/database/schemas/product.schema";
+import { users } from "@/database/schemas/auth.schema";
+import { orders, orderItems } from "@/database/schemas/order.schema";
+import {
+  and,
+  desc,
+  eq,
+  getTableColumns,
+  ilike,
+  inArray,
+  or,
+  sql,
+} from "drizzle-orm";
 import { CODE_PREFIX } from "@/common/constants/business.constant";
 import { generateDocumentCode } from "@/common/utils/code.util";
+import { daysToMs } from "@/common/utils/date.util";
+import { DEFAULT_LOCALE } from "@/common/constants/locale.constant";
 import {
   buildPaginationMeta,
   type PaginationMetaDto,
@@ -30,12 +40,13 @@ import type { JwtPayload } from "@/common/decorators/current-user.decorator";
 import type { QuoteStatus } from "@/database/schemas/enums.schema";
 import type {
   AdminQuoteItemInputDto,
+  AdminQuoteResponseDto,
   ApproveToOrderResponseDto,
   CreateAdminQuoteDto,
   CreateQuoteDto,
   QuoteMessageResponseDto,
   QuoteQueryDto,
-  QuoteResponseDto,
+  RfqResponseDto,
 } from "./dto";
 
 /**
@@ -51,6 +62,13 @@ const VALID_QUOTE_TRANSITIONS: Record<QuoteStatus, readonly QuoteStatus[]> = {
 };
 
 /**
+ * Dynamic column projections using Drizzle's getTableColumns:
+ * Automatically selects all columns while omitting soft-delete timestamp.
+ */
+const { deletedAt: _deletedAt, ...adminQuoteColumns } = getTableColumns(quotes);
+const adminQuoteItemColumns = getTableColumns(quoteItems);
+
+/**
  * Service managing B2B quote negotiation lifecycle, state machine transitions,
  * server-side financial calculations, and atomic conversion to orders.
  */
@@ -60,39 +78,55 @@ export class QuotesService {
 
   /**
    * Submits a customer Request For Quotation (RFQ).
+   * Official financial totals (subtotal, vat, totalQuotedPrice) are initialized to null until quoted by Sales.
    *
    * @param dto - Customer RFQ details and requested items.
    * @param userId - Optional registered customer ID.
-   * @returns Newly created Quote response.
+   * @returns Newly created RFQ inquiry response.
    */
   async createRfq(
     dto: CreateQuoteDto,
     userId?: string,
-  ): Promise<QuoteResponseDto> {
-    const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    const quoteNumber = `QT-${todayStr}-${String(randomSuffix)}`;
+  ): Promise<RfqResponseDto> {
+    const quoteNumber = generateDocumentCode(CODE_PREFIX.QUOTE);
 
-    let subtotal = 0;
+    const productIds = [
+      ...new Set(
+        dto.items
+          .map((i) => i.productId)
+          .filter((id): id is string => Boolean(id)),
+      ),
+    ];
+
+    if (productIds.length > 0) {
+      const existingProducts = await this.db
+        .select({ id: products.id })
+        .from(products)
+        .where(inArray(products.id, productIds));
+
+      if (existingProducts.length !== productIds.length) {
+        const foundIds = new Set(existingProducts.map((p) => p.id));
+        const missingIds = productIds.filter((id) => !foundIds.has(id));
+        throw new I18nNotFoundException("quotes.PRODUCTS_NOT_FOUND", {
+          ids: missingIds.join(", "),
+        });
+      }
+    }
+
     const itemsToInsert = dto.items.map((item) => {
-      const requestedPriceNum = item.requestedPrice
-        ? parseFloat(item.requestedPrice)
-        : 0;
-      const lineTotal = requestedPriceNum * item.quantity;
-      subtotal += lineTotal;
+      const isCustomItem = item.isCustomItem || !item.productId;
 
       return {
         productId: item.productId ?? null,
-        isCustomItem: item.isCustomItem,
+        isCustomItem,
         itemName: item.itemName,
         itemModel: item.itemModel ?? null,
         itemSpecs: item.itemSpecs ?? null,
         quantity: item.quantity,
         requestedPrice: item.requestedPrice ?? null,
-        totalPrice: lineTotal > 0 ? lineTotal.toFixed(2) : null,
+        totalPrice: null,
       };
     });
-
     return this.db.transaction(async (tx) => {
       const [newQuote] = await tx
         .insert(quotes)
@@ -106,13 +140,25 @@ export class QuotesService {
           taxId: dto.taxId ?? null,
           shippingAddress: dto.shippingAddress ?? null,
           status: "SUBMITTED",
-          subtotalPrice: subtotal > 0 ? subtotal.toFixed(2) : "0.00",
-          vatRate: 10,
-          vatAmount: (subtotal * 0.1).toFixed(2),
-          totalQuotedPrice: (subtotal * 1.1).toFixed(2),
+          subtotalPrice: null,
+          vatRate: null,
+          vatAmount: null,
+          totalQuotedPrice: null,
           note: dto.note ?? null,
         })
-        .returning();
+        .returning({
+          id: quotes.id,
+          quoteNumber: quotes.quoteNumber,
+          status: quotes.status,
+          customerName: quotes.customerName,
+          customerPhone: quotes.customerPhone,
+          customerEmail: quotes.customerEmail,
+          companyName: quotes.companyName,
+          taxId: quotes.taxId,
+          shippingAddress: quotes.shippingAddress,
+          note: quotes.note,
+          createdAt: quotes.createdAt,
+        });
 
       if (!newQuote) {
         throw new I18nBadRequestException("quotes.RFQ_CREATE_FAILED");
@@ -126,73 +172,30 @@ export class QuotesService {
             quoteId: newQuote.id,
           })),
         )
-        .returning();
-
-      const productIds = dto.items
-        .map((i) => i.productId)
-        .filter((id): id is string => Boolean(id));
-
-      const productRecords =
-        productIds.length > 0
-          ? await tx
-              .select({
-                id: products.id,
-                name: sql<string>`coalesce(${productTranslations.name}, '')`,
-                slug: products.slug,
-                price: products.price,
-                images: products.images,
-                totalStockCache: products.totalStockCache,
-              })
-              .from(products)
-              .leftJoin(
-                productTranslations,
-                and(
-                  eq(products.id, productTranslations.productId),
-                  eq(productTranslations.locale, "vi"),
-                ),
-              )
-              .where(inArray(products.id, productIds))
-          : [];
-
-      const productsMap = new Map(productRecords.map((p) => [p.id, p]));
-
-      let userSummary: {
-        id: string;
-        fullName: string;
-        email: string;
-        phoneNumber: string;
-        role: string;
-      } | null = null;
-
-      if (userId) {
-        const [u] = await tx
-          .select({
-            id: users.id,
-            fullName: users.fullName,
-            email: users.email,
-            phoneNumber: users.phoneNumber,
-            role: users.role,
-          })
-          .from(users)
-          .where(eq(users.id, userId))
-          .limit(1);
-
-        if (u) {
-          userSummary = u;
-        }
-      }
+        .returning({
+          id: quoteItems.id,
+          productId: quoteItems.productId,
+          isCustomItem: quoteItems.isCustomItem,
+          itemName: quoteItems.itemName,
+          itemModel: quoteItems.itemModel,
+          itemSpecs: quoteItems.itemSpecs,
+          quantity: quoteItems.quantity,
+          requestedPrice: quoteItems.requestedPrice,
+        });
 
       return {
-        ...newQuote,
-        commercialTerms: null,
-        items: insertedItems.map((item) => ({
-          ...item,
-          product: item.productId
-            ? (productsMap.get(item.productId) ?? null)
-            : null,
-        })),
-        messages: [],
-        user: userSummary,
+        id: newQuote.id,
+        quoteNumber: newQuote.quoteNumber ?? quoteNumber,
+        status: newQuote.status,
+        customerName: newQuote.customerName,
+        customerPhone: newQuote.customerPhone,
+        customerEmail: newQuote.customerEmail,
+        companyName: newQuote.companyName,
+        taxId: newQuote.taxId,
+        shippingAddress: newQuote.shippingAddress,
+        note: newQuote.note,
+        items: insertedItems,
+        createdAt: newQuote.createdAt,
       };
     });
   }
@@ -207,10 +210,8 @@ export class QuotesService {
   async createAdminQuote(
     dto: CreateAdminQuoteDto,
     adminUserId: string,
-  ): Promise<QuoteResponseDto> {
-    const todayStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    const quoteNumber = `QT-${todayStr}-${String(randomSuffix)}`;
+  ): Promise<AdminQuoteResponseDto> {
+    const quoteNumber = generateDocumentCode(CODE_PREFIX.QUOTE);
 
     // Deterministically compute line item metrics server-side to prevent tampering
     let subtotal = 0;
@@ -245,7 +246,7 @@ export class QuotesService {
     let expirationDate = dto.expirationDate;
     if (!expirationDate && dto.commercialTerms?.validityDays) {
       expirationDate = new Date(
-        Date.now() + dto.commercialTerms.validityDays * 24 * 60 * 60 * 1000,
+        Date.now() + daysToMs(dto.commercialTerms.validityDays),
       );
     }
 
@@ -271,7 +272,7 @@ export class QuotesService {
           note: dto.note ?? null,
           createdByAdminId: adminUserId,
         })
-        .returning();
+        .returning(adminQuoteColumns);
 
       if (!newQuote) {
         throw new I18nBadRequestException("quotes.QUOTATION_PERSIST_FAILED");
@@ -285,7 +286,7 @@ export class QuotesService {
             quoteId: newQuote.id,
           })),
         )
-        .returning();
+        .returning(adminQuoteItemColumns);
 
       const productIds = dto.items
         .map((i) => i.productId)
@@ -307,18 +308,19 @@ export class QuotesService {
                 productTranslations,
                 and(
                   eq(products.id, productTranslations.productId),
-                  eq(productTranslations.locale, "vi"),
+                  eq(productTranslations.locale, DEFAULT_LOCALE),
                 ),
               )
               .where(inArray(products.id, productIds))
           : [];
+
       const productsMap = new Map(productRecords.map((p) => [p.id, p]));
 
       let userSummary: {
         id: string;
         fullName: string;
         email: string;
-        phoneNumber: string;
+        phoneNumber: string | null;
         role: string;
       } | null = null;
 
@@ -342,8 +344,6 @@ export class QuotesService {
 
       return {
         ...newQuote,
-        commercialTerms:
-          newQuote.commercialTerms as QuoteResponseDto["commercialTerms"],
         items: insertedItems.map((item) => ({
           ...item,
           product: item.productId
@@ -357,13 +357,13 @@ export class QuotesService {
   }
 
   /**
-   * Retrieves paginated list of quotes with filtering options.
+   * Retrieves paginated list of quotes with filtering options (Admin/Sales).
    *
    * @param query - Pagination and filtering parameters.
    * @returns Array of quotes and pagination total.
    */
   async findAll(query: QuoteQueryDto): Promise<{
-    items: QuoteResponseDto[];
+    items: AdminQuoteResponseDto[];
     meta: PaginationMetaDto;
   }> {
     const page = query.page;
@@ -402,7 +402,7 @@ export class QuotesService {
     const total = totalRecord?.count ?? 0;
 
     const quoteRecords = await this.db
-      .select()
+      .select(adminQuoteColumns)
       .from(quotes)
       .where(whereClause)
       .orderBy(desc(quotes.createdAt))
@@ -425,11 +425,10 @@ export class QuotesService {
       ),
     ];
 
-    // Batch fetch items, messages, and users in parallel to eliminate N+1 cascade.
     const [allItemRecords, allMessageRecords, allUsers] = await Promise.all([
       this.db
         .select({
-          item: quoteItems,
+          item: adminQuoteItemColumns,
           product: {
             id: products.id,
             name: sql<string>`coalesce(${productTranslations.name}, '')`,
@@ -445,13 +444,20 @@ export class QuotesService {
           productTranslations,
           and(
             eq(products.id, productTranslations.productId),
-            eq(productTranslations.locale, "vi"),
+            eq(productTranslations.locale, DEFAULT_LOCALE),
           ),
         )
         .where(inArray(quoteItems.quoteId, quoteIds)),
       this.db
         .select({
-          message: quoteMessages,
+          message: {
+            id: quoteMessages.id,
+            quoteId: quoteMessages.quoteId,
+            senderId: quoteMessages.senderId,
+            message: quoteMessages.message,
+            createdAt: quoteMessages.createdAt,
+            updatedAt: quoteMessages.updatedAt,
+          },
           sender: {
             id: users.id,
             fullName: users.fullName,
@@ -513,7 +519,7 @@ export class QuotesService {
       usersById.set(u.id, u);
     }
 
-    const items: QuoteResponseDto[] = quoteRecords.map((quote) => {
+    const items: AdminQuoteResponseDto[] = quoteRecords.map((quote) => {
       const itemsList = itemsByQuoteId.get(quote.id) ?? [];
       const messagesList = messagesByQuoteId.get(quote.id) ?? [];
       const userSummary = quote.userId
@@ -522,13 +528,12 @@ export class QuotesService {
 
       return {
         ...quote,
-        commercialTerms:
-          quote.commercialTerms as QuoteResponseDto["commercialTerms"],
         items: itemsList,
         messages: messagesList,
         user: userSummary,
       };
     });
+
     return {
       items,
       meta: buildPaginationMeta(total, page, limit),
@@ -536,14 +541,14 @@ export class QuotesService {
   }
 
   /**
-   * Retrieves single quote details by UUID with items, products, messages, and user summary.
+   * Retrieves single quote details by UUID with items, products, messages, and user summary (Admin/Sales).
    *
    * @param id - Quote UUID identifier.
-   * @returns Detailed QuoteResponseDto.
+   * @returns Detailed AdminQuoteResponseDto.
    */
-  async findById(id: string): Promise<QuoteResponseDto> {
+  async findById(id: string): Promise<AdminQuoteResponseDto> {
     const [quote] = await this.db
-      .select()
+      .select(adminQuoteColumns)
       .from(quotes)
       .where(eq(quotes.id, id))
       .limit(1);
@@ -554,7 +559,7 @@ export class QuotesService {
 
     const itemRecords = await this.db
       .select({
-        item: quoteItems,
+        item: adminQuoteItemColumns,
         product: {
           id: products.id,
           name: sql<string>`coalesce(${productTranslations.name}, '')`,
@@ -570,7 +575,7 @@ export class QuotesService {
         productTranslations,
         and(
           eq(products.id, productTranslations.productId),
-          eq(productTranslations.locale, "vi"),
+          eq(productTranslations.locale, DEFAULT_LOCALE),
         ),
       )
       .where(eq(quoteItems.quoteId, id));
@@ -581,7 +586,14 @@ export class QuotesService {
 
     const messageRecords = await this.db
       .select({
-        message: quoteMessages,
+        message: {
+          id: quoteMessages.id,
+          quoteId: quoteMessages.quoteId,
+          senderId: quoteMessages.senderId,
+          message: quoteMessages.message,
+          createdAt: quoteMessages.createdAt,
+          updatedAt: quoteMessages.updatedAt,
+        },
         sender: {
           id: users.id,
           fullName: users.fullName,
@@ -618,8 +630,6 @@ export class QuotesService {
 
     return {
       ...quote,
-      commercialTerms:
-        quote.commercialTerms as QuoteResponseDto["commercialTerms"],
       items,
       messages,
       user: userSummary,
@@ -636,7 +646,7 @@ export class QuotesService {
   async updateStatus(
     id: string,
     newStatus: QuoteStatus,
-  ): Promise<QuoteResponseDto> {
+  ): Promise<AdminQuoteResponseDto> {
     const current = await this.findById(id);
 
     if (current.status === newStatus) {
@@ -654,13 +664,15 @@ export class QuotesService {
       .update(quotes)
       .set({
         status: newStatus,
+        updatedAt: new Date(),
       })
       .where(eq(quotes.id, id))
-      .returning();
+      .returning({
+        updatedAt: quotes.updatedAt,
+      });
 
     current.status = newStatus;
     current.updatedAt = updatedQuote?.updatedAt ?? new Date();
-
     return current;
   }
 
@@ -676,7 +688,7 @@ export class QuotesService {
     quoteId: string,
     itemId: string,
     agreedPrice: string,
-  ): Promise<QuoteResponseDto> {
+  ): Promise<AdminQuoteResponseDto> {
     const quote = await this.findById(quoteId);
 
     if (
@@ -686,98 +698,91 @@ export class QuotesService {
     ) {
       throw new I18nBadRequestException("quotes.QUOTE_CANNOT_BE_MODIFIED");
     }
-    const targetItem = quote.items.find((it) => it.id === itemId);
+
+    const targetItem = quote.items.find((i) => i.id === itemId);
     if (!targetItem) {
       throw new I18nNotFoundException("quotes.QUOTE_ITEM_NOT_FOUND");
     }
 
     const agreedPriceNum = parseFloat(agreedPrice);
-    const newLineTotal = agreedPriceNum * targetItem.quantity;
+    const newAgreedLineTotal = agreedPriceNum * targetItem.quantity;
 
     await this.db.transaction(async (tx) => {
       await tx
         .update(quoteItems)
         .set({
           agreedPrice,
-          totalPrice: newLineTotal.toFixed(2),
+          totalPrice: newAgreedLineTotal.toFixed(2),
+          updatedAt: new Date(),
         })
         .where(eq(quoteItems.id, itemId));
 
+      // Fetch all items with updated agreedPrice to deterministically recalculate parent quote totals
+      const currentItems = await tx
+        .select()
+        .from(quoteItems)
+        .where(eq(quoteItems.quoteId, quoteId));
+
       let newSubtotal = 0;
-      for (const it of quote.items) {
-        const price = parseFloat(
-          it.id === itemId
-            ? agreedPrice
-            : (it.agreedPrice ?? it.unitPrice ?? "0"),
+      for (const it of currentItems) {
+        const linePrice = parseFloat(
+          it.agreedPrice ?? it.finalUnitPrice ?? it.requestedPrice ?? "0",
         );
-        newSubtotal += price * it.quantity;
+        newSubtotal += linePrice * it.quantity;
       }
 
       const vatRate = quote.vatRate ?? 10;
       const vatAmount = newSubtotal * (vatRate / 100);
       const totalQuotedPrice = newSubtotal + vatAmount;
 
-      const [updatedQuote] = await tx
+      await tx
         .update(quotes)
         .set({
           subtotalPrice: newSubtotal.toFixed(2),
           vatAmount: vatAmount.toFixed(2),
           totalQuotedPrice: totalQuotedPrice.toFixed(2),
+          updatedAt: new Date(),
         })
-        .where(eq(quotes.id, quoteId))
-        .returning();
-
-      targetItem.agreedPrice = agreedPrice;
-      targetItem.totalPrice = newLineTotal.toFixed(2);
-      quote.subtotalPrice = newSubtotal.toFixed(2);
-      quote.vatAmount = vatAmount.toFixed(2);
-      quote.totalQuotedPrice = totalQuotedPrice.toFixed(2);
-      quote.updatedAt = updatedQuote?.updatedAt ?? new Date();
+        .where(eq(quotes.id, quoteId));
     });
 
-    return quote;
+    return await this.findById(quoteId);
   }
 
   /**
-   * Appends a timeline negotiation message and advances SUBMITTED quotes to NEGOTIATING.
+   * Posts negotiation timeline message and automatically advances SUBMITTED quotes to NEGOTIATING.
    *
-   * @param quoteId - Quote UUID.
-   * @param senderId - ID of message sender.
-   * @param messageText - Text content of negotiation message.
-   * @returns Newly created QuoteMessageResponseDto.
+   * @param quoteId - Parent quote UUID.
+   * @param senderId - Authenticated sender UUID.
+   * @param message - Message body content.
+   * @param currentUser - Authenticated user context.
+   * @returns Persisted quote message record.
    */
   async sendMessage(
     quoteId: string,
     senderId: string,
-    messageText: string,
+    message: string,
     currentUser?: JwtPayload,
   ): Promise<QuoteMessageResponseDto> {
     const quote = await this.findById(quoteId);
 
-    if (currentUser) {
-      if (
-        currentUser.role !== "ADMIN" &&
-        currentUser.role !== "SALES" &&
-        quote.userId !== currentUser.sub
-      ) {
-        throw new I18nForbiddenException("quotes.FORBIDDEN_NEGOTIATION");
-      }
+    // Enforce authorization: Admin, Sales, or the owning customer can message
+    if (
+      currentUser &&
+      currentUser.role !== "ADMIN" &&
+      currentUser.role !== "SALES" &&
+      quote.userId !== currentUser.sub
+    ) {
+      throw new I18nForbiddenException("quotes.FORBIDDEN_NEGOTIATION");
     }
 
-    if (
-      quote.status === "APPROVED" ||
-      quote.status === "REJECTED" ||
-      quote.status === "EXPIRED"
-    ) {
-      throw new I18nBadRequestException("quotes.QUOTE_CANNOT_BE_MODIFIED");
-    }
     return await this.db.transaction(async (tx) => {
       const [newMessage] = await tx
         .insert(quoteMessages)
         .values({
           quoteId,
           senderId,
-          message: messageText,
+          message,
         })
         .returning();
 
@@ -785,15 +790,18 @@ export class QuotesService {
         throw new I18nBadRequestException("quotes.MESSAGE_RECORD_FAILED");
       }
 
-      // Requirement: Timeline messaging advances state from SUBMITTED to NEGOTIATING
+      // Auto-advance quote status from SUBMITTED to NEGOTIATING upon first negotiation dialogue
       if (quote.status === "SUBMITTED") {
         await tx
           .update(quotes)
-          .set({ status: "NEGOTIATING" })
+          .set({
+            status: "NEGOTIATING",
+            updatedAt: new Date(),
+          })
           .where(eq(quotes.id, quoteId));
       }
 
-      const [sender] = await tx
+      const [senderRecord] = await tx
         .select({
           id: users.id,
           fullName: users.fullName,
@@ -805,18 +813,23 @@ export class QuotesService {
         .limit(1);
 
       return {
-        ...newMessage,
-        sender: sender ?? null,
+        id: newMessage.id,
+        quoteId: newMessage.quoteId,
+        senderId: newMessage.senderId,
+        message: newMessage.message,
+        sender: senderRecord ?? null,
+        createdAt: newMessage.createdAt,
+        updatedAt: newMessage.updatedAt,
       };
     });
   }
 
   /**
-   * Approves quote and atomically converts it into a standard Order record inside a database transaction.
+   * Approves a quotation and atomically converts it into a pending order.
    *
-   * @param quoteId - UUID of the quote to approve.
-   * @param adminUserId - ID of the approving admin user.
-   * @returns Conversion confirmation with created order ID.
+   * @param quoteId - Parent quote UUID.
+   * @param adminUserId - Authenticated admin user performing conversion.
+   * @returns Created order confirmation and updated quote status.
    */
   async approveAndConvertToOrder(
     quoteId: string,
@@ -824,7 +837,7 @@ export class QuotesService {
   ): Promise<ApproveToOrderResponseDto> {
     return await this.db.transaction(async (tx) => {
       const [quote] = await tx
-        .select()
+        .select(adminQuoteColumns)
         .from(quotes)
         .where(eq(quotes.id, quoteId))
         .limit(1);
@@ -836,23 +849,17 @@ export class QuotesService {
       if (quote.status === "APPROVED") {
         throw new I18nBadRequestException("quotes.QUOTE_ALREADY_CONVERTED");
       }
-
       if (quote.status === "REJECTED" || quote.status === "EXPIRED") {
         throw new I18nBadRequestException("quotes.INVALID_STATUS_TRANSITION");
       }
 
-      if (!quote.userId) {
-        throw new I18nBadRequestException("quotes.QUOTE_NO_USER_ACCOUNT");
-      }
-
       const items = await tx
         .select({
-          item: quoteItems,
+          item: adminQuoteItemColumns,
           product: {
             id: products.id,
             name: sql<string>`coalesce(${productTranslations.name}, '')`,
             slug: products.slug,
-            price: products.price,
           },
         })
         .from(quoteItems)
@@ -861,7 +868,7 @@ export class QuotesService {
           productTranslations,
           and(
             eq(products.id, productTranslations.productId),
-            eq(productTranslations.locale, "vi"),
+            eq(productTranslations.locale, DEFAULT_LOCALE),
           ),
         )
         .where(eq(quoteItems.quoteId, quoteId));
@@ -880,8 +887,8 @@ export class QuotesService {
           item.requestedPrice ??
           item.unitPrice ??
           "0.00";
-        const subtotal = parseFloat(finalPrice) * item.quantity;
-        totalAmountDecimal += subtotal;
+        const lineTotal = parseFloat(finalPrice) * item.quantity;
+        totalAmountDecimal += lineTotal;
 
         if (item.productId) {
           orderItemsToInsert.push({

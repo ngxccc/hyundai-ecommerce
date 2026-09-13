@@ -104,6 +104,7 @@ export type I18nTranslations = {
         "FORBIDDEN_ACCESS": string;
         "FORBIDDEN_EXPORT": string;
         "FORBIDDEN_NEGOTIATION": string;
+        "PRODUCTS_NOT_FOUND": string;
     };
     "users": {
         "USER_NOT_FOUND": string;

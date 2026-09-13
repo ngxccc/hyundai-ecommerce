@@ -36,7 +36,6 @@ export function QuoteRequestView() {
   const [submittedQuote, setSubmittedQuote] = useState<{
     quoteNumber: string;
     customerName: string;
-    totalAmount: string;
   } | null>(null);
 
   const [formData, setFormData] = useState({
@@ -98,8 +97,6 @@ export function QuoteRequestView() {
         setSubmittedQuote({
           quoteNumber: res.data.quoteNumber ?? "",
           customerName: res.data.customerName ?? "",
-          totalAmount:
-            res.data.totalQuotedPrice ?? res.data.subtotalPrice ?? "0",
         });
         clearQuote();
         toast.success(t("successTitle"));

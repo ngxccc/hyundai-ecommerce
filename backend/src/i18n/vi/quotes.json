@@ -12,5 +12,6 @@
   "ORDER_GENERATE_FAILED": "Không thể tạo đơn hàng từ báo giá",
   "FORBIDDEN_ACCESS": "Bạn không có quyền truy cập báo giá này",
   "FORBIDDEN_EXPORT": "Bạn không có quyền xuất dữ liệu báo giá này",
-  "FORBIDDEN_NEGOTIATION": "Bạn không có quyền tham gia thương thảo báo giá này"
+  "FORBIDDEN_NEGOTIATION": "Bạn không có quyền tham gia thương thảo báo giá này",
+  "PRODUCTS_NOT_FOUND": "Không tìm thấy sản phẩm cho các mã: {ids}"
 }

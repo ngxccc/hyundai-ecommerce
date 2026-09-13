@@ -12,5 +12,6 @@
   "ORDER_GENERATE_FAILED": "Failed to generate order from quote",
   "FORBIDDEN_ACCESS": "You are not authorized to access this quote",
   "FORBIDDEN_EXPORT": "You are not authorized to export this quote",
-  "FORBIDDEN_NEGOTIATION": "You are not authorized to participate in this quote negotiation"
+  "FORBIDDEN_NEGOTIATION": "You are not authorized to participate in this quote negotiation",
+  "PRODUCTS_NOT_FOUND": "Products not found for IDs: {ids}"
 }
