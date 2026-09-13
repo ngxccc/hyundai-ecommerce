@@ -1,6 +1,6 @@
 import { SentryModule } from "./common/modules/sentry.module";
 import { BullModule } from "@nestjs/bullmq";
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { GlobalExceptionFilter } from "./common/filters/global-exception.filter";
 import { LoggingInterceptor } from "./common/interceptors/logging.interceptor";
 import { ZodResponseValidationInterceptor } from "./common/interceptors/zod-response-validation.interceptor";
@@ -31,6 +31,9 @@ import { PaymentsModule } from "./modules/payments/payments.module";
 import { AppController } from "./app.controller";
 import { parseRedisOptions } from "./config/redis.config";
 import { ZodValidationPipe } from "./common/pipes/zod-validation.pipe";
+import { CustomThrottlerGuard } from "./common/guards/throttler.guard";
+import { JwtAuthGuard } from "./common/guards/jwt-auth.guard";
+import { RolesGuard } from "./common/guards/roles.guard";
 
 const getRedisOptions = () =>
   parseRedisOptions(env.REDIS_URL, env.REDIS_HOST, env.REDIS_PORT);
@@ -101,6 +104,18 @@ const getRedisOptions = () =>
   ],
   controllers: [AppController],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: CustomThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,

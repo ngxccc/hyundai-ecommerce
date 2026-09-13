@@ -1,6 +1,7 @@
 import { describe, expect, it, mock, beforeEach } from "bun:test";
 import { JwtAuthGuard } from "./jwt-auth.guard";
 import type { JwtService } from "@nestjs/jwt";
+import type { Reflector } from "@nestjs/core";
 import type { ExecutionContext } from "@nestjs/common";
 import { UnauthorizedException } from "@nestjs/common";
 import type { Request } from "express";
@@ -8,12 +9,19 @@ import type { Request } from "express";
 describe("JwtAuthGuard", () => {
   let guard: JwtAuthGuard;
   let mockJwtService: { verifyAsync: ReturnType<typeof mock> };
+  let mockReflector: { getAllAndOverride: ReturnType<typeof mock> };
 
   beforeEach(() => {
     mockJwtService = {
       verifyAsync: mock(),
     };
-    guard = new JwtAuthGuard(mockJwtService as unknown as JwtService);
+    mockReflector = {
+      getAllAndOverride: mock().mockReturnValue(false),
+    };
+    guard = new JwtAuthGuard(
+      mockJwtService as unknown as JwtService,
+      mockReflector as unknown as Reflector,
+    );
   });
 
   const createMockContext = (authHeader?: string) => {
@@ -31,6 +39,16 @@ describe("JwtAuthGuard", () => {
       getClass: () => ({}),
     } as unknown as ExecutionContext;
   };
+
+  it("should allow request without token when route is marked as public", async () => {
+    mockReflector.getAllAndOverride.mockReturnValue(true);
+
+    const ctx = createMockContext(undefined);
+    const canActivate = await guard.canActivate(ctx);
+
+    expect(canActivate).toBe(true);
+    expect(mockJwtService.verifyAsync).not.toHaveBeenCalled();
+  });
 
   it("should allow request and attach user payload when token is valid", async () => {
     const validPayload = {
