@@ -7,7 +7,6 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
-  UseGuards,
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
@@ -22,6 +21,7 @@ import {
   ApiNotFoundResponseRfc9457,
   ApiUnauthorizedResponseRfc9457,
   ApiForbiddenResponseRfc9457,
+  Public,
 } from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
 import {
@@ -29,8 +29,6 @@ import {
   type JwtPayload,
 } from "@/common/decorators/current-user.decorator";
 import { Roles } from "@/common/decorators/roles.decorator";
-import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
-import { RolesGuard } from "@/common/guards/roles.guard";
 import { apiSuccess } from "@/common/utils/api-response.util";
 import { PAYMENT_ROUTES } from "./payment.routes";
 import { PaymentsService } from "./payments.service";
@@ -56,6 +54,7 @@ export class PaymentsController {
    * @param dto - Payment link generation payload specifying order ID and transaction type.
    * @returns Checkout link and QR code details.
    */
+  @Public()
   @Post(PAYMENT_ROUTES.CHECKOUT_LINK)
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
@@ -77,6 +76,7 @@ export class PaymentsController {
    * @param dto - Incoming PayOS webhook payload with signature.
    * @returns Webhook processing confirmation.
    */
+  @Public()
   @Post(PAYMENT_ROUTES.PAYOS_WEBHOOK)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
@@ -100,7 +100,6 @@ export class PaymentsController {
    */
   @Post(PAYMENT_ROUTES.VERIFY_CASH)
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
   @ApiOperation({
@@ -136,7 +135,6 @@ export class PaymentsController {
    */
   @Post(PAYMENT_ROUTES.REPAY_DEBT)
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: "Repay B2B dealer debt via PayOS gateway or cash",
@@ -166,7 +164,6 @@ export class PaymentsController {
    * @returns Detailed payment summary for the order.
    */
   @Get(PAYMENT_ROUTES.BY_ORDER_ID)
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: "Get order payment status and transactions",

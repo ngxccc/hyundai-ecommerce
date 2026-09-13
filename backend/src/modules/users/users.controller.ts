@@ -1,8 +1,6 @@
-import { Controller, Get, UseGuards } from "@nestjs/common";
+import { Controller, Get } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
-import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
-import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
 import { CurrentUser } from "@/common/decorators/current-user.decorator";
 import {
   ApiOkResponseGeneric,
@@ -18,12 +16,10 @@ import { UserResponseDto } from "./dto/user-response.dto";
 
 @ApiTags(USERS_ROUTES.BASE)
 @Controller({ path: USERS_ROUTES.BASE, version: "1" })
-@UseGuards(CustomThrottlerGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get(USERS_ROUTES.ME)
-  @UseGuards(JwtAuthGuard)
   @Throttle({
     auth: { limit: 30, ttl: 60000 },
   })

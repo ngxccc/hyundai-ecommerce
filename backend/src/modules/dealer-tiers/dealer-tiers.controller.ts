@@ -1,18 +1,12 @@
-import {
-  Controller,
-  Get,
-  Param,
-  ParseUUIDPipe,
-  UseGuards,
-} from "@nestjs/common";
+import { Controller, Get, Param, ParseUUIDPipe } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
-import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
 import {
   ApiOkResponseGeneric,
   ApiBadRequestResponseRfc9457,
   ApiNotFoundResponseRfc9457,
   ApiTooManyRequestsResponseRfc9457,
+  Public,
 } from "@/common/decorators";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { DEALER_TIERS_ROUTES } from "./dealer-tiers.routes";
@@ -20,8 +14,8 @@ import { DealerTiersService } from "./dealer-tiers.service";
 import { DealerTierResponseDto } from "./dto/dealer-tier-response.dto";
 
 @ApiTags(DEALER_TIERS_ROUTES.BASE)
+@Public()
 @Controller({ path: DEALER_TIERS_ROUTES.BASE, version: "1" })
-@UseGuards(CustomThrottlerGuard)
 export class DealerTiersController {
   constructor(private readonly dealerTiersService: DealerTiersService) {}
 

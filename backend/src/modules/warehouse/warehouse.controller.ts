@@ -11,7 +11,6 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
@@ -31,8 +30,6 @@ import {
 } from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
 import { Roles } from "@/common/decorators/roles.decorator";
-import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
-import { RolesGuard } from "@/common/guards/roles.guard";
 import { apiSuccess } from "@/common/utils/api-response.util";
 import { WAREHOUSE_ROUTES } from "./warehouse.routes";
 import { WarehouseService } from "./warehouse.service";
@@ -102,7 +99,6 @@ export class WarehouseController {
 
   @Post()
   @Throttle({ default: { limit: 20, ttl: 60000 } })
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Create a new physical warehouse (Admin Only)" })
@@ -118,7 +114,6 @@ export class WarehouseController {
 
   @Put(WAREHOUSE_ROUTES.STOCK)
   @Throttle({ default: { limit: 30, ttl: 60000 } })
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({
@@ -141,7 +136,6 @@ export class WarehouseController {
 
   @Put(WAREHOUSE_ROUTES.BY_ID)
   @Throttle({ default: { limit: 20, ttl: 60000 } })
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Update warehouse details (Admin Only)" })
@@ -162,7 +156,6 @@ export class WarehouseController {
 
   @Delete(WAREHOUSE_ROUTES.BY_ID)
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth("JWT-auth")
   @ApiOperation({ summary: "Deactivate warehouse (Admin Only)" })

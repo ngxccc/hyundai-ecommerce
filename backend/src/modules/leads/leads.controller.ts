@@ -9,12 +9,8 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
-import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
-import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
-import { RolesGuard } from "@/common/guards/roles.guard";
 import { Roles } from "@/common/decorators/roles.decorator";
 import {
   ApiOkResponseGeneric,
@@ -25,6 +21,7 @@ import {
   ApiTooManyRequestsResponseRfc9457,
   ApiUnauthorizedResponseRfc9457,
   ApiForbiddenResponseRfc9457,
+  Public,
 } from "@/common/decorators";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import {
@@ -41,7 +38,6 @@ import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 
 @ApiTags(LEADS_ROUTES.TAG)
 @Controller({ path: LEADS_ROUTES.PREFIX, version: "1" })
-@UseGuards(CustomThrottlerGuard)
 export class LeadsController {
   constructor(private readonly leadsService: LeadsService) {}
 
@@ -49,6 +45,7 @@ export class LeadsController {
    * Public endpoint for Storefront visitors to submit Request for Quote (RFQ).
    * No login or authentication required. Rate-limited to prevent form spam.
    */
+  @Public()
   @Post(LEADS_ROUTES.SUBMIT_RFQ)
   @HttpCode(HttpStatus.CREATED)
   @Throttle({
@@ -73,7 +70,6 @@ export class LeadsController {
    * Internal CMS endpoint: Retrieve all leads for Sales and Admin staff.
    */
   @Get(LEADS_ROUTES.FIND_ALL)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
   @ApiOperation({
@@ -95,7 +91,6 @@ export class LeadsController {
    * Internal CMS endpoint: Retrieve lead details by UUID.
    */
   @Get(LEADS_ROUTES.FIND_BY_ID)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
   @ApiOperation({
@@ -117,7 +112,6 @@ export class LeadsController {
    * Internal CMS endpoint: Update lead pipeline status.
    */
   @Patch(LEADS_ROUTES.UPDATE_STATUS)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
   @ApiOperation({
@@ -142,7 +136,6 @@ export class LeadsController {
    * Internal CMS endpoint: Assign lead to a specific Sales representative.
    */
   @Patch(LEADS_ROUTES.ASSIGN_SALES)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @ApiOperation({

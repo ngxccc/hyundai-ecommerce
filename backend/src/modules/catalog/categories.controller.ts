@@ -10,7 +10,6 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
@@ -19,9 +18,6 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
-import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
-import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
-import { RolesGuard } from "@/common/guards/roles.guard";
 import { Roles } from "@/common/decorators/roles.decorator";
 import {
   ApiOkResponseGeneric,
@@ -32,6 +28,7 @@ import {
   ApiTooManyRequestsResponseRfc9457,
   ApiUnauthorizedResponseRfc9457,
   ApiForbiddenResponseRfc9457,
+  Public,
 } from "@/common/decorators";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { CATALOG_ROUTES } from "./catalog.routes";
@@ -42,10 +39,10 @@ import { CategoryResponseDto } from "./dto/category-response.dto";
 
 @ApiTags(CATALOG_ROUTES.CATEGORIES.TAG)
 @Controller({ path: CATALOG_ROUTES.CATEGORIES.PREFIX, version: "1" })
-@UseGuards(CustomThrottlerGuard)
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  @Public()
   @Get(CATALOG_ROUTES.CATEGORIES.FIND_ALL)
   @Throttle({ public: { limit: 60, ttl: 60000 } })
   @ApiOperation({
@@ -63,6 +60,7 @@ export class CategoriesController {
     return apiSuccess(categories);
   }
 
+  @Public()
   @Get(CATALOG_ROUTES.CATEGORIES.TREE)
   @Throttle({ public: { limit: 60, ttl: 60000 } })
   @ApiOperation({
@@ -79,6 +77,7 @@ export class CategoriesController {
     return apiSuccess(tree);
   }
 
+  @Public()
   @Get(CATALOG_ROUTES.CATEGORIES.FIND_BY_ID)
   @Throttle({ public: { limit: 60, ttl: 60000 } })
   @ApiOperation({
@@ -98,7 +97,6 @@ export class CategoriesController {
   }
 
   @Post(CATALOG_ROUTES.CATEGORIES.CREATE)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
@@ -119,7 +117,6 @@ export class CategoriesController {
   }
 
   @Put(CATALOG_ROUTES.CATEGORIES.UPDATE)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @ApiOperation({
@@ -141,7 +138,6 @@ export class CategoriesController {
   }
 
   @Delete(CATALOG_ROUTES.CATEGORIES.DELETE)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)

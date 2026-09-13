@@ -13,7 +13,6 @@ import {
   Query,
   Res,
   StreamableFile,
-  UseGuards,
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
@@ -40,8 +39,6 @@ import {
   type JwtPayload,
 } from "@/common/decorators/current-user.decorator";
 import { Roles } from "@/common/decorators/roles.decorator";
-import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
-import { RolesGuard } from "@/common/guards/roles.guard";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { QUOTE_ROUTES } from "./quote.routes";
 import { QuotesService } from "./quotes.service";
@@ -92,7 +89,6 @@ export class QuotesController {
    */
   @Post(QUOTE_ROUTES.ADMIN)
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create official B2B quotation (Admin only)" })
@@ -115,7 +111,6 @@ export class QuotesController {
    * @returns Paginated list of quotes.
    */
   @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
   @ApiOperation({ summary: "List quotes with filtering and pagination" })
@@ -142,7 +137,6 @@ export class QuotesController {
    * @returns Full quote details.
    */
   @Get(QUOTE_ROUTES.BY_ID)
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get detailed quote by ID" })
   @ApiParam({ name: "id", description: "Quote UUID" })
@@ -175,7 +169,6 @@ export class QuotesController {
    * @returns Updated quote details.
    */
   @Patch(QUOTE_ROUTES.STATUS)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @ApiOperation({
@@ -204,7 +197,6 @@ export class QuotesController {
    * @returns Updated quote with recalculated subtotals and VAT.
    */
   @Put(QUOTE_ROUTES.ITEM_PRICE)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @ApiOperation({
@@ -240,7 +232,6 @@ export class QuotesController {
    */
   @Post(QUOTE_ROUTES.MESSAGES)
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Post a message to quote negotiation timeline" })
   @ApiParam({ name: "id", description: "Quote UUID" })
@@ -272,7 +263,6 @@ export class QuotesController {
    */
   @Post(QUOTE_ROUTES.APPROVE_TO_ORDER)
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @ApiOperation({
@@ -303,7 +293,6 @@ export class QuotesController {
    * @returns Binary spreadsheet streamable file.
    */
   @Get(QUOTE_ROUTES.EXPORT_EXCEL)
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Download B2B quote Excel (.xlsx) spreadsheet" })
   @ApiParam({ name: "id", description: "Quote UUID" })

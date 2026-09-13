@@ -9,7 +9,6 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
@@ -18,9 +17,6 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
-import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
-import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
-import { RolesGuard } from "@/common/guards/roles.guard";
 import { Roles } from "@/common/decorators/roles.decorator";
 import {
   ApiOkResponseGeneric,
@@ -32,6 +28,7 @@ import {
   ApiTooManyRequestsResponseRfc9457,
   ApiUnauthorizedResponseRfc9457,
   ApiForbiddenResponseRfc9457,
+  Public,
 } from "@/common/decorators";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { type PaginationMetaDto } from "@/common/dto/pagination-meta.dto";
@@ -45,10 +42,10 @@ import { ProductMetadataResponseDto } from "./dto/product-metadata-response.dto"
 
 @ApiTags(CATALOG_ROUTES.PRODUCTS.TAG)
 @Controller({ path: CATALOG_ROUTES.PRODUCTS.PREFIX, version: "1" })
-@UseGuards(CustomThrottlerGuard)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @Public()
   @Get(CATALOG_ROUTES.PRODUCTS.FIND_ALL)
   @Throttle({ public: { limit: 60, ttl: 60000 } })
   @ApiOperation({
@@ -65,6 +62,7 @@ export class ProductsController {
     return apiSuccess(result.items, result.meta);
   }
 
+  @Public()
   @Get(CATALOG_ROUTES.PRODUCTS.METADATA)
   @Throttle({ public: { limit: 60, ttl: 60000 } })
   @ApiOperation({
@@ -82,6 +80,7 @@ export class ProductsController {
     return apiSuccess(metadata);
   }
 
+  @Public()
   @Get(CATALOG_ROUTES.PRODUCTS.FIND_BY_ID)
   @Throttle({ public: { limit: 60, ttl: 60000 } })
   @ApiOperation({
@@ -101,7 +100,6 @@ export class ProductsController {
   }
 
   @Post(CATALOG_ROUTES.PRODUCTS.CREATE)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
@@ -123,7 +121,6 @@ export class ProductsController {
   }
 
   @Put(CATALOG_ROUTES.PRODUCTS.UPDATE)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @ApiOperation({
@@ -145,7 +142,6 @@ export class ProductsController {
   }
 
   @Delete(CATALOG_ROUTES.PRODUCTS.DELETE)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)

@@ -9,7 +9,6 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
-  UseGuards,
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
@@ -26,7 +25,6 @@ import {
 } from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
 import { CurrentUser } from "@/common/decorators/current-user.decorator";
-import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
 import { apiSuccess } from "@/common/utils/api-response.util";
 import { CART_ROUTES } from "./cart.routes";
 import { CartService } from "./cart.service";
@@ -42,7 +40,6 @@ import {
  */
 @ApiTags(CART_ROUTES.TAG)
 @Controller({ path: CART_ROUTES.ROOT, version: "1" })
-@UseGuards(JwtAuthGuard)
 @ApiBearerAuth("JWT-auth")
 export class CartController {
   constructor(private readonly cartService: CartService) {}

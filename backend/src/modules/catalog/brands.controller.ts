@@ -10,7 +10,6 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
@@ -19,9 +18,6 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
-import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
-import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
-import { RolesGuard } from "@/common/guards/roles.guard";
 import { Roles } from "@/common/decorators/roles.decorator";
 import {
   ApiOkResponseGeneric,
@@ -32,6 +28,7 @@ import {
   ApiTooManyRequestsResponseRfc9457,
   ApiUnauthorizedResponseRfc9457,
   ApiForbiddenResponseRfc9457,
+  Public,
 } from "@/common/decorators";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { CATALOG_ROUTES } from "./catalog.routes";
@@ -42,10 +39,10 @@ import { BrandResponseDto } from "./dto/brand-response.dto";
 
 @ApiTags(CATALOG_ROUTES.BRANDS.TAG)
 @Controller({ path: CATALOG_ROUTES.BRANDS.PREFIX, version: "1" })
-@UseGuards(CustomThrottlerGuard)
 export class BrandsController {
   constructor(private readonly brandsService: BrandsService) {}
 
+  @Public()
   @Get(CATALOG_ROUTES.BRANDS.FIND_ALL)
   @Throttle({ public: { limit: 60, ttl: 60000 } })
   @ApiOperation({
@@ -61,6 +58,8 @@ export class BrandsController {
     const brands = await this.brandsService.findAll(locale);
     return apiSuccess(brands);
   }
+
+  @Public()
   @Get(CATALOG_ROUTES.BRANDS.FIND_BY_ID)
   @Throttle({ public: { limit: 60, ttl: 60000 } })
   @ApiOperation({
@@ -78,8 +77,8 @@ export class BrandsController {
     const brand = await this.brandsService.findById(id, locale);
     return apiSuccess(brand);
   }
+
   @Post(CATALOG_ROUTES.BRANDS.CREATE)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
@@ -100,7 +99,6 @@ export class BrandsController {
   }
 
   @Put(CATALOG_ROUTES.BRANDS.UPDATE)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @ApiOperation({
@@ -122,7 +120,6 @@ export class BrandsController {
   }
 
   @Delete(CATALOG_ROUTES.BRANDS.DELETE)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)

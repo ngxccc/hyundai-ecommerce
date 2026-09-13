@@ -28,6 +28,7 @@ import {
   ApiNotFoundResponseRfc9457,
   ApiUnauthorizedResponseRfc9457,
   ApiForbiddenResponseRfc9457,
+  Public,
 } from "@/common/decorators";
 import type { PaginationMetaDto } from "@/common/dto/pagination-meta.dto";
 import {
@@ -35,8 +36,6 @@ import {
   type JwtPayload,
 } from "@/common/decorators/current-user.decorator";
 import { Roles } from "@/common/decorators/roles.decorator";
-import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
-import { RolesGuard } from "@/common/guards/roles.guard";
 import { CronAuthGuard } from "@/common/guards/cron-auth.guard";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { ORDER_ROUTES } from "./order.routes";
@@ -62,6 +61,7 @@ export class OrdersController {
    * @param dto - Guest checkout details and line items.
    * @returns Created order response.
    */
+  @Public()
   @Post(ORDER_ROUTES.CHECKOUT)
   @HttpCode(HttpStatus.CREATED)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
@@ -88,7 +88,6 @@ export class OrdersController {
    */
   @Post(ORDER_ROUTES.ADMIN)
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create official B2B order (Admin/Sales)" })
@@ -112,7 +111,6 @@ export class OrdersController {
    * @returns Paginated list of orders.
    */
   @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
   @ApiOperation({ summary: "List orders with filtering and pagination" })
@@ -139,7 +137,6 @@ export class OrdersController {
    * @returns Order details with items and product summaries.
    */
   @Get(ORDER_ROUTES.BY_ID)
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get detailed order by ID" })
   @ApiParam({ name: "id", description: "Order UUID" })
@@ -171,7 +168,6 @@ export class OrdersController {
    * @returns Updated order details.
    */
   @Patch(ORDER_ROUTES.STATUS)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Update order status along state machine" })
@@ -203,7 +199,6 @@ export class OrdersController {
    */
   @Post(ORDER_ROUTES.CANCEL)
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   @ApiBearerAuth()
   @ApiOperation({
@@ -237,7 +232,6 @@ export class OrdersController {
    */
   @Post(ORDER_ROUTES.VERIFY_CASH)
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN", "SALES")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Verify offline cash payment (Admin/Accountant)" })
@@ -265,6 +259,7 @@ export class OrdersController {
    *
    * @returns Count of auto-expired orders.
    */
+  @Public()
   @Post(ORDER_ROUTES.EXPIRE_CRON)
   @HttpCode(HttpStatus.OK)
   @UseGuards(CronAuthGuard)

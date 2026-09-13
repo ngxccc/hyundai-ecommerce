@@ -6,13 +6,10 @@ import {
   HttpStatus,
   Post,
   Req,
-  UseGuards,
 } from "@nestjs/common";
 import type { Request } from "express";
 import { extractClientMetadata } from "@/common/utils/client-info.util";
 import { Throttle } from "@nestjs/throttler";
-import { CustomThrottlerGuard } from "@/common/guards/throttler.guard";
-import { JwtAuthGuard } from "@/common/guards/jwt-auth.guard";
 import { CurrentUser } from "@/common/decorators/current-user.decorator";
 import {
   ApiCreatedResponseGeneric,
@@ -22,6 +19,7 @@ import {
   ApiForbiddenResponseRfc9457,
   ApiConflictResponseRfc9457,
   ApiInternalServerErrorResponseRfc9457,
+  Public,
 } from "@/common/decorators";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { AUTH_ROUTES } from "./auth.routes";
@@ -39,12 +37,12 @@ import {
   ChangePasswordDto,
 } from "./dto";
 
-@UseGuards(CustomThrottlerGuard)
 @Controller({ path: AUTH_ROUTES.BASE, version: "1" })
 @ApiTags(AUTH_ROUTES.BASE)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post(AUTH_ROUTES.REGISTER)
   @ApiOperation({
     summary: "Register new user account",
@@ -60,6 +58,7 @@ export class AuthController {
     return apiSuccess(null);
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post(AUTH_ROUTES.VERIFY_EMAIL)
   @ApiOperation({
@@ -75,6 +74,7 @@ export class AuthController {
     return apiSuccess(null);
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post(AUTH_ROUTES.RESEND_VERIFICATION)
   @Throttle({
@@ -96,6 +96,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Public()
   @Post(AUTH_ROUTES.LOGIN)
   @ApiOperation({
     summary: "Authenticate user and issue tokens",
@@ -117,6 +118,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Public()
   @Post(AUTH_ROUTES.REFRESH)
   @Throttle({
     auth: { limit: 10, ttl: 60000 },
@@ -140,6 +142,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Public()
   @Post(AUTH_ROUTES.LOGOUT)
   @ApiOperation({
     summary: "Revoke current refresh session",
@@ -157,7 +160,6 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post(AUTH_ROUTES.LOGOUT_ALL)
-  @UseGuards(JwtAuthGuard)
   @Throttle({
     auth: { limit: 2, ttl: 60000 },
   })
@@ -182,6 +184,7 @@ export class AuthController {
   @Throttle({
     auth: { limit: 3, ttl: 60000 },
   })
+  @Public()
   @ApiOperation({
     summary: "Request password reset email",
     description:
@@ -202,6 +205,7 @@ export class AuthController {
   @Throttle({
     auth: { limit: 5, ttl: 60000 },
   })
+  @Public()
   @ApiOperation({
     summary: "Reset password with token",
     description:
@@ -219,7 +223,6 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post(AUTH_ROUTES.CHANGE_PASSWORD)
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Throttle({
     auth: { limit: 5, ttl: 60000 },
