@@ -219,11 +219,7 @@ describe("QuotesController", () => {
   describe("GET /quotes/:id", () => {
     describe("when retrieving quote details", () => {
       test("should return wrapped quote", async () => {
-        const result = await controller.getQuoteById(mockQuote.id, {
-          sub: mockUserId,
-          email: "user@example.com",
-          role: "ADMIN",
-        });
+        const result = await controller.getQuoteById(mockQuote.id);
 
         expect(mockQuotesService.findById).toHaveBeenCalledWith(mockQuote.id);
         expect(result.success).toBe(true);
@@ -329,11 +325,6 @@ describe("QuotesController", () => {
 
         const result = await controller.exportExcel(
           mockQuote.id,
-          {
-            sub: mockUserId,
-            email: "user@example.com",
-            role: "ADMIN",
-          },
           mockResponse as unknown as Response,
         );
 

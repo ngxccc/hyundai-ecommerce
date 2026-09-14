@@ -176,11 +176,7 @@ describe("OrdersController", () => {
   describe("GET /orders/:id", () => {
     describe("when retrieving order details", () => {
       test("should return wrapped order details", async () => {
-        const result = await controller.getOrderById(mockOrder.id, {
-          sub: "user-1",
-          email: "user@example.com",
-          role: "ADMIN",
-        });
+        const result = await controller.getOrderById(mockOrder.id);
 
         expect(mockOrdersService.findById).toHaveBeenCalledWith(mockOrder.id);
         expect(result.success).toBe(true);

@@ -10,15 +10,10 @@ import {
   Put,
   Query,
 } from "@nestjs/common";
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from "@nestjs/swagger";
+import { ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
-import { Roles } from "@/common/decorators/roles.decorator";
 import {
+  ApiAuth,
   ApiOkResponseGeneric,
   ApiOkResponsePaginated,
   ApiCreatedResponseGeneric,
@@ -26,8 +21,6 @@ import {
   ApiBadRequestResponseRfc9457,
   ApiConflictResponseRfc9457,
   ApiTooManyRequestsResponseRfc9457,
-  ApiUnauthorizedResponseRfc9457,
-  ApiForbiddenResponseRfc9457,
   Public,
 } from "@/common/decorators";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
@@ -100,8 +93,7 @@ export class ProductsController {
   }
 
   @Post(CATALOG_ROUTES.PRODUCTS.CREATE)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: "Create product (Admin only)",
@@ -111,8 +103,6 @@ export class ProductsController {
   @ApiCreatedResponseGeneric(ProductResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiConflictResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async create(
     @Body() dto: CreateProductDto,
   ): Promise<ApiResponse<ProductResponseDto>> {
@@ -121,8 +111,7 @@ export class ProductsController {
   }
 
   @Put(CATALOG_ROUTES.PRODUCTS.UPDATE)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @ApiOperation({
     summary: "Update product (Admin only)",
     description: "Updates an existing product by UUID.",
@@ -131,8 +120,6 @@ export class ProductsController {
   @ApiNotFoundResponseRfc9457()
   @ApiBadRequestResponseRfc9457()
   @ApiConflictResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async update(
     @Param("id") id: string,
     @Body() dto: UpdateProductDto,
@@ -142,8 +129,7 @@ export class ProductsController {
   }
 
   @Delete(CATALOG_ROUTES.PRODUCTS.DELETE)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: "Delete product (Admin only)",
@@ -151,8 +137,6 @@ export class ProductsController {
   })
   @ApiOkResponseGeneric()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async delete(@Param("id") id: string): Promise<ApiResponse<null>> {
     await this.productsService.delete(id);
     return apiSuccess(null);

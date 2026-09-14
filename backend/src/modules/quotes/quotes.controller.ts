@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -15,7 +14,6 @@ import {
   StreamableFile,
 } from "@nestjs/common";
 import {
-  ApiBearerAuth,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -23,13 +21,12 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import {
+  ApiAuth,
   ApiOkResponseGeneric,
   ApiOkResponsePaginated,
   ApiCreatedResponseGeneric,
   ApiBadRequestResponseRfc9457,
   ApiNotFoundResponseRfc9457,
-  ApiUnauthorizedResponseRfc9457,
-  ApiForbiddenResponseRfc9457,
   Public,
 } from "@/common/decorators";
 import type { PaginationMetaDto } from "@/common/dto/pagination-meta.dto";
@@ -39,7 +36,6 @@ import {
   CurrentUser,
   type JwtPayload,
 } from "@/common/decorators/current-user.decorator";
-import { Roles } from "@/common/decorators/roles.decorator";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { QUOTE_ROUTES } from "./quote.routes";
 import { QuotesService } from "./quotes.service";
@@ -92,13 +88,10 @@ export class QuotesController {
    */
   @Post(QUOTE_ROUTES.ADMIN)
   @HttpCode(HttpStatus.CREATED)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @ApiOperation({ summary: "Create official B2B quotation (Admin only)" })
   @ApiCreatedResponseGeneric(AdminQuoteResponseDto)
   @ApiBadRequestResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async createAdminQuote(
     @Body() dto: CreateAdminQuoteDto,
     @CurrentUser("sub") adminUserId: string,
@@ -114,8 +107,7 @@ export class QuotesController {
    * @returns Paginated list of quotes.
    */
   @Get()
-  @Roles("ADMIN", "SALES")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({ summary: "List quotes with filtering and pagination" })
   @ApiQuery({ name: "page", required: false, type: Number })
   @ApiQuery({ name: "limit", required: false, type: Number })
@@ -124,8 +116,6 @@ export class QuotesController {
   @ApiQuery({ name: "search", required: false, type: String })
   @ApiOkResponsePaginated(AdminQuoteResponseDto)
   @ApiBadRequestResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async listQuotes(
     @Query() query: QuoteQueryDto,
   ): Promise<ApiResponse<AdminQuoteResponseDto[], PaginationMetaDto>> {
@@ -140,27 +130,13 @@ export class QuotesController {
    * @returns Full quote details.
    */
   @Get(QUOTE_ROUTES.BY_ID)
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({ summary: "Get detailed quote by ID" })
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiOkResponseGeneric(AdminQuoteResponseDto)
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
-  async getQuoteById(
-    @Param("id", ParseUUIDPipe) id: string,
-    @CurrentUser() currentUser: JwtPayload,
-  ) {
+  async getQuoteById(@Param("id", ParseUUIDPipe) id: string) {
     const quote = await this.quotesService.findById(id);
-    if (
-      currentUser.role !== "ADMIN" &&
-      currentUser.role !== "SALES" &&
-      quote.userId !== currentUser.sub
-    ) {
-      throw new ForbiddenException(
-        "You are not authorized to access this quote",
-      );
-    }
     return apiSuccess(quote);
   }
 
@@ -172,8 +148,7 @@ export class QuotesController {
    * @returns Updated quote details.
    */
   @Patch(QUOTE_ROUTES.STATUS)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @ApiOperation({
     summary: "Update quote status along the state machine (Admin only)",
   })
@@ -181,8 +156,6 @@ export class QuotesController {
   @ApiOkResponseGeneric(AdminQuoteResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async updateStatus(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateQuoteStatusDto,
@@ -200,8 +173,7 @@ export class QuotesController {
    * @returns Updated quote with recalculated subtotals and VAT.
    */
   @Put(QUOTE_ROUTES.ITEM_PRICE)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @ApiOperation({
     summary: "Update negotiated price for a quote line item (Admin only)",
   })
@@ -210,8 +182,6 @@ export class QuotesController {
   @ApiOkResponseGeneric(AdminQuoteResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async updateItemPrice(
     @Param("id", ParseUUIDPipe) quoteId: string,
     @Param("itemId", ParseUUIDPipe) itemId: string,
@@ -235,14 +205,12 @@ export class QuotesController {
    */
   @Post(QUOTE_ROUTES.MESSAGES)
   @HttpCode(HttpStatus.CREATED)
-  @ApiBearerAuth()
+  @ApiAuth()
   @ApiOperation({ summary: "Post a message to quote negotiation timeline" })
   @ApiParam({ name: "id", description: "Quote UUID" })
   @ApiCreatedResponseGeneric(QuoteMessageResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async sendMessage(
     @Param("id", ParseUUIDPipe) quoteId: string,
     @CurrentUser() currentUser: JwtPayload,
@@ -266,8 +234,7 @@ export class QuotesController {
    */
   @Post(QUOTE_ROUTES.APPROVE_TO_ORDER)
   @HttpCode(HttpStatus.OK)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @ApiOperation({
     summary: "Approve quote and convert to order (Admin only)",
   })
@@ -275,8 +242,6 @@ export class QuotesController {
   @ApiOkResponseGeneric(ApproveToOrderResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async approveToOrder(
     @Param("id", ParseUUIDPipe) quoteId: string,
     @CurrentUser("sub") adminUserId: string,
@@ -296,7 +261,7 @@ export class QuotesController {
    * @returns Binary spreadsheet streamable file.
    */
   @Get(QUOTE_ROUTES.EXPORT_EXCEL)
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({ summary: "Download B2B quote Excel (.xlsx) spreadsheet" })
   @ApiParam({ name: "id", description: "Quote UUID" })
   @SwaggerResponse({
@@ -312,23 +277,11 @@ export class QuotesController {
     },
   })
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async exportExcel(
     @Param("id", ParseUUIDPipe) id: string,
-    @CurrentUser() currentUser: JwtPayload,
     @Res({ passthrough: true }) res: Response,
   ): Promise<StreamableFile> {
     const quote = await this.quotesService.findById(id);
-    if (
-      currentUser.role !== "ADMIN" &&
-      currentUser.role !== "SALES" &&
-      quote.userId !== currentUser.sub
-    ) {
-      throw new ForbiddenException(
-        "You are not authorized to export this quote",
-      );
-    }
     const buffer =
       await this.quoteExcelService.generateQuoteExcelWorkbook(quote);
     const filename = `${quote.quoteNumber ?? "Bao_Gia"}.xlsx`;

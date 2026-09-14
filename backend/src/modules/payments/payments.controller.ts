@@ -8,19 +8,13 @@ import {
   ParseUUIDPipe,
   Post,
 } from "@nestjs/common";
+import { ApiOperation, ApiParam, ApiTags } from "@nestjs/swagger";
 import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from "@nestjs/swagger";
-import {
+  ApiAuth,
   ApiOkResponseGeneric,
   ApiCreatedResponseGeneric,
   ApiBadRequestResponseRfc9457,
   ApiNotFoundResponseRfc9457,
-  ApiUnauthorizedResponseRfc9457,
-  ApiForbiddenResponseRfc9457,
   Public,
 } from "@/common/decorators";
 import { Throttle } from "@nestjs/throttler";
@@ -28,7 +22,6 @@ import {
   CurrentUser,
   type JwtPayload,
 } from "@/common/decorators/current-user.decorator";
-import { Roles } from "@/common/decorators/roles.decorator";
 import { apiSuccess } from "@/common/utils/api-response.util";
 import { PAYMENT_ROUTES } from "./payment.routes";
 import { PaymentsService } from "./payments.service";
@@ -100,8 +93,7 @@ export class PaymentsController {
    */
   @Post(PAYMENT_ROUTES.VERIFY_CASH)
   @HttpCode(HttpStatus.OK)
-  @Roles("ADMIN", "SALES")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({
     summary:
       "Verify offline cash payment (Deprecated: use POST /orders/:id/verify-cash)",
@@ -111,8 +103,6 @@ export class PaymentsController {
   @ApiOkResponseGeneric(OrderPaymentSummaryDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async verifyCashPayment(
     @Param("id") id: string,
     @Body() dto: VerifyCashPaymentDto,
@@ -135,7 +125,7 @@ export class PaymentsController {
    */
   @Post(PAYMENT_ROUTES.REPAY_DEBT)
   @HttpCode(HttpStatus.CREATED)
-  @ApiBearerAuth()
+  @ApiAuth()
   @ApiOperation({
     summary: "Repay B2B dealer debt via PayOS gateway or cash",
     deprecated: true,
@@ -143,8 +133,6 @@ export class PaymentsController {
   @ApiCreatedResponseGeneric(DebtRepaymentResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async repayDebt(
     @Body() dto: RepayDebtDto,
     @CurrentUser() currentUser: JwtPayload,
@@ -164,7 +152,7 @@ export class PaymentsController {
    * @returns Detailed payment summary for the order.
    */
   @Get(PAYMENT_ROUTES.BY_ORDER_ID)
-  @ApiBearerAuth()
+  @ApiAuth()
   @ApiOperation({
     summary: "Get order payment status and transactions",
     deprecated: true,
@@ -172,7 +160,6 @@ export class PaymentsController {
   @ApiOkResponseGeneric(OrderPaymentSummaryDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
   async getOrderPaymentSummary(
     @Param("orderId", ParseUUIDPipe) orderId: string,
   ) {

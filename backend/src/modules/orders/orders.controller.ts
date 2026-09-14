@@ -11,23 +11,16 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { I18nForbiddenException } from "@/common/exceptions";
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiTags,
-} from "@nestjs/swagger";
+import { ApiOperation, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 import {
+  ApiAuth,
   ApiOkResponseGeneric,
   ApiOkResponsePaginated,
   ApiCreatedResponseGeneric,
   ApiBadRequestResponseRfc9457,
   ApiNotFoundResponseRfc9457,
   ApiUnauthorizedResponseRfc9457,
-  ApiForbiddenResponseRfc9457,
   Public,
 } from "@/common/decorators";
 import type { PaginationMetaDto } from "@/common/dto/pagination-meta.dto";
@@ -35,7 +28,6 @@ import {
   CurrentUser,
   type JwtPayload,
 } from "@/common/decorators/current-user.decorator";
-import { Roles } from "@/common/decorators/roles.decorator";
 import { CronAuthGuard } from "@/common/guards/cron-auth.guard";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { ORDER_ROUTES } from "./order.routes";
@@ -88,14 +80,11 @@ export class OrdersController {
    */
   @Post(ORDER_ROUTES.ADMIN)
   @HttpCode(HttpStatus.CREATED)
-  @Roles("ADMIN", "SALES")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({ summary: "Create official B2B order (Admin/Sales)" })
   @ApiCreatedResponseGeneric(OrderResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async createB2bOrder(
     @Body() dto: CreateB2bOrderDto,
     @CurrentUser("sub") adminUserId: string,
@@ -111,8 +100,7 @@ export class OrdersController {
    * @returns Paginated list of orders.
    */
   @Get()
-  @Roles("ADMIN", "SALES")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({ summary: "List orders with filtering and pagination" })
   @ApiQuery({ name: "page", required: false, type: Number })
   @ApiQuery({ name: "limit", required: false, type: Number })
@@ -121,8 +109,6 @@ export class OrdersController {
   @ApiQuery({ name: "search", required: false, type: String })
   @ApiOkResponsePaginated(OrderResponseDto)
   @ApiBadRequestResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async listOrders(
     @Query() query: OrderQueryDto,
   ): Promise<ApiResponse<OrderResponseDto[], PaginationMetaDto>> {
@@ -137,25 +123,13 @@ export class OrdersController {
    * @returns Order details with items and product summaries.
    */
   @Get(ORDER_ROUTES.BY_ID)
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({ summary: "Get detailed order by ID" })
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderResponseDto)
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
-  async getOrderById(
-    @Param("id", ParseUUIDPipe) id: string,
-    @CurrentUser() currentUser: JwtPayload,
-  ) {
+  async getOrderById(@Param("id", ParseUUIDPipe) id: string) {
     const order = await this.ordersService.findById(id);
-    if (
-      currentUser.role !== "ADMIN" &&
-      currentUser.role !== "SALES" &&
-      order.userId !== currentUser.sub
-    ) {
-      throw new I18nForbiddenException("orders.FORBIDDEN_ACCESS");
-    }
     return apiSuccess(order);
   }
 
@@ -168,15 +142,12 @@ export class OrdersController {
    * @returns Updated order details.
    */
   @Patch(ORDER_ROUTES.STATUS)
-  @Roles("ADMIN", "SALES")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({ summary: "Update order status along state machine" })
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async updateStatus(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateOrderStatusDto,
@@ -199,8 +170,7 @@ export class OrdersController {
    */
   @Post(ORDER_ROUTES.CANCEL)
   @HttpCode(HttpStatus.OK)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @ApiOperation({
     summary: "Cancel order and release reserved stock (Admin only)",
   })
@@ -208,8 +178,6 @@ export class OrdersController {
   @ApiOkResponseGeneric(OrderResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async cancelOrder(
     @Param("id", ParseUUIDPipe) id: string,
     @CurrentUser() currentUser: JwtPayload,
@@ -232,15 +200,12 @@ export class OrdersController {
    */
   @Post(ORDER_ROUTES.VERIFY_CASH)
   @HttpCode(HttpStatus.OK)
-  @Roles("ADMIN", "SALES")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({ summary: "Verify offline cash payment (Admin/Accountant)" })
   @ApiParam({ name: "id", description: "Order UUID" })
   @ApiOkResponseGeneric(OrderResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async verifyCashPayment(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: VerifyCashPaymentDto,

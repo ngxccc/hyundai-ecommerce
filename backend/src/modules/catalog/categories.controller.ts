@@ -11,23 +11,16 @@ import {
   Put,
   Query,
 } from "@nestjs/common";
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from "@nestjs/swagger";
+import { ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
-import { Roles } from "@/common/decorators/roles.decorator";
 import {
+  ApiAuth,
   ApiOkResponseGeneric,
   ApiCreatedResponseGeneric,
   ApiNotFoundResponseRfc9457,
   ApiBadRequestResponseRfc9457,
   ApiConflictResponseRfc9457,
   ApiTooManyRequestsResponseRfc9457,
-  ApiUnauthorizedResponseRfc9457,
-  ApiForbiddenResponseRfc9457,
   Public,
 } from "@/common/decorators";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
@@ -97,8 +90,7 @@ export class CategoriesController {
   }
 
   @Post(CATALOG_ROUTES.CATEGORIES.CREATE)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: "Create category (Admin only)",
@@ -107,8 +99,6 @@ export class CategoriesController {
   @ApiCreatedResponseGeneric(CategoryResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiConflictResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async create(
     @Body() dto: CreateCategoryDto,
   ): Promise<ApiResponse<CategoryResponseDto>> {
@@ -117,8 +107,7 @@ export class CategoriesController {
   }
 
   @Put(CATALOG_ROUTES.CATEGORIES.UPDATE)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @ApiOperation({
     summary: "Update category (Admin only)",
     description: "Updates an existing category by UUID.",
@@ -127,8 +116,6 @@ export class CategoriesController {
   @ApiNotFoundResponseRfc9457()
   @ApiBadRequestResponseRfc9457()
   @ApiConflictResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async update(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateCategoryDto,
@@ -138,8 +125,7 @@ export class CategoriesController {
   }
 
   @Delete(CATALOG_ROUTES.CATEGORIES.DELETE)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: "Delete category (Admin only)",
@@ -147,8 +133,6 @@ export class CategoriesController {
   })
   @ApiOkResponseGeneric()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async delete(
     @Param("id", ParseUUIDPipe) id: string,
   ): Promise<ApiResponse<null>> {

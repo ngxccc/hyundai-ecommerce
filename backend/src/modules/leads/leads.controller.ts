@@ -11,19 +11,17 @@ import {
   Query,
 } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
-import { Roles } from "@/common/decorators/roles.decorator";
 import {
+  ApiAuth,
   ApiOkResponseGeneric,
   ApiOkResponsePaginated,
   ApiCreatedResponseGeneric,
   ApiNotFoundResponseRfc9457,
   ApiBadRequestResponseRfc9457,
   ApiTooManyRequestsResponseRfc9457,
-  ApiUnauthorizedResponseRfc9457,
-  ApiForbiddenResponseRfc9457,
   Public,
 } from "@/common/decorators";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import {
   AssignSalesDto,
   CreateLeadDto,
@@ -70,16 +68,13 @@ export class LeadsController {
    * Internal CMS endpoint: Retrieve all leads for Sales and Admin staff.
    */
   @Get(LEADS_ROUTES.FIND_ALL)
-  @Roles("ADMIN", "SALES")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({
     summary: "List all leads (CMS Admin & Sales)",
     description:
       "Returns all leads and quote requests ordered by latest submission date.",
   })
   @ApiOkResponsePaginated(LeadResponseDto)
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async getAll(
     @Query() query: LeadQueryDto,
   ): Promise<ApiResponse<LeadResponseDto[], PaginationMetaDto>> {
@@ -91,16 +86,13 @@ export class LeadsController {
    * Internal CMS endpoint: Retrieve lead details by UUID.
    */
   @Get(LEADS_ROUTES.FIND_BY_ID)
-  @Roles("ADMIN", "SALES")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({
     summary: "Get lead by ID (CMS Admin & Sales)",
     description: "Returns full lead information and list of requested items.",
   })
   @ApiOkResponseGeneric(LeadResponseDto)
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async getById(
     @Param("id", ParseUUIDPipe) id: string,
   ): Promise<ApiResponse<LeadResponseDto>> {
@@ -112,8 +104,7 @@ export class LeadsController {
    * Internal CMS endpoint: Update lead pipeline status.
    */
   @Patch(LEADS_ROUTES.UPDATE_STATUS)
-  @Roles("ADMIN", "SALES")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN", "SALES")
   @ApiOperation({
     summary: "Update lead status (CMS Admin & Sales)",
     description:
@@ -122,8 +113,6 @@ export class LeadsController {
   @ApiOkResponseGeneric(LeadResponseDto)
   @ApiNotFoundResponseRfc9457()
   @ApiBadRequestResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async updateStatus(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateLeadStatusDto,
@@ -136,8 +125,7 @@ export class LeadsController {
    * Internal CMS endpoint: Assign lead to a specific Sales representative.
    */
   @Patch(LEADS_ROUTES.ASSIGN_SALES)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @ApiOperation({
     summary: "Assign sales representative to lead (Admin only)",
     description: "Assigns a designated sales user ID to manage this lead.",
@@ -145,8 +133,6 @@ export class LeadsController {
   @ApiOkResponseGeneric(LeadResponseDto)
   @ApiNotFoundResponseRfc9457()
   @ApiBadRequestResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async assignSales(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: AssignSalesDto,

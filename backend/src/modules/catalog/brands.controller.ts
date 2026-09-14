@@ -11,23 +11,16 @@ import {
   Put,
   Query,
 } from "@nestjs/common";
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from "@nestjs/swagger";
+import { ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
-import { Roles } from "@/common/decorators/roles.decorator";
 import {
+  ApiAuth,
   ApiOkResponseGeneric,
   ApiCreatedResponseGeneric,
   ApiNotFoundResponseRfc9457,
   ApiBadRequestResponseRfc9457,
   ApiConflictResponseRfc9457,
   ApiTooManyRequestsResponseRfc9457,
-  ApiUnauthorizedResponseRfc9457,
-  ApiForbiddenResponseRfc9457,
   Public,
 } from "@/common/decorators";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
@@ -79,8 +72,7 @@ export class BrandsController {
   }
 
   @Post(CATALOG_ROUTES.BRANDS.CREATE)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: "Create brand (Admin only)",
@@ -89,8 +81,6 @@ export class BrandsController {
   @ApiCreatedResponseGeneric(BrandResponseDto)
   @ApiBadRequestResponseRfc9457()
   @ApiConflictResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async create(
     @Body() dto: CreateBrandDto,
   ): Promise<ApiResponse<BrandResponseDto>> {
@@ -99,8 +89,7 @@ export class BrandsController {
   }
 
   @Put(CATALOG_ROUTES.BRANDS.UPDATE)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @ApiOperation({
     summary: "Update brand (Admin only)",
     description: "Updates an existing brand by UUID.",
@@ -109,8 +98,6 @@ export class BrandsController {
   @ApiNotFoundResponseRfc9457()
   @ApiBadRequestResponseRfc9457()
   @ApiConflictResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async update(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateBrandDto,
@@ -120,8 +107,7 @@ export class BrandsController {
   }
 
   @Delete(CATALOG_ROUTES.BRANDS.DELETE)
-  @Roles("ADMIN")
-  @ApiBearerAuth()
+  @ApiAuth("ADMIN")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: "Delete brand (Admin only)",
@@ -129,8 +115,6 @@ export class BrandsController {
   })
   @ApiOkResponseGeneric()
   @ApiNotFoundResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   async delete(
     @Param("id", ParseUUIDPipe) id: string,
   ): Promise<ApiResponse<null>> {

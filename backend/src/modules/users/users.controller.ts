@@ -1,11 +1,10 @@
 import { Controller, Get } from "@nestjs/common";
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Throttle } from "@nestjs/throttler";
 import { CurrentUser } from "@/common/decorators/current-user.decorator";
 import {
+  ApiAuth,
   ApiOkResponseGeneric,
-  ApiUnauthorizedResponseRfc9457,
-  ApiForbiddenResponseRfc9457,
   ApiNotFoundResponseRfc9457,
   ApiTooManyRequestsResponseRfc9457,
 } from "@/common/decorators";
@@ -23,15 +22,13 @@ export class UsersController {
   @Throttle({
     auth: { limit: 30, ttl: 60000 },
   })
-  @ApiBearerAuth()
+  @ApiAuth()
   @ApiOperation({
     summary: "Get authenticated user profile",
     description:
       "Returns profile details and account status for the currently authenticated user.",
   })
   @ApiOkResponseGeneric(UserResponseDto)
-  @ApiUnauthorizedResponseRfc9457()
-  @ApiForbiddenResponseRfc9457()
   @ApiNotFoundResponseRfc9457()
   @ApiTooManyRequestsResponseRfc9457()
   async getMe(

@@ -1,4 +1,4 @@
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import {
   Body,
   Controller,
@@ -12,8 +12,9 @@ import { extractClientMetadata } from "@/common/utils/client-info.util";
 import { Throttle } from "@nestjs/throttler";
 import { CurrentUser } from "@/common/decorators/current-user.decorator";
 import {
-  ApiCreatedResponseGeneric,
+  ApiAuth,
   ApiOkResponseGeneric,
+  ApiCreatedResponseGeneric,
   ApiBadRequestResponseRfc9457,
   ApiUnauthorizedResponseRfc9457,
   ApiForbiddenResponseRfc9457,
@@ -163,14 +164,13 @@ export class AuthController {
   @Throttle({
     auth: { limit: 2, ttl: 60000 },
   })
-  @ApiBearerAuth()
+  @ApiAuth()
   @ApiOperation({
     summary: "Revoke all active user sessions",
     description:
       "Revokes all refresh tokens across every device for the authenticated user.",
   })
   @ApiOkResponseGeneric()
-  @ApiUnauthorizedResponseRfc9457()
   @ApiInternalServerErrorResponseRfc9457()
   async logoutAll(
     @CurrentUser("sub") userId: string,
@@ -223,7 +223,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post(AUTH_ROUTES.CHANGE_PASSWORD)
-  @ApiBearerAuth()
+  @ApiAuth()
   @Throttle({
     auth: { limit: 5, ttl: 60000 },
   })
@@ -234,7 +234,6 @@ export class AuthController {
   })
   @ApiOkResponseGeneric()
   @ApiBadRequestResponseRfc9457()
-  @ApiUnauthorizedResponseRfc9457()
   @ApiInternalServerErrorResponseRfc9457()
   async changePassword(
     @CurrentUser("sub") userId: string,
