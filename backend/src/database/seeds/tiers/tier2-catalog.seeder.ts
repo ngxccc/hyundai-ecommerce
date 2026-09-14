@@ -1,8 +1,11 @@
 import type { DrizzleDB } from "@/database/database.module";
 import {
   brands,
+  brandTranslations,
   categories,
+  categoryTranslations,
   products,
+  productTranslations,
   warehouses,
   warehouseStocks,
 } from "@/database/schemas";
@@ -78,8 +81,33 @@ export async function seedTier2Catalog(
       },
     ];
 
-    await db.insert(brands).values(brandData).onConflictDoNothing();
+    const brandsTableData = brandData.map(
+      ({ id, name, slug, logo, isActive }) => ({
+        id,
+        name,
+        slug,
+        logo,
+        isActive,
+      }),
+    );
+    await db.insert(brands).values(brandsTableData).onConflictDoNothing();
 
+    const brandTranslationData = brandData.flatMap((b) => [
+      {
+        brandId: b.id,
+        locale: "vi",
+        description: b.descriptionVi,
+      },
+      {
+        brandId: b.id,
+        locale: "en",
+        description: b.descriptionEn,
+      },
+    ]);
+    await db
+      .insert(brandTranslations)
+      .values(brandTranslationData)
+      .onConflictDoNothing();
     result.brands = await db
       .select({
         id: brands.id,
@@ -146,8 +174,37 @@ export async function seedTier2Catalog(
       },
     ];
 
-    await db.insert(categories).values(categoryData).onConflictDoNothing();
+    const categoriesTableData = categoryData.map(
+      ({ id, slug, parentId, isActive }) => ({
+        id,
+        slug,
+        parentId,
+        isActive,
+      }),
+    );
+    await db
+      .insert(categories)
+      .values(categoriesTableData)
+      .onConflictDoNothing();
 
+    const categoryTranslationData = categoryData.flatMap((c) => [
+      {
+        categoryId: c.id,
+        locale: "vi",
+        name: c.nameVi,
+        description: c.descriptionVi,
+      },
+      {
+        categoryId: c.id,
+        locale: "en",
+        name: c.nameEn,
+        description: c.descriptionEn,
+      },
+    ]);
+    await db
+      .insert(categoryTranslations)
+      .values(categoryTranslationData)
+      .onConflictDoNothing();
     result.categories = await db
       .select({
         id: categories.id,
@@ -303,8 +360,39 @@ export async function seedTier2Catalog(
       },
     ];
 
-    await db.insert(products).values(productData).onConflictDoNothing();
+    const productsTableData = productData.map((p) => {
+      const {
+        nameVi: _nVi,
+        nameEn: _nEn,
+        shortDescriptionVi: _sdVi,
+        descriptionVi: _dVi,
+        descriptionEn: _dEn,
+        ...productFields
+      } = p;
+      return productFields;
+    });
+    await db.insert(products).values(productsTableData).onConflictDoNothing();
 
+    const productTranslationData = productData.flatMap((p) => [
+      {
+        productId: p.id,
+        locale: "vi",
+        name: p.nameVi,
+        shortDescription: p.shortDescriptionVi,
+        description: p.descriptionVi,
+      },
+      {
+        productId: p.id,
+        locale: "en",
+        name: p.nameEn,
+        shortDescription: null,
+        description: p.descriptionEn,
+      },
+    ]);
+    await db
+      .insert(productTranslations)
+      .values(productTranslationData)
+      .onConflictDoNothing();
     result.products = await db
       .select({
         id: products.id,
