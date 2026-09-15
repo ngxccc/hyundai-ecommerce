@@ -65,7 +65,7 @@ export async function NewsSection() {
                   </Badge>
                 </CardHeader>
 
-                {/* Vùng Nội dung */}
+                {/* Content Section */}
                 <div className="flex flex-1 flex-col">
                   <CardContent className="grow p-6 pb-2">
                     <Link href={`/news/${article.slug}`}>
@@ -78,7 +78,7 @@ export async function NewsSection() {
                     </p>
                   </CardContent>
 
-                  {/* Vùng Footer */}
+                  {/* Footer Section */}
                   <CardFooter className="mt-auto px-6 pt-0 pb-6">
                     <div className="text-muted-foreground flex items-center text-xs font-medium">
                       <CalendarDays className="mr-2 h-3.5 w-3.5" />

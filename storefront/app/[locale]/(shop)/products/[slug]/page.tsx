@@ -162,7 +162,7 @@ async function ProductDetailsPageContent({
             totalStock={product.totalStockCache}
           />
         </div>
-        {/* Bảng thông số chi tiết */}
+        {/* Technical specifications table */}
         <div className="mt-6 border-t pt-6">
           <h2 className="text-foreground mb-4 text-lg font-bold">
             {t("detailedSpecs")}

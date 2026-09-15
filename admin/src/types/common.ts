@@ -22,15 +22,15 @@ export interface Category {
 
 export interface PromoCampaign {
   id: string;
-  badge: string; // VD: "Flash Sale"
-  title: string; // VD: "Black Friday"
-  subtitle: string; // VD: "Sập Sàn"
-  description: string; // VD: "Mua 1 tặng 1..."
-  discount: string; // VD: "-50%"
-  ctaText: string; // VD: "Săn ngay"
-  ctaLink: string; // VD: "/collections/black-friday"
+  badge: string; // E.g. "Flash Sale"
+  title: string; // E.g. "Black Friday"
+  subtitle: string; // E.g. "Mega Discount"
+  description: string; // E.g. "Buy 1 Get 1 Special Promotion"
+  discount: string; // E.g. "-50%"
+  ctaText: string; // E.g. "Shop Now"
+  ctaLink: string; // E.g. "/collections/black-friday"
   isActive: boolean;
-  themeColor: string; // Nâng cao: CMS có thể trả về màu primary luôn!
+  themeColor: string; // Hex color code for banner theme styling
 }
 
 export interface NewsArticle {

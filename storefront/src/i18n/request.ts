@@ -9,7 +9,7 @@ const isValidLocale = (locale: unknown): locale is Locale => {
 };
 
 export default getRequestConfig(async ({ locale }) => {
-  // Fallback an toàn nếu có request không hợp lệ
+  // Fallback to default locale if requested locale is invalid
   const resolvedLocale = isValidLocale(locale) ? locale : routing.defaultLocale;
 
   return {

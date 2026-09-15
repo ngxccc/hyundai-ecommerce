@@ -18,7 +18,7 @@ export function ScrollToTop() {
 
     window.addEventListener("scroll", toggleVisibility);
 
-    // Clean up event listener khi component unmount để tránh rò rỉ bộ nhớ (Memory Leak)
+    // Clean up event listener on unmount to prevent memory leaks
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 

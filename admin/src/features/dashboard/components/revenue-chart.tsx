@@ -70,7 +70,7 @@ export const RevenueChart = ({ data }: RevenueChartProps) => {
         </div>
       </div>
 
-      {/* TODO: sử dụng thư viên chart bên ngoài */}
+      {/* TODO(dashboard-v2): Integrate external chart library (e.g. Recharts or Chart.js) */}
       {/* Faux Chart Representation */}
       <div className="relative mt-4 flex h-62.5 flex-1 items-end gap-2">
         {/* Y-axis labels */}

@@ -116,7 +116,7 @@ export default async function RootLayout({
     <html
       lang={locale}
       className={`${inter.variable} h-full font-sans antialiased`}
-      suppressHydrationWarning // suppressHydrationWarning để chặn lỗi từ Extensions của trình duyệt
+      suppressHydrationWarning // Prevent hydration mismatch warnings from browser extensions
     >
       <body className="flex min-h-full flex-col">
         <Suspense fallback={null}>

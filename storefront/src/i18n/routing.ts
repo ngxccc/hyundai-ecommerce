@@ -4,7 +4,7 @@ import { createNavigation } from "next-intl/navigation";
 export const routing = defineRouting({
   locales: ["vi", "en"],
   defaultLocale: "vi",
-  localePrefix: "as-needed", // Nếu là /vi thì ẩn prefix, nếu /en thì hiện
+  localePrefix: "as-needed", // Hide prefix for default locale (/vi), show prefix for secondary locales (/en)
   localeDetection: false,
 });
 
