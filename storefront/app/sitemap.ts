@@ -42,13 +42,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const cat of categories) {
     sitemapEntries.push(
       {
-        url: `${siteConfig.url}/products/category/${cat.slug}`,
+        url: `${siteConfig.url}/categories/${cat.slug}`,
         lastModified,
         changeFrequency: "weekly",
         priority: 0.7,
       },
       {
-        url: `${siteConfig.url}/en/products/category/${cat.slug}`,
+        url: `${siteConfig.url}/en/categories/${cat.slug}`,
         lastModified,
         changeFrequency: "weekly",
         priority: 0.7,

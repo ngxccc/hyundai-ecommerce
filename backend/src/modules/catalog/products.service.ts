@@ -243,9 +243,7 @@ export class ProductsService {
       .select({ total: count() })
       .from(products)
       .where(whereClause);
-
     const total = countResult?.total ?? 0;
-
     if (total === 0) {
       return {
         items: [],

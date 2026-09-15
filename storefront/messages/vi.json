@@ -307,7 +307,7 @@
     }
   },
   "Catalog": {
-    "title": "Danh mục sản phẩm",
+    "title": "Tất cả sản phẩm",
     "search_placeholder": "Tìm kiếm sản phẩm...",
     "search_results": "Tìm kiếm cho: \"{query}\" ({count} kết quả)",
     "showing_products": "Hiển thị {count} sản phẩm",

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useTranslations } from "next-intl";
 import type { CatalogSearchParams } from "../types/catalog";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ArrowUpDown } from "lucide-react";
 import { useIsClient } from "@/hooks/useIsClient";
 
 interface ProductSortProps {
@@ -38,7 +38,7 @@ export function ProductSort({ currentSort, searchParams }: ProductSortProps) {
     const params = new URLSearchParams();
 
     Object.entries(searchParams).forEach(([key, val]) => {
-      if (val !== undefined && val !== "") {
+      if (val !== undefined && val !== "" && key !== "sort") {
         params.set(key, String(val));
       }
     });
@@ -46,51 +46,56 @@ export function ProductSort({ currentSort, searchParams }: ProductSortProps) {
     // Reset page cursors
     params.delete("after");
     params.delete("before");
+    params.delete("page");
 
-    if (value === "newest") {
-      params.delete("sort");
-    } else {
+    if (value && value !== "newest") {
       params.set("sort", value);
     }
 
+    const queryString = params.toString();
+    const targetUrl = queryString ? `${pathname}?${queryString}` : pathname;
+
     startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`);
+      router.push(targetUrl, { scroll: false });
     });
   };
 
   if (!isClient) {
     return (
-      <div className="flex items-center space-x-2">
-        <span className="text-muted-foreground text-sm font-medium whitespace-nowrap">
-          {t("sort.label")}:
-        </span>
-        <button
-          disabled
-          aria-label={t("sort.label")}
-          className="border-input bg-background text-muted-foreground flex h-9 w-45 cursor-not-allowed items-center justify-between rounded-md border px-3 py-2 text-sm opacity-60 shadow-xs outline-hidden"
-        >
-          <span className="line-clamp-1">{currentLabel}</span>
-          <ChevronDown className="h-4 w-4 opacity-50" />
-        </button>
-      </div>
+      <button
+        disabled
+        aria-label={t("sort.label")}
+        className="border-input bg-background text-muted-foreground flex h-8.5 w-auto min-w-[145px] cursor-not-allowed items-center justify-between rounded-md border px-3 py-1.5 text-xs opacity-60 shadow-xs outline-hidden"
+      >
+        <div className="flex items-center gap-1.5 truncate">
+          <ArrowUpDown className="size-3 shrink-0" />
+          <span className="truncate">{currentLabel}</span>
+        </div>
+        <ChevronDown className="size-3 shrink-0 opacity-50" />
+      </button>
     );
   }
 
   return (
-    <div className="flex items-center space-x-2">
-      <span className="text-muted-foreground text-sm font-medium whitespace-nowrap">
-        {t("sort.label")}:
-      </span>
-      <Select value={currentSort} onValueChange={handleSortChange}>
-        <SelectTrigger className="h-9 w-45" aria-label={t("sort.label")}>
-          <SelectValue placeholder={t("sort.newest")} />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="newest">{t("sort.newest")}</SelectItem>
-          <SelectItem value="priceAsc">{t("sort.priceAsc")}</SelectItem>
-          <SelectItem value="priceDesc">{t("sort.priceDesc")}</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
+    <Select value={currentSort} onValueChange={handleSortChange}>
+      <SelectTrigger
+        className="h-8.5 w-auto min-w-[145px] gap-1.5 px-3 text-xs font-semibold"
+        aria-label={t("sort.label")}
+      >
+        <ArrowUpDown className="text-muted-foreground size-3 shrink-0" />
+        <SelectValue placeholder={t("sort.newest")} />
+      </SelectTrigger>
+      <SelectContent align="end">
+        <SelectItem value="newest" className="text-xs">
+          {t("sort.newest")}
+        </SelectItem>
+        <SelectItem value="priceAsc" className="text-xs">
+          {t("sort.priceAsc")}
+        </SelectItem>
+        <SelectItem value="priceDesc" className="text-xs">
+          {t("sort.priceDesc")}
+        </SelectItem>
+      </SelectContent>
+    </Select>
   );
 }

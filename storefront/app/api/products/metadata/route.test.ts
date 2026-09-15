@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, mock } from "bun:test";
+import { beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
 
 const mockGetFiltersMetadata = mock();
 await mock.module("@/services", () => ({
@@ -13,6 +13,7 @@ import { GET } from "./route";
 describe("GET /api/products/metadata", () => {
   beforeEach(() => {
     mockGetFiltersMetadata.mockReset();
+    spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   it("returns products filter metadata on success", async () => {

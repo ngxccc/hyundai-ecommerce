@@ -62,10 +62,21 @@ export const productFilters = {
     brandId ? eq(products.brandId, brandId) : undefined,
 
   /**
-   * Filters by exact category UUID.
+   * Filters by category UUID including all descendant subcategories recursively.
    */
-  byCategoryId: (categoryId?: string | null): SQL | undefined =>
-    categoryId ? eq(products.categoryId, categoryId) : undefined,
+  byCategoryId: (categoryId?: string | null): SQL | undefined => {
+    if (!categoryId) return undefined;
+    return sql`EXISTS (
+      WITH RECURSIVE category_tree AS (
+        SELECT id FROM category WHERE id = ${categoryId}::uuid AND is_active = true
+        UNION ALL
+        SELECT c.id FROM category c
+        INNER JOIN category_tree ct ON c.parent_id = ct.id
+        WHERE c.is_active = true
+      )
+      SELECT 1 FROM category_tree ct WHERE ct.id = ${products.categoryId}
+    )`;
+  },
 
   /**
    * Filters products within the specified price range.

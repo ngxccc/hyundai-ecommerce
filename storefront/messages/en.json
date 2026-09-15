@@ -308,7 +308,7 @@
     }
   },
   "Catalog": {
-    "title": "Product Catalog",
+    "title": "All Products",
     "search_placeholder": "Search products...",
     "search_results": "Search results for: \"{query}\" ({count} results)",
     "showing_products": "Showing {count} products",

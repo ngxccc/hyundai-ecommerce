@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
-import { X } from "lucide-react";
+import { X, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 
@@ -23,24 +23,47 @@ export function ActiveFilterChips() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const t = useTranslations("Catalog.sidebar");
-  const tProduct = useTranslations("ProductDetails");
 
   const activeFilters: { key: string; value: string; label: string }[] = [];
 
   const getLabel = (key: string, value: string): string => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const translationKey = FILTER_KEY_MAP[key] ?? (key as any);
-    const labelPrefix = t(translationKey as never);
-
+    if (key === "q") {
+      return `Tìm: "${value}"`;
+    }
+    if (key === "minPower") {
+      return `Công suất: ≥ ${value} kW`;
+    }
+    if (key === "maxPower") {
+      return `Công suất: ≤ ${value} kW`;
+    }
+    if (key === "voltage") {
+      return `Điện áp: ${value}V`;
+    }
     if (key === "fuelType") {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return `${labelPrefix}: ${tProduct(`fuelTypes.${value}` as any)}`;
+      const label =
+        value === "gasoline"
+          ? "Xăng"
+          : value === "diesel"
+            ? "Diesel"
+            : value === "gas"
+              ? "Gas"
+              : value;
+      return `Nhiên liệu: ${label}`;
     }
     if (key === "phase") {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return `${labelPrefix}: ${tProduct(`phases.${value}` as any)}`;
+      const label =
+        value === "1phase" ? "1 Pha" : value === "3phase" ? "3 Pha" : value;
+      return `Pha điện: ${label}`;
+    }
+    if (key === "engineBrand") {
+      return `Động cơ: ${value}`;
+    }
+    if (key === "alternatorBrand") {
+      return `Đầu phát: ${value}`;
     }
 
+    const translationKey = FILTER_KEY_MAP[key] ?? key;
+    const labelPrefix = t(translationKey as never);
     return `${labelPrefix}: ${value}`;
   };
 
@@ -49,7 +72,7 @@ export function ActiveFilterChips() {
 
     if (key === "brand") {
       value.split(",").forEach((v) => {
-        activeFilters.push({ key, value: v, label: getLabel(key, v) });
+        activeFilters.push({ key, value: v, label: `Hãng: ${v}` });
       });
     } else {
       activeFilters.push({ key, value, label: getLabel(key, value) });
@@ -77,6 +100,7 @@ export function ActiveFilterChips() {
 
     params.delete("after");
     params.delete("before");
+    params.delete("page");
 
     const queryString = params.toString();
     router.push(queryString ? `${pathname}?${queryString}` : pathname, {
@@ -85,36 +109,35 @@ export function ActiveFilterChips() {
   };
 
   return (
-    <div className="mb-4 flex flex-wrap items-center gap-2">
-      <span className="text-muted-foreground mr-1 text-sm">
+    <div className="flex flex-wrap items-center gap-1.5 pt-1">
+      <span className="text-muted-foreground mr-1 text-xs font-semibold tracking-wider uppercase select-none">
         {t("active_filters")}:
       </span>
       {activeFilters.map((filter, index) => (
-        <Button
+        <button
           key={`${filter.key}-${filter.value}-${index}`}
-          variant="secondary"
-          size="sm"
-          className="h-7 rounded-full px-3 text-xs font-normal"
           onClick={() => {
             removeFilter(
               filter.key,
               filter.key === "brand" ? filter.value : undefined,
             );
           }}
+          className="bg-muted/60 text-foreground hover:bg-muted hover:text-destructive focus-visible:ring-ring flex h-7 items-center gap-1 rounded-full border px-2.5 text-xs font-medium transition-colors select-none"
         >
-          {filter.label}
-          <X className="ml-1.5 h-3 w-3" />
-        </Button>
+          <span>{filter.label}</span>
+          <X className="text-muted-foreground hover:text-destructive size-3" />
+        </button>
       ))}
       {activeFilters.length > 1 && (
         <Button
           variant="ghost"
           size="sm"
-          className="text-muted-foreground h-7 text-xs"
+          className="text-muted-foreground hover:text-foreground h-7 gap-1 px-2 text-xs font-semibold"
           onClick={() => {
             router.push(pathname, { scroll: false });
           }}
         >
+          <RotateCcw className="size-3" />
           {t("clear_all")}
         </Button>
       )}

@@ -1,12 +1,6 @@
 import { cacheLife } from "next/cache";
 import { catalogApi } from "../api/catalog.api";
-import type {
-  ProductQueryParams,
-  ProductPhase,
-  ProductFuelType,
-  ProductCanopyType,
-  ProductSort,
-} from "@/types/api";
+import type { ProductQueryParams } from "@/types/api";
 import {
   type StorefrontProduct,
   type StorefrontCatalogMetadata,
@@ -23,20 +17,21 @@ export interface GetProductsResponse {
   nextCursor?: string | undefined;
   prevCursor?: string | undefined;
 }
-export type CatalogQueryOptions = Omit<
+export interface CatalogQueryOptions extends Omit<
   ProductQueryParams,
-  "phase" | "fuelType" | "canopyType" | "sort" | "voltage"
-> & {
-  phase?: ProductPhase | (string & {}) | undefined;
-  fuelType?: ProductFuelType | (string & {}) | undefined;
-  canopyType?: ProductCanopyType | (string & {}) | undefined;
-  sort?: ProductSort | (string & {}) | undefined;
-  voltage?: string | number | undefined;
+  "voltage" | "phase" | "fuelType" | "canopyType" | "sort"
+> {
+  voltage?: string | number | null | undefined;
+  phase?: ProductQueryParams["phase"] | (string & {}) | null | undefined;
+  fuelType?: ProductQueryParams["fuelType"] | (string & {}) | null | undefined;
+  canopyType?:
+    ProductQueryParams["canopyType"] | (string & {}) | null | undefined;
+  sort?: ProductQueryParams["sort"] | (string & {}) | null | undefined;
   brandIds?: string[] | undefined;
   categoryIds?: string[] | undefined;
   after?: string | undefined;
   before?: string | undefined;
-};
+}
 
 export const productService = {
   getProducts: async (
@@ -47,27 +42,47 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await catalogApi.products.list({
+      const {
+        brandIds,
+        categoryIds,
+        after: _after,
+        before: _before,
+        voltage,
+        phase,
+        fuelType,
+        canopyType,
+        sort,
+        ...rest
+      } = options ?? {};
+
+      const queryParams: ProductQueryParams = {
         locale,
         limit,
-        page: options?.page ?? 1,
-        search: options?.search,
-        brandId: options?.brandId ?? options?.brandIds?.[0],
-        categoryId: options?.categoryId ?? options?.categoryIds?.[0],
-        priceMin: options?.priceMin,
-        priceMax: options?.priceMax,
-        minPower: options?.minPower,
-        maxPower: options?.maxPower,
-        phase: options?.phase as ProductPhase,
-        fuelType: options?.fuelType as ProductFuelType,
-        canopyType: options?.canopyType as ProductCanopyType,
-        sort: options?.sort as ProductSort,
-        voltage: options?.voltage != null ? String(options.voltage) : undefined,
-        engineBrand: options?.engineBrand,
-        alternatorBrand: options?.alternatorBrand,
-        status: options?.status,
-        isQuoteOnly: options?.isQuoteOnly,
-      });
+        page: rest.page ?? 1,
+        ...rest,
+        brandId: rest.brandId ?? brandIds?.[0],
+        categoryId: rest.categoryId ?? categoryIds?.[0],
+        voltage:
+          voltage != null && voltage !== "" ? String(voltage) : undefined,
+        phase:
+          phase && phase !== ""
+            ? (phase as ProductQueryParams["phase"])
+            : undefined,
+        fuelType:
+          fuelType && fuelType !== ""
+            ? (fuelType as ProductQueryParams["fuelType"])
+            : undefined,
+        canopyType:
+          canopyType && canopyType !== ""
+            ? (canopyType as ProductQueryParams["canopyType"])
+            : undefined,
+        sort:
+          sort && sort !== ""
+            ? (sort as ProductQueryParams["sort"])
+            : undefined,
+      };
+
+      const { data: res } = await catalogApi.products.list(queryParams);
 
       const items = res?.data ?? [];
       const meta = res?.meta;

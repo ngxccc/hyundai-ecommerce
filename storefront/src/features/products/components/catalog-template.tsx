@@ -1,16 +1,31 @@
 import { Suspense } from "react";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import { redirect } from "@/i18n/routing";
-import { productService, categoryService, brandService } from "@/services";
-import { ProductSort } from "./product-sort";
+import { Link, redirect } from "@/i18n/routing";
+import {
+  productService,
+  categoryService,
+  brandService,
+  type StorefrontCategory,
+} from "@/services";
 import { ProductPagination } from "./product-pagination";
 import { ActiveFilterChips } from "./active-filter-chips";
-import { DesktopProductFilters } from "./desktop-product-filters";
-import { ProductFilterSheet } from "./product-filter-sheet";
+import { TopProductFilters } from "./top-product-filters";
+import { SubcategoryPills } from "./subcategory-pills";
 import { ProductCard } from "./product-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
+import { RotateCcw, PackageSearch } from "lucide-react";
 import type { CatalogSearchParams } from "../types/catalog";
+
 interface CatalogTemplateProps {
   title?: string;
   categorySlug?: string | undefined;
@@ -48,7 +63,7 @@ export async function CatalogTemplate({
       ? categoryQuery[0]
       : categoryQuery;
     redirect({
-      href: `/products/category/${targetSlug}${queryString ? `?${queryString}` : ""}`,
+      href: `/categories/${targetSlug}${queryString ? `?${queryString}` : ""}`,
       locale: locale,
     });
   }
@@ -72,13 +87,12 @@ export async function CatalogTemplate({
   const engineBrand = searchParams.engineBrand;
   const alternatorBrand = searchParams.alternatorBrand;
 
-  // Resolve categoryIds if category slug is provided
+  // Resolve targetCategory and categoryIds if category slug is provided
+  let targetCategory: StorefrontCategory | undefined;
   let categoryIds: string[] | undefined;
   if (categorySlug) {
     const categoriesList = await categoryService.getCategories(locale!);
-    const targetCategory = categoriesList.find(
-      (cat) => cat.slug === categorySlug,
-    );
+    targetCategory = categoriesList.find((cat) => cat.slug === categorySlug);
     if (targetCategory) {
       categoryIds = await categoryService.getCategoryDescendants(
         targetCategory.id,
@@ -86,10 +100,11 @@ export async function CatalogTemplate({
     }
   }
 
-  // Fetch categories and brands from database first
-  const [categoriesTree, allBrands] = await Promise.all([
+  // Fetch categories tree, brands, and catalog facet metadata in parallel
+  const [categoriesTree, allBrands, catalogMetadata] = await Promise.all([
     categoryService.getCategoryTree(locale!),
     brandService.getBrands(locale!),
+    productService.getFiltersMetadata(locale!),
   ]);
 
   // Resolve brandIds from brand slugs in URL param
@@ -102,7 +117,8 @@ export async function CatalogTemplate({
   }
 
   // Fetch filtered products using resolved category and brand IDs
-  const productsData = await productService.getProducts(locale!, 12, {
+  const productsData = await productService.getProducts(locale!, 16, {
+    categoryId: targetCategory?.id,
     categoryIds,
     brandIds,
     search,
@@ -119,101 +135,144 @@ export async function CatalogTemplate({
   });
 
   const { data: productsList, hasMore, nextCursor, prevCursor } = productsData;
-
   const displayTitle = title ?? t("title");
 
+  // Determine breadcrumb structure
+  let currentCategoryNode = null;
+  let parentCategoryNode = null;
+  if (categorySlug) {
+    for (const root of categoriesTree) {
+      if (root.slug === categorySlug) {
+        currentCategoryNode = root;
+        break;
+      }
+      const child = root.children.find((c) => c.slug === categorySlug);
+      if (child) {
+        parentCategoryNode = root;
+        currentCategoryNode = child;
+        break;
+      }
+    }
+  }
+
   return (
-    <div className="bg-background min-h-screen pt-6">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Page Header */}
-        <div className="mb-8 border-b pb-4">
-          <h1 className="font-display text-foreground text-4xl font-extrabold tracking-tighter md:text-5xl">
-            {displayTitle}
-          </h1>
-          {search && (
-            <p className="text-muted-foreground mt-2 text-sm">
+    <div className="bg-background min-h-screen pt-4 pb-16">
+      <div className="mx-auto max-w-7xl space-y-5 px-4 sm:px-6 lg:px-8">
+        {/* Breadcrumb Navigation */}
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/">Trang chủ</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/products">Sản phẩm</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            {parentCategoryNode && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href={`/categories/${parentCategoryNode.slug}`}>
+                      {parentCategoryNode.name}
+                    </Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              </>
+            )}
+            {currentCategoryNode && (
+              <>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{currentCategoryNode.name}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </>
+            )}
+          </BreadcrumbList>
+        </Breadcrumb>
+
+        {/* Page Heading: Accessible via sr-only for Google SEO & Screen Readers */}
+        <h1 className="sr-only">{displayTitle}</h1>
+
+        {search && (
+          <div className="flex items-center justify-between border-b pb-2">
+            <p className="text-muted-foreground text-xs font-medium">
               {t("search_results", {
                 query: search,
-                count: productsList.length.toString(),
+                count: productsData.total.toString(),
               })}
             </p>
-          )}
+          </div>
+        )}
+        {/* Subcategory Navigation Pills */}
+        <SubcategoryPills
+          categories={categoriesTree}
+          currentCategorySlug={categorySlug}
+        />
+
+        {/* Top Filter Bar */}
+        <div className="bg-card rounded-xl border p-3 shadow-xs">
+          <TopProductFilters brands={allBrands} metadata={catalogMetadata} />
         </div>
 
-        {/* Main Section */}
-        <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
-          {/* Filters Sidebar (Desktop) */}
-          <div className="hidden lg:block">
-            <div className="bg-muted/10 sticky top-24 rounded-lg border p-4">
-              <DesktopProductFilters
-                categories={categoriesTree}
-                brands={allBrands}
-                selectedCategorySlug={categorySlug}
-                searchParams={searchParams}
-              />
+        {/* Active Filter Chips */}
+        <Suspense
+          fallback={
+            <div className="flex flex-wrap gap-2">
+              <Skeleton className="h-7 w-20 rounded-full" />
+              <Skeleton className="h-7 w-24 rounded-full" />
+            </div>
+          }
+        >
+          <ActiveFilterChips />
+        </Suspense>
+
+        {/* 100% Full-Width 4-Column Product Grid */}
+        {productsList.length > 0 ? (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+            {productsList.map((product, index) => (
+              <ProductCard key={product.id} product={product} index={index} />
+            ))}
+          </div>
+        ) : (
+          /* Modern Clean Empty State */
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed px-4 py-20 text-center">
+            <div className="bg-muted/50 mb-4 flex size-14 items-center justify-center rounded-full">
+              <PackageSearch className="text-muted-foreground size-7" />
+            </div>
+            <h3 className="font-display text-foreground text-lg font-bold">
+              {t("no_products")}
+            </h3>
+            <p className="text-muted-foreground mt-1 max-w-md text-xs sm:text-sm">
+              Không tìm thấy sản phẩm nào phù hợp với bộ lọc hiện tại. Vui lòng
+              thử điều chỉnh hoặc xóa bớt tiêu chí lọc.
+            </p>
+            <div className="mt-5 flex gap-3">
+              <Button variant="outline" size="sm" asChild>
+                <Link
+                  href={
+                    categorySlug ? `/categories/${categorySlug}` : "/products"
+                  }
+                  className="gap-1.5"
+                >
+                  <RotateCcw className="size-3.5" />
+                  Xóa tất cả bộ lọc
+                </Link>
+              </Button>
             </div>
           </div>
+        )}
 
-          {/* Filters Sheet (Mobile) */}
-          <div className="lg:hidden">
-            <ProductFilterSheet
-              categories={categoriesTree}
-              brands={allBrands}
-              selectedCategorySlug={categorySlug}
-              searchParams={searchParams}
-            />
-          </div>
-
-          {/* Product Listing */}
-          <div className="space-y-6 lg:col-span-3">
-            {/* Top Bar (Sorting + Summary) */}
-            <div className="flex items-center justify-between border-b pb-4">
-              <p className="text-muted-foreground text-sm font-medium">
-                {t("showing_products", {
-                  count: productsList.length.toString(),
-                })}
-              </p>
-              <ProductSort
-                currentSort={searchParams.sort ?? "newest"}
-                searchParams={searchParams}
-              />
-            </div>
-
-            {/* Active Filter Chips */}
+        {/* Pagination */}
+        {productsData.totalPages > 1 && (
+          <div className="pt-6">
             <Suspense
               fallback={
-                <div className="flex flex-wrap gap-2">
-                  <Skeleton className="h-8 w-20 rounded-full" />
-                  <Skeleton className="h-8 w-24 rounded-full" />
-                  <Skeleton className="h-8 w-28 rounded-full" />
-                </div>
-              }
-            >
-              <ActiveFilterChips />
-            </Suspense>
-            {/* Product Grid */}
-            {productsList.length > 0 ? (
-              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {productsList.map((product, index) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    index={index}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-24 text-center">
-                <p className="text-muted-foreground text-lg font-medium">
-                  {t("no_products")}
-                </p>
-              </div>
-            )}
-
-            {/* Pagination */}
-            <Suspense
-              fallback={
-                <div className="flex items-center justify-center gap-2 pt-6">
+                <div className="flex items-center justify-center gap-2">
                   <Skeleton className="h-10 w-10 rounded-md" />
                   <Skeleton className="h-10 w-24 rounded-md" />
                   <Skeleton className="h-10 w-10 rounded-md" />
@@ -231,7 +290,7 @@ export async function CatalogTemplate({
               />
             </Suspense>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

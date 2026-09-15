@@ -7,24 +7,17 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import { useRouter } from "@/i18n/routing";
+import { useRouter, usePathname } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import type {
-  StorefrontCategoryWithChildren,
-  StorefrontBrand,
-  StorefrontCatalogMetadata,
-} from "@/services";
+import type { StorefrontBrand, StorefrontCatalogMetadata } from "@/services";
 import { useTranslations, useLocale } from "next-intl";
-import { ChevronDown, ChevronRight } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 
 interface ProductFiltersProps {
-  categories: StorefrontCategoryWithChildren[];
   brands: StorefrontBrand[];
-  selectedCategorySlug?: string;
   mode?: "live" | "sheet";
   onPendingFiltersChange?: (params: URLSearchParams) => void;
   pendingSearchParams?: URLSearchParams | undefined;
@@ -32,15 +25,14 @@ interface ProductFiltersProps {
 }
 
 export function ProductFilters({
-  categories,
   brands,
-  selectedCategorySlug,
   mode = "live",
   onPendingFiltersChange,
   pendingSearchParams,
   searchParams: searchParamsProp,
 }: ProductFiltersProps) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const searchParams = useMemo(() => {
     const params = new URLSearchParams();
@@ -93,8 +85,6 @@ export function ProductFilters({
   const [, startTransition] = useTransition();
 
   // Selected values from effective params (URL or pending)
-  const selectedCategory =
-    effectiveSearchParams.get("category") ?? selectedCategorySlug ?? "";
   const selectedBrands =
     effectiveSearchParams.get("brand")?.split(",").filter(Boolean) ?? [];
   const searchQuery = effectiveSearchParams.get("q") ?? "";
@@ -131,18 +121,6 @@ export function ProductFilters({
     setLocalAlternatorBrand(searchParams.get("alternatorBrand") ?? "");
   }
 
-  // Expanded state for accordion categories
-  const [expandedCategories, setExpandedCategories] = useState<
-    Record<string, boolean>
-  >({});
-
-  const toggleCategory = (categoryId: string) => {
-    setExpandedCategories((prev) => ({
-      ...prev,
-      [categoryId]: !prev[categoryId],
-    }));
-  };
-
   // Base navigation update function with Transition
   const updateFilters = useCallback(
     (updates: Record<string, string | null>) => {
@@ -159,6 +137,7 @@ export function ProductFilters({
       // Reset pagination parameters when filters change
       params.delete("after");
       params.delete("before");
+      params.delete("page");
 
       if (mode === "sheet" && onPendingFiltersChange) {
         onPendingFiltersChange(params);
@@ -166,31 +145,13 @@ export function ProductFilters({
       }
 
       startTransition(() => {
-        const targetCategorySlug = updates.category ?? selectedCategory;
-        if (targetCategorySlug) {
-          const categoryPath = `/products/category/${targetCategorySlug}`;
-          const cleanParams = new URLSearchParams(params.toString());
-          cleanParams.delete("category");
-          const queryString = cleanParams.toString();
-          router.push(
-            queryString ? `${categoryPath}?${queryString}` : categoryPath,
-            { scroll: false },
-          );
-        } else {
-          const queryString = params.toString();
-          router.push(queryString ? `/products?${queryString}` : "/products", {
-            scroll: false,
-          });
-        }
+        const queryString = params.toString();
+        router.push(queryString ? `${pathname}?${queryString}` : pathname, {
+          scroll: false,
+        });
       });
     },
-    [
-      effectiveSearchParams,
-      mode,
-      onPendingFiltersChange,
-      router,
-      selectedCategory,
-    ],
+    [effectiveSearchParams, mode, onPendingFiltersChange, pathname, router],
   );
 
   // Debounced search query
@@ -278,92 +239,8 @@ export function ProductFilters({
     return metadata.phases.filter((p) => p.count > 0 && p.value);
   }, [metadata]);
 
-  // Recursive category tree renderer
-  const renderCategoryNode = (
-    node: StorefrontCategoryWithChildren,
-    depth = 0,
-  ) => {
-    const hasChildren = node.children.length > 0;
-    const isExpanded = expandedCategories[node.id];
-    const isSelected = selectedCategory === node.slug;
-
-    return (
-      <div key={node.id} className="select-none">
-        <div
-          className={`flex items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors ${
-            isSelected
-              ? "bg-primary/10 text-primary font-bold"
-              : "hover:bg-muted text-foreground cursor-pointer"
-          }`}
-          style={{ paddingLeft: `${depth * 12 + 8}px` }}
-          onClick={() => {
-            const params = new URLSearchParams(
-              effectiveSearchParams.toString(),
-            );
-            params.delete("category");
-            params.delete("after");
-            params.delete("before");
-
-            startTransition(() => {
-              if (mode === "sheet" && onPendingFiltersChange) {
-                const newParams = new URLSearchParams(params.toString());
-                if (isSelected) {
-                  newParams.delete("category");
-                } else {
-                  newParams.set("category", node.slug);
-                }
-                onPendingFiltersChange(newParams);
-              } else {
-                if (isSelected) {
-                  router.push(`/products?${params.toString()}`, {
-                    scroll: false,
-                  });
-                } else {
-                  router.push(
-                    `/products/category/${node.slug}?${params.toString()}`,
-                    { scroll: false },
-                  );
-                }
-              }
-            });
-          }}
-        >
-          <span>{node.name}</span>
-          {hasChildren && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleCategory(node.id);
-              }}
-              aria-label={
-                isExpanded
-                  ? t("sidebar.collapse_category")
-                  : t("sidebar.expand_category")
-              }
-              className="hover:bg-muted-foreground/10 rounded-sm p-1"
-            >
-              {isExpanded ? (
-                <ChevronDown className="text-muted-foreground h-4.5 w-4.5" />
-              ) : (
-                <ChevronRight className="text-muted-foreground h-4.5 w-4.5" />
-              )}
-            </button>
-          )}
-        </div>
-
-        {hasChildren && isExpanded && (
-          <div className="mt-1 space-y-1">
-            {node.children.map((child: StorefrontCategoryWithChildren) =>
-              renderCategoryNode(child, depth + 1),
-            )}
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
-    <div className="space-y-3">
+    <div className="space-y-4 p-4">
       {/* Search Input Box */}
       <div>
         <Input
@@ -379,22 +256,11 @@ export function ProductFilters({
 
       <Separator />
 
-      {/* Categories Tree Accordion */}
-      <div>
-        <div className="text-foreground mb-1 text-sm font-bold">
-          {t("sidebar.categories")}
-        </div>
-        <div className="space-y-1">
-          {categories.map((cat) => renderCategoryNode(cat))}
-        </div>
-      </div>
-
       {/* Brand Checklist - only render if available brands exist */}
       {availableBrands.length > 0 && (
         <>
-          <Separator />
           <div>
-            <div className="text-foreground mb-1 text-sm font-bold">
+            <div className="text-foreground mb-2 text-sm font-bold">
               {t("sidebar.brands")}
             </div>
             <div className="space-y-2.5">
@@ -416,20 +282,23 @@ export function ProductFilters({
               ))}
             </div>
           </div>
+          <Separator />
         </>
       )}
 
-      <Separator />
-
       {/* Power Range Filter (kW) */}
       <div>
-        <div className="text-foreground mb-1 text-sm font-bold">
-          {t("sidebar.power_range")}
+        <div className="text-foreground mb-2 text-sm font-bold">
+          {t("sidebar.power_range")} (kW)
         </div>
         <div className="flex items-center space-x-2">
           <Input
             type="number"
-            placeholder={t("sidebar.placeholder_min")}
+            placeholder={
+              metadata?.powerRange.min != null && metadata.powerRange.min > 0
+                ? `${metadata.powerRange.min} kW`
+                : t("sidebar.placeholder_min")
+            }
             value={localMinPower}
             onChange={(e) => {
               setLocalMinPower(e.target.value);
@@ -440,7 +309,11 @@ export function ProductFilters({
           <span className="text-muted-foreground text-xs">—</span>
           <Input
             type="number"
-            placeholder={t("sidebar.placeholder_max")}
+            placeholder={
+              metadata?.powerRange.max != null && metadata.powerRange.max > 0
+                ? `${metadata.powerRange.max} kW`
+                : t("sidebar.placeholder_max")
+            }
             value={localMaxPower}
             onChange={(e) => {
               setLocalMaxPower(e.target.value);
@@ -456,7 +329,7 @@ export function ProductFilters({
         <>
           <Separator />
           <div>
-            <div className="text-foreground mb-1 text-sm font-bold">
+            <div className="text-foreground mb-2 text-sm font-bold">
               {t("sidebar.fuel_type")}
             </div>
             <div className="flex flex-wrap gap-2">
@@ -496,7 +369,7 @@ export function ProductFilters({
         <>
           <Separator />
           <div>
-            <div className="text-foreground mb-1 text-sm font-bold">
+            <div className="text-foreground mb-2 text-sm font-bold">
               {t("sidebar.phase")}
             </div>
             <div className="flex gap-2">
@@ -527,8 +400,8 @@ export function ProductFilters({
 
       {/* Voltage */}
       <div>
-        <div className="text-foreground mb-1 text-sm font-bold">
-          {t("sidebar.voltage")}
+        <div className="text-foreground mb-2 text-sm font-bold">
+          {t("sidebar.voltage")} (V)
         </div>
         <Input
           type="number"
@@ -546,7 +419,7 @@ export function ProductFilters({
 
       {/* Engine Brand */}
       <div>
-        <div className="text-foreground mb-1 text-sm font-bold">
+        <div className="text-foreground mb-2 text-sm font-bold">
           {t("sidebar.engine_brand")}
         </div>
         <Input
@@ -564,7 +437,7 @@ export function ProductFilters({
 
       {/* Alternator Brand */}
       <div>
-        <div className="text-foreground mb-1 text-sm font-bold">
+        <div className="text-foreground mb-2 text-sm font-bold">
           {t("sidebar.alternator_brand")}
         </div>
         <Input

@@ -29,7 +29,7 @@ export async function CategoriesSection() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
           {categories.map((cat) => (
             <Link
-              href={`/products/category/${cat.slug}`}
+              href={`/categories/${cat.slug}`}
               key={cat.id}
               className="group focus-visible:ring-primary relative flex h-[160px] flex-col justify-end overflow-hidden rounded-xl bg-zinc-900 p-5 shadow-xs transition-all duration-300 outline-none hover:shadow-lg focus-visible:ring-2 md:h-[180px]"
             >

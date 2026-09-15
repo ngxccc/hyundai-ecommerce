@@ -82,6 +82,11 @@ describe("Cloudinary Service", () => {
   });
 
   describe("deleteFromCloudinary", () => {
+    beforeEach(() => {
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    });
+
     test("returns false if url is invalid", async () => {
       const result = await deleteFromCloudinary("https://example.com/img.png");
       expect(result).toBe(false);

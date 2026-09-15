@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "@/i18n/routing";
+import { useRouter, usePathname } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import {
   Sheet,
@@ -13,34 +13,30 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Filter, X } from "lucide-react";
-import type {
-  StorefrontCategoryWithChildren,
-  StorefrontBrand,
-} from "@/services";
+import type { StorefrontBrand } from "@/services";
 import { ProductFilters } from "./product-filters";
 
-interface ProductFilterSheetProps {
-  categories: StorefrontCategoryWithChildren[];
+export interface ProductFilterSheetProps {
   brands: StorefrontBrand[];
-  selectedCategorySlug?: string | undefined;
   searchParams: Record<string, string | string[] | undefined>;
+  trigger?: React.ReactNode;
+  side?: "bottom" | "right";
 }
-
 /**
  * Mobile Bottom Sheet wrapper for ProductFilters.
  * Renders the existing ProductFilters component inside a Sheet on mobile.
  * Desktop behavior is handled by the parent layout (sidebar).
  */
 export function ProductFilterSheet({
-  categories,
   brands,
-  selectedCategorySlug,
   searchParams,
+  trigger,
+  side = "right",
 }: ProductFilterSheetProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const t = useTranslations("Catalog.sidebar");
   const [open, setOpen] = useState(false);
-
   // Holds the accumulated filter state while the sheet is open.
   // This is only pushed to the URL when the user explicitly clicks "Apply".
   const [pendingParams, setPendingParams] = useState<URLSearchParams | null>(
@@ -62,9 +58,7 @@ export function ProductFilterSheet({
           }
         }
       });
-      if (selectedCategorySlug && !params.has("category")) {
-        params.set("category", selectedCategorySlug);
-      }
+      // Direct query params
       setPendingParams(params);
     } else {
       setPendingParams(null);
@@ -77,21 +71,10 @@ export function ProductFilterSheet({
 
   const handleApply = () => {
     if (pendingParams) {
-      const category = pendingParams.get("category");
-      const params = new URLSearchParams(pendingParams.toString());
-      params.delete("category");
-      const query = params.toString();
-
-      if (category) {
-        router.push(
-          `/products/category/${category}${query ? `?${query}` : ""}`,
-          { scroll: false },
-        );
-      } else {
-        router.push(query ? `/products?${query}` : "/products", {
-          scroll: false,
-        });
-      }
+      const query = pendingParams.toString();
+      router.push(query ? `${pathname}?${query}` : pathname, {
+        scroll: false,
+      });
     }
     setOpen(false);
     setPendingParams(null);
@@ -99,27 +82,27 @@ export function ProductFilterSheet({
 
   const handleClearAll = () => {
     setPendingParams(null);
-    // When clearing filters, always navigate back to the main products list
-    // instead of staying inside a specific category slug.
-    router.push("/products", { scroll: false });
+    router.push(pathname, { scroll: false });
     setOpen(false);
   };
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
-        <Button
-          variant="outline"
-          className="sticky bottom-4 z-40 w-full shadow-lg lg:hidden"
-        >
-          <Filter className="mr-2 h-4 w-4" />
-          {t("filters")}
-        </Button>
+        {trigger ?? (
+          <Button
+            variant="outline"
+            className="sticky bottom-4 z-40 w-full shadow-lg lg:hidden"
+          >
+            <Filter className="mr-2 h-4 w-4" />
+            {t("filters")}
+          </Button>
+        )}
       </SheetTrigger>
 
       <SheetContent
-        side="bottom"
-        className="flex h-[85vh] flex-col p-0"
+        side={side}
+        className="flex h-full max-w-md flex-col p-0"
         showCloseButton={false}
       >
         <SheetHeader className="shrink-0 flex-row items-center justify-between border-b px-6 pt-4 pb-2">
@@ -137,11 +120,9 @@ export function ProductFilterSheet({
           </Button>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="flex-1 overflow-y-auto">
           <ProductFilters
-            categories={categories}
             brands={brands}
-            selectedCategorySlug={selectedCategorySlug ?? ""}
             mode="sheet"
             onPendingFiltersChange={handlePendingChange}
             pendingSearchParams={pendingParams ?? undefined}

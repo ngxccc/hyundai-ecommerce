@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, mock } from "bun:test";
+import { beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
 
 await mock.module("next/server", () => {
   class MockNextResponse extends Response {
@@ -54,6 +54,7 @@ describe("GET /api/products", () => {
     mockGetProducts.mockReset();
     mockGetCategories.mockReset();
     mockGetBrands.mockReset();
+    spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   it("returns mapped products on success", async () => {

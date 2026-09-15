@@ -338,6 +338,47 @@ describe("Catalog Module Integration", () => {
         expect(prod?.slug).toBe("dhy65kse-60kva");
         expect(prod?.fuelType).toBe("diesel");
       }, 15000);
+
+      it("should filter by parent categoryId including all descendant subcategories", async () => {
+        const uniqueSlug = `child-cat-${String(Date.now())}`;
+        const [childCategory] = await db
+          .insert(categories)
+          .values({
+            slug: uniqueSlug,
+            parentId: categoryId,
+          })
+          .returning();
+
+        if (!childCategory) throw new Error("Child category creation failed");
+
+        const uniqueProdSlug = `p-child-${String(Date.now())}`;
+        await db.insert(products).values({
+          slug: uniqueProdSlug,
+          price: "10000000.00",
+          brandId,
+          categoryId: childCategory.id,
+          powerKva: "20.00",
+          powerKw: "16.00",
+          fuelType: "diesel",
+          phase: "1phase",
+          voltage: "230V",
+          canopyType: "silent",
+          totalStockCache: 5,
+          isActive: true,
+        });
+
+        const res = await request(getHttpServer())
+          .get("/api/v1/products")
+          .query({
+            categoryId,
+          });
+
+        expect(res.status).toBe(200);
+        const body = res.body as unknown as GenericSuccessResponse<
+          ProductResponseBody[]
+        >;
+        expect(body.data.some((p) => p.slug === uniqueProdSlug)).toBe(true);
+      }, 15000);
     });
 
     describe("GET /products/metadata", () => {

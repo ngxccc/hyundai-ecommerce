@@ -28,7 +28,7 @@ export async function generateMetadata({
   return {
     title: targetCategory.name,
     alternates: {
-      canonical: `${siteConfig.url}${localePrefix}/products/category/${slug}`,
+      canonical: `${siteConfig.url}${localePrefix}/categories/${slug}`,
     },
   };
 }
