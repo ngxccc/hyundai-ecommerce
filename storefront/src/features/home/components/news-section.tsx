@@ -1,6 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
-import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
+import { ImageWithSkeleton, ProductImagePlaceholder } from "@/components";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { Link } from "@/i18n/routing";
@@ -11,7 +10,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { newsService } from "@/shared/services";
+import { newsService } from "@/services";
 
 export async function NewsSection() {
   const t = await getTranslations("HomePage.news");
@@ -45,7 +44,8 @@ export async function NewsSection() {
           {articles.map((article) => (
             <Card
               key={article.id}
-              className="group hover:border-primary/40 overflow-hidden p-0 transition-all hover:shadow-lg"
+              size="dense"
+              className="group hover:border-primary/40 overflow-hidden transition-all hover:shadow-lg"
             >
               <article className="flex h-full flex-col sm:flex-row">
                 <CardHeader className="relative aspect-4/3 shrink-0 p-0 sm:aspect-auto sm:w-2/5">

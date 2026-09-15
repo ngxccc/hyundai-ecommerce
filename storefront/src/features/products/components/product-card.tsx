@@ -1,21 +1,20 @@
 "use client";
 
 import { Link, useRouter } from "@/i18n/routing";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { useQuoteStore, AddToQuoteButton } from "@/features/quote";
-import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
-import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
+import { FilePlus, Send } from "lucide-react";
+import { useQuoteStore } from "@/features/quote";
+import { ProductImage } from "@/components";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import type { StorefrontProduct } from "@/shared/services";
-import { priceFormatter } from "@/shared/lib/utils";
+import type { StorefrontProduct } from "@/services";
+import { priceFormatter } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
 interface ProductCardProps {
@@ -56,21 +55,13 @@ const formatSpecs = (
 
 export function ProductCard({ product, index }: ProductCardProps) {
   const router = useRouter();
-  const t = useTranslations("Catalog");
   const tHome = useTranslations("HomePage.products");
   const tProduct = useTranslations("ProductDetails");
+  const tQuote = useTranslations("Quote");
   const { addItem } = useQuoteStore();
-  const [isBuying, setIsBuying] = useState(false);
 
-  const handleBuyNow = (e: React.MouseEvent) => {
-    if (product.isQuoteOnly) {
-      // Let the default link handle navigation for quote-only products
-      return;
-    }
-
+  const handleQuoteNow = (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsBuying(true);
-
     addItem(
       {
         productId: product.id,
@@ -81,44 +72,55 @@ export function ProductCard({ product, index }: ProductCardProps) {
       },
       1,
     );
-
-    setIsBuying(false);
     router.push("/quote");
   };
 
+  const handleAddToList = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addItem(
+      {
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images[0] ?? "",
+        totalStock: product.totalStockCache,
+      },
+      1,
+    );
+    toast.success(tQuote("addedSuccess", { name: product.name }));
+  };
   return (
-    <Card className="group hover:border-primary/50 flex h-full flex-col gap-4 overflow-hidden py-0 transition-all hover:shadow-xl">
+    <Card
+      size="dense"
+      className="group hover:border-primary/50 h-full gap-4 overflow-hidden transition-all hover:shadow-xl"
+    >
       <Link href={`/products/${product.slug}`}>
         <CardHeader className="relative aspect-4/3 w-full p-0">
-          {product.images[0] ? (
-            <ImageWithSkeleton
-              src={product.images[0]}
-              alt={product.name}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 250px"
-              className="object-cover transition-all duration-300 group-hover:scale-105"
-              loading={index < 3 ? "eager" : "lazy"}
-              preload={index < 3}
-            />
-          ) : (
-            <ProductImagePlaceholder />
-          )}
-          <Badge className="absolute top-4 left-4 z-10 rounded-sm bg-black/70 px-3 py-1 text-white backdrop-blur-md hover:bg-black/70">
-            {tHome("model")}:{" "}
-            {typeof product.specs?.model === "string"
-              ? product.specs.model
-              : t("unknown")}
-          </Badge>
+          <ProductImage
+            src={product.images[0]}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 250px"
+            className="object-cover transition-all duration-300 group-hover:scale-105"
+            loading={index < 3 ? "eager" : "lazy"}
+            preload={index < 3}
+            showText
+          />
+          {typeof product.specs?.model === "string" &&
+            product.specs.model.trim().length > 0 && (
+              <Badge className="absolute top-3 left-3 z-10 rounded-sm bg-black/75 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-md">
+                {tHome("model")}: {product.specs.model}
+              </Badge>
+            )}
         </CardHeader>
       </Link>
 
-      <CardContent className="flex grow flex-col gap-2">
+      <CardContent className="flex grow flex-col gap-2 p-4 pt-1">
         <Link href={`/products/${product.slug}`}>
-          <h2 className="font-display text-foreground group-hover:text-primary line-clamp-2 text-xl leading-tight font-bold transition-colors">
+          <h3 className="font-display text-foreground group-hover:text-primary line-clamp-2 text-base leading-snug font-bold transition-colors">
             {product.name}
-          </h2>
+          </h3>
         </Link>
-
         {/* Specs List */}
         <div className="flex flex-wrap gap-2">
           {formatSpecs(product.specs, (key) =>
@@ -135,43 +137,35 @@ export function ProductCard({ product, index }: ProductCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="bg-muted/20 mt-auto flex flex-col items-stretch gap-3 border-t p-4 pt-4! sm:flex-row sm:items-center sm:justify-between sm:gap-2 lg:flex-col lg:items-stretch">
-        <span className="text-primary text-center text-xl font-bold sm:text-left lg:text-center">
-          {product.isQuoteOnly
-            ? tHome("contactPrice")
-            : priceFormatter.format(Number(product.price))}
-        </span>
+      <CardFooter className="bg-muted/10 mt-auto flex flex-col gap-2.5 border-t p-3.5">
+        <div className="flex w-full items-baseline justify-between gap-2">
+          <span className="text-primary text-base font-bold tracking-tight">
+            {product.isQuoteOnly
+              ? tHome("contactPrice")
+              : priceFormatter.format(Number(product.price))}
+          </span>
+        </div>
 
-        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row lg:w-full lg:flex-col">
-          {product.isQuoteOnly ? (
-            <Button
-              asChild
-              size="lg"
-              className="w-full font-bold tracking-wider uppercase sm:w-auto lg:w-full"
-            >
-              <Link href={`/products/${product.slug}`}>
-                {tHome("requestQuoteCta")}
-              </Link>
-            </Button>
-          ) : (
-            <Button
-              size="lg"
-              className="w-full font-bold tracking-wider uppercase sm:w-auto lg:w-full"
-              onClick={handleBuyNow}
-              disabled={isBuying}
-            >
-              {isBuying && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {tHome("buyNowCta")}
-            </Button>
-          )}
+        <div className="flex w-full items-center gap-1.5">
+          <Button
+            size="sm"
+            className="flex-1 gap-1.5 text-xs font-semibold tracking-wider uppercase shadow-xs"
+            onClick={handleQuoteNow}
+          >
+            <Send className="size-3.5" />
+            {tQuote("quoteNow")}
+          </Button>
+
           {!product.isQuoteOnly && (
-            <AddToQuoteButton
-              productId={product.id}
-              name={product.name}
-              price={product.price}
-              image={product.images[0] ?? ""}
-              totalStock={product.totalStockCache}
-            />
+            <Button
+              variant="outline"
+              size="icon"
+              title={tQuote("addToList")}
+              className="text-muted-foreground hover:text-primary hover:border-primary/50 size-8 shrink-0"
+              onClick={handleAddToList}
+            >
+              <FilePlus className="size-3.5" />
+            </Button>
           )}
         </div>
       </CardFooter>

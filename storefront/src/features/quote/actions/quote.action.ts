@@ -2,7 +2,7 @@
 
 import { getTranslations } from "next-intl/server";
 import { quoteApi } from "../api/quote.api";
-import { translateZodMessage } from "@/shared/lib/i18n-zod";
+import { translateZodMessage } from "@/lib/i18n-zod";
 import {
   submitQuoteSchema,
   type SubmitQuoteInput,

@@ -1,7 +1,7 @@
 import { Terminal, Home, ArrowRight, Activity } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Inter } from "next/font/google";
-import "@/shared/styles/globals.css";
+import "@/styles/globals.css";
 import Link from "next/link";
 
 const inter = Inter({
@@ -57,9 +57,12 @@ export default function GlobalNotFound() {
             {/* Cột Phải */}
             <div className="flex flex-col gap-6 lg:col-span-5">
               {/* Về Trang Chủ */}
-              <Card className="group border-muted/50 bg-card hover:border-primary/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+              <Card
+                size="dense"
+                className="group border-muted/50 hover:border-primary/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+              >
                 <Link href="/" className="block cursor-pointer p-8">
-                  <CardContent className="p-0">
+                  <CardContent size="compact">
                     <div className="mb-12 flex items-start justify-between">
                       <div className="bg-primary text-primary-foreground flex h-12 w-12 items-center justify-center rounded-lg">
                         <Home className="h-6 w-6" />

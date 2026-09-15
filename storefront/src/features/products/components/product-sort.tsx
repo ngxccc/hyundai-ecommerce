@@ -12,7 +12,7 @@ import {
 import { useTranslations } from "next-intl";
 import type { CatalogSearchParams } from "../types/catalog";
 import { ChevronDown } from "lucide-react";
-import { useIsClient } from "@/shared/hooks/useIsClient";
+import { useIsClient } from "@/hooks/useIsClient";
 
 interface ProductSortProps {
   currentSort: string;

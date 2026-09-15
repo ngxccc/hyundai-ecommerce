@@ -16,10 +16,10 @@ import type {
   StorefrontCategoryWithChildren,
   StorefrontBrand,
   StorefrontFilterMetadata,
-} from "@/shared/services";
+} from "@/services";
 import { useTranslations, useLocale } from "next-intl";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { useDebounce } from "@/shared/hooks/use-debounce";
+import { useDebounce } from "@/hooks/use-debounce";
 import { computeFacets } from "../utils/facet-engine";
 import type {
   ComputeFacetsParams,

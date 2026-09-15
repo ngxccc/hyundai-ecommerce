@@ -9,7 +9,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import type { PromoCampaign } from "@/shared/types/shared.types";
+import type { PromoCampaign } from "@/types/shared.types";
 import { useCallback, useState } from "react";
 
 const THEME_STYLES: Record<

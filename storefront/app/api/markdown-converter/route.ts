@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import TurndownService from "turndown";
 import { env } from "@/env";
-import { HTTP_STATUS } from "@/shared/constants";
+import { HTTP_STATUS } from "@/constants";
 
 interface CacheEntry {
   markdown: string;

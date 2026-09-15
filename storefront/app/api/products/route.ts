@@ -1,10 +1,6 @@
-import { HTTP_STATUS } from "@/shared/constants";
-import { jsonSuccess, jsonError } from "@/shared/lib/api-response";
-import {
-  productService,
-  categoryService,
-  brandService,
-} from "@/shared/services";
+import { HTTP_STATUS } from "@/constants";
+import { jsonSuccess, jsonError } from "@/lib/api-response";
+import { productService, categoryService, brandService } from "@/services";
 import { connection, type NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   await connection();

@@ -1,4 +1,4 @@
-import type { StorefrontFilterMetadata } from "@/shared/services";
+import type { StorefrontFilterMetadata } from "@/services";
 
 export interface ProductActiveFilters {
   categorySlug: string | null;

@@ -27,12 +27,12 @@ export default function ErrorBoundary({ error, reset }: ErrorProps) {
 
   return (
     <div className="flex min-h-112.5 w-full items-center justify-center p-4">
-      <Card className="w-full max-w-md border-red-200/50 shadow-lg dark:border-red-900/30">
+      <Card className="border-destructive/30 w-full max-w-md shadow-lg">
         <CardHeader className="flex flex-col items-center gap-2 pb-2 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-950/50">
-            <AlertCircle className="h-6 w-6 text-red-600 dark:text-red-400" />
+          <div className="bg-destructive/10 flex h-12 w-12 items-center justify-center rounded-full">
+            <AlertCircle className="text-destructive h-6 w-6" />
           </div>
-          <CardTitle className="mt-2 text-xl font-bold tracking-tight text-red-600 dark:text-red-400">
+          <CardTitle size="xl" className="text-destructive mt-2 tracking-tight">
             {t("title")}
           </CardTitle>
         </CardHeader>
@@ -41,7 +41,7 @@ export default function ErrorBoundary({ error, reset }: ErrorProps) {
             {t("description")}
           </p>
           {process.env.NODE_ENV !== "production" && (
-            <div className="mt-4 max-h-40 overflow-auto rounded border border-red-100 bg-red-50 p-3 text-left font-mono text-xs text-red-800 dark:border-red-950/50 dark:bg-red-950/20 dark:text-red-300">
+            <div className="border-destructive/20 bg-destructive/10 text-destructive mt-4 max-h-40 overflow-auto rounded border p-3 text-left font-mono text-xs">
               <p className="font-semibold">
                 {error.name}: {error.message}
               </p>
@@ -57,7 +57,7 @@ export default function ErrorBoundary({ error, reset }: ErrorProps) {
               reset();
             }}
             variant="outline"
-            className="flex items-center gap-2 border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:hover:bg-red-950/30 dark:hover:text-red-400"
+            className="border-destructive/30 hover:bg-destructive/10 hover:text-destructive flex items-center gap-2"
           >
             <RotateCcw className="h-4 w-4" />
             {t("retryButton")}

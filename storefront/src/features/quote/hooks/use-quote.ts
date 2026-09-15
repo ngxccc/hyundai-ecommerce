@@ -1,4 +1,4 @@
-import { useIsMounted } from "@/shared/hooks/useIsMounted";
+import { useIsMounted } from "@/hooks/useIsMounted";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { produce } from "immer";

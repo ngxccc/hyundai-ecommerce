@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
 
 const mockGetCategories = mock();
-await mock.module("@/shared/services", () => ({
+await mock.module("@/services", () => ({
   categoryService: {
     getCategories: mockGetCategories,
   },
 }));
 
-import { HTTP_STATUS } from "@/shared/constants";
+import { HTTP_STATUS } from "@/constants";
 import { GET } from "./route";
 
 describe("GET /api/categories", () => {

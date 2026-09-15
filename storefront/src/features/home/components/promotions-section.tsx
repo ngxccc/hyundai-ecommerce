@@ -1,4 +1,4 @@
-import { promoService } from "@/shared/services";
+import { promoService } from "@/services";
 import { PromoCarousel } from "./promo-carousel";
 
 export async function PromotionsSection() {

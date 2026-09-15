@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import Image from "next/image";
-import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
+import { ProductImage } from "@/components";
 import { useQuote } from "../hooks/use-quote";
-import { useIsMounted } from "@/shared/hooks/useIsMounted";
+import { useIsMounted } from "@/hooks/useIsMounted";
 import { Link } from "@/i18n/routing";
 import { FileText } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -15,7 +14,7 @@ import {
   PopoverContent,
   PopoverAnchor,
 } from "@/components/ui/popover";
-import { priceFormatter } from "@/shared/lib/utils";
+import { priceFormatter } from "@/lib/utils";
 
 export function HeaderQuote() {
   const t = useTranslations("Quote");
@@ -103,20 +102,15 @@ export function HeaderQuote() {
                         className="flex items-center gap-3 border-b border-zinc-100 pb-2 last:border-0 last:pb-0"
                       >
                         <div className="bg-muted relative size-10 overflow-hidden rounded">
-                          {item.image !== "" ? (
-                            <Image
-                              src={item.image}
-                              alt={item.name}
-                              fill
-                              className="object-cover"
-                              sizes="40px"
-                            />
-                          ) : (
-                            <ProductImagePlaceholder
-                              showText={false}
-                              iconClassName="size-4"
-                            />
-                          )}
+                          <ProductImage
+                            src={item.image}
+                            alt={item.name}
+                            fill
+                            className="object-cover"
+                            sizes="40px"
+                            showText={false}
+                            iconClassName="size-4"
+                          />
                         </div>
                         <div className="min-w-0 flex-1">
                           <h4 className="text-foreground truncate text-xs font-semibold">

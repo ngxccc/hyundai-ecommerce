@@ -1,17 +1,12 @@
 import { Suspense } from "react";
 import {
   HeroSection,
-  CategoriesSection,
-  PromotionsSection,
   ProductsSection,
   NewsSection,
-  TrustSignalsSection,
 } from "@/features/home/components";
 import {
-  CategoriesSectionSkeleton,
   ProductsSectionSkeleton,
   NewsSectionSkeleton,
-  PromotionsSectionSkeleton,
 } from "@/features/home/components/skeletons/home-skeletons";
 import type { Locale } from "next-intl";
 export default async function Home({
@@ -25,20 +20,11 @@ export default async function Home({
       <Suspense fallback={<div className="min-h-[80vh]" />}>
         <HeroSection />
       </Suspense>
-      <Suspense fallback={<CategoriesSectionSkeleton />}>
-        <CategoriesSection />
-      </Suspense>
-      <Suspense fallback={<PromotionsSectionSkeleton />}>
-        <PromotionsSection />
-      </Suspense>
       <Suspense fallback={<ProductsSectionSkeleton />}>
         <ProductsSection />
       </Suspense>
       <Suspense fallback={<NewsSectionSkeleton />}>
         <NewsSection />
-      </Suspense>
-      <Suspense fallback={<div className="h-32" />}>
-        <TrustSignalsSection />
       </Suspense>
     </>
   );

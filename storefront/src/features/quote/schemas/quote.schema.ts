@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { i18nZodMsg } from "@/shared/lib/i18n-zod";
+import { i18nZodMsg } from "@/lib/i18n-zod";
 
 export const submitQuoteItemSchema = z.object({
   productId: z.string().nullable().optional(),

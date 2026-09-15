@@ -53,15 +53,13 @@ export interface StorefrontBrand {
   isActive: boolean;
 }
 
-export function mapProductToStorefront(
-  dto: ApiProduct,
-): StorefrontProduct {
+export function mapProductToStorefront(dto: ApiProduct): StorefrontProduct {
   return {
     id: dto.id,
     name: dto.name,
     slug: dto.slug,
     price: dto.price,
-    description: (dto.description ?? null),
+    description: dto.description ?? null,
     shortDescription: dto.shortDescription ?? null,
     images: dto.images,
     brandId: dto.brandId ?? null,
@@ -73,9 +71,7 @@ export function mapProductToStorefront(
   };
 }
 
-export function mapCategoryToStorefront(
-  dto: ApiCategory,
-): StorefrontCategory {
+export function mapCategoryToStorefront(dto: ApiCategory): StorefrontCategory {
   return {
     id: dto.id,
     name: dto.name,
@@ -94,15 +90,11 @@ export function mapCategoryTreeToStorefront(
 ): StorefrontCategoryWithChildren {
   return {
     ...mapCategoryToStorefront(node),
-    children: (node.children ?? []).map((c) =>
-      mapCategoryTreeToStorefront(c),
-    ),
+    children: (node.children ?? []).map((c) => mapCategoryTreeToStorefront(c)),
   };
 }
 
-export function mapBrandToStorefront(
-  dto: ApiBrand,
-): StorefrontBrand {
+export function mapBrandToStorefront(dto: ApiBrand): StorefrontBrand {
   return {
     id: dto.id,
     name: dto.name,

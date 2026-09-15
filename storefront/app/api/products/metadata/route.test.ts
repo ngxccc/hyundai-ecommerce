@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
 
 const mockGetFiltersMetadata = mock();
-await mock.module("@/shared/services", () => ({
+await mock.module("@/services", () => ({
   productService: {
     getFiltersMetadata: mockGetFiltersMetadata,
   },
 }));
 
-import { HTTP_STATUS } from "@/shared/constants";
+import { HTTP_STATUS } from "@/constants";
 import { GET } from "./route";
 
 describe("GET /api/products/metadata", () => {

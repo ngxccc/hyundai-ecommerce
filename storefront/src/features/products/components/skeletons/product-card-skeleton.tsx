@@ -8,7 +8,7 @@ import {
 
 export function ProductCardSkeleton() {
   return (
-    <Card className="flex h-full flex-col gap-4 overflow-hidden py-0">
+    <Card size="dense" className="h-full gap-4 overflow-hidden">
       <CardHeader className="relative aspect-4/3 w-full p-0">
         <Skeleton className="h-full w-full rounded-none" />
       </CardHeader>
@@ -23,9 +23,14 @@ export function ProductCardSkeleton() {
         </div>
       </CardContent>
 
-      <CardFooter className="bg-muted/20 mt-auto flex items-center justify-between gap-1 border-t p-4 pt-4! lg:w-full lg:flex-col lg:items-stretch lg:gap-2">
-        <Skeleton className="h-7 w-24 rounded-md lg:w-1/2" />
-        <Skeleton className="h-10 w-28 rounded-md lg:w-full" />
+      <CardFooter className="bg-muted/10 mt-auto flex flex-col gap-2.5 border-t p-3.5">
+        <div className="flex w-full items-baseline justify-between gap-2">
+          <Skeleton className="h-5 w-28 rounded-sm" />
+        </div>
+        <div className="flex w-full items-center gap-1.5">
+          <Skeleton className="h-8 flex-1 rounded-md" />
+          <Skeleton className="size-8 shrink-0 rounded-md" />
+        </div>
       </CardFooter>
     </Card>
   );

@@ -1,47 +1,8 @@
 import Image from "next/image";
-import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
 import { ArrowUpRight } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { categoryService } from "@/shared/services";
-
-const CATEGORY_UI_MAP = {
-  industrial: {
-    span: "md:col-span-8",
-    gradient: "from-primary/90",
-    size: "text-3xl",
-  },
-  household: {
-    span: "md:col-span-4",
-    gradient: "from-black/70",
-    size: "text-2xl",
-  },
-  ups: {
-    span: "md:col-span-4",
-    gradient: "from-black/70",
-    size: "text-2xl",
-  },
-  hpgreen: {
-    span: "md:col-span-8",
-    gradient: "from-tertiary/90",
-    size: "text-3xl",
-  },
-} as const satisfies Record<
-  string,
-  { span: string; gradient: string; size: string }
->;
-
-const DEFAULT_UI = {
-  span: "md:col-span-4",
-  gradient: "from-black/70",
-  size: "text-2xl",
-};
-
-type CategoryKey = keyof typeof CATEGORY_UI_MAP;
-
-function isCategoryKey(value: string): value is CategoryKey {
-  return value in CATEGORY_UI_MAP;
-}
+import { categoryService } from "@/services";
 
 export async function CategoriesSection() {
   const [t, locale] = await Promise.all([
@@ -65,58 +26,45 @@ export async function CategoriesSection() {
           </p>
         </div>
 
-        <div className="grid auto-rows-[300px] grid-cols-1 gap-4 md:auto-rows-[360px] md:grid-cols-12 md:gap-6">
-          {categories.map((cat) => {
-            const ui = isCategoryKey(cat.slug)
-              ? CATEGORY_UI_MAP[cat.slug]
-              : DEFAULT_UI;
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          {categories.map((cat) => (
+            <Link
+              href={`/products/category/${cat.slug}`}
+              key={cat.id}
+              className="group focus-visible:ring-primary relative flex h-[160px] flex-col justify-end overflow-hidden rounded-xl bg-zinc-900 p-5 shadow-xs transition-all duration-300 outline-none hover:shadow-lg focus-visible:ring-2 md:h-[180px]"
+            >
+              {cat.image && cat.image !== "" ? (
+                <Image
+                  alt={cat.description ?? cat.name}
+                  src={cat.image}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 20vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-900 to-zinc-800" />
+              )}
 
-            return (
-              <Link
-                href={`/products/category/${cat.slug}`}
-                key={cat.id}
-                className={`${ui.span} group focus-visible:ring-primary relative overflow-hidden rounded-2xl shadow-sm transition-all duration-500 outline-none hover:shadow-xl focus-visible:ring-2`}
-              >
-                {cat.image && cat.image !== "" ? (
-                  <Image
-                    alt={cat.description ?? ""}
-                    src={cat.image}
-                    fill
-                    sizes={
-                      ui.span.includes("col-span-8")
-                        ? "(max-width: 768px) 100vw, 66vw"
-                        : "(max-width: 768px) 100vw, 33vw"
-                    }
-                    className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-105"
-                    loading="eager"
-                  />
-                ) : (
-                  <ProductImagePlaceholder />
-                )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
-                <div
-                  className={`absolute inset-0 bg-linear-to-t ${ui.gradient} flex flex-col justify-end p-6 transition-opacity duration-500 md:p-10`}
-                >
-                  <div className="flex items-end justify-between gap-4">
-                    <div className="transform transition-transform duration-500 group-hover:-translate-y-2">
-                      <h3
-                        className={`font-display ${ui.size} mb-2 font-bold tracking-tight text-white drop-shadow-md`}
-                      >
-                        {cat.name}
-                      </h3>
-                      <p className="line-clamp-2 font-sans text-white/80 md:text-lg">
-                        {cat.description}
-                      </p>
-                    </div>
-
-                    <div className="shrink-0 translate-y-4 transform rounded-full bg-white/20 p-3 text-white opacity-0 backdrop-blur-md transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                      <ArrowUpRight className="size-5" />
-                    </div>
-                  </div>
+              <div className="relative z-10 flex items-end justify-between gap-2">
+                <div>
+                  <h3 className="font-display text-lg font-bold tracking-tight text-white md:text-xl">
+                    {cat.name}
+                  </h3>
+                  {cat.description && (
+                    <p className="mt-1 line-clamp-1 font-sans text-xs text-white/75 md:text-sm">
+                      {cat.description}
+                    </p>
+                  )}
                 </div>
-              </Link>
-            );
-          })}
+                <div className="shrink-0 rounded-full bg-white/20 p-2 text-white opacity-0 transition-all duration-300 group-hover:opacity-100">
+                  <ArrowUpRight className="size-4" />
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </section>

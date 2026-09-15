@@ -2,11 +2,7 @@ import { Suspense } from "react";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/routing";
-import {
-  productService,
-  categoryService,
-  brandService,
-} from "@/shared/services";
+import { productService, categoryService, brandService } from "@/services";
 import { ProductSort } from "./product-sort";
 import { ProductPagination } from "./product-pagination";
 import { ActiveFilterChips } from "./active-filter-chips";

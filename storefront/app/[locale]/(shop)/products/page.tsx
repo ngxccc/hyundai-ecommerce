@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { siteConfig } from "@/shared/config/site";
+import { siteConfig } from "@/config/site";
 import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { CatalogTemplate } from "@/features/products/components/catalog-template";

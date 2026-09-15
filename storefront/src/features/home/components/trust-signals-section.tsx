@@ -29,7 +29,8 @@ export function TrustSignalsSection() {
           {SIGNALS.map((signal) => (
             <Card
               key={signal.key}
-              className="group gap-2 border-none bg-transparent p-0 shadow-none transition-all duration-300"
+              size="dense"
+              className="group border-none bg-transparent shadow-none transition-all duration-300"
             >
               <CardHeader className="flex flex-col items-center text-center">
                 <div className="bg-primary/10 mb-4 flex h-20 w-20 items-center justify-center rounded-full">
@@ -39,7 +40,7 @@ export function TrustSignalsSection() {
                   />
                 </div>
 
-                <CardTitle className="font-display text-xl font-bold">
+                <CardTitle size="xl" className="font-display">
                   {t(`${signal.key}.title`)}
                 </CardTitle>
               </CardHeader>

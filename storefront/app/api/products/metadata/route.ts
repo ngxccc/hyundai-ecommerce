@@ -1,6 +1,6 @@
-import { HTTP_STATUS } from "@/shared/constants";
-import { jsonSuccess, jsonError } from "@/shared/lib/api-response";
-import { productService } from "@/shared/services";
+import { HTTP_STATUS } from "@/constants";
+import { jsonSuccess, jsonError } from "@/lib/api-response";
+import { productService } from "@/services";
 import type { Locale } from "next-intl";
 
 export async function GET(request: Request) {

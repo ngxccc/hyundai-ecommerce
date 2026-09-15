@@ -1,6 +1,6 @@
-import { newsService } from "@/shared/services";
-import { jsonSuccess, jsonError } from "@/shared/lib/api-response";
-import { HTTP_STATUS } from "@/shared/constants";
+import { newsService } from "@/services";
+import { jsonSuccess, jsonError } from "@/lib/api-response";
+import { HTTP_STATUS } from "@/constants";
 export async function GET() {
   try {
     const data = await newsService.getLatest();

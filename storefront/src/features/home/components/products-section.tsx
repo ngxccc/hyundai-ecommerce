@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { ProductCard } from "@/features/products";
-import { productService } from "@/shared/services";
+import { productService } from "@/services";
 
 export async function ProductsSection() {
   const [t, locale] = await Promise.all([
@@ -26,7 +26,7 @@ export async function ProductsSection() {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product, index) => (
             <ProductCard key={product.id} product={product} index={index} />
           ))}

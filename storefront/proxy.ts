@@ -1,6 +1,6 @@
 import { routing } from "@/i18n/routing";
-import { checkRateLimitWithQueue } from "@/shared/lib/rate-limiter";
-import { HTTP_STATUS } from "@/shared/constants";
+import { checkRateLimitWithQueue } from "@/lib/rate-limiter";
+import { HTTP_STATUS } from "@/constants";
 import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 

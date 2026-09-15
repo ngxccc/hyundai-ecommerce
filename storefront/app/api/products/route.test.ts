@@ -32,7 +32,7 @@ const mockGetProducts = mock();
 const mockGetCategories = mock();
 const mockGetBrands = mock();
 
-await mock.module("@/shared/services", () => ({
+await mock.module("@/services", () => ({
   productService: {
     getProducts: mockGetProducts,
   },
@@ -45,7 +45,7 @@ await mock.module("@/shared/services", () => ({
   },
 }));
 
-import { HTTP_STATUS } from "@/shared/constants";
+import { HTTP_STATUS } from "@/constants";
 import { GET } from "./route";
 import { NextRequest } from "next/server";
 

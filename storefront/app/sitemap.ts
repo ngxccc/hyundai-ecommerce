@@ -1,6 +1,6 @@
-import { siteConfig } from "@/shared/config/site";
+import { siteConfig } from "@/config/site";
 import type { MetadataRoute } from "next";
-import { categoryService, productService } from "@/shared/services";
+import { categoryService, productService } from "@/services";
 import { cacheLife } from "next/cache";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

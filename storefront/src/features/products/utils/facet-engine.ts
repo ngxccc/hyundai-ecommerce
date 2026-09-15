@@ -1,4 +1,4 @@
-import type { StorefrontFilterMetadata } from "@/shared/services";
+import type { StorefrontFilterMetadata } from "@/services";
 import { FUEL_TYPES, PHASES } from "../types/catalog";
 import type {
   ComputeFacetsParams,

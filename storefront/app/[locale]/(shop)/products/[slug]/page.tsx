@@ -1,13 +1,12 @@
 import { Suspense } from "react";
 import { ProductDetailsSkeleton } from "@/features/products/components/skeletons/product-details-skeleton";
 import { getTranslations } from "next-intl/server";
-import type { StorefrontProduct } from "@/shared/services/types";
+import type { StorefrontProduct } from "@/services/types";
 import { routing } from "@/i18n/routing";
-import { priceFormatter } from "@/shared/lib/utils";
-import { productService } from "@/shared/services";
+import { priceFormatter } from "@/lib/utils";
+import { productService } from "@/services";
 import type { Metadata } from "next";
-import { ImageWithSkeleton } from "@/shared/components/image-with-skeleton";
-import { ProductImagePlaceholder } from "@/shared/components/product-image-placeholder";
+import { ProductImage } from "@/components";
 import { notFound } from "next/navigation";
 import type { Locale } from "next-intl";
 import { FUEL_TYPES, PHASES } from "@/features/products/types/catalog";
@@ -117,18 +116,16 @@ async function ProductDetailsPageContent({
   return (
     <section className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:flex-row lg:px-8">
       <div className="relative aspect-square w-full overflow-hidden rounded-xl lg:w-1/2">
-        {product.images[0] && product.images[0] !== "" ? (
-          <ImageWithSkeleton
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            preload
-          />
-        ) : (
-          <ProductImagePlaceholder iconClassName="size-12" />
-        )}
+        <ProductImage
+          src={product.images[0]}
+          alt={product.name}
+          fill
+          className="object-cover"
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          preload
+          showText
+          iconClassName="size-12"
+        />
       </div>
 
       <div className="flex w-full flex-col gap-4 lg:w-1/2">

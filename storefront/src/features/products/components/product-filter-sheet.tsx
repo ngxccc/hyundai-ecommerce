@@ -16,7 +16,7 @@ import { Filter, X } from "lucide-react";
 import type {
   StorefrontCategoryWithChildren,
   StorefrontBrand,
-} from "@/shared/services";
+} from "@/services";
 import { ProductFilters } from "./product-filters";
 
 interface ProductFilterSheetProps {

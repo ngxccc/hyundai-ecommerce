@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { HTTP_STATUS } from "@/shared/constants";
+import { HTTP_STATUS } from "@/constants";
 export function GET(request: NextRequest) {
   const origin = request.nextUrl.origin;
 

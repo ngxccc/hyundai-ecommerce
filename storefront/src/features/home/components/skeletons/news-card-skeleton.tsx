@@ -8,7 +8,7 @@ import {
 
 export function NewsCardSkeleton() {
   return (
-    <Card className="overflow-hidden p-0">
+    <Card size="dense" className="overflow-hidden">
       <article className="flex h-full flex-col sm:flex-row">
         {/* Left Side (Image Skeleton) */}
         <CardHeader className="relative aspect-4/3 min-h-50 shrink-0 p-0 sm:aspect-auto sm:w-2/5">

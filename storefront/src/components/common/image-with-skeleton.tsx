@@ -3,14 +3,13 @@
 import { useState } from "react";
 import Image, { type ImageProps } from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/shared/lib/utils";
-import {
-  cloudinaryLoader,
-  isCloudinaryUrl,
-} from "@/shared/utils/cloudinary.utils";
+import { ProductImagePlaceholder } from "./product-image-placeholder";
+import { cn } from "@/lib/utils";
+import { cloudinaryLoader, isCloudinaryUrl } from "@/lib/cloudinary.utils";
 
 interface ImageWithSkeletonProps extends ImageProps {
   skeletonClassName?: string;
+  fallback?: React.ReactNode;
 }
 
 export function ImageWithSkeleton({
@@ -26,12 +25,23 @@ export function ImageWithSkeleton({
   ...props
 }: ImageWithSkeletonProps) {
   const [isLoading, setIsLoading] = useState(true);
-
+  const [hasError, setHasError] = useState(false);
   const styleWidth = typeof width === "number" ? `${width}px` : width;
   const styleHeight = typeof height === "number" ? `${height}px` : height;
   const srcString = typeof src === "string" ? src : "";
   const isCld = isCloudinaryUrl(srcString);
   const selectedLoader = props.loader ?? (isCld ? cloudinaryLoader : undefined);
+
+  if (hasError) {
+    return (
+      <div
+        className={cn(fill ? "absolute inset-0" : "relative inline-block")}
+        style={!fill ? { width: styleWidth, height: styleHeight } : undefined}
+      >
+        {props.fallback ?? <ProductImagePlaceholder showText />}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -65,7 +75,11 @@ export function ImageWithSkeleton({
           setIsLoading(false);
           onLoad?.(e);
         }}
-        {...props}
+        onError={(e) => {
+          setIsLoading(false);
+          setHasError(true);
+          props.onError?.(e);
+        }}
       />
     </div>
   );

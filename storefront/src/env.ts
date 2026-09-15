@@ -1,4 +1,4 @@
-import { ENVIRONMENT_MODES, MESSAGES } from "@/shared/constants";
+import { ENVIRONMENT_MODES, MESSAGES } from "@/constants";
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 const zUrl = (defaultVal: string, errorMsg?: string) =>

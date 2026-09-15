@@ -48,9 +48,12 @@ export default async function NotFoundPage() {
         {/* Cột Phải: Các nút điều hướng (Interaction Matrix) */}
         <div className="flex flex-col gap-6 lg:col-span-5">
           {/* Action Card 1: Về Trang Chủ */}
-          <Card className="group border-muted/50 bg-card hover:border-primary/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+          <Card
+            size="dense"
+            className="group border-muted/50 hover:border-primary/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+          >
             <Link href="/" className="block cursor-pointer p-8">
-              <CardContent className="p-0">
+              <CardContent size="compact">
                 <div className="mb-12 flex items-start justify-between">
                   <div className="bg-primary text-primary-foreground flex h-12 w-12 items-center justify-center rounded-lg">
                     <Home className="h-6 w-6" />
@@ -75,9 +78,12 @@ export default async function NotFoundPage() {
           </Card>
 
           {/* Action Card 2: Liên hệ Hỗ trợ */}
-          <Card className="group border-muted/50 bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-xl">
+          <Card
+            size="dense"
+            className="group border-muted/50 hover:border-primary/50 transition-all duration-300 hover:shadow-xl"
+          >
             <Link href="/contact" className="block cursor-pointer p-8">
-              <CardContent className="p-0">
+              <CardContent size="compact">
                 <div className="mb-12 flex items-start justify-between">
                   <div className="bg-muted text-foreground flex h-12 w-12 items-center justify-center rounded-lg">
                     <Headset className="h-6 w-6" />

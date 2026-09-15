@@ -6,15 +6,14 @@ export function CategoriesSectionSkeleton() {
   return (
     <section className="bg-background pt-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 text-center">
-          <Skeleton className="mx-auto h-10 w-64 rounded-md uppercase" />
-          <Skeleton className="mx-auto mt-2 h-4 w-48 rounded-md" />
+        <div className="mb-8 border-b pb-4">
+          <Skeleton className="h-10 w-64 rounded-md uppercase" />
+          <Skeleton className="mt-2 h-4 w-48 rounded-md" />
         </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
-          <Skeleton className="h-64 rounded-xl md:col-span-8" />
-          <Skeleton className="h-64 rounded-xl md:col-span-4" />
-          <Skeleton className="h-64 rounded-xl md:col-span-4" />
-          <Skeleton className="h-64 rounded-xl md:col-span-8" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-[160px] rounded-xl md:h-[180px]" />
+          ))}
         </div>
       </div>
     </section>

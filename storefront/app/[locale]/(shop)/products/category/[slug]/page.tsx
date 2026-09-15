@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { siteConfig } from "@/shared/config/site";
+import { siteConfig } from "@/config/site";
 import type { Metadata } from "next";
 import { CatalogTemplate } from "@/features/products/components/catalog-template";
 import { CatalogTemplateSkeleton } from "@/features/products/components/skeletons/catalog-template-skeleton";
 import type { CatalogPageProps } from "@/features/products/types/catalog";
-import { categoryService } from "@/shared/services";
+import { categoryService } from "@/services";
 import { notFound } from "next/navigation";
 import type { Locale } from "next-intl";
 

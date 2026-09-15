@@ -1,5 +1,5 @@
 import { cacheLife } from "next/cache";
-import type { NewsArticle } from "@/shared/types/shared.types";
+import type { NewsArticle } from "@/types/shared.types";
 
 export const MOCK_NEWS: NewsArticle[] = [
   {

@@ -1,5 +1,5 @@
 import { ImageOff } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
 interface ProductImagePlaceholderProps {

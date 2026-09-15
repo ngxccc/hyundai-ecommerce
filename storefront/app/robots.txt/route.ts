@@ -1,4 +1,4 @@
-import { siteConfig } from "@/shared/config/site";
+import { siteConfig } from "@/config/site";
 import { NextResponse } from "next/server";
 
 export function GET() {

@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import type { Viewport } from "next";
 import { Inter } from "next/font/google";
-import "@/shared/styles/globals.css";
-import { META_THEME_COLORS, siteConfig } from "@/shared/config/site";
+import "@/styles/globals.css";
+import { META_THEME_COLORS, siteConfig } from "@/config/site";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getMessages, getTranslations } from "next-intl/server";

@@ -1,6 +1,6 @@
-import { promoService } from "@/shared/services";
-import { jsonSuccess, jsonError } from "@/shared/lib/api-response";
-import { HTTP_STATUS } from "@/shared/constants";
+import { promoService } from "@/services";
+import { jsonSuccess, jsonError } from "@/lib/api-response";
+import { HTTP_STATUS } from "@/constants";
 export async function GET() {
   try {
     const activePromo = await promoService.getPromos();

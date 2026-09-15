@@ -4,7 +4,7 @@ import { ProductFilters } from "./product-filters";
 import type {
   StorefrontCategoryWithChildren,
   StorefrontBrand,
-} from "@/shared/services";
+} from "@/services";
 
 interface DesktopProductFiltersProps {
   categories: StorefrontCategoryWithChildren[];

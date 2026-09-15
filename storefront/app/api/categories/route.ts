@@ -1,6 +1,6 @@
-import { HTTP_STATUS } from "@/shared/constants";
-import { jsonSuccess, jsonError } from "@/shared/lib/api-response";
-import { categoryService } from "@/shared/services";
+import { HTTP_STATUS } from "@/constants";
+import { jsonSuccess, jsonError } from "@/lib/api-response";
+import { categoryService } from "@/services";
 
 export async function GET(request: Request) {
   try {
