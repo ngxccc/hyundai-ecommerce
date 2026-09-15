@@ -10,3 +10,4 @@ export {
   AddressCascader,
   type AddressState,
 } from "./components/address-cascader";
+export { CustomQuoteItemModal } from "./components/custom-quote-item-modal";

@@ -12,6 +12,37 @@ export const priceFormatter = new Intl.NumberFormat("vi-VN", {
   maximumFractionDigits: 0,
 });
 
+/**
+ * Sanitizes human-entered price strings (e.g. "150.000.000", "150,000,000", "150 000 đ")
+ * into a clean digits-only numeric string (e.g. "150000000") or null.
+ */
+export function normalizePriceString(raw?: string | null): string | null {
+  if (!raw) return null;
+  const cleaned = raw.replace(/[^\d]/g, "");
+  return cleaned.length > 0 ? cleaned : null;
+}
+
+/**
+ * Formats a number or numeric string with Vietnamese thousand separators (e.g. 150000000 -> "150.000.000").
+ */
+export function formatNumberInput(
+  value: string | number | undefined | null,
+): string {
+  if (value === undefined || value === null || value === "") return "";
+  const num =
+    typeof value === "string" ? parseFloat(value.replace(/[^\d]/g, "")) : value;
+  if (isNaN(num)) return "";
+  return new Intl.NumberFormat("vi-VN").format(num);
+}
+
+/**
+ * Extracts digits only from an input string (e.g. "150.000.000 ₫" -> "150000000").
+ */
+export function parseNumberInput(value: string | undefined | null): string {
+  if (!value) return "";
+  return value.replace(/[^\d]/g, "");
+}
+
 export function isDomainError(
   error: unknown,
 ): error is { translationKey: string } {

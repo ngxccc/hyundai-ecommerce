@@ -5,7 +5,7 @@ import { ProductImage } from "@/components";
 import { useQuote } from "../hooks/use-quote";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { Link } from "@/i18n/routing";
-import { FileText } from "lucide-react";
+import { FileText, PackagePlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,7 +39,7 @@ export function HeaderQuote() {
   if (!isMounted) {
     return (
       <div className="relative p-2" data-testid="quote-skeleton">
-        <FileText className="size-6 text-zinc-600" />
+        <FileText className="text-muted-foreground size-6" />
       </div>
     );
   }
@@ -98,19 +98,23 @@ export function HeaderQuote() {
                     const priceNum = Number(item.price);
                     return (
                       <div
-                        key={item.productId}
-                        className="flex items-center gap-3 border-b border-zinc-100 pb-2 last:border-0 last:pb-0"
+                        key={item.id}
+                        className="border-border/60 flex items-center gap-3 border-b pb-2 last:border-0 last:pb-0"
                       >
-                        <div className="bg-muted relative size-10 overflow-hidden rounded">
-                          <ProductImage
-                            src={item.image}
-                            alt={item.name}
-                            fill
-                            className="object-cover"
-                            sizes="40px"
-                            showText={false}
-                            iconClassName="size-4"
-                          />
+                        <div className="bg-muted relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded">
+                          {item.isCustomItem ? (
+                            <PackagePlus className="text-primary size-5 opacity-80" />
+                          ) : (
+                            <ProductImage
+                              src={item.image}
+                              alt={item.name}
+                              fill
+                              className="object-cover"
+                              sizes="40px"
+                              showText={false}
+                              iconClassName="size-4"
+                            />
+                          )}
                         </div>
                         <div className="min-w-0 flex-1">
                           <h4 className="text-foreground truncate text-xs font-semibold">
