@@ -6,7 +6,6 @@ import { useQuoteStore } from "@/features/quote";
 import { ProductImage } from "@/components";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -31,21 +30,21 @@ const formatSpecs = (
     string,
     string | number | boolean | null | undefined
   >;
+
   const specsArray: string[] = [];
-  if (specsObj.power) specsArray.push(`${String(specsObj.power)}kW`);
-  if (typeof specsObj.fuelType === "string") {
-    const fuelType = specsObj.fuelType;
-    if (
-      fuelType === "gasoline" ||
-      fuelType === "diesel" ||
-      fuelType === "gas"
-    ) {
-      // Safely pass to translator
-      specsArray.push(tProduct(`fuelTypes.${fuelType}`));
-    }
+
+  const rawPower = specsObj.power ?? specsObj.powerKw ?? specsObj.powerKva;
+  if (typeof rawPower === "number" || typeof rawPower === "string") {
+    specsArray.push(`${rawPower}kW`);
   }
+
+  const fuelType = specsObj.fuelType;
+  if (typeof fuelType === "string" && fuelType.trim().length > 0) {
+    specsArray.push(tProduct(`fuelTypes.${fuelType}`));
+  }
+
+  const phase = specsObj.phase;
   if (typeof specsObj.phase === "string") {
-    const phase = specsObj.phase;
     if (phase === "1phase" || phase === "3phase") {
       specsArray.push(tProduct(`phases.${phase}`));
     }
@@ -87,14 +86,18 @@ export function ProductCard({ product, index }: ProductCardProps) {
       },
       1,
     );
-    toast.success(tQuote("addedSuccess", { name: product.name }));
   };
+
+  const specsList = formatSpecs(product.specs, (key) =>
+    tProduct(key as Parameters<typeof tProduct>[0]),
+  );
+
   return (
     <Card
       size="dense"
-      className="group hover:border-primary/50 h-full gap-4 overflow-hidden transition-all hover:shadow-xl"
+      className="group hover:border-primary/50 flex h-full flex-col overflow-hidden transition-all hover:shadow-xl"
     >
-      <Link href={`/products/${product.slug}`}>
+      <Link href={`/products/${product.slug}`} className="block">
         <CardHeader className="relative aspect-4/3 w-full p-0">
           <ProductImage
             src={product.images[0]}
@@ -115,29 +118,32 @@ export function ProductCard({ product, index }: ProductCardProps) {
         </CardHeader>
       </Link>
 
-      <CardContent className="flex grow flex-col gap-2 p-4 pt-1">
-        <Link href={`/products/${product.slug}`}>
+      <CardContent className="flex grow flex-col p-4">
+        <Link href={`/products/${product.slug}`} className="block">
           <h3 className="font-display text-foreground group-hover:text-primary line-clamp-2 text-base leading-snug font-bold transition-colors">
             {product.name}
           </h3>
         </Link>
-        {/* Specs List */}
-        <div className="flex flex-wrap gap-2">
-          {formatSpecs(product.specs, (key) =>
-            tProduct(key as Parameters<typeof tProduct>[0]),
-          ).map((spec) => (
-            <Badge
-              variant="secondary"
-              key={`${product.id}-${spec}`}
-              className="rounded-sm text-[13px] font-semibold"
-            >
-              {spec}
-            </Badge>
-          ))}
-        </div>
+        {/* Specs List - only render if specs exist */}
+        {specsList.length > 0 && (
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {specsList.map((spec) => (
+              <Badge
+                variant="secondary"
+                key={`${product.id}-${spec}`}
+                className="rounded-xs text-[12px] font-medium"
+              >
+                {spec}
+              </Badge>
+            ))}
+          </div>
+        )}
       </CardContent>
 
-      <CardFooter className="bg-muted/10 mt-auto flex flex-col gap-2.5 border-t p-3.5">
+      <CardFooter
+        size="dense"
+        className="bg-muted/10 mt-auto flex flex-col gap-2.5 border-t p-3"
+      >
         <div className="flex w-full items-baseline justify-between gap-2">
           <span className="text-primary text-base font-bold tracking-tight">
             {product.isQuoteOnly

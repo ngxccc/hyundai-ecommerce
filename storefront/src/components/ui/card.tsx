@@ -59,6 +59,18 @@ const cardContentVariants = cva("", {
     size: "default",
   },
 });
+const cardFooterVariants = cva("flex items-center", {
+  variants: {
+    size: {
+      default: "px-6 [.border-t]:pt-6",
+      dense: "px-4 py-3",
+      compact: "p-0",
+    },
+  },
+  defaultVariants: {
+    size: "default",
+  },
+});
 
 const cardTitleVariants = cva(
   "flex items-center gap-2 leading-none font-semibold [&_svg]:shrink-0 [&_svg]:pointer-events-none",
@@ -279,11 +291,16 @@ function CardContent({
   return content;
 }
 
-function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+export interface CardFooterProps
+  extends
+    React.ComponentProps<"div">,
+    VariantProps<typeof cardFooterVariants> {}
+
+function CardFooter({ className, size, ...props }: CardFooterProps) {
   return (
     <div
       data-slot="card-footer"
-      className={cn("flex items-center px-6 [.border-t]:pt-6", className)}
+      className={cn(cardFooterVariants({ size }), className)}
       {...props}
     />
   );
@@ -301,4 +318,5 @@ export {
   cardHeaderVariants,
   cardTitleVariants,
   cardContentVariants,
+  cardFooterVariants,
 };

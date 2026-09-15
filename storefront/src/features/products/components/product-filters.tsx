@@ -7,7 +7,7 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import { useRouter, usePathname } from "@/i18n/routing";
+import { useRouter } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -15,17 +15,11 @@ import { Separator } from "@/components/ui/separator";
 import type {
   StorefrontCategoryWithChildren,
   StorefrontBrand,
-  StorefrontFilterMetadata,
+  StorefrontCatalogMetadata,
 } from "@/services";
 import { useTranslations, useLocale } from "next-intl";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
-import { computeFacets } from "../utils/facet-engine";
-import type {
-  ComputeFacetsParams,
-  ProductActiveFilters,
-} from "../types/facet-engine";
-import { FUEL_TYPES, PHASES } from "../types/catalog";
 
 interface ProductFiltersProps {
   categories: StorefrontCategoryWithChildren[];
@@ -35,24 +29,6 @@ interface ProductFiltersProps {
   onPendingFiltersChange?: (params: URLSearchParams) => void;
   pendingSearchParams?: URLSearchParams | undefined;
   searchParams: Record<string, string | string[] | undefined>;
-}
-
-function flattenCategoriesTree(
-  tree: StorefrontCategoryWithChildren[],
-  parentId: string | null = null,
-) {
-  const result: ComputeFacetsParams["categories"] = [];
-  for (const node of tree) {
-    result.push({
-      id: node.id,
-      slug: node.slug,
-      parentId,
-    });
-    if (node.children.length > 0) {
-      result.push(...flattenCategoriesTree(node.children, node.id));
-    }
-  }
-  return result;
 }
 
 export function ProductFilters({
@@ -65,7 +41,6 @@ export function ProductFilters({
   searchParams: searchParamsProp,
 }: ProductFiltersProps) {
   const router = useRouter();
-  const pathname = usePathname();
 
   const searchParams = useMemo(() => {
     const params = new URLSearchParams();
@@ -82,20 +57,24 @@ export function ProductFilters({
     });
     return params;
   }, [searchParamsProp]);
-  // Fetch metadata once on mount or when locale changes
+
+  // Fetch real catalog metadata from backend Single Source of Truth
   const locale = useLocale();
-  const [metadata, setMetadata] = useState<StorefrontFilterMetadata[]>([]);
+  const [metadata, setMetadata] = useState<StorefrontCatalogMetadata | null>(
+    null,
+  );
+
   useEffect(() => {
     fetch(`/api/products/metadata?locale=${locale}`)
       .then(
         (res) =>
           res.json() as Promise<{
             status: boolean;
-            data: StorefrontFilterMetadata[];
+            data: StorefrontCatalogMetadata | null;
           }>,
       )
       .then((resData) => {
-        if (resData.status && Array.isArray(resData.data)) {
+        if (resData.status && resData.data) {
           setMetadata(resData.data);
         }
       })
@@ -127,30 +106,6 @@ export function ProductFilters({
   const engineBrand = effectiveSearchParams.get("engineBrand") ?? "";
   const alternatorBrand = effectiveSearchParams.get("alternatorBrand") ?? "";
 
-  // Compute active filters and facetStatus
-  const activeFilters: ProductActiveFilters = {
-    categorySlug: selectedCategory || null,
-    brandSlugs: selectedBrands,
-    fuelType: fuelType || null,
-    phase: phase || null,
-    minPower: minPower ? Number(minPower) : null,
-    maxPower: maxPower ? Number(maxPower) : null,
-    voltage: voltage ? Number(voltage) : null,
-    engineBrand: engineBrand || null,
-    alternatorBrand: alternatorBrand || null,
-    q: searchQuery || null,
-  };
-
-  const facetStatus =
-    metadata.length > 0
-      ? computeFacets({
-          products: metadata,
-          brands,
-          categories: flattenCategoriesTree(categories),
-          activeFilters,
-        })
-      : null;
-
   // Local state for text search & specification filters to prevent typing lag
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const [localMinPower, setLocalMinPower] = useState(minPower);
@@ -159,6 +114,7 @@ export function ProductFilters({
   const [localEngineBrand, setLocalEngineBrand] = useState(engineBrand);
   const [localAlternatorBrand, setLocalAlternatorBrand] =
     useState(alternatorBrand);
+
   // Render-based state synchronization to avoid cascading renders (React 19 pattern)
   const [prevQueryString, setPrevQueryString] = useState(
     searchParams.toString(),
@@ -175,114 +131,152 @@ export function ProductFilters({
     setLocalAlternatorBrand(searchParams.get("alternatorBrand") ?? "");
   }
 
-  // Local state for expandable category nodes
+  // Expanded state for accordion categories
   const [expandedCategories, setExpandedCategories] = useState<
     Record<string, boolean>
-  >({
-    [selectedCategory]: true,
-  });
+  >({});
 
-  const toggleCategory = (id: string) => {
-    setExpandedCategories((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggleCategory = (categoryId: string) => {
+    setExpandedCategories((prev) => ({
+      ...prev,
+      [categoryId]: !prev[categoryId],
+    }));
   };
 
+  // Base navigation update function with Transition
   const updateFilters = useCallback(
     (updates: Record<string, string | null>) => {
       const params = new URLSearchParams(effectiveSearchParams.toString());
 
-      // Reset page cursor when filters change
-      params.delete("after");
-      params.delete("before");
-
-      Object.entries(updates).forEach(([key, val]) => {
-        if (val === null) {
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === null || value === "") {
           params.delete(key);
         } else {
-          params.set(key, val);
+          params.set(key, value);
         }
       });
 
-      if (mode === "sheet") {
-        // Sheet mode: NEVER navigate. Only report to parent if callback exists.
-        if (onPendingFiltersChange) {
-          onPendingFiltersChange(params);
-        }
-      } else {
-        // Live mode (Desktop): navigate immediately.
-        startTransition(() => {
-          router.push(`${pathname}?${params.toString()}`, { scroll: false });
-        });
+      // Reset pagination parameters when filters change
+      params.delete("after");
+      params.delete("before");
+
+      if (mode === "sheet" && onPendingFiltersChange) {
+        onPendingFiltersChange(params);
+        return;
       }
+
+      startTransition(() => {
+        const targetCategorySlug = updates.category ?? selectedCategory;
+        if (targetCategorySlug) {
+          const categoryPath = `/products/category/${targetCategorySlug}`;
+          const cleanParams = new URLSearchParams(params.toString());
+          cleanParams.delete("category");
+          const queryString = cleanParams.toString();
+          router.push(
+            queryString ? `${categoryPath}?${queryString}` : categoryPath,
+            { scroll: false },
+          );
+        } else {
+          const queryString = params.toString();
+          router.push(queryString ? `/products?${queryString}` : "/products", {
+            scroll: false,
+          });
+        }
+      });
     },
-    [effectiveSearchParams, mode, onPendingFiltersChange, router, pathname],
+    [
+      effectiveSearchParams,
+      mode,
+      onPendingFiltersChange,
+      router,
+      selectedCategory,
+    ],
   );
 
-  const handleBrandChange = (brandSlug: string, checked: boolean) => {
-    let newBrands = [...selectedBrands];
-    if (checked) {
-      newBrands.push(brandSlug);
-    } else {
-      newBrands = newBrands.filter((slug) => slug !== brandSlug);
-    }
-    updateFilters({
-      brand: newBrands.length > 0 ? newBrands.join(",") : null,
-    });
-  };
-
-  const debouncedSearch = useDebounce(localSearch, 400);
+  // Debounced search query
+  const debouncedSearch = useDebounce(localSearch, 300);
   const debouncedMinPower = useDebounce(localMinPower, 400);
   const debouncedMaxPower = useDebounce(localMaxPower, 400);
   const debouncedVoltage = useDebounce(localVoltage, 400);
   const debouncedEngineBrand = useDebounce(localEngineBrand, 400);
   const debouncedAlternatorBrand = useDebounce(localAlternatorBrand, 400);
 
-  // Trigger URL parameter updates when debounced values change
+  // Sync debounced values to URL
   useEffect(() => {
-    const updates: Record<string, string | null> = {};
+    if (debouncedSearch !== searchQuery) {
+      updateFilters({ q: debouncedSearch || null });
+    }
+  }, [debouncedSearch, searchQuery, updateFilters]);
 
-    if (debouncedSearch !== searchQuery && debouncedSearch === localSearch)
-      updates.q = debouncedSearch || null;
-    if (debouncedMinPower !== minPower && debouncedMinPower === localMinPower)
-      updates.minPower = debouncedMinPower || null;
-    if (debouncedMaxPower !== maxPower && debouncedMaxPower === localMaxPower)
-      updates.maxPower = debouncedMaxPower || null;
-    if (debouncedVoltage !== voltage && debouncedVoltage === localVoltage)
-      updates.voltage = debouncedVoltage || null;
-    if (
-      debouncedEngineBrand !== engineBrand &&
-      debouncedEngineBrand === localEngineBrand
-    )
-      updates.engineBrand = debouncedEngineBrand || null;
-    if (
-      debouncedAlternatorBrand !== alternatorBrand &&
-      debouncedAlternatorBrand === localAlternatorBrand
-    )
-      updates.alternatorBrand = debouncedAlternatorBrand || null;
+  useEffect(() => {
+    const isMinChanged = debouncedMinPower !== minPower;
+    const isMaxChanged = debouncedMaxPower !== maxPower;
+    const isVoltageChanged = debouncedVoltage !== voltage;
+    const isEngineBrandChanged = debouncedEngineBrand !== engineBrand;
+    const isAlternatorBrandChanged =
+      debouncedAlternatorBrand !== alternatorBrand;
 
-    if (Object.keys(updates).length > 0) {
-      updateFilters(updates);
+    if (
+      isMinChanged ||
+      isMaxChanged ||
+      isVoltageChanged ||
+      isEngineBrandChanged ||
+      isAlternatorBrandChanged
+    ) {
+      updateFilters({
+        minPower: debouncedMinPower || null,
+        maxPower: debouncedMaxPower || null,
+        voltage: debouncedVoltage || null,
+        engineBrand: debouncedEngineBrand || null,
+        alternatorBrand: debouncedAlternatorBrand || null,
+      });
     }
   }, [
-    debouncedSearch,
     debouncedMinPower,
     debouncedMaxPower,
     debouncedVoltage,
     debouncedEngineBrand,
     debouncedAlternatorBrand,
-    searchQuery,
     minPower,
     maxPower,
     voltage,
     engineBrand,
     alternatorBrand,
-    localSearch,
-    localMinPower,
-    localMaxPower,
-    localVoltage,
-    localEngineBrand,
-    localAlternatorBrand,
     updateFilters,
   ]);
+
+  const handleBrandChange = (brandSlug: string, checked: boolean) => {
+    let newBrands = [...selectedBrands];
+    if (checked) {
+      if (!newBrands.includes(brandSlug)) {
+        newBrands.push(brandSlug);
+      }
+    } else {
+      newBrands = newBrands.filter((b) => b !== brandSlug);
+    }
+    updateFilters({ brand: newBrands.length > 0 ? newBrands.join(",") : null });
+  };
+
+  // Only keep brands that exist in the database (count > 0)
+  const availableBrands = useMemo(() => {
+    if (!metadata?.brands) return brands;
+    const existingBrandIds = new Set(
+      metadata.brands.filter((b) => b.count > 0).map((b) => b.id),
+    );
+    return brands.filter((b) => existingBrandIds.has(b.id));
+  }, [brands, metadata]);
+
+  // Only keep fuel types that exist in the database (count > 0)
+  const availableFuelTypes = useMemo(() => {
+    if (!metadata?.fuelTypes) return [];
+    return metadata.fuelTypes.filter((f) => f.count > 0 && f.value);
+  }, [metadata]);
+
+  // Only keep phases that exist in the database (count > 0)
+  const availablePhases = useMemo(() => {
+    if (!metadata?.phases) return [];
+    return metadata.phases.filter((p) => p.count > 0 && p.value);
+  }, [metadata]);
 
   // Recursive category tree renderer
   const renderCategoryNode = (
@@ -292,7 +286,6 @@ export function ProductFilters({
     const hasChildren = node.children.length > 0;
     const isExpanded = expandedCategories[node.id];
     const isSelected = selectedCategory === node.slug;
-    const isDisabled = facetStatus ? !facetStatus.categories[node.slug] : false;
 
     return (
       <div key={node.id} className="select-none">
@@ -300,38 +293,27 @@ export function ProductFilters({
           className={`flex items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors ${
             isSelected
               ? "bg-primary/10 text-primary font-bold"
-              : isDisabled
-                ? "text-muted-foreground pointer-events-none cursor-not-allowed opacity-50"
-                : "hover:bg-muted text-foreground cursor-pointer"
+              : "hover:bg-muted text-foreground cursor-pointer"
           }`}
           style={{ paddingLeft: `${depth * 12 + 8}px` }}
           onClick={() => {
-            if (isDisabled) return;
             const params = new URLSearchParams(
               effectiveSearchParams.toString(),
             );
-            // Clear category from searchParams as it is now a path parameter
             params.delete("category");
-            // Reset pagination parameters when category changes
             params.delete("after");
             params.delete("before");
 
             startTransition(() => {
               if (mode === "sheet" && onPendingFiltersChange) {
-                // In sheet mode, report the category change to the parent
-                // without navigating. The parent will apply it on "Apply".
                 const newParams = new URLSearchParams(params.toString());
                 if (isSelected) {
                   newParams.delete("category");
                 } else {
-                  // Note: Category slug navigation in sheet mode is complex
-                  // as it changes the route segment. For simplicity in Phase 2,
-                  // we treat category as a filter param inside the sheet.
                   newParams.set("category", node.slug);
                 }
                 onPendingFiltersChange(newParams);
               } else {
-                // Live mode (Desktop Sidebar)
                 if (isSelected) {
                   router.push(`/products?${params.toString()}`, {
                     scroll: false,
@@ -407,43 +389,35 @@ export function ProductFilters({
         </div>
       </div>
 
-      <Separator />
-
-      {/* Brand Checklist */}
-      <div>
-        <div className="text-foreground mb-1 text-sm font-bold">
-          {t("sidebar.brands")}
-        </div>
-        <div className="space-y-2.5">
-          {brands.map((brand) => {
-            const isBrandDisabled = facetStatus
-              ? !facetStatus.brands[brand.slug]
-              : false;
-            return (
-              <label
-                key={brand.id}
-                aria-disabled={isBrandDisabled}
-                className={`flex items-center space-x-2.5 ${
-                  isBrandDisabled
-                    ? "cursor-not-allowed opacity-50"
-                    : "cursor-pointer"
-                }`}
-              >
-                <Checkbox
-                  checked={selectedBrands.includes(brand.slug)}
-                  onCheckedChange={(checked: boolean | "indeterminate") => {
-                    handleBrandChange(brand.slug, !!checked);
-                  }}
-                  disabled={isBrandDisabled}
-                />
-                <span className="text-foreground text-sm leading-none font-medium select-none">
-                  {brand.name}
-                </span>
-              </label>
-            );
-          })}
-        </div>
-      </div>
+      {/* Brand Checklist - only render if available brands exist */}
+      {availableBrands.length > 0 && (
+        <>
+          <Separator />
+          <div>
+            <div className="text-foreground mb-1 text-sm font-bold">
+              {t("sidebar.brands")}
+            </div>
+            <div className="space-y-2.5">
+              {availableBrands.map((brand) => (
+                <label
+                  key={brand.id}
+                  className="flex cursor-pointer items-center space-x-2.5"
+                >
+                  <Checkbox
+                    checked={selectedBrands.includes(brand.slug)}
+                    onCheckedChange={(checked: boolean | "indeterminate") => {
+                      handleBrandChange(brand.slug, !!checked);
+                    }}
+                  />
+                  <span className="text-foreground text-sm leading-none font-medium select-none">
+                    {brand.name}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
 
       <Separator />
 
@@ -477,69 +451,77 @@ export function ProductFilters({
         </div>
       </div>
 
-      <Separator />
+      {/* Fuel Type - only render existing types in database */}
+      {availableFuelTypes.length > 0 && (
+        <>
+          <Separator />
+          <div>
+            <div className="text-foreground mb-1 text-sm font-bold">
+              {t("sidebar.fuel_type")}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {availableFuelTypes.map((item) => {
+                const type = item.value;
+                const label =
+                  type === "gasoline"
+                    ? "Xăng"
+                    : type === "diesel"
+                      ? "Diesel"
+                      : type === "gas"
+                        ? "Gas"
+                        : type;
+                return (
+                  <Button
+                    key={type}
+                    variant={fuelType === type ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      updateFilters({
+                        fuelType: fuelType === type ? null : type,
+                      });
+                    }}
+                    className="h-8.5 rounded-full px-3.5 text-xs font-semibold"
+                  >
+                    {label}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
 
-      {/* Fuel Type */}
-      <div>
-        <div className="text-foreground mb-1 text-sm font-bold">
-          {t("sidebar.fuel_type")}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {FUEL_TYPES.map((type) => {
-            const isFuelDisabled = facetStatus
-              ? !facetStatus.fuelTypes[type]
-              : false;
-            return (
-              <Button
-                key={type}
-                variant={fuelType === type ? "default" : "outline"}
-                size="sm"
-                disabled={isFuelDisabled}
-                onClick={() => {
-                  updateFilters({ fuelType: fuelType === type ? null : type });
-                }}
-                className="h-8.5 rounded-full px-3.5 text-xs font-semibold"
-              >
-                {type === "gasoline"
-                  ? "Xăng"
-                  : type === "diesel"
-                    ? "Diesel"
-                    : "Gas"}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
-
-      <Separator />
-
-      {/* Phase */}
-      <div>
-        <div className="text-foreground mb-1 text-sm font-bold">
-          {t("sidebar.phase")}
-        </div>
-        <div className="flex gap-2">
-          {PHASES.map((ph) => {
-            const isPhaseDisabled = facetStatus
-              ? !facetStatus.phases[ph]
-              : false;
-            return (
-              <Button
-                key={ph}
-                variant={phase === ph ? "default" : "outline"}
-                size="sm"
-                disabled={isPhaseDisabled}
-                onClick={() => {
-                  updateFilters({ phase: phase === ph ? null : ph });
-                }}
-                className="h-8.5 rounded-full px-4 text-xs font-semibold"
-              >
-                {ph === "1phase" ? "1 Pha" : "3 Pha"}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+      {/* Phase - only render existing phases in database */}
+      {availablePhases.length > 0 && (
+        <>
+          <Separator />
+          <div>
+            <div className="text-foreground mb-1 text-sm font-bold">
+              {t("sidebar.phase")}
+            </div>
+            <div className="flex gap-2">
+              {availablePhases.map((item) => {
+                const ph = item.value;
+                const label =
+                  ph === "1phase" ? "1 Pha" : ph === "3phase" ? "3 Pha" : ph;
+                return (
+                  <Button
+                    key={ph}
+                    variant={phase === ph ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      updateFilters({ phase: phase === ph ? null : ph });
+                    }}
+                    className="h-8.5 rounded-full px-4 text-xs font-semibold"
+                  >
+                    {label}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
 
       <Separator />
 

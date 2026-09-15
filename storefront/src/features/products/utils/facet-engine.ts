@@ -166,25 +166,38 @@ function matchesSpecsBase(
   activeFilters: ProductActiveFilters,
 ) {
   const specs = product.specs;
-  if (!specs) return false;
-
   const minPower = activeFilters.minPower;
   const maxPower = activeFilters.maxPower;
-  const powerVal = typeof specs.power === "number" ? specs.power : null;
 
-  if (minPower !== null && (powerVal === null || powerVal < minPower)) {
-    return false;
-  }
-  if (maxPower !== null && (powerVal === null || powerVal > maxPower)) {
-    return false;
+  if (minPower !== null || maxPower !== null) {
+    if (!specs) return false;
+    const powerVal =
+      typeof specs.power === "number"
+        ? specs.power
+        : typeof specs.powerKva === "number"
+          ? specs.powerKva
+          : typeof specs.powerKw === "number"
+            ? specs.powerKw
+            : null;
+
+    if (minPower !== null && (powerVal === null || powerVal < minPower)) {
+      return false;
+    }
+    if (maxPower !== null && (powerVal === null || powerVal > maxPower)) {
+      return false;
+    }
   }
 
-  const voltageVal = typeof specs.voltage === "number" ? specs.voltage : null;
-  if (activeFilters.voltage !== null && voltageVal !== activeFilters.voltage) {
-    return false;
+  if (activeFilters.voltage !== null) {
+    if (!specs) return false;
+    const voltageVal = typeof specs.voltage === "number" ? specs.voltage : null;
+    if (voltageVal !== activeFilters.voltage) {
+      return false;
+    }
   }
 
   if (activeFilters.engineBrand) {
+    if (!specs) return false;
     const engineBrandVal =
       typeof specs.engineBrand === "string" ? specs.engineBrand : "";
     const pEngine = engineBrandVal.toLowerCase();
@@ -193,6 +206,7 @@ function matchesSpecsBase(
   }
 
   if (activeFilters.alternatorBrand) {
+    if (!specs) return false;
     const alternatorBrandVal =
       typeof specs.alternatorBrand === "string" ? specs.alternatorBrand : "";
     const pAlt = alternatorBrandVal.toLowerCase();

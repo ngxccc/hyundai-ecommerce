@@ -9,7 +9,7 @@ import type {
 } from "@/types/api";
 import {
   type StorefrontProduct,
-  type StorefrontFilterMetadata,
+  type StorefrontCatalogMetadata,
   mapProductToStorefront,
 } from "./types";
 import type { Locale } from "next-intl";
@@ -147,25 +147,17 @@ export const productService = {
 
   getFiltersMetadata: async (
     locale: Locale,
-  ): Promise<StorefrontFilterMetadata[]> => {
+  ): Promise<StorefrontCatalogMetadata | null> => {
     "use cache";
     cacheLife("hours");
     try {
       const { data: res } = await catalogApi.products.getMetadata({
         locale,
       });
-      const metadata = res?.data;
-      if (!metadata) return [];
-      return metadata.categories.map((c) => ({
-        id: c.id,
-        name: c.name,
-        categoryId: c.id,
-        brandId: null,
-        specs: null,
-      }));
+      return res?.data ?? null;
     } catch (error) {
       console.error("Failed to fetch product filters metadata:", error);
-      return [];
+      return null;
     }
   },
 };

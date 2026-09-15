@@ -34,6 +34,20 @@ export interface StorefrontCategoryWithChildren extends StorefrontCategory {
   children: StorefrontCategoryWithChildren[];
 }
 
+export interface StorefrontRangeFacet {
+  min: number;
+  max: number;
+}
+
+export interface StorefrontCatalogMetadata {
+  brands: { id: string; name: string; count: number }[];
+  categories: { id: string; name: string; count: number }[];
+  powerRange: StorefrontRangeFacet;
+  priceRange: StorefrontRangeFacet;
+  fuelTypes: { value: string; count: number }[];
+  phases: { value: string; count: number }[];
+  canopyTypes: { value: string; count: number }[];
+}
 export interface StorefrontFilterMetadata {
   id: string;
   name: string;

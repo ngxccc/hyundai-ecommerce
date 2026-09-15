@@ -16,22 +16,15 @@ describe("GET /api/products/metadata", () => {
   });
 
   it("returns products filter metadata on success", async () => {
-    const mockMetadata = [
-      {
-        id: "prod-1",
-        name: "Hyundai Generator",
-        categoryId: "cat-1",
-        brandId: "brand-1",
-        specs: {
-          power: 10.5,
-          voltage: 220,
-          phase: "1phase",
-          fuelType: "diesel",
-          engineBrand: "Hyundai",
-          alternatorBrand: "Hyundai",
-        },
-      },
-    ];
+    const mockMetadata = {
+      brands: [{ id: "brand-1", name: "Hyundai", count: 12 }],
+      categories: [{ id: "cat-1", name: "Generators", count: 12 }],
+      powerRange: { min: 5, max: 2500 },
+      priceRange: { min: 10000000, max: 2000000000 },
+      fuelTypes: [{ value: "diesel", count: 10 }],
+      phases: [{ value: "1phase", count: 5 }],
+      canopyTypes: [{ value: "silent", count: 5 }],
+    };
 
     mockGetFiltersMetadata.mockResolvedValue(mockMetadata);
 
@@ -47,8 +40,7 @@ describe("GET /api/products/metadata", () => {
     expect(response.status).toBe(HTTP_STATUS.OK);
     expect(json.success).toBe(true);
     expect(json.status).toBe(true);
-    expect(json.data).toHaveLength(1);
-    expect(json.data[0]).toEqual(mockMetadata[0]);
+    expect(json.data).toEqual(mockMetadata);
   });
 
   it("handles errors gracefully", async () => {
