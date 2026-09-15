@@ -4,14 +4,14 @@ import { revalidatePath } from "next/cache";
 import { ApiClientError } from "@/lib/api-client";
 import { quotesApi } from "../api/quotes.api";
 import { getTranslations } from "next-intl/server";
-import { translateZodMessage } from "@/shared/lib/i18n-zod";
+import { translateZodMessage } from "@/lib/i18n-zod";
 import {
   isValidIdentifier,
   createAdminQuoteSchema,
   updateQuoteStatusSchema,
   type CreateAdminQuoteInput,
   type UpdateQuoteStatusInput,
-} from "@/shared/validators";
+} from "@/validators";
 
 export async function approveAndConvertToOrderAction(quoteId: string) {
   const t = await getTranslations("errors");

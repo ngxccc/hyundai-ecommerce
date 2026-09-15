@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useDebounce } from "@/shared/hooks/use-debounce";
+import { useDebounce } from "@/hooks/use-debounce";
 import { useTranslations } from "next-intl";
 import { useRouter, usePathname, Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
@@ -18,9 +18,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, Eye } from "lucide-react";
-import { quoteStatusEnum } from "@/shared/constants";
+import { quoteStatusEnum } from "@/constants";
 import type { AdminQuote } from "@/types/api";
-import { formatCurrency } from "@/shared/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 
 interface QuoteListProps {
   quotes: AdminQuote[];

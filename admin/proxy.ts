@@ -1,12 +1,9 @@
 import { routing } from "@/i18n/routing";
-import { checkRateLimitWithQueue } from "@/shared/lib/rate-limiter";
-import { HTTP_STATUS } from "@/shared/constants";
-import { parseSessionFromCookieStore } from "@/shared/lib/session";
-import { isJwtExpired } from "@/shared/lib/jwt";
-import {
-  rotateAdminToken,
-  type RotatedTokens,
-} from "@/shared/lib/token-refresh";
+import { checkRateLimitWithQueue } from "@/lib/rate-limiter";
+import { HTTP_STATUS } from "@/constants";
+import { parseSessionFromCookieStore } from "@/lib/session";
+import { isJwtExpired } from "@/lib/jwt";
+import { rotateAdminToken, type RotatedTokens } from "@/lib/token-refresh";
 import type { Locale } from "next-intl";
 import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";

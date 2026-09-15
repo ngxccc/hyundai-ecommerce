@@ -14,9 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { LocaleTabs } from "@/shared/components/locale-tabs";
-import { formatNumberInput } from "@/shared/lib/utils";
-import type { CreateProductInput } from "@/shared/validators";
+import { LocaleTabs } from "@/components/common/locale-tabs";
+import { formatNumberInput } from "@/lib/utils";
+import type { CreateProductInput } from "@/validators";
 
 interface ProductGeneralInfoProps {
   form: UseFormReturn<CreateProductInput>;

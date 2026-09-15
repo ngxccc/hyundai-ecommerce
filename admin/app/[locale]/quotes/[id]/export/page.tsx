@@ -1,6 +1,6 @@
 import { QuotePrintDocument } from "@/features/quotes/components";
 import { quotesApi } from "@/features/quotes/api/quotes.api";
-import { requireAuth } from "@/shared/lib/action-auth";
+import { requireAuth } from "@/lib/action-auth";
 import { notFound } from "next/navigation";
 import { type Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";

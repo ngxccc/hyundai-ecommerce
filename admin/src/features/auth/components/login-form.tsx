@@ -2,12 +2,9 @@
 
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { translatedZodResolver } from "@/shared/lib/validation-resolver";
+import { translatedZodResolver } from "@/lib/validation-resolver";
 import { useTranslations } from "next-intl";
-import {
-  type LoginForm as LoginFormInput,
-  loginSchema,
-} from "@/shared/validators";
+import { type LoginForm as LoginFormInput, loginSchema } from "@/validators";
 import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

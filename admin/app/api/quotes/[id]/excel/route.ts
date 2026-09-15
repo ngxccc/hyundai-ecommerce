@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { HTTP_STATUS } from "@/shared/constants";
+import { HTTP_STATUS } from "@/constants";
 import { quotesApi } from "@/features/quotes/api/quotes.api";
-import { requireAuth } from "@/shared/lib/action-auth";
+import { requireAuth } from "@/lib/action-auth";
 
 export async function GET(
   _request: NextRequest,

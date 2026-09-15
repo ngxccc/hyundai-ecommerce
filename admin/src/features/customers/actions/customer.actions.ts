@@ -4,12 +4,12 @@ import {
   assertFinanceRole,
   getAuthErrorMessage,
   AuthError,
-} from "@/shared/lib/action-auth";
+} from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import {
   updateCustomerTierSchema,
   type UpdateCustomerTierInput,
-} from "@/shared/validators";
+} from "@/validators";
 
 export const createDealerTierAction = async (_formData: FormData) => {
   const t = await getTranslations("errors");

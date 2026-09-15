@@ -21,7 +21,7 @@ import {
   FileSpreadsheet,
   Loader2,
 } from "lucide-react";
-import { QUOTE_STATUS } from "@/shared/constants";
+import { QUOTE_STATUS } from "@/constants";
 import type { AdminQuote } from "@/types/api";
 import {
   updateQuoteStatusAction,

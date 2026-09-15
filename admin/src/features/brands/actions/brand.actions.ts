@@ -9,7 +9,7 @@ import {
   type UpdateBrandInput,
   type BrandTranslationInput,
   isValidIdentifier,
-} from "@/shared/validators";
+} from "@/validators";
 
 function formatBrandTranslations(translations?: BrandTranslationInput[]) {
   if (!translations) return undefined;
@@ -26,17 +26,17 @@ function formatBrandTranslations(translations?: BrandTranslationInput[]) {
       description: t.description?.trim() ? t.description.trim() : null,
     }));
 }
-import { formatValidationErrors } from "@/shared/utils/validation";
-import { SYSTEM_ERROR_CODES } from "@/shared/constants";
+import { formatValidationErrors } from "@/lib/validation";
+import { SYSTEM_ERROR_CODES } from "@/constants";
 import {
   requireAuth,
   getAuthErrorMessage,
   getActionErrorMessage,
   AuthError,
-} from "@/shared/lib/action-auth";
+} from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
-import { uploadToCloudinary, validateUploadedFile } from "@/shared/services";
+import { uploadToCloudinary, validateUploadedFile } from "@/services";
 
 export const createBrandAction = async (formData: FormData) => {
   try {
@@ -74,14 +74,13 @@ export const createBrandAction = async (formData: FormData) => {
       validatedData.translations,
     );
 
-    const { data: createRes, error: createError } =
-      await brandsApi.create({
-        name: validatedData.name,
-        slug: validatedData.slug,
-        logo: validatedData.logo,
-        isActive: validatedData.isActive,
-        translations: formattedTranslations,
-      });
+    const { data: createRes, error: createError } = await brandsApi.create({
+      name: validatedData.name,
+      slug: validatedData.slug,
+      logo: validatedData.logo,
+      isActive: validatedData.isActive,
+      translations: formattedTranslations,
+    });
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create brand");
     }
@@ -161,15 +160,12 @@ export async function updateBrandAction(id: string, formData: FormData) {
       validatedData.translations,
     );
 
-    const { data: updateRes, error: updateError } = await brandsApi.update(
-      id,
-      {
-        name: validatedData.name,
-        slug: validatedData.slug,
-        logo: validatedData.logo,
-        translations: formattedTranslations,
-      },
-    );
+    const { data: updateRes, error: updateError } = await brandsApi.update(id, {
+      name: validatedData.name,
+      slug: validatedData.slug,
+      logo: validatedData.logo,
+      translations: formattedTranslations,
+    });
     if (updateError || !updateRes.data) {
       throw new Error(updateError?.detail ?? "Failed to update brand");
     }

@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { AdminCategory, AdminBrand } from "@/types/api";
-import type { CreateProductInput } from "@/shared/validators";
+import type { CreateProductInput } from "@/validators";
 
 interface ProductCategorySectionProps {
   form: UseFormReturn<CreateProductInput>;

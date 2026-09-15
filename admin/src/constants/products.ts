@@ -1,4 +1,4 @@
-import type { Product } from "@/shared/types/common";
+import type { Product } from "@/types/common";
 
 export const PRODUCTS_REVALIDATE_SECONDS = 60 * 60;
 

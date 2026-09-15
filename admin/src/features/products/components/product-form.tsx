@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { translatedZodResolver } from "@/shared/lib/validation-resolver";
+import { translatedZodResolver } from "@/lib/validation-resolver";
 import { useTranslations } from "next-intl";
 import { toast } from "@/components/ui/sonner";
 import { useRouter } from "next/navigation";
@@ -12,12 +12,9 @@ import {
 } from "../actions/product.actions";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { formatNumberInput } from "@/shared/lib/utils";
+import { formatNumberInput } from "@/lib/utils";
 import type { AdminProduct, AdminCategory, AdminBrand } from "@/types/api";
-import {
-  type CreateProductInput,
-  createProductSchema,
-} from "@/shared/validators";
+import { type CreateProductInput, createProductSchema } from "@/validators";
 
 import {
   ProductGeneralInfo,
@@ -26,7 +23,7 @@ import {
   ProductCategorySection,
   ProductDescriptionSection,
 } from "./form-sections";
-import { AdminImageUploadSection } from "@/shared/components/admin-image-upload-section";
+import { AdminImageUploadSection } from "@/components/common/admin-image-upload-section";
 
 export const ProductForm = ({
   initialData,

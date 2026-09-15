@@ -4,12 +4,12 @@ import { revalidatePath } from "next/cache";
 import { ApiClientError } from "@/lib/api-client";
 import { ordersApi } from "../api/orders.api";
 import type { AdminOrder } from "@/types/api";
-import { isValidIdentifier } from "@/shared/validators";
+import { isValidIdentifier } from "@/validators";
 import {
   requireAuth,
   assertFinanceRole,
   assertSalesOrFinanceRole,
-} from "@/shared/lib/action-auth";
+} from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 
 export const updateOrderStatusAction = async (

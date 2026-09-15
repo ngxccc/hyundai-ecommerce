@@ -1,9 +1,9 @@
 import { BrandHeader } from "@/features/brands/components";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { OrderList } from "@/features/orders/components";
 import { ordersApi } from "@/features/orders/api/orders.api";
-import { OffsetPagination } from "@/shared/components/offset-pagination";
-import { orderStatusEnum } from "@/shared/constants";
+import { OffsetPagination } from "@/components/common/offset-pagination";
+import { orderStatusEnum } from "@/constants";
 import type { AdminOrder, OrderStatus } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";

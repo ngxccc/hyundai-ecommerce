@@ -2,7 +2,7 @@
 
 import { useState, useTransition, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
-import { translatedZodResolver } from "@/shared/lib/validation-resolver";
+import { translatedZodResolver } from "@/lib/validation-resolver";
 import { useTranslations } from "next-intl";
 import { toast } from "@/components/ui/sonner";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ import {
   createCategoryAction,
   updateCategoryAction,
 } from "../actions/category.actions";
-import { isCloudinaryUrl } from "@/shared/utils";
+import { isCloudinaryUrl } from "@/lib";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { LocaleTabs } from "@/shared/components/locale-tabs";
+import { LocaleTabs } from "@/components/common/locale-tabs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -34,15 +34,12 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminCategory } from "@/types/api";
-import {
-  type CreateCategoryInput,
-  createCategorySchema,
-} from "@/shared/validators";
+import { type CreateCategoryInput, createCategorySchema } from "@/validators";
 import { Save, Loader2, X, Info } from "lucide-react";
 import {
   AdminImageUploadSection,
   type AdminImageItem,
-} from "@/shared/components/admin-image-upload-section";
+} from "@/components/common/admin-image-upload-section";
 
 export const CategoryForm = ({
   initialData,
@@ -324,7 +321,6 @@ export const CategoryForm = ({
                   </FormItem>
                 )}
               />
-
 
               <FormField
                 control={form.control}

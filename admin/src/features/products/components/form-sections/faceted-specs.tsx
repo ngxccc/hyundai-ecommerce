@@ -19,8 +19,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { CreateProductInput } from "@/shared/validators";
-import { toInputValue } from "@/shared/lib/utils";
+import type { CreateProductInput } from "@/validators";
+import { toInputValue } from "@/lib/utils";
 
 interface FacetedSpecsProps {
   form: UseFormReturn<CreateProductInput>;

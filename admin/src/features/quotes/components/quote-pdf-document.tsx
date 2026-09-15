@@ -7,7 +7,7 @@ import {
   Font,
   Image,
 } from "@react-pdf/renderer";
-import { numberToVietnameseWords } from "@/shared/lib/utils";
+import { numberToVietnameseWords } from "@/lib/utils";
 import type { AdminQuote } from "@/types/api";
 
 Font.register({

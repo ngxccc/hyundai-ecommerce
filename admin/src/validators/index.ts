@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { i18nZodMsg } from "@/shared/lib/i18n-zod";
+import { i18nZodMsg } from "@/lib/i18n-zod";
 
 export const isValidIdentifier = (id: unknown): id is string => {
   return typeof id === "string" && /^[a-zA-Z0-9_-]+$/.test(id.trim());
@@ -10,9 +10,7 @@ export const brandTranslationInputSchema = z.object({
   locale: z.string().min(2).max(8),
   description: z.string().nullable().optional(),
 });
-export type BrandTranslationInput = z.infer<
-  typeof brandTranslationInputSchema
->;
+export type BrandTranslationInput = z.infer<typeof brandTranslationInputSchema>;
 export const createBrandSchema = z.object({
   name: z.string().min(1, "validation.nameRequired"),
   slug: z.string().min(1, "validation.slugRequired"),

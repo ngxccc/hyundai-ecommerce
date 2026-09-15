@@ -1,9 +1,6 @@
 import { env } from "@/env";
 import { v2 as cloudinary } from "cloudinary";
-import {
-  validateUploadedFile,
-  isCloudinaryUrl,
-} from "../utils/cloudinary.utils";
+import { validateUploadedFile, isCloudinaryUrl } from "@/lib/cloudinary.utils";
 
 export { validateUploadedFile, isCloudinaryUrl };
 

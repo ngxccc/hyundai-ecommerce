@@ -1,12 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useDebounce } from "@/shared/hooks/use-debounce";
+import { useDebounce } from "@/hooks/use-debounce";
 import { useRouter, usePathname } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/lib/utils";
 
 export interface DataTableSearchInputProps {
   placeholder?: string;

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
-import { canUseCldImage } from "@/shared/utils";
+import { canUseCldImage } from "@/lib";
 import { Link, useRouter } from "@/i18n/routing";
 import { toast } from "@/components/ui/sonner";
 import type { ProductGridItem } from "../product-form-types";

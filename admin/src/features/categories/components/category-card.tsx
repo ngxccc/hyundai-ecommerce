@@ -10,7 +10,7 @@ import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
 import type { AdminCategory } from "@/types/api";
 
-import { canUseCldImage } from "@/shared/utils";
+import { canUseCldImage } from "@/lib";
 
 import { DeleteCategoryButton } from "./delete-category-button";
 

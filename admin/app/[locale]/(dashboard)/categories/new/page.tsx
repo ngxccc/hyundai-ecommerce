@@ -4,7 +4,7 @@ import { categoriesApi } from "@/features/categories/api/categories.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import type { Metadata } from "next";
 
 export const generateStaticParams = () => {

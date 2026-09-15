@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { LocaleTabs } from "@/shared/components/locale-tabs";
-import { type JSONContent } from "@/shared/lib/action-auth";
-import type { CreateProductInput } from "@/shared/validators";
+import { LocaleTabs } from "@/components/common/locale-tabs";
+import { type JSONContent } from "@/lib/action-auth";
+import type { CreateProductInput } from "@/validators";
 
 interface ProductDescriptionSectionProps {
   form: UseFormReturn<CreateProductInput>;
@@ -42,10 +42,7 @@ export const ProductDescriptionSection = ({
             {t("fields.description")}
           </CardTitle>
 
-          <LocaleTabs
-            activeLocale={langTab}
-            onLocaleChange={setLangTab}
-          />
+          <LocaleTabs activeLocale={langTab} onLocaleChange={setLangTab} />
         </div>
       </CardHeader>
 
@@ -70,10 +67,14 @@ export const ProductDescriptionSection = ({
                             : ""
                       }
                       onChange={(e) =>
-                        form.setValue("translations.0.description", e.target.value, {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                        })
+                        form.setValue(
+                          "translations.0.description",
+                          e.target.value,
+                          {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          },
+                        )
                       }
                     />
                   </FormControl>
@@ -102,10 +103,14 @@ export const ProductDescriptionSection = ({
                             : ""
                       }
                       onChange={(e) =>
-                        form.setValue("translations.1.description", e.target.value, {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                        })
+                        form.setValue(
+                          "translations.1.description",
+                          e.target.value,
+                          {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          },
+                        )
                       }
                     />
                   </FormControl>

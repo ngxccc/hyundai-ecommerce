@@ -1,5 +1,5 @@
 import { AdminSidebar } from "@/features/dashboard/components/admin-sidebar";
-import { getCachedSession } from "@/shared/lib/session";
+import { getCachedSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 

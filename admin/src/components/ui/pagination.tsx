@@ -5,7 +5,7 @@ import {
   MoreHorizontalIcon,
 } from "lucide-react";
 import { Slot, Slottable } from "@radix-ui/react-slot";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/lib/utils";
 import { buttonVariants, type Button } from "@/components/ui/button";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {

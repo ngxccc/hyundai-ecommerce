@@ -1,10 +1,10 @@
 import type { NextRequest } from "next/server";
-import { checkRateLimitWithQueue } from "@/shared/lib/rate-limiter";
-import { jsonSuccess, jsonError } from "@/shared/lib/api-response";
+import { checkRateLimitWithQueue } from "@/lib/rate-limiter";
+import { jsonSuccess, jsonError } from "@/lib/api-response";
 import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 import { getTranslations } from "next-intl/server";
-import { getCachedSession } from "@/shared/lib/session";
-import { HTTP_STATUS } from "@/shared/constants";
+import { getCachedSession } from "@/lib/session";
+import { HTTP_STATUS } from "@/constants";
 import dns from "node:dns/promises";
 import { env } from "@/env";
 

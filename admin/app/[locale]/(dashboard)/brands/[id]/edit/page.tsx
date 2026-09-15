@@ -3,7 +3,7 @@ import { BrandForm } from "@/features/brands/components/brand-form";
 import { brandsApi } from "@/features/brands/api/brands.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 

@@ -3,7 +3,7 @@
 import {
   OffsetPagination,
   type OffsetPaginationProps,
-} from "@/shared/components/offset-pagination";
+} from "@/components/common/offset-pagination";
 
 export type ProductPaginationProps = OffsetPaginationProps;
 

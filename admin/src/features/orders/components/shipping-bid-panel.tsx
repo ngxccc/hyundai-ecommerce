@@ -3,11 +3,8 @@
 import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { translatedZodResolver } from "@/shared/lib/validation-resolver";
-import {
-  type AddShippingBidInput,
-  addShippingBidSchema,
-} from "@/shared/validators";
+import { translatedZodResolver } from "@/lib/validation-resolver";
+import { type AddShippingBidInput, addShippingBidSchema } from "@/validators";
 import type { AdminOrder } from "@/types/api";
 
 export interface ShippingBid {
@@ -48,7 +45,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Truck, Plus, CheckCircle2 } from "lucide-react";
-import { formatNumberInput } from "@/shared/lib/utils";
+import { formatNumberInput } from "@/lib/utils";
 
 interface ShippingBidPanelProps {
   order: AdminOrder;

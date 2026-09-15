@@ -9,14 +9,10 @@ import {
   type CreateWarehouseInput,
   type UpdateWarehouseInput,
   isValidIdentifier,
-} from "@/shared/validators";
-import { formatValidationErrors } from "@/shared/utils/validation";
-import { SYSTEM_ERROR_CODES } from "@/shared/constants";
-import {
-  requireAuth,
-  getAuthErrorMessage,
-  AuthError,
-} from "@/shared/lib/action-auth";
+} from "@/validators";
+import { formatValidationErrors } from "@/lib/validation";
+import { SYSTEM_ERROR_CODES } from "@/constants";
+import { requireAuth, getAuthErrorMessage, AuthError } from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 
 export const createWarehouseAction = async (input: CreateWarehouseInput) => {

@@ -2,7 +2,7 @@ import {
   CustomerHeader,
   CustomerDirectory,
 } from "@/features/customers/components";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { customersApi } from "@/features/customers/api/customers.api";
 import type { AdminUser } from "@/types/api";
 import { getTranslations } from "next-intl/server";

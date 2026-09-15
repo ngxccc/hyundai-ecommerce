@@ -10,22 +10,22 @@ import {
   type UpdateProductInput,
   type ProductTranslationInput,
   isValidIdentifier,
-} from "@/shared/validators";
-import { formatValidationErrors } from "@/shared/utils/validation";
-import { SYSTEM_ERROR_CODES } from "@/shared/constants";
-import { AuthError } from "@/shared/lib/action-auth";
+} from "@/validators";
+import { formatValidationErrors } from "@/lib/validation";
+import { SYSTEM_ERROR_CODES } from "@/constants";
+import { AuthError } from "@/lib/action-auth";
 import {
   requireAuth,
   getAuthErrorMessage,
   getActionErrorMessage,
-} from "@/shared/lib/action-auth";
+} from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
 import {
   uploadToCloudinary,
   deleteFromCloudinary,
   validateUploadedFile,
-} from "@/shared/services";
+} from "@/services";
 
 function parseOptionalNumber(
   val: string | number | null | undefined,
@@ -38,9 +38,7 @@ function parseOptionalNumber(
   return isNaN(num) ? undefined : num;
 }
 
-function toTipTapJson(
-  content: unknown,
-): Record<string, unknown> | undefined {
+function toTipTapJson(content: unknown): Record<string, unknown> | undefined {
   if (typeof content === "object") {
     return content as Record<string, unknown>;
   }
@@ -82,9 +80,7 @@ function formatProductTranslations(
         : null,
       description: toTipTapJson(t.description) ?? null,
       seoTitle: t.seoTitle?.trim() ? t.seoTitle.trim() : null,
-      seoDescription: t.seoDescription?.trim()
-        ? t.seoDescription.trim()
-        : null,
+      seoDescription: t.seoDescription?.trim() ? t.seoDescription.trim() : null,
     }));
 }
 

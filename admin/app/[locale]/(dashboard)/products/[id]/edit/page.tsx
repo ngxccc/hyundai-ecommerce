@@ -5,7 +5,7 @@ import { categoriesApi } from "@/features/categories/api/categories.api";
 import { brandsApi } from "@/features/brands/api/brands.api";
 import { notFound } from "next/navigation";
 import { ProductHeader } from "@/features/products/components";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 
 export default async function EditProductPage({
   params,

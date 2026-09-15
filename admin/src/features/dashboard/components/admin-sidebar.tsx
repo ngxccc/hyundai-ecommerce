@@ -12,7 +12,7 @@ import {
   Globe,
   Palette,
 } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/lib/utils";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { useAdminNav } from "../hooks/use-admin-nav";

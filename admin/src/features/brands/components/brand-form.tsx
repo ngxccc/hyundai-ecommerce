@@ -2,7 +2,7 @@
 
 import { useState, useTransition, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
-import { translatedZodResolver } from "@/shared/lib/validation-resolver";
+import { translatedZodResolver } from "@/lib/validation-resolver";
 import { useTranslations } from "next-intl";
 import { toast } from "@/components/ui/sonner";
 import { useRouter } from "next/navigation";
@@ -18,19 +18,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { LocaleTabs } from "@/shared/components/locale-tabs";
+import { LocaleTabs } from "@/components/common/locale-tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminBrand } from "@/types/api";
-import { isCloudinaryUrl } from "@/shared/utils";
+import { isCloudinaryUrl } from "@/lib";
 
-import { type CreateBrandInput, createBrandSchema } from "@/shared/validators";
+import { type CreateBrandInput, createBrandSchema } from "@/validators";
 import { Save, Loader2, X, Info } from "lucide-react";
 
 import {
   AdminImageUploadSection,
   type AdminImageItem,
-} from "@/shared/components/admin-image-upload-section";
+} from "@/components/common/admin-image-upload-section";
 
 export const BrandForm = ({
   initialData,

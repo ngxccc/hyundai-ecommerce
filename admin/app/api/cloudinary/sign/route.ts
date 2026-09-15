@@ -2,10 +2,10 @@ import { env } from "@/env";
 import { v2 as cloudinary } from "cloudinary";
 import { type NextRequest } from "next/server";
 import { getTranslations } from "next-intl/server";
-import { getCachedSession } from "@/shared/lib/session";
-import { checkRateLimitWithQueue } from "@/shared/lib/rate-limiter";
-import { jsonSuccess, jsonError } from "@/shared/lib/api-response";
-import { HTTP_STATUS } from "@/shared/constants";
+import { getCachedSession } from "@/lib/session";
+import { checkRateLimitWithQueue } from "@/lib/rate-limiter";
+import { jsonSuccess, jsonError } from "@/lib/api-response";
+import { HTTP_STATUS } from "@/constants";
 
 export async function POST(request: NextRequest) {
   const requestedLocale =

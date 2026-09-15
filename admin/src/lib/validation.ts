@@ -1,8 +1,5 @@
 import type { ZodError } from "zod";
-import {
-  translateZodMessage,
-  type I18nTranslator,
-} from "@/shared/lib/i18n-zod";
+import { translateZodMessage, type I18nTranslator } from "@/lib/i18n-zod";
 
 export function formatValidationErrors(
   error: ZodError,

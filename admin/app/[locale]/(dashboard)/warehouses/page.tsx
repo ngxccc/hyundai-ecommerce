@@ -2,7 +2,7 @@ import {
   WarehouseHeader,
   WarehouseGrid,
 } from "@/features/warehouses/components";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { warehousesApi } from "@/features/warehouses/api/warehouses.api";
 import type { AdminWarehouse } from "@/types/api";
 import { getTranslations } from "next-intl/server";

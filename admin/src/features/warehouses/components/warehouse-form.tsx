@@ -22,10 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminWarehouse } from "@/types/api";
-import {
-  type CreateWarehouseInput,
-  createWarehouseSchema,
-} from "@/shared/validators";
+import { type CreateWarehouseInput, createWarehouseSchema } from "@/validators";
 import { Save, Loader2, X, Warehouse } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 

@@ -1,8 +1,8 @@
 import { BrandHeader } from "@/features/brands/components";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { QuoteHeader, QuotePricingCockpit } from "@/features/quotes/components";
 import { quotesApi } from "@/features/quotes/api/quotes.api";
-import { requireAuth } from "@/shared/lib/action-auth";
+import { requireAuth } from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { type Locale } from "next-intl";

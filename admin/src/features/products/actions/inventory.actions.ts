@@ -1,10 +1,10 @@
 "use server";
 
 import { warehousesApi } from "@/features/warehouses/api/warehouses.api";
-import { updateWarehouseStockSchema } from "@/shared/validators";
+import { updateWarehouseStockSchema } from "@/validators";
 import { revalidatePath } from "next/cache";
-import { AuthError } from "@/shared/lib/action-auth";
-import { requireAuth, getAuthErrorMessage } from "@/shared/lib/action-auth";
+import { AuthError } from "@/lib/action-auth";
+import { requireAuth, getAuthErrorMessage } from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 

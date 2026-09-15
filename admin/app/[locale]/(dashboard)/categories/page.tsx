@@ -1,8 +1,8 @@
 import { CategoryHeader } from "@/features/categories/components";
-import { DataTableSearchInput } from "@/shared/components/data-table-search-input";
+import { DataTableSearchInput } from "@/components/common/data-table-search-input";
 import { categoriesApi } from "@/features/categories/api/categories.api";
 import { CategoryGrid } from "@/features/categories/components/category-grid";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { routing } from "@/i18n/routing";

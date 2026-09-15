@@ -1,4 +1,4 @@
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import {
   WarehouseForm,
   WarehouseHeader,

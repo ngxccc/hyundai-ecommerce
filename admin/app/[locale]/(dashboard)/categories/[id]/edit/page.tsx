@@ -3,7 +3,7 @@ import { CategoryForm } from "@/features/categories/components/category-form";
 import { categoriesApi } from "@/features/categories/api/categories.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 

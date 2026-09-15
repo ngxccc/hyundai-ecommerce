@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import { useAdminNav } from "../hooks/use-admin-nav";
 import { Link, usePathname } from "@/i18n/routing";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/lib/utils";
 
 export const AdminHeader = () => {
   const t = useTranslations("adminDashboard");

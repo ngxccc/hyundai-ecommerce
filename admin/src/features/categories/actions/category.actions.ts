@@ -9,11 +9,9 @@ import {
   type UpdateCategoryInput,
   type CategoryTranslationInput,
   isValidIdentifier,
-} from "@/shared/validators";
+} from "@/validators";
 
-function formatCategoryTranslations(
-  translations?: CategoryTranslationInput[],
-) {
+function formatCategoryTranslations(translations?: CategoryTranslationInput[]) {
   if (!translations) return undefined;
   return translations
     .filter((t) => t.locale === "vi" || t.name.trim().length > 0)
@@ -23,17 +21,17 @@ function formatCategoryTranslations(
       description: t.description?.trim() ? t.description.trim() : null,
     }));
 }
-import { formatValidationErrors } from "@/shared/utils/validation";
-import { SYSTEM_ERROR_CODES } from "@/shared/constants";
+import { formatValidationErrors } from "@/lib/validation";
+import { SYSTEM_ERROR_CODES } from "@/constants";
 import {
   requireAuth,
   getAuthErrorMessage,
   getActionErrorMessage,
   AuthError,
-} from "@/shared/lib/action-auth";
+} from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { after } from "next/server";
-import { uploadToCloudinary, validateUploadedFile } from "@/shared/services";
+import { uploadToCloudinary, validateUploadedFile } from "@/services";
 
 export const createCategoryAction = async (formData: FormData) => {
   try {
@@ -71,14 +69,13 @@ export const createCategoryAction = async (formData: FormData) => {
       validatedData.translations,
     );
 
-    const { data: createRes, error: createError } =
-      await categoriesApi.create({
-        slug: validatedData.slug,
-        parentId: validatedData.parentId,
-        image: validatedData.image,
-        isActive: validatedData.isActive,
-        translations: formattedTranslations ?? [],
-      });
+    const { data: createRes, error: createError } = await categoriesApi.create({
+      slug: validatedData.slug,
+      parentId: validatedData.parentId,
+      image: validatedData.image,
+      isActive: validatedData.isActive,
+      translations: formattedTranslations ?? [],
+    });
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create category");
     }
@@ -157,14 +154,16 @@ export async function updateCategoryAction(id: string, formData: FormData) {
       validatedData.translations,
     );
 
-    const { data: updateRes, error: updateError } =
-      await categoriesApi.update(id, {
+    const { data: updateRes, error: updateError } = await categoriesApi.update(
+      id,
+      {
         slug: validatedData.slug,
         parentId: validatedData.parentId,
         image: validatedData.image,
         isActive: validatedData.isActive,
         translations: formattedTranslations,
-      });
+      },
+    );
     if (updateError || !updateRes.data) {
       throw new Error(updateError?.detail ?? "Failed to update category");
     }

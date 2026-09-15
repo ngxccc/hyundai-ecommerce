@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import type { AdminOrder } from "@/types/api";
 import { updateOrderStatusAction, verifyCashPaymentAction } from "../actions";
-import type { UserRole } from "@/shared/lib/action-auth";
+import type { UserRole } from "@/lib/action-auth";
 import {
   Stepper,
   StepperItem,

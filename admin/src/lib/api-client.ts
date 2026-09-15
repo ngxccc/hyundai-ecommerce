@@ -9,8 +9,8 @@ import { cookies } from "next/headers";
 import { env } from "@/env";
 import type { paths } from "@/types/api-schema";
 import type { ApiProblemDetails } from "@/types/api";
-import { isJwtExpired } from "@/shared/lib/jwt";
-import { rotateAdminToken } from "@/shared/lib/token-refresh";
+import { isJwtExpired } from "@/lib/jwt";
+import { rotateAdminToken } from "@/lib/token-refresh";
 export class ApiClientError extends Error {
   public readonly status: number;
   public readonly problem?: ApiProblemDetails;

@@ -1,14 +1,14 @@
 "use server";
 
 import { cookies, headers } from "next/headers";
-import { checkRateLimitWithQueue } from "@/shared/lib/rate-limiter";
+import { checkRateLimitWithQueue } from "@/lib/rate-limiter";
 import { ApiClientError } from "@/lib/api-client";
 import { authApi } from "@/features/auth/api/auth.api";
 import { getTranslations } from "next-intl/server";
-import { adminLoginSchema, type AdminLoginForm } from "@/shared/validators";
-import { formatValidationErrors } from "@/shared/utils/validation";
-import { getActionErrorMessage } from "@/shared/lib/action-auth";
-import { SYSTEM_ERROR_CODES } from "@/shared/constants";
+import { adminLoginSchema, type AdminLoginForm } from "@/validators";
+import { formatValidationErrors } from "@/lib/validation";
+import { getActionErrorMessage } from "@/lib/action-auth";
+import { SYSTEM_ERROR_CODES } from "@/constants";
 export const adminLoginAction = async (data: AdminLoginForm) => {
   const reqHeaders = await headers();
   const ip = reqHeaders.get("x-forwarded-for") ?? "127.0.0.1";

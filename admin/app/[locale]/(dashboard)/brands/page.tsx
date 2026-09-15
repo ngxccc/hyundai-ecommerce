@@ -1,6 +1,6 @@
 import { BrandHeader } from "@/features/brands/components";
-import { DataTableSearchInput } from "@/shared/components/data-table-search-input";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { DataTableSearchInput } from "@/components/common/data-table-search-input";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { BrandGrid } from "@/features/brands/components/brand-grid";
 import { brandsApi } from "@/features/brands/api/brands.api";
 import { getTranslations } from "next-intl/server";

@@ -1,9 +1,9 @@
 import { BrandHeader } from "@/features/brands/components";
-import { AdminBreadcrumbs } from "@/shared/components/admin-breadcrumbs";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { QuoteList } from "@/features/quotes/components";
 import { quotesApi } from "@/features/quotes/api/quotes.api";
-import { OffsetPagination } from "@/shared/components/offset-pagination";
-import { quoteStatusEnum } from "@/shared/constants";
+import { OffsetPagination } from "@/components/common/offset-pagination";
+import { quoteStatusEnum } from "@/constants";
 import type { AdminQuote, QuoteStatus } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";

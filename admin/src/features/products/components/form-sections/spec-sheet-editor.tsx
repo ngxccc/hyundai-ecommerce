@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { CreateProductInput } from "@/shared/validators";
+import type { CreateProductInput } from "@/validators";
 import type {
   SpecGroup,
   SpecItem,

@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/sonner";
 import { Loader2, DollarSign } from "lucide-react";
-import { QUOTE_STATUS } from "@/shared/constants";
+import { QUOTE_STATUS } from "@/constants";
 import type { AdminQuote } from "@/types/api";
 import { updateQuoteItemPriceAction } from "../actions";
 import {
@@ -29,7 +29,7 @@ import {
   formatCurrency,
   parseNumberInput,
   toIntegerString,
-} from "@/shared/lib/utils";
+} from "@/lib/utils";
 
 interface QuotePricingCockpitProps {
   quote: AdminQuote;

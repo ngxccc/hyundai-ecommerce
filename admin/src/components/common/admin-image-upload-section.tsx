@@ -11,7 +11,7 @@ import { Image as ImageIcon, Link as LinkIcon, Plus, X } from "lucide-react";
 import { useDropzone, type Accept } from "react-dropzone";
 import Image from "next/image";
 import { CldImage } from "next-cloudinary";
-import { canUseCldImage } from "@/shared/utils";
+import { canUseCldImage } from "@/lib";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
 import { useTranslations } from "next-intl";
