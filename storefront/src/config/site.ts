@@ -1,4 +1,5 @@
 import { env } from "@/env";
+import { companyConfig } from "./company";
 
 export const META_THEME_COLORS = {
   light: "#ffffff",
@@ -6,8 +7,8 @@ export const META_THEME_COLORS = {
 } as const;
 
 export const siteConfig = {
-  name: "Hyundai Nhật Năng | Máy Phát Điện Chính Hãng",
-  shortName: "Hyundai Nhật Năng",
+  name: `${companyConfig.shortName} | Máy Phát Điện Chính Hãng`,
+  shortName: companyConfig.shortName,
   description:
     "Đại lý phân phối độc quyền máy phát điện Hyundai chính hãng, bộ lưu điện UPS và giải pháp nguồn điện công nghiệp/dân dụng hàng đầu tại Việt Nam.",
   url: env.NEXT_PUBLIC_APP_URL,
@@ -25,8 +26,8 @@ export const siteConfig = {
     github: "https://github.com/ngocdev/hyundai-ecommerce",
   },
   contact: {
-    hotline: "091 234 5678",
-    email: "nhatnang@hyundai.vn",
+    hotline: companyConfig.hotlines.project.display,
+    email: companyConfig.emails.sales,
   },
 } as const;
 

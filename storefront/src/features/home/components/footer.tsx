@@ -1,6 +1,7 @@
 import { CopyrightYear } from "./copyright-year";
 import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
+import { companyConfig } from "@/config/company";
 
 export async function Footer() {
   const t = await getTranslations("HomePage");
@@ -9,7 +10,7 @@ export async function Footer() {
     <footer className="bg-muted/20 mt-10 border-t pt-14 pb-4 lg:mt-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-14 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {/* Cột 1: Pháp nhân & Giới thiệu */}
+          {/* Column 1: Legal Entity & Overview */}
           <div>
             <Link
               href="/"
@@ -29,7 +30,7 @@ export async function Footer() {
             <p className="text-muted-foreground text-xs">{t("footer.taxId")}</p>
           </div>
 
-          {/* Cột 2: Trụ sở & Tổng kho */}
+          {/* Column 2: Headquarters & Warehouses */}
           <div>
             <div className="font-display text-foreground mb-4 text-sm font-bold tracking-widest uppercase">
               {t("footer.headquartersTitle")}
@@ -41,7 +42,7 @@ export async function Footer() {
             </ul>
           </div>
 
-          {/* Cột 3: Dịch vụ & Kỹ thuật */}
+          {/* Column 3: Services & Technical Support */}
           <div>
             <div className="font-display text-foreground mb-4 text-sm font-bold tracking-widest uppercase">
               {t("footer.servicesTitle")}
@@ -54,7 +55,7 @@ export async function Footer() {
             </ul>
           </div>
 
-          {/* Cột 4: Kênh Dự án & Hotline */}
+          {/* Column 4: Projects & Contact */}
           <div>
             <div className="font-display text-foreground mb-4 text-sm font-bold tracking-widest uppercase">
               {t("footer.contactTitle")}
@@ -62,26 +63,26 @@ export async function Footer() {
             <ul className="text-muted-foreground space-y-2.5 text-sm">
               <li>
                 <a
-                  href="tel:0901497771"
+                  href={`tel:${companyConfig.hotlines.project.raw}`}
                   className="hover:text-primary transition-colors"
                 >
-                  0901 49 7771 (Dự án)
+                  {companyConfig.hotlines.project.display} (Dự án)
                 </a>
               </li>
               <li>
                 <a
-                  href="tel:0982890698"
+                  href={`tel:${companyConfig.hotlines.technical.raw}`}
                   className="hover:text-primary transition-colors"
                 >
-                  0982 89 0698 (Kỹ thuật)
+                  {companyConfig.hotlines.technical.display} (Kỹ thuật)
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:duan@hyundainhatnang.com"
+                  href={`mailto:${companyConfig.emails.project}`}
                   className="hover:text-primary transition-colors"
                 >
-                  duan@hyundainhatnang.com
+                  {companyConfig.emails.project}
                 </a>
               </li>
               <li className="pt-1 text-xs">{t("footer.workingHours")}</li>

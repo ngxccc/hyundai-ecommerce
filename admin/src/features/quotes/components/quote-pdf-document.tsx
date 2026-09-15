@@ -8,6 +8,7 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import { numberToVietnameseWords } from "@/lib/utils";
+import { companyConfig } from "@/config/company";
 import type { AdminQuote } from "@/types/api";
 
 Font.register({
@@ -635,20 +636,21 @@ export const QuotePdfDocument = ({
         <View style={styles.headerRow}>
           <View style={styles.logoSection}>
             <Text style={styles.companyBrand}>HYUNDAI POWER PRODUCTS</Text>
-            <Text style={styles.companyName}>
-              CÔNG TY TNHH THIẾT BỊ CÔNG NGHỆ NHẬT NĂNG
+            <Text style={styles.companyName}>{companyConfig.legalNameVi}</Text>
+            <Text style={styles.companyDetails}>
+              VP: {companyConfig.addresses.headquarters.vi}
             </Text>
             <Text style={styles.companyDetails}>
-              VP: 310/61 Đường Chiến Lược, P. Bình Trị Đông A, Q. Bình Tân, TP.
-              HCM
+              Hotline:{" "}
+              <Text style={styles.companyHighlight}>
+                {companyConfig.hotlines.project.display}
+              </Text>{" "}
+              | Email: {companyConfig.emails.support}
             </Text>
             <Text style={styles.companyDetails}>
-              Hotline: <Text style={styles.companyHighlight}>0901.49.7771</Text>{" "}
-              | Email: hyundaipowerproducts.vn@gmail.com
-            </Text>
-            <Text style={styles.companyDetails}>
-              MST: <Text style={styles.companyHighlight}>0316447814</Text> |
-              Website: https://hyundaipowerproducts.vn
+              MST:{" "}
+              <Text style={styles.companyHighlight}>{companyConfig.taxId}</Text>{" "}
+              | Website: {companyConfig.links.website}
             </Text>
           </View>
 

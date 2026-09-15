@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Workbook, type Borders } from "exceljs";
 import { numberToVietnameseWords } from "@/common/utils/number-to-words.util";
+import { companyConfig } from "@/config/company.config";
 import type { QuoteResponseDto } from "../dto/quote-response.dto";
 
 /**
@@ -87,9 +88,7 @@ export class QuoteExcelService {
     };
     titleRow1.alignment = { vertical: "middle", horizontal: "left" };
 
-    const titleRow2 = worksheet.addRow([
-      "CÔNG TY TNHH THIẾT BỊ CÔNG NGHỆ NHẬT NĂNG",
-    ]);
+    const titleRow2 = worksheet.addRow([companyConfig.legalNameVi]);
     worksheet.mergeCells(`A${rn(titleRow2)}:H${rn(titleRow2)}`);
     titleRow2.getCell(1).font = {
       name: "Arial",
@@ -99,7 +98,7 @@ export class QuoteExcelService {
     };
 
     const titleRow3 = worksheet.addRow([
-      "Địa chỉ: 310/61 Đường Chiến Lược, P. Bình Trị Đông A, Q. Bình Tân, TP. HCM | Hotline: 0901.49.7771 | MST: 0316447814",
+      `Địa chỉ: ${companyConfig.addresses.headquarters.vi} | Hotline: ${companyConfig.hotlines.project.formatted} | MST: ${companyConfig.taxId}`,
     ]);
     worksheet.mergeCells(`A${rn(titleRow3)}:H${rn(titleRow3)}`);
     titleRow3.getCell(1).font = {
@@ -269,7 +268,7 @@ export class QuoteExcelService {
       row.height = 24;
       row.font = { name: "Arial", size: 9 };
 
-      // STT, ĐVT, Qty, Discount -> Centered
+      // Item index, Unit of measure, Quantity, Discount -> Centered
       row.getCell(1).alignment = { vertical: "middle", horizontal: "center" };
       row.getCell(4).alignment = { vertical: "middle", horizontal: "center" };
       row.getCell(5).alignment = { vertical: "middle", horizontal: "center" };
