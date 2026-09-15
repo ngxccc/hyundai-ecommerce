@@ -331,9 +331,9 @@
       "apply": "Xem sản phẩm",
       "placeholder_min": "Tối thiểu",
       "placeholder_max": "Tối đa",
-      "placeholder_voltage": "Ví dụ: 220, 380",
-      "placeholder_engine_brand": "Ví dụ: Hyundai, Cummins",
-      "placeholder_alternator_brand": "Ví dụ: Stamford, Mecc Alte",
+      "placeholder_voltage": "220, 380",
+      "placeholder_engine_brand": "Hyundai, Cummins",
+      "placeholder_alternator_brand": "Stamford, Mecc Alte",
       "expand_category": "Mở rộng danh mục",
       "collapse_category": "Thu gọn danh mục"
     },

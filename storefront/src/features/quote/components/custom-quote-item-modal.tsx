@@ -66,7 +66,6 @@ export function CustomQuoteItemModal() {
       requestedPrice: parseNumberInput(form.requestedPrice) || null,
     });
 
-    toast.success(t("addedSuccess", { name: form.name }));
     setForm({
       name: "",
       model: "",

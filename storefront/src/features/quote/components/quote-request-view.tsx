@@ -3,8 +3,11 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useQuoteStore } from "@/features/quote";
+import { useIsMounted } from "@/hooks/useIsMounted";
 import { normalizePriceString } from "@/lib/utils";
 import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { type AddressState } from "./address-cascader";
 import { QuoteEmptyState } from "./quote-empty-state";
 import { QuoteSuccessState } from "./quote-success-state";
@@ -35,6 +38,7 @@ const INITIAL_ADDRESS: AddressState = {
  */
 export function QuoteRequestView() {
   const t = useTranslations("Quote");
+  const isMounted = useIsMounted();
   const items = useQuoteStore((s) => s.items);
   const updateQuantity = useQuoteStore((s) => s.updateQuantity);
   const updateRequestedPrice = useQuoteStore((s) => s.updateRequestedPrice);
@@ -120,7 +124,6 @@ export function QuoteRequestView() {
         });
         clearQuote();
         resetAllForms();
-        toast.success(t("successTitle"));
       } else {
         toast.error(res.error || "Request failed");
       }
@@ -143,12 +146,50 @@ export function QuoteRequestView() {
     );
   }
 
-  // 2. Empty state when no items selected
+  // 2. Prevent hydration empty state flash before localStorage rehydration
+  if (!isMounted) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mb-8">
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="mt-2 h-4 w-96" />
+        </div>
+
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <Card size="dense">
+              <CardHeader bordered size="dense" className="py-3 sm:py-4">
+                <Skeleton className="h-6 w-48" />
+              </CardHeader>
+              <CardContent size="compact" className="space-y-4 p-4 sm:p-6">
+                <Skeleton className="h-20 w-full" />
+                <Skeleton className="h-20 w-full" />
+              </CardContent>
+            </Card>
+          </div>
+          <div className="lg:col-span-5">
+            <Card size="dense">
+              <CardHeader bordered size="dense" className="py-3 sm:py-4">
+                <Skeleton className="h-6 w-36" />
+              </CardHeader>
+              <CardContent className="space-y-4 p-4 sm:p-6">
+                <Skeleton className="h-9 w-full" />
+                <Skeleton className="h-9 w-full" />
+                <Skeleton className="h-9 w-full" />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 3. Empty state when mounted and no items selected
   if (items.length === 0) {
     return <QuoteEmptyState />;
   }
 
-  // 3. Main quotation form & line items layout
+  // 4. Main quotation form & line items layout
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">

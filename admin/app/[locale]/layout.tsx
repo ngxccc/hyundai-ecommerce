@@ -78,7 +78,7 @@ export default async function RootLayout({
         >
           <NextIntlClientProvider messages={messages}>
             {children}
-            <Toaster position="top-center" />
+            <Toaster position="top-right" closeButton richColors />
             <ScrollToTop />
           </NextIntlClientProvider>
         </ThemeProvider>

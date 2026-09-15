@@ -3,7 +3,6 @@
 import { useQuoteStore } from "../hooks/use-quote";
 import { Button } from "@/components/ui/button";
 import { FileText, Send } from "lucide-react";
-import { toast } from "sonner";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 
@@ -28,7 +27,6 @@ export function AddToQuoteButton({
 
   const handleAddToList = () => {
     addItem({ productId, name, price, image, totalStock }, 1);
-    toast.success(t("addedSuccess", { name }));
   };
 
   const handleQuoteNow = () => {
@@ -50,7 +48,7 @@ export function AddToQuoteButton({
       <Button
         variant="outline"
         size="lg"
-        className="w-full gap-2 border-zinc-200 font-bold tracking-wider text-zinc-700 uppercase hover:bg-zinc-100"
+        className="border-border text-foreground hover:bg-muted w-full gap-2 font-bold tracking-wider uppercase"
         onClick={handleAddToList}
       >
         <FileText className="size-4" />

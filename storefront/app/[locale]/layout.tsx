@@ -142,7 +142,7 @@ async function LocalizedLayoutContent({
     <NextIntlClientProvider messages={messages}>
       <Header />
       <main className="flex-1 pt-16">{children}</main>
-      <Toaster position="top-center" />
+      <Toaster position="top-right" closeButton richColors />
       <ScrollToTop />
       <Suspense fallback={null}>
         <Analytics />
