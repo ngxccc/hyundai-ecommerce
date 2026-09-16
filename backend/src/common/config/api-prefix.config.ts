@@ -8,6 +8,7 @@ export const GLOBAL_API_PREFIX = "api";
 
 export const GLOBAL_PREFIX_EXCLUSIONS = [
   { path: "/", method: RequestMethod.GET },
+  { path: "health", method: RequestMethod.GET },
   { path: "openapi.json", method: RequestMethod.GET },
   { path: "api/docs", method: RequestMethod.GET },
 ] as const;

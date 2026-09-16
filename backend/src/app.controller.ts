@@ -1,13 +1,15 @@
 import { Controller, Get } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { SkipThrottle } from "@nestjs/throttler";
 import { HealthResponseDto } from "./app.dto";
 import { Public } from "./common/decorators/public.decorator";
 
 @ApiTags("app")
+@SkipThrottle()
 @Controller()
 export class AppController {
   @Public()
-  @Get()
+  @Get(["", "health"])
   @ApiOperation({
     summary: "System health check",
     description: "Returns service operational status.",
