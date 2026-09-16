@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "cdn.example.com" },
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "hyundainhatnang.vn" },
+      { protocol: "https", hostname: "hyundainhatnang.com" },
     ],
   },
   experimental: {

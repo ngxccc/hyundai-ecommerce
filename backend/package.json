@@ -23,6 +23,7 @@
     "i18n:generate": "nestjs-i18n -p ./src/i18n/ -o ./src/generated/i18n.generated.ts",
     "lint": "eslint . --fix --cache --cache-location .eslintcache",
     "openapi:generate": "doppler run -c test -- bun scripts/generate-openapi-types.ts",
+    "scrape:products": "bun scripts/scrape-products.ts",
     "prepare": "husky",
     "start": "doppler run -- bun dist/main.js",
     "start:debug": "doppler run -- nest start --debug --watch --exec bun",

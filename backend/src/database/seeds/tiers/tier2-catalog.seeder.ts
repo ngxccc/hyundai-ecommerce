@@ -148,11 +148,17 @@ export async function seedTier2Catalog(
     // 5. Seed Warehouse Stocks
     const warehouseStocksList: WarehouseStockFixtureData[] =
       warehouseStocksFixture;
+    const warehouseStocksTableData = warehouseStocksList.map((s) => ({
+      warehouseId: s.warehouseId,
+      productId: s.productId,
+      stock: s.stock,
+      minStockWarning: s.minStockWarning,
+    }));
     await db
       .insert(warehouseStocks)
-      .values(warehouseStocksList)
+      .values(warehouseStocksTableData)
       .onConflictDoNothing();
-    result.warehouseStocksCount = warehouseStocksList.length;
+    result.warehouseStocksCount = warehouseStocksTableData.length;
   }
 
   return result;

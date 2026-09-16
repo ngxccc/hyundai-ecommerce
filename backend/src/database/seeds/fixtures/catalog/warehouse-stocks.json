@@ -2,325 +2,1473 @@
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
     "productId": "019de188-693a-79a4-ab25-2ad9513da470",
-    "stock": 15,
-    "minStockWarning": 5
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000002",
     "productId": "019de188-693a-79a4-ab25-2ad9513da470",
-    "stock": 10,
-    "minStockWarning": 5
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
     "productId": "019de188-693a-79a4-ab25-3008985ebba1",
     "stock": 4,
-    "minStockWarning": 2
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-693a-79a4-ab25-3008985ebba1",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-693a-79a4-ab25-3430f81d11ff",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000002",
     "productId": "019de188-693a-79a4-ab25-3430f81d11ff",
-    "stock": 12,
-    "minStockWarning": 3
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
     "productId": "019de188-693a-79a4-ab25-37f26d36e2f1",
-    "stock": 8,
-    "minStockWarning": 2
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-693a-79a4-ab25-37f26d36e2f1",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7001-7000-8000-000000000001",
+    "productId": "01a0aac5-3197-768e-bb42-57706b061ead",
     "stock": 7,
-    "minStockWarning": 2
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7001-7000-8000-000000000001",
-    "stock": 5,
-    "minStockWarning": 2
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7001-7000-8000-000000000002",
-    "stock": 5,
-    "minStockWarning": 2
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7001-7000-8000-000000000002",
-    "stock": 4,
-    "minStockWarning": 2
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7001-7000-8000-000000000003",
-    "stock": 3,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7001-7000-8000-000000000003",
-    "stock": 3,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7001-7000-8000-000000000004",
+    "productId": "01a0aac5-3197-768e-bb42-57706b061ead",
     "stock": 2,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7001-7000-8000-000000000004",
-    "stock": 2,
-    "minStockWarning": 1
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7001-7000-8000-000000000005",
-    "stock": 3,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7001-7000-8000-000000000006",
-    "stock": 2,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7001-7000-8000-000000000007",
-    "stock": 2,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7001-7000-8000-000000000008",
-    "stock": 2,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7001-7000-8000-000000000009",
-    "stock": 1,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7001-7000-8000-00000000000a",
-    "stock": 3,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7001-7000-8000-00000000000a",
-    "stock": 2,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7001-7000-8000-00000000000b",
-    "stock": 4,
-    "minStockWarning": 2
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7001-7000-8000-00000000000b",
-    "stock": 3,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7001-7000-8000-00000000000c",
-    "stock": 2,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7001-7000-8000-00000000000c",
-    "stock": 2,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7002-7000-8000-000000000001",
-    "stock": 10,
-    "minStockWarning": 3
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7002-7000-8000-000000000001",
+    "productId": "01a0aac5-3197-768e-bb42-5ae54a868b4a",
     "stock": 8,
-    "minStockWarning": 3
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3197-768e-bb42-5ae54a868b4a",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.143Z",
+    "updatedAt": "2026-09-16T15:10:45.143Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7002-7000-8000-000000000002",
+    "productId": "01a0aac5-3197-768e-bb42-5f15a1049382",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3197-768e-bb42-5f15a1049382",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919c-c3441fe948f7",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919c-c3441fe948f7",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919c-c5c3fa2bba8f",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919c-c5c3fa2bba8f",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919c-cb7d002ffb6b",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919c-cb7d002ffb6b",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919c-ceff90d3f961",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919c-ceff90d3f961",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919c-d2bfb27ed731",
     "stock": 8,
-    "minStockWarning": 3
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7002-7000-8000-000000000002",
-    "stock": 6,
-    "minStockWarning": 2
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7002-7000-8000-000000000003",
-    "stock": 6,
-    "minStockWarning": 2
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7002-7000-8000-000000000003",
+    "productId": "01a0aac5-3198-716a-919c-d2bfb27ed731",
     "stock": 5,
-    "minStockWarning": 2
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7002-7000-8000-000000000004",
-    "stock": 5,
-    "minStockWarning": 2
+    "productId": "01a0aac5-3198-716a-919c-d7d7f3e9a109",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7002-7000-8000-000000000004",
-    "stock": 3,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7002-7000-8000-000000000005",
-    "stock": 3,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7002-7000-8000-000000000005",
-    "stock": 3,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7002-7000-8000-000000000006",
-    "stock": 4,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7002-7000-8000-000000000006",
-    "stock": 3,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7002-7000-8000-000000000007",
-    "stock": 3,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7002-7000-8000-000000000007",
+    "productId": "01a0aac5-3198-716a-919c-d7d7f3e9a109",
     "stock": 2,
-    "minStockWarning": 1
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7002-7000-8000-000000000008",
-    "stock": 6,
-    "minStockWarning": 2
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7002-7000-8000-000000000008",
+    "productId": "01a0aac5-3198-716a-919c-db7b98969834",
     "stock": 4,
-    "minStockWarning": 2
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7003-7000-8000-000000000001",
-    "stock": 15,
-    "minStockWarning": 5
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7003-7000-8000-000000000001",
-    "stock": 10,
-    "minStockWarning": 3
+    "productId": "01a0aac5-3198-716a-919c-db7b98969834",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7003-7000-8000-000000000002",
-    "stock": 10,
-    "minStockWarning": 3
+    "productId": "01a0aac5-3198-716a-919c-de3a7aa56290",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7003-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919c-de3a7aa56290",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919c-e04e3c5f4bbe",
     "stock": 6,
-    "minStockWarning": 2
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919c-e04e3c5f4bbe",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7003-7000-8000-000000000003",
+    "productId": "01a0aac5-3198-716a-919c-e4f440e2bfcc",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919c-e4f440e2bfcc",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919c-e973231db989",
     "stock": 8,
-    "minStockWarning": 2
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7003-7000-8000-000000000003",
-    "stock": 6,
-    "minStockWarning": 2
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7003-7000-8000-000000000004",
-    "stock": 5,
-    "minStockWarning": 2
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7003-7000-8000-000000000004",
-    "stock": 4,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7003-7000-8000-000000000005",
+    "productId": "01a0aac5-3198-716a-919c-e973231db989",
     "stock": 3,
-    "minStockWarning": 1
-  },
-  {
-    "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7003-7000-8000-000000000005",
-    "stock": 2,
-    "minStockWarning": 1
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7003-7000-8000-000000000006",
-    "stock": 2,
-    "minStockWarning": 1
+    "productId": "01a0aac5-3198-716a-919c-ed1911c975e8",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7003-7000-8000-000000000006",
-    "stock": 2,
-    "minStockWarning": 1
+    "productId": "01a0aac5-3198-716a-919c-ed1911c975e8",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000001",
-    "productId": "019de188-7003-7000-8000-000000000007",
-    "stock": 2,
-    "minStockWarning": 1
+    "productId": "01a0aac5-3198-716a-919c-f3bdc61d886b",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
   },
   {
     "warehouseId": "019de188-8888-7000-8000-000000000002",
-    "productId": "019de188-7003-7000-8000-000000000007",
-    "stock": 1,
-    "minStockWarning": 1
+    "productId": "01a0aac5-3198-716a-919c-f3bdc61d886b",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919c-f76b8ead260b",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919c-f76b8ead260b",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919c-fb6d96debf11",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919c-fb6d96debf11",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919c-fce9fc161d55",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919c-fce9fc161d55",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-00b10f589268",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-00b10f589268",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-04d23fa81f50",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-04d23fa81f50",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-09f958e6091d",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-09f958e6091d",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-0faa0cec74fa",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-0faa0cec74fa",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-11b70ffb7f5e",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-11b70ffb7f5e",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-16770277fffc",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-16770277fffc",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-19c370719ff3",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-19c370719ff3",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-1f732c198297",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-1f732c198297",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-23ed934ffb50",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-23ed934ffb50",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-24234b5f69f3",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-24234b5f69f3",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-287e537bbc18",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-287e537bbc18",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-2e65aaec7e12",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-2e65aaec7e12",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-336f5e5d989a",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-336f5e5d989a",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-37de75ed7510",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-37de75ed7510",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-39cf3daca058",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-39cf3daca058",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-3ea3ef3d4460",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-3ea3ef3d4460",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-4107449d7a1c",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-4107449d7a1c",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-449ef001b3eb",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-449ef001b3eb",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-492586b8276c",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-492586b8276c",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-4c27a625bc1b",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-4c27a625bc1b",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-520f94b5bd7d",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-520f94b5bd7d",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-569fd2ef1ba9",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-569fd2ef1ba9",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-59f99fd409e0",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-59f99fd409e0",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-5ceec851ee3e",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-5ceec851ee3e",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-60c1df03d502",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-60c1df03d502",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-65224192898d",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-65224192898d",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-69fd37c9b8b4",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-69fd37c9b8b4",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-6d8e95264295",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-6d8e95264295",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-706ae7281447",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-706ae7281447",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-76d9818d6e65",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-76d9818d6e65",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-7a02d7509df5",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-7a02d7509df5",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3198-716a-919d-7c9cdb5ef807",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3198-716a-919d-7c9cdb5ef807",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.144Z",
+    "updatedAt": "2026-09-16T15:10:45.144Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-37e4c8415f04",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-37e4c8415f04",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-3ac051d965c0",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-3ac051d965c0",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-3eb26288db94",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-3eb26288db94",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-43a4bb6cc08f",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-43a4bb6cc08f",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-44379b9d3350",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-44379b9d3350",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-4ac43898e2d1",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-4ac43898e2d1",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-4cdcca2579d9",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-4cdcca2579d9",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-52159ccc4578",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-52159ccc4578",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-5513b3b088d2",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-5513b3b088d2",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-582a3036bc38",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-582a3036bc38",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-5c74c9367402",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-5c74c9367402",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-6123d17314b7",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-6123d17314b7",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-6695b2663b0b",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-6695b2663b0b",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-6a25c2b90c7b",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-6a25c2b90c7b",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-6d4c396c5e86",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-6d4c396c5e86",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-70b6a982b7b2",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-70b6a982b7b2",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-774a5f313569",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-774a5f313569",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-796de2365b53",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-796de2365b53",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-7f405f8c0587",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-7f405f8c0587",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-8224475ece76",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-8224475ece76",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-8453901f4169",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-8453901f4169",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-8896ecf55aa4",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-8896ecf55aa4",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-8c31d6451dab",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-8c31d6451dab",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-910304777a1c",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-910304777a1c",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-97ded84d3917",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-97ded84d3917",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-98960cc76311",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-98960cc76311",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-9ff98c55ff83",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-9ff98c55ff83",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-a366596d89b4",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-a366596d89b4",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-a53baa689ee8",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-a53baa689ee8",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-ab75d08a74de",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-ab75d08a74de",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-aff5830fe1b4",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-aff5830fe1b4",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-b075a8465a16",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-b075a8465a16",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-b7cf7a191b1c",
+    "stock": 6,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-b7cf7a191b1c",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-bb1e2a059a42",
+    "stock": 7,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-bb1e2a059a42",
+    "stock": 2,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-bd1c88252520",
+    "stock": 8,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-bd1c88252520",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-c3c5c2a036c1",
+    "stock": 3,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-c3c5c2a036c1",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "01a0aac5-3199-71ce-9a0d-c40ef5e4160e",
+    "stock": 4,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "01a0aac5-3199-71ce-9a0d-c40ef5e4160e",
+    "stock": 5,
+    "minStockWarning": 2,
+    "createdAt": "2026-09-16T15:10:45.145Z",
+    "updatedAt": "2026-09-16T15:10:45.145Z"
   }
 ]

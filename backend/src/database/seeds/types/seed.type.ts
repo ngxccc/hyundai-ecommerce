@@ -11,7 +11,6 @@ import type {
   Warehouse,
   dealerTiers,
   warehouses,
-  warehouseStocks,
 } from "@/database/schemas";
 import type {
   ProductSpecSheet,
@@ -180,7 +179,12 @@ export interface ProductFixtureData {
   isActive: boolean;
   translations: ProductTranslationFixture[];
 }
-export type WarehouseStockFixtureData = typeof warehouseStocks.$inferInsert;
+export interface WarehouseStockFixtureData {
+  warehouseId: string;
+  productId: string;
+  stock: number;
+  minStockWarning: number;
+}
 export interface QuoteFixtureItem {
   productId: string;
   isCustomItem: boolean;
