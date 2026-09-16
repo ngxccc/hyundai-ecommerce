@@ -1,0 +1,20 @@
+[
+  {
+    "id": "019de188-8888-7000-8000-000000000001",
+    "nameVi": "Kho Hà Nội",
+    "nameEn": "Hanoi Warehouse",
+    "streetAddress": "Cụm Công nghiệp Ngọc Hồi, Xã Ngọc Hồi",
+    "district": "Huyện Thanh Trì",
+    "city": "Thành phố Hà Nội",
+    "isActive": true
+  },
+  {
+    "id": "019de188-8888-7000-8000-000000000002",
+    "nameVi": "Kho TP.HCM",
+    "nameEn": "HCM Warehouse",
+    "streetAddress": "Số 89, Đường Nguyễn Thị Minh Khai",
+    "district": "Quận 1",
+    "city": "Thành phố Hồ Chí Minh",
+    "isActive": true
+  }
+]

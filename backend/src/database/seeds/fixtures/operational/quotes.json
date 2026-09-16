@@ -1,0 +1,104 @@
+[
+  {
+    "id": "019de1a0-9999-7000-8000-000000000001",
+    "quoteNumber": "BG-2026-0001",
+    "userId": "019de1a0-1234-71bf-8082-ec510823ed3c",
+    "customerName": "Nguyễn Văn Hùng",
+    "customerPhone": "0912345678",
+    "customerEmail": "hung.nguyen@nhatnangpartner.vn",
+    "companyName": "Công ty Cổ phần Cơ điện Miền Nam",
+    "taxId": "0314567890",
+    "shippingAddress": "302/105 Phan Huy Ích, Phường 12, Quận Gò Vấp, TP. Hồ Chí Minh",
+    "status": "NEGOTIATING",
+    "subtotalPrice": "245000000.00",
+    "vatRate": 10,
+    "vatAmount": "24500000.00",
+    "totalQuotedPrice": "269500000.00",
+    "note": "Dự án cấp nguồn dự phòng cho nhà xưởng may",
+    "items": [
+      {
+        "productId": "019de188-693a-79a4-ab25-2ad9513da470",
+        "isCustomItem": false,
+        "quantity": 1,
+        "unitPrice": "245000000.00",
+        "discountPercent": "10.00",
+        "finalUnitPrice": "220500000.00",
+        "totalPrice": "220500000.00"
+      }
+    ],
+    "messages": [
+      {
+        "senderId": "019de1a0-1234-71bf-8082-ec510823ed3c",
+        "message": "Chào admin, bên mình cần báo giá kèm chi phí lắp đặt tủ ATS tại xưởng."
+      }
+    ]
+  },
+  {
+    "id": "019de1a0-9999-7000-8000-000000000002",
+    "quoteNumber": "BG-2026-0002",
+    "userId": "019de1a0-5678-71bf-8082-f37ae97f09e4",
+    "customerName": "Lê Thị Mai",
+    "customerPhone": "0987654321",
+    "customerEmail": "mai.le@mientrungelectric.vn",
+    "companyName": "Công ty TNHH Thiết bị Điện Miền Trung",
+    "taxId": "0401234567",
+    "shippingAddress": "123 Nguyễn Văn Linh, Quận Hải Châu, TP. Đà Nẵng",
+    "status": "APPROVED",
+    "subtotalPrice": "85000000.00",
+    "vatRate": 10,
+    "vatAmount": "8500000.00",
+    "totalQuotedPrice": "93500000.00",
+    "note": "Báo giá cung cấp máy phát điện diesel gia đình cho khách VIP",
+    "items": [
+      {
+        "productId": "019de188-693a-79a4-ab25-3008985ebba1",
+        "isCustomItem": false,
+        "quantity": 1,
+        "unitPrice": "85000000.00",
+        "discountPercent": "5.00",
+        "finalUnitPrice": "80750000.00",
+        "totalPrice": "80750000.00"
+      }
+    ],
+    "messages": [
+      {
+        "senderId": "019de1a0-5678-71bf-8082-f37ae97f09e4",
+        "message": "Đã chốt giá theo chiết khấu đại lý Bạc, vui lòng duyệt đơn giúp mình."
+      }
+    ]
+  },
+  {
+    "id": "019de1a0-9999-7000-8000-000000000003",
+    "quoteNumber": "BG-2026-0003",
+    "userId": "019de1a0-9012-735c-8639-3e1d67c3f6c5",
+    "customerName": "Phạm Quốc Bảo",
+    "customerPhone": "0933445566",
+    "customerEmail": "bao.pham@gmail.com",
+    "companyName": "Hộ kinh doanh cá thể Phạm Quốc Bảo",
+    "taxId": "0109876543",
+    "shippingAddress": "45 Cầu Giấy, Quận Cầu Giấy, TP. Hà Nội",
+    "status": "SUBMITTED",
+    "subtotalPrice": "42000000.00",
+    "vatRate": 10,
+    "vatAmount": "4200000.00",
+    "totalQuotedPrice": "46200000.00",
+    "note": "Yêu cầu báo giá bộ lưu điện online cho phòng khám nha khoa",
+    "items": [
+      {
+        "productId": "019de188-693a-79a4-ab25-37f26d36e2f1",
+        "isCustomItem": false,
+        "quantity": 1,
+        "unitPrice": "42000000.00",
+        "discountPercent": "0.00",
+        "finalUnitPrice": "42000000.00",
+        "totalPrice": "42000000.00"
+      }
+    ],
+    "messages": [
+      {
+        "senderId": "019de1a0-9012-735c-8639-3e1d67c3f6c5",
+        "message": "Thiết bị này có đủ tải cho 2 ghế nha khoa hoạt động trong 30 phút không?"
+      }
+    ]
+  }
+]

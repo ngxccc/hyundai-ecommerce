@@ -1,0 +1,3014 @@
+[
+  {
+    "id": "019de188-693a-79a4-ab25-2ad9513da470",
+    "slug": "may-phat-dien-diesel-hyundai-dhy65kse-60kva-3-pha",
+    "price": "245000000.00",
+    "images": ["https://cdn.example.com/dhy65kse.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "60.00",
+    "powerKw": "48.00",
+    "standbyPowerKva": "66.00",
+    "standbyPowerKw": "52.80",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai Brushless",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 25,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha",
+        "shortDescription": "Máy phát điện công nghiệp 60kVA vỏ chống ồn đồng bộ cao cấp",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai DHY65KSE 60kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-693a-79a4-ab25-3008985ebba1",
+    "slug": "may-phat-dien-diesel-hyundai-dhy11ksem-10kva-1-pha",
+    "price": "85000000.00",
+    "images": ["https://cdn.example.com/dhy11ksem.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-42a4f367350b",
+    "productType": "generator",
+    "powerKva": "10.00",
+    "powerKw": "8.00",
+    "standbyPowerKva": "11.00",
+    "standbyPowerKw": "8.80",
+    "phase": "1phase",
+    "voltage": "230V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "super_silent",
+    "startMethod": "electric",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 4,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Hyundai DHY11KSEm 10kVA 1 Pha",
+        "shortDescription": "Máy phát điện diesel gia đình, văn phòng vỏ siêu chống ồn",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai DHY11KSEm 10kVA Single Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-693a-79a4-ab25-3430f81d11ff",
+    "slug": "may-phat-dien-xang-hyundai-hy3100le-28kw",
+    "price": "12500000.00",
+    "images": ["https://cdn.example.com/hy3100le.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-42a4f367350b",
+    "productType": "generator",
+    "powerKva": "3.50",
+    "powerKw": "2.80",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "fuelType": "gasoline",
+    "canopyType": "open_frame",
+    "startMethod": "recoil",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Rated Power",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "220",
+            "unit": "V"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Xăng"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 12,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Xăng Hyundai HY3100LE 2.8kW",
+        "shortDescription": "Máy phát điện xách tay nhỏ gọn dùng xăng",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HY3100LE 2.8kW Portable Gasoline Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-693a-79a4-ab25-37f26d36e2f1",
+    "slug": "bo-luu-dien-online-hyundai-hd-10ks-10kva-9kw",
+    "price": "42000000.00",
+    "images": ["https://cdn.example.com/hd10ks.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-7777-7000-8000-000000000002",
+    "productType": "ups",
+    "powerKva": "10.00",
+    "powerKw": "9.00",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "upsTopology": "online_double_conversion",
+    "upsBatteryType": "external",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "capacity_kva",
+            "nameVi": "Công suất kVA",
+            "nameEn": "Capacity kVA",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "capacity_kw",
+            "nameVi": "Công suất kW",
+            "nameEn": "Capacity kW",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "topology",
+            "nameVi": "Công nghệ UPS",
+            "nameEn": "UPS Topology",
+            "value": "Online chuyển đổi kép"
+          },
+          {
+            "key": "transfer_time",
+            "nameVi": "Thời gian chuyển mạch",
+            "nameEn": "Transfer Time",
+            "value": "0",
+            "unit": "ms"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 8,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Bộ lưu điện Online Hyundai HD-10KS 10kVA/9kW",
+        "shortDescription": "UPS Online sóng sin chuẩn thời gian lưu điện dài",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HD-10KS 10kVA/9kW Online UPS",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-000000000001",
+    "slug": "may-phat-dien-diesel-hyundai-dhy18kse-16kva-3-pha",
+    "price": "125000000.00",
+    "images": ["https://cdn.example.com/dhy18kse.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "16.00",
+    "powerKw": "12.80",
+    "standbyPowerKva": "18.00",
+    "standbyPowerKw": "14.40",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai Brushless",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 12,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Hyundai DHY18KSE 16kVA 3 Pha",
+        "shortDescription": "Máy phát điện diesel công nghiệp 16kVA chống ồn tiêu chuẩn",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai DHY18KSE 16kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-000000000002",
+    "slug": "may-phat-dien-diesel-hyundai-dhy28kse-25kva-3-pha",
+    "price": "160000000.00",
+    "images": ["https://cdn.example.com/dhy28kse.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "25.00",
+    "powerKw": "20.00",
+    "standbyPowerKva": "28.00",
+    "standbyPowerKw": "22.40",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai Brushless",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 9,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Hyundai DHY28KSE 25kVA 3 Pha",
+        "shortDescription": "Máy phát điện công nghiệp 25kVA tiết kiệm nhiên liệu, độ ồn thấp",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai DHY28KSE 25kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-000000000003",
+    "slug": "may-phat-dien-diesel-hyundai-dhy35kse-32kva-3-pha",
+    "price": "195000000.00",
+    "images": ["https://cdn.example.com/dhy35kse.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "32.00",
+    "powerKw": "25.60",
+    "standbyPowerKva": "35.00",
+    "standbyPowerKw": "28.00",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai Brushless",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 6,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Hyundai DHY35KSE 32kVA 3 Pha",
+        "shortDescription": "Máy phát điện công nghiệp 32kVA cho tòa nhà, trạm viễn thông",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai DHY35KSE 32kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-000000000004",
+    "slug": "may-phat-dien-diesel-hyundai-dhy115kse-105kva-3-pha",
+    "price": "380000000.00",
+    "images": ["https://cdn.example.com/dhy115kse.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "105.00",
+    "powerKw": "84.00",
+    "standbyPowerKva": "115.00",
+    "standbyPowerKw": "92.00",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "super_silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai Brushless",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 4,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Hyundai DHY115KSE 105kVA 3 Pha",
+        "shortDescription": "Máy phát điện công suất lớn 105kVA vỏ siêu chống ồn đồng bộ",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai DHY115KSE 105kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-000000000005",
+    "slug": "may-phat-dien-diesel-hyundai-dhy150kse-135kva-3-pha",
+    "price": "490000000.00",
+    "images": ["https://cdn.example.com/dhy150kse.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "135.00",
+    "powerKw": "108.00",
+    "standbyPowerKva": "150.00",
+    "standbyPowerKw": "120.00",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai Brushless",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 3,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Hyundai DHY150KSE 135kVA 3 Pha",
+        "shortDescription": "Máy phát điện công nghiệp 135kVA cho nhà xưởng và bệnh viện",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai DHY150KSE 135kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-000000000006",
+    "slug": "may-phat-dien-diesel-hyundai-dhy250kse-225kva-3-pha",
+    "price": "720000000.00",
+    "images": ["https://cdn.example.com/dhy250kse.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "225.00",
+    "powerKw": "180.00",
+    "standbyPowerKva": "250.00",
+    "standbyPowerKw": "200.00",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai Brushless",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 2,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Hyundai DHY250KSE 225kVA 3 Pha",
+        "shortDescription": "Máy phát điện công nghiệp 225kVA vận hành bền bỉ 24/7",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai DHY250KSE 225kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-000000000007",
+    "slug": "may-phat-dien-diesel-mitsubishi-mgs0300b-300kva-3-pha",
+    "price": "850000000.00",
+    "images": ["https://cdn.example.com/mgs0300b.jpg"],
+    "brandId": "019de188-642a-71bf-8082-ec510823ed3c",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "300.00",
+    "powerKw": "240.00",
+    "standbyPowerKva": "330.00",
+    "standbyPowerKw": "264.00",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Mitsubishi",
+    "alternatorBrand": "Leroy Somer",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 2,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Mitsubishi MGS0300B 300kVA 3 Pha",
+        "shortDescription": "Máy phát điện công nghiệp cao cấp Mitsubishi 300kVA xuất xứ Nhật Bản",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Mitsubishi MGS0300B 300kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-000000000008",
+    "slug": "may-phat-dien-diesel-mitsubishi-mgs0500b-500kva-3-pha",
+    "price": "1200000000.00",
+    "images": ["https://cdn.example.com/mgs0500b.jpg"],
+    "brandId": "019de188-642a-71bf-8082-ec510823ed3c",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "500.00",
+    "powerKw": "400.00",
+    "standbyPowerKva": "550.00",
+    "standbyPowerKw": "440.00",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Mitsubishi",
+    "alternatorBrand": "Stamford",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 2,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Mitsubishi MGS0500B 500kVA 3 Pha",
+        "shortDescription": "Máy phát điện công nghiệp Mitsubishi 500kVA tải nặng công trường",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Mitsubishi MGS0500B 500kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-000000000009",
+    "slug": "may-phat-dien-diesel-mitsubishi-mgs0650b-650kva-3-pha",
+    "price": "1550000000.00",
+    "images": ["https://cdn.example.com/mgs0650b.jpg"],
+    "brandId": "019de188-642a-71bf-8082-ec510823ed3c",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "650.00",
+    "powerKw": "520.00",
+    "standbyPowerKva": "715.00",
+    "standbyPowerKw": "572.00",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Mitsubishi",
+    "alternatorBrand": "Stamford",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 1,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Mitsubishi MGS0650B 650kVA 3 Pha",
+        "shortDescription": "Tổ máy phát điện siêu tải trọng Mitsubishi 650kVA động cơ S6R2",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Mitsubishi MGS0650B 650kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-00000000000a",
+    "slug": "may-phat-dien-diesel-kubota-sq3300-30kva-3-pha",
+    "price": "210000000.00",
+    "images": ["https://cdn.example.com/sq3300.jpg"],
+    "brandId": "019de188-642a-71bf-8082-f37ae97f09e4",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "30.00",
+    "powerKw": "24.00",
+    "standbyPowerKva": "33.00",
+    "standbyPowerKw": "26.40",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "super_silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Kubota",
+    "alternatorBrand": "Kubota Brushless",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 5,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Kubota SQ3300 30kVA 3 Pha",
+        "shortDescription": "Máy phát điện Kubota 30kVA vỏ siêu chống ồn công nghệ Nhật Bản",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Kubota SQ3300 30kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-00000000000b",
+    "slug": "may-phat-dien-diesel-kubota-kj-t180-18kva-3-pha",
+    "price": "145000000.00",
+    "images": ["https://cdn.example.com/kjt180.jpg"],
+    "brandId": "019de188-642a-71bf-8082-f37ae97f09e4",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "18.00",
+    "powerKw": "14.40",
+    "standbyPowerKva": "20.00",
+    "standbyPowerKw": "16.00",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "electric",
+    "engineBrand": "Kubota",
+    "alternatorBrand": "Kubota",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 7,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Kubota KJ-T180 18kVA 3 Pha",
+        "shortDescription": "Tổ máy phát điện Kubota KJ series 18kVA hoạt động êm ái",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Kubota KJ-T180 18kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7001-7000-8000-00000000000c",
+    "slug": "may-phat-dien-diesel-kubota-kj-t300-30kva-3-pha",
+    "price": "230000000.00",
+    "images": ["https://cdn.example.com/kjt300.jpg"],
+    "brandId": "019de188-642a-71bf-8082-f37ae97f09e4",
+    "categoryId": "019de188-6756-735c-8639-44cdd56f6e88",
+    "productType": "generator",
+    "powerKva": "30.00",
+    "powerKw": "24.00",
+    "standbyPowerKva": "33.00",
+    "standbyPowerKw": "26.40",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "auto_ats",
+    "engineBrand": "Kubota",
+    "alternatorBrand": "Kubota",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230/400",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Diesel"
+          },
+          {
+            "key": "canopy_type",
+            "nameVi": "Loại vỏ",
+            "nameEn": "Canopy Type",
+            "value": "Vỏ chống ồn"
+          }
+        ]
+      },
+      {
+        "groupKey": "engine",
+        "titleVi": "Động cơ",
+        "titleEn": "Engine Specifications",
+        "order": 2,
+        "items": [
+          {
+            "key": "engine_brand",
+            "nameVi": "Hãng sản xuất động cơ",
+            "nameEn": "Engine Manufacturer",
+            "value": ""
+          },
+          {
+            "key": "engine_model",
+            "nameVi": "Model động cơ",
+            "nameEn": "Engine Model",
+            "value": ""
+          },
+          {
+            "key": "cylinders",
+            "nameVi": "Số xi lanh",
+            "nameEn": "Number of Cylinders",
+            "value": ""
+          },
+          {
+            "key": "speed",
+            "nameVi": "Tốc độ vòng quay",
+            "nameEn": "Engine Speed",
+            "value": "1500",
+            "unit": "vòng/phút"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 4,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Kubota KJ-T300 30kVA 3 Pha",
+        "shortDescription": "Máy phát điện Kubota 30kVA dòng KJ chuyên dùng viễn thông ngân hàng",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Kubota KJ-T300 30kVA 3 Phase Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7002-7000-8000-000000000001",
+    "slug": "may-phat-dien-inverter-hyundai-hy2000si-2kva-xang-sieu-em",
+    "price": "16500000.00",
+    "images": ["https://cdn.example.com/hy2000si.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-42a4f367350b",
+    "productType": "generator",
+    "powerKva": "2.00",
+    "powerKw": "1.60",
+    "standbyPowerKva": "2.20",
+    "standbyPowerKw": "1.80",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "fuelType": "gasoline",
+    "canopyType": "super_silent",
+    "startMethod": "recoil",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai Digital Inverter",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Rated Power",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "220",
+            "unit": "V"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Xăng"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 18,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Inverter Hyundai HY2000Si 2kVA Xăng Siêu Êm",
+        "shortDescription": "Máy phát điện biến tần Inverter siêu nhỏ gọn sóng sin chuẩn",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HY2000Si 2kVA Silent Inverter Gasoline Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7002-7000-8000-000000000002",
+    "slug": "may-phat-dien-xang-hyundai-hy7000le-55kw-de-no",
+    "price": "21000000.00",
+    "images": ["https://cdn.example.com/hy7000le.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-42a4f367350b",
+    "productType": "generator",
+    "powerKva": "6.80",
+    "powerKw": "5.50",
+    "standbyPowerKva": "7.50",
+    "standbyPowerKw": "6.00",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "fuelType": "gasoline",
+    "canopyType": "open_frame",
+    "startMethod": "electric",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Rated Power",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "220",
+            "unit": "V"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Xăng"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 14,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Xăng Hyundai HY7000LE 5.5kW Đề Nổ",
+        "shortDescription": "Máy phát điện chạy xăng gia đình 5.5kW có đề nổ và bánh xe di chuyển",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HY7000LE 5.5kW Portable Gasoline Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7002-7000-8000-000000000003",
+    "slug": "may-phat-dien-xang-hyundai-hy9000le-65kw-de-no",
+    "price": "26500000.00",
+    "images": ["https://cdn.example.com/hy9000le.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-42a4f367350b",
+    "productType": "generator",
+    "powerKva": "8.10",
+    "powerKw": "6.50",
+    "standbyPowerKva": "8.80",
+    "standbyPowerKw": "7.00",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "fuelType": "gasoline",
+    "canopyType": "open_frame",
+    "startMethod": "electric",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Rated Power",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "220",
+            "unit": "V"
+          },
+          {
+            "key": "fuel_type",
+            "nameVi": "Nhiên liệu",
+            "nameEn": "Fuel Type",
+            "value": "Xăng"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 11,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Xăng Hyundai HY9000LE 6.5kW Đề Nổ",
+        "shortDescription": "Máy phát điện xăng công suất lớn 6.5kW dùng cho biệt thự, văn phòng",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HY9000LE 6.5kW Portable Gasoline Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7002-7000-8000-000000000004",
+    "slug": "may-phat-dien-diesel-hyundai-dhy6000se-5kva-chong-on",
+    "price": "34000000.00",
+    "images": ["https://cdn.example.com/dhy6000se.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-42a4f367350b",
+    "productType": "generator",
+    "powerKva": "5.00",
+    "powerKw": "4.50",
+    "standbyPowerKva": "5.50",
+    "standbyPowerKw": "5.00",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "silent",
+    "startMethod": "electric",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 8,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Hyundai DHY6000SE 5kVA Chống Ồn",
+        "shortDescription": "Máy phát điện diesel gia đình 5kVA vỏ chống ồn cách âm cao cấp",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai DHY6000SE 5kVA Silent Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7002-7000-8000-000000000005",
+    "slug": "may-phat-dien-diesel-hyundai-dhy8000se-65kva-sieu-chong-on",
+    "price": "42000000.00",
+    "images": ["https://cdn.example.com/dhy8000se.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-6756-735c-8639-42a4f367350b",
+    "productType": "generator",
+    "powerKva": "6.50",
+    "powerKw": "6.00",
+    "standbyPowerKva": "7.00",
+    "standbyPowerKw": "6.50",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "super_silent",
+    "startMethod": "electric",
+    "engineBrand": "Hyundai",
+    "alternatorBrand": "Hyundai",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 6,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Hyundai DHY8000SE 6.5kVA Siêu Chống Ồn",
+        "shortDescription": "Máy phát điện diesel 6.5kVA công nghệ phun nhiên liệu trực tiếp",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai DHY8000SE 6.5kVA Super Silent Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7002-7000-8000-000000000006",
+    "slug": "may-phat-dien-diesel-kubota-gl6000-6kva-1-pha-vo-cach-am",
+    "price": "48000000.00",
+    "images": ["https://cdn.example.com/gl6000.jpg"],
+    "brandId": "019de188-642a-71bf-8082-f37ae97f09e4",
+    "categoryId": "019de188-6756-735c-8639-42a4f367350b",
+    "productType": "generator",
+    "powerKva": "6.00",
+    "powerKw": "5.50",
+    "standbyPowerKva": "6.50",
+    "standbyPowerKw": "6.00",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "super_silent",
+    "startMethod": "electric",
+    "engineBrand": "Kubota",
+    "alternatorBrand": "Kubota",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 7,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Kubota GL6000 6kVA 1 Pha Vỏ Cách Âm",
+        "shortDescription": "Máy phát điện diesel Kubota GL series 6kVA 2 cực làm mát bằng nước",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Kubota GL6000 6kVA Single Phase Silent Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7002-7000-8000-000000000007",
+    "slug": "may-phat-dien-diesel-kubota-gl9000-85kva-1-pha-sieu-ben",
+    "price": "68000000.00",
+    "images": ["https://cdn.example.com/gl9000.jpg"],
+    "brandId": "019de188-642a-71bf-8082-f37ae97f09e4",
+    "categoryId": "019de188-6756-735c-8639-42a4f367350b",
+    "productType": "generator",
+    "powerKva": "8.50",
+    "powerKw": "8.00",
+    "standbyPowerKva": "9.00",
+    "standbyPowerKw": "8.50",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "super_silent",
+    "startMethod": "electric",
+    "engineBrand": "Kubota",
+    "alternatorBrand": "Kubota",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 5,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Kubota GL9000 8.5kVA 1 Pha Siêu Bền",
+        "shortDescription": "Tổ máy phát điện gia đình cao cấp Kubota 8.5kVA động cơ D722",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Kubota GL9000 8.5kVA Single Phase Silent Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7002-7000-8000-000000000008",
+    "slug": "may-phat-dien-diesel-kubota-j106-55kva-khung-ho",
+    "price": "38000000.00",
+    "images": ["https://cdn.example.com/j106.jpg"],
+    "brandId": "019de188-642a-71bf-8082-f37ae97f09e4",
+    "categoryId": "019de188-6756-735c-8639-42a4f367350b",
+    "productType": "generator",
+    "powerKva": "5.50",
+    "powerKw": "5.00",
+    "standbyPowerKva": "6.00",
+    "standbyPowerKw": "5.50",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "fuelType": "diesel",
+    "canopyType": "open_frame",
+    "startMethod": "recoil",
+    "engineBrand": "Kubota",
+    "alternatorBrand": "Kubota",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "continuous_power",
+            "nameVi": "Công suất liên tục",
+            "nameEn": "Prime Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "standby_power",
+            "nameVi": "Công suất dự phòng",
+            "nameEn": "Standby Power",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "voltage",
+            "nameVi": "Điện thế",
+            "nameEn": "Voltage",
+            "value": "230",
+            "unit": "V"
+          },
+          {
+            "key": "frequency",
+            "nameVi": "Tần số",
+            "nameEn": "Frequency",
+            "value": "50",
+            "unit": "Hz"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 10,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện Diesel Kubota J106 5.5kVA Khung Hở",
+        "shortDescription": "Máy phát điện diesel khung trần cơ động dùng cho thợ và xây dựng",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Kubota J106 5.5kVA Open Frame Diesel Generator",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7003-7000-8000-000000000001",
+    "slug": "bo-luu-dien-online-hyundai-hd-1ks-1kva-900w",
+    "price": "6500000.00",
+    "images": ["https://cdn.example.com/hd1ks.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-7777-7000-8000-000000000002",
+    "productType": "ups",
+    "powerKva": "1.00",
+    "powerKw": "0.90",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "upsTopology": "online_double_conversion",
+    "upsBatteryType": "internal",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "capacity_kva",
+            "nameVi": "Công suất kVA",
+            "nameEn": "Capacity kVA",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "capacity_kw",
+            "nameVi": "Công suất kW",
+            "nameEn": "Capacity kW",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "topology",
+            "nameVi": "Công nghệ UPS",
+            "nameEn": "UPS Topology",
+            "value": "Online chuyển đổi kép"
+          },
+          {
+            "key": "transfer_time",
+            "nameVi": "Thời gian chuyển mạch",
+            "nameEn": "Transfer Time",
+            "value": "0",
+            "unit": "ms"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 25,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Bộ lưu điện Online Hyundai HD-1KS 1kVA/900W 1 Pha",
+        "shortDescription": "UPS Online chuyển đổi kép 1kVA sóng sin chuẩn 0ms cho PC, camera",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HD-1KS 1kVA/900W Online UPS",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7003-7000-8000-000000000002",
+    "slug": "bo-luu-dien-online-hyundai-hd-2ks-2kva-1800w",
+    "price": "11500000.00",
+    "images": ["https://cdn.example.com/hd2ks.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-7777-7000-8000-000000000002",
+    "productType": "ups",
+    "powerKva": "2.00",
+    "powerKw": "1.80",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "upsTopology": "online_double_conversion",
+    "upsBatteryType": "external",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "capacity_kva",
+            "nameVi": "Công suất kVA",
+            "nameEn": "Capacity kVA",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "capacity_kw",
+            "nameVi": "Công suất kW",
+            "nameEn": "Capacity kW",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "topology",
+            "nameVi": "Công nghệ UPS",
+            "nameEn": "UPS Topology",
+            "value": "Online chuyển đổi kép"
+          },
+          {
+            "key": "transfer_time",
+            "nameVi": "Thời gian chuyển mạch",
+            "nameEn": "Transfer Time",
+            "value": "0",
+            "unit": "ms"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 16,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Bộ lưu điện Online Hyundai HD-2KS 2kVA/1800W 1 Pha",
+        "shortDescription": "UPS Online 2kVA hỗ trợ mở rộng ắc quy ngoài lưu điện lâu",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HD-2KS 2kVA/1800W Online UPS",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7003-7000-8000-000000000003",
+    "slug": "bo-luu-dien-online-hyundai-hd-3ks-3kva-2700w",
+    "price": "16000000.00",
+    "images": ["https://cdn.example.com/hd3ks.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-7777-7000-8000-000000000002",
+    "productType": "ups",
+    "powerKva": "3.00",
+    "powerKw": "2.70",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "upsTopology": "online_double_conversion",
+    "upsBatteryType": "external",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "capacity_kva",
+            "nameVi": "Công suất kVA",
+            "nameEn": "Capacity kVA",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "capacity_kw",
+            "nameVi": "Công suất kW",
+            "nameEn": "Capacity kW",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "topology",
+            "nameVi": "Công nghệ UPS",
+            "nameEn": "UPS Topology",
+            "value": "Online chuyển đổi kép"
+          },
+          {
+            "key": "transfer_time",
+            "nameVi": "Thời gian chuyển mạch",
+            "nameEn": "Transfer Time",
+            "value": "0",
+            "unit": "ms"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 14,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Bộ lưu điện Online Hyundai HD-3KS 3kVA/2700W 1 Pha",
+        "shortDescription": "UPS Online 3kVA chuyển đổi kép chuyên dụng server máy chủ phòng khám",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HD-3KS 3kVA/2700W Online UPS",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7003-7000-8000-000000000004",
+    "slug": "bo-luu-dien-online-hyundai-hd-6ks-6kva-5400w",
+    "price": "28500000.00",
+    "images": ["https://cdn.example.com/hd6ks.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-7777-7000-8000-000000000002",
+    "productType": "ups",
+    "powerKva": "6.00",
+    "powerKw": "5.40",
+    "phase": "1phase",
+    "voltage": "220V",
+    "frequency": 50,
+    "upsTopology": "online_double_conversion",
+    "upsBatteryType": "external",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "capacity_kva",
+            "nameVi": "Công suất kVA",
+            "nameEn": "Capacity kVA",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "capacity_kw",
+            "nameVi": "Công suất kW",
+            "nameEn": "Capacity kW",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "topology",
+            "nameVi": "Công nghệ UPS",
+            "nameEn": "UPS Topology",
+            "value": "Online chuyển đổi kép"
+          },
+          {
+            "key": "transfer_time",
+            "nameVi": "Thời gian chuyển mạch",
+            "nameEn": "Transfer Time",
+            "value": "0",
+            "unit": "ms"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 9,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Bộ lưu điện Online Hyundai HD-6KS 6kVA/5400W 1 Pha",
+        "shortDescription": "UPS Online công suất cao 6kVA bảo vệ hệ thống mạng và datacenter",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HD-6KS 6kVA/5400W Online UPS",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7003-7000-8000-000000000005",
+    "slug": "bo-luu-dien-online-hyundai-hd-15ks-15kva-135kw",
+    "price": "68000000.00",
+    "images": ["https://cdn.example.com/hd15ks.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-7777-7000-8000-000000000002",
+    "productType": "ups",
+    "powerKva": "15.00",
+    "powerKw": "13.50",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "upsTopology": "online_double_conversion",
+    "upsBatteryType": "external",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "capacity_kva",
+            "nameVi": "Công suất kVA",
+            "nameEn": "Capacity kVA",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "capacity_kw",
+            "nameVi": "Công suất kW",
+            "nameEn": "Capacity kW",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "topology",
+            "nameVi": "Công nghệ UPS",
+            "nameEn": "UPS Topology",
+            "value": "Online chuyển đổi kép"
+          },
+          {
+            "key": "transfer_time",
+            "nameVi": "Thời gian chuyển mạch",
+            "nameEn": "Transfer Time",
+            "value": "0",
+            "unit": "ms"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 5,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Bộ lưu điện Online Hyundai HD-15KS 15kVA/13.5kW 3/1 Pha",
+        "shortDescription": "UPS Online 15kVA vào 3 pha ra 1 pha màn hình LCD cảm ứng thông minh",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HD-15KS 15kVA/13.5kW Online UPS 3/1 Phase",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7003-7000-8000-000000000006",
+    "slug": "bo-luu-dien-online-hyundai-hd-20ks-20kva-18kw",
+    "price": "95000000.00",
+    "images": ["https://cdn.example.com/hd20ks.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-7777-7000-8000-000000000002",
+    "productType": "ups",
+    "powerKva": "20.00",
+    "powerKw": "18.00",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "upsTopology": "online_double_conversion",
+    "upsBatteryType": "external",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "capacity_kva",
+            "nameVi": "Công suất kVA",
+            "nameEn": "Capacity kVA",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "capacity_kw",
+            "nameVi": "Công suất kW",
+            "nameEn": "Capacity kW",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "topology",
+            "nameVi": "Công nghệ UPS",
+            "nameEn": "UPS Topology",
+            "value": "Online chuyển đổi kép"
+          },
+          {
+            "key": "transfer_time",
+            "nameVi": "Thời gian chuyển mạch",
+            "nameEn": "Transfer Time",
+            "value": "0",
+            "unit": "ms"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 4,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Bộ lưu điện Online Hyundai HD-20KS 20kVA/18kW 3 Pha Chuẩn",
+        "shortDescription": "UPS Online công nghiệp 20kVA 3 pha vào 3 pha ra hiệu suất 96%",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HD-20KS 20kVA/18kW Online UPS 3 Phase",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  },
+  {
+    "id": "019de188-7003-7000-8000-000000000007",
+    "slug": "bo-luu-dien-online-hyundai-hd-30ks-30kva-27kw",
+    "price": "145000000.00",
+    "images": ["https://cdn.example.com/hd30ks.jpg"],
+    "brandId": "019de188-641f-768f-8fe7-da0964943808",
+    "categoryId": "019de188-7777-7000-8000-000000000002",
+    "productType": "ups",
+    "powerKva": "30.00",
+    "powerKw": "27.00",
+    "phase": "3phase",
+    "voltage": "230/400V",
+    "frequency": 50,
+    "upsTopology": "online_double_conversion",
+    "upsBatteryType": "external",
+    "specSheet": [
+      {
+        "groupKey": "general",
+        "titleVi": "Thông số chung",
+        "titleEn": "General Specifications",
+        "order": 1,
+        "items": [
+          {
+            "key": "capacity_kva",
+            "nameVi": "Công suất kVA",
+            "nameEn": "Capacity kVA",
+            "value": "",
+            "unit": "kVA"
+          },
+          {
+            "key": "capacity_kw",
+            "nameVi": "Công suất kW",
+            "nameEn": "Capacity kW",
+            "value": "",
+            "unit": "kW"
+          },
+          {
+            "key": "topology",
+            "nameVi": "Công nghệ UPS",
+            "nameEn": "UPS Topology",
+            "value": "Online chuyển đổi kép"
+          },
+          {
+            "key": "transfer_time",
+            "nameVi": "Thời gian chuyển mạch",
+            "nameEn": "Transfer Time",
+            "value": "0",
+            "unit": "ms"
+          }
+        ]
+      }
+    ],
+    "totalStockCache": 3,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Bộ lưu điện Online Hyundai HD-30KS 30kVA/27kW 3 Pha Công Nghiệp",
+        "shortDescription": "Bộ lưu điện UPS 30kVA 3 pha chuyển đổi kép bảo vệ tải y tế dây chuyền",
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      },
+      {
+        "locale": "en",
+        "name": "Hyundai HD-30KS 30kVA/27kW Online UPS 3 Phase Industrial",
+        "shortDescription": null,
+        "description": {
+          "type": "doc",
+          "content": []
+        }
+      }
+    ]
+  }
+]

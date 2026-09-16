@@ -1,0 +1,63 @@
+[
+  {
+    "id": "019de1a0-aaaa-761e-bb91-7c6ecf6377d8",
+    "orderNumber": "ORD-2026-0001",
+    "userId": "019de1a0-1234-71bf-8082-ec510823ed3c",
+    "status": "PROCESSING",
+    "shippingFee": "2000000.00",
+    "shippingAddress": "Cụm Công nghiệp Ngọc Hồi, Thanh Trì, Hà Nội",
+    "totalAmount": "222500000.00",
+    "paymentMethod": "TRADE_CREDIT",
+    "paymentStatus": "FULLY_PAID",
+    "approvalStatus": "APPROVED",
+    "approvedBy": "019de1a0-1234-71bf-8082-ec510823ed3c",
+    "items": [
+      {
+        "productId": "019de188-693a-79a4-ab25-2ad9513da470",
+        "productName": "Máy phát điện Diesel Hyundai DHY65KSE 60kVA 3 Pha",
+        "productSku": "DHY65KSE",
+        "quantity": 1,
+        "unitPrice": "220500000.00"
+      }
+    ],
+    "shippingBids": [
+      {
+        "vendorName": "Vận tải Đa phương thức Miền Bắc",
+        "quotedPrice": "2000000.00",
+        "internalNote": "Giao bằng xe cẩu 5 tấn trong 24h",
+        "isSelected": true
+      }
+    ],
+    "payments": [
+      {
+        "amount": "222500000.00",
+        "method": "TRADE_CREDIT",
+        "status": "COMPLETED",
+        "rawPayload": "{\"note\":\"Ghi nhận công nợ đại lý Gold\"}"
+      }
+    ]
+  },
+  {
+    "id": "019de1a0-bbbb-761e-bb91-825a77b45568",
+    "orderNumber": "ORD-2026-0002",
+    "userId": "019de1a0-9012-735c-8639-3e1d67c3f6c5",
+    "status": "PENDING",
+    "shippingFee": "250000.00",
+    "shippingAddress": "123 Nguyễn Văn Linh, Quận Hải Châu, Đà Nẵng",
+    "totalAmount": "12750000.00",
+    "paymentMethod": "PAYOS",
+    "paymentStatus": "PENDING",
+    "approvalStatus": "APPROVED",
+    "items": [
+      {
+        "productId": "019de188-693a-79a4-ab25-3430f81d11ff",
+        "productName": "Máy phát điện Xăng Hyundai HY3100LE 2.8kW",
+        "productSku": "HY3100LE",
+        "quantity": 1,
+        "unitPrice": "12500000.00"
+      }
+    ],
+    "shippingBids": [],
+    "payments": []
+  }
+]

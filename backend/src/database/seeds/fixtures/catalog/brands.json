@@ -1,0 +1,53 @@
+[
+  {
+    "id": "019de188-641f-768f-8fe7-da0964943808",
+    "name": "Hyundai",
+    "slug": "hyundai",
+    "logo": "https://cdn.example.com/hyundai.png",
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "description": "Thương hiệu máy phát điện uy tín từ Hàn Quốc"
+      },
+      {
+        "locale": "en",
+        "description": "Reputable generator brand from South Korea"
+      }
+    ]
+  },
+  {
+    "id": "019de188-642a-71bf-8082-ec510823ed3c",
+    "name": "Mitsubishi",
+    "slug": "mitsubishi",
+    "logo": "https://cdn.example.com/mitsubishi.png",
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "description": "Máy phát điện công nghiệp cao cấp Nhật Bản"
+      },
+      {
+        "locale": "en",
+        "description": "Premium industrial generators from Japan"
+      }
+    ]
+  },
+  {
+    "id": "019de188-642a-71bf-8082-f37ae97f09e4",
+    "name": "Kubota",
+    "slug": "kubota",
+    "logo": "https://cdn.example.com/kubota.png",
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "description": "Máy phát điện diesel Nhật Bản chất lượng cao"
+      },
+      {
+        "locale": "en",
+        "description": "High-quality Japanese diesel generators"
+      }
+    ]
+  }
+]

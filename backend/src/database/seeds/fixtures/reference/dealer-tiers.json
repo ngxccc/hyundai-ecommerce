@@ -1,0 +1,23 @@
+[
+  {
+    "id": "019de19f-863e-7b1d-ab3d-4539b4f9b950",
+    "nameVi": "Đại lý Bạc",
+    "nameEn": "Silver Dealer",
+    "discountPercentage": "5.00",
+    "minimumSpend": "50000000.00"
+  },
+  {
+    "id": "019de19f-ecc7-71c1-a06c-2377ca8d5a33",
+    "nameVi": "Đại lý Vàng",
+    "nameEn": "Gold Dealer",
+    "discountPercentage": "10.00",
+    "minimumSpend": "200000000.00"
+  },
+  {
+    "id": "019de1a0-0705-729b-a369-9ccb56fb8a8d",
+    "nameVi": "Đại lý Bạch Kim",
+    "nameEn": "Platinum Dealer",
+    "discountPercentage": "15.00",
+    "minimumSpend": "1000000000.00"
+  }
+]

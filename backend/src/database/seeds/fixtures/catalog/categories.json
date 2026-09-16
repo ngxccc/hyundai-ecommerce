@@ -1,0 +1,92 @@
+[
+  {
+    "id": "019de188-6756-735c-8639-3e1d67c3f6c5",
+    "slug": "may-phat-dien",
+    "parentId": null,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện",
+        "description": "Tất cả các loại máy phát điện"
+      },
+      {
+        "locale": "en",
+        "name": "Generators",
+        "description": "All types of generators"
+      }
+    ]
+  },
+  {
+    "id": "019de188-6756-735c-8639-42a4f367350b",
+    "slug": "may-phat-dien-gia-dinh",
+    "parentId": "019de188-6756-735c-8639-3e1d67c3f6c5",
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện gia đình",
+        "description": "Máy phát điện dùng cho gia đình, văn phòng"
+      },
+      {
+        "locale": "en",
+        "name": "Household Generators",
+        "description": "Generators for home and office use"
+      }
+    ]
+  },
+  {
+    "id": "019de188-6756-735c-8639-44cdd56f6e88",
+    "slug": "may-phat-dien-cong-nghiep",
+    "parentId": "019de188-6756-735c-8639-3e1d67c3f6c5",
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Máy phát điện công nghiệp",
+        "description": "Máy phát điện công suất lớn cho nhà máy, công trường"
+      },
+      {
+        "locale": "en",
+        "name": "Industrial Generators",
+        "description": "High-power generators for factories and construction sites"
+      }
+    ]
+  },
+  {
+    "id": "019de188-7777-7000-8000-000000000001",
+    "slug": "bo-luu-dien-ups",
+    "parentId": null,
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Bộ lưu điện (UPS)",
+        "description": "Thiết bị lưu điện dự phòng cho server, y tế, viễn thông"
+      },
+      {
+        "locale": "en",
+        "name": "Uninterruptible Power Supply (UPS)",
+        "description": "Backup power supply for servers, medical, and telecom"
+      }
+    ]
+  },
+  {
+    "id": "019de188-7777-7000-8000-000000000002",
+    "slug": "bo-luu-dien-online",
+    "parentId": "019de188-7777-7000-8000-000000000001",
+    "isActive": true,
+    "translations": [
+      {
+        "locale": "vi",
+        "name": "Bộ lưu điện Online",
+        "description": "UPS Online chuyển đổi kép sóng sin chuẩn 0ms"
+      },
+      {
+        "locale": "en",
+        "name": "Online UPS",
+        "description": "Online double conversion UPS pure sine wave 0ms"
+      }
+    ]
+  }
+]

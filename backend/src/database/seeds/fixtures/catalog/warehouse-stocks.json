@@ -1,0 +1,326 @@
+[
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-693a-79a4-ab25-2ad9513da470",
+    "stock": 15,
+    "minStockWarning": 5
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-693a-79a4-ab25-2ad9513da470",
+    "stock": 10,
+    "minStockWarning": 5
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-693a-79a4-ab25-3008985ebba1",
+    "stock": 4,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-693a-79a4-ab25-3430f81d11ff",
+    "stock": 12,
+    "minStockWarning": 3
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-693a-79a4-ab25-37f26d36e2f1",
+    "stock": 8,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7001-7000-8000-000000000001",
+    "stock": 7,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7001-7000-8000-000000000001",
+    "stock": 5,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7001-7000-8000-000000000002",
+    "stock": 5,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7001-7000-8000-000000000002",
+    "stock": 4,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7001-7000-8000-000000000003",
+    "stock": 3,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7001-7000-8000-000000000003",
+    "stock": 3,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7001-7000-8000-000000000004",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7001-7000-8000-000000000004",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7001-7000-8000-000000000005",
+    "stock": 3,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7001-7000-8000-000000000006",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7001-7000-8000-000000000007",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7001-7000-8000-000000000008",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7001-7000-8000-000000000009",
+    "stock": 1,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7001-7000-8000-00000000000a",
+    "stock": 3,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7001-7000-8000-00000000000a",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7001-7000-8000-00000000000b",
+    "stock": 4,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7001-7000-8000-00000000000b",
+    "stock": 3,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7001-7000-8000-00000000000c",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7001-7000-8000-00000000000c",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7002-7000-8000-000000000001",
+    "stock": 10,
+    "minStockWarning": 3
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7002-7000-8000-000000000001",
+    "stock": 8,
+    "minStockWarning": 3
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7002-7000-8000-000000000002",
+    "stock": 8,
+    "minStockWarning": 3
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7002-7000-8000-000000000002",
+    "stock": 6,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7002-7000-8000-000000000003",
+    "stock": 6,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7002-7000-8000-000000000003",
+    "stock": 5,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7002-7000-8000-000000000004",
+    "stock": 5,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7002-7000-8000-000000000004",
+    "stock": 3,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7002-7000-8000-000000000005",
+    "stock": 3,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7002-7000-8000-000000000005",
+    "stock": 3,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7002-7000-8000-000000000006",
+    "stock": 4,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7002-7000-8000-000000000006",
+    "stock": 3,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7002-7000-8000-000000000007",
+    "stock": 3,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7002-7000-8000-000000000007",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7002-7000-8000-000000000008",
+    "stock": 6,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7002-7000-8000-000000000008",
+    "stock": 4,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7003-7000-8000-000000000001",
+    "stock": 15,
+    "minStockWarning": 5
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7003-7000-8000-000000000001",
+    "stock": 10,
+    "minStockWarning": 3
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7003-7000-8000-000000000002",
+    "stock": 10,
+    "minStockWarning": 3
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7003-7000-8000-000000000002",
+    "stock": 6,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7003-7000-8000-000000000003",
+    "stock": 8,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7003-7000-8000-000000000003",
+    "stock": 6,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7003-7000-8000-000000000004",
+    "stock": 5,
+    "minStockWarning": 2
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7003-7000-8000-000000000004",
+    "stock": 4,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7003-7000-8000-000000000005",
+    "stock": 3,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7003-7000-8000-000000000005",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7003-7000-8000-000000000006",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7003-7000-8000-000000000006",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000001",
+    "productId": "019de188-7003-7000-8000-000000000007",
+    "stock": 2,
+    "minStockWarning": 1
+  },
+  {
+    "warehouseId": "019de188-8888-7000-8000-000000000002",
+    "productId": "019de188-7003-7000-8000-000000000007",
+    "stock": 1,
+    "minStockWarning": 1
+  }
+]
