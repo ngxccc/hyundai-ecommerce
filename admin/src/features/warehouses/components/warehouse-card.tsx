@@ -9,6 +9,7 @@ import { Link } from "@/i18n/routing";
 import type { AdminWarehouse } from "@/types/api";
 
 import { DeleteWarehouseButton } from "./delete-warehouse-button";
+import { cn } from "cn";
 
 export const WarehouseCard = ({ warehouse }: { warehouse: AdminWarehouse }) => {
   const t = useTranslations("adminWarehouses.card");
@@ -22,12 +23,13 @@ export const WarehouseCard = ({ warehouse }: { warehouse: AdminWarehouse }) => {
     >
       <div className="absolute top-4 right-4 z-10">
         <Badge
-          variant="secondary"
-          className={`border-transparent font-medium ${
+          variant="outline"
+          className={cn(
+            "bg-background/90 px-2.5 py-0.5 text-xs font-medium shadow-2xs backdrop-blur-xs",
             status === "active"
-              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-              : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-          }`}
+              ? "border-border text-foreground"
+              : "border-destructive/40 text-destructive",
+          )}
         >
           {t(`status.${status}`)}
         </Badge>

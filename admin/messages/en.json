@@ -132,7 +132,14 @@
       "brands": "Brands",
       "quotes": "RFQ Quotes"
     },
-    "quickSearch": "Quick Search (Cmd+K)",
+    "quickSearch": "Search...",
+    "command": {
+      "searchPlaceholder": "Search pages, products or quick actions...",
+      "navigate": "Navigate",
+      "select": "Open",
+      "close": "Close",
+      "noResults": "No results found."
+    },
     "header": {
       "title": "Overview",
       "description": "Track your business performance.",

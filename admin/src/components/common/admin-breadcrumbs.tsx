@@ -17,7 +17,7 @@ export const AdminBreadcrumbs = ({ items }: AdminBreadcrumbsProps) => {
   if (items.length === 0) return null;
 
   return (
-    <Breadcrumb className="mb-2">
+    <Breadcrumb>
       <BreadcrumbList>
         {items.map((item, index) => (
           <React.Fragment key={index}>

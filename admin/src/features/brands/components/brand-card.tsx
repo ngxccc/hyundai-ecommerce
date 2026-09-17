@@ -13,6 +13,7 @@ import type { AdminBrand } from "@/types/api";
 import { canUseCldImage } from "@/lib";
 
 import { DeleteBrandButton } from "./delete-brand-button";
+import { cn } from "cn";
 
 export const BrandCard = ({ brand }: { brand: AdminBrand }) => {
   const t = useTranslations("adminBrands.card");
@@ -26,12 +27,13 @@ export const BrandCard = ({ brand }: { brand: AdminBrand }) => {
     <Card size="compact" className="group relative">
       <div className="absolute top-4 right-4 z-10">
         <Badge
-          variant="secondary"
-          className={`border-transparent font-medium ${
+          variant="outline"
+          className={cn(
+            "bg-background/90 px-2.5 py-0.5 text-xs font-medium shadow-2xs backdrop-blur-xs",
             status === "active"
-              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-              : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-          }`}
+              ? "border-border text-foreground"
+              : "border-destructive/40 text-destructive",
+          )}
         >
           {t(`status.${status}`)}
         </Badge>

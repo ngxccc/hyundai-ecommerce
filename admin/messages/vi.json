@@ -132,7 +132,14 @@
       "brands": "Thương hiệu",
       "quotes": "Báo giá RFQ"
     },
-    "quickSearch": "Tìm kiếm nhanh (Cmd+K)",
+    "quickSearch": "Tìm kiếm...",
+    "command": {
+      "searchPlaceholder": "Tìm trang, sản phẩm hoặc thao tác nhanh...",
+      "navigate": "Di chuyển",
+      "select": "Mở",
+      "close": "Đóng",
+      "noResults": "Không tìm thấy kết quả phù hợp."
+    },
     "header": {
       "title": "Tổng quan",
       "description": "Theo dõi hiệu suất kinh doanh của bạn.",

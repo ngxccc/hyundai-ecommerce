@@ -125,11 +125,11 @@ export const AdminSidebar = ({ user }: AdminSidebarProps) => {
                 onClick={() => setCommandOpen(true)}
                 className="border-sidebar-border bg-sidebar-accent/50 text-muted-foreground hover:bg-sidebar-accent hover:text-foreground flex h-8 w-full cursor-pointer items-center justify-between rounded-md border px-2.5 text-xs transition-colors"
               >
-                <div className="flex items-center gap-2">
-                  <Search className="size-3.5" />
-                  <span>{t("quickSearch")}</span>
+                <div className="flex min-w-0 items-center gap-2">
+                  <Search className="size-3.5 shrink-0" />
+                  <span className="truncate">{t("quickSearch")}</span>
                 </div>
-                <kbd className="border-border bg-background text-muted-foreground pointer-events-none inline-flex h-4.5 items-center gap-0.5 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none">
+                <kbd className="border-border bg-background text-muted-foreground pointer-events-none inline-flex h-4.5 shrink-0 items-center gap-0.5 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none">
                   <span className="text-xs">⌘</span>K
                 </kbd>
               </button>
