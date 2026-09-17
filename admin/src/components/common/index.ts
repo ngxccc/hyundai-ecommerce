@@ -6,3 +6,4 @@ export * from "./offset-pagination";
 export * from "./theme-provider";
 export * from "./product-image-placeholder";
 export * from "./entity-delete-button";
+export * from "./centered-spinner";

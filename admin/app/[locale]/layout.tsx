@@ -10,6 +10,8 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { Toaster } from "@/components/ui/sonner";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ThemeProvider } from "@/components/common/theme-provider";
+import { CenteredSpinner } from "@/components/common";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({
   subsets: ["vietnamese", "latin"],
@@ -78,13 +80,18 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <NextIntlClientProvider locale={locale} messages={messages}>
-            <Suspense
-              fallback={
-                <div className="flex min-h-[50vh] w-full items-center justify-center">
-                  <div className="border-primary size-6 animate-spin rounded-full border-2 border-t-transparent" />
-                </div>
-              }
-            >
+            <NextTopLoader
+              color="#002C6C"
+              initialPosition={0.08}
+              crawlSpeed={200}
+              height={3}
+              crawl={true}
+              showSpinner={false}
+              easing="ease"
+              speed={200}
+              shadow="0 0 10px #002C6C,0 0 5px #002C6C"
+            />
+            <Suspense fallback={<CenteredSpinner variant="screen" size="lg" />}>
               {children}
             </Suspense>
             <Toaster position="top-right" closeButton />
