@@ -25,7 +25,7 @@
     "openapi:generate": "doppler run -c test -- bun scripts/generate-openapi-types.ts",
     "scrape:products": "bun scripts/scrape-products.ts",
     "prepare": "husky",
-    "start": "doppler run -- bun dist/main.js",
+    "start": "doppler run -- bun --smol dist/main.js",
     "start:debug": "doppler run -- nest start --debug --watch --exec bun",
     "start:test": "doppler run -c test -- bun dist/main.js",
     "test": "bun test src/ --bail",

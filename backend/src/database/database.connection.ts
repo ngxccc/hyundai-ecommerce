@@ -38,7 +38,7 @@ export function createDatabasePool(
         connectionTimeoutMillis: 5000,
         keepAlive: true,
         keepAliveInitialDelayMillis: 10000,
-        max: 20,
+        max: 10,
         ...overrides,
       })
     : new Pool({
@@ -50,7 +50,7 @@ export function createDatabasePool(
         connectionTimeoutMillis: 5000,
         keepAlive: true,
         keepAliveInitialDelayMillis: 10000,
-        max: 20,
+        max: 10,
         ...overrides,
       });
 }
