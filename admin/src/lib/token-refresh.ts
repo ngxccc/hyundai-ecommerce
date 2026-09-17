@@ -5,7 +5,7 @@ export interface RotatedTokens {
 
 /**
  * Rotates an expired admin access token using a valid refresh token.
- * Calls backend POST /auth/refresh directly without recursive client dependencies.
+ * Calls backend POST /api/v1/auth/refresh directly without recursive client dependencies.
  *
  * @param refreshToken - Single-use refresh token string
  * @returns New token pair or null if rotation failed / revoked
@@ -24,10 +24,10 @@ export async function rotateAdminToken(
     const rawUrl = envUrl ?? "http://localhost:3000";
     const baseUrl =
       rawUrl.startsWith("http://") || rawUrl.startsWith("https://")
-        ? rawUrl
-        : `https://${rawUrl}`;
+        ? rawUrl.replace(/\/+$/, "")
+        : `https://${rawUrl.replace(/\/+$/, "")}`;
 
-    const res = await fetch(`${baseUrl}/auth/refresh`, {
+    const res = await fetch(`${baseUrl}/api/v1/auth/refresh`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
