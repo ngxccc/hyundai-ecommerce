@@ -149,22 +149,33 @@
     "metrics": {
       "totalRevenue": "Tổng doanh thu",
       "totalOrders": "Tổng đơn hàng",
-      "totalProducts": "Tổng sản phẩm",
+      "averageOrderValue": "Giá trị trung bình đơn",
       "newCustomers": "Khách hàng mới"
     },
     "chart": {
-      "title": "Doanh thu theo tháng"
+      "title": "Doanh thu & Xu hướng",
+      "subtitle": "Phân tích doanh thu và số lượng đơn hàng theo thời gian",
+      "revenue": "Doanh thu",
+      "orders": "Đơn hàng",
+      "range7d": "7 ngày",
+      "range30d": "30 ngày",
+      "range12m": "12 tháng",
+      "categoryDistribution": "Cơ cấu theo danh mục",
+      "categorySubtitle": "Tỷ trọng đóng góp doanh thu theo nhóm sản phẩm",
+      "noCategoryData": "Chưa có dữ liệu cơ cấu doanh thu danh mục."
     },
     "topProducts": {
       "title": "Sản phẩm bán chạy",
       "viewAll": "Xem tất cả",
-      "sold": "Đã bán: {count}"
+      "sold": "Đã bán: {count}",
+      "noProducts": "Chưa có dữ liệu sản phẩm bán chạy."
     },
     "recentOrders": {
       "title": "Đơn hàng gần đây",
       "filter": "Lọc",
       "export": "Xuất",
       "viewAll": "Xem tất cả đơn hàng",
+      "noOrders": "Chưa có đơn hàng nào gần đây.",
       "columns": {
         "orderId": "Mã Đơn",
         "customer": "Khách Hàng",

@@ -1,116 +1,104 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import {
   DollarSign,
   ShoppingBag,
-  Package,
+  Receipt,
   UserPlus,
   TrendingUp,
   TrendingDown,
   Minus,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import type { DashboardMetrics } from "../types";
+import { formatCurrency, formatNumber } from "@/lib/utils";
+import type { DashboardMetrics } from "@/types/api";
 
 interface MetricsCardsProps {
   metrics: DashboardMetrics;
 }
 
-const formatVND = (value: string | number) => {
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(Number(value));
-};
-
 const GrowthBadge = ({ value }: { value: number }) => {
   if (value > 0) {
     return (
-      <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
-        <TrendingUp className="mr-1 h-3.5 w-3.5" /> {value}%
+      <span className="inline-flex items-center gap-0.5 rounded border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+        <TrendingUp className="size-3" /> +{value}%
       </span>
     );
   }
   if (value < 0) {
     return (
-      <span className="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
-        <TrendingDown className="mr-1 h-3.5 w-3.5" /> {Math.abs(value)}%
+      <span className="border-destructive/20 bg-destructive/10 text-destructive inline-flex items-center gap-0.5 rounded border px-1.5 py-0.5 text-[11px] font-medium">
+        <TrendingDown className="size-3" /> {value}%
       </span>
     );
   }
   return (
-    <span className="bg-muted text-muted-foreground inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium">
-      <Minus className="mr-1 h-3.5 w-3.5" /> 0%
+    <span className="border-border bg-muted/40 text-muted-foreground inline-flex items-center gap-0.5 rounded border px-1.5 py-0.5 text-[11px] font-medium">
+      <Minus className="size-3" /> 0%
     </span>
   );
 };
 
-export const MetricsCards = ({ metrics }: MetricsCardsProps) => {
-  const t = useTranslations("adminDashboard.metrics");
+/**
+ * KPI Metrics Overview Cards.
+ * Pure React Server Component (RSC) rendered on the server with zero client JS bundle.
+ */
+export const MetricsCards = async ({ metrics }: MetricsCardsProps) => {
+  const t = await getTranslations("adminDashboard.metrics");
+
+  const cards = [
+    {
+      title: t("totalRevenue"),
+      value: formatCurrency(metrics.totalRevenue),
+      growth: metrics.revenueGrowth,
+      icon: DollarSign,
+    },
+    {
+      title: t("totalOrders"),
+      value: formatNumber(metrics.totalOrders),
+      growth: metrics.ordersGrowth,
+      icon: ShoppingBag,
+    },
+    {
+      title: t("averageOrderValue"),
+      value: formatCurrency(metrics.averageOrderValue),
+      growth: metrics.aovGrowth,
+      icon: Receipt,
+    },
+    {
+      title: t("newCustomers"),
+      value: formatNumber(metrics.newCustomers),
+      growth: metrics.customersGrowth,
+      icon: UserPlus,
+    },
+  ];
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-      {/* Revenue Card */}
-      <Card className="relative flex min-h-35 flex-col justify-between overflow-hidden p-6 shadow-sm">
-        <div className="mb-2 flex items-start justify-between">
-          <div className="text-muted-foreground flex items-center gap-2">
-            <DollarSign className="text-primary h-5 w-5" />
-            <span className="text-sm font-medium">{t("totalRevenue")}</span>
-          </div>
-          <GrowthBadge value={metrics.revenueGrowth} />
-        </div>
-        <div className="text-primary text-3xl font-bold">
-          {formatVND(metrics.totalRevenue)}
-        </div>
-        {/* Decorative Sparkline */}
-        <div className="absolute right-0 bottom-0 left-0 h-12 border-b-2 border-green-500 bg-linear-to-t from-green-500/10 to-transparent opacity-30"></div>
-      </Card>
+    <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+      {cards.map((card, idx) => {
+        const Icon = card.icon;
+        return (
+          <Card
+            key={idx}
+            className="border-border/80 bg-card flex flex-col justify-between gap-2.5 rounded-lg border p-3.5 shadow-none transition-colors"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground text-xs font-medium">
+                {card.title}
+              </span>
+              <div className="border-border/60 bg-muted/30 text-muted-foreground flex size-7 items-center justify-center rounded-md border">
+                <Icon className="size-3.5" />
+              </div>
+            </div>
 
-      {/* Orders Card */}
-      <Card className="relative flex min-h-35 flex-col justify-between overflow-hidden p-6 shadow-sm">
-        <div className="mb-2 flex items-start justify-between">
-          <div className="text-muted-foreground flex items-center gap-2">
-            <ShoppingBag className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-            <span className="text-sm font-medium">{t("totalOrders")}</span>
-          </div>
-          <GrowthBadge value={metrics.ordersGrowth} />
-        </div>
-        <div className="text-primary text-3xl font-bold">
-          {new Intl.NumberFormat().format(metrics.totalOrders)}
-        </div>
-        <div className="absolute right-0 bottom-0 left-0 h-12 border-b-2 border-green-500 bg-linear-to-t from-green-500/10 to-transparent opacity-30"></div>
-      </Card>
-
-      {/* Products Card */}
-      <Card className="relative flex min-h-35 flex-col justify-between overflow-hidden p-6 shadow-sm">
-        <div className="mb-2 flex items-start justify-between">
-          <div className="text-muted-foreground flex items-center gap-2">
-            <Package className="h-5 w-5 text-orange-500" />
-            <span className="text-sm font-medium">{t("totalProducts")}</span>
-          </div>
-          <GrowthBadge value={0} />
-        </div>
-        <div className="text-primary text-3xl font-bold">
-          {new Intl.NumberFormat().format(metrics.totalProducts)}
-        </div>
-        <div className="bg-muted/50 absolute right-0 bottom-0 left-0 h-8"></div>
-      </Card>
-
-      {/* New Customers Card */}
-      <Card className="relative flex min-h-35 flex-col justify-between overflow-hidden p-6 shadow-sm">
-        <div className="mb-2 flex items-start justify-between">
-          <div className="text-muted-foreground flex items-center gap-2">
-            <UserPlus className="text-destructive h-5 w-5" />
-            <span className="text-sm font-medium">{t("newCustomers")}</span>
-          </div>
-          <GrowthBadge value={metrics.customersGrowth ?? 0} />
-        </div>
-        <div className="text-primary text-3xl font-bold">
-          {new Intl.NumberFormat().format(metrics.newCustomers)}
-        </div>
-        <div className="border-destructive from-destructive/10 absolute right-0 bottom-0 left-0 h-12 border-b-2 bg-linear-to-t to-transparent opacity-30"></div>
-      </Card>
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="text-foreground text-xl font-bold tracking-tight">
+                {card.value}
+              </span>
+              <GrowthBadge value={card.growth} />
+            </div>
+          </Card>
+        );
+      })}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import type { components } from "@/types/api-schema";
 
 type ApiSchemas = components["schemas"];
 
-export type QuoteStatus = ApiSchemas["QuoteResponseDto"]["status"];
+export type QuoteStatus = ApiSchemas["AdminQuoteResponseDto"]["status"];
 export type OrderStatus = ApiSchemas["OrderResponseDto"]["status"];
 
 export const QUOTE_STATUS = {

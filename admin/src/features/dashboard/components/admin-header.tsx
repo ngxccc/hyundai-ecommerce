@@ -1,11 +1,13 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export const AdminHeader = () => {
-  const t = useTranslations("adminDashboard");
+/**
+ * Enterprise Dashboard Header component.
+ * Pure React Server Component (RSC) rendered 100% on the server without client JS overhead.
+ */
+export async function AdminHeader() {
+  const t = await getTranslations("adminDashboard");
 
   return (
     <div className="flex flex-col gap-4 pb-1 sm:flex-row sm:items-center sm:justify-between">
@@ -29,4 +31,4 @@ export const AdminHeader = () => {
       </div>
     </div>
   );
-};
+}

@@ -1,7 +1,21 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Card } from "@/components/ui/card";
+import { useState, useMemo } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import {
   Select,
   SelectContent,
@@ -9,107 +23,208 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import type { MonthlyRevenue } from "../types";
+import { formatCurrency, formatVNDShort } from "@/lib/utils";
+import type { AdminOrder, MonthlyRevenue } from "@/types/api";
+import {
+  aggregateRevenueByMonth,
+  aggregateRevenueByDays,
+  getAvailableYears,
+  formatMonthLabel,
+} from "../lib/analytics";
 
 interface RevenueChartProps {
-  data: MonthlyRevenue[];
+  data?: MonthlyRevenue[];
+  orders?: AdminOrder[];
+  availableYears?: number[];
+  initialYear?: number;
 }
 
-export const RevenueChart = ({ data }: RevenueChartProps) => {
+type TimeRange = "7d" | "30d" | "12m";
+
+export const RevenueChart = ({
+  data,
+  orders = [],
+  availableYears: propYears,
+  initialYear,
+}: RevenueChartProps) => {
   const t = useTranslations("adminDashboard.chart");
+  const locale = useLocale();
+  const currentYear = new Date().getFullYear();
 
-  const maxRevenue = Math.max(...data.map((d) => Number(d.revenue)), 0);
-  const currentMonthStr = (new Date().getMonth() + 1)
-    .toString()
-    .padStart(2, "0");
+  const years = useMemo(() => {
+    if (propYears && propYears.length > 0) return propYears;
+    return getAvailableYears(orders);
+  }, [propYears, orders]);
 
-  const formatBarValue = (val: number) => {
-    if (val >= 1000000000) {
-      return `${(val / 1000000000).toFixed(1)}B`;
+  const defaultYear = years.length > 0 ? years[0] : currentYear;
+  const [selectedYear, setSelectedYear] = useState<number>(
+    initialYear ?? defaultYear,
+  );
+  const [timeRange, setTimeRange] = useState<TimeRange>("12m");
+
+  const chartConfig = {
+    revenue: {
+      label: t("revenue"),
+      color: "var(--color-chart-1)",
+    },
+    orders: {
+      label: t("orders"),
+      color: "var(--color-chart-3)",
+    },
+  } satisfies ChartConfig;
+
+  const chartData = useMemo(() => {
+    if (timeRange === "7d") {
+      return aggregateRevenueByDays(orders, 7);
     }
-    if (val >= 1000000) {
-      return `${(val / 1000000).toFixed(0)}M`;
+    if (timeRange === "30d") {
+      return aggregateRevenueByDays(orders, 30);
     }
-    return new Intl.NumberFormat().format(val);
-  };
 
-  const bars = data.map((d) => {
-    const revenueVal = Number(d.revenue);
-    const heightPercentage =
-      maxRevenue > 0 ? (revenueVal / maxRevenue) * 90 : 0;
-    return {
-      month: `T${parseInt(d.month, 10)}`,
-      height: `${Math.round(heightPercentage)}%`,
-      val: formatBarValue(revenueVal),
-      active: d.month === currentMonthStr,
-    };
-  });
+    // 12 months for the selected year
+    if (data && data.length > 0) {
+      const filtered = data.filter((d) => d.year === selectedYear);
+      if (filtered.length > 0) {
+        return filtered.map((d) => ({
+          label: formatMonthLabel(d.month, locale),
+          revenue: d.revenue,
+          orders: d.orders,
+        }));
+      }
+    }
 
-  const yAxisLabels = [
-    formatBarValue(maxRevenue),
-    formatBarValue(maxRevenue * 0.75),
-    formatBarValue(maxRevenue * 0.5),
-    formatBarValue(maxRevenue * 0.25),
-    "0",
-  ];
+    const aggregated = aggregateRevenueByMonth(orders, selectedYear);
+    return aggregated.map((d) => ({
+      label: formatMonthLabel(d.month, locale),
+      revenue: d.revenue,
+      orders: d.orders,
+    }));
+  }, [data, orders, selectedYear, timeRange, locale]);
+
+  const totalRevenue = useMemo(() => {
+    return chartData.reduce((acc, curr) => acc + curr.revenue, 0);
+  }, [chartData]);
+
   return (
-    <Card size="compact" className="h-full">
-      <div className="border-border/50 mb-6 flex flex-wrap items-center justify-between gap-4 border-b pb-4">
-        <h3 className="text-primary text-xl font-semibold">{t("title")}</h3>
-        <div className="flex gap-2">
-          <Select defaultValue="2026">
-            <SelectTrigger className="h-8 w-25 text-sm">
-              <SelectValue />
+    <Card className="flex h-full flex-col justify-between">
+      <CardHeader className="flex flex-col gap-4 border-b pb-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="space-y-1">
+          <CardTitle className="text-base font-semibold">
+            {t("title")}
+          </CardTitle>
+          <CardDescription className="text-xs">{t("subtitle")}</CardDescription>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Dynamic Year Selector with sufficient width for 'Năm YYYY' */}
+          <Select
+            value={String(selectedYear)}
+            onValueChange={(val) => setSelectedYear(Number(val))}
+          >
+            <SelectTrigger className="h-8 w-auto text-xs font-medium">
+              <SelectValue placeholder={String(currentYear)} />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="2026">2026</SelectItem>
-              <SelectItem value="2025">2025</SelectItem>
+            <SelectContent align="end">
+              {years.map((yr) => (
+                <SelectItem key={yr} value={String(yr)}>
+                  Năm {yr}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Time Range Selector */}
+          <Select
+            value={timeRange}
+            onValueChange={(val) => setTimeRange(val as TimeRange)}
+          >
+            <SelectTrigger className="h-8 w-auto text-xs font-medium">
+              <SelectValue placeholder={t("range12m")} />
+            </SelectTrigger>
+            <SelectContent align="end">
+              <SelectItem value="7d">{t("range7d")}</SelectItem>
+              <SelectItem value="30d">{t("range30d")}</SelectItem>
+              <SelectItem value="12m">{t("range12m")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
-      </div>
+      </CardHeader>
 
-      {/* TODO(dashboard-v2): Integrate external chart library (e.g. Recharts or Chart.js) */}
-      {/* Faux Chart Representation */}
-      <div className="relative mt-4 flex h-62.5 flex-1 items-end gap-2">
-        {/* Y-axis labels */}
-        <div className="text-muted-foreground absolute top-0 bottom-0 left-0 flex w-12 flex-col justify-between pr-2 pb-6 text-right text-xs">
-          {yAxisLabels.map((lbl, idx) => (
-            <span key={idx}>{lbl}</span>
-          ))}
+      <CardContent>
+        <div className="mb-4 flex items-baseline gap-2">
+          <span className="text-foreground text-2xl font-bold tracking-tight">
+            {formatCurrency(totalRevenue)}
+          </span>
         </div>
 
-        {/* Grid lines */}
-        <div className="absolute top-0 right-0 bottom-6 left-12 z-0 flex flex-col justify-between">
-          <div className="border-border/40 w-full border-t border-dashed"></div>
-          <div className="border-border/40 w-full border-t border-dashed"></div>
-          <div className="border-border/40 w-full border-t border-dashed"></div>
-          <div className="border-border/40 w-full border-t border-dashed"></div>
-          <div className="border-border w-full border-t border-solid"></div>
-        </div>
-
-        {/* Bars Container */}
-        <div className="z-10 ml-12 flex h-full flex-1 items-end justify-around pb-6">
-          {bars.map((bar, i) => (
-            <div key={i} className="flex w-full max-w-10 flex-col items-center">
-              <div
-                className={`group relative w-full cursor-pointer rounded-t-sm transition-all hover:brightness-110 ${bar.active ? "bg-primary" : "bg-primary/50"}`}
-                style={{ height: bar.height }}
-              >
-                <div className="bg-foreground text-background pointer-events-none absolute -top-8 left-1/2 z-20 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
-                  {bar.val}
-                </div>
-              </div>
-              <span
-                className={`mt-2 text-xs ${bar.active ? "text-primary font-bold" : "text-muted-foreground"}`}
-              >
-                {bar.month}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-65 w-full"
+        >
+          <AreaChart
+            data={chartData}
+            margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="var(--color-border)"
+              opacity={0.6}
+            />
+            <XAxis
+              dataKey="label"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              fontSize={11}
+              stroke="var(--color-muted-foreground)"
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              fontSize={11}
+              stroke="var(--color-muted-foreground)"
+              tickFormatter={formatVNDShort}
+            />
+            <ChartTooltip
+              cursor={{ stroke: "var(--color-border)", strokeWidth: 1 }}
+              content={
+                <ChartTooltipContent
+                  indicator="line"
+                  formatter={(value, name) => (
+                    <div className="flex w-full items-center justify-between gap-4">
+                      <span className="text-muted-foreground">
+                        {name === "revenue" ? t("revenue") : t("orders")}
+                      </span>
+                      <span className="text-foreground font-semibold">
+                        {name === "revenue"
+                          ? formatCurrency(Number(value))
+                          : value}
+                      </span>
+                    </div>
+                  )}
+                />
+              }
+            />
+            <Area
+              animationDuration={500}
+              dataKey="revenue"
+              type="monotone"
+              fill="var(--color-chart-1)"
+              fillOpacity={0.12}
+              stroke="var(--color-chart-1)"
+              strokeWidth={2}
+              activeDot={{
+                r: 4,
+                fill: "var(--color-chart-1)",
+                stroke: "var(--color-background)",
+                strokeWidth: 2,
+              }}
+            />
+          </AreaChart>
+        </ChartContainer>
+      </CardContent>
     </Card>
   );
 };

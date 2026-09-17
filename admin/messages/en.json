@@ -149,22 +149,33 @@
     "metrics": {
       "totalRevenue": "Total Revenue",
       "totalOrders": "Total Orders",
-      "totalProducts": "Total Products",
+      "averageOrderValue": "Avg. Order Value",
       "newCustomers": "New Customers"
     },
     "chart": {
-      "title": "Monthly Revenue"
+      "title": "Revenue & Trends",
+      "subtitle": "Analyze revenue and order volume over time",
+      "revenue": "Revenue",
+      "orders": "Orders",
+      "range7d": "7 days",
+      "range30d": "30 days",
+      "range12m": "12 months",
+      "categoryDistribution": "Category Distribution",
+      "categorySubtitle": "Revenue share contribution by product category",
+      "noCategoryData": "No category revenue data available."
     },
     "topProducts": {
       "title": "Top Selling Products",
       "viewAll": "View All",
-      "sold": "Sold: {count}"
+      "sold": "Sold: {count}",
+      "noProducts": "No top selling products data available."
     },
     "recentOrders": {
       "title": "Recent Orders",
       "filter": "Filter",
       "export": "Export",
-      "viewAll": "View all orders",
+      "viewAll": "View All Orders",
+      "noOrders": "No recent orders found.",
       "columns": {
         "orderId": "Order ID",
         "customer": "Customer",
