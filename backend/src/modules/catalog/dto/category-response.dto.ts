@@ -12,7 +12,6 @@ const baseCategoryResponseSchema = z.object({
   id: z.uuid(),
   slug: z.string(),
   parentId: z.uuid().nullable(),
-  image: z.string().nullable(),
   isActive: z.boolean(),
   name: z.string(),
   description: z.string().nullable(),

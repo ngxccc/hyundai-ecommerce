@@ -19,7 +19,6 @@ export const categories = snakeCase.table(
     parentId: uuid().references((): AnyPgColumn => categories.id, {
       onDelete: "set null",
     }),
-    image: text(),
     isActive: boolean().default(true).notNull(),
   },
   (table) => [

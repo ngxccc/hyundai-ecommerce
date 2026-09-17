@@ -17,7 +17,6 @@ export const createBrandBaseSchema = z.object({
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
       message: i18nZodMsg("validation.matches"),
     }),
-  logo: zSanitizedString({ max: 500 }).nullish(),
   translations: z.array(brandTranslationInputSchema).optional(),
   isActive: z.boolean().default(true),
 });

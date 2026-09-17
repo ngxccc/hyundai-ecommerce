@@ -1,17 +1,11 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "d4c7589a-a16d-4754-a7f5-bb31a52268f5",
-  "prevIds": [
-    "fd5d3891-4877-4a3e-b96e-fa17a41061da"
-  ],
+  "id": "406c5b90-7e18-41bc-931e-bb53a9c6167c",
+  "prevIds": ["00000000-0000-0000-0000-000000000000"],
   "ddl": [
     {
-      "values": [
-        "PENDING",
-        "APPROVED",
-        "REJECTED"
-      ],
+      "values": ["PENDING", "APPROVED", "REJECTED"],
       "name": "approval_status",
       "entityType": "enums",
       "schema": "public"
@@ -29,11 +23,7 @@
       "schema": "public"
     },
     {
-      "values": [
-        "PENDING",
-        "COMPLETED",
-        "FAILED"
-      ],
+      "values": ["PENDING", "COMPLETED", "FAILED"],
       "name": "debt_repayment_status",
       "entityType": "enums",
       "schema": "public"
@@ -66,80 +56,43 @@
       "schema": "public"
     },
     {
-      "values": [
-        "PENDING",
-        "DEPOSIT_PAID",
-        "FULLY_PAID",
-        "REFUNDED",
-        "FAILED"
-      ],
+      "values": ["PENDING", "DEPOSIT_PAID", "FULLY_PAID", "REFUNDED", "FAILED"],
       "name": "order_payment_status",
       "entityType": "enums",
       "schema": "public"
     },
     {
-      "values": [
-        "PENDING",
-        "PROCESSING",
-        "SHIPPED",
-        "DELIVERED",
-        "CANCELLED"
-      ],
+      "values": ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"],
       "name": "order_status",
       "entityType": "enums",
       "schema": "public"
     },
     {
-      "values": [
-        "PENDING",
-        "PROCESSING",
-        "PROCESSED",
-        "FAILED"
-      ],
+      "values": ["PENDING", "PROCESSING", "PROCESSED", "FAILED"],
       "name": "outbox_event_status",
       "entityType": "enums",
       "schema": "public"
     },
     {
-      "values": [
-        "CASH",
-        "TRADE_CREDIT",
-        "PAYOS",
-        "BANK_TRANSFER"
-      ],
+      "values": ["CASH", "TRADE_CREDIT", "PAYOS", "BANK_TRANSFER"],
       "name": "payment_method",
       "entityType": "enums",
       "schema": "public"
     },
     {
-      "values": [
-        "PENDING",
-        "COMPLETED",
-        "FAILED",
-        "REFUNDED"
-      ],
+      "values": ["PENDING", "COMPLETED", "FAILED", "REFUNDED"],
       "name": "payment_status",
       "entityType": "enums",
       "schema": "public"
     },
     {
-      "values": [
-        "PENDING",
-        "COMPLETED",
-        "FAILED",
-        "CANCELLED"
-      ],
+      "values": ["PENDING", "COMPLETED", "FAILED", "CANCELLED"],
       "name": "payment_transaction_status",
       "entityType": "enums",
       "schema": "public"
     },
     {
-      "values": [
-        "FULL_PAYMENT",
-        "DEPOSIT",
-        "REMAINING",
-        "DEBT_REPAYMENT"
-      ],
+      "values": ["FULL_PAYMENT", "DEPOSIT", "REMAINING", "DEBT_REPAYMENT"],
       "name": "payment_transaction_type",
       "entityType": "enums",
       "schema": "public"
@@ -158,21 +111,13 @@
       "schema": "public"
     },
     {
-      "values": [
-        "ADMIN",
-        "SALES"
-      ],
+      "values": ["ADMIN", "SALES"],
       "name": "user_role",
       "entityType": "enums",
       "schema": "public"
     },
     {
-      "values": [
-        "ACTIVE",
-        "INACTIVE",
-        "SUSPENDED",
-        "PENDING_VERIFICATION"
-      ],
+      "values": ["ACTIVE", "INACTIVE", "SUSPENDED", "PENDING_VERIFICATION"],
       "name": "user_status",
       "entityType": "enums",
       "schema": "public"
@@ -1211,19 +1156,6 @@
       "table": "brand"
     },
     {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "logo",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "brand"
-    },
-    {
       "type": "boolean",
       "typeSchema": null,
       "notNull": true,
@@ -1297,19 +1229,6 @@
       "generated": null,
       "identity": null,
       "name": "parent_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "category"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "image",
       "entityType": "columns",
       "schema": "public",
       "table": "category"
@@ -5573,14 +5492,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "refresh_tokens_user_id_users_id_fkey",
@@ -5590,14 +5505,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "dealer_tier_id"
-      ],
+      "columns": ["dealer_tier_id"],
       "schemaTo": "public",
       "tableTo": "dealer_tier",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "users_dealer_tier_id_dealer_tier_id_fkey",
@@ -5607,14 +5518,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "parent_id"
-      ],
+      "columns": ["parent_id"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "users_parent_id_users_id_fkey",
@@ -5624,14 +5531,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "credit_limit_history_user_id_users_id_fkey",
@@ -5641,14 +5544,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "changed_by"
-      ],
+      "columns": ["changed_by"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "RESTRICT",
       "name": "credit_limit_history_changed_by_users_id_fkey",
@@ -5658,14 +5557,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "user_address_user_id_users_id_fkey",
@@ -5675,14 +5570,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "brand_id"
-      ],
+      "columns": ["brand_id"],
       "schemaTo": "public",
       "tableTo": "brand",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "brand_translation_brand_id_brand_id_fkey",
@@ -5692,14 +5583,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "parent_id"
-      ],
+      "columns": ["parent_id"],
       "schemaTo": "public",
       "tableTo": "category",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "category_parent_id_category_id_fkey",
@@ -5709,14 +5596,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "category_id"
-      ],
+      "columns": ["category_id"],
       "schemaTo": "public",
       "tableTo": "category",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "category_translation_category_id_category_id_fkey",
@@ -5726,14 +5609,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "product_id"
-      ],
+      "columns": ["product_id"],
       "schemaTo": "public",
       "tableTo": "product",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "product_translation_product_id_product_id_fkey",
@@ -5743,14 +5622,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "brand_id"
-      ],
+      "columns": ["brand_id"],
       "schemaTo": "public",
       "tableTo": "brand",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "product_brand_id_brand_id_fkey",
@@ -5760,14 +5635,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "category_id"
-      ],
+      "columns": ["category_id"],
       "schemaTo": "public",
       "tableTo": "category",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "product_category_id_category_id_fkey",
@@ -5777,14 +5648,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "warehouse_id"
-      ],
+      "columns": ["warehouse_id"],
       "schemaTo": "public",
       "tableTo": "warehouse",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "warehouse_stock_warehouse_id_warehouse_id_fkey",
@@ -5794,14 +5661,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "product_id"
-      ],
+      "columns": ["product_id"],
       "schemaTo": "public",
       "tableTo": "product",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "warehouse_stock_product_id_product_id_fkey",
@@ -5811,14 +5674,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "cart_id"
-      ],
+      "columns": ["cart_id"],
       "schemaTo": "public",
       "tableTo": "cart",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "cart_item_cart_id_cart_id_fkey",
@@ -5828,14 +5687,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "product_id"
-      ],
+      "columns": ["product_id"],
       "schemaTo": "public",
       "tableTo": "product",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "cart_item_product_id_product_id_fkey",
@@ -5845,14 +5700,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "cart_user_id_users_id_fkey",
@@ -5862,14 +5713,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "order_id"
-      ],
+      "columns": ["order_id"],
       "schemaTo": "public",
       "tableTo": "order",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "order_item_order_id_order_id_fkey",
@@ -5879,14 +5726,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "product_id"
-      ],
+      "columns": ["product_id"],
       "schemaTo": "public",
       "tableTo": "product",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "RESTRICT",
       "name": "order_item_product_id_product_id_fkey",
@@ -5896,14 +5739,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "order_user_id_users_id_fkey",
@@ -5913,14 +5752,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "lead_id"
-      ],
+      "columns": ["lead_id"],
       "schemaTo": "public",
       "tableTo": "lead",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "order_lead_id_lead_id_fkey",
@@ -5930,14 +5765,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "approved_by"
-      ],
+      "columns": ["approved_by"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "order_approved_by_users_id_fkey",
@@ -5947,14 +5778,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "order_id"
-      ],
+      "columns": ["order_id"],
       "schemaTo": "public",
       "tableTo": "order",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "shipping_bid_order_id_order_id_fkey",
@@ -5964,14 +5791,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "quote_id"
-      ],
+      "columns": ["quote_id"],
       "schemaTo": "public",
       "tableTo": "quote",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "quote_item_quote_id_quote_id_fkey",
@@ -5981,14 +5804,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "product_id"
-      ],
+      "columns": ["product_id"],
       "schemaTo": "public",
       "tableTo": "product",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "quote_item_product_id_product_id_fkey",
@@ -5998,14 +5817,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "quote_id"
-      ],
+      "columns": ["quote_id"],
       "schemaTo": "public",
       "tableTo": "quote",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "quote_message_quote_id_quote_id_fkey",
@@ -6015,14 +5830,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "sender_id"
-      ],
+      "columns": ["sender_id"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "RESTRICT",
       "name": "quote_message_sender_id_users_id_fkey",
@@ -6032,14 +5843,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "quote_user_id_users_id_fkey",
@@ -6049,14 +5856,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "order_id"
-      ],
+      "columns": ["order_id"],
       "schemaTo": "public",
       "tableTo": "order",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "quote_order_id_order_id_fkey",
@@ -6066,14 +5869,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "created_by_admin_id"
-      ],
+      "columns": ["created_by_admin_id"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "quote_created_by_admin_id_users_id_fkey",
@@ -6083,14 +5882,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "RESTRICT",
       "name": "debt_repayment_user_id_users_id_fkey",
@@ -6100,14 +5895,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "verified_by"
-      ],
+      "columns": ["verified_by"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "debt_repayment_verified_by_users_id_fkey",
@@ -6117,14 +5908,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "order_id"
-      ],
+      "columns": ["order_id"],
       "schemaTo": "public",
       "tableTo": "order",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "payment_transaction_order_id_order_id_fkey",
@@ -6134,14 +5921,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "verified_by"
-      ],
+      "columns": ["verified_by"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "payment_transaction_verified_by_users_id_fkey",
@@ -6151,14 +5934,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "order_id"
-      ],
+      "columns": ["order_id"],
       "schemaTo": "public",
       "tableTo": "order",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "RESTRICT",
       "name": "payment_order_id_order_id_fkey",
@@ -6168,14 +5947,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "lead_id"
-      ],
+      "columns": ["lead_id"],
       "schemaTo": "public",
       "tableTo": "lead",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "lead_item_lead_id_lead_id_fkey",
@@ -6185,14 +5960,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "product_id"
-      ],
+      "columns": ["product_id"],
       "schemaTo": "public",
       "tableTo": "product",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "RESTRICT",
       "name": "lead_item_product_id_product_id_fkey",
@@ -6202,14 +5973,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "assigned_sales_id"
-      ],
+      "columns": ["assigned_sales_id"],
       "schemaTo": "public",
       "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "SET NULL",
       "name": "lead_assigned_sales_id_users_id_fkey",
@@ -6218,10 +5985,7 @@
       "table": "lead"
     },
     {
-      "columns": [
-        "brand_id",
-        "locale"
-      ],
+      "columns": ["brand_id", "locale"],
       "nameExplicit": false,
       "name": "brand_translation_pkey",
       "entityType": "pks",
@@ -6229,10 +5993,7 @@
       "table": "brand_translation"
     },
     {
-      "columns": [
-        "category_id",
-        "locale"
-      ],
+      "columns": ["category_id", "locale"],
       "nameExplicit": false,
       "name": "category_translation_pkey",
       "entityType": "pks",
@@ -6240,10 +6001,7 @@
       "table": "category_translation"
     },
     {
-      "columns": [
-        "product_id",
-        "locale"
-      ],
+      "columns": ["product_id", "locale"],
       "nameExplicit": false,
       "name": "product_translation_pkey",
       "entityType": "pks",
@@ -6251,10 +6009,7 @@
       "table": "product_translation"
     },
     {
-      "columns": [
-        "warehouse_id",
-        "product_id"
-      ],
+      "columns": ["warehouse_id", "product_id"],
       "nameExplicit": false,
       "name": "warehouse_stock_pkey",
       "entityType": "pks",
@@ -6262,9 +6017,7 @@
       "table": "warehouse_stock"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "dealer_tier_pkey",
       "schema": "public",
@@ -6272,9 +6025,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "refresh_tokens_pkey",
       "schema": "public",
@@ -6282,9 +6033,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "users_pkey",
       "schema": "public",
@@ -6292,9 +6041,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "credit_limit_history_pkey",
       "schema": "public",
@@ -6302,9 +6049,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "user_address_pkey",
       "schema": "public",
@@ -6312,9 +6057,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "brand_pkey",
       "schema": "public",
@@ -6322,9 +6065,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "category_pkey",
       "schema": "public",
@@ -6332,9 +6073,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "product_pkey",
       "schema": "public",
@@ -6342,9 +6081,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "warehouse_pkey",
       "schema": "public",
@@ -6352,9 +6089,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "cart_item_pkey",
       "schema": "public",
@@ -6362,9 +6097,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "cart_pkey",
       "schema": "public",
@@ -6372,9 +6105,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "order_item_pkey",
       "schema": "public",
@@ -6382,9 +6113,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "order_pkey",
       "schema": "public",
@@ -6392,9 +6121,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "shipping_bid_pkey",
       "schema": "public",
@@ -6402,9 +6129,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "quote_item_pkey",
       "schema": "public",
@@ -6412,9 +6137,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "quote_message_pkey",
       "schema": "public",
@@ -6422,9 +6145,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "quote_pkey",
       "schema": "public",
@@ -6432,9 +6153,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "debt_repayment_pkey",
       "schema": "public",
@@ -6442,9 +6161,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "payment_transaction_pkey",
       "schema": "public",
@@ -6452,9 +6169,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "payment_pkey",
       "schema": "public",
@@ -6462,9 +6177,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "outbox_events_pkey",
       "schema": "public",
@@ -6472,9 +6185,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "lead_item_pkey",
       "schema": "public",
@@ -6482,9 +6193,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "lead_pkey",
       "schema": "public",
@@ -6493,9 +6202,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "name_vi"
-      ],
+      "columns": ["name_vi"],
       "nullsNotDistinct": false,
       "name": "dealer_tier_name_vi_key",
       "schema": "public",
@@ -6504,9 +6211,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "name"
-      ],
+      "columns": ["name"],
       "nullsNotDistinct": false,
       "name": "brand_name_key",
       "schema": "public",
@@ -6515,9 +6220,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "slug"
-      ],
+      "columns": ["slug"],
       "nullsNotDistinct": false,
       "name": "brand_slug_key",
       "schema": "public",
@@ -6526,9 +6229,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
+      "columns": ["user_id"],
       "nullsNotDistinct": false,
       "name": "cart_user_id_key",
       "schema": "public",
@@ -6537,9 +6238,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "order_code"
-      ],
+      "columns": ["order_code"],
       "nullsNotDistinct": false,
       "name": "debt_repayment_order_code_key",
       "schema": "public",
@@ -6548,9 +6247,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "reference_code"
-      ],
+      "columns": ["reference_code"],
       "nullsNotDistinct": false,
       "name": "debt_repayment_reference_code_key",
       "schema": "public",
@@ -6559,9 +6256,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "order_code"
-      ],
+      "columns": ["order_code"],
       "nullsNotDistinct": false,
       "name": "payment_transaction_order_code_key",
       "schema": "public",
@@ -6570,9 +6265,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "reference_code"
-      ],
+      "columns": ["reference_code"],
       "nullsNotDistinct": false,
       "name": "payment_transaction_reference_code_key",
       "schema": "public",
@@ -6581,9 +6274,7 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "lead_code"
-      ],
+      "columns": ["lead_code"],
       "nullsNotDistinct": false,
       "name": "lead_lead_code_key",
       "schema": "public",

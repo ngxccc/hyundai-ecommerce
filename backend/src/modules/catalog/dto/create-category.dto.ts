@@ -18,7 +18,6 @@ export const createCategoryBaseSchema = z.object({
       message: i18nZodMsg("validation.matches"),
     }),
   parentId: z.uuid({ message: i18nZodMsg("validation.isUuid") }).nullish(),
-  image: zSanitizedString({ max: 500 }).nullish(),
   isActive: z.boolean().default(true),
   translations: z.array(categoryTranslationInputSchema).min(1),
 });

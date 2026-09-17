@@ -14,7 +14,6 @@ describe("CategoriesController", () => {
     slug: "may-phat-dien",
     parentId: null,
     description: null,
-    image: null,
     isActive: true,
     createdAt: new Date("2026-09-04T08:00:00.000Z"),
     updatedAt: new Date("2026-09-04T08:00:00.000Z"),

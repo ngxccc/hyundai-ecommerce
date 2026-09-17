@@ -3,17 +3,18 @@ import { readdir, rm } from "node:fs/promises";
 import { join } from "path";
 import { createHash } from "crypto";
 import { execSync } from "child_process";
-import { NestFactory } from "@nestjs/core";
-import { AppModule } from "@/app.module";
-import {
-  DATABASE_CONNECTION,
-  type DrizzleDB,
-} from "@/database/database.module";
+import { Pool } from "pg";
+import { drizzle } from "drizzle-orm/node-postgres";
 
 async function forceBaseline() {
-  const app = await NestFactory.createApplicationContext(AppModule);
-  const db = app.get<DrizzleDB>(DATABASE_CONNECTION);
+  const dbUrl = process.env["DB_URL"];
+  if (!dbUrl) {
+    console.error("Missing required environment variable: DB_URL");
+    process.exit(1);
+  }
 
+  const pool = new Pool({ connectionString: dbUrl });
+  const db = drizzle({ client: pool });
   const injectOnly = process.argv.includes("--inject-only");
   console.log(
     injectOnly
@@ -24,32 +25,26 @@ async function forceBaseline() {
   const drizzleDir = join(process.cwd(), "drizzle");
 
   if (!injectOnly) {
-    // 1. Delete all existing migration folders
-    try {
-      const entries = await readdir(drizzleDir, { withFileTypes: true });
-      const migrationFolders = entries
-        .filter((dirent) => dirent.isDirectory() && /^\d{14}/.test(dirent.name))
-        .map((dirent) => dirent.name);
-
-      for (const folder of migrationFolders) {
-        console.log(`Cleaning up old migration folder: ${folder}`);
-        await rm(join(drizzleDir, folder), { recursive: true, force: true });
+    // 1. Clean up old migration directories except drizzle.config.ts / meta if any
+    console.log("Purging existing migration directories...");
+    const entries = await readdir(drizzleDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (entry.isDirectory() && /^\d{14}/.test(entry.name)) {
+        await rm(join(drizzleDir, entry.name), {
+          recursive: true,
+          force: true,
+        });
       }
-    } catch {
-      console.log("No existing drizzle directory or folders to clean up.");
     }
 
-    // 2. Automatically generate the new consolidated migration
-    console.log("Generating consolidated drizzle migration...");
-    try {
-      execSync("bun run db:generate", {
-        stdio: "inherit",
-      });
-    } catch (error) {
-      console.error("Failed to generate migration via drizzle-kit:", error);
-      process.exit(1);
-    }
+    // Also remove meta folder to prevent drizzle-kit from trying to calculate incremental diffs
+    await rm(join(drizzleDir, "meta"), { recursive: true, force: true });
+
+    // 2. Generate a single fresh baseline migration
+    console.log("Generating consolidated fresh baseline migration...");
+    execSync("bun run db:generate", { stdio: "inherit" });
   }
+
   // 3. Read the newly generated migration folder
   const entriesAfterGen = await readdir(drizzleDir, { withFileTypes: true });
   const migrationFoldersAfterGen = entriesAfterGen
@@ -60,7 +55,7 @@ async function forceBaseline() {
   const latestMigrationName = migrationFoldersAfterGen.at(-1);
 
   if (!latestMigrationName) {
-    console.error("No migration folders found after generation.");
+    console.error("No migration directory found after generation.");
     process.exit(1);
   }
 
@@ -95,9 +90,11 @@ async function forceBaseline() {
     console.log(
       "Baselining Complete! Migration record injected & synced in __drizzle_migrations.",
     );
+    await pool.end();
     process.exit(0);
   } catch (error) {
     console.error("Fatal Error during injection:", error);
+    await pool.end();
     process.exit(1);
   }
 }

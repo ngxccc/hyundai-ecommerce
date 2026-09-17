@@ -13,7 +13,6 @@ export const brands = snakeCase.table("brand", {
   ...baseEntity,
   name: text().notNull().unique(),
   slug: text().notNull().unique(),
-  logo: text(),
   isActive: boolean().default(true).notNull(),
 });
 

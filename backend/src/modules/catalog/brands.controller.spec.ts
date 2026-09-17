@@ -12,7 +12,6 @@ describe("BrandsController", () => {
     id: "brand-1",
     name: "Hyundai Power",
     slug: "hyundai-power",
-    logo: null,
     description: null,
     isActive: true,
     createdAt: new Date("2026-09-04T08:00:00.000Z"),

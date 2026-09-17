@@ -87,15 +87,19 @@ CREATE TABLE "user_address" (
 	"is_default" boolean DEFAULT false NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "brand_translation" (
+	"brand_id" uuid,
+	"locale" varchar(8),
+	"description" text,
+	CONSTRAINT "brand_translation_pkey" PRIMARY KEY("brand_id","locale")
+);
+--> statement-breakpoint
 CREATE TABLE "brand" (
 	"id" uuid PRIMARY KEY,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"name" text NOT NULL UNIQUE,
 	"slug" text NOT NULL UNIQUE,
-	"logo" text,
-	"description_vi" text,
-	"description_en" text,
 	"is_active" boolean DEFAULT true NOT NULL
 );
 --> statement-breakpoint
@@ -103,14 +107,28 @@ CREATE TABLE "category" (
 	"id" uuid PRIMARY KEY,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"name_vi" text NOT NULL,
-	"name_en" text,
-	"slug" text NOT NULL UNIQUE,
+	"slug" text NOT NULL,
 	"parent_id" uuid,
-	"description_vi" text,
-	"description_en" text,
-	"image" text,
 	"is_active" boolean DEFAULT true NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "category_translation" (
+	"category_id" uuid,
+	"locale" varchar(8),
+	"name" text NOT NULL,
+	"description" text,
+	CONSTRAINT "category_translation_pkey" PRIMARY KEY("category_id","locale")
+);
+--> statement-breakpoint
+CREATE TABLE "product_translation" (
+	"product_id" uuid,
+	"locale" varchar(8),
+	"name" text NOT NULL,
+	"short_description" text,
+	"description" jsonb,
+	"seo_title" text,
+	"seo_description" text,
+	CONSTRAINT "product_translation_pkey" PRIMARY KEY("product_id","locale")
 );
 --> statement-breakpoint
 CREATE TABLE "product" (
@@ -118,14 +136,8 @@ CREATE TABLE "product" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"deleted_at" timestamp with time zone,
-	"name_vi" text NOT NULL,
-	"name_en" text,
 	"slug" text NOT NULL,
 	"price" numeric(15,2) NOT NULL,
-	"description_vi" jsonb,
-	"description_en" jsonb,
-	"short_description_vi" text,
-	"short_description_en" text,
 	"images" text[] DEFAULT '{}'::text[] NOT NULL,
 	"brand_id" uuid,
 	"category_id" uuid,
@@ -149,7 +161,8 @@ CREATE TABLE "product" (
 	"total_stock_cache" integer DEFAULT 0 NOT NULL,
 	"total_sales_cache" integer DEFAULT 0 NOT NULL,
 	"is_quote_only" boolean DEFAULT false NOT NULL,
-	"is_active" boolean DEFAULT true NOT NULL
+	"is_active" boolean DEFAULT true NOT NULL,
+	CONSTRAINT "product_stock_non_negative_chk" CHECK ("total_stock_cache" >= 0)
 );
 --> statement-breakpoint
 CREATE TABLE "warehouse_stock" (
@@ -159,7 +172,8 @@ CREATE TABLE "warehouse_stock" (
 	"min_stock_warning" integer DEFAULT 2 NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	CONSTRAINT "warehouse_stock_pkey" PRIMARY KEY("warehouse_id","product_id")
+	CONSTRAINT "warehouse_stock_pkey" PRIMARY KEY("warehouse_id","product_id"),
+	CONSTRAINT "warehouse_stock_stock_non_negative_chk" CHECK ("stock" >= 0)
 );
 --> statement-breakpoint
 CREATE TABLE "warehouse" (
@@ -180,7 +194,8 @@ CREATE TABLE "cart_item" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"cart_id" uuid NOT NULL,
 	"product_id" uuid NOT NULL,
-	"quantity" integer DEFAULT 1 NOT NULL
+	"quantity" integer DEFAULT 1 NOT NULL,
+	CONSTRAINT "cart_item_quantity_positive_chk" CHECK ("quantity" > 0)
 );
 --> statement-breakpoint
 CREATE TABLE "cart" (
@@ -379,11 +394,23 @@ CREATE UNIQUE INDEX "refresh_tokens_token_hash_uidx" ON "refresh_tokens" ("token
 CREATE INDEX "refresh_tokens_user_id_idx" ON "refresh_tokens" ("user_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "users_email_uidx" ON "users" ("email");--> statement-breakpoint
 CREATE UNIQUE INDEX "users_phone_uidx" ON "users" ("phone_number");--> statement-breakpoint
+CREATE INDEX "users_verification_token_idx" ON "users" ("verification_token");--> statement-breakpoint
+CREATE INDEX "users_reset_password_token_idx" ON "users" ("reset_password_token");--> statement-breakpoint
 CREATE INDEX "users_dealer_tier_idx" ON "users" ("dealer_tier_id");--> statement-breakpoint
 CREATE INDEX "users_parent_id_idx" ON "users" ("parent_id");--> statement-breakpoint
 CREATE INDEX "users_role_idx" ON "users" ("role");--> statement-breakpoint
 CREATE INDEX "users_status_idx" ON "users" ("status");--> statement-breakpoint
 CREATE INDEX "users_created_at_idx" ON "users" ("created_at");--> statement-breakpoint
+CREATE INDEX "credit_limit_history_user_id_idx" ON "credit_limit_history" ("user_id");--> statement-breakpoint
+CREATE INDEX "credit_limit_history_changed_by_idx" ON "credit_limit_history" ("changed_by");--> statement-breakpoint
+CREATE INDEX "user_address_user_id_idx" ON "user_address" ("user_id");--> statement-breakpoint
+CREATE INDEX "user_address_default_idx" ON "user_address" ("user_id","is_default");--> statement-breakpoint
+CREATE INDEX "brand_translation_brand_locale_idx" ON "brand_translation" ("brand_id","locale");--> statement-breakpoint
+CREATE UNIQUE INDEX "category_slug_uidx" ON "category" ("slug");--> statement-breakpoint
+CREATE INDEX "category_parent_id_idx" ON "category" ("parent_id");--> statement-breakpoint
+CREATE INDEX "category_is_active_idx" ON "category" ("is_active");--> statement-breakpoint
+CREATE INDEX "category_translation_category_locale_idx" ON "category_translation" ("category_id","locale");--> statement-breakpoint
+CREATE INDEX "product_translation_product_locale_idx" ON "product_translation" ("product_id","locale");--> statement-breakpoint
 CREATE UNIQUE INDEX "product_slug_uidx" ON "product" ("slug");--> statement-breakpoint
 CREATE INDEX "product_price_idx" ON "product" ("price");--> statement-breakpoint
 CREATE INDEX "product_brand_id_idx" ON "product" ("brand_id");--> statement-breakpoint
@@ -400,6 +427,7 @@ CREATE INDEX "product_product_type_idx" ON "product" ("product_type");--> statem
 CREATE INDEX "warehouse_stock_product_idx" ON "warehouse_stock" ("product_id");--> statement-breakpoint
 CREATE INDEX "warehouse_name_idx" ON "warehouse" ("name_vi");--> statement-breakpoint
 CREATE UNIQUE INDEX "cart_product_unique_idx" ON "cart_item" ("cart_id","product_id");--> statement-breakpoint
+CREATE INDEX "cart_item_product_id_idx" ON "cart_item" ("product_id");--> statement-breakpoint
 CREATE INDEX "order_item_order_idx" ON "order_item" ("order_id");--> statement-breakpoint
 CREATE INDEX "order_item_product_idx" ON "order_item" ("product_id");--> statement-breakpoint
 CREATE INDEX "order_user_status_created_idx" ON "order" ("user_id","status","created_at");--> statement-breakpoint
@@ -434,7 +462,10 @@ ALTER TABLE "users" ADD CONSTRAINT "users_parent_id_users_id_fkey" FOREIGN KEY (
 ALTER TABLE "credit_limit_history" ADD CONSTRAINT "credit_limit_history_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "credit_limit_history" ADD CONSTRAINT "credit_limit_history_changed_by_users_id_fkey" FOREIGN KEY ("changed_by") REFERENCES "users"("id") ON DELETE RESTRICT;--> statement-breakpoint
 ALTER TABLE "user_address" ADD CONSTRAINT "user_address_user_id_users_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "brand_translation" ADD CONSTRAINT "brand_translation_brand_id_brand_id_fkey" FOREIGN KEY ("brand_id") REFERENCES "brand"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "category" ADD CONSTRAINT "category_parent_id_category_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "category"("id") ON DELETE SET NULL;--> statement-breakpoint
+ALTER TABLE "category_translation" ADD CONSTRAINT "category_translation_category_id_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "category"("id") ON DELETE CASCADE;--> statement-breakpoint
+ALTER TABLE "product_translation" ADD CONSTRAINT "product_translation_product_id_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "product"("id") ON DELETE CASCADE;--> statement-breakpoint
 ALTER TABLE "product" ADD CONSTRAINT "product_brand_id_brand_id_fkey" FOREIGN KEY ("brand_id") REFERENCES "brand"("id") ON DELETE SET NULL;--> statement-breakpoint
 ALTER TABLE "product" ADD CONSTRAINT "product_category_id_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "category"("id") ON DELETE SET NULL;--> statement-breakpoint
 ALTER TABLE "warehouse_stock" ADD CONSTRAINT "warehouse_stock_warehouse_id_warehouse_id_fkey" FOREIGN KEY ("warehouse_id") REFERENCES "warehouse"("id") ON DELETE CASCADE;--> statement-breakpoint

@@ -166,7 +166,6 @@ export class CategoriesService {
         .values({
           slug: dto.slug,
           parentId: dto.parentId ?? null,
-          image: dto.image ?? null,
           isActive: dto.isActive,
         })
         .returning();
@@ -264,7 +263,6 @@ export class CategoriesService {
         .set({
           ...(dto.slug !== undefined ? { slug: dto.slug } : {}),
           ...(dto.parentId !== undefined ? { parentId: dto.parentId } : {}),
-          ...(dto.image !== undefined ? { image: dto.image } : {}),
           ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
         })
         .where(eq(categories.id, id))
@@ -362,7 +360,6 @@ export class CategoriesService {
       id: record.id,
       slug: record.slug,
       parentId: record.parentId,
-      image: record.image,
       isActive: record.isActive,
       name,
       description,

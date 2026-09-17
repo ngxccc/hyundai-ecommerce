@@ -126,7 +126,6 @@ export class BrandsService {
         .values({
           name: dto.name,
           slug: dto.slug,
-          logo: dto.logo ?? null,
           isActive: dto.isActive,
         })
         .returning();
@@ -214,7 +213,6 @@ export class BrandsService {
         .set({
           ...(dto.name !== undefined ? { name: dto.name } : {}),
           ...(dto.slug !== undefined ? { slug: dto.slug } : {}),
-          ...(dto.logo !== undefined ? { logo: dto.logo } : {}),
           ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),
         })
         .where(eq(brands.id, id))
@@ -303,7 +301,6 @@ export class BrandsService {
       id: record.id,
       name: record.name,
       slug: record.slug,
-      logo: record.logo,
       description,
       translations: allTranslations?.map((t) => ({
         locale: t.locale,
