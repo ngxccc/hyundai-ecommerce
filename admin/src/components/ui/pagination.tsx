@@ -4,7 +4,7 @@ import {
   ChevronRightIcon,
   MoreHorizontalIcon,
 } from "lucide-react";
-import { Slot, Slottable } from "@radix-ui/react-slot";
+import { Slot } from "@radix-ui/react-slot";
 import { cn } from "cn";
 import { buttonVariants, type Button } from "@/components/ui/button";
 
@@ -47,7 +47,7 @@ function PaginationLink({
   className,
   isActive,
   size = "icon",
-  asChild,
+  asChild = false,
   ...props
 }: PaginationLinkProps) {
   const Comp = asChild ? Slot : "a";
@@ -68,38 +68,106 @@ function PaginationLink({
   );
 }
 
+type PaginationNavProps = PaginationLinkProps & {
+  label?: string;
+};
+
 function PaginationPrevious({
   className,
+  label = "Previous",
+  asChild,
+  children,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) {
+}: PaginationNavProps) {
+  if (asChild && React.isValidElement(children)) {
+    const child = children as React.ReactElement<{
+      className?: string;
+      children?: React.ReactNode;
+    }>;
+    return (
+      <PaginationLink
+        aria-label="Go to previous page"
+        size="default"
+        asChild
+        className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
+        {...props}
+      >
+        {React.cloneElement(
+          child,
+          {
+            className: cn(child.props.className),
+          },
+          <>
+            <ChevronLeftIcon className="size-4" />
+            <span className="hidden sm:inline">
+              {child.props.children ?? label}
+            </span>
+          </>,
+        )}
+      </PaginationLink>
+    );
+  }
+
   return (
     <PaginationLink
       aria-label="Go to previous page"
       size="default"
+      asChild={asChild}
       className={cn("gap-1 px-2.5 sm:pl-2.5", className)}
       {...props}
     >
-      <ChevronLeftIcon />
-      <span className="hidden sm:block">Previous</span>
-      <Slottable>{props.children}</Slottable>
+      <ChevronLeftIcon className="size-4" />
+      <span className="hidden sm:inline">{children ?? label}</span>
     </PaginationLink>
   );
 }
 
 function PaginationNext({
   className,
+  label = "Next",
+  asChild,
+  children,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) {
+}: PaginationNavProps) {
+  if (asChild && React.isValidElement(children)) {
+    const child = children as React.ReactElement<{
+      className?: string;
+      children?: React.ReactNode;
+    }>;
+    return (
+      <PaginationLink
+        aria-label="Go to next page"
+        size="default"
+        asChild
+        className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
+        {...props}
+      >
+        {React.cloneElement(
+          child,
+          {
+            className: cn(child.props.className),
+          },
+          <>
+            <span className="hidden sm:inline">
+              {child.props.children ?? label}
+            </span>
+            <ChevronRightIcon className="size-4" />
+          </>,
+        )}
+      </PaginationLink>
+    );
+  }
+
   return (
     <PaginationLink
       aria-label="Go to next page"
       size="default"
+      asChild={asChild}
       className={cn("gap-1 px-2.5 sm:pr-2.5", className)}
       {...props}
     >
-      <Slottable>{props.children}</Slottable>
-      <span className="hidden sm:block">Next</span>
-      <ChevronRightIcon />
+      <span className="hidden sm:inline">{children ?? label}</span>
+      <ChevronRightIcon className="size-4" />
     </PaginationLink>
   );
 }

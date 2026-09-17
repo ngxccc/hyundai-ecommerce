@@ -1,4 +1,10 @@
 {
+  "pagination": {
+    "totalCount": "Total {total} {label}",
+    "previous": "Previous",
+    "next": "Next",
+    "rowsPerPage": "Rows per page"
+  },
   "cloudinary": {
     "signFailed": "Failed to sign upload request",
     "noFileProvided": "No file provided",
