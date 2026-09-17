@@ -1,6 +1,6 @@
 import { Link } from "@/i18n/routing";
 import type { StorefrontCategoryWithChildren } from "@/services";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 
 interface SubcategoryPillsProps {
   categories: StorefrontCategoryWithChildren[];

@@ -34,7 +34,7 @@ import { ProductFilterSheet } from "./product-filter-sheet";
 import type { StorefrontBrand, StorefrontCatalogMetadata } from "@/services";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 
 interface TopProductFiltersProps {
   brands: StorefrontBrand[];

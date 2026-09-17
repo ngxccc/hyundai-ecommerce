@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image, { type ImageProps } from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductImagePlaceholder } from "./product-image-placeholder";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 import { cloudinaryLoader, isCloudinaryUrl } from "@/lib/cloudinary.utils";
 
 interface ImageWithSkeletonProps extends ImageProps {
