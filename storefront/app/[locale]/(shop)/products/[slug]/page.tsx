@@ -18,7 +18,7 @@ interface ProductPageParams {
 }
 
 const formatSpecs = (specs: StorefrontProduct["specs"]): string[] => {
-  if (!specs || typeof specs !== "object") return [];
+  if (typeof specs !== "object") return [];
   const specsObj = specs as Record<
     string,
     string | number | boolean | null | undefined
@@ -133,7 +133,7 @@ async function ProductDetailsPageContent({
           {product.name}
         </h1>
         <p className="text-muted-foreground text-lg">
-          {typeof product.specs?.model === "string"
+          {typeof product.specs.model === "string"
             ? product.specs.model
             : "Unknown"}
         </p>

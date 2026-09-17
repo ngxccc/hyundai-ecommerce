@@ -25,7 +25,7 @@ const formatSpecs = (
   specs: StorefrontProduct["specs"],
   tProduct: (key: string) => string,
 ): string[] => {
-  if (!specs || typeof specs !== "object") return [];
+  if (typeof specs !== "object") return [];
   const specsObj = specs as Record<
     string,
     string | number | boolean | null | undefined
@@ -109,7 +109,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
             preload={index < 3}
             showText
           />
-          {typeof product.specs?.model === "string" &&
+          {typeof product.specs.model === "string" &&
             product.specs.model.trim().length > 0 && (
               <Badge className="absolute top-3 left-3 z-10 rounded-sm bg-black/75 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-md">
                 {tHome("model")}: {product.specs.model}
