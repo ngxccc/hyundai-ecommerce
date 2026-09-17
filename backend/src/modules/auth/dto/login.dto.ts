@@ -12,7 +12,7 @@ export const loginSchema = z
     email: zEmail(),
     password: z
       .string(i18nZodMsg("validation.isString"))
-      .min(8, { message: i18nZodMsg("validation.minLength", { "0": 8 }) }),
+      .min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
   })
   .strict();
 

@@ -34,8 +34,8 @@ describe("LoginDto Validation", () => {
   });
 
   describe("password field", () => {
-    it("should fail validation when password length is under 8 characters", () => {
-      const payload = { email: "user@example.com", password: "short" };
+    it("should fail validation when password is empty", () => {
+      const payload = { email: "user@example.com", password: "" };
       expect(loginSchema.safeParse(payload).success).toBe(false);
     });
   });
