@@ -1,6 +1,7 @@
 import { parseArgs } from "node:util";
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
+import sanitizeHtml from "sanitize-html";
 
 interface ScrapedProduct {
   name: string;
@@ -95,11 +96,16 @@ async function scrapeProductPage(url: string): Promise<ScrapedProduct | null> {
     const ogTitle = /<meta property="og:title" content="([^"]+)"/.exec(
       html,
     )?.[1];
-    const headerTitle =
-      /<h1[^>]*class="[^"]*product_title[^"]*"[^>]*>([\s\S]*?)<\/h1>/i
-        .exec(html)?.[1]
-        ?.replace(/<[^>]+>/g, "")
-        .trim();
+    const headerMatch =
+      /<h1[^>]*class="[^"]*product_title[^"]*"[^>]*>([\s\S]*?)<\/h1>/i.exec(
+        html,
+      )?.[1];
+    const headerTitle = headerMatch
+      ? sanitizeHtml(headerMatch, {
+          allowedTags: [],
+          allowedAttributes: {},
+        }).trim()
+      : undefined;
     const rawTitle = ogTitle ?? headerTitle ?? "";
 
     const cleanTitle = rawTitle.replace(/\s+/g, " ").trim();
@@ -157,8 +163,7 @@ async function scrapeProductPage(url: string): Promise<ScrapedProduct | null> {
       const cells = [
         ...rowContent.matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/gi),
       ].map((c) =>
-        (c[1] ?? "")
-          .replace(/<[^>]+>/g, "")
+        sanitizeHtml(c[1] ?? "", { allowedTags: [], allowedAttributes: {} })
           .replace(/&nbsp;/g, " ")
           .trim(),
       );
