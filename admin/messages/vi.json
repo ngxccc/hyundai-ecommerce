@@ -117,16 +117,22 @@
     "logoutSuccess": "Đăng xuất thành công",
     "logoutError": "Đăng xuất thất bại",
     "nav": {
-      "overview": "Tổng quan",
+      "groups": {
+        "overview": "Tổng quan",
+        "catalog": "Catalog & Kho hàng",
+        "sales": "Kinh doanh & B2B"
+      },
+      "overview": "Bảng điều khiển",
       "products": "Sản phẩm",
       "orders": "Đơn hàng",
       "customers": "Khách hàng",
       "dealerTiers": "Phân hạng đại lý",
-      "warehouses": "Kho hàng",
+      "warehouses": "Kho & Tồn kho",
       "categories": "Danh mục",
       "brands": "Thương hiệu",
-      "quotes": "Báo giá"
+      "quotes": "Báo giá RFQ"
     },
+    "quickSearch": "Tìm kiếm nhanh (Cmd+K)",
     "header": {
       "title": "Tổng quan",
       "description": "Theo dõi hiệu suất kinh doanh của bạn.",

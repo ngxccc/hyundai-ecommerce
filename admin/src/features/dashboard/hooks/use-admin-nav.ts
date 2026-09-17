@@ -8,21 +8,88 @@ import {
   FolderTree,
   Warehouse,
   FileText,
+  type LucideIcon,
 } from "lucide-react";
 
-export const useAdminNav = () => {
+export interface NavItem {
+  icon: LucideIcon;
+  label: string;
+  href: string;
+  badge?: string | number;
+}
+
+export interface NavGroup {
+  id: string;
+  title: string;
+  items: NavItem[];
+}
+
+export const useAdminNavGroups = (): NavGroup[] => {
   const t = useTranslations("adminDashboard.nav");
 
-  const navItems = [
-    { icon: LayoutDashboard, label: t("overview"), href: "/" },
-    { icon: Package, label: t("products"), href: "/products" },
-    { icon: FolderTree, label: t("categories"), href: "/categories" },
-    { icon: Tags, label: t("brands"), href: "/brands" },
-    { icon: Warehouse, label: t("warehouses"), href: "/warehouses" },
-    { icon: ShoppingCart, label: t("orders"), href: "/orders" },
-    { icon: FileText, label: t("quotes"), href: "/quotes" },
-    { icon: Users, label: t("customers"), href: "/customers" },
+  return [
+    {
+      id: "overview",
+      title: t("groups.overview"),
+      items: [
+        {
+          icon: LayoutDashboard,
+          label: t("overview"),
+          href: "/",
+        },
+      ],
+    },
+    {
+      id: "catalog",
+      title: t("groups.catalog"),
+      items: [
+        {
+          icon: Package,
+          label: t("products"),
+          href: "/products",
+        },
+        {
+          icon: FolderTree,
+          label: t("categories"),
+          href: "/categories",
+        },
+        {
+          icon: Tags,
+          label: t("brands"),
+          href: "/brands",
+        },
+        {
+          icon: Warehouse,
+          label: t("warehouses"),
+          href: "/warehouses",
+        },
+      ],
+    },
+    {
+      id: "sales",
+      title: t("groups.sales"),
+      items: [
+        {
+          icon: FileText,
+          label: t("quotes"),
+          href: "/quotes",
+        },
+        {
+          icon: ShoppingCart,
+          label: t("orders"),
+          href: "/orders",
+        },
+        {
+          icon: Users,
+          label: t("customers"),
+          href: "/customers",
+        },
+      ],
+    },
   ];
+};
 
-  return navItems;
+export const useAdminNav = (): NavItem[] => {
+  const groups = useAdminNavGroups();
+  return groups.flatMap((group) => group.items);
 };

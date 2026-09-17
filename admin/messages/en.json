@@ -117,16 +117,22 @@
     "logoutSuccess": "Logged out successfully",
     "logoutError": "Logout failed",
     "nav": {
-      "overview": "Overview",
+      "groups": {
+        "overview": "Overview",
+        "catalog": "Catalog & Inventory",
+        "sales": "Sales & B2B"
+      },
+      "overview": "Dashboard",
       "products": "Products",
       "orders": "Orders",
       "customers": "Customers",
       "dealerTiers": "Dealer Tiers",
-      "warehouses": "Warehouses",
+      "warehouses": "Warehouses & Stock",
       "categories": "Categories",
       "brands": "Brands",
-      "quotes": "Quotes"
+      "quotes": "RFQ Quotes"
     },
+    "quickSearch": "Quick Search (Cmd+K)",
     "header": {
       "title": "Overview",
       "description": "Track your business performance.",

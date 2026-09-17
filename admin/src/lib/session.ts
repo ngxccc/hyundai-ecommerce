@@ -6,15 +6,13 @@ const adminUserSchema = z
   .object({
     id: z.string(),
     email: z.string(),
-    fullName: z.string().optional(),
-    name: z.string().optional(),
+    fullName: z.string(),
     role: z.string(),
   })
   .transform((data) => ({
     id: data.id,
     email: data.email,
-    fullName: data.fullName ?? data.name ?? data.email,
-    name: data.fullName ?? data.name ?? data.email,
+    fullName: data.fullName,
     role: data.role,
   }));
 
