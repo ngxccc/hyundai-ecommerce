@@ -1,6 +1,6 @@
 import { routing } from "@/i18n/routing";
 import { checkRateLimitWithQueue } from "@/lib/rate-limiter";
-import { HTTP_STATUS } from "@/constants";
+import { HTTP_STATUS, REDIS_KEYS } from "@/constants";
 import { parseSessionFromCookieStore } from "@/lib/session";
 import { isJwtExpired } from "@/lib/jwt";
 import { rotateAdminToken, type RotatedTokens } from "@/lib/token-refresh";
@@ -27,7 +27,7 @@ export async function proxy(request: NextRequest) {
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0] ?? "127.0.0.1";
   const rateLimit = await checkRateLimitWithQueue(
-    `ratelimit:admin_page:${ip}`,
+    REDIS_KEYS.RATE_LIMIT.ADMIN_PAGE(ip),
     100,
     "60 s",
   );
@@ -97,11 +97,15 @@ export async function proxy(request: NextRequest) {
 
   if (user) {
     if (!isAdmin && !isForbiddenRoute) return redirect(`/${locale}/forbidden`);
-    if (isAuthRoute && isAdmin)
-      return redirect(pathname.replace(/\/login$/, "") || "/");
+    if (isAuthRoute && isAdmin) {
+      const targetPath = locale === routing.defaultLocale ? "/" : `/${locale}`;
+      return redirect(targetPath);
+    }
   } else {
     if (!isPublicRoute) {
-      const redirectRes = redirect(`/${locale}/login`);
+      const loginPath =
+        locale === routing.defaultLocale ? "/login" : `/${locale}/login`;
+      const redirectRes = redirect(loginPath);
       redirectRes.cookies.delete("adminAccessToken");
       redirectRes.cookies.delete("adminRefreshToken");
       redirectRes.cookies.delete("adminUser");

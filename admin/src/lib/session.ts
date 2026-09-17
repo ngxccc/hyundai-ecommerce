@@ -2,12 +2,21 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { z } from "zod";
 
-const adminUserSchema = z.object({
-  id: z.string(),
-  email: z.string(),
-  name: z.string(),
-  role: z.string(),
-});
+const adminUserSchema = z
+  .object({
+    id: z.string(),
+    email: z.string(),
+    fullName: z.string().optional(),
+    name: z.string().optional(),
+    role: z.string(),
+  })
+  .transform((data) => ({
+    id: data.id,
+    email: data.email,
+    fullName: data.fullName ?? data.name ?? data.email,
+    name: data.fullName ?? data.name ?? data.email,
+    role: data.role,
+  }));
 
 export type AdminUser = z.infer<typeof adminUserSchema>;
 

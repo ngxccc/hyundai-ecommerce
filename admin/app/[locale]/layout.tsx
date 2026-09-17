@@ -61,7 +61,7 @@ export default async function RootLayout({
     notFound();
   }
 
-  const messages = await getMessages();
+  const messages = await getMessages({ locale });
 
   return (
     <html
@@ -69,16 +69,16 @@ export default async function RootLayout({
       className={`${inter.variable} h-full font-sans antialiased`}
       suppressHydrationWarning // Prevent hydration mismatch warnings from browser extensions
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <NextIntlClientProvider messages={messages}>
+          <NextIntlClientProvider locale={locale} messages={messages}>
             {children}
-            <Toaster position="top-right" closeButton richColors />
+            <Toaster position="top-right" closeButton />
             <ScrollToTop />
           </NextIntlClientProvider>
         </ThemeProvider>

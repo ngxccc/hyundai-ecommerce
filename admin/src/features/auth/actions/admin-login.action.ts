@@ -8,14 +8,15 @@ import { getTranslations } from "next-intl/server";
 import { adminLoginSchema, type AdminLoginForm } from "@/validators";
 import { formatValidationErrors } from "@/lib/validation";
 import { getActionErrorMessage } from "@/lib/action-auth";
-import { SYSTEM_ERROR_CODES } from "@/constants";
-export const adminLoginAction = async (data: AdminLoginForm) => {
+import { SYSTEM_ERROR_CODES, REDIS_KEYS } from "@/constants";
+import { parseDurationToSeconds } from "@/lib/date.util";
+
+export const adminLoginAction = async (input: AdminLoginForm) => {
   const reqHeaders = await headers();
   const ip = reqHeaders.get("x-forwarded-for") ?? "127.0.0.1";
 
-  // 1. Rate limiting check
   const rateLimitResult = await checkRateLimitWithQueue(
-    `login:admin:${ip}`,
+    REDIS_KEYS.RATE_LIMIT.ADMIN_LOGIN(ip),
     5,
     "60 s",
   );
@@ -25,43 +26,67 @@ export const adminLoginAction = async (data: AdminLoginForm) => {
     return {
       success: false as const,
       error: t("rateLimitExceeded"),
+      errorCode: SYSTEM_ERROR_CODES.RATE_LIMIT_EXCEEDED,
     };
   }
 
-  const parsed = await adminLoginSchema.safeParseAsync(data);
+  const parsed = await adminLoginSchema.safeParseAsync(input);
 
   if (!parsed.success) {
     const t = await getTranslations("errors");
     return {
-      success: false,
-      code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
+      success: false as const,
       fieldErrors: formatValidationErrors(parsed.error, (key: string) =>
         t(key as never),
       ),
     };
   }
-
   try {
-    const { data: res, error } = await authApi.login(parsed.data);
+    const { email, password, rememberMe } = parsed.data;
+    const { data: res, error } = await authApi.login({ email, password });
 
     if (error || !res.data) {
+      const t = await getTranslations("errors");
+      if (
+        error &&
+        "invalidParams" in error &&
+        Array.isArray(error.invalidParams) &&
+        error.invalidParams.length > 0
+      ) {
+        const fieldErrors: Record<string, string[]> = {};
+        for (const param of error.invalidParams as {
+          name: string;
+          reason: string;
+        }[]) {
+          if (param.name) {
+            fieldErrors[param.name] = [param.reason];
+          }
+        }
+        return {
+          success: false as const,
+          fieldErrors,
+        };
+      }
+
       return {
         success: false as const,
-        error:
-          error?.detail ??
-          "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.",
+        error: error?.detail ?? t("loginFailed"),
       };
     }
 
     const loginData = res.data;
     const cookieStore = await cookies();
+    const sessionMaxAge = rememberMe
+      ? parseDurationToSeconds("30d")
+      : parseDurationToSeconds("24h");
+    const refreshMaxAge = parseDurationToSeconds("30d");
 
     cookieStore.set("adminAccessToken", loginData.accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 604800,
+      maxAge: sessionMaxAge,
     });
 
     cookieStore.set("adminRefreshToken", loginData.refreshToken, {
@@ -69,7 +94,7 @@ export const adminLoginAction = async (data: AdminLoginForm) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 2592000,
+      maxAge: refreshMaxAge,
     });
 
     cookieStore.set(
@@ -87,7 +112,7 @@ export const adminLoginAction = async (data: AdminLoginForm) => {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
-        maxAge: 604800,
+        maxAge: sessionMaxAge,
       },
     );
 

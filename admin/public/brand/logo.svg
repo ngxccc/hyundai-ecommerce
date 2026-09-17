@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 115" width="100%" height="100%" fill="none">
+  <!-- ================= SYMBOL MARK (Left: 100% Solid Flat Geometry) ================= -->
+  <g transform="translate(6, 8)">
+    <!-- Ambient Ring Frame (Solid Flat Color) -->
+    <circle cx="50" cy="50" r="48" stroke="#002C6C" stroke-width="2" stroke-opacity="0.2" stroke-dasharray="6 3" />
+    <circle cx="50" cy="50" r="45" stroke="#0077C8" stroke-width="1.5" stroke-opacity="0.6" />
+
+    <!-- Left Pillar of 'H' (Solid Navy) -->
+    <path d="M 28 22 
+             C 28 22, 38 22, 40 32
+             L 32 78 
+             C 30 84, 22 84, 22 84 
+             L 28 22 Z" 
+          fill="#002C6C" />
+    <path d="M 28 22 L 38 32 L 35 52 L 25 42 Z" fill="#001F4D" opacity="0.35" />
+
+    <!-- Right Pillar of 'H' (Solid Navy) -->
+    <path d="M 68 18 
+             C 74 18, 78 22, 76 28
+             L 66 72 
+             C 64 82, 54 82, 54 82 
+             L 68 18 Z" 
+          fill="#002C6C" />
+
+    <!-- Dynamic Energy Bolt (Solid Electric Blue #0077C8) -->
+    <path d="M 28 54 
+             L 52 38 
+             L 46 50 
+             L 72 46 
+             L 48 68 
+             L 54 56 
+             Z" 
+          fill="#0077C8" />
+
+    <!-- Energy Spark Accent (Solid Cyan) -->
+    <circle cx="72" cy="46" r="3" fill="#00A3E0" />
+    <circle cx="28" cy="54" r="2.5" fill="#002C6C" />
+  </g>
+
+  <!-- ================= WORDMARK (Right: 100% Solid Flat Typography) ================= -->
+  <g transform="translate(122, 22)">
+    <!-- HYUNDAI (Solid Corporate Navy #002C6C) -->
+    <text x="0" y="36" 
+          font-family="system-ui, -apple-system, 'Inter', 'Segoe UI', sans-serif" 
+          font-size="32" 
+          font-weight="900" 
+          letter-spacing="4" 
+          fill="#002C6C">
+      HYUNDAI
+    </text>
+
+    <!-- NHẬT NĂNG (Solid Electric Blue #0077C8) -->
+    <text x="195" y="36" 
+          font-family="system-ui, -apple-system, 'Inter', 'Segoe UI', sans-serif" 
+          font-size="32" 
+          font-weight="900" 
+          letter-spacing="1.5" 
+          fill="#0077C8">
+      NHẬT NĂNG
+    </text>
+
+    <!-- Subtitle / Brand Descriptor (Solid Slate) -->
+    <g transform="translate(2, 58)">
+      <!-- Badge pill -->
+      <rect x="0" y="0" width="76" height="17" rx="3.5" fill="#002C6C" />
+      <text x="38" y="12" 
+            text-anchor="middle"
+            font-family="system-ui, -apple-system, sans-serif" 
+            font-size="8.5" 
+            font-weight="800" 
+            letter-spacing="1.5" 
+            fill="#FFFFFF">
+        OFFICIAL
+      </text>
+
+      <!-- Tagline -->
+      <text x="86" y="12.5" 
+            font-family="system-ui, -apple-system, sans-serif" 
+            font-size="10.5" 
+            font-weight="700" 
+            letter-spacing="2" 
+            fill="#64748B">
+        GENERATOR &amp; UPS POWER SOLUTIONS
+      </text>
+    </g>
+
+    <!-- Technical Divider Line (Aligned with end of text) -->
+    <line x1="0" y1="46" x2="410" y2="46" stroke="#E2E8F0" stroke-width="1.5" />
+    <line x1="0" y1="46" x2="160" y2="46" stroke="#0077C8" stroke-width="2" />
+  </g>
+</svg>

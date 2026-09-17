@@ -218,6 +218,7 @@ export type UpdateStockInput = z.infer<typeof updateStockSchema>;
 export const adminLoginSchema = z.object({
   email: z.email({ message: "validation.emailInvalid" }),
   password: z.string().min(1, "validation.passwordRequired"),
+  rememberMe: z.boolean().optional().default(false),
 });
 
 export const loginSchema = adminLoginSchema;
