@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Edit, Package, FilePlus, Trash2, MoreHorizontal } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -83,89 +83,94 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
   return (
     <>
       <Card
-        size="compact"
-        className="group relative flex flex-col justify-between overflow-hidden transition-all duration-200 hover:shadow-md"
+        size="dense"
+        className="group relative justify-between overflow-hidden transition-all duration-200 hover:shadow-md"
       >
-        {/* Top Badges & Actions Overlay */}
-        <div className="absolute top-3 right-3 left-3 z-10 flex items-center justify-between">
-          <Badge
-            variant="outline"
-            className={cn(
-              "bg-background/90 px-2.5 py-0.5 text-xs font-medium shadow-2xs backdrop-blur-xs",
-              isOutOfStock
-                ? "border-destructive/40 text-destructive"
-                : "border-border text-foreground",
-            )}
+        {/* Top Edge-to-Edge Image Container with Link */}
+        <div className="border-border/60 bg-muted/20 relative aspect-4/3 w-full overflow-hidden border-b">
+          <Link
+            href={`/products/${product.id}/edit`}
+            className="relative block h-full w-full focus-visible:outline-none"
+            tabIndex={-1}
           >
-            {t(`card.status.${statusKey}`)}
-          </Badge>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="secondary"
-                size="icon"
-                className="bg-background/90 text-muted-foreground hover:bg-background hover:text-foreground size-7 rounded-full shadow-2xs backdrop-blur-xs focus-visible:ring-1"
-                aria-label={t("card.actions.edit")}
-              >
-                <MoreHorizontal className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-44">
-              <DropdownMenuItem asChild>
-                <Link
-                  href={`/products/${product.id}/edit`}
-                  className="cursor-pointer gap-2"
-                >
-                  <Edit className="size-4" />
-                  <span>{t("card.actions.edit")}</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  href={`/products/${product.id}/inventory`}
-                  className="cursor-pointer gap-2"
-                >
-                  <Package className="size-4" />
-                  <span>{t("card.actions.inventory")}</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onSelect={() => setIsDeleteDialogOpen(true)}
-                variant="destructive"
-                className="text-destructive focus:text-destructive cursor-pointer gap-2"
-              >
-                <Trash2 className="size-4" />
-                <span>{t("card.actions.delete")}</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+            {canUseCldImage(image) ? (
+              <CldImage
+                src={image}
+                alt={product.name}
+                width={400}
+                height={300}
+                className="h-full w-full object-contain mix-blend-multiply dark:mix-blend-normal"
+              />
+            ) : (
+              <Image
+                src={image}
+                alt={product.name}
+                width={400}
+                height={300}
+                unoptimized
+                className="h-full w-full object-contain mix-blend-multiply dark:mix-blend-normal"
+              />
+            )}
+          </Link>
 
-        {/* Product Image */}
-        <div className="bg-muted/40 border-border/50 relative mb-3 aspect-4/3 w-full overflow-hidden rounded-md border">
-          {canUseCldImage(image) ? (
-            <CldImage
-              src={image}
-              alt={product.name}
-              width={400}
-              height={300}
-              className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
-            />
-          ) : (
-            <Image
-              src={image}
-              alt={product.name}
-              width={400}
-              height={300}
-              unoptimized
-              className="h-full w-full object-cover mix-blend-multiply transition-transform duration-500 dark:mix-blend-normal"
-            />
-          )}
+          {/* Floating Badges & Action Menu */}
+          <div className="pointer-events-none absolute top-2.5 right-2.5 left-2.5 z-10 flex items-center justify-between">
+            <Badge
+              variant="outline"
+              className={cn(
+                "bg-background/85 pointer-events-auto px-2.5 py-0.5 text-xs font-medium shadow-xs backdrop-blur-md",
+                isOutOfStock
+                  ? "border-destructive/40 text-destructive"
+                  : "border-border/80 text-foreground",
+              )}
+            >
+              {t(`card.status.${statusKey}`)}
+            </Badge>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="border-border/40 bg-background/85 text-muted-foreground hover:bg-background hover:text-foreground pointer-events-auto size-7 rounded-full border shadow-xs backdrop-blur-md focus-visible:ring-1"
+                  aria-label={t("card.actions.edit")}
+                >
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-44">
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/products/${product.id}/edit`}
+                    className="cursor-pointer gap-2"
+                  >
+                    <Edit className="size-4" />
+                    <span>{t("card.actions.edit")}</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/products/${product.id}/inventory`}
+                    className="cursor-pointer gap-2"
+                  >
+                    <Package className="size-4" />
+                    <span>{t("card.actions.inventory")}</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onSelect={() => setIsDeleteDialogOpen(true)}
+                  variant="destructive"
+                  className="text-destructive focus:text-destructive cursor-pointer gap-2"
+                >
+                  <Trash2 className="size-4" />
+                  <span>{t("card.actions.delete")}</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
-
         {/* Content Body */}
-        <div className="flex flex-1 flex-col">
+        <CardContent size="compact" className="flex flex-1 flex-col p-3.5 pt-2">
           <div className="mb-2">
             <p className="text-muted-foreground font-mono text-xs font-medium">
               {product.slug}
@@ -176,7 +181,10 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
           </div>
 
           {/* Footer: Price, Stock & Primary Action */}
-          <div className="border-border/50 mt-auto flex flex-wrap items-end justify-between gap-x-2 gap-y-2 border-t pt-2.5">
+          <CardFooter
+            size="compact"
+            className="border-border/50 mt-auto flex flex-wrap items-end justify-between gap-x-2 gap-y-2 border-t pt-2.5"
+          >
             <div className="min-w-fit">
               <p
                 className={cn(
@@ -204,8 +212,8 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
               <FilePlus className="size-3.5" />
               <span>{t("card.actions.addToQuote")}</span>
             </Button>
-          </div>
-        </div>
+          </CardFooter>
+        </CardContent>
       </Card>
 
       {/* Delete Confirmation Alert Dialog */}
