@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useQuoteStore } from "@/features/quote";
-import { useIsMounted } from "@/hooks/useIsMounted";
+import { useIsClient } from "@/hooks/useIsClient";
 import { normalizePriceString } from "@/lib/utils";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -38,7 +38,7 @@ const INITIAL_ADDRESS: AddressState = {
  */
 export function QuoteRequestView() {
   const t = useTranslations("Quote");
-  const isMounted = useIsMounted();
+  const isMounted = useIsClient();
   const items = useQuoteStore((s) => s.items);
   const updateQuantity = useQuoteStore((s) => s.updateQuantity);
   const updateRequestedPrice = useQuoteStore((s) => s.updateRequestedPrice);
@@ -119,7 +119,7 @@ export function QuoteRequestView() {
       const res = await submitQuoteRequestAction(payload);
       if (res.success) {
         setSubmittedQuote({
-          quoteNumber: res.data.quoteNumber ?? "",
+          quoteNumber: res.data.quoteNumber,
           customerName: res.data.customerName ?? "",
         });
         clearQuote();

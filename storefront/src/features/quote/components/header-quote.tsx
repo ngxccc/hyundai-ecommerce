@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { ProductImage } from "@/components";
 import { useQuote } from "../hooks/use-quote";
-import { useIsMounted } from "@/hooks/useIsMounted";
+import { useIsClient } from "@/hooks/useIsClient";
 import { Link } from "@/i18n/routing";
 import { FileText, PackagePlus } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -18,7 +18,7 @@ import { priceFormatter } from "@/lib/utils";
 
 export function HeaderQuote() {
   const t = useTranslations("Quote");
-  const isMounted = useIsMounted();
+  const isMounted = useIsClient();
   const quoteItems = useQuote((state) => state.items) ?? [];
   const totalCount = quoteItems.reduce((acc, item) => acc + item.quantity, 0);
 

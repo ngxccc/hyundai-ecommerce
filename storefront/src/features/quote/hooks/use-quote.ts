@@ -1,4 +1,4 @@
-import { useIsMounted } from "@/hooks/useIsMounted";
+import { useIsClient } from "@/hooks/useIsClient";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { produce } from "immer";
@@ -168,7 +168,7 @@ export const useQuoteStore = create<QuoteState>()(
 );
 
 export function useQuote<T>(selector: (state: QuoteState) => T): T | undefined {
-  const isMounted = useIsMounted();
+  const isMounted = useIsClient();
   const storeValue = useQuoteStore(selector);
   return isMounted ? storeValue : undefined;
 }
