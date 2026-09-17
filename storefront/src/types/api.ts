@@ -5,7 +5,7 @@
  */
 
 import type { paths, components } from "@/types/api-schema";
-
+import type { ProductSpecSheet } from "@/types/product-spec";
 // ============================================================================
 // 1. API INFRASTRUCTURE & GENERIC ENVELOPES
 // ============================================================================
@@ -51,11 +51,15 @@ export type ProductPhase = ProductQueryParams["phase"];
 export type ProductFuelType = ProductQueryParams["fuelType"];
 export type ProductCanopyType = ProductQueryParams["canopyType"];
 export type ProductSort = ProductQueryParams["sort"];
+export type StorefrontProduct = Omit<ApiProduct, "specSheet"> & {
+  specSheet?: ProductSpecSheet | null;
+};
 
 // Categories & Brands
 export type ApiCategory = ApiSchemas["CategoryResponseDto"];
+export type StorefrontCategory = ApiCategory;
 export type ApiBrand = ApiSchemas["BrandResponseDto"];
-
+export type StorefrontBrand = ApiBrand;
 // Warehouses & Stock
 export type ApiWarehouse = ApiSchemas["WarehouseResponseDto"];
 export type ApiWarehouseStock = ApiSchemas["WarehouseStockResponseDto"];

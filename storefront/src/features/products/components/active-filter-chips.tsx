@@ -28,38 +28,28 @@ export function ActiveFilterChips() {
 
   const getLabel = (key: string, value: string): string => {
     if (key === "q") {
-      return `Tìm: "${value}"`;
+      return `${t("search")}: "${value}"`;
     }
     if (key === "minPower") {
-      return `Công suất: ≥ ${value} kW`;
+      return `${t("min_power")}: ≥ ${value} kW`;
     }
     if (key === "maxPower") {
-      return `Công suất: ≤ ${value} kW`;
+      return `${t("max_power")}: ≤ ${value} kW`;
     }
     if (key === "voltage") {
-      return `Điện áp: ${value}V`;
+      return `${t("voltage")}: ${value}V`;
     }
     if (key === "fuelType") {
-      const label =
-        value === "gasoline"
-          ? "Xăng"
-          : value === "diesel"
-            ? "Diesel"
-            : value === "gas"
-              ? "Gas"
-              : value;
-      return `Nhiên liệu: ${label}`;
+      return `${t("fuel_type")}: ${value}`;
     }
     if (key === "phase") {
-      const label =
-        value === "1phase" ? "1 Pha" : value === "3phase" ? "3 Pha" : value;
-      return `Pha điện: ${label}`;
+      return `${t("phase")}: ${value}`;
     }
     if (key === "engineBrand") {
-      return `Động cơ: ${value}`;
+      return `${t("engine_brand")}: ${value}`;
     }
     if (key === "alternatorBrand") {
-      return `Đầu phát: ${value}`;
+      return `${t("alternator_brand")}: ${value}`;
     }
 
     const translationKey = FILTER_KEY_MAP[key] ?? key;

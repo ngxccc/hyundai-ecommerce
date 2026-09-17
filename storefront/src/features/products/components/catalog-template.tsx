@@ -260,7 +260,7 @@ export async function CatalogTemplate({
                   className="gap-1.5"
                 >
                   <RotateCcw className="size-3.5" />
-                  Xóa tất cả bộ lọc
+                  {t("sidebar.clear_all")}
                 </Link>
               </Button>
             </div>
