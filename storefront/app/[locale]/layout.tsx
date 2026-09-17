@@ -118,7 +118,7 @@ export default async function RootLayout({
       className={`${inter.variable} h-full font-sans antialiased`}
       suppressHydrationWarning // Prevent hydration mismatch warnings from browser extensions
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <Suspense fallback={null}>
           <LocalizedLayoutContent locale={locale}>
             {children}
@@ -139,10 +139,10 @@ async function LocalizedLayoutContent({
   const messages = await getMessages({ locale });
 
   return (
-    <NextIntlClientProvider messages={messages}>
+    <NextIntlClientProvider locale={locale} messages={messages}>
       <Header />
       <main className="flex-1 pt-16">{children}</main>
-      <Toaster position="top-right" closeButton richColors />
+      <Toaster position="top-right" closeButton />
       <ScrollToTop />
       <Suspense fallback={null}>
         <Analytics />

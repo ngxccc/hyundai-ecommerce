@@ -212,7 +212,7 @@ function CardHeader({
             <button
               type="button"
               className="text-muted-foreground hover:text-foreground hover:bg-muted/60 flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md transition-colors"
-              aria-label="Thu gọn / Mở rộng"
+              aria-label="Toggle card content"
             >
               <ChevronDown className="size-4.5 transition-transform duration-200 group-data-[state=closed]/card:rotate-0 group-data-[state=open]/card:rotate-180" />
             </button>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%" fill="none">
+  <!-- Squircle App Container (Solid Hyundai Navy #002C6C) -->
+  <rect width="100" height="100" rx="22" fill="#002C6C" />
+
+  <!-- Outer Ambient Ring -->
+  <circle cx="50" cy="50" r="42" stroke="#38BDF8" stroke-width="1.5" stroke-opacity="0.3" stroke-dasharray="6 3" />
+  <circle cx="50" cy="50" r="39" stroke="#00A3E0" stroke-width="1.5" stroke-opacity="0.6" />
+
+  <!-- Left Pillar of 'H' (Solid White) -->
+  <path d="M 31 26 
+           C 31 26, 39 26, 41 34
+           L 35 72 
+           C 33 77, 26 77, 26 77 
+           L 31 26 Z" 
+        fill="#FFFFFF" />
+
+  <!-- Right Pillar of 'H' (Solid White) -->
+  <path d="M 66 22 
+           C 71 22, 74 26, 73 31
+           L 64 67 
+           C 62 75, 54 75, 54 75 
+           L 66 22 Z" 
+        fill="#FFFFFF" />
+
+  <!-- Dynamic Energy Bolt (Solid Electric Blue #0077C8) -->
+  <path d="M 31 52 
+           L 52 38 
+           L 47 48 
+           L 69 45 
+           L 48 64 
+           L 53 54 
+           Z" 
+        fill="#00A3E0" />
+
+  <!-- Energy Spark Accent -->
+  <circle cx="69" cy="45" r="2.5" fill="#BAE6FD" />
+  <circle cx="31" cy="52" r="2" fill="#38BDF8" />
+</svg>

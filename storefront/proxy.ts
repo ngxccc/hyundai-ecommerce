@@ -1,6 +1,6 @@
 import { routing } from "@/i18n/routing";
 import { checkRateLimitWithQueue } from "@/lib/rate-limiter";
-import { HTTP_STATUS } from "@/constants";
+import { HTTP_STATUS, REDIS_KEYS } from "@/constants";
 import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -11,7 +11,7 @@ export async function proxy(request: NextRequest) {
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0] ?? "127.0.0.1";
   const rateLimit = await checkRateLimitWithQueue(
-    `ratelimit:page:${ip}`,
+    REDIS_KEYS.RATE_LIMIT.PAGE(ip),
     100,
     "60 s",
   );
