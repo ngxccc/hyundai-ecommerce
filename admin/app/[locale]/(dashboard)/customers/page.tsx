@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import {
   CustomerHeader,
   CustomerDirectory,
@@ -9,6 +10,7 @@ import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { connection } from "next/server";
 import type { Metadata } from "next";
+import { CenteredSpinner } from "@/components/common";
 
 export async function generateMetadata({
   params,
@@ -25,13 +27,10 @@ export async function generateMetadata({
 }
 
 export default async function AdminCustomersPage() {
-  await connection();
-  const tNav = await getTranslations("adminDashboard.nav");
-  const tCustomers = await getTranslations("adminCustomers");
-
-  const users: AdminUser[] = [];
-  const { data: tierRes } = await customersApi.listTiers();
-  const dealerTiers = tierRes?.data ?? [];
+  const [tNav, tCustomers] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminCustomers"),
+  ]);
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -47,9 +46,22 @@ export default async function AdminCustomersPage() {
         description={tCustomers("description")}
       />
 
-      <div className="flex w-full flex-col gap-4">
-        <CustomerDirectory initialUsers={users} dealerTiers={dealerTiers} />
-      </div>
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <CustomersContent />
+      </Suspense>
+    </div>
+  );
+}
+
+async function CustomersContent() {
+  await connection();
+  const users: AdminUser[] = [];
+  const { data: tierRes } = await customersApi.listTiers();
+  const dealerTiers = tierRes?.data ?? [];
+
+  return (
+    <div className="flex w-full flex-col gap-4">
+      <CustomerDirectory initialUsers={users} dealerTiers={dealerTiers} />
     </div>
   );
 }

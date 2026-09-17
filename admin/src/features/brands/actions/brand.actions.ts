@@ -23,9 +23,10 @@ function formatBrandTranslations(translations?: BrandTranslationInput[]) {
     )
     .map((t) => ({
       locale: t.locale,
-      description: t.description?.trim() ? t.description.trim() : null,
+      description: t.description?.trim() ?? null,
     }));
 }
+
 import { formatValidationErrors } from "@/lib/validation";
 import { SYSTEM_ERROR_CODES } from "@/constants";
 import {
@@ -35,12 +36,11 @@ import {
   AuthError,
 } from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
-import { after } from "next/server";
-import { uploadToCloudinary, validateUploadedFile } from "@/services";
 
 export const createBrandAction = async (formData: FormData) => {
   try {
     await requireAuth();
+
     const payloadStr = formData.get("payload");
     if (!payloadStr) throw new Error("Missing payload");
     const data = JSON.parse(payloadStr as string) as CreateBrandInput;
@@ -58,18 +58,6 @@ export const createBrandAction = async (formData: FormData) => {
     }
 
     const validatedData = parsed.data;
-    const logoFile = formData.get("logo") as File | null;
-    if (logoFile) {
-      const validation = validateUploadedFile(logoFile);
-      if (!validation.valid && validation.error) {
-        const t = await getTranslations("errors");
-        return {
-          success: false,
-          error: t(validation.error as never),
-        };
-      }
-    }
-
     const formattedTranslations = formatBrandTranslations(
       validatedData.translations,
     );
@@ -77,31 +65,16 @@ export const createBrandAction = async (formData: FormData) => {
     const { data: createRes, error: createError } = await brandsApi.create({
       name: validatedData.name,
       slug: validatedData.slug,
-      logo: validatedData.logo,
       isActive: validatedData.isActive,
-      translations: formattedTranslations,
+      translations: formattedTranslations ?? [],
     });
+
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create brand");
     }
-    const brandData = createRes.data;
-
-    // Background Image Upload
-    if (brandData.id && logoFile) {
-      after(async () => {
-        try {
-          const url = await uploadToCloudinary(logoFile, "brands");
-          if (url) {
-            await brandsApi.update(brandData.id, { logo: url });
-          }
-        } catch (e) {
-          console.error("[Background Brand Logo Upload Failed]", e);
-        }
-      });
-    }
 
     revalidatePath("/brands");
-    return { success: true as const, data: brandData };
+    return { success: true, data: createRes.data };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
@@ -133,7 +106,6 @@ export async function updateBrandAction(id: string, formData: FormData) {
     const parsed = await updateBrandSchema.safeParseAsync(data);
 
     if (!parsed.success) {
-      const t = await getTranslations("errors");
       return {
         success: false,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
@@ -144,18 +116,6 @@ export async function updateBrandAction(id: string, formData: FormData) {
     }
 
     const validatedData = parsed.data;
-    const logoFile = formData.get("logo") as File | null;
-    if (logoFile) {
-      const validation = validateUploadedFile(logoFile);
-      if (!validation.valid && validation.error) {
-        const t = await getTranslations("errors");
-        return {
-          success: false,
-          error: t(validation.error as never),
-        };
-      }
-    }
-
     const formattedTranslations = formatBrandTranslations(
       validatedData.translations,
     );
@@ -163,32 +123,17 @@ export async function updateBrandAction(id: string, formData: FormData) {
     const { data: updateRes, error: updateError } = await brandsApi.update(id, {
       name: validatedData.name,
       slug: validatedData.slug,
-      logo: validatedData.logo,
+      isActive: validatedData.isActive,
       translations: formattedTranslations,
     });
+
     if (updateError || !updateRes.data) {
       throw new Error(updateError?.detail ?? "Failed to update brand");
     }
-    const updatedBrand = updateRes.data;
-
-    // Background Tasks: Image Upload
-    if (logoFile) {
-      after(async () => {
-        try {
-          const url = await uploadToCloudinary(logoFile, "brands");
-          if (url) {
-            await brandsApi.update(id, { logo: url });
-          }
-        } catch (e) {
-          console.error("[Background Brand Update Upload Failed]", e);
-        }
-      });
-    }
 
     revalidatePath("/brands");
-    return { success: true as const, data: updatedBrand };
+    return { success: true, data: updateRes.data };
   } catch (error) {
-    const t = await getTranslations("errors");
     if (error instanceof AuthError) {
       return { success: false as const, error: getAuthErrorMessage(error, t) };
     }
@@ -211,15 +156,15 @@ export async function deleteBrandAction(id: string) {
   }
   try {
     await requireAuth();
-    const { error: deleteError } = await brandsApi.delete(id);
-    if (deleteError) {
-      throw new Error(deleteError.detail);
+
+    const { error } = await brandsApi.delete(id);
+    if (error) {
+      throw new Error(error.detail);
     }
-    const success = true;
+
     revalidatePath("/brands");
-    return { success: true as const, data: success };
+    return { success: true };
   } catch (error) {
-    const t = await getTranslations("errors");
     if (error instanceof AuthError) {
       return { success: false as const, error: getAuthErrorMessage(error, t) };
     }

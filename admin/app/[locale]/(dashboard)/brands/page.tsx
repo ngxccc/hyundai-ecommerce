@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { BrandHeader } from "@/features/brands/components";
 import { DataTableSearchInput } from "@/components/common/data-table-search-input";
-import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
-import { BrandGrid } from "@/features/brands/components/brand-grid";
 import { brandsApi } from "@/features/brands/api/brands.api";
+import { BrandTable } from "@/features/brands/components/brand-table";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { connection } from "next/server";
@@ -88,7 +88,7 @@ async function BrandsContent({
   return (
     <div className="flex w-full flex-col gap-4">
       <DataTableSearchInput placeholder={searchPlaceholder} />
-      <BrandGrid brands={filteredBrands} />
+      <BrandTable brands={filteredBrands} />
     </div>
   );
 }

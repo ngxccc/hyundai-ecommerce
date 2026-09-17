@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, type ReactNode } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { translatedZodResolver } from "@/lib/validation-resolver";
 import { useTranslations } from "next-intl";
@@ -10,8 +10,6 @@ import {
   createCategoryAction,
   updateCategoryAction,
 } from "../actions/category.actions";
-import { isCloudinaryUrl } from "@/lib";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -35,92 +33,64 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminCategory } from "@/types/api";
 import { type CreateCategoryInput, createCategorySchema } from "@/validators";
-import { Save, Loader2, X, Info } from "lucide-react";
-import {
-  AdminImageUploadSection,
-  type AdminImageItem,
-} from "@/components/common/admin-image-upload-section";
+import { Save, Loader2, X, Info, FolderTree } from "lucide-react";
+import { CategoryHeader } from "./category-header";
 
 export const CategoryForm = ({
   initialData,
   categories = [],
-  breadcrumbs,
 }: {
-  initialData?: AdminCategory | null;
+  initialData?: AdminCategory;
   categories?: AdminCategory[];
-  breadcrumbs?: ReactNode;
 }) => {
   const t = useTranslations("adminCategoryForm");
-
+  const tErrors = useTranslations("errors");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const isEditing = !!initialData;
   const [langTab, setLangTab] = useState<"vi" | "en">("vi");
 
   const form = useForm<CreateCategoryInput>({
-    resolver: translatedZodResolver(createCategorySchema, t),
-    defaultValues: {
-      slug: initialData?.slug ?? "",
-      parentId: initialData?.parentId ?? null,
-      image: initialData?.image ?? "",
-      isActive: initialData?.isActive ?? true,
-      translations: [
-        {
-          locale: "vi",
-          name:
-            initialData?.translations?.find((t) => t.locale === "vi")?.name ??
-            initialData?.name ??
-            "",
-          description:
-            initialData?.translations?.find((t) => t.locale === "vi")
-              ?.description ??
-            initialData?.description ??
-            "",
+    resolver: translatedZodResolver(createCategorySchema, tErrors),
+    defaultValues: isEditing
+      ? {
+          slug: initialData.slug,
+          parentId: initialData.parentId,
+          sortOrder: 0,
+          isActive: initialData.isActive,
+          translations: initialData.translations?.map((tr) => ({
+            locale: tr.locale as "vi" | "en",
+            name: tr.name,
+            description: tr.description ?? "",
+          })) ?? [
+            { locale: "vi", name: "", description: "" },
+            { locale: "en", name: "", description: "" },
+          ],
+        }
+      : {
+          slug: "",
+          parentId: null,
+          sortOrder: 0,
+          isActive: true,
+          translations: [
+            { locale: "vi", name: "", description: "" },
+            { locale: "en", name: "", description: "" },
+          ],
         },
-        {
-          locale: "en",
-          name:
-            initialData?.translations?.find((t) => t.locale === "en")?.name ??
-            "",
-          description:
-            initialData?.translations?.find((t) => t.locale === "en")
-              ?.description ?? "",
-        },
-      ],
-    },
   });
-
-  const [imageImages, setImageImages] = useState<AdminImageItem[]>(
-    initialData?.image ? [initialData.image] : [],
-  );
 
   const onSubmit = (data: CreateCategoryInput) => {
     startTransition(async () => {
-      const existingImageUrls: string[] = [];
-      const imagesToUpload: (File | string)[] = [];
-
-      for (const item of imageImages) {
-        if (item instanceof File) {
-          imagesToUpload.push(item);
-        } else if (typeof item === "string" && !isCloudinaryUrl(item)) {
-          imagesToUpload.push(item);
-        } else {
-          existingImageUrls.push(item);
-        }
-      }
-
-      const payload = {
-        ...data,
-        parentId: data.parentId === "none" ? null : data.parentId,
-        image: existingImageUrls.length > 0 ? existingImageUrls[0] : "",
+      const payload: CreateCategoryInput = {
+        slug: data.slug,
+        parentId: data.parentId ?? null,
+        sortOrder: data.sortOrder,
+        isActive: data.isActive,
+        translations: data.translations,
       };
 
       const finalFormData = new FormData();
       finalFormData.append("payload", JSON.stringify(payload));
-      if (imagesToUpload.length > 0) {
-        const fileOrStr = imagesToUpload[0];
-        if (fileOrStr) finalFormData.append("image", fileOrStr);
-      }
 
       const result = isEditing
         ? await updateCategoryAction(initialData.id, finalFormData)
@@ -133,55 +103,70 @@ export const CategoryForm = ({
         router.push("/categories");
         router.refresh();
       } else {
-        if ("fieldErrors" in result && result.fieldErrors) {
+        if (result.fieldErrors) {
           Object.entries(result.fieldErrors).forEach(([field, errors]) => {
             const message = errors[0];
             if (message) {
               form.setError(field as keyof CreateCategoryInput, {
                 type: "server",
-                message: t(message as never),
+                message,
               });
             }
           });
-        } else {
-          toast.error("error" in result ? result.error : t("messages.error"));
         }
+        toast.error(result.error ?? t("messages.error"));
       }
     });
   };
 
+  const availableParentCategories = categories.filter(
+    (c) => !isEditing || c.id !== initialData.id,
+  );
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="bg-background/80 sticky top-15 z-30 -mx-4 mb-2 flex items-center justify-between rounded-none px-4 pb-2 backdrop-blur-md sm:top-20 sm:-mx-6 sm:px-6 sm:pt-1 sm:pb-2">
-          <div className="hidden flex-1 sm:block">{breadcrumbs}</div>
-          <div className="flex w-full items-center justify-end gap-3 sm:w-fit">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push("/categories")}
-              disabled={isPending}
-            >
-              <X className="mr-2 h-4 w-4" />
-              {t("buttons.cancel")}
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="mr-2 h-4 w-4" />
-              )}
-              {isEditing ? t("buttons.save") : t("buttons.create")}
-            </Button>
-          </div>
-        </div>
+        {/* Header with Cancel and Submit actions on top right */}
+        <CategoryHeader
+          title={isEditing ? t("editTitle") : t("title")}
+          description={isEditing ? t("editDescription") : t("description")}
+          actions={
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 shadow-xs"
+                onClick={() => router.push("/categories")}
+                disabled={isPending}
+              >
+                <X className="mr-1.5 h-4 w-4" />
+                {t("buttons.cancel")}
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                className="h-9 shadow-xs"
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="mr-1.5 h-4 w-4" />
+                )}
+                {isEditing ? t("buttons.save") : t("buttons.create")}
+              </Button>
+            </div>
+          }
+        />
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card size="dense" className="col-span-1">
+        <div className="mx-auto space-y-6">
+          {/* General Translations Section */}
+          <Card size="dense">
             <CardHeader bordered size="dense">
               <div className="flex items-center justify-between">
                 <CardTitle size="lg">
-                  <Info />
+                  <Info className="size-4" />
                   {t("sections.general")}
                 </CardTitle>
                 <LocaleTabs
@@ -219,10 +204,10 @@ export const CategoryForm = ({
                         <FormControl>
                           <Textarea
                             placeholder={t("placeholders.description")}
+                            rows={3}
                             disabled={isPending}
                             {...field}
                             value={field.value ?? ""}
-                            className="min-h-0 resize-none"
                           />
                         </FormControl>
                         <FormMessage />
@@ -258,10 +243,10 @@ export const CategoryForm = ({
                         <FormControl>
                           <Textarea
                             placeholder={t("placeholders.description")}
+                            rows={3}
                             disabled={isPending}
                             {...field}
                             value={field.value ?? ""}
-                            className="min-h-0 resize-none"
                           />
                         </FormControl>
                         <FormMessage />
@@ -270,6 +255,51 @@ export const CategoryForm = ({
                   />
                 </>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Classification & Hierarchy Section */}
+          <Card size="dense">
+            <CardHeader bordered size="dense">
+              <CardTitle size="lg">
+                <FolderTree className="size-4" />
+                {t("sections.general")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent size="dense" className="space-y-4">
+              <FormField
+                control={form.control}
+                name="parentId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("fields.parentId")}</FormLabel>
+                    <Select
+                      onValueChange={(val) =>
+                        field.onChange(val === "none" ? null : val)
+                      }
+                      value={field.value ?? "none"}
+                      disabled={isPending}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            placeholder={t("placeholders.parentId")}
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="none">{t("labels.none")}</SelectItem>
+                        {availableParentCategories.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            {c.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}
@@ -288,45 +318,12 @@ export const CategoryForm = ({
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="parentId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("fields.parentId")}</FormLabel>
-                    <Select
-                      disabled={isPending}
-                      onValueChange={field.onChange}
-                      value={field.value ?? "none"}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={t("placeholders.parentId")}
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="none">{t("labels.none")}</SelectItem>
-                        {categories
-                          .filter((c) => c.id !== initialData?.id)
-                          .map((category) => (
-                            <SelectItem key={category.id} value={category.id}>
-                              {category.name}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <FormField
                 control={form.control}
                 name="isActive"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-y-0 space-x-3 rounded-md border p-4 shadow-sm">
+                  <FormItem className="border-border/60 flex flex-row items-center space-y-0 space-x-3 rounded-md border p-3">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -334,28 +331,16 @@ export const CategoryForm = ({
                         disabled={isPending}
                       />
                     </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>{t("fields.isActive")}</FormLabel>
+                    <div className="space-y-0.5">
+                      <FormLabel className="cursor-pointer">
+                        {t("fields.isActive")}
+                      </FormLabel>
                     </div>
                   </FormItem>
                 )}
               />
             </CardContent>
           </Card>
-
-          <div className="col-span-1">
-            <AdminImageUploadSection
-              title={t("sections.media")}
-              images={imageImages}
-              setImages={setImageImages}
-              urlPlaceholder={t("placeholders.image")}
-              addUrlLabel={t("buttons.addUrl")}
-              dragDropLabel={t("fields.dragDropImage")}
-              clickToSelectLabel={t("fields.orClickToSelect")}
-              limitReachedMessage={t("messages.maxImagesReached")}
-              maxImages={1}
-            />
-          </div>
         </div>
       </form>
     </Form>

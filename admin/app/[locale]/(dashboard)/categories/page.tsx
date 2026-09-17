@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { CategoryHeader } from "@/features/categories/components";
 import { DataTableSearchInput } from "@/components/common/data-table-search-input";
 import { categoriesApi } from "@/features/categories/api/categories.api";
-import { CategoryGrid } from "@/features/categories/components/category-grid";
+import { CategoryTable } from "@/features/categories/components/category-table";
 import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
@@ -88,7 +88,7 @@ async function CategoriesContent({
   return (
     <div className="flex w-full flex-col gap-4">
       <DataTableSearchInput placeholder={searchPlaceholder} />
-      <CategoryGrid
+      <CategoryTable
         categories={filteredCategories}
         allCategories={categories}
       />

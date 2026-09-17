@@ -1,5 +1,4 @@
-import { CategoryHeader } from "@/features/categories/components";
-import { CategoryForm } from "@/features/categories/components/category-form";
+import { Suspense } from "react";
 import { categoriesApi } from "@/features/categories/api/categories.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
@@ -7,6 +6,9 @@ import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import type { Metadata } from "next";
+import { CategoryForm } from "@/features/categories/components/category-form";
+import { CenteredSpinner } from "@/components/common";
+
 export async function generateMetadata({
   params,
 }: {
@@ -29,10 +31,35 @@ export default async function AdminEditCategoryPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const [tNav, tForm] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminCategoryForm"),
+  ]);
+
+  return (
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("categories"), href: "/categories" },
+          { label: tForm("editTitle") },
+        ]}
+      />
+
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <EditCategoryContent params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function EditCategoryContent({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   await connection();
   const { id } = await params;
-  const tNav = await getTranslations("adminDashboard.nav");
-  const tForm = await getTranslations("adminCategoryForm");
 
   const [categoriesRes, categoryRes] = await Promise.all([
     categoriesApi.list(),
@@ -45,29 +72,5 @@ export default async function AdminEditCategoryPage({
     notFound();
   }
 
-  return (
-    <>
-      <CategoryHeader
-        title={tForm("editTitle")}
-        description={tForm("editDescription")}
-        showAddButton={false}
-      />
-
-      <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <CategoryForm
-          initialData={category}
-          categories={categories}
-          breadcrumbs={
-            <AdminBreadcrumbs
-              items={[
-                { label: tNav("overview"), href: "/" },
-                { label: tNav("categories"), href: "/categories" },
-                { label: tForm("editTitle") },
-              ]}
-            />
-          }
-        />
-      </div>
-    </>
-  );
+  return <CategoryForm initialData={category} categories={categories} />;
 }

@@ -14,7 +14,6 @@ export type BrandTranslationInput = z.infer<typeof brandTranslationInputSchema>;
 export const createBrandSchema = z.object({
   name: z.string().min(1, "validation.nameRequired"),
   slug: z.string().min(1, "validation.slugRequired"),
-  logo: z.string().nullable().optional(),
   translations: z.array(brandTranslationInputSchema).default([]),
   website: z.string().nullable().optional(),
   sortOrder: z.coerce.number().default(0),
@@ -38,7 +37,6 @@ export type CategoryTranslationInput = z.infer<
 export const baseCreateCategorySchema = z.object({
   slug: z.string().min(1, "validation.slugRequired"),
   icon: z.string().nullable().optional(),
-  image: z.string().nullable().optional(),
   parentId: z.string().nullable().optional(),
   sortOrder: z.coerce.number().default(0),
   isActive: z.boolean().default(true),

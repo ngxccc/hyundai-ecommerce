@@ -18,9 +18,10 @@ function formatCategoryTranslations(translations?: CategoryTranslationInput[]) {
     .map((t) => ({
       locale: t.locale,
       name: t.name.trim(),
-      description: t.description?.trim() ? t.description.trim() : null,
+      description: t.description?.trim() ?? null,
     }));
 }
+
 import { formatValidationErrors } from "@/lib/validation";
 import { SYSTEM_ERROR_CODES } from "@/constants";
 import {
@@ -30,8 +31,6 @@ import {
   AuthError,
 } from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
-import { after } from "next/server";
-import { uploadToCloudinary, validateUploadedFile } from "@/services";
 
 export const createCategoryAction = async (formData: FormData) => {
   try {
@@ -54,17 +53,6 @@ export const createCategoryAction = async (formData: FormData) => {
     }
 
     const validatedData = parsed.data;
-    const imageFile = formData.get("image") as File | null;
-    if (imageFile) {
-      const validation = validateUploadedFile(imageFile);
-      if (!validation.valid && validation.error) {
-        const t = await getTranslations("errors");
-        return {
-          success: false,
-          error: t(validation.error as never),
-        };
-      }
-    }
     const formattedTranslations = formatCategoryTranslations(
       validatedData.translations,
     );
@@ -72,31 +60,16 @@ export const createCategoryAction = async (formData: FormData) => {
     const { data: createRes, error: createError } = await categoriesApi.create({
       slug: validatedData.slug,
       parentId: validatedData.parentId,
-      image: validatedData.image,
       isActive: validatedData.isActive,
       translations: formattedTranslations ?? [],
     });
+
     if (createError || !createRes.data) {
       throw new Error(createError?.detail ?? "Failed to create category");
     }
-    const categoryData = createRes.data;
-
-    // Background Image Upload
-    if (categoryData.id && imageFile) {
-      after(async () => {
-        try {
-          const url = await uploadToCloudinary(imageFile, "categories");
-          if (url) {
-            await categoriesApi.update(categoryData.id, { image: url });
-          }
-        } catch (e) {
-          console.error("[Background Category Image Upload Failed]", e);
-        }
-      });
-    }
 
     revalidatePath("/categories");
-    return { success: true, data: categoryData };
+    return { success: true, data: createRes.data };
   } catch (error) {
     const t = await getTranslations("errors");
     if (error instanceof AuthError) {
@@ -128,7 +101,6 @@ export async function updateCategoryAction(id: string, formData: FormData) {
     const parsed = await updateCategorySchema.safeParseAsync(data);
 
     if (!parsed.success) {
-      const t = await getTranslations("errors");
       return {
         success: false,
         code: SYSTEM_ERROR_CODES.VALIDATION_ERROR,
@@ -139,17 +111,6 @@ export async function updateCategoryAction(id: string, formData: FormData) {
     }
 
     const validatedData = parsed.data;
-    const imageFile = formData.get("image") as File | null;
-    if (imageFile) {
-      const validation = validateUploadedFile(imageFile);
-      if (!validation.valid && validation.error) {
-        const t = await getTranslations("errors");
-        return {
-          success: false,
-          error: t(validation.error as never),
-        };
-      }
-    }
     const formattedTranslations = formatCategoryTranslations(
       validatedData.translations,
     );
@@ -159,32 +120,18 @@ export async function updateCategoryAction(id: string, formData: FormData) {
       {
         slug: validatedData.slug,
         parentId: validatedData.parentId,
-        image: validatedData.image,
         isActive: validatedData.isActive,
         translations: formattedTranslations,
       },
     );
+
     if (updateError || !updateRes.data) {
       throw new Error(updateError?.detail ?? "Failed to update category");
     }
-    const updatedCategory = updateRes.data;
 
-    if (imageFile) {
-      after(async () => {
-        try {
-          const url = await uploadToCloudinary(imageFile, "categories");
-          if (url) {
-            await categoriesApi.update(id, { image: url });
-          }
-        } catch (e) {
-          console.error("[Background Category Update Upload Failed]", e);
-        }
-      });
-    }
     revalidatePath("/categories");
-    return { success: true, data: updatedCategory };
+    return { success: true, data: updateRes.data };
   } catch (error) {
-    const t = await getTranslations("errors");
     if (error instanceof AuthError) {
       return { success: false as const, error: getAuthErrorMessage(error, t) };
     }
@@ -207,15 +154,15 @@ export async function deleteCategoryAction(id: string) {
   }
   try {
     await requireAuth();
-    const { error: deleteError } = await categoriesApi.delete(id);
-    if (deleteError) {
-      throw new Error(deleteError.detail);
+
+    const { error } = await categoriesApi.delete(id);
+    if (error) {
+      throw new Error(error.detail);
     }
-    const success = true;
+
     revalidatePath("/categories");
-    return { success: true, data: success };
+    return { success: true };
   } catch (error) {
-    const t = await getTranslations("errors");
     if (error instanceof AuthError) {
       return { success: false as const, error: getAuthErrorMessage(error, t) };
     }

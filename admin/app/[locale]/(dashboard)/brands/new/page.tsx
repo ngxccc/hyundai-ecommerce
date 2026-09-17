@@ -1,10 +1,10 @@
-import { BrandHeader } from "@/features/brands/components";
-import { BrandForm } from "@/features/brands/components/brand-form";
+import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
-import { connection } from "next/server";
 import type { Metadata } from "next";
+import { BrandForm } from "@/features/brands/components/brand-form";
+import { CenteredSpinner } from "@/components/common";
 
 export async function generateMetadata({
   params,
@@ -24,31 +24,24 @@ export async function generateMetadata({
 }
 
 export default async function AdminNewBrandPage() {
-  await connection();
-  const tNav = await getTranslations("adminDashboard.nav");
-  const tForm = await getTranslations("adminBrandForm");
+  const [tNav, tForm] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminBrandForm"),
+  ]);
 
   return (
-    <>
-      <BrandHeader
-        title={tForm("title")}
-        description={tForm("description")}
-        showAddButton={false}
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("brands"), href: "/brands" },
+          { label: tForm("title") },
+        ]}
       />
 
-      <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <BrandForm
-          breadcrumbs={
-            <AdminBreadcrumbs
-              items={[
-                { label: tNav("overview"), href: "/" },
-                { label: tNav("brands"), href: "/brands" },
-                { label: tForm("title") },
-              ]}
-            />
-          }
-        />
-      </div>
-    </>
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <BrandForm />
+      </Suspense>
+    </div>
   );
 }
