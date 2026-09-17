@@ -2,7 +2,6 @@ import { LoginForm, AuthHeaderControls } from "@/features/auth/components";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { COMPANY_CONFIG } from "@/constants";
-import { connection } from "next/server";
 import type { Metadata } from "next";
 export async function generateMetadata({
   params,
@@ -24,13 +23,12 @@ const AdminLoginPage = async ({
 }: {
   params: Promise<{ locale: Locale }>;
 }) => {
-  await connection();
   const resolvedParams = await params;
   const t = await getTranslations({
     locale: resolvedParams.locale,
     namespace: "login",
   });
-  const currentYear = new Date().getFullYear();
+  const currentYear = 2026;
 
   return (
     <div className="bg-muted/30 flex min-h-screen w-full flex-col justify-between p-4 sm:p-6 lg:p-8">

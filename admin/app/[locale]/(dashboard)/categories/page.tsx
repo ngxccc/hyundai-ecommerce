@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { CategoryHeader } from "@/features/categories/components";
 import { DataTableSearchInput } from "@/components/common/data-table-search-input";
 import { categoriesApi } from "@/features/categories/api/categories.api";
@@ -7,6 +8,7 @@ import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { connection } from "next/server";
 import type { Metadata } from "next";
+import { CenteredSpinner } from "@/components/common";
 
 export async function generateMetadata({
   params,
@@ -27,9 +29,44 @@ export default async function AdminCategoriesPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const [tNav, tHeader] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminCategories.header"),
+  ]);
+
+  return (
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("categories") },
+        ]}
+      />
+
+      <CategoryHeader
+        title={tHeader("title")}
+        description={tHeader("description")}
+        showAddButton={true}
+      />
+
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <CategoriesContent
+          searchParams={searchParams}
+          searchPlaceholder={tHeader("searchPlaceholder")}
+        />
+      </Suspense>
+    </div>
+  );
+}
+
+async function CategoriesContent({
+  searchParams,
+  searchPlaceholder,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchPlaceholder: string;
+}) {
   await connection();
-  const tNav = await getTranslations("adminDashboard.nav");
-  const tHeader = await getTranslations("adminCategories.header");
   const { data: res } = await categoriesApi.list();
   const categories = res?.data ?? [];
 
@@ -49,27 +86,12 @@ export default async function AdminCategoriesPage({
     : categories;
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <AdminBreadcrumbs
-        items={[
-          { label: tNav("overview"), href: "/" },
-          { label: tNav("categories") },
-        ]}
+    <div className="flex w-full flex-col gap-4">
+      <DataTableSearchInput placeholder={searchPlaceholder} />
+      <CategoryGrid
+        categories={filteredCategories}
+        allCategories={categories}
       />
-
-      <CategoryHeader
-        title={tHeader("title")}
-        description={tHeader("description")}
-        showAddButton={true}
-      />
-
-      <div className="flex w-full flex-col gap-4">
-        <DataTableSearchInput placeholder={tHeader("searchPlaceholder")} />
-        <CategoryGrid
-          categories={filteredCategories}
-          allCategories={categories}
-        />
-      </div>
     </div>
   );
 }

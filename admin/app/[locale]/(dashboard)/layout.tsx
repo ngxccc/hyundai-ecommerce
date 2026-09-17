@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { AdminSidebar } from "@/features/dashboard/components/admin-sidebar";
 import { getCachedSession } from "@/lib/session";
 import {
@@ -6,26 +7,17 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { cookies } from "next/headers";
-import { connection } from "next/server";
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await connection();
-  const session = await getCachedSession();
-  const allowedRoles = ["ADMIN", "SALES"];
-  const isAdmin =
-    session?.user.role && allowedRoles.includes(session.user.role);
-
-  const cookieStore = await cookies();
-  const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
-
   return (
-    <SidebarProvider defaultOpen={defaultOpen}>
-      {isAdmin && <AdminSidebar user={session.user} />}
+    <SidebarProvider defaultOpen={true}>
+      <Suspense fallback={null}>
+        <AdminSidebarSlot />
+      </Suspense>
       <SidebarInset className="bg-background">
         <header className="border-border/60 bg-background/95 sticky top-0 z-20 flex h-12 shrink-0 items-center gap-2 border-b px-4 backdrop-blur-sm transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2">
@@ -34,9 +26,20 @@ export default async function DashboardLayout({
           </div>
         </header>
         <div className="flex flex-1 flex-col overflow-y-auto p-1 md:p-2 lg:p-4">
-          <div className="flex w-full flex-1 flex-col">{children}</div>
+          <div className="flex min-h-0 w-full flex-1 flex-col">{children}</div>
         </div>
       </SidebarInset>
     </SidebarProvider>
   );
+}
+
+async function AdminSidebarSlot() {
+  const session = await getCachedSession();
+  if (!session) return null;
+
+  const allowedRoles = ["ADMIN", "SALES"];
+  const isAdmin = allowedRoles.includes(session.user.role);
+  if (!isAdmin) return null;
+
+  return <AdminSidebar user={session.user} />;
 }

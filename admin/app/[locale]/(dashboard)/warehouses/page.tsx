@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import {
   WarehouseHeader,
   WarehouseGrid,
@@ -9,7 +10,7 @@ import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { connection } from "next/server";
 import type { Metadata } from "next";
-
+import { CenteredSpinner } from "@/components/common";
 export async function generateMetadata({
   params,
 }: {
@@ -29,9 +30,39 @@ export default async function AdminWarehousesPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const [tNav, tHeader] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminWarehouses.header"),
+  ]);
+
+  return (
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tHeader("title") },
+        ]}
+      />
+
+      <WarehouseHeader
+        title={tHeader("title")}
+        description={tHeader("description")}
+        showAddButton={true}
+      />
+
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <WarehousesContent searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function WarehousesContent({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   await connection();
-  const tNav = await getTranslations("adminDashboard.nav");
-  const tHeader = await getTranslations("adminWarehouses.header");
   const { data: res } = await warehousesApi.list();
   const warehouses: AdminWarehouse[] = res?.data ?? [];
 
@@ -51,23 +82,8 @@ export default async function AdminWarehousesPage({
     : warehouses;
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <AdminBreadcrumbs
-        items={[
-          { label: tNav("overview"), href: "/" },
-          { label: tHeader("title") },
-        ]}
-      />
-
-      <WarehouseHeader
-        title={tHeader("title")}
-        description={tHeader("description")}
-        showAddButton={true}
-      />
-
-      <div className="flex w-full flex-col gap-4">
-        <WarehouseGrid warehouses={filteredWarehouses} />
-      </div>
+    <div className="flex w-full flex-col gap-4">
+      <WarehouseGrid warehouses={filteredWarehouses} />
     </div>
   );
 }

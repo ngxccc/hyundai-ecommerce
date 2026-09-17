@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { OrderList } from "@/features/orders/components";
@@ -9,6 +10,7 @@ import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { connection } from "next/server";
 import type { Metadata } from "next";
+import { CenteredSpinner } from "@/components/common";
 
 export async function generateMetadata({
   params,
@@ -29,10 +31,39 @@ export default async function AdminOrdersPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  await connection();
-  const tNav = await getTranslations("adminDashboard.nav");
-  const tHeader = await getTranslations("adminOrders");
+  const [tNav, tHeader] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminOrders"),
+  ]);
 
+  return (
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("orders") },
+        ]}
+      />
+
+      <BrandHeader
+        title={tHeader("title")}
+        description={tHeader("description")}
+        showAddButton={false}
+      />
+
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <OrdersContent searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function OrdersContent({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  await connection();
   const resolvedSearchParams = await searchParams;
   const page =
     typeof resolvedSearchParams.page === "string"
@@ -64,31 +95,16 @@ export default async function AdminOrdersPage({
   const meta = ordersRes?.meta;
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <AdminBreadcrumbs
-        items={[
-          { label: tNav("overview"), href: "/" },
-          { label: tNav("orders") },
-        ]}
+    <div className="flex w-full flex-col gap-4">
+      <OrderList orders={orders} />
+      <OffsetPagination
+        page={meta?.page ?? page}
+        totalPages={meta?.totalPages ?? 1}
+        total={meta?.total}
+        hasNextPage={meta?.hasNextPage}
+        hasPrevPage={meta?.hasPrevPage}
+        label="đơn hàng"
       />
-
-      <BrandHeader
-        title={tHeader("title")}
-        description={tHeader("description")}
-        showAddButton={false}
-      />
-
-      <div className="flex w-full flex-col gap-4">
-        <OrderList orders={orders} />
-        <OffsetPagination
-          page={meta?.page ?? page}
-          totalPages={meta?.totalPages ?? 1}
-          total={meta?.total}
-          hasNextPage={meta?.hasNextPage}
-          hasPrevPage={meta?.hasPrevPage}
-          label="đơn hàng"
-        />
-      </div>
     </div>
   );
 }

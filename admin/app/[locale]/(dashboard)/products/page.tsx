@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { ProductFilters } from "@/features/products/components/product-filters";
 import { ProductGrid } from "@/features/products/components/product-grid";
 import { ProductPagination } from "@/features/products/components/product-pagination";
@@ -11,6 +12,7 @@ import type { AdminProduct } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { connection } from "next/server";
+import { CenteredSpinner } from "@/components/common";
 
 export const generateMetadata = async ({
   params,
@@ -31,20 +33,10 @@ export default async function AdminProductsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  await connection();
-  const query = parseProductQueryParams(await searchParams);
-
-  const [t, tNav, productsRes, categoriesRes, brandsRes] = await Promise.all([
+  const [t, tNav] = await Promise.all([
     getTranslations("adminProducts.header"),
     getTranslations("adminDashboard.nav"),
-    productsApi.list(query),
-    categoriesApi.list(),
-    brandsApi.list(),
   ]);
-  const categories = categoriesRes.data?.data ?? [];
-  const brands = brandsRes.data?.data ?? [];
-  const products: AdminProduct[] = productsRes.data?.data ?? [];
-  const meta = productsRes.data?.meta;
 
   return (
     <div className="flex w-full flex-col gap-6">
@@ -61,22 +53,48 @@ export default async function AdminProductsPage({
         showAddButton={true}
       />
 
-      <div className="flex w-full flex-col gap-4">
-        {/* Filters */}
-        <ProductFilters categories={categories} brands={brands} />
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <ProductsContent searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}
 
-        {/* Product Grid */}
-        <ProductGrid products={products} />
+async function ProductsContent({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  await connection();
+  const query = parseProductQueryParams(await searchParams);
 
-        {/* Pagination */}
-        <ProductPagination
-          page={meta?.page ?? (typeof query.page === "number" ? query.page : 1)}
-          totalPages={meta?.totalPages ?? 1}
-          total={meta?.total}
-          hasNextPage={meta?.hasNextPage}
-          hasPrevPage={meta?.hasPrevPage}
-        />
-      </div>
+  const [productsRes, categoriesRes, brandsRes] = await Promise.all([
+    productsApi.list(query),
+    categoriesApi.list(),
+    brandsApi.list(),
+  ]);
+
+  const categories = categoriesRes.data?.data ?? [];
+  const brands = brandsRes.data?.data ?? [];
+  const products: AdminProduct[] = productsRes.data?.data ?? [];
+  const meta = productsRes.data?.meta;
+
+  return (
+    <div className="flex w-full flex-col gap-4">
+      {/* Filters */}
+      <ProductFilters categories={categories} brands={brands} />
+
+      {/* Product Grid */}
+      <ProductGrid products={products} />
+
+      {/* Pagination */}
+      <ProductPagination
+        page={meta?.page ?? (typeof query.page === "number" ? query.page : 1)}
+        totalPages={meta?.totalPages ?? 1}
+        total={meta?.total}
+        hasNextPage={meta?.hasNextPage}
+        hasPrevPage={meta?.hasPrevPage}
+      />
     </div>
   );
 }

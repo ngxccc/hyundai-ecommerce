@@ -16,17 +16,17 @@ export async function rotateAdminToken(
   const token = refreshToken?.trim();
   if (!token) return null;
 
-  try {
-    const envUrl = process.env.BACKEND_API_URL?.trim().replace(
-      /^["'\\]+|["'\\]+$/g,
-      "",
-    );
-    const rawUrl = envUrl ?? "http://localhost:3000";
-    const baseUrl =
-      rawUrl.startsWith("http://") || rawUrl.startsWith("https://")
-        ? rawUrl.replace(/\/+$/, "")
-        : `https://${rawUrl.replace(/\/+$/, "")}`;
+  const envUrl = process.env.BACKEND_API_URL?.trim().replace(
+    /^["'\\]+|["'\\]+$/g,
+    "",
+  );
+  const rawUrl = envUrl ?? "http://localhost:3000";
+  const baseUrl =
+    rawUrl.startsWith("http://") || rawUrl.startsWith("https://")
+      ? rawUrl.replace(/\/+$/, "")
+      : `https://${rawUrl.replace(/\/+$/, "")}`;
 
+  try {
     const res = await fetch(`${baseUrl}/api/v1/auth/refresh`, {
       method: "POST",
       headers: {
@@ -56,8 +56,29 @@ export async function rotateAdminToken(
       accessToken: payload.data.accessToken,
       refreshToken: payload.data.refreshToken,
     };
-  } catch (error) {
-    console.error("[rotateAdminToken] Failed to rotate token:", error);
+  } catch (error: unknown) {
+    const hasCode = (obj: unknown): obj is { code: string } =>
+      typeof obj === "object" &&
+      obj !== null &&
+      "code" in obj &&
+      typeof obj.code === "string";
+
+    const hasCause = (obj: unknown): obj is { cause: unknown } =>
+      typeof obj === "object" && obj !== null && "cause" in obj;
+
+    const isConnRefused =
+      (hasCode(error) && error.code === "ECONNREFUSED") ||
+      (hasCause(error) &&
+        hasCode(error.cause) &&
+        error.cause.code === "ECONNREFUSED");
+
+    if (isConnRefused) {
+      console.warn(
+        `[rotateAdminToken] Backend at ${baseUrl} is currently unreachable (ECONNREFUSED). Skipping token rotation.`,
+      );
+    } else {
+      console.error("[rotateAdminToken] Failed to rotate token:", error);
+    }
     return null;
   }
 }

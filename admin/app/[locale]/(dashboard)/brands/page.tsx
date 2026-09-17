@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { BrandHeader } from "@/features/brands/components";
 import { DataTableSearchInput } from "@/components/common/data-table-search-input";
 import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
@@ -7,6 +8,7 @@ import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { connection } from "next/server";
 import type { Metadata } from "next";
+import { CenteredSpinner } from "@/components/common";
 
 export async function generateMetadata({
   params,
@@ -27,9 +29,44 @@ export default async function AdminBrandsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const [tNav, tHeader] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminBrands.header"),
+  ]);
+
+  return (
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("brands") },
+        ]}
+      />
+
+      <BrandHeader
+        title={tHeader("title")}
+        description={tHeader("description")}
+        showAddButton={true}
+      />
+
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <BrandsContent
+          searchParams={searchParams}
+          searchPlaceholder={tHeader("searchPlaceholder")}
+        />
+      </Suspense>
+    </div>
+  );
+}
+
+async function BrandsContent({
+  searchParams,
+  searchPlaceholder,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchPlaceholder: string;
+}) {
   await connection();
-  const tNav = await getTranslations("adminDashboard.nav");
-  const tHeader = await getTranslations("adminBrands.header");
   const { data: res } = await brandsApi.list();
   const brands = res?.data ?? [];
 
@@ -49,24 +86,9 @@ export default async function AdminBrandsPage({
     : brands;
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <AdminBreadcrumbs
-        items={[
-          { label: tNav("overview"), href: "/" },
-          { label: tNav("brands") },
-        ]}
-      />
-
-      <BrandHeader
-        title={tHeader("title")}
-        description={tHeader("description")}
-        showAddButton={true}
-      />
-
-      <div className="flex w-full flex-col gap-4">
-        <DataTableSearchInput placeholder={tHeader("searchPlaceholder")} />
-        <BrandGrid brands={filteredBrands} />
-      </div>
+    <div className="flex w-full flex-col gap-4">
+      <DataTableSearchInput placeholder={searchPlaceholder} />
+      <BrandGrid brands={filteredBrands} />
     </div>
   );
 }

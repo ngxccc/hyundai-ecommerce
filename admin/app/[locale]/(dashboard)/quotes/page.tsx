@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { BrandHeader } from "@/features/brands/components";
 import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { QuoteList } from "@/features/quotes/components";
@@ -9,6 +10,7 @@ import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { connection } from "next/server";
 import type { Metadata } from "next";
+import { CenteredSpinner } from "@/components/common";
 
 export async function generateMetadata({
   params,
@@ -29,10 +31,39 @@ export default async function AdminQuotesPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  await connection();
-  const tNav = await getTranslations("adminDashboard.nav");
-  const tHeader = await getTranslations("adminQuotes");
+  const [tNav, tHeader] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminQuotes"),
+  ]);
 
+  return (
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tHeader("listTitle") },
+        ]}
+      />
+
+      <BrandHeader
+        title={tHeader("listTitle")}
+        description={tHeader("listDescription")}
+        showAddButton={false}
+      />
+
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <QuotesContent searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function QuotesContent({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  await connection();
   const resolvedSearchParams = await searchParams;
   const page =
     typeof resolvedSearchParams.page === "string"
@@ -66,31 +97,16 @@ export default async function AdminQuotesPage({
   const meta = quotesRes?.meta;
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <AdminBreadcrumbs
-        items={[
-          { label: tNav("overview"), href: "/" },
-          { label: tHeader("listTitle") },
-        ]}
+    <div className="flex w-full flex-col gap-4">
+      <QuoteList quotes={quotes} />
+      <OffsetPagination
+        page={meta?.page ?? page}
+        totalPages={meta?.totalPages ?? 1}
+        total={meta?.total}
+        hasNextPage={meta?.hasNextPage}
+        hasPrevPage={meta?.hasPrevPage}
+        label="báo giá"
       />
-
-      <BrandHeader
-        title={tHeader("listTitle")}
-        description={tHeader("listDescription")}
-        showAddButton={false}
-      />
-
-      <div className="flex w-full flex-col gap-4">
-        <QuoteList quotes={quotes} />
-        <OffsetPagination
-          page={meta?.page ?? page}
-          totalPages={meta?.totalPages ?? 1}
-          total={meta?.total}
-          hasNextPage={meta?.hasNextPage}
-          hasPrevPage={meta?.hasPrevPage}
-          label="báo giá"
-        />
-      </div>
     </div>
   );
 }
