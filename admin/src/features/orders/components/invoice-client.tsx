@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { AdminOrder } from "@/types/api";
-
+import { formatCurrency } from "@/lib/utils";
 interface InvoiceClientProps {
   order: AdminOrder;
 }
@@ -21,14 +21,6 @@ interface InvoiceClientProps {
 export const InvoiceClient = ({ order }: InvoiceClientProps) => {
   const t = useTranslations("adminOrders");
   const router = useRouter();
-
-  const formatCurrency = (amountStr: string) => {
-    const amount = parseFloat(amountStr);
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
-  };
 
   const formatDate = (date: Date | string) => {
     return new Date(date).toLocaleDateString("vi-VN", {

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { formatCurrency } from "@/lib/utils";
 import { useQuoteDraftStore } from "../stores/quote-draft.store";
 
 export interface QuoteFinancialSummaryProps {
@@ -41,13 +42,6 @@ export const QuoteFinancialSummary = ({
   const vatAmount = subtotal * (vatRate / 100);
   const grandTotal = subtotal + vatAmount;
 
-  const formatVND = (num: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(num);
-  };
-
   return (
     <Card className="border-border sticky top-6 border shadow-sm">
       <CardHeader className="bg-muted/20 border-b p-4 pb-3">
@@ -70,7 +64,7 @@ export const QuoteFinancialSummary = ({
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground">{t("subtotal")}</span>
           <span className="text-foreground font-mono text-sm font-semibold">
-            {formatVND(subtotal)}
+            {formatCurrency(subtotal)}
           </span>
         </div>
 
@@ -80,7 +74,7 @@ export const QuoteFinancialSummary = ({
             {t("vat")} ({vatRate}%)
           </span>
           <span className="text-foreground font-mono font-semibold">
-            {formatVND(vatAmount)}
+            {formatCurrency(vatAmount)}
           </span>
         </div>
 
@@ -93,7 +87,7 @@ export const QuoteFinancialSummary = ({
           </span>
           <div className="text-right">
             <span className="text-primary block font-mono text-lg font-bold">
-              {formatVND(grandTotal)}
+              {formatCurrency(grandTotal)}
             </span>
             <span className="text-muted-foreground text-[10px]">
               {t("vatInclusiveNotice")}

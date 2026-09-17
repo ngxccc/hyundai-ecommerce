@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Eye } from "lucide-react";
 import { orderStatusEnum } from "@/constants";
 import type { AdminOrder } from "@/types/api";
-
+import { formatCurrency } from "@/lib/utils";
 interface OrderListProps {
   orders: AdminOrder[];
 }
@@ -108,14 +108,6 @@ export const OrderList = ({ orders }: OrderListProps) => {
       default:
         return status;
     }
-  };
-
-  const formatCurrency = (amountStr: string) => {
-    const amount = parseFloat(amountStr);
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
   };
 
   const formatDate = (date: Date | string) => {

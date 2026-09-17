@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/sonner";
 import { canUseCldImage } from "@/lib";
 import type { AdminProduct } from "@/types/api";
+import { formatCurrency } from "@/lib/utils";
 import { searchProductsAction } from "@/features/products/actions";
 import { useQuoteDraftStore } from "../stores/quote-draft.store";
 
@@ -80,14 +81,6 @@ export const ProductSearchModal = ({
 
     setRecentlyAddedId(product.id);
     setTimeout(() => setRecentlyAddedId(null), 1200);
-  };
-
-  const formatPrice = (priceStr: string | null) => {
-    const num = parseFloat(priceStr ?? "0");
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(num);
   };
 
   const extractModelAndPower = (product: AdminProduct) => {
@@ -233,7 +226,7 @@ export const ProductSearchModal = ({
                       </div>
 
                       <div className="text-primary mt-0.5 text-sm font-bold">
-                        {formatPrice(product.price)}
+                        {formatCurrency(product.price)}
                       </div>
                     </div>
                   </div>

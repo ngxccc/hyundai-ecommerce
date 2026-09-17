@@ -32,7 +32,7 @@ import type { ProductGridItem } from "../product-form-types";
 import { deleteProductAction } from "../actions/product.actions";
 import { useQuoteDraftStore } from "@/features/quotes/stores";
 import { cn } from "cn";
-
+import { formatCurrency } from "@/lib/utils";
 export const ProductCard = ({ product }: { product: ProductGridItem }) => {
   const t = useTranslations("adminProducts");
   const router = useRouter();
@@ -47,10 +47,7 @@ export const ProductCard = ({ product }: { product: ProductGridItem }) => {
   const image =
     product.images[0] || "https://placehold.co/400x300/png?text=No+Image";
 
-  const formattedPrice = new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(Number(product.price));
+  const formattedPrice = formatCurrency(product.price);
 
   const handleAddToQuote = (e: React.MouseEvent) => {
     e.preventDefault();

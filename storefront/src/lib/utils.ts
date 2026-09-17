@@ -6,6 +6,7 @@ export const priceFormatter = new Intl.NumberFormat("vi-VN", {
   maximumFractionDigits: 0,
 });
 
+export const numberFormatter = new Intl.NumberFormat("vi-VN");
 /**
  * Sanitizes human-entered price strings (e.g. "150.000.000", "150,000,000", "150 000 đ")
  * into a clean digits-only numeric string (e.g. "150000000") or null.
@@ -26,7 +27,7 @@ export function formatNumberInput(
   const num =
     typeof value === "string" ? parseFloat(value.replace(/[^\d]/g, "")) : value;
   if (isNaN(num)) return "";
-  return new Intl.NumberFormat("vi-VN").format(num);
+  return numberFormatter.format(num);
 }
 
 /**

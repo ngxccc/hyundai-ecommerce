@@ -1,7 +1,5 @@
-"use client";
-
 import { BadgeCheck, Handshake, UsersRound } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const SIGNALS = [
@@ -19,8 +17,8 @@ const SIGNALS = [
   },
 ];
 
-export function TrustSignalsSection() {
-  const t = useTranslations("HomePage.trust");
+export async function TrustSignalsSection() {
+  const t = await getTranslations("HomePage.trust");
 
   return (
     <section className="bg-muted/30 mt-12 py-12">

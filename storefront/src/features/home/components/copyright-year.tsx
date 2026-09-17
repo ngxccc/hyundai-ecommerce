@@ -1,18 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
+/**
+ * Client Component rendering current year to avoid static build-time date lock.
+ */
 export function CopyrightYear() {
-  const [year, setYear] = useState(2026);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setYear(new Date().getFullYear());
-    }, 0);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
-
-  return <>{year}</>;
+  return <span>{new Date().getFullYear()}</span>;
 }

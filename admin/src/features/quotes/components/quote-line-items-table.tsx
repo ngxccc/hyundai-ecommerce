@@ -33,6 +33,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { canUseCldImage } from "@/lib";
+import { formatCurrency } from "@/lib/utils";
 import { ProductSearchModal } from "./product-search-modal";
 import {
   useQuoteDraftStore,
@@ -57,13 +58,6 @@ export const QuoteLineItemsTable = () => {
   const updateItem = useQuoteDraftStore((state) => state.updateItem);
   const removeItem = useQuoteDraftStore((state) => state.removeItem);
   const addCustomItem = useQuoteDraftStore((state) => state.addCustomItem);
-
-  const formatVND = (num: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(num);
-  };
 
   const handleAddCustomItem = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -328,12 +322,12 @@ export const QuoteLineItemsTable = () => {
 
                       {/* Final Unit Price */}
                       <TableCell className="text-muted-foreground text-right font-medium">
-                        {formatVND(finalUnit)}
+                        {formatCurrency(finalUnit)}
                       </TableCell>
 
                       {/* Total Line Amount */}
                       <TableCell className="text-foreground text-right font-bold">
-                        {formatVND(lineTotal)}
+                        {formatCurrency(lineTotal)}
                       </TableCell>
 
                       {/* Delete Action */}

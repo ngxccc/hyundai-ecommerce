@@ -28,6 +28,7 @@ import {
 import type { AdminOrder } from "@/types/api";
 import { updateOrderStatusAction, verifyCashPaymentAction } from "../actions";
 import type { UserRole } from "@/lib/action-auth";
+import { formatCurrency } from "@/lib/utils";
 import {
   Stepper,
   StepperItem,
@@ -114,14 +115,6 @@ export const OrderDetail = ({ order, currentUser }: OrderDetailProps) => {
       default:
         return status;
     }
-  };
-
-  const formatCurrency = (amountStr: string) => {
-    const amount = parseFloat(amountStr);
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
   };
 
   const formatDate = (date: Date | string) => {

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { translatedZodResolver } from "@/lib/validation-resolver";
 import { type AddShippingBidInput, addShippingBidSchema } from "@/validators";
 import type { AdminOrder } from "@/types/api";
-
+import { formatCurrency } from "@/lib/utils";
 export interface ShippingBid {
   id: string;
   orderId?: string;
@@ -92,13 +92,6 @@ export const ShippingBidPanel = ({ order }: ShippingBidPanelProps) => {
         toast.error(result.error);
       }
     });
-  };
-
-  const formatCurrency = (amountStr: string) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(Number(amountStr));
   };
 
   return (

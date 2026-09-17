@@ -1,13 +1,11 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 
-export function HeroSection() {
-  const t = useTranslations("HomePage");
+export async function HeroSection() {
+  const t = await getTranslations("HomePage");
 
   return (
     <section className="bg-background relative flex min-h-[94vh] items-center overflow-hidden pt-32 pb-20">

@@ -612,7 +612,8 @@ export const QuotePdfDocument = ({
   const quoteNo = quote.quoteNumber ?? quote.id.slice(0, 8);
 
   // Filter generator items for Appendix
-  const generatorItems = quote.items.filter((item) => {
+  const items = quote.items;
+  const generatorItems = items.filter((item) => {
     const hasItemSpecs = Boolean(item.itemSpecs);
     return hasItemSpecs || !item.isCustomItem;
   });
@@ -738,7 +739,7 @@ export const QuotePdfDocument = ({
           </View>
 
           {/* Table Rows */}
-          {quote.items.map((item, idx) => {
+          {items.map((item, idx) => {
             const unitPrice = parseFloat(item.unitPrice ?? "0");
             const discountPercent = parseFloat(item.discountPercent ?? "0");
             const finalUnitPrice =
