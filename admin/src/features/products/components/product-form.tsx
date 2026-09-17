@@ -23,18 +23,17 @@ import {
   ProductCategorySection,
   ProductDescriptionSection,
 } from "./form-sections";
+import { ProductHeader } from "./product-header";
 import { AdminImageUploadSection } from "@/components/common/admin-image-upload-section";
 
 export const ProductForm = ({
   initialData,
   categories,
   brands,
-  breadcrumbs,
 }: {
   initialData?: AdminProduct;
   categories: AdminCategory[];
   brands: AdminBrand[];
-  breadcrumbs?: React.ReactNode;
 }) => {
   const t = useTranslations("adminProductForm");
 
@@ -241,21 +240,32 @@ export const ProductForm = ({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="bg-background/80 sticky top-15 z-30 mb-2 flex w-full items-center justify-between rounded-none py-2 backdrop-blur-md sm:top-20 sm:pt-1 sm:pb-2">
-          <div className="hidden flex-1 sm:block">{breadcrumbs}</div>
-          <div className="flex w-full items-center justify-end gap-3 sm:w-fit">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push("/products")}
-            >
-              {t("buttons.cancel")}
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? t("buttons.submitting") : t("buttons.submit")}
-            </Button>
-          </div>
-        </div>
+        {/* ProductHeader with Hủy and Lưu sản phẩm on the top right */}
+        <ProductHeader
+          title={isEditing ? t("editTitle") : t("title")}
+          description={isEditing ? t("editDescription") : t("description")}
+          actions={
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 shadow-xs"
+                onClick={() => router.push("/products")}
+              >
+                {t("buttons.cancel")}
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={isPending}
+                className="h-9 shadow-xs"
+              >
+                {isPending ? t("buttons.submitting") : t("buttons.submit")}
+              </Button>
+            </div>
+          }
+        />
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Left Column */}
