@@ -1,64 +1,72 @@
 # Code Architecture & Design Principles
 
-## 1. DRY vs. Orthogonal Code
+## 1. Deep Modules & Information Hiding
 
-- **Business Knowledge SSOT**: Maintain a single authoritative implementation for each calculation, domain invariant (`INV-N`), permission rule, and schema constraint.
-- **Orthogonal Domain Separation**: Keep domain implementations separate when their business lifecycles diverge, even if their data structures currently match (e.g. `AdminUserUpdateDto` vs `PublicUserProfileDto`). Unify only when a change in one domain strictly demands the same change in the other.
-
----
-
-## 2. YAGNI: Active Requirements Only
-
-- **Zero Speculative Code**: Implement solely what active tickets and specifications require.
-- **Banned Speculations**: Unused configuration flags, anticipatory database columns, uncalled helper methods, and generic type parameters with a single consumer.
-- **Evolutionary Design**: Keep code simple and tested so future extensions remain cheap, rather than pre-engineering complexity into current implementations.
-
----
-
-## 3. AHA (Avoid Hasty Abstractions) & Rule of Three
-
-- **Prefer Duplication over Wrong Abstraction**: Write concrete logic inline until repetition reveals the exact shared pattern.
-- **Rule of Three**:
-  1. _First occurrence_: Implement concrete logic inline.
-  2. _Second occurrence_: Duplicate with local adjustments.
-  3. _Third occurrence_: Extract a shared abstraction only when three distinct, proven use-cases exhibit identical invariants.
-- **Tangled Abstraction Rejection**: If a shared abstraction requires caller-specific branching (`isSpecialCase`, `callerType`), dissolve the abstraction and inline the logic.
-
----
-
-## 4. Deep Modules & Information Hiding
-
-- **Deep Interface**: Design modules with narrow, simple interfaces that conceal complex implementation mechanics (concurrency, distributed locks, database transactions, caching).
-- **Prohibition of Pass-Through Layers**: Do NOT create shallow services or repositories that merely forward 1:1 calls to Drizzle ORM without transforming data or enforcing domain rules.
-- **Pull Complexity Downward**: Internalize error recovery, default values, and cleanup within the service boundary instead of burdening callers.
-- **Define Errors Out of Existence**: Design APIs to make boundary conditions natural and idempotent (e.g. deleting a non-existent entity returns `deleted: 0` / success rather than throwing `NotFoundException`).
+- **Thick Implementation, Narrow Interface**: Expose minimal, intention-revealing method signatures that conceal internal complexity (distributed locks, transactions, ORM queries, multi-tier caching, outbox events).
+- **Complexity Sink**: Internalize error recovery, defaults, and boundary normalization inside the service rather than leaking them to controllers or callers.
+- **Define Errors Out of Existence**: Structure domain APIs so edge conditions resolve naturally and idempotently (e.g. cancelling an already cancelled quote returns current state rather than throwing).
+- **Prohibit Shallow Pass-Throughs**: Every service method MUST enforce domain invariants, data transformations, or transaction boundaries. Direct ORM pass-throughs with zero domain logic are banned.
 
 ```ts
-// GOOD: Deep Module (Simple signature encapsulates locking, transactions, and state transitions)
+// GOOD: Deep Module (Encapsulates stock reservation, transaction boundary, and outbox event)
 @Injectable()
-export class BookingDomainService {
-  async reserveSeats(dto: ReserveSeatsDto): Promise<ReservationResult> { ... }
+export class OrderCheckoutService {
+  async checkout(dto: CreateOrderDto): Promise<OrderResult> {
+    return this.db.transaction(async (tx) => {
+      // 1. Validate stock & lock inventory rows
+      // 2. Insert order & order items
+      // 3. Emit outbox event for payment integration
+    });
+  }
 }
 
-// BANNED: Shallow Pass-Through (Adds indirection without abstraction or domain logic)
+// BANNED: Shallow Pass-Through (Zero domain logic, pure ORM forwarding indirection)
 @Injectable()
-export class HallService {
-  constructor(private readonly db: DrizzleService) {}
-  async getHall(id: string) { return this.db.query.halls.findFirst({ where: eq(halls.id, id) }); }
+export class ShallowCategoryService {
+  constructor(private readonly db: DrizzleDB) {}
+  async getCategory(id: string) {
+    return this.db.query.categories.findFirst({ where: eq(categories.id, id) });
+  }
 }
 ```
 
 ---
 
-## 5. Command-Query Separation (CQS) & Idempotency
+## 2. AHA (Avoid Hasty Abstractions) & Rule of Three
 
-- **Commands (Mutations)**: State-changing operations execute within atomic transactions and return minimal acknowledgments (`id`, `status`). Never execute heavy, nested query aggregations inside mutation handlers.
-- **Queries (Reads)**: Query operations MUST be side-effect-free, safe to retry, and leverage selective projections for Index-Only Scans.
-- **Idempotent Mutations**: State-mutating commands (payments, reservations, cancellations) MUST enforce deterministic idempotency via unique constraints or idempotency keys.
+- **Prefer Concrete Duplication Over Wrong Abstraction**: Write logic inline until exact repetition across 3 distinct domain contexts reveals the stable, unified invariant.
+- **The Rule of Three Progression**:
+  1. _First occurrence_: Inline concrete implementation.
+  2. _Second occurrence_: Duplicate with localized adjustments.
+  3. _Third occurrence_: Extract shared abstraction only when invariants, failure modes, and lifecycles are identical.
+- **Dissolve Tangled Abstractions**: If a shared helper requires caller-type branching (`if (caller === 'admin')`), immediately inline the logic back into respective callers.
 
 ---
 
-## 6. Law of Demeter (Least Knowledge)
+## 3. Business Knowledge SSOT vs. Orthogonal Separation
 
-- **Immediate Collaborators Only**: Methods MUST interact only with injected dependencies, method arguments, and created objects.
-- **No Chained Traversals**: Prohibit deep object-graph navigation (`order.getUser().getTier().getDiscount()`). Encapsulate domain calculations within the immediate aggregate (`order.calculateDiscount()`).
+- **Domain Knowledge SSOT**: Maintain a single authoritative implementation for every business calculation (e.g. pricing, discounts, VAT rates, commission splits, inventory states).
+- **Orthogonal Lifecycle Separation**: Keep domain models separate when their business lifecycles diverge, even if schemas currently look identical (e.g. `AdminCreateProductDto` vs `B2bQuoteLineItemDto`). Unify only when a business change in one strictly mandates the exact same change in the other.
+
+---
+
+## 4. Command-Query Separation (CQS) & Idempotency
+
+- **Commands (Mutations)**: State-changing operations execute within atomic transactions and return minimal acknowledgments (`{ id, status }`). Heavy nested joins or analytics MUST NOT run inside mutation transactions.
+- **Queries (Reads)**: Query operations MUST be side-effect-free, safe to retry, and leverage selective projections for Index-Only Scans.
+- **Idempotent Mutations**: State-mutating endpoints (payments, order creation, cancellations, quote finalizations) MUST enforce deterministic idempotency via unique constraints, distributed locks, or idempotency keys.
+
+---
+
+## 5. Law of Demeter (Least Knowledge)
+
+- **Immediate Collaborators Only**: Methods interact strictly with injected dependencies, method arguments, and internally instantiated entities.
+- **Direct Aggregate Computation**: Prohibit chained traversals across aggregate boundaries (`order.getCustomer().getTier().getDiscount()`). Encapsulate calculations within the immediate aggregate method (`order.calculateDiscount()`).
+
+---
+
+## 6. YAGNI & Evolutionary Design
+
+- **Zero Speculative Code**: Implement strictly what active tickets, specs, and domain invariants demand.
+- **Banned Speculations**: Unused configuration toggles, premature database columns, dead helper methods, and generic abstractions with a single consumer.
+- **Refactor at Thresholds**: Keep modules tight and tested so future extensions remain cheap, rather than pre-engineering speculative flexibility.
