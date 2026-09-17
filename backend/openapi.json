@@ -1,10 +1,31 @@
 {
   "openapi": "3.1.0",
   "paths": {
-    "/": {
+    "/api": {
       "get": {
         "description": "Returns service operational status.",
-        "operationId": "AppController_getHealth",
+        "operationId": "AppController_getHealth[0]",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is operational",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "System health check",
+        "tags": ["app"]
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "Returns service operational status.",
+        "operationId": "AppController_getHealth[1]",
         "parameters": [],
         "responses": {
           "200": {
@@ -678,6 +699,25 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal server error",
             "content": {
@@ -953,6 +993,25 @@
                   "title": "Unauthorized",
                   "status": 401,
                   "detail": "Unauthorized access",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
                   "instance": "/api/example",
                   "invalidParams": [],
                   "timestamp": "2026-07-25T02:45:00.000Z"
@@ -3835,8 +3894,51 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Authentication required or invalid token (Unauthorized)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/unauthorized",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "Unauthorized access",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "List all physical warehouses",
         "tags": ["warehouses"]
       },
@@ -3959,7 +4061,7 @@
         },
         "security": [
           {
-            "JWT-auth": []
+            "bearer": []
           }
         ],
         "summary": "Create a new physical warehouse (Admin Only)",
@@ -4005,6 +4107,44 @@
               }
             }
           },
+          "401": {
+            "description": "Authentication required or invalid token (Unauthorized)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/unauthorized",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "Unauthorized access",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Resource not found (Not Found)",
             "content": {
@@ -4025,6 +4165,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Get stock distribution across all warehouses for a product",
         "tags": ["warehouses"]
       }
@@ -4068,6 +4213,44 @@
               }
             }
           },
+          "401": {
+            "description": "Authentication required or invalid token (Unauthorized)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/unauthorized",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "Unauthorized access",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Resource not found (Not Found)",
             "content": {
@@ -4088,6 +4271,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Get all product inventory stocks located in a warehouse",
         "tags": ["warehouses"]
       },
@@ -4216,11 +4404,30 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Resource conflict (Conflict)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/conflict",
+                  "title": "Conflict",
+                  "status": 409,
+                  "detail": "Email address already exists",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
           }
         },
         "security": [
           {
-            "JWT-auth": []
+            "bearer": []
           }
         ],
         "summary": "Update product stock in a warehouse and atomically sync totalStockCache (Admin Only)",
@@ -4263,6 +4470,44 @@
               }
             }
           },
+          "401": {
+            "description": "Authentication required or invalid token (Unauthorized)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/unauthorized",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "Unauthorized access",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Resource not found (Not Found)",
             "content": {
@@ -4283,6 +4528,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Get warehouse details by UUID",
         "tags": ["warehouses"]
       },
@@ -4434,7 +4684,7 @@
         },
         "security": [
           {
-            "JWT-auth": []
+            "bearer": []
           }
         ],
         "summary": "Update warehouse details (Admin Only)",
@@ -4535,7 +4785,7 @@
         },
         "security": [
           {
-            "JWT-auth": []
+            "bearer": []
           }
         ],
         "summary": "Deactivate warehouse (Admin Only)",
@@ -5027,7 +5277,7 @@
                     {
                       "properties": {
                         "data": {
-                          "$ref": "#/components/schemas/QuoteResponseDto"
+                          "$ref": "#/components/schemas/RfqResponseDto"
                         }
                       }
                     }
@@ -5139,7 +5389,7 @@
                         "data": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/QuoteResponseDto"
+                            "$ref": "#/components/schemas/AdminQuoteResponseDto"
                           }
                         },
                         "meta": {
@@ -5251,7 +5501,7 @@
                     {
                       "properties": {
                         "data": {
-                          "$ref": "#/components/schemas/QuoteResponseDto"
+                          "$ref": "#/components/schemas/AdminQuoteResponseDto"
                         }
                       }
                     }
@@ -5359,7 +5609,7 @@
                     {
                       "properties": {
                         "data": {
-                          "$ref": "#/components/schemas/QuoteResponseDto"
+                          "$ref": "#/components/schemas/AdminQuoteResponseDto"
                         }
                       }
                     }
@@ -5472,7 +5722,7 @@
                     {
                       "properties": {
                         "data": {
-                          "$ref": "#/components/schemas/QuoteResponseDto"
+                          "$ref": "#/components/schemas/AdminQuoteResponseDto"
                         }
                       }
                     }
@@ -5618,7 +5868,7 @@
                     {
                       "properties": {
                         "data": {
-                          "$ref": "#/components/schemas/QuoteResponseDto"
+                          "$ref": "#/components/schemas/AdminQuoteResponseDto"
                         }
                       }
                     }
@@ -7009,6 +7259,27 @@
         "operationId": "OrdersController_expireOrders_v1",
         "parameters": [],
         "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ExpireOrdersResponseDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
           "401": {
             "description": "Authentication required or invalid token (Unauthorized)",
             "content": {
@@ -7529,6 +7800,25 @@
               }
             }
           },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Resource not found (Not Found)",
             "content": {
@@ -7556,6 +7846,103 @@
         ],
         "summary": "Get order payment status and transactions",
         "tags": ["payments (deprecated)"]
+      }
+    },
+    "/api/v1/analytics/dashboard": {
+      "get": {
+        "description": "Retrieves KPI metrics, monthly revenue time-series, category distribution, and top selling products for enterprise dashboard views.",
+        "operationId": "AnalyticsController_getDashboardAnalytics_v1",
+        "parameters": [
+          {
+            "name": "year",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 2020,
+              "maximum": 2999,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "locale",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minLength": 2,
+              "maxLength": 8,
+              "default": "vi",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/DashboardAnalyticsResponseDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or invalid token (Unauthorized)\n\nAuthentication required or invalid token (Unauthorized)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/unauthorized",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "Unauthorized access",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get consolidated dashboard analytics",
+        "tags": ["analytics"]
       }
     }
   },
@@ -7840,7 +8227,7 @@
           },
           "password": {
             "type": "string",
-            "minLength": 8
+            "minLength": 1
           }
         },
         "required": ["email", "password"],
@@ -10494,7 +10881,190 @@
         "required": ["items"],
         "additionalProperties": false
       },
-      "QuoteResponseDto": {
+      "RfqResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "quoteNumber": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SUBMITTED",
+              "NEGOTIATING",
+              "APPROVED",
+              "REJECTED",
+              "EXPIRED"
+            ]
+          },
+          "customerName": {
+            "type": ["string", "null"]
+          },
+          "customerPhone": {
+            "type": ["string", "null"]
+          },
+          "customerEmail": {
+            "type": ["string", "null"]
+          },
+          "companyName": {
+            "type": ["string", "null"]
+          },
+          "taxId": {
+            "type": ["string", "null"]
+          },
+          "shippingAddress": {
+            "type": ["string", "null"]
+          },
+          "note": {
+            "type": ["string", "null"]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "productId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "isCustomItem": {
+                  "type": "boolean"
+                },
+                "itemName": {
+                  "type": ["string", "null"]
+                },
+                "itemModel": {
+                  "type": ["string", "null"]
+                },
+                "itemSpecs": {
+                  "type": ["string", "null"]
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "requestedPrice": {
+                  "type": ["string", "null"]
+                }
+              },
+              "required": ["id", "isCustomItem", "itemName", "quantity"]
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "quoteNumber",
+          "status",
+          "customerName",
+          "customerPhone",
+          "items",
+          "createdAt"
+        ]
+      },
+      "CreateQuoteDto": {
+        "type": "object",
+        "properties": {
+          "customerName": {
+            "type": "string"
+          },
+          "customerPhone": {
+            "type": "string",
+            "pattern": "^(0[35789])\\d{8}$"
+          },
+          "customerEmail": {
+            "type": ["string", "null"]
+          },
+          "companyName": {
+            "type": ["string", "null"]
+          },
+          "taxId": {
+            "type": ["string", "null"]
+          },
+          "shippingAddress": {
+            "type": ["string", "null"]
+          },
+          "note": {
+            "type": ["string", "null"]
+          },
+          "items": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "isCustomItem": {
+                  "default": false,
+                  "type": "boolean"
+                },
+                "itemName": {
+                  "type": "string"
+                },
+                "itemModel": {
+                  "type": ["string", "null"]
+                },
+                "itemSpecs": {
+                  "type": ["string", "null"]
+                },
+                "quantity": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "requestedPrice": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^\\d+(\\.\\d{1,2})?$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": ["itemName", "quantity"]
+            }
+          }
+        },
+        "required": ["customerName", "customerPhone", "items"]
+      },
+      "AdminQuoteResponseDto": {
         "type": "object",
         "properties": {
           "id": {
@@ -10564,10 +11134,16 @@
                 "type": "object",
                 "properties": {
                   "validityDays": {
-                    "default": 15,
-                    "type": "integer",
-                    "minimum": -9007199254740991,
-                    "maximum": 9007199254740991
+                    "anyOf": [
+                      {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "paymentSchedule": {
                     "type": ["string", "null"]
@@ -10709,28 +11285,36 @@
                         "name": {
                           "type": "string"
                         },
-                        "nameVi": {
-                          "type": "string"
-                        },
-                        "nameEn": {
-                          "type": ["string", "null"]
-                        },
                         "slug": {
                           "type": "string"
                         },
                         "price": {
-                          "type": "string"
+                          "type": ["string", "null"]
                         },
                         "images": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
                         },
                         "totalStockCache": {
-                          "type": "integer",
-                          "minimum": -9007199254740991,
-                          "maximum": 9007199254740991
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": -9007199254740991,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
                         }
                       },
                       "required": [
@@ -10792,9 +11376,16 @@
                   "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
                 },
                 "senderId": {
-                  "type": "string",
-                  "format": "uuid",
-                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 },
                 "message": {
                   "type": "string"
@@ -10862,13 +11453,13 @@
                     "type": "string"
                   },
                   "phoneNumber": {
-                    "type": "string"
+                    "type": ["string", "null"]
                   },
                   "role": {
                     "type": "string"
                   }
                 },
-                "required": ["id", "fullName", "email", "phoneNumber", "role"]
+                "required": ["id", "fullName", "email", "role"]
               },
               {
                 "type": "null"
@@ -10879,7 +11470,6 @@
         "required": [
           "id",
           "quoteNumber",
-          "userId",
           "customerName",
           "customerPhone",
           "customerEmail",
@@ -10899,85 +11489,6 @@
           "updatedAt",
           "items"
         ]
-      },
-      "CreateQuoteDto": {
-        "type": "object",
-        "properties": {
-          "customerName": {
-            "type": "string"
-          },
-          "customerPhone": {
-            "type": "string",
-            "pattern": "^(0[35789])\\d{8}$"
-          },
-          "customerEmail": {
-            "type": ["string", "null"]
-          },
-          "companyName": {
-            "type": ["string", "null"]
-          },
-          "taxId": {
-            "type": ["string", "null"]
-          },
-          "shippingAddress": {
-            "type": ["string", "null"]
-          },
-          "note": {
-            "type": ["string", "null"]
-          },
-          "items": {
-            "minItems": 1,
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "productId": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
-                },
-                "isCustomItem": {
-                  "default": false,
-                  "type": "boolean"
-                },
-                "itemName": {
-                  "type": "string"
-                },
-                "itemModel": {
-                  "type": ["string", "null"]
-                },
-                "itemSpecs": {
-                  "type": ["string", "null"]
-                },
-                "quantity": {
-                  "type": "integer",
-                  "exclusiveMinimum": 0,
-                  "maximum": 9007199254740991
-                },
-                "requestedPrice": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "pattern": "^\\d+(\\.\\d{1,2})?$"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
-                }
-              },
-              "required": ["itemName", "quantity"]
-            }
-          }
-        },
-        "required": ["customerName", "customerPhone", "items"]
       },
       "CreateAdminQuoteDto": {
         "type": "object",
@@ -11173,9 +11684,16 @@
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "senderId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "message": {
             "type": "string"
@@ -11742,6 +12260,17 @@
         },
         "required": ["amount"]
       },
+      "ExpireOrdersResponseDto": {
+        "type": "object",
+        "properties": {
+          "expiredCount": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": ["expiredCount"]
+      },
       "CheckoutLinkResponseDto": {
         "type": "object",
         "properties": {
@@ -12102,6 +12631,135 @@
           }
         },
         "required": ["amount"]
+      },
+      "DashboardAnalyticsResponseDto": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "metrics": {
+            "type": "object",
+            "properties": {
+              "totalRevenue": {
+                "type": "number"
+              },
+              "totalOrders": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "totalProducts": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "newCustomers": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "revenueGrowth": {
+                "type": "number"
+              },
+              "ordersGrowth": {
+                "type": "number"
+              },
+              "customersGrowth": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "totalRevenue",
+              "totalOrders",
+              "totalProducts",
+              "newCustomers",
+              "revenueGrowth",
+              "ordersGrowth",
+              "customersGrowth"
+            ]
+          },
+          "monthlyRevenue": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "year": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "month": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 12
+                },
+                "revenue": {
+                  "type": "number"
+                },
+                "orders": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": ["year", "month", "revenue", "orders"]
+            }
+          },
+          "categoryDistribution": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string"
+                },
+                "revenue": {
+                  "type": "number"
+                },
+                "share": {
+                  "type": "number"
+                }
+              },
+              "required": ["category", "revenue", "share"]
+            }
+          },
+          "topProducts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "sold": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "price": {
+                  "type": "string"
+                },
+                "image": {
+                  "type": "string"
+                }
+              },
+              "required": ["id", "name", "sold", "price"]
+            }
+          }
+        },
+        "required": [
+          "year",
+          "metrics",
+          "monthlyRevenue",
+          "categoryDistribution",
+          "topProducts"
+        ]
       }
     }
   }

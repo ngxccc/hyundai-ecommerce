@@ -28,7 +28,7 @@ import {
 } from "@/database/schemas";
 import type { components } from "../generated/api-schema";
 
-type QuoteData = components["schemas"]["QuoteResponseDto"];
+type QuoteData = components["schemas"]["AdminQuoteResponseDto"];
 type QuoteMessageData = components["schemas"]["QuoteMessageResponseDto"];
 type ApproveToOrderData = components["schemas"]["ApproveToOrderResponseDto"];
 

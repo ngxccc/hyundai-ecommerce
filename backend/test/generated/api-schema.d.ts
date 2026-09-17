@@ -1,5 +1,5 @@
 export interface paths {
-  "/": {
+  "/api": {
     parameters: {
       query?: never;
       header?: never;
@@ -10,7 +10,27 @@ export interface paths {
      * System health check
      * @description Returns service operational status.
      */
-    get: operations["AppController_getHealth"];
+    get: operations["AppController_getHealth[0]"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/health": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * System health check
+     * @description Returns service operational status.
+     */
+    get: operations["AppController_getHealth[1]"];
     put?: never;
     post?: never;
     delete?: never;
@@ -1097,6 +1117,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/analytics/dashboard": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get consolidated dashboard analytics
+     * @description Retrieves KPI metrics, monthly revenue time-series, category distribution, and top selling products for enterprise dashboard views.
+     */
+    get: operations["AnalyticsController_getDashboardAnalytics_v1"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1925,11 +1965,63 @@ export interface components {
         quantity: number;
       }[];
     };
-    QuoteResponseDto: {
+    RfqResponseDto: {
+      /** Format: uuid */
+      id: string;
+      quoteNumber: string;
+      /** @enum {string} */
+      status:
+        | "DRAFT"
+        | "SUBMITTED"
+        | "NEGOTIATING"
+        | "APPROVED"
+        | "REJECTED"
+        | "EXPIRED";
+      customerName: string | null;
+      customerPhone: string | null;
+      customerEmail?: string | null;
+      companyName?: string | null;
+      taxId?: string | null;
+      shippingAddress?: string | null;
+      note?: string | null;
+      items: {
+        /** Format: uuid */
+        id: string;
+        productId?: string | null;
+        isCustomItem: boolean;
+        itemName: string | null;
+        itemModel?: string | null;
+        itemSpecs?: string | null;
+        quantity: number;
+        requestedPrice?: string | null;
+      }[];
+      /** Format: date-time */
+      createdAt: string;
+    };
+    CreateQuoteDto: {
+      customerName: string;
+      customerPhone: string;
+      customerEmail?: string | null;
+      companyName?: string | null;
+      taxId?: string | null;
+      shippingAddress?: string | null;
+      note?: string | null;
+      items: {
+        productId?: string | null;
+        /** @default false */
+        isCustomItem: boolean;
+        itemName: string;
+        itemModel?: string | null;
+        itemSpecs?: string | null;
+        quantity: number;
+        requestedPrice?: string | null;
+      }[];
+    };
+    AdminQuoteResponseDto: {
       /** Format: uuid */
       id: string;
       quoteNumber: string | null;
-      userId: string | null;
+      userId?: string | null;
       customerName: string | null;
       customerPhone: string | null;
       customerEmail: string | null;
@@ -1949,8 +2041,7 @@ export interface components {
       vatAmount: string | null;
       totalQuotedPrice: string | null;
       commercialTerms?: {
-        /** @default 15 */
-        validityDays: number;
+        validityDays?: number | null;
         paymentSchedule?: string | null;
         warrantyTerms?: string | null;
         deliveryTime?: string | null;
@@ -1985,12 +2076,10 @@ export interface components {
           /** Format: uuid */
           id: string;
           name: string;
-          nameVi?: string;
-          nameEn?: string | null;
           slug: string;
-          price: string;
-          images: string[];
-          totalStockCache: number;
+          price: string | null;
+          images: string[] | null;
+          totalStockCache: number | null;
         } | null;
         /** Format: date-time */
         createdAt: string;
@@ -2002,8 +2091,7 @@ export interface components {
         id: string;
         /** Format: uuid */
         quoteId: string;
-        /** Format: uuid */
-        senderId: string;
+        senderId: string | null;
         message: string;
         sender?: {
           /** Format: uuid */
@@ -2022,28 +2110,9 @@ export interface components {
         id: string;
         fullName: string;
         email: string;
-        phoneNumber: string;
+        phoneNumber?: string | null;
         role: string;
       } | null;
-    };
-    CreateQuoteDto: {
-      customerName: string;
-      customerPhone: string;
-      customerEmail?: string | null;
-      companyName?: string | null;
-      taxId?: string | null;
-      shippingAddress?: string | null;
-      note?: string | null;
-      items: {
-        productId?: string | null;
-        /** @default false */
-        isCustomItem: boolean;
-        itemName: string;
-        itemModel?: string | null;
-        itemSpecs?: string | null;
-        quantity: number;
-        requestedPrice?: string | null;
-      }[];
     };
     CreateAdminQuoteDto: {
       userId?: string | null;
@@ -2096,8 +2165,7 @@ export interface components {
       id: string;
       /** Format: uuid */
       quoteId: string;
-      /** Format: uuid */
-      senderId: string;
+      senderId: string | null;
       message: string;
       sender?: {
         /** Format: uuid */
@@ -2245,6 +2313,9 @@ export interface components {
       amount: number | string;
       note?: string | null;
     };
+    ExpireOrdersResponseDto: {
+      expiredCount: number;
+    };
     CheckoutLinkResponseDto: {
       checkoutUrl: string;
       qrCode: string;
@@ -2358,6 +2429,36 @@ export interface components {
       returnUrl?: string;
       cancelUrl?: string;
     };
+    DashboardAnalyticsResponseDto: {
+      year: number;
+      metrics: {
+        totalRevenue: number;
+        totalOrders: number;
+        totalProducts: number;
+        newCustomers: number;
+        revenueGrowth: number;
+        ordersGrowth: number;
+        customersGrowth: number;
+      };
+      monthlyRevenue: {
+        year: number;
+        month: number;
+        revenue: number;
+        orders: number;
+      }[];
+      categoryDistribution: {
+        category: string;
+        revenue: number;
+        share: number;
+      }[];
+      topProducts: {
+        id: string;
+        name: string;
+        sold: number;
+        price: string;
+        image?: string;
+      }[];
+    };
   };
   responses: never;
   parameters: never;
@@ -2367,7 +2468,27 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  AppController_getHealth: {
+  "AppController_getHealth[0]": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Service is operational */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HealthResponseDto"];
+        };
+      };
+    };
+  };
+  "AppController_getHealth[1]": {
     parameters: {
       query?: never;
       header?: never;
@@ -2951,6 +3072,26 @@ export interface operations {
           "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Internal server error */
       500: {
         headers: {
@@ -3176,6 +3317,26 @@ export interface operations {
            *       "title": "Unauthorized",
            *       "status": 401,
            *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
@@ -5328,6 +5489,46 @@ export interface operations {
           };
         };
       };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   WarehouseController_create_v1: {
@@ -5462,6 +5663,46 @@ export interface operations {
           };
         };
       };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Resource not found (Not Found) */
       404: {
         headers: {
@@ -5504,6 +5745,46 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["WarehouseStockResponseDto"][];
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
       /** @description Resource not found (Not Found) */
@@ -5639,6 +5920,26 @@ export interface operations {
           "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
+      /** @description Resource conflict (Conflict) */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/conflict",
+           *       "title": "Conflict",
+           *       "status": 409,
+           *       "detail": "Email address already exists",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
     };
   };
   WarehouseController_getById_v1: {
@@ -5661,6 +5962,46 @@ export interface operations {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["WarehouseResponseDto"];
           };
+        };
+      };
+      /** @description Authentication required or invalid token (Unauthorized) */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
       /** @description Resource not found (Not Found) */
@@ -6287,7 +6628,7 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["PaginatedApiResponseDto"] & {
-            data?: components["schemas"]["QuoteResponseDto"][];
+            data?: components["schemas"]["AdminQuoteResponseDto"][];
             meta?: components["schemas"]["PaginationMetaDto"];
           };
         };
@@ -6378,7 +6719,7 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["QuoteResponseDto"];
+            data?: components["schemas"]["RfqResponseDto"];
           };
         };
       };
@@ -6428,7 +6769,7 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["QuoteResponseDto"];
+            data?: components["schemas"]["AdminQuoteResponseDto"];
           };
         };
       };
@@ -6517,7 +6858,7 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["QuoteResponseDto"];
+            data?: components["schemas"]["AdminQuoteResponseDto"];
           };
         };
       };
@@ -6605,7 +6946,7 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["QuoteResponseDto"];
+            data?: components["schemas"]["AdminQuoteResponseDto"];
           };
         };
       };
@@ -6720,7 +7061,7 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["QuoteResponseDto"];
+            data?: components["schemas"]["AdminQuoteResponseDto"];
           };
         };
       };
@@ -7824,6 +8165,16 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["ExpireOrdersResponseDto"];
+          };
+        };
+      };
       /** @description Authentication required or invalid token (Unauthorized) */
       401: {
         headers: {
@@ -8255,6 +8606,26 @@ export interface operations {
           "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
         };
       };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
       /** @description Resource not found (Not Found) */
       404: {
         headers: {
@@ -8267,6 +8638,74 @@ export interface operations {
            *       "title": "Not Found",
            *       "status": 404,
            *       "detail": "Requested resource not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+    };
+  };
+  AnalyticsController_getDashboardAnalytics_v1: {
+    parameters: {
+      query?: {
+        year?: number;
+        locale?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["DashboardAnalyticsResponseDto"];
+          };
+        };
+      };
+      /**
+       * @description Authentication required or invalid token (Unauthorized)
+       *
+       *     Authentication required or invalid token (Unauthorized)
+       */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /** @description Forbidden access (Forbidden) */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"
