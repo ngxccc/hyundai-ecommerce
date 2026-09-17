@@ -6,6 +6,7 @@
 
 import createClient, { type Middleware } from "openapi-fetch";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import { env } from "@/env";
 import type { paths } from "@/types/api-schema";
 import type { ApiProblemDetails } from "@/types/api";
@@ -43,6 +44,7 @@ const authMiddleware: Middleware = {
       );
     }
     try {
+      await connection();
       const cookieStore = await cookies();
       if (!request.headers.has("Accept-Language")) {
         const locale = cookieStore.get("NEXT_LOCALE")?.value;

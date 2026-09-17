@@ -7,14 +7,14 @@ import {
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import { cookies } from "next/headers";
-
-export const dynamic = "force-dynamic";
+import { connection } from "next/server";
 
 export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  await connection();
   const session = await getCachedSession();
   const allowedRoles = ["ADMIN", "SALES"];
   const isAdmin =

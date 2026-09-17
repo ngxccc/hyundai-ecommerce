@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { type Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 export async function generateMetadata({
   params,
@@ -29,6 +30,7 @@ export default async function AdminQuoteExportPage({
 }: {
   params: Promise<{ locale: string; id: string }>;
 }) {
+  await connection();
   const { id } = await params;
   await requireAuth();
 

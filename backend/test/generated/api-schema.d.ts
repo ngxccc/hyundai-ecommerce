@@ -2434,10 +2434,11 @@ export interface components {
       metrics: {
         totalRevenue: number;
         totalOrders: number;
-        totalProducts: number;
+        averageOrderValue: number;
         newCustomers: number;
         revenueGrowth: number;
         ordersGrowth: number;
+        aovGrowth: number;
         customersGrowth: number;
       };
       monthlyRevenue: {

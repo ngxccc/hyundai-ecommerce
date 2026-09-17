@@ -22,8 +22,10 @@ describe("AnalyticsService", () => {
   const createMockDb = (responses: unknown[][]) => {
     let callIdx = 0;
     return {
-      select: mock(() => {
-        const currentIdx = callIdx++;
+      select: () => {
+        const currentData = responses[callIdx] ?? [];
+        callIdx++;
+
         const chain: QueryMockChain = {
           from: () => chain,
           where: () => chain,
@@ -31,17 +33,12 @@ describe("AnalyticsService", () => {
           leftJoin: () => chain,
           groupBy: () => chain,
           orderBy: () => chain,
-          limit: () => {
-            const res = responses[currentIdx] ?? [];
-            return Promise.resolve(res);
-          },
-          then: (resolve, reject) => {
-            const res = responses[currentIdx] ?? [];
-            return Promise.resolve(res).then(resolve, reject);
-          },
+          limit: () => Promise.resolve(currentData),
+          then: (resolve, reject) =>
+            Promise.resolve(currentData).then(resolve, reject),
         };
         return chain;
-      }),
+      },
     } as unknown as DrizzleDB;
   };
 
@@ -49,17 +46,16 @@ describe("AnalyticsService", () => {
     const mockDb = createMockDb([
       [{ totalRevenue: "500000000", totalOrders: "10" }], // 1. Current year orders
       [{ totalRevenue: "400000000", totalOrders: "8" }], // 2. Prev year orders
-      [{ totalProducts: "92" }], // 3. Total products
-      [{ newCustomers: "15" }], // 4. Curr year customers
-      [{ newCustomers: "10" }], // 5. Prev year customers
+      [{ newCustomers: "15" }], // 3. Curr year customers
+      [{ newCustomers: "10" }], // 4. Prev year customers
       [
         { month: 1, revenue: "200000000", orders: 4 },
         { month: 2, revenue: "300000000", orders: 6 },
-      ], // 6. Monthly revenue
+      ], // 5. Monthly revenue
       [
         { categoryName: "Máy phát điện", revenue: "350000000" },
         { categoryName: "Phụ tùng", revenue: "150000000" },
-      ], // 7. Category revenue
+      ], // 6. Category revenue
       [
         {
           id: "prod-1",
@@ -68,7 +64,7 @@ describe("AnalyticsService", () => {
           images: ["https://example.com/p1.jpg"],
           sold: 10,
         },
-      ], // 8. Top products
+      ], // 7. Top products
     ]);
 
     const service = new AnalyticsService(mockDb);
@@ -77,10 +73,11 @@ describe("AnalyticsService", () => {
     expect(result.year).toBe(2026);
     expect(result.metrics.totalRevenue).toBe(500000000);
     expect(result.metrics.totalOrders).toBe(10);
-    expect(result.metrics.totalProducts).toBe(92);
+    expect(result.metrics.averageOrderValue).toBe(50000000); // 500m / 10 orders
     expect(result.metrics.newCustomers).toBe(15);
     expect(result.metrics.revenueGrowth).toBe(25); // ((500 - 400) / 400) * 100
     expect(result.metrics.ordersGrowth).toBe(25); // ((10 - 8) / 8) * 100
+    expect(result.metrics.aovGrowth).toBe(0); // 50m vs (400m / 8 = 50m) -> 0%
     expect(result.metrics.customersGrowth).toBe(50); // ((15 - 10) / 10) * 100
 
     expect(result.monthlyRevenue).toHaveLength(12);
@@ -100,7 +97,7 @@ describe("AnalyticsService", () => {
   });
 
   it("should handle empty database gracefully with zero metrics", async () => {
-    const mockDb = createMockDb([[], [], [], [], [], [], [], []]);
+    const mockDb = createMockDb([[], [], [], [], [], [], []]);
 
     const service = new AnalyticsService(mockDb);
     const result = await service.getDashboardAnalytics({});
@@ -109,7 +106,9 @@ describe("AnalyticsService", () => {
     expect(result.year).toBe(currentYear);
     expect(result.metrics.totalRevenue).toBe(0);
     expect(result.metrics.totalOrders).toBe(0);
+    expect(result.metrics.averageOrderValue).toBe(0);
     expect(result.metrics.revenueGrowth).toBe(0);
+    expect(result.metrics.aovGrowth).toBe(0);
     expect(result.monthlyRevenue).toHaveLength(12);
     expect(result.monthlyRevenue[0]?.revenue).toBe(0);
     expect(result.categoryDistribution).toHaveLength(0);
@@ -122,10 +121,11 @@ describe("AnalyticsService", () => {
       metrics: {
         totalRevenue: 888000000,
         totalOrders: 40,
-        totalProducts: 92,
+        averageOrderValue: 22200000,
         newCustomers: 20,
         revenueGrowth: 30,
         ordersGrowth: 20,
+        aovGrowth: 8.3,
         customersGrowth: 10,
       },
       monthlyRevenue: [
@@ -161,7 +161,7 @@ describe("AnalyticsService", () => {
   });
 
   it("should write to Redis cache on cache miss", async () => {
-    const mockDb = createMockDb([[], [], [], [], [], [], [], []]);
+    const mockDb = createMockDb([[], [], [], [], [], [], []]);
     const getMock = mock(() => Promise.resolve(null));
     const setMock = mock(() => Promise.resolve("OK"));
 
@@ -184,10 +184,14 @@ describe("AnalyticsService", () => {
   });
 
   it("should fail-open and query database when Redis throws an error", async () => {
-    const mockDb = createMockDb([[], [], [], [], [], [], [], []]);
+    const mockDb = createMockDb([[], [], [], [], [], [], []]);
+    const getMock = mock(() =>
+      Promise.reject(new Error("Redis connection refused")),
+    );
+
     const mockRedis = {
-      get: mock(() => Promise.reject(new Error("Redis connection dropped"))),
-      set: mock(() => Promise.reject(new Error("Redis write failure"))),
+      get: getMock,
+      set: mock(() => Promise.resolve("OK")),
     } as unknown as Redis;
 
     const service = new AnalyticsService(mockDb, mockRedis);

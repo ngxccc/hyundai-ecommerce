@@ -12651,10 +12651,8 @@
                 "minimum": -9007199254740991,
                 "maximum": 9007199254740991
               },
-              "totalProducts": {
-                "type": "integer",
-                "minimum": -9007199254740991,
-                "maximum": 9007199254740991
+              "averageOrderValue": {
+                "type": "number"
               },
               "newCustomers": {
                 "type": "integer",
@@ -12667,6 +12665,9 @@
               "ordersGrowth": {
                 "type": "number"
               },
+              "aovGrowth": {
+                "type": "number"
+              },
               "customersGrowth": {
                 "type": "number"
               }
@@ -12674,10 +12675,11 @@
             "required": [
               "totalRevenue",
               "totalOrders",
-              "totalProducts",
+              "averageOrderValue",
               "newCustomers",
               "revenueGrowth",
               "ordersGrowth",
+              "aovGrowth",
               "customersGrowth"
             ]
           },

@@ -3,13 +3,9 @@ import { CategoryForm } from "@/features/categories/components/category-form";
 import { categoriesApi } from "@/features/categories/api/categories.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
-import { routing } from "@/i18n/routing";
 import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
+import { connection } from "next/server";
 import type { Metadata } from "next";
-
-export const generateStaticParams = () => {
-  return routing.locales.map((locale) => ({ locale }));
-};
 
 export async function generateMetadata({
   params,
@@ -29,6 +25,7 @@ export async function generateMetadata({
 }
 
 export default async function AdminNewCategoryPage() {
+  await connection();
   const tNav = await getTranslations("adminDashboard.nav");
   const tForm = await getTranslations("adminCategoryForm");
 

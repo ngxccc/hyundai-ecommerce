@@ -1,6 +1,4 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
@@ -11,12 +9,12 @@ interface ProductHeaderProps {
   showAddButton?: boolean;
 }
 
-export const ProductHeader = ({
+export async function ProductHeader({
   title,
   description,
   showAddButton = true,
-}: ProductHeaderProps) => {
-  const t = useTranslations("adminProducts.header");
+}: ProductHeaderProps) {
+  const t = await getTranslations("adminProducts.header");
 
   return (
     <div className="flex flex-col gap-4 pb-1 sm:flex-row sm:items-center sm:justify-between">
@@ -39,4 +37,4 @@ export const ProductHeader = ({
       )}
     </div>
   );
-};
+}

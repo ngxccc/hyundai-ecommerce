@@ -7,12 +7,8 @@ import { customersApi } from "@/features/customers/api/customers.api";
 import type { AdminUser } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
-import { routing } from "@/i18n/routing";
+import { connection } from "next/server";
 import type { Metadata } from "next";
-
-export const generateStaticParams = () => {
-  return routing.locales.map((locale) => ({ locale }));
-};
 
 export async function generateMetadata({
   params,
@@ -29,6 +25,7 @@ export async function generateMetadata({
 }
 
 export default async function AdminCustomersPage() {
+  await connection();
   const tNav = await getTranslations("adminDashboard.nav");
   const tCustomers = await getTranslations("adminCustomers");
 

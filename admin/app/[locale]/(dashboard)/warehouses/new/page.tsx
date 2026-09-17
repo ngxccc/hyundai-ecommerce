@@ -5,12 +5,8 @@ import {
 } from "@/features/warehouses/components";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
-import { routing } from "@/i18n/routing";
+import { connection } from "next/server";
 import type { Metadata } from "next";
-
-export const generateStaticParams = () => {
-  return routing.locales.map((locale) => ({ locale }));
-};
 
 export async function generateMetadata({
   params,
@@ -27,6 +23,7 @@ export async function generateMetadata({
 }
 
 export default async function NewWarehousePage() {
+  await connection();
   const tNav = await getTranslations("adminDashboard.nav");
   const tForm = await getTranslations("adminWarehouseForm");
   const tHeader = await getTranslations("adminWarehouses.header");

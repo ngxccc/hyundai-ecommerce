@@ -1,6 +1,4 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
@@ -11,12 +9,12 @@ interface BrandHeaderProps {
   showAddButton?: boolean;
 }
 
-export const BrandHeader = ({
+export async function BrandHeader({
   title,
   description,
   showAddButton = true,
-}: BrandHeaderProps) => {
-  const t = useTranslations("adminBrands.header");
+}: BrandHeaderProps) {
+  const t = await getTranslations("adminBrands.header");
 
   return (
     <div className="flex flex-col gap-4 pb-1 sm:flex-row sm:items-center sm:justify-between">
@@ -39,4 +37,4 @@ export const BrandHeader = ({
       )}
     </div>
   );
-};
+}

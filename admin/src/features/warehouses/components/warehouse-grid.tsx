@@ -1,5 +1,3 @@
-"use client";
-
 import { WarehouseCard } from "./warehouse-card";
 import type { AdminWarehouse } from "@/types/api";
 

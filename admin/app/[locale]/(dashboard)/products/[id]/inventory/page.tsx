@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { connection } from "next/server";
 import { productsApi } from "@/features/products/api/products.api";
 import { warehousesApi } from "@/features/warehouses/api/warehouses.api";
 import { notFound } from "next/navigation";
@@ -18,6 +19,7 @@ export default async function ProductInventoryPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await connection();
   const { id } = await params;
 
   const [productRes, t, tNav, warehousesRes, warehouseStocksRes] =

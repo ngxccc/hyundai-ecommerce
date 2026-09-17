@@ -1,5 +1,3 @@
-"use client";
-
 import { CategoryCard } from "./category-card";
 import type { AdminCategory } from "@/types/api";
 

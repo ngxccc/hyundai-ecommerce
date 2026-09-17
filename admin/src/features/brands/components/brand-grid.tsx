@@ -1,5 +1,3 @@
-"use client";
-
 import { BrandCard } from "./brand-card";
 import type { AdminBrand } from "@/types/api";
 

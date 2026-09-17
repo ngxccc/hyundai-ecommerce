@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { connection } from "next/server";
 import { ProductForm } from "@/features/products/components/product-form";
 import { productsApi } from "@/features/products/api/products.api";
 import { categoriesApi } from "@/features/categories/api/categories.api";
@@ -12,6 +13,7 @@ export default async function EditProductPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await connection();
   const { id } = await params;
 
   const [productRes, t, tNav, categoriesRes, brandsRes] = await Promise.all([

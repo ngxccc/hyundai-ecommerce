@@ -5,8 +5,8 @@ import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import type { Metadata } from "next";
-
 export async function generateMetadata({
   params,
 }: {
@@ -29,6 +29,7 @@ export default async function AdminEditBrandPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await connection();
   const { id } = await params;
   const tNav = await getTranslations("adminDashboard.nav");
   const tForm = await getTranslations("adminBrandForm");

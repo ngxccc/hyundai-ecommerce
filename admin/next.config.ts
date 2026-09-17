@@ -10,6 +10,8 @@ const withNextIntl = createNextIntlPlugin({
 });
 
 const nextConfig: NextConfig = {
+  reactCompiler: true,
+  cacheComponents: true,
   turbopack: {
     root: path.resolve(import.meta.dirname, ".."),
   },
@@ -28,6 +30,18 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-slot",
+      "@radix-ui/react-select",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-tooltip",
+      "react-hook-form",
+      "recharts",
+    ],
     serverActions: {
       bodySizeLimit: "20mb",
     },

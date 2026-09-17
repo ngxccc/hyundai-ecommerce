@@ -3,10 +3,11 @@ import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { OrderDetail } from "@/features/orders/components";
 import { getCachedSession } from "@/lib/session";
 import { ordersApi } from "@/features/orders/api/orders.api";
+import type { Locale } from "next-intl";
+import type { UserRole } from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { type Locale } from "next-intl";
-import type { UserRole } from "@/lib/action-auth";
+import { connection } from "next/server";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -28,6 +29,7 @@ export default async function AdminOrderDetailPage({
 }: {
   params: Promise<{ locale: string; id: string }>;
 }) {
+  await connection();
   const { id } = await params;
   const tNav = await getTranslations("adminDashboard.nav");
   const tHeader = await getTranslations("adminOrders");

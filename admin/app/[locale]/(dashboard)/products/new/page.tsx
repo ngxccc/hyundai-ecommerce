@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { connection } from "next/server";
 import { ProductForm } from "@/features/products/components/product-form";
 import { ProductHeader } from "@/features/products/components";
 import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
@@ -6,6 +7,7 @@ import { categoriesApi } from "@/features/categories/api/categories.api";
 import { brandsApi } from "@/features/brands/api/brands.api";
 
 export default async function CreateProductPage() {
+  await connection();
   const [t, tNav, categoriesRes, brandsRes] = await Promise.all([
     getTranslations("adminProductForm"),
     getTranslations("adminDashboard.nav"),

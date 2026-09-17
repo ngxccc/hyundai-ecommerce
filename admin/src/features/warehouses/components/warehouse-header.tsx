@@ -1,6 +1,4 @@
-"use client";
-
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
@@ -11,12 +9,12 @@ interface WarehouseHeaderProps {
   showAddButton?: boolean;
 }
 
-export const WarehouseHeader = ({
+export async function WarehouseHeader({
   title,
   description,
   showAddButton = true,
-}: WarehouseHeaderProps) => {
-  const t = useTranslations("adminWarehouses.header");
+}: WarehouseHeaderProps) {
+  const t = await getTranslations("adminWarehouses.header");
 
   return (
     <div className="flex flex-col gap-4 pb-1 sm:flex-row sm:items-center sm:justify-between">
@@ -39,4 +37,4 @@ export const WarehouseHeader = ({
       )}
     </div>
   );
-};
+}

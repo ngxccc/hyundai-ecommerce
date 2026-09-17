@@ -3,9 +3,10 @@ import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { QuoteHeader, QuotePricingCockpit } from "@/features/quotes/components";
 import { quotesApi } from "@/features/quotes/api/quotes.api";
 import { requireAuth } from "@/lib/action-auth";
+import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { type Locale } from "next-intl";
+import { connection } from "next/server";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -28,6 +29,7 @@ export default async function AdminQuoteDetailPage({
 }: {
   params: Promise<{ locale: string; id: string }>;
 }) {
+  await connection();
   const { id } = await params;
   await requireAuth();
   const tNav = await getTranslations("adminDashboard.nav");

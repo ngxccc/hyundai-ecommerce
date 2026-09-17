@@ -5,6 +5,7 @@ import { requireAuth } from "@/lib/action-auth";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import type { Metadata } from "next";
+import { connection } from "next/server";
 
 export async function generateMetadata({
   params,
@@ -23,6 +24,7 @@ export async function generateMetadata({
 }
 
 export default async function AdminNewQuotePage() {
+  await connection();
   await requireAuth();
 
   const tNav = await getTranslations("adminDashboard.nav");

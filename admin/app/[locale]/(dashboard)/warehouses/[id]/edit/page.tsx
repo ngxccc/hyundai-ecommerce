@@ -7,11 +7,8 @@ import {
 import { warehousesApi } from "@/features/warehouses/api/warehouses.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
+import { connection } from "next/server";
 import type { Metadata } from "next";
-
-export const generateStaticParams = () => {
-  return []; // SSR for edit pages
-};
 
 export async function generateMetadata({
   params,
@@ -32,6 +29,7 @@ export default async function EditWarehousePage({
 }: {
   params: Promise<{ locale: string; id: string }>;
 }) {
+  await connection();
   const { id } = await params;
 
   const { data: res } = await warehousesApi.getById(id);

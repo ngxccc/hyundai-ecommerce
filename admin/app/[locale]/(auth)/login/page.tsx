@@ -1,14 +1,9 @@
 import { LoginForm, AuthHeaderControls } from "@/features/auth/components";
-import { routing } from "@/i18n/routing";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import type { Metadata } from "next";
 import { COMPANY_CONFIG } from "@/constants";
-
-export const generateStaticParams = () => {
-  return routing.locales.map((locale) => ({ locale }));
-};
-
+import { connection } from "next/server";
+import type { Metadata } from "next";
 export async function generateMetadata({
   params,
 }: {
@@ -29,6 +24,7 @@ const AdminLoginPage = async ({
 }: {
   params: Promise<{ locale: Locale }>;
 }) => {
+  await connection();
   const resolvedParams = await params;
   const t = await getTranslations({
     locale: resolvedParams.locale,

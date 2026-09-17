@@ -25,10 +25,11 @@ export const topProductItemSchema = z.object({
 export const dashboardMetricsSchema = z.object({
   totalRevenue: z.number(),
   totalOrders: z.number().int(),
-  totalProducts: z.number().int(),
+  averageOrderValue: z.number(),
   newCustomers: z.number().int(),
   revenueGrowth: z.number(),
   ordersGrowth: z.number(),
+  aovGrowth: z.number(),
   customersGrowth: z.number(),
 });
 

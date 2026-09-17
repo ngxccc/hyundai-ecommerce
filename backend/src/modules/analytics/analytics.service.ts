@@ -111,7 +111,6 @@ export class AnalyticsService implements OnModuleDestroy {
     const [
       currYearOrdersRes,
       prevYearOrdersRes,
-      productsCountRes,
       currYearUsersRes,
       prevYearUsersRes,
       monthlyRevenueRes,
@@ -147,12 +146,6 @@ export class AnalyticsService implements OnModuleDestroy {
             lte(orders.createdAt, prevYearRange.end),
           ),
         ),
-
-      this.db
-        .select({
-          totalProducts: sql<string | number>`count(${products.id})`,
-        })
-        .from(products),
 
       this.db
         .select({
@@ -290,9 +283,13 @@ export class AnalyticsService implements OnModuleDestroy {
     const prevTotalRev = toSafeNumber(prevYearOrdersRes[0]?.totalRevenue);
     const currTotalOrders = toSafeNumber(currYearOrdersRes[0]?.totalOrders);
     const prevTotalOrders = toSafeNumber(prevYearOrdersRes[0]?.totalOrders);
-    const totalProducts = toSafeNumber(productsCountRes[0]?.totalProducts);
     const currNewCust = toSafeNumber(currYearUsersRes[0]?.newCustomers);
     const prevNewCust = toSafeNumber(prevYearUsersRes[0]?.newCustomers);
+
+    const currAov =
+      currTotalOrders > 0 ? Math.round(currTotalRev / currTotalOrders) : 0;
+    const prevAov =
+      prevTotalOrders > 0 ? Math.round(prevTotalRev / prevTotalOrders) : 0;
 
     const monthlyRevenue = Array.from({ length: 12 }, (_, i) => {
       const monthNum = i + 1;
@@ -334,10 +331,11 @@ export class AnalyticsService implements OnModuleDestroy {
       metrics: {
         totalRevenue: currTotalRev,
         totalOrders: currTotalOrders,
-        totalProducts,
+        averageOrderValue: currAov,
         newCustomers: currNewCust,
         revenueGrowth: calcGrowth(currTotalRev, prevTotalRev),
         ordersGrowth: calcGrowth(currTotalOrders, prevTotalOrders),
+        aovGrowth: calcGrowth(currAov, prevAov),
         customersGrowth: calcGrowth(currNewCust, prevNewCust),
       },
       monthlyRevenue,

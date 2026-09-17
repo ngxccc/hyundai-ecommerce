@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { META_THEME_COLORS } from "@/config/site";
@@ -77,7 +78,15 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <NextIntlClientProvider locale={locale} messages={messages}>
-            {children}
+            <Suspense
+              fallback={
+                <div className="flex min-h-[50vh] w-full items-center justify-center">
+                  <div className="border-primary size-6 animate-spin rounded-full border-2 border-t-transparent" />
+                </div>
+              }
+            >
+              {children}
+            </Suspense>
             <Toaster position="top-right" closeButton />
             <ScrollToTop />
           </NextIntlClientProvider>

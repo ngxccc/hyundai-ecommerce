@@ -4,15 +4,11 @@ import { QuoteList } from "@/features/quotes/components";
 import { quotesApi } from "@/features/quotes/api/quotes.api";
 import { OffsetPagination } from "@/components/common/offset-pagination";
 import { quoteStatusEnum } from "@/constants";
-import type { AdminQuote, QuoteStatus } from "@/types/api";
+import type { AdminQuote, QuoteQueryParams } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
-import { routing } from "@/i18n/routing";
+import { connection } from "next/server";
 import type { Metadata } from "next";
-
-export const generateStaticParams = () => {
-  return routing.locales.map((locale) => ({ locale }));
-};
 
 export async function generateMetadata({
   params,
@@ -33,6 +29,7 @@ export default async function AdminQuotesPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  await connection();
   const tNav = await getTranslations("adminDashboard.nav");
   const tHeader = await getTranslations("adminQuotes");
 
@@ -51,9 +48,11 @@ export default async function AdminQuotesPage({
       : undefined;
 
   // Validate status parameter with type guard
-  const isQuoteStatus = (val: string): val is QuoteStatus =>
+  const isQuoteStatus = (
+    val: string,
+  ): val is NonNullable<QuoteQueryParams["status"]> =>
     (quoteStatusEnum.enumValues as readonly string[]).includes(val);
-  const status =
+  const status: QuoteQueryParams["status"] =
     statusParam && isQuoteStatus(statusParam) ? statusParam : undefined;
 
   // Fetch filtered quotes with backend SQL search and offset pagination

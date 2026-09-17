@@ -7,12 +7,8 @@ import { orderStatusEnum } from "@/constants";
 import type { AdminOrder, OrderStatus } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
-import { routing } from "@/i18n/routing";
+import { connection } from "next/server";
 import type { Metadata } from "next";
-
-export const generateStaticParams = () => {
-  return routing.locales.map((locale) => ({ locale }));
-};
 
 export async function generateMetadata({
   params,
@@ -33,6 +29,7 @@ export default async function AdminOrdersPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  await connection();
   const tNav = await getTranslations("adminDashboard.nav");
   const tHeader = await getTranslations("adminOrders");
 

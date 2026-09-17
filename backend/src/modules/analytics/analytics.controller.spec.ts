@@ -10,10 +10,11 @@ describe("AnalyticsController", () => {
     metrics: {
       totalRevenue: 500000000,
       totalOrders: 25,
-      totalProducts: 92,
+      averageOrderValue: 20000000,
       newCustomers: 10,
       revenueGrowth: 15.5,
       ordersGrowth: 10.2,
+      aovGrowth: 4.8,
       customersGrowth: 5.0,
     },
     monthlyRevenue: [{ year: 2026, month: 1, revenue: 50000000, orders: 3 }],

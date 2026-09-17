@@ -10,10 +10,7 @@ import { parseProductQueryParams } from "@/features/products/utils/product-query
 import type { AdminProduct } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
-import { routing } from "@/i18n/routing";
-export const generateStaticParams = () => {
-  return routing.locales.map((locale) => ({ locale }));
-};
+import { connection } from "next/server";
 
 export const generateMetadata = async ({
   params,
@@ -34,6 +31,7 @@ export default async function AdminProductsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  await connection();
   const query = parseProductQueryParams(await searchParams);
 
   const [t, tNav, productsRes, categoriesRes, brandsRes] = await Promise.all([
