@@ -99,6 +99,9 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Public()
   @Post(AUTH_ROUTES.LOGIN)
+  @Throttle({
+    auth: { limit: 5, ttl: 60000 },
+  })
   @ApiOperation({
     summary: "Authenticate user and issue tokens",
     description:

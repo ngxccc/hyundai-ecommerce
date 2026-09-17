@@ -664,7 +664,6 @@ export class QuotesService {
       .update(quotes)
       .set({
         status: newStatus,
-        updatedAt: new Date(),
       })
       .where(eq(quotes.id, id))
       .returning({
@@ -713,7 +712,6 @@ export class QuotesService {
         .set({
           agreedPrice,
           totalPrice: newAgreedLineTotal.toFixed(2),
-          updatedAt: new Date(),
         })
         .where(eq(quoteItems.id, itemId));
 
@@ -741,7 +739,6 @@ export class QuotesService {
           subtotalPrice: newSubtotal.toFixed(2),
           vatAmount: vatAmount.toFixed(2),
           totalQuotedPrice: totalQuotedPrice.toFixed(2),
-          updatedAt: new Date(),
         })
         .where(eq(quotes.id, quoteId));
     });
@@ -796,7 +793,6 @@ export class QuotesService {
           .update(quotes)
           .set({
             status: "NEGOTIATING",
-            updatedAt: new Date(),
           })
           .where(eq(quotes.id, quoteId));
       }
@@ -935,7 +931,6 @@ export class QuotesService {
           status: "APPROVED",
           orderId: newOrder.id,
           totalQuotedPrice: totalAmountDecimal.toFixed(2),
-          updatedAt: new Date(),
         })
         .where(eq(quotes.id, quoteId));
 

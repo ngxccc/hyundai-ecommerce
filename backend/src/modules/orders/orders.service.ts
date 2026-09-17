@@ -945,7 +945,6 @@ export class OrdersService {
             amount: formattedAmount,
             method: "CASH",
             status: "COMPLETED",
-            updatedAt: new Date(),
           })
           .where(eq(payments.id, existingPayment.id));
       } else {
@@ -970,7 +969,6 @@ export class OrdersService {
           depositAmount: formattedAmount,
           remainingAmount: "0.00",
           note: updatedNote,
-          updatedAt: new Date(),
         })
         .where(eq(orders.id, order.id));
 

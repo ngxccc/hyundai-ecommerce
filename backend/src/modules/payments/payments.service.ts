@@ -19,6 +19,7 @@ import {
 } from "@/database/schemas";
 import { env } from "@/env";
 import { OUTBOX_EVENT_TYPE } from "@/common/constants/event.constant";
+import { isPayOSTimestampValid } from "@/common/utils/payos-crypto.util";
 import {
   formatPayOSDescription,
   generatePayOSOrderCode,
@@ -104,41 +105,41 @@ export class PaymentsService {
     const orderCode = generatePayOSOrderCode();
     const formattedAmount = payableAmount.toFixed(2);
 
-    // Save pending payment transaction
-    await this.db.insert(paymentTransactions).values({
-      orderId: order.id,
-      amount: formattedAmount,
-      paymentMethod: "PAYOS",
-      transactionType: dto.transactionType,
-      status: "PENDING",
-      orderCode,
-    });
+    // Save pending payment transaction and payment record atomically in a transaction
+    await this.db.transaction(async (tx) => {
+      await tx.insert(paymentTransactions).values({
+        orderId: order.id,
+        amount: formattedAmount,
+        paymentMethod: "PAYOS",
+        transactionType: dto.transactionType,
+        status: "PENDING",
+        orderCode,
+      });
 
-    // Save or update base payment record
-    const [existingPayment] = await this.db
-      .select()
-      .from(payments)
-      .where(eq(payments.orderId, order.id))
-      .limit(1);
+      const [existingPayment] = await tx
+        .select()
+        .from(payments)
+        .where(eq(payments.orderId, order.id))
+        .limit(1);
 
-    if (existingPayment) {
-      await this.db
-        .update(payments)
-        .set({
+      if (existingPayment) {
+        await tx
+          .update(payments)
+          .set({
+            amount: formattedAmount,
+            method: "PAYOS",
+            status: "PENDING",
+          })
+          .where(eq(payments.id, existingPayment.id));
+      } else {
+        await tx.insert(payments).values({
+          orderId: order.id,
           amount: formattedAmount,
           method: "PAYOS",
           status: "PENDING",
-          updatedAt: new Date(),
-        })
-        .where(eq(payments.id, existingPayment.id));
-    } else {
-      await this.db.insert(payments).values({
-        orderId: order.id,
-        amount: formattedAmount,
-        method: "PAYOS",
-        status: "PENDING",
-      });
-    }
+        });
+      }
+    });
 
     const description = formatPayOSDescription(order.orderNumber, order.id);
     const returnUrl = dto.returnUrl ?? `${env.FRONTEND_URL}/checkout/success`;
@@ -187,6 +188,13 @@ export class PaymentsService {
       throw new I18nBadRequestException("payments.INVALID_PAYMENT_SIGNATURE");
     }
 
+    if (
+      webhookDto.data.transactionDateTime &&
+      !isPayOSTimestampValid(webhookDto.data.transactionDateTime)
+    ) {
+      throw new I18nBadRequestException("payments.INVALID_PAYMENT_SIGNATURE");
+    }
+
     // Acknowledge non-success webhook codes (cancelled, expired) without error
     if (webhookDto.code !== PAYOS_RESPONSE_CODE.SUCCESS) {
       return { processed: false, reason: "Non-success code acknowledged" };
@@ -220,7 +228,7 @@ export class PaymentsService {
         if (amount < expectedAmount) {
           await this.db
             .update(paymentTransactions)
-            .set({ status: "FAILED", updatedAt: new Date() })
+            .set({ status: "FAILED" })
             .where(eq(paymentTransactions.id, tx.id));
 
           throw new I18nBadRequestException("payments.PAYMENT_AMOUNT_MISMATCH");
@@ -233,23 +241,19 @@ export class PaymentsService {
           .limit(1);
 
         await this.db.transaction(async (dbTx) => {
-          // Update transaction status
           await dbTx
             .update(paymentTransactions)
             .set({
               status: "COMPLETED",
               referenceCode: reference ?? null,
-              updatedAt: new Date(),
             })
             .where(eq(paymentTransactions.id, tx.id));
 
-          // Update payment status
           await dbTx
             .update(payments)
             .set({
               status: "COMPLETED",
               rawPayload: JSON.stringify(webhookDto.data),
-              updatedAt: new Date(),
             })
             .where(eq(payments.orderId, tx.orderId));
 
@@ -275,7 +279,6 @@ export class PaymentsService {
                 status: newStatus,
                 depositAmount: depositAmt,
                 remainingAmount: remainingAmt,
-                updatedAt: new Date(),
               })
               .where(eq(orders.id, order.id));
 
@@ -324,7 +327,6 @@ export class PaymentsService {
             .set({
               status: "COMPLETED",
               referenceCode: reference ?? null,
-              updatedAt: new Date(),
             })
             .where(eq(debtRepayments.id, debt.id));
 
@@ -333,10 +335,8 @@ export class PaymentsService {
             .update(users)
             .set({
               currentDebt: sql`GREATEST(0, ${users.currentDebt} - ${debt.amount})`,
-              updatedAt: new Date(),
             })
             .where(eq(users.id, debt.userId));
-
           await dbTx.insert(outboxEvents).values({
             eventType: OUTBOX_EVENT_TYPE.DEBT_REPAID,
             payload: {
@@ -423,7 +423,6 @@ export class PaymentsService {
             amount: formattedAmount,
             method: "CASH",
             status: "COMPLETED",
-            updatedAt: new Date(),
           })
           .where(eq(payments.id, existingPayment.id));
       } else {
@@ -449,7 +448,6 @@ export class PaymentsService {
           depositAmount: formattedAmount,
           remainingAmount: "0.00",
           note: updatedNote,
-          updatedAt: new Date(),
         })
         .where(eq(orders.id, order.id));
 
@@ -543,7 +541,6 @@ export class PaymentsService {
           .update(users)
           .set({
             currentDebt: sql`GREATEST(0, ${users.currentDebt} - ${formattedAmount})`,
-            updatedAt: new Date(),
           })
           .where(eq(users.id, dealer.id));
 
