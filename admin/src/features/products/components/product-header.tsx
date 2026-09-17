@@ -11,7 +11,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Link, usePathname } from "@/i18n/routing";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 import { useAdminNav } from "@/features/dashboard/hooks";
 
 interface ProductHeaderProps {
