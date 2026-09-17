@@ -35,7 +35,7 @@ export function ScrollToTop() {
     <Button
       onClick={scrollToTop}
       size="icon"
-      className="fixed right-8 bottom-8 z-50 h-12 w-12 rounded-full shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+      className="fixed right-8 bottom-8 z-50 h-12 w-12 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl"
       aria-label="Lên đầu trang"
     >
       <ArrowUp className="h-6 w-6" />

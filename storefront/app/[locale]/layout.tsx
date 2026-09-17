@@ -11,6 +11,7 @@ import { Header } from "@/features/home/components";
 import { Analytics } from "@vercel/analytics/next";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { Toaster } from "@/components/ui/sonner";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({
   subsets: ["vietnamese", "latin"],
@@ -140,6 +141,17 @@ async function LocalizedLayoutContent({
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
+      <NextTopLoader
+        color="#002C6C"
+        initialPosition={0.08}
+        crawlSpeed={200}
+        height={3}
+        crawl={true}
+        showSpinner={false}
+        easing="ease"
+        speed={200}
+        shadow="0 0 10px #002C6C,0 0 5px #002C6C"
+      />
       <Header />
       <main className="flex-1 pt-16">{children}</main>
       <Toaster position="top-right" closeButton />
