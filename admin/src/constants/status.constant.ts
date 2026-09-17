@@ -42,3 +42,30 @@ export const quoteStatusEnum = {
     "EXPIRED",
   ] as const,
 } as const;
+
+/**
+ * Shared status badge styling classes complying with 60-30-10 neutral flat design.
+ */
+export const STATUS_BADGE_CLASSES: Record<string, string> = {
+  PENDING: "border-border/80 bg-muted/40 text-foreground",
+  PROCESSING: "border-border/80 bg-muted/40 text-foreground",
+  SHIPPED: "border-border/80 bg-muted/40 text-foreground",
+  DELIVERED: "border-border/80 bg-muted/40 text-foreground",
+  COMPLETED: "border-border/80 bg-muted/40 text-foreground",
+  CANCELLED: "border-destructive/30 bg-destructive/10 text-destructive",
+  REFUNDED: "border-destructive/30 bg-destructive/10 text-destructive",
+  DRAFT: "border-border/80 bg-muted/40 text-foreground",
+  SUBMITTED: "border-border/80 bg-muted/40 text-foreground",
+  NEGOTIATING: "border-border/80 bg-muted/40 text-foreground",
+  APPROVED: "border-border/80 bg-muted/40 text-foreground",
+  REJECTED: "border-destructive/30 bg-destructive/10 text-destructive",
+  EXPIRED: "border-muted text-muted-foreground",
+};
+
+export function getStatusBadgeClass(status?: string | null): string {
+  if (!status) return "border-border/80 bg-muted/40 text-foreground";
+  return (
+    STATUS_BADGE_CLASSES[status.toUpperCase()] ??
+    "border-border/80 bg-muted/40 text-foreground"
+  );
+}

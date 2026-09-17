@@ -1,7 +1,6 @@
 "use client";
 
 import { useTransition, useState } from "react";
-import { useTranslations } from "next-intl";
 import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/sonner";
@@ -16,37 +15,51 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { deleteBrandAction } from "../actions/brand.actions";
 import { useRouter } from "next/navigation";
 
-interface DeleteBrandButtonProps {
-  brandId: string;
-  brandName: string;
+export interface EntityDeleteButtonProps {
+  entityId: string;
+  onDelete: (id: string) => Promise<{ success: boolean; error?: string }>;
+  dialogTitle: string;
+  dialogDescription: string;
+  successMessage: string;
+  errorMessage: string;
+  cancelLabel?: string;
+  confirmLabel?: string;
+  deletingLabel?: string;
+  buttonTooltip?: string;
 }
 
-export const DeleteBrandButton = ({
-  brandId,
-  brandName,
-}: DeleteBrandButtonProps) => {
-  const t = useTranslations("adminBrands");
+/**
+ * Reusable Enterprise Entity Deletion Button with Confirmation Alert Dialog.
+ * Enforces AHA Rule of Three across Brand, Category, Warehouse, and Product deletion flows.
+ */
+export function EntityDeleteButton({
+  entityId,
+  onDelete,
+  dialogTitle,
+  dialogDescription,
+  successMessage,
+  errorMessage,
+  cancelLabel = "Hủy",
+  confirmLabel = "Xóa",
+  deletingLabel = "Đang xóa...",
+  buttonTooltip,
+}: EntityDeleteButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = () => {
     startTransition(async () => {
-      const result = await deleteBrandAction(brandId);
+      const result = await onDelete(entityId);
 
       if (result.success) {
-        toast.success(t("messages.deleteSuccess"));
+        toast.success(successMessage);
         setIsOpen(false);
         router.refresh();
       } else {
-        toast.error(
-          "error" in result && result.error
-            ? result.error
-            : t("messages.deleteError"),
-        );
+        toast.error(result.error ?? errorMessage);
       }
     });
   };
@@ -58,21 +71,19 @@ export const DeleteBrandButton = ({
           variant="ghost"
           size="icon"
           className="text-destructive hover:bg-destructive/20 hover:text-destructive h-8 w-8 transition-colors"
-          title={t("card.actions.delete")}
+          title={buttonTooltip}
         >
           <Trash className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t("dialogs.delete.title")}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {t("dialogs.delete.description", { brandName })}
-          </AlertDialogDescription>
+          <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
+          <AlertDialogDescription>{dialogDescription}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>
-            {t("dialogs.delete.cancel")}
+            {cancelLabel}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={(e) => {
@@ -82,12 +93,10 @@ export const DeleteBrandButton = ({
             disabled={isPending}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            {isPending
-              ? t("dialogs.delete.deleting")
-              : t("dialogs.delete.confirm")}
+            {isPending ? deletingLabel : confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
-};
+}

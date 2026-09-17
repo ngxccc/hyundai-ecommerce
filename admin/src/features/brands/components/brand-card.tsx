@@ -9,14 +9,14 @@ import Image from "next/image";
 import { CldImage } from "next-cloudinary";
 import { Link } from "@/i18n/routing";
 import type { AdminBrand } from "@/types/api";
-
 import { canUseCldImage } from "@/lib";
-
-import { DeleteBrandButton } from "./delete-brand-button";
+import { EntityDeleteButton } from "@/components/common";
+import { deleteBrandAction } from "../actions/brand.actions";
 import { cn } from "cn";
 
 export const BrandCard = ({ brand }: { brand: AdminBrand }) => {
-  const t = useTranslations("adminBrands.card");
+  const t = useTranslations("adminBrands");
+  const cardT = useTranslations("adminBrands.card");
 
   const status = brand.isActive ? "active" : "inactive";
   const image = brand.logo?.length
@@ -35,7 +35,7 @@ export const BrandCard = ({ brand }: { brand: AdminBrand }) => {
               : "border-destructive/40 text-destructive",
           )}
         >
-          {t(`status.${status}`)}
+          {cardT(`status.${status}`)}
         </Badge>
       </div>
 
@@ -78,12 +78,25 @@ export const BrandCard = ({ brand }: { brand: AdminBrand }) => {
                 variant="ghost"
                 size="icon"
                 className="text-muted-foreground hover:bg-muted hover:text-foreground h-8 w-8 transition-colors"
-                title={t("actions.edit")}
+                title={cardT("actions.edit")}
               >
                 <Edit className="h-4 w-4" />
               </Button>
             </Link>
-            <DeleteBrandButton brandId={brand.id} brandName={brand.name} />
+            <EntityDeleteButton
+              entityId={brand.id}
+              onDelete={deleteBrandAction}
+              dialogTitle={t("dialogs.delete.title")}
+              dialogDescription={t("dialogs.delete.description", {
+                brandName: brand.name,
+              })}
+              successMessage={t("messages.deleteSuccess")}
+              errorMessage={t("messages.deleteError")}
+              cancelLabel={t("dialogs.delete.cancel")}
+              confirmLabel={t("dialogs.delete.confirm")}
+              deletingLabel={t("dialogs.delete.deleting")}
+              buttonTooltip={cardT("actions.delete")}
+            />
           </div>
         </div>
       </div>

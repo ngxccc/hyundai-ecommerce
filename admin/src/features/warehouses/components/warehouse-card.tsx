@@ -7,12 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import type { AdminWarehouse } from "@/types/api";
-
-import { DeleteWarehouseButton } from "./delete-warehouse-button";
+import { EntityDeleteButton } from "@/components/common";
+import { deleteWarehouseAction } from "../actions/warehouse.actions";
 import { cn } from "cn";
 
 export const WarehouseCard = ({ warehouse }: { warehouse: AdminWarehouse }) => {
-  const t = useTranslations("adminWarehouses.card");
+  const t = useTranslations("adminWarehouses");
+  const cardT = useTranslations("adminWarehouses.card");
 
   const status = warehouse.isActive ? "active" : "inactive";
 
@@ -31,7 +32,7 @@ export const WarehouseCard = ({ warehouse }: { warehouse: AdminWarehouse }) => {
               : "border-destructive/40 text-destructive",
           )}
         >
-          {t(`status.${status}`)}
+          {cardT(`status.${status}`)}
         </Badge>
       </div>
 
@@ -56,14 +57,24 @@ export const WarehouseCard = ({ warehouse }: { warehouse: AdminWarehouse }) => {
                 variant="ghost"
                 size="icon"
                 className="text-muted-foreground hover:bg-muted hover:text-foreground h-8 w-8 transition-colors"
-                title={t("actions.edit")}
+                title={cardT("actions.edit")}
               >
                 <Edit className="h-4 w-4" />
               </Button>
             </Link>
-            <DeleteWarehouseButton
-              warehouseId={warehouse.id}
-              warehouseName={warehouse.nameVi}
+            <EntityDeleteButton
+              entityId={warehouse.id}
+              onDelete={deleteWarehouseAction}
+              dialogTitle={t("dialogs.delete.title")}
+              dialogDescription={t("dialogs.delete.description", {
+                warehouseName: warehouse.nameVi,
+              })}
+              successMessage={t("messages.deleteSuccess")}
+              errorMessage={t("messages.deleteError")}
+              cancelLabel={t("dialogs.delete.cancel")}
+              confirmLabel={t("dialogs.delete.confirm")}
+              deletingLabel={t("dialogs.delete.deleting")}
+              buttonTooltip={cardT("actions.delete")}
             />
           </div>
         </div>

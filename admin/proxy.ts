@@ -120,14 +120,14 @@ export async function proxy(request: NextRequest) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 604800,
+      maxAge: 900,
     });
     response.cookies.set("adminRefreshToken", newTokens.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 2592000,
+      maxAge: 604800,
     });
   }
   return applySecurityHeaders(response);
