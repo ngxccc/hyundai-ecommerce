@@ -67,20 +67,21 @@ export default async function AdminOrdersPage({
   const meta = ordersRes?.meta;
 
   return (
-    <>
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("orders") },
+        ]}
+      />
+
       <BrandHeader
         title={tHeader("title")}
         description={tHeader("description")}
         showAddButton={false}
       />
 
-      <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("overview"), href: "/" },
-            { label: tNav("orders") },
-          ]}
-        />
+      <div className="flex w-full flex-col gap-4">
         <OrderList orders={orders} />
         <OffsetPagination
           page={meta?.page ?? page}
@@ -91,6 +92,6 @@ export default async function AdminOrdersPage({
           label="đơn hàng"
         />
       </div>
-    </>
+    </div>
   );
 }

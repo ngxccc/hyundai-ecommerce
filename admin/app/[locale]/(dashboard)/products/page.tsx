@@ -49,39 +49,36 @@ export default async function AdminProductsPage({
   const meta = productsRes.data?.meta;
 
   return (
-    <>
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("products") },
+        ]}
+      />
+
       <ProductHeader
         title={t("title")}
         description={t("description")}
         showAddButton={true}
       />
 
-      <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("overview"), href: "/" },
-            { label: tNav("products") },
-          ]}
+      <div className="flex w-full flex-col gap-4">
+        {/* Filters */}
+        <ProductFilters categories={categories} brands={brands} />
+
+        {/* Product Grid */}
+        <ProductGrid products={products} />
+
+        {/* Pagination */}
+        <ProductPagination
+          page={meta?.page ?? (typeof query.page === "number" ? query.page : 1)}
+          totalPages={meta?.totalPages ?? 1}
+          total={meta?.total}
+          hasNextPage={meta?.hasNextPage}
+          hasPrevPage={meta?.hasPrevPage}
         />
-        <div className="mx-auto flex w-full flex-col gap-4 pb-8">
-          {/* Filters */}
-          <ProductFilters categories={categories} brands={brands} />
-
-          {/* Product Grid */}
-          <ProductGrid products={products} />
-
-          {/* Pagination */}
-          <ProductPagination
-            page={
-              meta?.page ?? (typeof query.page === "number" ? query.page : 1)
-            }
-            totalPages={meta?.totalPages ?? 1}
-            total={meta?.total}
-            hasNextPage={meta?.hasNextPage}
-            hasPrevPage={meta?.hasPrevPage}
-          />
-        </div>
       </div>
-    </>
+    </div>
   );
 }

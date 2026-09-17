@@ -49,27 +49,25 @@ export const AdminDashboard = async () => {
   const recentOrders = ordersList.slice(0, 5);
 
   return (
-    <>
+    <div className="flex w-full flex-col gap-6">
       <AdminHeader />
 
-      <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        {/* KPI Cards */}
-        <MetricsCards metrics={metrics} />
+      {/* KPI Cards */}
+      <MetricsCards metrics={metrics} />
 
-        {/* Main Chart & Top Products */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <RevenueChart data={monthlyRevenue} />
-          </div>
-          <div className="lg:col-span-1">
-            <TopProducts products={topProducts} />
-          </div>
+      {/* Main Chart & Top Products */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <RevenueChart data={monthlyRevenue} />
         </div>
-
-        {/* Recent Orders Table */}
-        <RecentOrdersTable orders={recentOrders} />
+        <div className="lg:col-span-1">
+          <TopProducts products={topProducts} />
+        </div>
       </div>
-    </>
+
+      {/* Recent Orders Table */}
+      <RecentOrdersTable orders={recentOrders} />
+    </div>
   );
 };
 

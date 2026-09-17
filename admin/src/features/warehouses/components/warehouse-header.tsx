@@ -1,18 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Bell, Plus, Menu } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Link, usePathname } from "@/i18n/routing";
-import { cn } from "cn";
-import { useAdminNav } from "@/features/dashboard/hooks";
+import { Link } from "@/i18n/routing";
 
 interface WarehouseHeaderProps {
   title: string;
@@ -26,92 +17,26 @@ export const WarehouseHeader = ({
   showAddButton = true,
 }: WarehouseHeaderProps) => {
   const t = useTranslations("adminWarehouses.header");
-  const tDashboard = useTranslations("adminDashboard");
-  const navItems = useAdminNav();
-  const pathname = usePathname();
 
   return (
-    <header className="bg-background/80 sticky top-0 z-40 flex w-full items-center justify-between px-4 pt-4 pb-2 backdrop-blur-md md:px-2">
-      {/* Mobile navbar */}
-      <div className="flex items-center gap-2">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Menu className="size-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-70 p-0">
-            <SheetHeader className="p-6 text-left">
-              <SheetTitle className="text-primary text-xl font-bold">
-                {tDashboard("title")}
-              </SheetTitle>
-            </SheetHeader>
-            <nav className="flex flex-col gap-1 px-3">
-              {navItems.map((item, index) => {
-                const isActive =
-                  item.href === "/"
-                    ? pathname === "/"
-                    : pathname.startsWith(item.href);
-
-                return (
-                  <Link
-                    key={index}
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors",
-                      isActive
-                        ? "bg-primary/10 text-primary font-bold"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                    )}
-                  >
-                    <item.icon
-                      className={cn(
-                        "h-5 w-5 shrink-0",
-                        isActive && "text-primary fill-primary/20",
-                      )}
-                    />
-                    <span className="text-sm font-medium">{item.label}</span>
-                  </Link>
-                );
-              })}
-            </nav>
-          </SheetContent>
-        </Sheet>
-        <div className="flex flex-col gap-1">
-          <h2 className="text-primary text-xl font-bold md:text-2xl">
-            {title}
-          </h2>
-          {description && (
-            <p className="text-muted-foreground hidden text-sm sm:block">
-              {description}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2 md:gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="bg-card text-muted-foreground hover:text-primary hover:bg-card relative flex h-10 w-10 shrink-0 rounded-full shadow-sm"
-        >
-          <Bell className="h-5 w-5" />
-          <span className="bg-destructive absolute top-2 right-2 h-2 w-2 rounded-full"></span>
-        </Button>
-
-        {showAddButton && (
-          <Button
-            className="flex shrink-0 items-center gap-2 rounded-lg shadow-sm"
-            variant="default"
-            asChild
-          >
-            <Link href="/warehouses/new">
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">{t("addWarehouse")}</span>
-            </Link>
-          </Button>
+    <div className="flex flex-col gap-4 pb-1 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h1 className="text-foreground text-2xl font-bold tracking-tight">
+          {title}
+        </h1>
+        {description && (
+          <p className="text-muted-foreground text-sm">{description}</p>
         )}
       </div>
-    </header>
+
+      {showAddButton && (
+        <Button asChild variant="default" className="gap-2 shadow-xs">
+          <Link href="/warehouses/new">
+            <Plus className="size-4" />
+            <span>{t("addWarehouse")}</span>
+          </Link>
+        </Button>
+      )}
+    </div>
   );
 };

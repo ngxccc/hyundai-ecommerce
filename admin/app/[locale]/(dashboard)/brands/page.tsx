@@ -52,23 +52,24 @@ export default async function AdminBrandsPage({
     : brands;
 
   return (
-    <>
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("brands") },
+        ]}
+      />
+
       <BrandHeader
         title={tHeader("title")}
         description={tHeader("description")}
         showAddButton={true}
       />
 
-      <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("overview"), href: "/" },
-            { label: tNav("brands") },
-          ]}
-        />
+      <div className="flex w-full flex-col gap-4">
         <DataTableSearchInput placeholder={tHeader("searchPlaceholder")} />
         <BrandGrid brands={filteredBrands} />
       </div>
-    </>
+    </div>
   );
 }

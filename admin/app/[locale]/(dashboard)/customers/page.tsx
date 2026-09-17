@@ -37,21 +37,22 @@ export default async function AdminCustomersPage() {
   const dealerTiers = tierRes?.data ?? [];
 
   return (
-    <>
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("customers") },
+        ]}
+      />
+
       <CustomerHeader
         title={tCustomers("title")}
         description={tCustomers("description")}
       />
 
-      <div className="mx-auto flex w-full flex-col gap-4 p-4">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("overview"), href: "/" },
-            { label: tNav("customers") },
-          ]}
-        />
+      <div className="flex w-full flex-col gap-4">
         <CustomerDirectory initialUsers={users} dealerTiers={dealerTiers} />
       </div>
-    </>
+    </div>
   );
 }

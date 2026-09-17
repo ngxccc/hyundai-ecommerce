@@ -67,20 +67,21 @@ export default async function AdminQuotesPage({
   const meta = quotesRes?.meta;
 
   return (
-    <>
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tHeader("listTitle") },
+        ]}
+      />
+
       <BrandHeader
         title={tHeader("listTitle")}
         description={tHeader("listDescription")}
         showAddButton={false}
       />
 
-      <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("overview"), href: "/" },
-            { label: tHeader("listTitle") },
-          ]}
-        />
+      <div className="flex w-full flex-col gap-4">
         <QuoteList quotes={quotes} />
         <OffsetPagination
           page={meta?.page ?? page}
@@ -91,6 +92,6 @@ export default async function AdminQuotesPage({
           label="báo giá"
         />
       </div>
-    </>
+    </div>
   );
 }
