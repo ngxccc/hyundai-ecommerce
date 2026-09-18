@@ -244,10 +244,9 @@ export class QuotesService {
     const totalQuotedPrice = subtotal + vatAmount;
 
     let expirationDate = dto.expirationDate;
-    if (!expirationDate && dto.commercialTerms?.validityDays) {
-      expirationDate = new Date(
-        Date.now() + daysToMs(dto.commercialTerms.validityDays),
-      );
+    if (!expirationDate) {
+      const validityDays = dto.commercialTerms?.validityDays ?? 15;
+      expirationDate = new Date(Date.now() + daysToMs(validityDays));
     }
 
     return this.db.transaction(async (tx) => {
@@ -268,7 +267,7 @@ export class QuotesService {
           vatAmount: vatAmount.toFixed(2),
           totalQuotedPrice: totalQuotedPrice.toFixed(2),
           commercialTerms: dto.commercialTerms ?? null,
-          expirationDate: expirationDate ?? null,
+          expirationDate: expirationDate,
           note: dto.note ?? null,
           createdByAdminId: adminUserId,
         })
@@ -667,11 +666,20 @@ export class QuotesService {
       );
     }
 
+    const updatePayload: Partial<typeof quotes.$inferInsert> = {
+      status: newStatus,
+    };
+
+    if (newStatus === "NEGOTIATING" && !current.expirationDate) {
+      const validityDays = current.commercialTerms?.validityDays ?? 15;
+      const calculatedExpiry = new Date(Date.now() + daysToMs(validityDays));
+      updatePayload.expirationDate = calculatedExpiry;
+      current.expirationDate = calculatedExpiry;
+    }
+
     const [updatedQuote] = await this.db
       .update(quotes)
-      .set({
-        status: newStatus,
-      })
+      .set(updatePayload)
       .where(eq(quotes.id, id))
       .returning({
         updatedAt: quotes.updatedAt,
@@ -896,8 +904,7 @@ export class QuotesService {
         if (item.productId) {
           orderItemsToInsert.push({
             productId: item.productId,
-            productName:
-              item.itemName ?? product?.name ?? "Thiết bị máy phát điện",
+            productName: item.itemName,
             productSku: item.itemModel ?? product?.slug ?? "sku-quote-item",
             quantity: item.quantity,
             unitPrice: finalPrice,

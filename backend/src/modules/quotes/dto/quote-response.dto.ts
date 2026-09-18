@@ -1,3 +1,7 @@
+import {
+  quoteCommercialTermsSchema,
+  type QuoteCommercialTerms,
+} from "@/types/quote-commercial-terms.type";
 import { z } from "zod";
 import { createZodDto } from "@/common/dto";
 import { zCoerceDate } from "@/common/schemas/zod-primitives";
@@ -6,13 +10,7 @@ import {
   type QuoteStatus,
 } from "@/database/schemas/enums.schema";
 
-export const quoteCommercialTermsSchema = z.object({
-  validityDays: z.number().int().positive().nullable().optional(),
-  paymentSchedule: z.string().nullable().optional(),
-  warrantyTerms: z.string().nullable().optional(),
-  deliveryTime: z.string().nullable().optional(),
-  deliveryLocation: z.string().nullable().optional(),
-});
+export { quoteCommercialTermsSchema, type QuoteCommercialTerms };
 
 export const quoteItemProductSummarySchema = z.object({
   id: z.uuid(),
@@ -28,7 +26,7 @@ export const quoteItemResponseSchema = z.object({
   quoteId: z.uuid(),
   productId: z.uuid().nullable(),
   isCustomItem: z.boolean(),
-  itemName: z.string().nullable(),
+  itemName: z.string(),
   itemModel: z.string().nullable(),
   itemSpecs: z.string().nullable(),
   quantity: z.number().int(),

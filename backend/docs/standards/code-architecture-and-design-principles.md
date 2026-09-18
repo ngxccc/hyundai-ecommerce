@@ -70,3 +70,11 @@ export class ShallowCategoryService {
 - **Zero Speculative Code**: Implement strictly what active tickets, specs, and domain invariants demand.
 - **Banned Speculations**: Unused configuration toggles, premature database columns, dead helper methods, and generic abstractions with a single consumer.
 - **Refactor at Thresholds**: Keep modules tight and tested so future extensions remain cheap, rather than pre-engineering speculative flexibility.
+
+---
+
+## 7. Zero Defensive Fallbacks & Fail-Fast Source Integrity (Linux Philosophy)
+
+- **Strict at the Source**: Database schemas, DTOs, and seed fixtures must strictly enforce domain invariants (e.g. `notNull()`, check constraints, and exact validation schemas). Never allow dirty, partial, or ambiguous data into the persistence layer.
+- **Banned Defensive Shims**: Do NOT write defensive fallbacks (e.g. `item.itemName || item.product?.name || "—"`) across presentation, service, or API layers to silently mask schema loopholes or dirty data.
+- **Fail Fast & Cut Clean**: If data violates an invariant, reject it immediately at compile-time (TypeScript), schema validation (Zod/DTO), or database constraint (DDL). Presentation components must consume strictly verified fields directly without redundant backward-compatibility glue.

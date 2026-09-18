@@ -184,15 +184,31 @@ export interface WarehouseStockFixtureData {
   stock: number;
   minStockWarning: number;
 }
-export interface QuoteFixtureItem {
-  productId: string;
-  isCustomItem: boolean;
+interface BaseQuoteFixtureItem {
+  itemName: string;
+  itemModel?: string | null;
+  itemSpecs?: string | null;
   quantity: number;
   unitPrice: string;
   discountPercent: string;
   finalUnitPrice: string;
   totalPrice: string;
 }
+
+/**
+ * Strict discriminated union for quotation seed items:
+ * - Catalog items (isCustomItem: false) strictly require a valid product UUID.
+ * - Custom items (isCustomItem: true) strictly forbid a catalog product UUID.
+ */
+export type QuoteFixtureItem =
+  | (BaseQuoteFixtureItem & {
+      isCustomItem: false;
+      productId: string;
+    })
+  | (BaseQuoteFixtureItem & {
+      isCustomItem: true;
+      productId?: null;
+    });
 
 export interface QuoteFixtureMessage {
   senderId: string;
@@ -215,6 +231,8 @@ export interface QuoteFixtureData {
   vatAmount: string;
   totalQuotedPrice: string;
   note: string;
+  commercialTerms?: Quote["commercialTerms"];
+  expirationDate?: string | Date | null;
   items: QuoteFixtureItem[];
   messages: QuoteFixtureMessage[];
 }

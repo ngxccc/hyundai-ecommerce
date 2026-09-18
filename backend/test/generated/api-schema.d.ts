@@ -2062,7 +2062,7 @@ export interface components {
         quoteId: string;
         productId: string | null;
         isCustomItem: boolean;
-        itemName: string | null;
+        itemName: string;
         itemModel: string | null;
         itemSpecs: string | null;
         quantity: number;
@@ -2125,8 +2125,7 @@ export interface components {
       /** @default 10 */
       vatRate: number;
       commercialTerms?: {
-        /** @default 15 */
-        validityDays: number;
+        validityDays?: number | null;
         paymentSchedule?: string | null;
         warrantyTerms?: string | null;
         deliveryTime?: string | null;

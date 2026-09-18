@@ -1,3 +1,4 @@
+import { quoteCommercialTermsSchema } from "@/types/quote-commercial-terms.type";
 import { z } from "zod";
 import { createZodDto } from "@/common/dto";
 import {
@@ -37,14 +38,6 @@ export const adminQuoteItemInputSchema = z.object({
     .default(0),
 });
 
-export const commercialTermsSchema = z.object({
-  validityDays: z.number().int().positive().default(15),
-  paymentSchedule: z.string().optional().nullable(),
-  warrantyTerms: z.string().optional().nullable(),
-  deliveryTime: z.string().optional().nullable(),
-  deliveryLocation: z.string().optional().nullable(),
-});
-
 export const createAdminQuoteSchema = z.object({
   userId: z
     .uuid({ message: i18nZodMsg("validation.isUuid") })
@@ -57,7 +50,7 @@ export const createAdminQuoteSchema = z.object({
   taxId: z.string().optional().nullable(),
   shippingAddress: z.string().optional().nullable(),
   vatRate: z.number().min(0).max(100).default(10),
-  commercialTerms: commercialTermsSchema.optional().nullable(),
+  commercialTerms: quoteCommercialTermsSchema.optional().nullable(),
   note: z.string().optional().nullable(),
   expirationDate: zCoerceDate().optional().nullable(),
   items: z
@@ -68,11 +61,9 @@ export const createAdminQuoteSchema = z.object({
 export type AdminQuoteItemInputDtoType = z.infer<
   typeof adminQuoteItemInputSchema
 >;
-export type CommercialTermsDtoType = z.infer<typeof commercialTermsSchema>;
 export type CreateAdminQuoteDtoType = z.infer<typeof createAdminQuoteSchema>;
 
 export class AdminQuoteItemInputDto extends createZodDto(
   adminQuoteItemInputSchema,
 ) {}
-export class CommercialTermsDto extends createZodDto(commercialTermsSchema) {}
 export class CreateAdminQuoteDto extends createZodDto(createAdminQuoteSchema) {}

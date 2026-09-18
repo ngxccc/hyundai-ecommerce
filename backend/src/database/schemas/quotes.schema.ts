@@ -1,3 +1,4 @@
+import type { QuoteCommercialTerms } from "@/types/quote-commercial-terms.type";
 import {
   boolean,
   index,
@@ -33,13 +34,7 @@ export const quotes = snakeCase.table(
     vatRate: integer().default(10),
     vatAmount: numeric({ precision: 15, scale: 2 }).default("0.00"),
     totalQuotedPrice: numeric({ precision: 15, scale: 2 }),
-    commercialTerms: jsonb().$type<{
-      validityDays?: number | null | undefined;
-      paymentSchedule?: string | null | undefined;
-      warrantyTerms?: string | null | undefined;
-      deliveryTime?: string | null | undefined;
-      deliveryLocation?: string | null | undefined;
-    } | null>(),
+    commercialTerms: jsonb().$type<QuoteCommercialTerms | null>(),
     expirationDate: timestamp({ withTimezone: true, mode: "date" }),
     note: text(),
     orderId: uuid().references(() => orders.id, { onDelete: "set null" }),
@@ -64,7 +59,7 @@ export const quoteItems = snakeCase.table(
       .references(() => quotes.id, { onDelete: "cascade" }),
     productId: uuid().references(() => products.id, { onDelete: "set null" }),
     isCustomItem: boolean().default(false).notNull(),
-    itemName: varchar({ length: 255 }),
+    itemName: varchar({ length: 255 }).notNull(),
     itemModel: varchar({ length: 100 }),
     itemSpecs: text(),
     quantity: integer().default(1).notNull(),

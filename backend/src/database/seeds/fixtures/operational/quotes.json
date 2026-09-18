@@ -19,6 +19,9 @@
       {
         "productId": "019de188-693a-79a4-ab25-2ad9513da470",
         "isCustomItem": false,
+        "itemName": "Bộ Lưu Điện UPS 60KVA Online HYUNDAI HD-60K3 3Pha vào 3Pha ra",
+        "itemModel": "HD-60K3",
+        "itemSpecs": "Công suất: 60kVA / 48kW\nĐiện áp Vào / Ra: 380V (3 Pha 4 Dây)\nTần số định mức: 50Hz ± 0.1%\nCông nghệ: True Online Double Conversion\nẮc quy: 16 bình 12V gắn ngoài\nThời gian chuyển mạch: 0 ms",
         "quantity": 1,
         "unitPrice": "245000000.00",
         "discountPercent": "10.00",
@@ -48,11 +51,14 @@
     "vatRate": 10,
     "vatAmount": "8500000.00",
     "totalQuotedPrice": "93500000.00",
-    "note": "Báo giá cung cấp máy phát điện diesel gia đình cho khách VIP",
+    "note": "Báo giá cung cấp bộ lưu điện UPS cho phòng máy chủ",
     "items": [
       {
         "productId": "019de188-693a-79a4-ab25-3008985ebba1",
         "isCustomItem": false,
+        "itemName": "Bộ Lưu Điện UPS Online HYUNDAI HD-30K3 30KVA 3Pha vào 3Pha ra",
+        "itemModel": "HD-30K3",
+        "itemSpecs": "Công suất: 30kVA / 24kW\nĐiện áp Vào / Ra: 380V (3 Pha 4 Dây)\nTần số định mức: 50Hz ± 0.1%\nCông nghệ: True Online Double Conversion\nẮc quy: 16 bình 12V gắn ngoài\nThời gian chuyển mạch: 0 ms",
         "quantity": 1,
         "unitPrice": "85000000.00",
         "discountPercent": "5.00",
@@ -76,17 +82,20 @@
     "customerEmail": "bao.pham@gmail.com",
     "companyName": "Hộ kinh doanh cá thể Phạm Quốc Bảo",
     "taxId": "0109876543",
-    "shippingAddress": "45 Cầu Giấy, Quận Cầu Giấy, TP. Hà Nội",
+    "shippingAddress": "456 Giải Phóng, Quận Hoàng Mai, TP. Hà Nội",
     "status": "SUBMITTED",
     "subtotalPrice": "42000000.00",
     "vatRate": 10,
     "vatAmount": "4200000.00",
     "totalQuotedPrice": "46200000.00",
-    "note": "Yêu cầu báo giá bộ lưu điện online cho phòng khám nha khoa",
+    "note": "Khách cần giao gấp trong 24h",
     "items": [
       {
         "productId": "019de188-693a-79a4-ab25-37f26d36e2f1",
         "isCustomItem": false,
+        "itemName": "Bộ Lưu Điện Online Hyundai HD-10KS 10kVA/9kW",
+        "itemModel": "HD-10KS",
+        "itemSpecs": "Công suất: 10kVA / 9kW\nĐiện áp Vào / Ra: 220V (1 Pha 2 Dây)\nTần số định mức: 50Hz ± 0.1%\nCông nghệ: True Online Double Conversion\nẮc quy: 16 bình 12V/9Ah gắn trong\nThời gian chuyển mạch: 0 ms",
         "quantity": 1,
         "unitPrice": "42000000.00",
         "discountPercent": "0.00",
@@ -97,7 +106,7 @@
     "messages": [
       {
         "senderId": "019de1a0-9012-735c-8639-3e1d67c3f6c5",
-        "message": "Thiết bị này có đủ tải cho 2 ghế nha khoa hoạt động trong 30 phút không?"
+        "message": "Cần hóa đơn VAT tên hộ kinh doanh."
       }
     ]
   }
