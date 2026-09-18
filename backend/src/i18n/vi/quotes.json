@@ -13,5 +13,6 @@
   "FORBIDDEN_ACCESS": "Bạn không có quyền truy cập báo giá này",
   "FORBIDDEN_EXPORT": "Bạn không có quyền xuất dữ liệu báo giá này",
   "FORBIDDEN_NEGOTIATION": "Bạn không có quyền tham gia thương thảo báo giá này",
-  "PRODUCTS_NOT_FOUND": "Không tìm thấy sản phẩm cho các mã: {ids}"
+  "PRODUCTS_NOT_FOUND": "Không tìm thấy sản phẩm cho các mã: {ids}",
+  "QUOTE_ITEMS_NOT_PRICED": "Tất cả sản phẩm trong báo giá phải có đơn giá hợp lệ trước khi chuyển thành đơn hàng"
 }

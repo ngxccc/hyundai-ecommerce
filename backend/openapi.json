@@ -11297,6 +11297,61 @@
                               "type": "null"
                             }
                           ]
+                        },
+                        "specSheet": {
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "groupKey": {
+                                    "type": "string"
+                                  },
+                                  "titleVi": {
+                                    "type": "string"
+                                  },
+                                  "titleEn": {
+                                    "type": "string"
+                                  },
+                                  "order": {
+                                    "default": 0,
+                                    "type": "integer",
+                                    "minimum": -9007199254740991,
+                                    "maximum": 9007199254740991
+                                  },
+                                  "items": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "key": {
+                                          "type": "string"
+                                        },
+                                        "nameVi": {
+                                          "type": "string"
+                                        },
+                                        "nameEn": {
+                                          "type": "string"
+                                        },
+                                        "value": {
+                                          "type": "string"
+                                        },
+                                        "unit": {
+                                          "type": ["string", "null"]
+                                        }
+                                      },
+                                      "required": ["key", "nameVi", "value"]
+                                    }
+                                  }
+                                },
+                                "required": ["groupKey", "titleVi", "items"]
+                              }
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
                         }
                       },
                       "required": [

@@ -105,6 +105,7 @@ export type I18nTranslations = {
         "FORBIDDEN_EXPORT": string;
         "FORBIDDEN_NEGOTIATION": string;
         "PRODUCTS_NOT_FOUND": string;
+        "QUOTE_ITEMS_NOT_PRICED": string;
     };
     "users": {
         "USER_NOT_FOUND": string;

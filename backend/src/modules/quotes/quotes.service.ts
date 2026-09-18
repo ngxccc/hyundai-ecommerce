@@ -53,7 +53,7 @@ import type {
  * Valid state transitions for quote negotiation lifecycle.
  */
 const VALID_QUOTE_TRANSITIONS: Record<QuoteStatus, readonly QuoteStatus[]> = {
-  DRAFT: ["SUBMITTED", "REJECTED"],
+  DRAFT: ["SUBMITTED", "NEGOTIATING", "REJECTED"],
   SUBMITTED: ["NEGOTIATING", "APPROVED", "REJECTED", "EXPIRED"],
   NEGOTIATING: ["APPROVED", "REJECTED", "EXPIRED"],
   APPROVED: [],
@@ -213,6 +213,22 @@ export class QuotesService {
   ): Promise<AdminQuoteResponseDto> {
     const quoteNumber = generateDocumentCode(CODE_PREFIX.QUOTE);
 
+    // Query referenced products to automatically backfill specSheet if itemSpecs was omitted
+    const productIds = dto.items
+      .map((i) => i.productId)
+      .filter((id): id is string => Boolean(id));
+
+    const productMap = new Map<string, { specSheet?: unknown }>();
+    if (productIds.length > 0) {
+      const productRecords = await this.db
+        .select({ id: products.id, specSheet: products.specSheet })
+        .from(products)
+        .where(inArray(products.id, productIds));
+      for (const p of productRecords) {
+        productMap.set(p.id, p);
+      }
+    }
+
     // Deterministically compute line item metrics server-side to prevent tampering
     let subtotal = 0;
     const computedItems = dto.items.map((item: AdminQuoteItemInputDto) => {
@@ -223,12 +239,24 @@ export class QuotesService {
 
       subtotal += lineTotalNum;
 
+      let itemSpecs = item.itemSpecs ?? null;
+      if (!itemSpecs && item.productId) {
+        const matchedProduct = productMap.get(item.productId);
+        if (
+          matchedProduct?.specSheet &&
+          Array.isArray(matchedProduct.specSheet) &&
+          matchedProduct.specSheet.length > 0
+        ) {
+          itemSpecs = JSON.stringify(matchedProduct.specSheet);
+        }
+      }
+
       return {
         productId: item.productId ?? null,
         isCustomItem: item.isCustomItem || !item.productId,
         itemName: item.itemName,
         itemModel: item.itemModel ?? null,
-        itemSpecs: item.itemSpecs ?? null,
+        itemSpecs,
         quantity: item.quantity,
         unitPrice: unitPriceNum.toFixed(2),
         discountPercent: discountPercentNum.toFixed(2),
@@ -439,6 +467,7 @@ export class QuotesService {
             price: products.price,
             images: products.images,
             totalStockCache: products.totalStockCache,
+            specSheet: products.specSheet,
           },
         })
         .from(quoteItems)
@@ -573,6 +602,7 @@ export class QuotesService {
           price: products.price,
           images: products.images,
           totalStockCache: products.totalStockCache,
+          specSheet: products.specSheet,
         },
       })
       .from(quoteItems)
@@ -893,11 +923,12 @@ export class QuotesService {
 
       for (const { item, product } of items) {
         const finalPrice =
-          item.agreedPrice ??
-          item.finalUnitPrice ??
-          item.requestedPrice ??
-          item.unitPrice ??
-          "0.00";
+          item.agreedPrice ?? item.finalUnitPrice ?? item.unitPrice;
+
+        if (!finalPrice || parseFloat(finalPrice) <= 0) {
+          throw new I18nBadRequestException("quotes.QUOTE_ITEMS_NOT_PRICED");
+        }
+
         const lineTotal = parseFloat(finalPrice) * item.quantity;
         totalAmountDecimal += lineTotal;
 
@@ -905,7 +936,7 @@ export class QuotesService {
           orderItemsToInsert.push({
             productId: item.productId,
             productName: item.itemName,
-            productSku: item.itemModel ?? product?.slug ?? "sku-quote-item",
+            productSku: item.itemModel ?? product?.slug ?? "QUOTE-ITEM",
             quantity: item.quantity,
             unitPrice: finalPrice,
           });

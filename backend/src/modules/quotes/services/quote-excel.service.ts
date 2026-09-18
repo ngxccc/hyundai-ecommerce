@@ -248,15 +248,11 @@ export class QuoteExcelService {
       const finalUnitPrice = unitPrice * (1 - discountPercent / 100);
       const calculatedTotal = finalUnitPrice * item.quantity;
 
-      const specsText =
-        item.itemSpecs ??
-        (item.product
-          ? `Model: ${item.product.slug}`
-          : "Tiêu chuẩn nhà sản xuất");
+      const specsText = item.itemSpecs ?? item.itemModel ?? "";
 
       const row = worksheet.addRow([
         i + 1, // A: Index
-        item.itemName ?? item.product?.name ?? "Thiết bị", // B: Name
+        item.itemName, // B: Name
         specsText, // C: Specs
         "Bộ", // D: Unit
         item.quantity, // E: Quantity

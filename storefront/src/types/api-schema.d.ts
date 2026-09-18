@@ -2080,6 +2080,22 @@ export interface components {
           price: string | null;
           images: string[] | null;
           totalStockCache: number | null;
+          specSheet?:
+            | {
+                groupKey: string;
+                titleVi: string;
+                titleEn?: string;
+                /** @default 0 */
+                order: number;
+                items: {
+                  key: string;
+                  nameVi: string;
+                  nameEn?: string;
+                  value: string;
+                  unit?: string | null;
+                }[];
+              }[]
+            | null;
         } | null;
         /** Format: date-time */
         createdAt: string;

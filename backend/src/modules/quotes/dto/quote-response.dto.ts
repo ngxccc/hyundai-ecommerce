@@ -9,7 +9,7 @@ import {
   QUOTE_STATUSES,
   type QuoteStatus,
 } from "@/database/schemas/enums.schema";
-
+import { productSpecSheetSchema } from "@/modules/catalog/dto/create-product.dto";
 export { quoteCommercialTermsSchema, type QuoteCommercialTerms };
 
 export const quoteItemProductSummarySchema = z.object({
@@ -19,6 +19,7 @@ export const quoteItemProductSummarySchema = z.object({
   price: z.string().nullable(),
   images: z.array(z.string()).nullable(),
   totalStockCache: z.number().int().nullable(),
+  specSheet: productSpecSheetSchema.nullable().optional(),
 });
 
 export const quoteItemResponseSchema = z.object({
