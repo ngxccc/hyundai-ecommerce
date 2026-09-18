@@ -8202,7 +8202,13 @@
               },
               "role": {
                 "type": "string",
-                "enum": ["ADMIN", "SALES"]
+                "enum": [
+                  "ADMIN",
+                  "SALES",
+                  "WAREHOUSE",
+                  "ACCOUNTANT",
+                  "CUSTOMER"
+                ]
               },
               "status": {
                 "type": "string",
@@ -8337,7 +8343,7 @@
           },
           "role": {
             "type": "string",
-            "enum": ["ADMIN", "SALES"]
+            "enum": ["ADMIN", "SALES", "WAREHOUSE", "ACCOUNTANT", "CUSTOMER"]
           },
           "status": {
             "type": "string",
@@ -8362,11 +8368,12 @@
                       {
                         "type": "string",
                         "enum": [
+                          "INTERNAL",
+                          "DEALER",
                           "CONTRACTOR",
                           "COMMERCIAL",
                           "GOVERNMENT",
-                          "END_USER",
-                          "DEALER"
+                          "END_USER"
                         ]
                       },
                       {
@@ -8783,9 +8790,6 @@
               }
             ]
           },
-          "image": {
-            "type": ["string", "null"]
-          },
           "isActive": {
             "type": "boolean"
           },
@@ -8832,7 +8836,6 @@
           "id",
           "slug",
           "parentId",
-          "image",
           "isActive",
           "name",
           "description",
@@ -8860,9 +8863,6 @@
                 "type": "null"
               }
             ]
-          },
-          "image": {
-            "type": ["string", "null"]
           },
           "isActive": {
             "default": true,
@@ -8914,9 +8914,6 @@
               }
             ]
           },
-          "image": {
-            "type": ["string", "null"]
-          },
           "isActive": {
             "type": "boolean"
           },
@@ -8958,9 +8955,6 @@
           "slug": {
             "type": "string"
           },
-          "logo": {
-            "type": ["string", "null"]
-          },
           "description": {
             "type": ["string", "null"]
           },
@@ -8995,7 +8989,6 @@
           "id",
           "name",
           "slug",
-          "logo",
           "description",
           "isActive",
           "createdAt",
@@ -9013,9 +9006,6 @@
             "minLength": 2,
             "maxLength": 255,
             "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-          },
-          "logo": {
-            "type": ["string", "null"]
           },
           "translations": {
             "type": "array",
@@ -9053,9 +9043,6 @@
             "minLength": 2,
             "maxLength": 255,
             "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
-          },
-          "logo": {
-            "type": ["string", "null"]
           },
           "translations": {
             "type": "array",
@@ -9148,9 +9135,6 @@
               }
             ]
           },
-          "image": {
-            "type": ["string", "null"]
-          },
           "isActive": {
             "type": "boolean"
           },
@@ -9197,7 +9181,6 @@
           "id",
           "slug",
           "parentId",
-          "image",
           "isActive",
           "name",
           "description",
@@ -9531,9 +9514,6 @@
                   "slug": {
                     "type": "string"
                   },
-                  "logo": {
-                    "type": ["string", "null"]
-                  },
                   "description": {
                     "type": ["string", "null"]
                   },
@@ -9568,7 +9548,6 @@
                   "id",
                   "name",
                   "slug",
-                  "logo",
                   "description",
                   "isActive",
                   "createdAt",

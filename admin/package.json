@@ -11,7 +11,7 @@
     "start": "doppler run -- next start -p 3002",
     "test": "bun test src/",
     "typegen:i18n": "bun -e 'import fn from \"./node_modules/next-intl/dist/esm/development/plugin/declaration/createMessagesDeclaration.js\"; fn([\"./messages/vi.json\"]);'",
-    "types:pull": "doppler run -- openapi-typescript ${BACKEND_API_URL:-http://localhost:3000}/openapi.json -o src/types/api-schema.d.ts"
+    "types:pull": "doppler run -- bun scripts/pull-openapi-types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

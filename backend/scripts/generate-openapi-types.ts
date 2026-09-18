@@ -1,3 +1,4 @@
+import { extractRuntimeEnums } from "./extract-openapi-enums";
 import "reflect-metadata";
 import path from "node:path";
 process.env["SKIP_ENV_VALIDATION"] = "true";
@@ -55,6 +56,28 @@ async function generate() {
   for (const outPath of outputPaths) {
     await Bun.write(outPath, formattedContents);
     console.log(`OpenAPI types successfully generated at ${outPath}`);
+  }
+
+  // 3. Extract and write runtime enums
+  const rawEnums = extractRuntimeEnums(
+    document as unknown as Record<string, unknown>,
+  );
+  const formattedEnums = await prettier.format(rawEnums, {
+    ...prettierConfig,
+    parser: "typescript",
+  });
+
+  const enumOutputPaths = [
+    path.resolve(import.meta.dirname, "../../admin/src/types/api-enums.ts"),
+    path.resolve(
+      import.meta.dirname,
+      "../../storefront/src/types/api-enums.ts",
+    ),
+  ];
+
+  for (const enumPath of enumOutputPaths) {
+    await Bun.write(enumPath, formattedEnums);
+    console.log(`OpenAPI runtime enums successfully generated at ${enumPath}`);
   }
 }
 

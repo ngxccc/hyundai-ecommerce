@@ -1224,7 +1224,7 @@ export interface components {
         email: string;
         fullName: string;
         /** @enum {string} */
-        role: "ADMIN" | "SALES";
+        role: "ADMIN" | "SALES" | "WAREHOUSE" | "ACCOUNTANT" | "CUSTOMER";
         /** @enum {string} */
         status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING_VERIFICATION";
       };
@@ -1262,7 +1262,7 @@ export interface components {
       phoneNumber: string;
       avatarUrl: string | null;
       /** @enum {string} */
-      role: "ADMIN" | "SALES";
+      role: "ADMIN" | "SALES" | "WAREHOUSE" | "ACCOUNTANT" | "CUSTOMER";
       /** @enum {string} */
       status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING_VERIFICATION";
       isVerified: boolean;
@@ -1270,7 +1270,14 @@ export interface components {
         companyName: string | null;
         taxId: string | null;
         businessType:
-          | ("CONTRACTOR" | "COMMERCIAL" | "GOVERNMENT" | "END_USER" | "DEALER")
+          | (
+              | "INTERNAL"
+              | "DEALER"
+              | "CONTRACTOR"
+              | "COMMERCIAL"
+              | "GOVERNMENT"
+              | "END_USER"
+            )
           | null;
         province: string | null;
         creditLimit: string;
@@ -1405,7 +1412,6 @@ export interface components {
       id: string;
       slug: string;
       parentId: string | null;
-      image: string | null;
       isActive: boolean;
       name: string;
       description: string | null;
@@ -1423,7 +1429,6 @@ export interface components {
     CreateCategoryDto: {
       slug: string;
       parentId?: string | null;
-      image?: string | null;
       /** @default true */
       isActive: boolean;
       translations: {
@@ -1435,7 +1440,6 @@ export interface components {
     UpdateCategoryDto: {
       slug?: string;
       parentId?: string | null;
-      image?: string | null;
       isActive?: boolean;
       translations?: {
         locale: string;
@@ -1448,7 +1452,6 @@ export interface components {
       id: string;
       name: string;
       slug: string;
-      logo: string | null;
       description: string | null;
       translations?: {
         locale: string;
@@ -1463,7 +1466,6 @@ export interface components {
     CreateBrandDto: {
       name: string;
       slug: string;
-      logo?: string | null;
       translations?: {
         locale: string;
         description?: string | null;
@@ -1474,7 +1476,6 @@ export interface components {
     UpdateBrandDto: {
       name?: string;
       slug?: string;
-      logo?: string | null;
       translations?: {
         locale: string;
         description?: string | null;
@@ -1504,7 +1505,6 @@ export interface components {
       id: string;
       slug: string;
       parentId: string | null;
-      image: string | null;
       isActive: boolean;
       name: string;
       description: string | null;
@@ -1609,7 +1609,6 @@ export interface components {
         id: string;
         name: string;
         slug: string;
-        logo: string | null;
         description: string | null;
         translations?: {
           locale: string;
