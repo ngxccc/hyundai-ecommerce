@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { formatPrice } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import { ProductThumbnail } from "./product-thumbnail";
 import type { TopSellingProduct } from "@/types/api";
 
@@ -55,7 +55,7 @@ export async function TopProducts({ products = [] }: TopProductsProps) {
               </div>
               <div className="text-right">
                 <p className="text-foreground text-xs font-semibold">
-                  {formatPrice(product.price)}
+                  {formatCurrency(product.price)}
                 </p>
               </div>
             </div>

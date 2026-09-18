@@ -1074,6 +1074,12 @@
     "convertSuccess": "Quote approved and converted to order successfully",
     "placeholderAgreedPrice": "Enter agreed price",
     "exportExcel": "Export Excel",
+    "exportExcelButton": "Export Excel (.xlsx)",
+    "printPdfButton": "Print / Export PDF",
+    "buyerCompany": "B2B Entity",
+    "buyerEmail": "Contact Email",
+    "buyerLocation": "Delivery Location",
+    "orderRef": "Order {orderNumber}",
     "exportExcelSuccess": "Quote Excel spreadsheet exported successfully!",
     "exportExcelError": "Failed to export quote Excel file. Please retry.",
     "timelineSystem": "SYSTEM",
@@ -1116,7 +1122,19 @@
         "taxIdLabel": "Tax Identification Number",
         "taxIdPlaceholder": "e.g. 0101234567",
         "addressLabel": "Shipping / Site Address",
-        "addressPlaceholder": "e.g. 123 ABC Street, Hanoi"
+        "addressPlaceholder": "e.g. Lot B2 Song Than 2 IP, Di An, Binh Duong"
+      },
+      "address": {
+        "shippingAddress": "Delivery Address / Job Site",
+        "city": "Province / City",
+        "cityPlaceholder": "Search or select Province/City...",
+        "district": "Ward / Commune / Town",
+        "districtPlaceholder": "Search or select Ward/Commune...",
+        "selectCityFirst": "Please select Province/City first",
+        "searchPlaceholder": "Type to search...",
+        "emptySearch": "No matching location found.",
+        "streetAddress": "Detailed Street / Industrial Park / Project Site",
+        "streetAddressPlaceholder": "e.g. Lot B2 Song Than 2 IP, Street No. 4"
       },
       "items": {
         "title": "Line Items & Products",

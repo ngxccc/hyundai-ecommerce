@@ -14,13 +14,6 @@ export const priceFormatter = new Intl.NumberFormat("vi-VN", {
 export const numberFormatter = new Intl.NumberFormat("vi-VN");
 
 /**
- * Cached singleton formatter for compact million displays (1 decimal place max).
- */
-export const compactMillionFormatter = new Intl.NumberFormat("vi-VN", {
-  maximumFractionDigits: 1,
-});
-
-/**
  * Formats a numeric or string monetary value into standard Vietnamese currency (e.g. "165.000.000 ₫").
  *
  * @param value - Scalar monetary amount
@@ -32,24 +25,6 @@ export function formatCurrency(
   if (value === undefined || value === null || value === "") return "0 ₫";
   const num = typeof value === "string" ? parseFloat(value) : value;
   if (isNaN(num)) return "0 ₫";
-  return priceFormatter.format(num);
-}
-
-/**
- * Smart price formatter converting high-value amounts (>= 1,000,000 VND) to compact "Tr" units,
- * or standard currency notation for lower amounts.
- *
- * @param value - Scalar price value
- * @returns Human-friendly formatted price string (e.g. "165 Tr" or "850.000 ₫")
- */
-export function formatPrice(value: string | number | undefined | null): string {
-  if (value === undefined || value === null || value === "") return "0 ₫";
-  const num = typeof value === "string" ? parseFloat(value) : value;
-  if (isNaN(num)) return String(value);
-
-  if (num >= 1000000) {
-    return `${compactMillionFormatter.format(num / 1000000)} Tr`;
-  }
   return priceFormatter.format(num);
 }
 
@@ -92,7 +67,10 @@ export function formatNumberInput(
   value: string | number | undefined | null,
 ): string {
   if (value === undefined || value === null || value === "") return "";
-  const num = typeof value === "string" ? parseFloat(value) : value;
+  const rawStr = typeof value === "number" ? String(value) : value;
+  const digitsOnly = rawStr.replace(/[^\d]/g, "");
+  if (!digitsOnly) return "";
+  const num = Number(digitsOnly);
   if (isNaN(num)) return "";
   return numberFormatter.format(num);
 }

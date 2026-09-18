@@ -43,15 +43,15 @@ export const QuoteFinancialSummary = ({
   const grandTotal = subtotal + vatAmount;
 
   return (
-    <Card className="border-border sticky top-6 border shadow-sm">
-      <CardHeader className="bg-muted/20 border-b p-4 pb-3">
+    <Card size="dense" className="sticky top-6">
+      <CardHeader bordered size="dense" className="bg-muted/20">
         <CardTitle>
           <Calculator />
           {t("title")}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="space-y-3 p-4 text-xs">
+      <CardContent size="dense" className="space-y-3 text-xs">
         {/* Total Items & Units */}
         <div className="text-muted-foreground flex items-center justify-between">
           <span>{t("totalItems")}</span>
@@ -63,7 +63,7 @@ export const QuoteFinancialSummary = ({
         {/* Subtotal */}
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground">{t("subtotal")}</span>
-          <span className="text-foreground font-mono text-sm font-semibold">
+          <span className="text-foreground text-sm font-semibold">
             {formatCurrency(subtotal)}
           </span>
         </div>
@@ -73,7 +73,7 @@ export const QuoteFinancialSummary = ({
           <span className="text-muted-foreground">
             {t("vat")} ({vatRate}%)
           </span>
-          <span className="text-foreground font-mono font-semibold">
+          <span className="text-foreground font-semibold">
             {formatCurrency(vatAmount)}
           </span>
         </div>
@@ -86,7 +86,7 @@ export const QuoteFinancialSummary = ({
             {t("grandTotal")}
           </span>
           <div className="text-right">
-            <span className="text-primary block font-mono text-lg font-bold">
+            <span className="text-primary block text-lg font-bold">
               {formatCurrency(grandTotal)}
             </span>
             <span className="text-muted-foreground text-[10px]">
@@ -96,7 +96,7 @@ export const QuoteFinancialSummary = ({
         </div>
       </CardContent>
 
-      <CardFooter className="flex flex-col gap-2 border-t p-4 pt-2">
+      <CardFooter size="dense" className="flex flex-col gap-2 border-t pt-2">
         <Button
           type="button"
           disabled={isSubmitting || items.length === 0}

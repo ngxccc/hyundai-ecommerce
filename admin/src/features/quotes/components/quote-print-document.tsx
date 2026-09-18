@@ -106,7 +106,7 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
           <div className="flex items-center gap-2">
             <Badge
               variant="secondary"
-              className="font-mono text-xs font-bold text-blue-900"
+              className="text-xs font-bold text-blue-900"
             >
               {quoteNo}
             </Badge>

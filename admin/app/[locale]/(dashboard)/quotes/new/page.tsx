@@ -1,11 +1,10 @@
-import { BrandHeader } from "@/features/brands/components";
-import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
-import { QuoteComposer } from "@/features/quotes/components";
-import { requireAuth } from "@/lib/action-auth";
+import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import type { Metadata } from "next";
-import { connection } from "next/server";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
+import { QuoteComposer } from "@/features/quotes/components/quote-composer";
+import { CenteredSpinner } from "@/components/common";
 
 export async function generateMetadata({
   params,
@@ -14,40 +13,41 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({
-    locale,
-    namespace: "adminQuotes.composer",
-  });
+  const t = await getTranslations({ locale, namespace: "adminQuotes" });
+
   return {
-    title: t("pageTitle"),
+    title: t("composer.pageTitle"),
   };
 }
 
-export default async function AdminNewQuotePage() {
-  await connection();
-  await requireAuth();
-
-  const tNav = await getTranslations("adminDashboard.nav");
-  const t = await getTranslations("adminQuotes.composer");
+export default async function NewQuotePage() {
+  const [tNav, tQuotes] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminQuotes"),
+  ]);
 
   return (
-    <>
-      <BrandHeader
-        title={t("headerTitle")}
-        description={t("headerDescription")}
-        showAddButton={false}
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("quotes"), href: "/quotes" },
+          { label: tQuotes("composer.breadcrumbNew") },
+        ]}
       />
-      <div className="mx-auto flex w-full flex-col gap-6 p-4">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("overview"), href: "/" },
-            { label: tNav("quotes"), href: "/quotes" },
-            { label: t("breadcrumbNew") },
-          ]}
-        />
 
-        <QuoteComposer />
+      <div>
+        <h1 className="text-foreground text-2xl font-bold tracking-tight">
+          {tQuotes("composer.headerTitle")}
+        </h1>
+        <p className="text-muted-foreground text-sm">
+          {tQuotes("composer.headerDescription")}
+        </p>
       </div>
-    </>
+
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <QuoteComposer />
+      </Suspense>
+    </div>
   );
 }

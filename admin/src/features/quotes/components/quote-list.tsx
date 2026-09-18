@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { useRouter, usePathname, Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -157,10 +157,15 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
       </div>
 
       {quotes.length === 0 ? (
-        <Card className="flex flex-col items-center justify-center p-12 text-center shadow-sm">
-          <p className="text-muted-foreground text-lg font-medium">
-            {t("noQuotesFound")}
-          </p>
+        <Card size="dense">
+          <CardContent
+            size="dense"
+            className="flex flex-col items-center justify-center py-12 text-center"
+          >
+            <p className="text-muted-foreground text-sm font-medium">
+              {t("noQuotesFound")}
+            </p>
+          </CardContent>
         </Card>
       ) : (
         <>
@@ -188,7 +193,7 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
               <TableBody>
                 {quotes.map((quote) => (
                   <TableRow key={quote.id}>
-                    <TableCell className="text-primary font-mono text-xs font-semibold">
+                    <TableCell className="text-primary text-xs font-semibold">
                       {quote.quoteNumber ?? `#${quote.id.slice(0, 8)}`}
                     </TableCell>
                     <TableCell>
@@ -229,9 +234,9 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
           {/* Mobile Cards Grid View */}
           <div className="grid grid-cols-1 gap-4 md:hidden">
             {quotes.map((quote) => (
-              <Card key={quote.id} size="dense" className="p-4">
+              <Card key={quote.id} size="dense" className="gap-3 p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-primary font-mono text-xs font-bold">
+                  <span className="text-primary text-xs font-bold">
                     {quote.quoteNumber ?? `#${quote.id.slice(0, 8)}`}
                   </span>
                   <Badge className={getStatusBadgeClass(quote.status)}>

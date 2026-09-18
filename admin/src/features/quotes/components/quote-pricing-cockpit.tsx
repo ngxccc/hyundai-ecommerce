@@ -137,15 +137,15 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
   }
 
   return (
-    <Card className="h-full">
-      <CardHeader>
+    <Card size="dense" className="h-full">
+      <CardHeader bordered size="dense">
         <CardTitle>
-          <DollarSign className="text-green-600" />
+          <DollarSign className="text-primary" />
           {t("pricingCockpit")}
         </CardTitle>
         <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-6">
+      <CardContent size="dense" className="flex flex-col gap-6">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -173,14 +173,14 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
                   <TableCell className="text-muted-foreground text-right font-semibold">
                     {formatCurrency(item.product?.price ?? item.unitPrice)}
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-orange-600 dark:text-orange-400">
+                  <TableCell className="text-foreground text-right font-semibold">
                     {formatCurrency(item.requestedPrice ?? item.unitPrice)}
                   </TableCell>
                   <TableCell className="text-right">
                     {isFinalized ? (
-                      <span className="font-bold text-green-600 dark:text-green-400">
+                      <span className="text-primary font-bold">
                         {item.agreedPrice
-                          ? formatNumberInput(item.agreedPrice)
+                          ? formatCurrency(item.agreedPrice)
                           : "—"}
                       </span>
                     ) : (
@@ -188,9 +188,9 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
                         <Input
                           type="text"
                           disabled={isPending}
-                          placeholder={
-                            item.requestedPrice ?? item.unitPrice ?? ""
-                          }
+                          placeholder={formatNumberInput(
+                            item.requestedPrice ?? item.unitPrice,
+                          )}
                           value={inputValues[item.id] ?? ""}
                           onChange={(e) =>
                             handleInputChange(item.id, e.target.value)
@@ -207,10 +207,13 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
                               e.currentTarget.blur();
                             }
                           }}
-                          className="h-9 border-green-200 pr-8 text-right font-semibold focus-visible:ring-green-500"
+                          className="h-9 pr-7 text-right font-semibold"
                         />
+                        <span className="text-muted-foreground pointer-events-none absolute right-2.5 text-xs font-semibold">
+                          ₫
+                        </span>
                         {isPending && (
-                          <div className="text-muted-foreground absolute right-2">
+                          <div className="text-muted-foreground absolute right-7">
                             <Loader2 className="h-4 w-4 animate-spin" />
                           </div>
                         )}
@@ -233,7 +236,7 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
           </div>
           <div className="mt-1 flex items-center justify-between border-t pt-2 text-base font-bold">
             <span>{t("totalAmount")}:</span>
-            <span className="text-green-600 dark:text-green-400">
+            <span className="text-primary">
               {formatCurrency(totalNegotiatedAmount)}
             </span>
           </div>

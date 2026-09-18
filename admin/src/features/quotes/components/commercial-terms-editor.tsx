@@ -30,8 +30,8 @@ export const CommercialTermsEditor = () => {
   );
 
   return (
-    <Card className="border-border border shadow-xs">
-      <CardHeader className="bg-muted/20 border-b p-4 pb-3">
+    <Card size="dense">
+      <CardHeader bordered size="dense" className="bg-muted/20">
         <CardTitle>
           <FileText />
           {t("composer.terms.title")}
@@ -41,7 +41,7 @@ export const CommercialTermsEditor = () => {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-4 p-4 text-xs">
+      <CardContent size="dense" className="text-xs">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Validity Days */}
           <div className="space-y-1.5">

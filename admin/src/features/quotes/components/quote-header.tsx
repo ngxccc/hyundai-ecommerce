@@ -161,7 +161,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
           <Button asChild variant="outline" className="gap-2 shadow-xs">
             <Link href={`/quotes/${quote.id}/export`}>
               <Printer className="h-4 w-4" />
-              In / Xuất PDF
+              {t("printPdfButton")}
             </Link>
           </Button>
 
@@ -174,26 +174,29 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
             {isExportingExcel ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <FileSpreadsheet className="h-4 w-4 text-emerald-600" />
+              <FileSpreadsheet className="text-primary h-4 w-4" />
             )}
-            Xuất Excel (.xlsx)
+            {t("exportExcelButton")}
           </Button>
 
           {quote.status === QUOTE_STATUS.SUBMITTED && (
             <>
               <Button
+                variant="destructive"
                 onClick={() => handleStatusChange(QUOTE_STATUS.REJECTED)}
                 disabled={isPending}
-                className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/30 dark:hover:bg-red-900/10"
+                className="gap-2"
               >
-                <XCircle className="mr-2 h-4 w-4" />
+                <XCircle className="h-4 w-4" />
                 {t("reject")}
               </Button>
               <Button
+                variant="default"
                 onClick={() => handleStatusChange(QUOTE_STATUS.NEGOTIATING)}
                 disabled={isPending}
+                className="gap-2"
               >
-                <Play className="mr-2 h-4 w-4" />
+                <Play className="h-4 w-4" />
                 {t("startNegotiating")}
               </Button>
             </>
@@ -202,20 +205,21 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
           {quote.status === QUOTE_STATUS.NEGOTIATING && (
             <>
               <Button
-                variant="outline"
+                variant="destructive"
                 onClick={() => handleStatusChange(QUOTE_STATUS.REJECTED)}
                 disabled={isPending}
-                className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/30 dark:hover:bg-red-900/10"
+                className="gap-2"
               >
-                <XCircle className="mr-2 h-4 w-4" />
+                <XCircle className="h-4 w-4" />
                 {t("reject")}
               </Button>
               <Button
+                variant="default"
                 onClick={handleApproveAndConvert}
                 disabled={isPending}
-                className="bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+                className="gap-2"
               >
-                <CheckCircle2 className="mr-2 h-4 w-4" />
+                <CheckCircle2 className="h-4 w-4" />
                 {t("approveAndConvert")}
               </Button>
             </>
@@ -225,7 +229,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
             <Button asChild variant="outline">
               <Link href={`/orders/${quote.orderId}`}>
                 <ExternalLink className="mr-2 h-4 w-4" />
-                Order #{quote.orderId.substring(0, 8)}
+                {t("orderRef", { orderNumber: quote.orderNumber ?? "" })}
               </Link>
             </Button>
           )}
@@ -233,8 +237,11 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
       </div>
 
       {/* Buyer Details Grid */}
-      <Card className="py-0">
-        <CardContent className="grid grid-cols-1 gap-6 px-6 py-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Card size="dense">
+        <CardContent
+          size="dense"
+          className="grid grid-cols-1 gap-6 space-y-0 sm:grid-cols-2 lg:grid-cols-4"
+        >
           <div className="flex items-start gap-3">
             <User className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
             <div>
@@ -251,7 +258,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
             <Building2 className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
             <div>
               <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                {t("buyer")} (B2B Entity)
+                {t("buyerCompany")}
               </p>
               <p className="text-foreground text-sm font-semibold">
                 {quote.companyName ?? "N/A"}
@@ -263,9 +270,9 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
             <Mail className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
             <div>
               <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                Email
+                {t("buyerEmail")}
               </p>
-              <p className="text-foreground max-w-50 truncate text-sm font-semibold">
+              <p className="text-foreground text-sm font-semibold break-all">
                 {quote.user?.email ?? quote.customerEmail ?? "N/A"}
               </p>
             </div>
@@ -275,7 +282,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
             <MapPin className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
             <div>
               <p className="text-muted-foreground text-xs font-medium tracking-wider uppercase">
-                {t("buyer")} Location
+                {t("buyerLocation")}
               </p>
               <p className="text-foreground text-sm font-semibold">
                 {quote.shippingAddress ?? "N/A"}

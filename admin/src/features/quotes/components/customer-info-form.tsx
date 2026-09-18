@@ -1,14 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { User, Building2, Phone, Mail, FileSpreadsheet } from "lucide-react";
+import { cn } from "cn";
 import {
-  User,
-  Building2,
-  Phone,
-  Mail,
-  MapPin,
-  FileSpreadsheet,
-} from "lucide-react";
+  QuoteAddressCascader,
+  type QuoteAddressState,
+} from "./quote-address-cascader";
 import {
   Card,
   CardHeader,
@@ -24,14 +22,89 @@ export interface CustomerInfoFormProps {
   errors?: Record<string, string>;
 }
 
+interface FormInputFieldProps {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (val: string) => void;
+  placeholder?: string;
+  icon: React.ComponentType<{ className?: string }>;
+  required?: boolean;
+  type?: string;
+  error?: string;
+  className?: string;
+}
+
+const FormInputField = ({
+  id,
+  label,
+  value,
+  onChange,
+  placeholder,
+  icon: Icon,
+  required = false,
+  type = "text",
+  error,
+  className,
+}: FormInputFieldProps) => (
+  <div className={cn("space-y-1.5", className)}>
+    <Label
+      htmlFor={id}
+      className="flex items-center gap-1 text-xs font-semibold"
+    >
+      {label} {required && <span className="text-destructive">*</span>}
+    </Label>
+    <div className="relative">
+      <Icon className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+      <Input
+        id={id}
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={cn(
+          "h-9 pl-8 text-sm",
+          error && "border-destructive focus-visible:ring-destructive",
+        )}
+      />
+    </div>
+    {error && (
+      <p className="text-destructive text-[11px] font-medium">{error}</p>
+    )}
+  </div>
+);
+
 export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
   const t = useTranslations("adminQuotes.composer.customer");
   const customerInfo = useQuoteDraftStore((state) => state.customerInfo);
   const setCustomerInfo = useQuoteDraftStore((state) => state.setCustomerInfo);
 
+  const addressState: QuoteAddressState = {
+    city: customerInfo.city ?? "",
+    district: customerInfo.district ?? "",
+    streetAddress: customerInfo.streetAddress ?? "",
+  };
+
+  const handleAddressChange = (newAddress: QuoteAddressState) => {
+    const fullAddress = [
+      newAddress.streetAddress.trim(),
+      newAddress.district.trim(),
+      newAddress.city.trim(),
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    setCustomerInfo({
+      city: newAddress.city || null,
+      district: newAddress.district || null,
+      streetAddress: newAddress.streetAddress || null,
+      shippingAddress: fullAddress || null,
+    });
+  };
+
   return (
-    <Card className="border-border border shadow-xs">
-      <CardHeader className="bg-muted/20 border-b p-4 pb-3">
+    <Card size="dense">
+      <CardHeader bordered size="dense" className="bg-muted/20">
         <CardTitle>
           <User />
           {t("title")}
@@ -41,142 +114,66 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2">
-        {/* Customer Full Name */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor="customerName"
-            className="flex items-center gap-1 text-xs font-semibold"
-          >
-            {t("nameLabel")} <span className="text-destructive">*</span>
-          </Label>
-          <div className="relative">
-            <User className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-            <Input
-              id="customerName"
-              value={customerInfo.customerName}
-              onChange={(e) =>
-                setCustomerInfo({ customerName: e.target.value })
-              }
-              placeholder={t("namePlaceholder")}
-              className={`h-9 pl-8 text-sm ${errors.customerName ? "border-destructive focus-visible:ring-destructive" : ""}`}
-            />
-          </div>
-          {errors.customerName && (
-            <p className="text-destructive text-[11px] font-medium">
-              {errors.customerName}
-            </p>
-          )}
-        </div>
+      <CardContent
+        size="dense"
+        className="grid grid-cols-1 gap-4 space-y-0 md:grid-cols-2"
+      >
+        <FormInputField
+          id="customerName"
+          label={t("nameLabel")}
+          required
+          icon={User}
+          value={customerInfo.customerName}
+          onChange={(val) => setCustomerInfo({ customerName: val })}
+          placeholder={t("namePlaceholder")}
+          error={errors.customerName}
+        />
 
-        {/* Customer Phone */}
-        <div className="space-y-1.5">
-          <Label
-            htmlFor="customerPhone"
-            className="flex items-center gap-1 text-xs font-semibold"
-          >
-            {t("phoneLabel")} <span className="text-destructive">*</span>
-          </Label>
-          <div className="relative">
-            <Phone className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-            <Input
-              id="customerPhone"
-              value={customerInfo.customerPhone}
-              onChange={(e) =>
-                setCustomerInfo({ customerPhone: e.target.value })
-              }
-              placeholder={t("phonePlaceholder")}
-              className={`h-9 pl-8 text-sm ${errors.customerPhone ? "border-destructive focus-visible:ring-destructive" : ""}`}
-            />
-          </div>
-          {errors.customerPhone && (
-            <p className="text-destructive text-[11px] font-medium">
-              {errors.customerPhone}
-            </p>
-          )}
-        </div>
+        <FormInputField
+          id="customerPhone"
+          label={t("phoneLabel")}
+          required
+          icon={Phone}
+          value={customerInfo.customerPhone}
+          onChange={(val) => setCustomerInfo({ customerPhone: val })}
+          placeholder={t("phonePlaceholder")}
+          error={errors.customerPhone}
+        />
 
-        {/* Customer Email */}
-        <div className="space-y-1.5">
-          <Label htmlFor="customerEmail" className="text-xs font-semibold">
-            {t("emailLabel")}
-          </Label>
-          <div className="relative">
-            <Mail className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-            <Input
-              id="customerEmail"
-              type="email"
-              value={customerInfo.customerEmail ?? ""}
-              onChange={(e) =>
-                setCustomerInfo({ customerEmail: e.target.value || null })
-              }
-              placeholder={t("emailPlaceholder")}
-              className={`h-9 pl-8 text-sm ${errors.customerEmail ? "border-destructive focus-visible:ring-destructive" : ""}`}
-            />
-          </div>
-          {errors.customerEmail && (
-            <p className="text-destructive text-[11px] font-medium">
-              {errors.customerEmail}
-            </p>
-          )}
-        </div>
+        <FormInputField
+          id="companyName"
+          label={t("companyLabel")}
+          icon={Building2}
+          value={customerInfo.companyName ?? ""}
+          onChange={(val) => setCustomerInfo({ companyName: val || null })}
+          placeholder={t("companyPlaceholder")}
+        />
 
-        {/* Company Name */}
-        <div className="space-y-1.5">
-          <Label htmlFor="companyName" className="text-xs font-semibold">
-            {t("companyLabel")}
-          </Label>
-          <div className="relative">
-            <Building2 className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-            <Input
-              id="companyName"
-              value={customerInfo.companyName ?? ""}
-              onChange={(e) =>
-                setCustomerInfo({ companyName: e.target.value || null })
-              }
-              placeholder={t("companyPlaceholder")}
-              className="h-9 pl-8 text-sm"
-            />
-          </div>
-        </div>
+        <FormInputField
+          id="taxId"
+          label={t("taxIdLabel")}
+          icon={FileSpreadsheet}
+          value={customerInfo.taxId ?? ""}
+          onChange={(val) => setCustomerInfo({ taxId: val || null })}
+          placeholder={t("taxIdPlaceholder")}
+        />
 
-        {/* Tax Identification Number */}
-        <div className="space-y-1.5">
-          <Label htmlFor="taxId" className="text-xs font-semibold">
-            {t("taxIdLabel")}
-          </Label>
-          <div className="relative">
-            <FileSpreadsheet className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-            <Input
-              id="taxId"
-              value={customerInfo.taxId ?? ""}
-              onChange={(e) =>
-                setCustomerInfo({ taxId: e.target.value || null })
-              }
-              placeholder={t("taxIdPlaceholder")}
-              className="h-9 pl-8 font-mono text-sm"
-            />
-          </div>
-        </div>
+        <FormInputField
+          id="customerEmail"
+          label={t("emailLabel")}
+          type="email"
+          icon={Mail}
+          value={customerInfo.customerEmail ?? ""}
+          onChange={(val) => setCustomerInfo({ customerEmail: val || null })}
+          placeholder={t("emailPlaceholder")}
+          error={errors.customerEmail}
+          className="col-span-full md:col-span-2"
+        />
 
-        {/* Shipping / Installation Address */}
-        <div className="space-y-1.5">
-          <Label htmlFor="shippingAddress" className="text-xs font-semibold">
-            {t("addressLabel")}
-          </Label>
-          <div className="relative">
-            <MapPin className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-            <Input
-              id="shippingAddress"
-              value={customerInfo.shippingAddress ?? ""}
-              onChange={(e) =>
-                setCustomerInfo({ shippingAddress: e.target.value || null })
-              }
-              placeholder={t("addressPlaceholder")}
-              className="h-9 pl-8 text-sm"
-            />
-          </div>
-        </div>
+        <QuoteAddressCascader
+          value={addressState}
+          onChange={handleAddressChange}
+        />
       </CardContent>
     </Card>
   );

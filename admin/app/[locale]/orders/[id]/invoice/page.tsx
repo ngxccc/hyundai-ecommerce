@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { InvoiceClient } from "@/features/orders/components";
 import { ordersApi } from "@/features/orders/api/orders.api";
 import { notFound } from "next/navigation";
@@ -5,7 +6,7 @@ import { type Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { connection } from "next/server";
-
+import { CenteredSpinner } from "@/components/common";
 export async function generateMetadata({
   params,
 }: {
@@ -20,7 +21,19 @@ export async function generateMetadata({
   };
 }
 
-export default async function AdminInvoicePage({
+export default function AdminInvoicePage({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }>;
+}) {
+  return (
+    <Suspense fallback={<CenteredSpinner variant="content" />}>
+      <InvoiceContent params={params} />
+    </Suspense>
+  );
+}
+
+async function InvoiceContent({
   params,
 }: {
   params: Promise<{ locale: string; id: string }>;

@@ -23,6 +23,9 @@ export interface AdminQuoteCustomerInfo {
   companyName: string | null;
   taxId: string | null;
   shippingAddress: string | null;
+  city?: string | null;
+  district?: string | null;
+  streetAddress?: string | null;
 }
 
 export interface AdminQuoteCommercialTerms {
@@ -67,6 +70,9 @@ const defaultCustomerInfo: AdminQuoteCustomerInfo = {
   companyName: null,
   taxId: null,
   shippingAddress: null,
+  city: null,
+  district: null,
+  streetAddress: null,
 };
 
 const defaultCommercialTerms: AdminQuoteCommercialTerms = {

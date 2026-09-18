@@ -194,7 +194,7 @@ export const ProductSearchModal = ({
                         {model && (
                           <Badge
                             variant="outline"
-                            className="bg-background px-1.5 py-0 font-mono text-[10px] uppercase"
+                            className="bg-background px-1.5 py-0 text-[10px] uppercase"
                           >
                             {model}
                           </Badge>

@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardAction,
   CardContent,
 } from "@/components/ui/card";
 import {
@@ -93,22 +94,20 @@ export const QuoteLineItemsTable = () => {
 
   return (
     <>
-      <Card className="border-border border shadow-xs">
-        <CardHeader className="bg-muted/20 flex flex-row flex-wrap items-center justify-between gap-4 border-b p-4 pb-3">
-          <div>
-            <CardTitle>
-              <Package />
-              {t("title")}
-              <Badge variant="secondary" className="px-1.5 font-mono text-xs">
-                {items.length}
-              </Badge>
-            </CardTitle>
-            <CardDescription className="text-xs">
-              {t("description")}
-            </CardDescription>
-          </div>
+      <Card size="dense">
+        <CardHeader bordered size="dense" className="bg-muted/20">
+          <CardTitle>
+            <Package />
+            {t("title")}
+            <Badge variant="secondary" className="px-1.5 text-xs">
+              {items.length}
+            </Badge>
+          </CardTitle>
+          <CardDescription className="text-xs">
+            {t("description")}
+          </CardDescription>
 
-          <div className="flex items-center gap-2">
+          <CardAction className="flex items-center gap-2">
             <Button
               type="button"
               variant="outline"
@@ -128,10 +127,10 @@ export const QuoteLineItemsTable = () => {
               <Search className="h-3.5 w-3.5" />
               {t("searchCatalog")}
             </Button>
-          </div>
+          </CardAction>
         </CardHeader>
 
-        <CardContent className="overflow-x-auto p-0">
+        <CardContent size="compact" className="overflow-x-auto">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
               <div className="bg-muted/60 mb-3 flex h-12 w-12 items-center justify-center rounded-full">
@@ -194,7 +193,7 @@ export const QuoteLineItemsTable = () => {
 
                   return (
                     <TableRow key={item.id} className="hover:bg-muted/30">
-                      <TableCell className="text-muted-foreground text-center font-mono">
+                      <TableCell className="text-muted-foreground text-center">
                         {index + 1}
                       </TableCell>
 
@@ -244,7 +243,7 @@ export const QuoteLineItemsTable = () => {
                               ) : item.itemModel ? (
                                 <Badge
                                   variant="outline"
-                                  className="h-4 px-1 py-0 font-mono text-[9px]"
+                                  className="h-4 px-1 py-0 text-[9px]"
                                 >
                                   {item.itemModel}
                                 </Badge>
@@ -404,7 +403,7 @@ export const QuoteLineItemsTable = () => {
                     value={customModel}
                     onChange={(e) => setCustomModel(e.target.value)}
                     placeholder="VD: ATS-100A"
-                    className="h-8 font-mono text-xs"
+                    className="h-8 text-xs"
                   />
                 </div>
 

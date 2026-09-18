@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { QuotePrintDocument } from "@/features/quotes/components";
 import { quotesApi } from "@/features/quotes/api/quotes.api";
 import { requireAuth } from "@/lib/action-auth";
@@ -6,7 +7,7 @@ import { type Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { connection } from "next/server";
-
+import { CenteredSpinner } from "@/components/common";
 export async function generateMetadata({
   params,
 }: {
@@ -25,7 +26,19 @@ export async function generateMetadata({
   };
 }
 
-export default async function AdminQuoteExportPage({
+export default function AdminQuoteExportPage({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }>;
+}) {
+  return (
+    <Suspense fallback={<CenteredSpinner variant="content" />}>
+      <QuoteExportContent params={params} />
+    </Suspense>
+  );
+}
+
+async function QuoteExportContent({
   params,
 }: {
   params: Promise<{ locale: string; id: string }>;

@@ -1,5 +1,8 @@
 import { Suspense } from "react";
 import { BrandHeader } from "@/features/brands/components";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/routing";
+import { Plus } from "lucide-react";
 import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import { QuoteList } from "@/features/quotes/components";
 import { quotesApi } from "@/features/quotes/api/quotes.api";
@@ -48,7 +51,14 @@ export default async function AdminQuotesPage({
       <BrandHeader
         title={tHeader("listTitle")}
         description={tHeader("listDescription")}
-        showAddButton={false}
+        actions={
+          <Button asChild variant="default" className="gap-2 shadow-xs">
+            <Link href="/quotes/new">
+              <Plus className="size-4" />
+              <span>{tHeader("composer.headerTitle")}</span>
+            </Link>
+          </Button>
+        }
       />
 
       <Suspense fallback={<CenteredSpinner variant="content" />}>
