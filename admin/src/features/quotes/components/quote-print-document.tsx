@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
 import {
@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { AdminQuote } from "@/types/api";
 import { QuotePdfDocument } from "./quote-pdf-document";
+import type { PdfLocale } from "./quote-pdf";
 
 // Dynamically import PDFViewer with SSR disabled to prevent canvas/font SSR issues
 const PDFViewer = dynamic(
@@ -29,12 +30,17 @@ const PDFViewer = dynamic(
 export interface QuotePrintDocumentProps {
   quote: AdminQuote;
 }
+
 export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
   const t = useTranslations("adminQuotes");
+  const activeLocale = useLocale();
   const router = useRouter();
 
   const [mounted, setMounted] = useState(false);
   const [includeAppendix, setIncludeAppendix] = useState(true);
+  const [pdfLocale, setPdfLocale] = useState<PdfLocale>(
+    activeLocale.startsWith("en") ? "en" : "vi",
+  );
   const [isDownloading, setIsDownloading] = useState(false);
   const [isOpeningTab, setIsOpeningTab] = useState(false);
 
@@ -42,8 +48,7 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
     setMounted(true);
   }, []);
 
-  const quoteNo = quote.quoteNumber;
-
+  const quoteNo = quote.quoteNumber ?? quote.id.slice(0, 8);
   const hasGeneratorItems = quote.items.length > 0;
 
   const handleDownloadPdf = async () => {
@@ -51,12 +56,16 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
     try {
       const { pdf } = await import("@react-pdf/renderer");
       const blob = await pdf(
-        <QuotePdfDocument quote={quote} includeAppendix={includeAppendix} />,
+        <QuotePdfDocument
+          quote={quote}
+          includeAppendix={includeAppendix}
+          locale={pdfLocale}
+        />,
       ).toBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `Bao_Gia_${quoteNo}.pdf`;
+      link.download = `Quotation_${quoteNo}_${pdfLocale.toUpperCase()}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -75,7 +84,11 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
     try {
       const { pdf } = await import("@react-pdf/renderer");
       const blob = await pdf(
-        <QuotePdfDocument quote={quote} includeAppendix={includeAppendix} />,
+        <QuotePdfDocument
+          quote={quote}
+          includeAppendix={includeAppendix}
+          locale={pdfLocale}
+        />,
       ).toBlob();
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
@@ -118,21 +131,50 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
           </div>
         </div>
 
-        {/* Center: Appendix Toggle */}
-        {hasGeneratorItems && (
-          <div className="flex items-center gap-2">
-            <label className="flex cursor-pointer items-center gap-2 text-xs font-medium text-slate-700 select-none">
-              <input
-                type="checkbox"
-                checked={includeAppendix}
-                onChange={(e) => setIncludeAppendix(e.target.checked)}
-                className="h-4 w-4 rounded border-slate-300 text-blue-900 focus:ring-blue-900"
-              />
-              <FileCheck2 className="h-3.5 w-3.5 text-blue-800" />
-              <span>{t("printDocument.toggleAppendix")}</span>
-            </label>
+        {/* Center: Controls (Language Toggle & Appendix Toggle) */}
+        <div className="flex items-center gap-4">
+          {/* Language Switcher */}
+          <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5">
+            <button
+              type="button"
+              onClick={() => setPdfLocale("vi")}
+              className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
+                pdfLocale === "vi"
+                  ? "bg-blue-900 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <span>🇻🇳 Tiếng Việt</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setPdfLocale("en")}
+              className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
+                pdfLocale === "en"
+                  ? "bg-blue-900 text-white shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <span>🇬🇧 English</span>
+            </button>
           </div>
-        )}
+
+          {/* Appendix Toggle */}
+          {hasGeneratorItems && (
+            <div className="flex items-center gap-2 border-l border-slate-200 pl-4">
+              <label className="flex cursor-pointer items-center gap-2 text-xs font-medium text-slate-700 select-none">
+                <input
+                  type="checkbox"
+                  checked={includeAppendix}
+                  onChange={(e) => setIncludeAppendix(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-blue-900 focus:ring-blue-900"
+                />
+                <FileCheck2 className="h-3.5 w-3.5 text-blue-800" />
+                <span>{t("printDocument.toggleAppendix")}</span>
+              </label>
+            </div>
+          )}
+        </div>
 
         {/* Right: PDF Actions */}
         <div className="flex items-center gap-2">
@@ -173,6 +215,7 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
         <div className="relative h-[calc(100vh-100px)] w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
           {mounted ? (
             <PDFViewer
+              key={`${pdfLocale}-${includeAppendix}`}
               width="100%"
               height="100%"
               showToolbar={true}
@@ -181,6 +224,7 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
               <QuotePdfDocument
                 quote={quote}
                 includeAppendix={includeAppendix}
+                locale={pdfLocale}
               />
             </PDFViewer>
           ) : (

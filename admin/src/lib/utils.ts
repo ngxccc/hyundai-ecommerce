@@ -217,3 +217,123 @@ export function numberToVietnameseWords(amount: number | string): string {
   const fullSentence = `${resultWords.join(" ")} đồng`;
   return fullSentence.charAt(0).toUpperCase() + fullSentence.slice(1);
 }
+
+const ONES_EN = [
+  "",
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+  "Thirteen",
+  "Fourteen",
+  "Fifteen",
+  "Sixteen",
+  "Seventeen",
+  "Eighteen",
+  "Nineteen",
+];
+
+const TENS_EN = [
+  "",
+  "",
+  "Twenty",
+  "Thirty",
+  "Forty",
+  "Fifty",
+  "Sixty",
+  "Seventy",
+  "Eighty",
+  "Ninety",
+];
+
+const SCALES_EN = ["", "Thousand", "Million", "Billion", "Trillion"];
+
+function readThreeDigitsEn(num: number): string {
+  let result = "";
+  const hundreds = Math.floor(num / 100);
+  const remainder = num % 100;
+
+  if (hundreds > 0) {
+    result += `${ONES_EN[hundreds]} Hundred`;
+    if (remainder > 0) result += " ";
+  }
+
+  if (remainder < 20) {
+    result += ONES_EN[remainder] ?? "";
+  } else {
+    const tens = Math.floor(remainder / 10);
+    const ones = remainder % 10;
+    result += TENS_EN[tens] ?? "";
+    if (ones > 0) {
+      result += `-${ONES_EN[ones]}`;
+    }
+  }
+
+  return result.trim();
+}
+
+/**
+ * Converts a numeric amount into English words representation.
+ *
+ * @param amount - Number or string currency amount
+ * @returns Capitalized English words (e.g. "Two Hundred Sixty-Nine Million Five Hundred Thousand Vietnamese Dong Only")
+ */
+export function numberToEnglishWords(amount: number | string): string {
+  const numericAmount =
+    typeof amount === "string"
+      ? Math.floor(Number(amount))
+      : Math.floor(amount);
+
+  if (Number.isNaN(numericAmount) || numericAmount === 0) {
+    return "Zero Vietnamese Dong only";
+  }
+
+  if (numericAmount < 0) {
+    return `Negative ${numberToEnglishWords(Math.abs(numericAmount))}`;
+  }
+
+  const groups: number[] = [];
+  let remaining = numericAmount;
+
+  while (remaining > 0) {
+    groups.push(remaining % 1000);
+    remaining = Math.floor(remaining / 1000);
+  }
+
+  const words: string[] = [];
+  for (let i = groups.length - 1; i >= 0; i--) {
+    const group = groups[i] ?? 0;
+    if (group > 0) {
+      const groupText = readThreeDigitsEn(group);
+      const scale = SCALES_EN[i] ?? "";
+      words.push(scale ? `${groupText} ${scale}` : groupText);
+    }
+  }
+
+  return `${words.join(" ")} Vietnamese Dong only`;
+}
+
+/**
+ * Converts a monetary amount to localized text in words (Vietnamese or English).
+ *
+ * @param amount - Numeric amount
+ * @param locale - Supported language ("vi" | "en")
+ * @returns Localized words sentence
+ */
+export function formatCurrencyWords(
+  amount: number | string,
+  locale = "vi",
+): string {
+  if (locale.toLowerCase().startsWith("en")) {
+    return numberToEnglishWords(amount);
+  }
+  return numberToVietnameseWords(amount);
+}

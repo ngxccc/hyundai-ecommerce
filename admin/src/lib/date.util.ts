@@ -43,3 +43,11 @@ export function parseDurationToMs(
 ): number {
   return parseDurationToSeconds(duration, defaultMs / 1000) * 1000;
 }
+
+/**
+ * Convert days to equivalent milliseconds.
+ * @param days Number of days
+ */
+export function daysToMs(days: number): number {
+  return days * TIME_IN_MS.DAY;
+}

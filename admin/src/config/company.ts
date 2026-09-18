@@ -8,6 +8,8 @@ export const companyConfig = {
   legalNameEn: "NHAT NANG TECHNOLOGY EQUIPMENT CO., LTD",
   shortName: "Hyundai Nhật Năng",
   brandName: "Hyundai",
+  brandTitle: "HYUNDAI POWER PRODUCTS",
+  brandFullName: "Hyundai Power Products Vietnam",
   taxId: "0316447814",
 
   // Direct contact channels
@@ -61,6 +63,17 @@ export const companyConfig = {
     website: "https://hyundainhatnang.vn",
     zalo: "https://zalo.me/0901497771",
     facebook: "https://facebook.com/hyundainhatnang",
+  },
+
+  // Official banking details for invoices & quotations
+  bank: {
+    bankName: "VietinBank",
+    branchVi: "Chi nhánh Tây Sài Gòn",
+    branchEn: "Tay Sai Gon Branch",
+    accountNo: "113002859999",
+    accountName: "CÔNG TY TNHH THIẾT BỊ CÔNG NGHỆ NHẬT NĂNG",
+    bin: "vietinbank",
+    qrTemplate: "qr_only",
   },
 } as const;
 

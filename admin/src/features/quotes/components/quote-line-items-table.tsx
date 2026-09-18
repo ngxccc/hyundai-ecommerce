@@ -34,7 +34,11 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { canUseCldImage } from "@/lib";
-import { formatCurrency } from "@/lib/utils";
+import {
+  formatCurrency,
+  formatNumberInput,
+  parseNumberInput,
+} from "@/lib/utils";
 import { ProductSearchModal } from "./product-search-modal";
 import {
   useQuoteDraftStore,
@@ -165,9 +169,7 @@ export const QuoteLineItemsTable = () => {
               <TableHeader className="bg-muted/40 text-[11px] tracking-wider uppercase">
                 <TableRow>
                   <TableHead className="w-10 text-center">#</TableHead>
-                  <TableHead className="min-w-[240px]">
-                    {t("colItem")}
-                  </TableHead>
+                  <TableHead className="min-w-60">{t("colItem")}</TableHead>
                   <TableHead className="w-20 text-center">
                     {t("colQty")}
                   </TableHead>
@@ -198,7 +200,7 @@ export const QuoteLineItemsTable = () => {
                       </TableCell>
 
                       <TableCell>
-                        <div className="flex items-start gap-2.5">
+                        <div className="flex items-center gap-2.5">
                           <div className="bg-muted relative h-10 w-10 shrink-0 overflow-hidden rounded-md border">
                             {item.image && canUseCldImage(item.image) ? (
                               <CldImage
@@ -240,13 +242,6 @@ export const QuoteLineItemsTable = () => {
                                 >
                                   {t("customTag")}
                                 </Badge>
-                              ) : item.itemModel ? (
-                                <Badge
-                                  variant="outline"
-                                  className="h-4 px-1 py-0 text-[9px]"
-                                >
-                                  {item.itemModel}
-                                </Badge>
                               ) : null}
                             </div>
                             {item.itemSpecs && (
@@ -279,19 +274,17 @@ export const QuoteLineItemsTable = () => {
                       {/* Unit Price Input */}
                       <TableCell className="text-right">
                         <Input
-                          type="number"
-                          min="0"
-                          step="10000"
-                          value={item.unitPrice}
-                          onChange={(e) =>
+                          type="text"
+                          inputMode="numeric"
+                          value={formatNumberInput(item.unitPrice)}
+                          onChange={(e) => {
+                            const rawDigits = parseNumberInput(e.target.value);
+                            const parsed = rawDigits ? Number(rawDigits) : 0;
                             updateItem(item.id, {
-                              unitPrice: Math.max(
-                                0,
-                                parseFloat(e.target.value) || 0,
-                              ),
-                            })
-                          }
-                          className="ml-auto h-8 w-28 text-right text-xs font-medium"
+                              unitPrice: Math.max(0, parsed),
+                            });
+                          }}
+                          className="ml-auto h-8 w-32 text-right text-xs font-medium"
                         />
                       </TableCell>
 
@@ -448,11 +441,13 @@ export const QuoteLineItemsTable = () => {
                   </Label>
                   <Input
                     id="customPrice"
-                    type="number"
-                    min="0"
-                    step="10000"
-                    value={customPrice}
-                    onChange={(e) => setCustomPrice(e.target.value)}
+                    type="text"
+                    inputMode="numeric"
+                    value={formatNumberInput(customPrice)}
+                    onChange={(e) => {
+                      const rawDigits = parseNumberInput(e.target.value);
+                      setCustomPrice(rawDigits || "0");
+                    }}
                     className="h-8 text-right text-xs font-medium"
                   />
                 </div>

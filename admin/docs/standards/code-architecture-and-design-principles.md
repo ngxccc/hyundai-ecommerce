@@ -93,3 +93,11 @@ export const ShallowHeader = ({ title }: { title: string }) => <h1>{title}</h1>;
   - Maintain Core Web Vitals targets: $\text{LCP} < 1.2\text{s}$, $\text{INP} < 100\text{ms}$, $\text{CLS} < 0.05$.
 - **Pillar 6: Off-Main-Thread Processing**:
   - Delegate heavy document parsing, batch file generation, or massive catalog filtering to Server APIs or dedicated Web Workers to ensure a consistent 60/120 FPS UI thread.
+
+---
+
+## 8. Zero Defensive Fallbacks & Fail-Fast Source Integrity (Linux Philosophy)
+
+- **Direct Consumption**: UI components must consume strongly-typed API models directly (`item.itemName`). Never introduce ad-hoc defensive fallback cascades (`item.itemName || item.product?.name || "—"`) to paper over backend schema gaps or dirty database records.
+- **Fix at the Origin**: If an invariant is violated (e.g. an item name is missing), fix the root cause in the database schema, migration, seed fixture, or DTO contract—never compensate with client-side masking.
+- **Clean Cutover**: Delete obsolete backward-compatibility shims, aliases, and weightless fallbacks immediately upon schema migration.
