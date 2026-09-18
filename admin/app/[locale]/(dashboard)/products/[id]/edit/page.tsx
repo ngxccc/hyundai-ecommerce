@@ -52,14 +52,22 @@ async function EditProductContent({
     brandsApi.list(),
   ]);
 
-  const product = productRes.data?.data;
+  if (productRes.error) {
+    if (productRes.error.status === 404) {
+      notFound();
+    }
+    throw new Error(
+      `Không thể tải thông tin sản phẩm: ${productRes.error.detail || "Lỗi máy chủ"} (Mã lỗi: ${productRes.error.status})`,
+    );
+  }
+
+  const product = productRes.data.data;
   const categories = categoriesRes.data?.data ?? [];
   const brands = brandsRes.data?.data ?? [];
 
   if (!product) {
     notFound();
   }
-
   return (
     <ProductForm
       initialData={product}
