@@ -28,7 +28,7 @@ export const categoryService = {
       return categories.map((c) => mapCategoryToStorefront(c));
     } catch (error) {
       console.error("Failed to fetch categories from backend:", error);
-      throw error;
+      return [];
     }
   },
 
@@ -52,7 +52,7 @@ export const categoryService = {
       return tree.map((node) => mapCategoryTreeToStorefront(node));
     } catch (error) {
       console.error("Failed to fetch category tree from backend:", error);
-      throw error;
+      return [];
     }
   },
 

@@ -23,7 +23,7 @@ export const brandService = {
       return brands.map((b) => mapBrandToStorefront(b));
     } catch (error) {
       console.error("Failed to fetch brands from backend:", error);
-      throw error;
+      return [];
     }
   },
 };
