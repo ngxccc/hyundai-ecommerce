@@ -115,27 +115,12 @@ export const productService = {
     "use cache";
     cacheLife("days");
     try {
-      const allSlugs: string[] = [];
-      let page = 1;
-      let hasMore = true;
-
-      while (hasMore && page <= 10) {
-        const { data: res } = await catalogApi.products.list({
-          page,
-          limit: 100,
-        });
-        const items = res?.data ?? [];
-        allSlugs.push(...items.map((p) => p.slug));
-
-        const totalPages = res?.meta ? res.meta.totalPages : 1;
-        if (page >= totalPages || items.length === 0) {
-          hasMore = false;
-        } else {
-          page++;
-        }
-      }
-
-      return allSlugs;
+      const { data: res } = await catalogApi.products.list({
+        page: 1,
+        limit: 30,
+      });
+      const items = res?.data ?? [];
+      return items.map((p) => p.slug);
     } catch (error) {
       console.error("Failed to fetch product slugs:", error);
       return [];
@@ -155,16 +140,17 @@ export const productService = {
       );
       if (apiError) {
         if (apiError.status === 404) return null;
-        throw new Error(
+        console.error(
           `Failed to fetch product by slug: ${apiError.detail || "Unknown error"}`,
         );
+        return null;
       }
       const product = res.data;
       if (!product) return null;
       return mapProductToStorefront(product);
     } catch (error) {
       console.error("Failed to fetch product by slug:", error);
-      throw error;
+      return null;
     }
   },
 
