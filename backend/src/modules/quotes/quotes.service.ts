@@ -344,6 +344,7 @@ export class QuotesService {
 
       return {
         ...newQuote,
+        orderNumber: null,
         items: insertedItems.map((item) => ({
           ...item,
           product: item.productId
@@ -402,13 +403,16 @@ export class QuotesService {
     const total = totalRecord?.count ?? 0;
 
     const quoteRecords = await this.db
-      .select(adminQuoteColumns)
+      .select({
+        ...adminQuoteColumns,
+        orderNumber: orders.orderNumber,
+      })
       .from(quotes)
+      .leftJoin(orders, eq(quotes.orderId, orders.id))
       .where(whereClause)
       .orderBy(desc(quotes.createdAt))
       .limit(limit)
       .offset(offset);
-
     if (quoteRecords.length === 0) {
       return {
         items: [],
@@ -548,11 +552,14 @@ export class QuotesService {
    */
   async findById(id: string): Promise<AdminQuoteResponseDto> {
     const [quote] = await this.db
-      .select(adminQuoteColumns)
+      .select({
+        ...adminQuoteColumns,
+        orderNumber: orders.orderNumber,
+      })
       .from(quotes)
+      .leftJoin(orders, eq(quotes.orderId, orders.id))
       .where(eq(quotes.id, id))
       .limit(1);
-
     if (!quote) {
       throw new I18nNotFoundException("quotes.QUOTE_NOT_FOUND");
     }
@@ -942,6 +949,7 @@ export class QuotesService {
 
       return {
         orderId: newOrder.id,
+        orderNumber: newOrder.orderNumber,
         quoteId,
         status: "APPROVED",
       };

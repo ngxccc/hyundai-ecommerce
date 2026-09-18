@@ -35,6 +35,7 @@ describe("QuotesController", () => {
     expirationDate: new Date("2026-09-19T00:00:00.000Z"),
     note: "Ghi chú",
     orderId: null,
+    orderNumber: null,
     createdByAdminId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9c",
     createdAt: new Date("2026-09-04T08:00:00.000Z"),
     updatedAt: new Date("2026-09-04T08:00:00.000Z"),

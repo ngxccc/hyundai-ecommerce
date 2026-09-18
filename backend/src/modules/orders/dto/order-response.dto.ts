@@ -46,7 +46,7 @@ export const orderUserSummarySchema = z.object({
 
 export const orderResponseSchema = z.object({
   id: z.uuid(),
-  orderNumber: z.string().nullable().optional(),
+  orderNumber: z.string(),
   userId: z.uuid().nullable().optional(),
   leadId: z.uuid().nullable().optional(),
   customerName: z.string().nullable().optional(),

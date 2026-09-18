@@ -222,7 +222,7 @@ CREATE TABLE "order" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"deleted_at" timestamp with time zone,
-	"order_number" varchar(32),
+	"order_number" varchar(32) NOT NULL UNIQUE,
 	"user_id" uuid,
 	"lead_id" uuid,
 	"customer_name" varchar(255),

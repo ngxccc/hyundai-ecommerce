@@ -90,6 +90,7 @@ export const adminQuoteResponseSchema = z.object({
   expirationDate: zCoerceDate().nullable(),
   note: z.string().nullable(),
   orderId: z.uuid().nullable(),
+  orderNumber: z.string().nullable(),
   createdByAdminId: z.uuid().nullable(),
   createdAt: zCoerceDate(),
   updatedAt: zCoerceDate(),
@@ -111,6 +112,7 @@ export const paginatedQuoteResponseSchema = paginatedAdminQuoteResponseSchema;
 
 export const approveToOrderResponseSchema = z.object({
   orderId: z.uuid(),
+  orderNumber: z.string(),
   quoteId: z.uuid(),
   status: z.enum(QUOTE_STATUSES),
 });

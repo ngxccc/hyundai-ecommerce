@@ -25,7 +25,7 @@ export const orders = snakeCase.table(
   "order",
   {
     ...fullEntity,
-    orderNumber: varchar({ length: 32 }),
+    orderNumber: varchar({ length: 32 }).notNull().unique(),
     userId: uuid().references(() => users.id, { onDelete: "set null" }),
     leadId: uuid().references(() => leads.id, { onDelete: "set null" }),
     customerName: varchar({ length: 255 }),

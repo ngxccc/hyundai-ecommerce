@@ -1,7 +1,7 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "c49cf395-1817-4f72-a293-708e4324ffcc",
+  "id": "c14466d9-fc8f-495f-843a-cea38e14c703",
   "prevIds": ["00000000-0000-0000-0000-000000000000"],
   "ddl": [
     {
@@ -2277,7 +2277,7 @@
     {
       "type": "varchar(32)",
       "typeSchema": null,
-      "notNull": false,
+      "notNull": true,
       "dimensions": 0,
       "default": null,
       "generated": null,
@@ -6235,6 +6235,15 @@
       "name": "cart_user_id_key",
       "schema": "public",
       "table": "cart",
+      "entityType": "uniques"
+    },
+    {
+      "nameExplicit": false,
+      "columns": ["order_number"],
+      "nullsNotDistinct": false,
+      "name": "order_order_number_key",
+      "schema": "public",
+      "table": "order",
       "entityType": "uniques"
     },
     {

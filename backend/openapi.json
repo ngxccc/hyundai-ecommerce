@@ -11169,6 +11169,9 @@
               }
             ]
           },
+          "orderNumber": {
+            "type": ["string", "null"]
+          },
           "createdByAdminId": {
             "anyOf": [
               {
@@ -11463,6 +11466,7 @@
           "expirationDate",
           "note",
           "orderId",
+          "orderNumber",
           "createdByAdminId",
           "createdAt",
           "updatedAt",
@@ -11739,6 +11743,9 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
+          "orderNumber": {
+            "type": "string"
+          },
           "quoteId": {
             "type": "string",
             "format": "uuid",
@@ -11756,7 +11763,7 @@
             ]
           }
         },
-        "required": ["orderId", "quoteId", "status"]
+        "required": ["orderId", "orderNumber", "quoteId", "status"]
       },
       "OrderResponseDto": {
         "type": "object",
@@ -11767,7 +11774,7 @@
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "orderNumber": {
-            "type": ["string", "null"]
+            "type": "string"
           },
           "userId": {
             "anyOf": [
@@ -12011,6 +12018,7 @@
         },
         "required": [
           "id",
+          "orderNumber",
           "status",
           "shippingFee",
           "shippingAddress",
