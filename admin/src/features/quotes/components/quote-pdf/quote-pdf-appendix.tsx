@@ -21,6 +21,7 @@ interface SpecPair {
 }
 
 interface RawSpecItem {
+  key?: string;
   nameVi?: string;
   nameEn?: string;
   value?: string | number;
@@ -40,11 +41,30 @@ function extractSpecs(
   dict: QuotePdfDictionary,
 ): SpecItemEntry[] {
   const entries: SpecItemEntry[] = [];
-  if (!item.itemSpecs?.trim()) {
-    return entries;
+  const raw = item.itemSpecs?.trim();
+
+  // If itemSpecs is empty, check if product has specSheet
+  if (!raw && Array.isArray(item.product?.specSheet)) {
+    for (const group of item.product.specSheet) {
+      for (const spec of group.items) {
+        const valStr = spec.value.trim();
+        if (
+          valStr &&
+          spec.key !== "pdfCatalogUrl" &&
+          !valStr.startsWith("http")
+        ) {
+          const label = spec.nameVi;
+          const value = spec.unit ? `${valStr} ${spec.unit}` : valStr;
+          entries.push({ label: `${label}:`, value });
+        }
+      }
+    }
+    if (entries.length > 0) return entries;
   }
 
-  const raw = item.itemSpecs.trim();
+  if (!raw) {
+    return entries;
+  }
 
   // 1. Try parsing JSON format
   if (raw.startsWith("{") || raw.startsWith("[")) {
@@ -58,7 +78,12 @@ function extractSpecs(
             const rawNode = itemNode as RawSpecGroup & RawSpecItem;
             if (Array.isArray(rawNode.items)) {
               for (const spec of rawNode.items) {
-                if (spec.value != null && String(spec.value).trim()) {
+                if (
+                  spec.value != null &&
+                  String(spec.value).trim() &&
+                  spec.key !== "pdfCatalogUrl" &&
+                  !String(spec.value).startsWith("http")
+                ) {
                   const label = spec.nameVi ?? "Thông số";
                   const valStr = String(spec.value).trim();
                   const value = spec.unit ? `${valStr} ${spec.unit}` : valStr;
@@ -67,7 +92,11 @@ function extractSpecs(
               }
             } else if (rawNode.nameVi && rawNode.value != null) {
               const valStr = String(rawNode.value).trim();
-              if (valStr) {
+              if (
+                valStr &&
+                rawNode.key !== "pdfCatalogUrl" &&
+                !valStr.startsWith("http")
+              ) {
                 const label = rawNode.nameVi;
                 const value = rawNode.unit
                   ? `${valStr} ${rawNode.unit}`

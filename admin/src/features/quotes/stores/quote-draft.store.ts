@@ -108,43 +108,60 @@ export const useQuoteDraftStore = create<AdminQuoteDraftState>()(
             return { items: updatedItems };
           }
 
-          // Extract generator specifications for quote display
-          const specsRecord = product.specs as Record<string, unknown>;
-          const model =
-            typeof specsRecord.model === "string" ? specsRecord.model : null;
-          const power =
-            specsRecord.powerKva ??
-            specsRecord.power ??
-            specsRecord.standbyPowerKva ??
-            specsRecord.primePowerKva;
-          const phase = specsRecord.phase;
-          const fuelType = specsRecord.fuelType;
-
-          const powerStr =
-            typeof power === "number" || typeof power === "string"
-              ? `${String(power)}kVA`
+          // Extract equipment specifications for quote display and technical appendix
+          let model =
+            typeof product.specs.model === "string" &&
+            product.specs.model.trim()
+              ? product.specs.model.trim()
               : null;
-          const phaseStr =
-            typeof phase === "string"
-              ? phase === "1phase"
+
+          if (!model && Array.isArray(product.specSheet)) {
+            for (const group of product.specSheet) {
+              const modelItem = group.items.find((i) => i.key === "model");
+              if (modelItem?.value.trim()) {
+                model = modelItem.value.trim();
+                break;
+              }
+            }
+          }
+
+          let itemSpecs: string | null = null;
+          if (
+            Array.isArray(product.specSheet) &&
+            product.specSheet.length > 0
+          ) {
+            itemSpecs = JSON.stringify(product.specSheet);
+          } else {
+            const power = product.powerKva ?? product.powerKw;
+            const powerStr = power ? `${power} kVA` : null;
+            const phaseStr =
+              product.phase === "1phase"
                 ? "1 Pha"
-                : phase === "3phase"
+                : product.phase === "3phase"
                   ? "3 Pha"
-                  : phase
-              : null;
-          const fuelStr = typeof fuelType === "string" ? fuelType : null;
-
-          const specsSummary = [powerStr, phaseStr, fuelStr]
-            .filter(Boolean)
-            .join(", ");
+                  : product.phase;
+            const voltageStr = product.voltage;
+            const fuelStr =
+              product.fuelType === "diesel"
+                ? "Diesel"
+                : product.fuelType === "gasoline"
+                  ? "Xăng"
+                  : product.fuelType;
+            const parts = [powerStr, phaseStr, voltageStr, fuelStr].filter(
+              Boolean,
+            );
+            if (parts.length > 0) {
+              itemSpecs = parts.join(", ");
+            }
+          }
 
           const newItem: AdminQuoteDraftItem = {
             id: crypto.randomUUID(),
             productId: product.id,
             isCustomItem: false,
             itemName: product.name,
-            itemModel: model ?? product.slug,
-            itemSpecs: specsSummary || null,
+            itemModel: model ?? null,
+            itemSpecs,
             quantity,
             unitPrice: parseFloat(product.price),
             discountPercent: 0,

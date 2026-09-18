@@ -98,7 +98,7 @@ export async function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
           ) : (
             orders.map((order) => {
               const customerName =
-                order.user?.fullName ?? order.customerName ?? "Customer";
+                order.user?.fullName ?? order.customerName ?? "—";
               const items = order.items;
               let productText = "Không có sản phẩm";
               if (items.length > 0) {

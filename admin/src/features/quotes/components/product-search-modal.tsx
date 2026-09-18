@@ -84,27 +84,29 @@ export const ProductSearchModal = ({
   };
 
   const extractModelAndPower = (product: AdminProduct) => {
-    const specs = product.specs as Record<string, unknown>;
-    const model = typeof specs.model === "string" ? specs.model : product.slug;
-    const power =
-      specs.powerKva ??
-      specs.power ??
-      specs.standbyPowerKva ??
-      specs.primePowerKva;
-    const phase = specs.phase;
+    let model =
+      typeof product.specs.model === "string" && product.specs.model.trim()
+        ? product.specs.model.trim()
+        : null;
 
-    const powerStr =
-      typeof power === "number" || typeof power === "string"
-        ? `${String(power)}kVA`
-        : null;
+    if (!model && Array.isArray(product.specSheet)) {
+      for (const group of product.specSheet) {
+        const modelItem = group.items.find((i) => i.key === "model");
+        if (modelItem?.value.trim()) {
+          model = modelItem.value.trim();
+          break;
+        }
+      }
+    }
+
+    const power = product.powerKva ?? product.powerKw;
+    const powerStr = power ? `${power} kVA` : null;
     const phaseStr =
-      typeof phase === "string"
-        ? phase === "1phase"
-          ? "1 Pha"
-          : phase === "3phase"
-            ? "3 Pha"
-            : phase
-        : null;
+      product.phase === "1phase"
+        ? "1 Pha"
+        : product.phase === "3phase"
+          ? "3 Pha"
+          : product.phase;
 
     return {
       model,

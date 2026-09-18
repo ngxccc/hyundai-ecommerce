@@ -123,15 +123,11 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
   let totalNegotiatedAmount = 0;
 
   for (const item of quote.items) {
-    const reqPrice = parseFloat(item.requestedPrice ?? item.unitPrice ?? "0");
+    const reqPrice = item.requestedPrice ? parseFloat(item.requestedPrice) : 0;
     totalRequestedAmount += reqPrice * item.quantity;
 
     const finalPrice = parseFloat(
-      item.agreedPrice ??
-        item.finalUnitPrice ??
-        item.requestedPrice ??
-        item.unitPrice ??
-        "0",
+      item.agreedPrice ?? item.finalUnitPrice ?? item.unitPrice ?? "0",
     );
     totalNegotiatedAmount += finalPrice * item.quantity;
   }
@@ -171,10 +167,14 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
                     {item.quantity}
                   </TableCell>
                   <TableCell className="text-muted-foreground text-right font-semibold">
-                    {formatCurrency(item.product?.price ?? item.unitPrice)}
+                    {item.product?.price || item.unitPrice
+                      ? formatCurrency(item.product?.price ?? item.unitPrice)
+                      : "—"}
                   </TableCell>
                   <TableCell className="text-foreground text-right font-semibold">
-                    {formatCurrency(item.requestedPrice ?? item.unitPrice)}
+                    {item.requestedPrice
+                      ? formatCurrency(item.requestedPrice)
+                      : "—"}
                   </TableCell>
                   <TableCell className="text-right">
                     {isFinalized ? (

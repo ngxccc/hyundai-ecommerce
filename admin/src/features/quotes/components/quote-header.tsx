@@ -111,7 +111,7 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
   };
 
   const handleStatusChange = (
-    newStatus: "NEGOTIATING" | "REJECTED" | "EXPIRED",
+    newStatus: "DRAFT" | "SUBMITTED" | "NEGOTIATING" | "REJECTED" | "EXPIRED",
   ) => {
     startTransition(async () => {
       const res = await updateQuoteStatusAction(quote.id, newStatus);
@@ -178,8 +178,8 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
             )}
             {t("exportExcelButton")}
           </Button>
-
-          {quote.status === QUOTE_STATUS.SUBMITTED && (
+          {(quote.status === QUOTE_STATUS.DRAFT ||
+            quote.status === QUOTE_STATUS.SUBMITTED) && (
             <>
               <Button
                 variant="destructive"

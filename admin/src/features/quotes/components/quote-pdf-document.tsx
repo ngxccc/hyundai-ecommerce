@@ -37,7 +37,7 @@ export const QuotePdfDocument = ({
   const grandTotal = parseFloat(quote.totalQuotedPrice ?? "0");
   const amountInWords = formatCurrencyWords(grandTotal, locale);
 
-  const quoteNo = quote.quoteNumber ?? quote.id.slice(0, 8);
+  const quoteNo = quote.quoteNumber ?? "DRAFT";
 
   const items = quote.items;
   const generatorItems = items.filter((item) => {
