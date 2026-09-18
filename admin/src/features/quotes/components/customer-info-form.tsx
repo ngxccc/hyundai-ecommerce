@@ -20,6 +20,7 @@ import { useQuoteDraftStore } from "../stores/quote-draft.store";
 
 export interface CustomerInfoFormProps {
   errors?: Record<string, string>;
+  onFieldErrorChange?: (field: string, error: string | null) => void;
 }
 
 interface FormInputFieldProps {
@@ -31,10 +32,11 @@ interface FormInputFieldProps {
   icon: React.ComponentType<{ className?: string }>;
   required?: boolean;
   type?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  maxLength?: number;
   error?: string;
   className?: string;
 }
-
 const FormInputField = ({
   id,
   label,
@@ -44,6 +46,8 @@ const FormInputField = ({
   icon: Icon,
   required = false,
   type = "text",
+  inputMode,
+  maxLength,
   error,
   className,
 }: FormInputFieldProps) => (
@@ -59,6 +63,8 @@ const FormInputField = ({
       <Input
         id={id}
         type={type}
+        inputMode={inputMode}
+        maxLength={maxLength}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
@@ -74,11 +80,13 @@ const FormInputField = ({
   </div>
 );
 
-export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
+export const CustomerInfoForm = ({
+  errors = {},
+  onFieldErrorChange,
+}: CustomerInfoFormProps) => {
   const t = useTranslations("adminQuotes.composer.customer");
   const customerInfo = useQuoteDraftStore((state) => state.customerInfo);
   const setCustomerInfo = useQuoteDraftStore((state) => state.setCustomerInfo);
-
   const addressState: QuoteAddressState = {
     city: customerInfo.city ?? "",
     district: customerInfo.district ?? "",
@@ -124,7 +132,16 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
           required
           icon={User}
           value={customerInfo.customerName}
-          onChange={(val) => setCustomerInfo({ customerName: val })}
+          onChange={(val) => {
+            setCustomerInfo({ customerName: val });
+            if (
+              onFieldErrorChange &&
+              errors.customerName &&
+              val.trim().length >= 2
+            ) {
+              onFieldErrorChange("customerName", null);
+            }
+          }}
           placeholder={t("namePlaceholder")}
           error={errors.customerName}
         />
@@ -134,8 +151,21 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
           label={t("phoneLabel")}
           required
           icon={Phone}
+          type="tel"
+          inputMode="numeric"
+          maxLength={10}
           value={customerInfo.customerPhone}
-          onChange={(val) => setCustomerInfo({ customerPhone: val })}
+          onChange={(val) => {
+            const digitsOnly = val.replace(/\D/g, "").slice(0, 10);
+            setCustomerInfo({ customerPhone: digitsOnly });
+            if (
+              onFieldErrorChange &&
+              errors.customerPhone &&
+              /^(0[35789])\d{8}$/.test(digitsOnly)
+            ) {
+              onFieldErrorChange("customerPhone", null);
+            }
+          }}
           placeholder={t("phonePlaceholder")}
           error={errors.customerPhone}
         />
@@ -153,9 +183,24 @@ export const CustomerInfoForm = ({ errors = {} }: CustomerInfoFormProps) => {
           id="taxId"
           label={t("taxIdLabel")}
           icon={FileSpreadsheet}
+          maxLength={14}
           value={customerInfo.taxId ?? ""}
-          onChange={(val) => setCustomerInfo({ taxId: val || null })}
+          onChange={(val) => {
+            const cleanTaxId = val
+              .replace(/[^0-9-]/g, "")
+              .replace(/--+/g, "-")
+              .slice(0, 14);
+            setCustomerInfo({ taxId: cleanTaxId || null });
+            if (
+              onFieldErrorChange &&
+              errors.taxId &&
+              (!cleanTaxId || /^\d{10}(-\d{3})?$/.test(cleanTaxId))
+            ) {
+              onFieldErrorChange("taxId", null);
+            }
+          }}
           placeholder={t("taxIdPlaceholder")}
+          error={errors.taxId}
         />
 
         <FormInputField

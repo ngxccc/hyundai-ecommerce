@@ -152,21 +152,23 @@ export const approveOrderCancellationAction = async (
   }
 };
 
-export const selectShippingBidAction = (
+export const selectShippingBidAction = async (
   _orderId: string,
   _bidId: string,
 ): Promise<{ success: true } | { success: false; error: string }> => {
-  return Promise.resolve({
+  await Promise.resolve();
+  return {
     success: false,
     error: "Chức năng chọn đơn vị vận chuyển đang được kết nối API",
-  });
+  };
 };
 
-export const addShippingBidAction = (
+export const addShippingBidAction = async (
   _data: Record<string, unknown>,
 ): Promise<{ success: true } | { success: false; error: string }> => {
-  return Promise.resolve({
+  await Promise.resolve();
+  return {
     success: false,
     error: "Chức năng thêm báo giá vận chuyển đang được kết nối API",
-  });
+  };
 };

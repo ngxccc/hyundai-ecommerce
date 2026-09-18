@@ -84,12 +84,9 @@ export const ProductSearchModal = ({
   };
 
   const extractModelAndPower = (product: AdminProduct) => {
-    let model =
-      typeof product.specs.model === "string" && product.specs.model.trim()
-        ? product.specs.model.trim()
-        : null;
+    let model: string | null = null;
 
-    if (!model && Array.isArray(product.specSheet)) {
+    if (Array.isArray(product.specSheet)) {
       for (const group of product.specSheet) {
         const modelItem = group.items.find((i) => i.key === "model");
         if (modelItem?.value.trim()) {

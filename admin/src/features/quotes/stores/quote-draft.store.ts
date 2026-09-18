@@ -109,13 +109,8 @@ export const useQuoteDraftStore = create<AdminQuoteDraftState>()(
           }
 
           // Extract equipment specifications for quote display and technical appendix
-          let model =
-            typeof product.specs.model === "string" &&
-            product.specs.model.trim()
-              ? product.specs.model.trim()
-              : null;
-
-          if (!model && Array.isArray(product.specSheet)) {
+          let model: string | null = null;
+          if (Array.isArray(product.specSheet)) {
             for (const group of product.specSheet) {
               const modelItem = group.items.find((i) => i.key === "model");
               if (modelItem?.value.trim()) {
@@ -125,43 +120,13 @@ export const useQuoteDraftStore = create<AdminQuoteDraftState>()(
             }
           }
 
-          let itemSpecs: string | null = null;
-          if (
-            Array.isArray(product.specSheet) &&
-            product.specSheet.length > 0
-          ) {
-            itemSpecs = JSON.stringify(product.specSheet);
-          } else {
-            const power = product.powerKva ?? product.powerKw;
-            const powerStr = power ? `${power} kVA` : null;
-            const phaseStr =
-              product.phase === "1phase"
-                ? "1 Pha"
-                : product.phase === "3phase"
-                  ? "3 Pha"
-                  : product.phase;
-            const voltageStr = product.voltage;
-            const fuelStr =
-              product.fuelType === "diesel"
-                ? "Diesel"
-                : product.fuelType === "gasoline"
-                  ? "Xăng"
-                  : product.fuelType;
-            const parts = [powerStr, phaseStr, voltageStr, fuelStr].filter(
-              Boolean,
-            );
-            if (parts.length > 0) {
-              itemSpecs = parts.join(", ");
-            }
-          }
-
           const newItem: AdminQuoteDraftItem = {
             id: crypto.randomUUID(),
             productId: product.id,
             isCustomItem: false,
             itemName: product.name,
             itemModel: model ?? null,
-            itemSpecs,
+            itemSpecs: null,
             quantity,
             unitPrice: parseFloat(product.price),
             discountPercent: 0,

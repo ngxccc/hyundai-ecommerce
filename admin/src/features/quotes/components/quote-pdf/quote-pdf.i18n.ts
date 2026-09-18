@@ -129,7 +129,7 @@ const DICTIONARIES: Record<PdfLocale, QuotePdfDictionary> = {
     itemsSectionTitle: "I. DANH MỤC THIẾT BỊ & CHI TIẾT BÁO GIÁ",
     colIndex: "#",
     colItemName: "Tên Hàng Hóa",
-    colModel: "Mã Hiệu / Model",
+    colModel: "Model",
     colUnit: "ĐVT",
     colQuantity: "SL",
     colUnitPrice: "Đơn Giá (VNĐ)",

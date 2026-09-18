@@ -89,7 +89,6 @@ export const ProductForm = ({
     isQuoteOnly: false,
     isActive: true,
     totalStockCache: 0,
-    specs: {},
   } satisfies CreateProductInput;
 
   const form = useForm<CreateProductInput>({
@@ -165,7 +164,6 @@ export const ProductForm = ({
       upsTopology: initialData?.upsTopology ?? null,
       upsBatteryType: initialData?.upsBatteryType ?? null,
       specSheet: initialData?.specSheet ?? [],
-      specs: initialData?.specs ?? {},
       totalStockCache: initialData?.totalStockCache ?? 0,
       isQuoteOnly: initialData?.isQuoteOnly ?? false,
       isActive: initialData?.isActive ?? true,

@@ -10,7 +10,8 @@ import { CommercialTermsEditor } from "./commercial-terms-editor";
 import { QuoteFinancialSummary } from "./quote-financial-summary";
 import { useQuoteDraftStore } from "../stores/quote-draft.store";
 import { createAdminQuoteAction } from "../actions/quote.actions";
-
+import { createAdminQuoteSchema } from "@/validators";
+import { formatFieldErrors } from "@/lib/validation";
 export const QuoteComposer = () => {
   const t = useTranslations("adminQuotes");
 
@@ -23,60 +24,71 @@ export const QuoteComposer = () => {
   const commercialTerms = useQuoteDraftStore((state) => state.commercialTerms);
   const resetDraft = useQuoteDraftStore((state) => state.resetDraft);
 
+  const handleFieldErrorChange = (field: string, error: string | null) => {
+    setErrors((prev) => {
+      if (!error && !prev[field]) return prev;
+      const updated = { ...prev };
+      if (!error) {
+        delete updated[field];
+      } else {
+        updated[field] = error;
+      }
+      return updated;
+    });
+  };
+
   const handleSubmitQuote = () => {
     setErrors({});
 
-    // Client-side prerequisite check
-    if (items.length === 0) {
-      toast.error(t("composer.errors.emptyItems"));
-      return;
-    }
+    const payload = {
+      userId: customerInfo.userId,
+      customerName: customerInfo.customerName.trim(),
+      customerPhone: customerInfo.customerPhone.trim(),
+      customerEmail: customerInfo.customerEmail?.trim()
+        ? customerInfo.customerEmail.trim()
+        : null,
+      companyName: customerInfo.companyName?.trim()
+        ? customerInfo.companyName.trim()
+        : null,
+      taxId: customerInfo.taxId?.trim() ? customerInfo.taxId.trim() : null,
+      shippingAddress: customerInfo.shippingAddress?.trim()
+        ? customerInfo.shippingAddress.trim()
+        : null,
+      vatRate: commercialTerms.vatRate,
+      commercialTerms: {
+        validityDays: commercialTerms.validityDays,
+        paymentSchedule: commercialTerms.paymentSchedule,
+        warrantyTerms: commercialTerms.warrantyTerms,
+        deliveryTime: commercialTerms.deliveryTime,
+        deliveryLocation: commercialTerms.deliveryLocation,
+      },
+      note: commercialTerms.note,
+      items: items.map((item) => ({
+        productId: item.productId,
+        isCustomItem: item.isCustomItem,
+        itemName: item.itemName,
+        itemModel: item.itemModel,
+        itemSpecs: item.itemSpecs,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        discountPercent: item.discountPercent,
+      })),
+    };
 
-    const fieldErrors: Record<string, string> = {};
-    if (!customerInfo.customerName.trim()) {
-      fieldErrors.customerName = t("composer.errors.nameRequired");
-    }
-    if (!customerInfo.customerPhone.trim()) {
-      fieldErrors.customerPhone = t("composer.errors.phoneRequired");
-    }
-
-    if (Object.keys(fieldErrors).length > 0) {
+    const validation = createAdminQuoteSchema.safeParse(payload);
+    if (!validation.success) {
+      const fieldErrors = formatFieldErrors(validation.error, (key, args) =>
+        t(key, args),
+      );
+      if (fieldErrors.items) {
+        toast.error(fieldErrors.items);
+      }
       setErrors(fieldErrors);
-      toast.error(t("composer.errors.formIncomplete"));
       return;
     }
 
     startTransition(async () => {
-      const payload = {
-        userId: customerInfo.userId,
-        customerName: customerInfo.customerName.trim(),
-        customerPhone: customerInfo.customerPhone.trim(),
-        customerEmail: customerInfo.customerEmail?.trim() ?? null,
-        companyName: customerInfo.companyName?.trim() ?? null,
-        taxId: customerInfo.taxId?.trim() ?? null,
-        shippingAddress: customerInfo.shippingAddress?.trim() ?? null,
-        vatRate: commercialTerms.vatRate,
-        commercialTerms: {
-          validityDays: commercialTerms.validityDays,
-          paymentSchedule: commercialTerms.paymentSchedule,
-          warrantyTerms: commercialTerms.warrantyTerms,
-          deliveryTime: commercialTerms.deliveryTime,
-          deliveryLocation: commercialTerms.deliveryLocation,
-        },
-        note: commercialTerms.note,
-        items: items.map((item) => ({
-          productId: item.productId,
-          isCustomItem: item.isCustomItem,
-          itemName: item.itemName,
-          itemModel: item.itemModel,
-          itemSpecs: item.itemSpecs,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          discountPercent: item.discountPercent,
-        })),
-      };
-
-      const response = await createAdminQuoteAction(payload);
+      const response = await createAdminQuoteAction(validation.data);
 
       if (response.success) {
         toast.success(
@@ -95,8 +107,9 @@ export const QuoteComposer = () => {
             }
           }
           setErrors(flattened);
+        } else {
+          toast.error(response.error);
         }
-        toast.error(response.error);
       }
     });
   };
@@ -105,7 +118,10 @@ export const QuoteComposer = () => {
     <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-3">
       {/* Left 2 Columns: Main Editing Canvas */}
       <div className="space-y-6 xl:col-span-2">
-        <CustomerInfoForm errors={errors} />
+        <CustomerInfoForm
+          errors={errors}
+          onFieldErrorChange={handleFieldErrorChange}
+        />
         <QuoteLineItemsTable />
         <CommercialTermsEditor />
       </div>

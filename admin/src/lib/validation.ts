@@ -65,6 +65,29 @@ export function formatValidationErrors(
 
     fieldErrors[field].push(message);
   });
+  return fieldErrors;
+}
+
+/**
+ * Extracts and translates Zod errors into a flat single-message map: Record<fieldName, firstErrorMessage>.
+ * Ideal for client-side form state feedback.
+ */
+export function formatFieldErrors(
+  error: ZodError,
+  t: I18nTranslator,
+): Record<string, string> {
+  const fieldErrors: Record<string, string> = {};
+
+  error.issues.forEach((issue) => {
+    const field = String(issue.path[0] ?? "");
+    if (!field || fieldErrors[field]) return;
+
+    let message = issue.message ? translateZodMessage(issue.message, t) : "";
+    if (!message || message === "Invalid input") {
+      message = t("invalidInput" as never);
+    }
+    fieldErrors[field] = message;
+  });
 
   return fieldErrors;
 }

@@ -117,7 +117,6 @@ function toCreateProductDto(input: CreateProductInput): AdminCreateProduct {
     upsTopology: input.upsTopology ?? undefined,
     upsBatteryType: input.upsBatteryType ?? undefined,
     specSheet: input.specSheet as unknown as AdminCreateProduct["specSheet"],
-    specs: input.specs ?? {},
     totalStockCache: input.totalStockCache,
     isQuoteOnly: input.isQuoteOnly,
     isActive: input.isActive,
@@ -180,7 +179,6 @@ function toUpdateProductDto(input: UpdateProductInput): AdminUpdateProduct {
   if (input.specSheet !== undefined)
     result.specSheet = (input.specSheet ??
       []) as unknown as AdminUpdateProduct["specSheet"];
-  if (input.specs !== undefined) result.specs = input.specs ?? {};
   if (input.totalStockCache !== undefined)
     result.totalStockCache = input.totalStockCache;
   if (input.isQuoteOnly !== undefined) result.isQuoteOnly = input.isQuoteOnly;

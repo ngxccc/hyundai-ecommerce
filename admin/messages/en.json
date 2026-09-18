@@ -1121,11 +1121,11 @@
         "companyPlaceholder": "e.g. Alpha Construction JSC",
         "taxIdLabel": "Tax Identification Number",
         "taxIdPlaceholder": "e.g. 0101234567",
-        "addressLabel": "Shipping / Site Address",
-        "addressPlaceholder": "e.g. Lot B2 Song Than 2 IP, Di An, Binh Duong"
+        "addressLabel": "Delivery Address",
+        "addressPlaceholder": "e.g. 123 Nguyen Van Linh, Hai Chau, Da Nang"
       },
       "address": {
-        "shippingAddress": "Delivery Address / Job Site",
+        "shippingAddress": "Delivery Address",
         "city": "Province / City",
         "cityPlaceholder": "Search or select Province/City...",
         "district": "Ward / Commune / Town",
@@ -1133,8 +1133,8 @@
         "selectCityFirst": "Please select Province/City first",
         "searchPlaceholder": "Type to search...",
         "emptySearch": "No matching location found.",
-        "streetAddress": "Detailed Street / Industrial Park / Project Site",
-        "streetAddressPlaceholder": "e.g. Lot B2 Song Than 2 IP, Street No. 4"
+        "streetAddress": "Detailed Street Address (Building, Street, House No.)",
+        "streetAddressPlaceholder": "123 Nguyen Van Linh (or Landmark 81 Tower)"
       },
       "items": {
         "title": "Line Items & Products",
@@ -1197,8 +1197,13 @@
       "errors": {
         "emptyItems": "Please add at least 1 product or line item to the quote",
         "nameRequired": "Customer name is required",
+        "nameMinLength": "Customer name must be at least 2 characters",
         "phoneRequired": "Customer phone number is required",
-        "formIncomplete": "Please fill in all mandatory fields",
+        "phoneIncomplete": "Phone number must be exactly 10 digits (0912345678)",
+        "phoneInvalid": "Invalid Vietnamese 10-digit phone number (0912345678)",
+        "emailInvalid": "Invalid email address format",
+        "taxIdIncomplete": "Tax ID must be 10 digits (or 13 digits for branches)",
+        "taxIdInvalid": "Invalid Tax ID format (0314567890 or 0314567890-001)",
         "genericFailure": "Failed to create quote. Please check your inputs."
       },
       "successToast": "Quote created successfully! Code: {quoteNumber}"

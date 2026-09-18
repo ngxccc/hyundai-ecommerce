@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { ApiClientError } from "@/lib/api-client";
 import { quotesApi } from "../api/quotes.api";
 import { getTranslations } from "next-intl/server";
-import { translateZodMessage } from "@/lib/i18n-zod";
+import { formatFieldErrors, formatValidationErrors } from "@/lib/validation";
 import {
   isValidIdentifier,
   createAdminQuoteSchema,
@@ -154,14 +154,18 @@ export async function createAdminQuoteAction(rawInput: CreateAdminQuoteInput) {
   const t = await getTranslations("errors");
   const parsed = createAdminQuoteSchema.safeParse(rawInput);
   if (!parsed.success) {
-    const firstIssue = parsed.error.issues[0];
-    const errorMessage = translateZodMessage(firstIssue.message, (key, args) =>
+    const fieldErrors = formatValidationErrors(parsed.error, (key, args) =>
       t(key, args),
     );
+    const flatErrors = formatFieldErrors(parsed.error, (key, args) =>
+      t(key, args),
+    );
+    const firstErrorMessage =
+      Object.values(flatErrors)[0] || t("createQuoteFailed");
     return {
       success: false as const,
-      error: errorMessage || t("createQuoteFailed"),
-      fieldErrors: undefined,
+      error: firstErrorMessage,
+      fieldErrors,
     };
   }
   const dto = parsed.data;
@@ -212,16 +216,25 @@ export async function createAdminQuoteAction(rawInput: CreateAdminQuoteInput) {
   } catch (error) {
     console.error("[createAdminQuoteAction] Error:", error);
     if (error instanceof ApiClientError && error.problem?.detail) {
+      const fieldErrors: Record<string, string[]> = {};
+      if (Array.isArray(error.problem.invalidParams)) {
+        for (const param of error.problem.invalidParams) {
+          if (param.name && param.reason) {
+            fieldErrors[param.name] = [param.reason];
+          }
+        }
+      }
       return {
         success: false as const,
         error: error.problem.detail,
-        fieldErrors: undefined as Record<string, string[]> | undefined,
+        fieldErrors:
+          Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined,
       };
     }
     return {
       success: false as const,
       error: t("createQuoteFailed"),
-      fieldErrors: undefined as Record<string, string[]> | undefined,
+      fieldErrors: undefined,
     };
   }
 }

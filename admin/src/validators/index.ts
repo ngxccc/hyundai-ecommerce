@@ -96,21 +96,6 @@ export const specGroupSchema = z.object({
 
 export const productSpecSheetSchema = z.array(specGroupSchema);
 
-export const productSpecsSchema = z
-  .object({
-    model: z.string().optional(),
-    powerKva: z.string().optional(),
-    powerKw: z.string().optional(),
-    fuelType: z.string().optional(),
-    phase: z.string().optional(),
-    voltage: z.string().optional(),
-    frequency: z.string().optional(),
-    canopyType: z.string().optional(),
-    engineBrand: z.string().optional(),
-    alternatorBrand: z.string().optional(),
-  })
-  .catchall(z.unknown());
-
 export const baseCreateProductSchema = z.object({
   slug: z.string().min(1, "validation.slugRequired"),
   price: z.string().min(1, "validation.priceRequired"),
@@ -158,7 +143,6 @@ export const baseCreateProductSchema = z.object({
     .optional(),
   upsBatteryType: z.enum(["internal", "external"]).nullable().optional(),
   specSheet: productSpecSheetSchema.default([]),
-  specs: productSpecsSchema.nullable().optional(),
   totalStockCache: z.coerce.number().default(0),
   isQuoteOnly: z.boolean().default(false),
   isActive: z.boolean().default(true),
@@ -180,7 +164,6 @@ export const createProductSchema = baseCreateProductSchema.superRefine(
 
 export const updateProductSchema = baseCreateProductSchema.partial();
 
-export type ProductSpecs = z.infer<typeof productSpecsSchema>;
 export type CreateProductInput = z.infer<typeof baseCreateProductSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 
@@ -324,15 +307,26 @@ export const commercialTermsSchema = z.object({
 
 export const createAdminQuoteSchema = z.object({
   userId: z.string().nullable().optional(),
-  customerName: z.string().min(2, i18nZodMsg("validation.customerNameMin")),
-  customerPhone: z.string().min(8, i18nZodMsg("validation.phoneInvalid")),
+  customerName: z
+    .string()
+    .min(1, i18nZodMsg("composer.errors.nameRequired"))
+    .min(2, i18nZodMsg("composer.errors.nameMinLength")),
+  customerPhone: z
+    .string()
+    .min(1, i18nZodMsg("composer.errors.phoneRequired"))
+    .regex(/^(0[35789])\d{8}$/, i18nZodMsg("composer.errors.phoneInvalid")),
   customerEmail: z
-    .email(i18nZodMsg("validation.emailInvalid"))
+    .email({ message: i18nZodMsg("composer.errors.emailInvalid") })
     .nullable()
     .optional()
     .or(z.literal("")),
   companyName: z.string().nullable().optional(),
-  taxId: z.string().nullable().optional(),
+  taxId: z
+    .string()
+    .regex(/^\d{10}(-\d{3})?$/, i18nZodMsg("composer.errors.taxIdInvalid"))
+    .nullable()
+    .optional()
+    .or(z.literal("")),
   shippingAddress: z.string().nullable().optional(),
   vatRate: z.coerce.number().min(0).max(100).default(10),
   commercialTerms: commercialTermsSchema.nullable().optional(),
@@ -340,7 +334,7 @@ export const createAdminQuoteSchema = z.object({
   expirationDate: z.coerce.date().nullable().optional(),
   items: z
     .array(adminQuoteItemInputSchema)
-    .min(1, i18nZodMsg("validation.itemsRequired")),
+    .min(1, i18nZodMsg("composer.errors.emptyItems")),
 });
 export type CommercialTermsInput = z.infer<typeof commercialTermsSchema>;
 export type CreateAdminQuoteInput = z.infer<typeof createAdminQuoteSchema>;

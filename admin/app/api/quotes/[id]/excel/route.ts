@@ -11,8 +11,8 @@ export async function GET(
     await requireAuth();
     const { id } = await params;
 
-    const { response } = await quotesApi.exportExcel(id);
-    if (!response.ok) {
+    const { data, response } = await quotesApi.exportExcel(id);
+    if (!response.ok || !data) {
       return NextResponse.json(
         {
           success: false,
@@ -25,11 +25,10 @@ export async function GET(
       );
     }
 
-    const buffer = await response.arrayBuffer();
     const disposition =
       response.headers.get("content-disposition") ??
       `attachment; filename="Bao-Gia-Hyundai-${id.slice(0, 8)}.xlsx"`;
-    return new NextResponse(buffer, {
+    return new NextResponse(data, {
       status: HTTP_STATUS.OK,
       headers: {
         "Content-Type":

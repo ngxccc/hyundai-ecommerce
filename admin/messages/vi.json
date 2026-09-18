@@ -1126,11 +1126,11 @@
         "companyPlaceholder": "Công ty Cổ phần Xây dựng Alpha",
         "taxIdLabel": "Mã số thuế",
         "taxIdPlaceholder": "0101234567",
-        "addressLabel": "Địa chỉ giao hàng / Công trình",
-        "addressPlaceholder": "Lô B2 KCN Sóng Thần 2, Đường số 4, TP. Dĩ An, Bình Dương"
+        "addressLabel": "Địa chỉ nhận hàng",
+        "addressPlaceholder": "123 Nguyễn Văn Linh, Quận Hải Châu, TP. Đà Nẵng"
       },
       "address": {
-        "shippingAddress": "Địa chỉ giao hàng / Chân công trình",
+        "shippingAddress": "Địa chỉ nhận hàng",
         "city": "Tỉnh / Thành phố",
         "cityPlaceholder": "Tìm hoặc chọn Tỉnh/Thành...",
         "district": "Phường / Xã / Thị trấn",
@@ -1138,8 +1138,8 @@
         "selectCityFirst": "Vui lòng chọn Tỉnh/Thành phố trước",
         "searchPlaceholder": "Gõ tìm kiếm...",
         "emptySearch": "Không tìm thấy kết quả phù hợp.",
-        "streetAddress": "Địa chỉ chi tiết / Tên KCN / Chân công trình",
-        "streetAddressPlaceholder": "Lô B2 KCN Sóng Thần 2, Đường số 4"
+        "streetAddress": "Địa chỉ chi tiết (Số nhà, Tên đường, Tòa nhà...)",
+        "streetAddressPlaceholder": "123 Nguyễn Văn Linh (hoặc Tòa nhà Landmark 81)"
       },
       "items": {
         "title": "Danh mục sản phẩm & Hạng mục báo giá",
@@ -1202,8 +1202,13 @@
       "errors": {
         "emptyItems": "Vui lòng thêm ít nhất 1 sản phẩm hoặc hạng mục vào báo giá",
         "nameRequired": "Vui lòng nhập họ tên khách hàng",
+        "nameMinLength": "Họ tên khách hàng tối thiểu 2 ký tự",
         "phoneRequired": "Vui lòng nhập số điện thoại liên hệ",
-        "formIncomplete": "Vui lòng hoàn thành các trường bắt buộc",
+        "phoneIncomplete": "Số điện thoại phải đủ 10 chữ số (0912345678)",
+        "phoneInvalid": "Số điện thoại không đúng định dạng 10 số của Việt Nam (0912345678)",
+        "emailInvalid": "Địa chỉ email không đúng định dạng",
+        "taxIdIncomplete": "Mã số thuế phải có 10 chữ số (hoặc 13 số kèm chi nhánh)",
+        "taxIdInvalid": "Mã số thuế không đúng định dạng (0314567890 hoặc 0314567890-001)",
         "genericFailure": "Không thể tạo báo giá. Vui lòng kiểm tra lại thông tin."
       },
       "successToast": "Khởi tạo báo giá thành công! Mã: {quoteNumber}"
@@ -1225,7 +1230,7 @@
       "deliveryAddress": "Địa điểm giao hàng",
       "pricingTableTitle": "DANH MỤC THIẾT BỊ & CHI TIẾT BÁO GIÁ",
       "colDescription": "Tên Thiết Bị & Quy Cách Hàng Hóa",
-      "colModel": "Mã hiệu / Model",
+      "colModel": "Model",
       "colUnit": "ĐVT",
       "colQty": "SL",
       "colUnitPrice": "Đơn Giá (VNĐ)",

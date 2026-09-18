@@ -244,11 +244,6 @@ export const QuoteLineItemsTable = () => {
                                 </Badge>
                               ) : null}
                             </div>
-                            {item.itemSpecs && (
-                              <span className="text-muted-foreground mt-0.5 max-w-sm truncate text-[11px]">
-                                {item.itemSpecs}
-                              </span>
-                            )}
                           </div>
                         </div>
                       </TableCell>
@@ -395,7 +390,7 @@ export const QuoteLineItemsTable = () => {
                     id="customModel"
                     value={customModel}
                     onChange={(e) => setCustomModel(e.target.value)}
-                    placeholder="VD: ATS-100A"
+                    placeholder="ATS-100A"
                     className="h-8 text-xs"
                   />
                 </div>
@@ -411,7 +406,7 @@ export const QuoteLineItemsTable = () => {
                     id="customSpecs"
                     value={customSpecs}
                     onChange={(e) => setCustomSpecs(e.target.value)}
-                    placeholder="VD: 100A, 3 Pha"
+                    placeholder="100A, 3 Pha"
                     className="h-8 text-xs"
                   />
                 </div>
