@@ -14,6 +14,11 @@ const UUID_V7_REGEX =
 const VN_PHONE_REGEX = /^(0[35789])\d{8}$/;
 
 /**
+ * Vietnamese Tax ID (Mã số thuế) regular expression conforming to Circular 105/2020/TT-BTC.
+ * Validates 10-digit primary enterprise codes and 13-digit branch codes (10 digits + hyphen + 3 digits).
+ */
+const VN_TAX_ID_REGEX = /^\d{10}(-\d{3})?$/;
+/**
  * Builds a sanitized string schema that neutralizes HTML tags and trims whitespace.
  *
  * @param options Optional minimum and maximum string length boundaries
@@ -129,6 +134,34 @@ export function zPhoneNumber() {
     .regex(VN_PHONE_REGEX, {
       message: i18nZodMsg("validation.phoneNumberInvalid"),
     });
+}
+
+/**
+ * Builds a Vietnamese Tax ID (Mã số thuế) validation schema.
+ *
+ * @returns Zod Tax ID validation schema
+ */
+export function zTaxId() {
+  return z
+    .string({
+      error: i18nZodMsg("validation.isString"),
+    })
+    .trim()
+    .regex(VN_TAX_ID_REGEX, {
+      message: i18nZodMsg("validation.taxIdInvalid"),
+    });
+}
+
+/**
+ * Builds an optional and nullable Vietnamese Tax ID schema.
+ *
+ * @returns Zod optional Tax ID parsing schema
+ */
+export function zOptionalTaxId() {
+  return z.preprocess((val) => {
+    if (typeof val === "string" && val.trim() === "") return null;
+    return val;
+  }, zTaxId().nullable().optional());
 }
 
 /**

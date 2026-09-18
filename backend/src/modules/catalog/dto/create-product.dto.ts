@@ -52,23 +52,6 @@ export const jsonContentSchema: z.ZodType<JSONContent> = z.lazy(() =>
     .catchall(z.unknown()),
 );
 
-export const baseProductSpecsSchema = z
-  .object({
-    model: z.string().optional(),
-    origin: z.string().optional(),
-    engineModel: z.string().optional(),
-    alternatorModel: z.string().optional(),
-    controller: z.string().optional(),
-    dimensions: z.string().optional(),
-    weight: z.string().optional(),
-    noiseLevel: z.string().optional(),
-    fuelConsumption: z.string().optional(),
-    warranty: z.string().optional(),
-  })
-  .catchall(z.unknown());
-
-export const productSpecsSchema = baseProductSpecsSchema.default({});
-
 export const productTranslationInputSchema = z.object({
   locale: z.string().min(2).max(8),
   name: zSanitizedString({ min: 2, max: 255 }),
@@ -121,7 +104,6 @@ export const createProductBaseSchema = z.object({
   upsTopology: z.enum(UPS_TOPOLOGIES).nullish(),
   upsBatteryType: z.enum(UPS_BATTERY_TYPES).nullish(),
   specSheet: productSpecSheetSchema.default([]),
-  specs: productSpecsSchema,
   totalStockCache: z.number().int().min(0).default(0),
   isQuoteOnly: z.boolean().default(false),
   isActive: z.boolean().default(true),

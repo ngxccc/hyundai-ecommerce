@@ -71,6 +71,27 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       detail = parsed.detail;
       invalidParams = parsed.invalidParams;
       code = parsed.code;
+
+      const genericVi = "Dữ liệu gửi lên không đúng định dạng";
+      const genericEn = "Submitted data format is invalid";
+      const genericI18n = this.translate(
+        "common.INVALID_INPUT",
+        lang,
+        genericEn,
+      );
+
+      if (
+        invalidParams.length > 0 &&
+        (detail === genericVi || detail === genericEn || detail === genericI18n)
+      ) {
+        if (invalidParams.length === 1 && invalidParams[0]?.reason) {
+          detail = invalidParams[0].reason;
+        } else {
+          detail = invalidParams
+            .map((p) => `${p.name}: ${p.reason}`)
+            .join("; ");
+        }
+      }
     } else {
       const errStack =
         exception instanceof Error

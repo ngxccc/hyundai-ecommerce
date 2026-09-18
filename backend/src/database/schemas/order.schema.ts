@@ -1,5 +1,6 @@
 import {
   boolean,
+  check,
   index,
   integer,
   numeric,
@@ -71,12 +72,13 @@ export const orderItems = snakeCase.table(
       .references(() => products.id, { onDelete: "restrict" }),
     productName: text().notNull(),
     productSku: text().notNull(),
-    quantity: integer().default(0).notNull(),
+    quantity: integer().notNull(),
     unitPrice: numeric({ precision: 15, scale: 2 }).notNull(),
   },
   (table) => [
     index("order_item_order_idx").on(table.orderId),
     index("order_item_product_idx").on(table.productId),
+    check("order_item_quantity_positive_check", sql`${table.quantity} > 0`),
   ],
 );
 

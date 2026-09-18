@@ -4,6 +4,7 @@ import { createZodDto } from "@/common/dto";
 import {
   zCoerceDate,
   zOptionalEmail,
+  zOptionalTaxId,
   zPhoneNumber,
   zSanitizedString,
 } from "@/common/schemas/zod-primitives";
@@ -47,7 +48,7 @@ export const createAdminQuoteSchema = z.object({
   customerPhone: zPhoneNumber(),
   customerEmail: zOptionalEmail(),
   companyName: z.string().optional().nullable(),
-  taxId: z.string().optional().nullable(),
+  taxId: zOptionalTaxId(),
   shippingAddress: z.string().optional().nullable(),
   vatRate: z.number().min(0).max(100).default(10),
   commercialTerms: quoteCommercialTermsSchema.optional().nullable(),

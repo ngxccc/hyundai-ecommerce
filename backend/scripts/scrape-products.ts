@@ -22,7 +22,6 @@ interface ScrapedProduct {
   startMethod?: "electric" | "recoil";
   pdfCatalogUrl: string | null;
   images: string[];
-  specs: Record<string, string>;
   translations: [
     {
       locale: "vi";
@@ -251,7 +250,6 @@ async function scrapeProductPage(url: string): Promise<ScrapedProduct | null> {
       startMethod: "electric",
       pdfCatalogUrl: pdfUrl,
       images: filteredImages,
-      specs,
       translations: [
         {
           locale: "vi",

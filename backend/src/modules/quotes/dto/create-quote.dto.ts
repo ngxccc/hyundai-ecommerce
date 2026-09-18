@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createZodDto } from "@/common/dto";
 import {
   zOptionalEmail,
+  zOptionalTaxId,
   zPhoneNumber,
   zSanitizedString,
 } from "@/common/schemas/zod-primitives";
@@ -34,7 +35,7 @@ export const createQuoteSchema = z.object({
   customerPhone: zPhoneNumber(),
   customerEmail: zOptionalEmail(),
   companyName: z.string().optional().nullable(),
-  taxId: z.string().optional().nullable(),
+  taxId: zOptionalTaxId(),
   shippingAddress: z.string().optional().nullable(),
   note: z.string().optional().nullable(),
   items: z

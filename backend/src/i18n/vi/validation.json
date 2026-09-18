@@ -18,5 +18,6 @@
   "isPositive": "{property} phải là số dương",
   "isIn": "{property} phải là một trong các giá trị: {constraints.0}",
   "isDate": "{property} phải là ngày hợp lệ theo định dạng YYYY-MM-DD",
-  "isNonNegative": "{property} không được nhỏ hơn 0"
+  "isNonNegative": "{property} không được nhỏ hơn 0",
+  "taxIdInvalid": "Mã số thuế không đúng định dạng (10 số doanh nghiệp hoặc 13 số kèm chi nhánh)"
 }

@@ -40,7 +40,8 @@ export const products = snakeCase.table(
       onDelete: "set null",
     }),
     productType: text()
-      .$type<ProductType | undefined>()
+      .$type<ProductType>()
+      .notNull()
       .$defaultFn(() => "generator"),
     powerKva: numeric({ precision: 10, scale: 2 }).$type<string | undefined>(),
     powerKw: numeric({ precision: 10, scale: 2 }).$type<string | undefined>(),
@@ -65,7 +66,6 @@ export const products = snakeCase.table(
     specSheet: jsonb()
       .$type<ProductSpecSheet | undefined>()
       .$defaultFn(() => []),
-    specs: jsonb().$type<Record<string, unknown>>().default({}),
     totalStockCache: integer().notNull().default(0),
     totalSalesCache: integer().notNull().default(0),
     isQuoteOnly: boolean().default(false).notNull(),

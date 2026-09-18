@@ -13,7 +13,6 @@ import {
 import {
   jsonContentSchema,
   productSpecSheetSchema,
-  productSpecsSchema,
   productTranslationResponseSchema,
 } from "./create-product.dto";
 import { brandResponseSchema } from "./brand-response.dto";
@@ -49,7 +48,6 @@ export const productResponseSchema = z.object({
   upsTopology: z.enum(UPS_TOPOLOGIES).nullable(),
   upsBatteryType: z.enum(UPS_BATTERY_TYPES).nullable(),
   specSheet: productSpecSheetSchema,
-  specs: productSpecsSchema,
   totalStockCache: z.number(),
   totalSalesCache: z.number(),
   isActive: z.boolean(),

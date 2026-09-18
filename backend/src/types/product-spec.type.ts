@@ -53,20 +53,6 @@ export interface SpecGroup {
 
 export type ProductSpecSheet = SpecGroup[];
 
-export interface ProductSpecs {
-  model?: string | undefined;
-  origin?: string | undefined;
-  engineModel?: string | undefined;
-  alternatorModel?: string | undefined;
-  controller?: string | undefined;
-  dimensions?: string | undefined;
-  weight?: string | undefined;
-  noiseLevel?: string | undefined;
-  fuelConsumption?: string | undefined;
-  warranty?: string | undefined;
-  [key: string]: unknown;
-}
-
 export interface TipTapMark {
   type: string;
   attrs?: Record<string, unknown>;

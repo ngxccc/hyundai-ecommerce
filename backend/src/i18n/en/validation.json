@@ -18,5 +18,6 @@
   "isPositive": "{property} must be a positive number",
   "isIn": "{property} must be one of the following values: {constraints.0}",
   "isDate": "{property} must be a valid date in YYYY-MM-DD format",
-  "isNonNegative": "{property} cannot be negative"
+  "isNonNegative": "{property} cannot be negative",
+  "taxIdInvalid": "Invalid Vietnamese Tax ID format (10-digit primary or 13-digit branch code)"
 }

@@ -9444,43 +9444,6 @@
               "required": ["groupKey", "titleVi", "items"]
             }
           },
-          "specs": {
-            "default": {},
-            "type": "object",
-            "properties": {
-              "model": {
-                "type": "string"
-              },
-              "origin": {
-                "type": "string"
-              },
-              "engineModel": {
-                "type": "string"
-              },
-              "alternatorModel": {
-                "type": "string"
-              },
-              "controller": {
-                "type": "string"
-              },
-              "dimensions": {
-                "type": "string"
-              },
-              "weight": {
-                "type": "string"
-              },
-              "noiseLevel": {
-                "type": "string"
-              },
-              "fuelConsumption": {
-                "type": "string"
-              },
-              "warranty": {
-                "type": "string"
-              }
-            },
-            "additionalProperties": {}
-          },
           "totalStockCache": {
             "type": "number"
           },
@@ -10042,43 +10005,6 @@
               "required": ["groupKey", "titleVi", "items"]
             }
           },
-          "specs": {
-            "default": {},
-            "type": "object",
-            "properties": {
-              "model": {
-                "type": "string"
-              },
-              "origin": {
-                "type": "string"
-              },
-              "engineModel": {
-                "type": "string"
-              },
-              "alternatorModel": {
-                "type": "string"
-              },
-              "controller": {
-                "type": "string"
-              },
-              "dimensions": {
-                "type": "string"
-              },
-              "weight": {
-                "type": "string"
-              },
-              "noiseLevel": {
-                "type": "string"
-              },
-              "fuelConsumption": {
-                "type": "string"
-              },
-              "warranty": {
-                "type": "string"
-              }
-            },
-            "additionalProperties": {}
-          },
           "totalStockCache": {
             "default": 0,
             "type": "integer",
@@ -10408,42 +10334,6 @@
               },
               "required": ["groupKey", "titleVi", "items"]
             }
-          },
-          "specs": {
-            "type": "object",
-            "properties": {
-              "model": {
-                "type": "string"
-              },
-              "origin": {
-                "type": "string"
-              },
-              "engineModel": {
-                "type": "string"
-              },
-              "alternatorModel": {
-                "type": "string"
-              },
-              "controller": {
-                "type": "string"
-              },
-              "dimensions": {
-                "type": "string"
-              },
-              "weight": {
-                "type": "string"
-              },
-              "noiseLevel": {
-                "type": "string"
-              },
-              "fuelConsumption": {
-                "type": "string"
-              },
-              "warranty": {
-                "type": "string"
-              }
-            },
-            "additionalProperties": {}
           },
           "totalStockCache": {
             "type": "integer",
@@ -10981,7 +10871,15 @@
             "type": ["string", "null"]
           },
           "taxId": {
-            "type": ["string", "null"]
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^\\d{10}(-\\d{3})?$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "shippingAddress": {
             "type": ["string", "null"]
@@ -11557,7 +11455,15 @@
             "type": ["string", "null"]
           },
           "taxId": {
-            "type": ["string", "null"]
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^\\d{10}(-\\d{3})?$"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "shippingAddress": {
             "type": ["string", "null"]

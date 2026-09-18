@@ -1582,21 +1582,6 @@ export interface components {
           unit?: string | null;
         }[];
       }[];
-      /** @default {} */
-      specs: {
-        model?: string;
-        origin?: string;
-        engineModel?: string;
-        alternatorModel?: string;
-        controller?: string;
-        dimensions?: string;
-        weight?: string;
-        noiseLevel?: string;
-        fuelConsumption?: string;
-        warranty?: string;
-      } & {
-        [key: string]: unknown;
-      };
       totalStockCache: number;
       totalSalesCache: number;
       isActive: boolean;
@@ -1734,21 +1719,6 @@ export interface components {
           unit?: string | null;
         }[];
       }[];
-      /** @default {} */
-      specs: {
-        model?: string;
-        origin?: string;
-        engineModel?: string;
-        alternatorModel?: string;
-        controller?: string;
-        dimensions?: string;
-        weight?: string;
-        noiseLevel?: string;
-        fuelConsumption?: string;
-        warranty?: string;
-      } & {
-        [key: string]: unknown;
-      };
       /** @default 0 */
       totalStockCache: number;
       /** @default false */
@@ -1828,20 +1798,6 @@ export interface components {
           unit?: string | null;
         }[];
       }[];
-      specs?: {
-        model?: string;
-        origin?: string;
-        engineModel?: string;
-        alternatorModel?: string;
-        controller?: string;
-        dimensions?: string;
-        weight?: string;
-        noiseLevel?: string;
-        fuelConsumption?: string;
-        warranty?: string;
-      } & {
-        [key: string]: unknown;
-      };
       totalStockCache?: number;
       isQuoteOnly?: boolean;
       isActive?: boolean;

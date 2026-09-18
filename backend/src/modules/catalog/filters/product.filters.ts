@@ -46,7 +46,8 @@ export const productFilters = {
     const escaped = `%${escapeLikePattern(search.trim())}%`;
     return or(
       ilike(products.slug, escaped),
-      sql`${products.specs}->>'model' ILIKE ${escaped}`,
+      ilike(products.engineBrand, escaped),
+      ilike(products.alternatorBrand, escaped),
       sql`EXISTS (
         SELECT 1 FROM product_translation pt
         WHERE pt.product_id = ${products.id}

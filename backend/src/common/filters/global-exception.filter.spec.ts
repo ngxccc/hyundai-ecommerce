@@ -98,7 +98,7 @@ describe("GlobalExceptionFilter", () => {
           type: "http://localhost:3000/errors/bad-request",
           title: "Bad Request",
           status: 400,
-          detail: "Dữ liệu gửi lên không đúng định dạng",
+          detail: "Mật khẩu xác nhận không trùng khớp",
           instance: "/api/test",
           invalidParams: [
             {
@@ -224,7 +224,7 @@ describe("GlobalExceptionFilter", () => {
 
       expect(mockResponse.json).toHaveBeenCalledWith(
         expect.objectContaining({
-          detail: "Submitted data format is invalid",
+          detail: "password must be at least 8 characters",
           invalidParams: [
             {
               name: "password",

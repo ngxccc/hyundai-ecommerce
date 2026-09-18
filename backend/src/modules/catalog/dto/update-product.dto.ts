@@ -3,7 +3,6 @@ import { createZodDto } from "@/common/dto";
 import {
   createProductBaseSchema,
   productSpecSheetSchema,
-  baseProductSpecsSchema,
 } from "./create-product.dto";
 import { PRODUCT_TYPES } from "@/types/product-spec.type";
 import { zSanitizedString } from "@/common/schemas/zod-primitives";
@@ -16,7 +15,6 @@ export const updateProductSchema = createProductBaseSchema
     productType: z.enum(PRODUCT_TYPES).optional(),
     frequency: z.number().int().positive().optional(),
     specSheet: productSpecSheetSchema.optional(),
-    specs: baseProductSpecsSchema.optional(),
     totalStockCache: z.number().int().min(0).optional(),
     isQuoteOnly: z.boolean().optional(),
     isActive: z.boolean().optional(),

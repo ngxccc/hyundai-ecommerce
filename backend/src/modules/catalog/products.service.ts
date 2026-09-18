@@ -68,7 +68,6 @@ function toProductInsertValues(
     upsTopology: dto.upsTopology ?? null,
     upsBatteryType: dto.upsBatteryType ?? null,
     specSheet: dto.specSheet,
-    specs: dto.specs,
     totalStockCache: dto.totalStockCache,
     isQuoteOnly: dto.isQuoteOnly,
     isActive: dto.isActive,
@@ -114,7 +113,6 @@ function toProductUpdateValues(
   if (dto.upsBatteryType !== undefined)
     updateValues.upsBatteryType = dto.upsBatteryType;
   if (dto.specSheet !== undefined) updateValues.specSheet = dto.specSheet;
-  if (dto.specs !== undefined) updateValues.specs = dto.specs;
   if (dto.totalStockCache !== undefined)
     updateValues.totalStockCache = dto.totalStockCache;
   if (dto.isQuoteOnly !== undefined) updateValues.isQuoteOnly = dto.isQuoteOnly;
@@ -158,7 +156,7 @@ function mapProductRow(
       seoDescription: tr.seoDescription,
     })),
     isQuoteOnly: product.isQuoteOnly,
-    productType: product.productType ?? "generator",
+    productType: product.productType,
     powerKva: product.powerKva ?? null,
     powerKw: product.powerKw ?? null,
     standbyPowerKva: product.standbyPowerKva ?? null,
@@ -174,7 +172,6 @@ function mapProductRow(
     upsTopology: product.upsTopology ?? null,
     upsBatteryType: product.upsBatteryType ?? null,
     specSheet: product.specSheet ?? [],
-    specs: (product.specs as ProductResponseDto["specs"] | undefined) ?? {},
     brand: brand?.id
       ? {
           ...brand,

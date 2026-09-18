@@ -133,6 +133,7 @@ export type I18nTranslations = {
         "isIn": string;
         "isDate": string;
         "isNonNegative": string;
+        "taxIdInvalid": string;
     };
     "warehouse": {
         "WAREHOUSE_NOT_FOUND": string;
