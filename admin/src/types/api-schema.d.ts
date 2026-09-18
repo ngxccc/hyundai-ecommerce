@@ -2049,6 +2049,7 @@ export interface components {
       expirationDate: string | null;
       note: string | null;
       orderId: string | null;
+      orderNumber: string | null;
       createdByAdminId: string | null;
       /** Format: date-time */
       createdAt: string;
@@ -2184,6 +2185,7 @@ export interface components {
     ApproveToOrderResponseDto: {
       /** Format: uuid */
       orderId: string;
+      orderNumber: string;
       /** Format: uuid */
       quoteId: string;
       /** @enum {string} */
@@ -2198,7 +2200,7 @@ export interface components {
     OrderResponseDto: {
       /** Format: uuid */
       id: string;
-      orderNumber?: string | null;
+      orderNumber: string;
       userId?: string | null;
       leadId?: string | null;
       customerName?: string | null;
