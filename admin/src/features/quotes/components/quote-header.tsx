@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/components/ui/sonner";
 import {
-  ArrowLeft,
   Building2,
   Mail,
   MapPin,
@@ -89,9 +88,11 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
+      case QUOTE_STATUS.DRAFT:
+        return t("statusDraft");
       case QUOTE_STATUS.SUBMITTED:
       case "pending_review":
-        return t("statusPendingReview");
+        return t("statusSubmitted");
       case QUOTE_STATUS.NEGOTIATING:
       case "negotiating":
         return t("statusNegotiating");
@@ -140,16 +141,10 @@ export const QuoteHeader = ({ quote }: QuoteHeaderProps) => {
       {/* Top Bar */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-2">
-          <Link
-            href="/quotes"
-            className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm font-medium transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {t("backToQuotes")}
-          </Link>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-              {t("quoteId")}: #{quote.id.substring(0, 8)}
+            <h1 className="text-primary text-2xl font-bold tracking-tight md:text-3xl">
+              {t("quoteId")}:{" "}
+              {quote.quoteNumber ?? `#${quote.id.substring(0, 8)}`}
             </h1>
             <Badge className={getStatusBadgeClass(quote.status)}>
               {getStatusLabel(quote.status)}

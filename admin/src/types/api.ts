@@ -29,6 +29,8 @@ export type ApiProblemDetails = ApiSchemas["Rfc9457ErrorResponseDto"];
 // 2. AUTHENTICATION & USER MANAGEMENT
 
 export type AdminLogin = ApiSchemas["LoginDto"];
+export type UserRole = ApiSchemas["UserResponseDto"]["role"];
+
 export type AdminUser = ApiSchemas["UserResponseDto"];
 export type AdminDealerTier = ApiSchemas["DealerTierResponseDto"];
 export type BusinessType = NonNullable<

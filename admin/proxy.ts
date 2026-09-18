@@ -1,3 +1,4 @@
+import { isInternalStaff } from "@/lib/rbac";
 import { routing } from "@/i18n/routing";
 import { checkRateLimitWithQueue } from "@/lib/rate-limiter";
 import { HTTP_STATUS, REDIS_KEYS } from "@/constants";
@@ -92,8 +93,7 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  const allowedRoles = ["ADMIN", "SALES"];
-  const isAdmin = user && allowedRoles.includes(user.role);
+  const isAdmin = user && isInternalStaff(user.role);
 
   if (user) {
     if (!isAdmin && !isForbiddenRoute) return redirect(`/${locale}/forbidden`);

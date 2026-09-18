@@ -1,12 +1,10 @@
-import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
-import {
-  WarehouseForm,
-  WarehouseHeader,
-} from "@/features/warehouses/components";
+import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
-import { connection } from "next/server";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import type { Metadata } from "next";
+import { WarehouseForm } from "@/features/warehouses/components/warehouse-form";
+import { CenteredSpinner } from "@/components/common";
 
 export async function generateMetadata({
   params,
@@ -15,7 +13,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({ locale, namespace: "adminWarehouseForm" });
+  const t = await getTranslations({
+    locale,
+    namespace: "adminWarehouseForm",
+  });
 
   return {
     title: t("title"),
@@ -23,31 +24,24 @@ export async function generateMetadata({
 }
 
 export default async function NewWarehousePage() {
-  await connection();
-  const tNav = await getTranslations("adminDashboard.nav");
-  const tForm = await getTranslations("adminWarehouseForm");
-  const tHeader = await getTranslations("adminWarehouses.header");
-
-  const breadcrumbs = (
-    <AdminBreadcrumbs
-      items={[
-        { label: tNav("overview"), href: "/" },
-        { label: tHeader("title"), href: "/warehouses" },
-        { label: tForm("title") },
-      ]}
-    />
-  );
+  const [tNav, tForm] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminWarehouseForm"),
+  ]);
 
   return (
-    <>
-      <WarehouseHeader
-        title={tForm("title")}
-        description={tForm("description")}
-        showAddButton={false}
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("warehouses"), href: "/warehouses" },
+          { label: tForm("title") },
+        ]}
       />
-      <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <WarehouseForm breadcrumbs={breadcrumbs} />
-      </div>
-    </>
+
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <WarehouseForm />
+      </Suspense>
+    </div>
   );
 }

@@ -19,8 +19,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search, Eye } from "lucide-react";
 import { orderStatusEnum } from "@/constants";
-import type { AdminOrder } from "@/types/api";
 import { formatCurrency } from "@/lib/utils";
+import type { AdminOrder } from "@/types/api";
 interface OrderListProps {
   orders: AdminOrder[];
 }
@@ -144,7 +144,7 @@ export const OrderList = ({ orders }: OrderListProps) => {
               variant={activeStatus === status ? "default" : "ghost"}
               size="sm"
               onClick={() => handleFilterChange("status", status)}
-              className="h-8 text-xs font-medium capitalize"
+              className="h-8 text-xs font-medium"
             >
               {status === "all" ? t("statusAll") : getStatusLabel(status)}
             </Button>
@@ -188,8 +188,8 @@ export const OrderList = ({ orders }: OrderListProps) => {
               <TableBody>
                 {orders.map((order) => (
                   <TableRow key={order.id}>
-                    <TableCell className="font-mono text-xs font-semibold">
-                      #{order.id.slice(0, 8)}...
+                    <TableCell className="text-primary font-mono text-xs font-semibold">
+                      {order.orderNumber ?? `#${order.id.slice(0, 8)}`}
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
@@ -233,8 +233,8 @@ export const OrderList = ({ orders }: OrderListProps) => {
             {orders.map((order) => (
               <Card key={order.id} size="dense" className="p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground font-mono text-xs font-bold">
-                    #{order.id.slice(0, 8)}...
+                  <span className="text-primary font-mono text-xs font-bold">
+                    {order.orderNumber ?? `#${order.id.slice(0, 8)}`}
                   </span>
                   <Badge className={getStatusBadgeClass(order.status)}>
                     {getStatusLabel(order.status)}

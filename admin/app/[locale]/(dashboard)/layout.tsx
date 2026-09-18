@@ -1,3 +1,4 @@
+import { isInternalStaff } from "@/lib/rbac";
 import { Suspense } from "react";
 import { AdminSidebar } from "@/features/dashboard/components/admin-sidebar";
 import { getCachedSession } from "@/lib/session";
@@ -37,9 +38,7 @@ async function AdminSidebarSlot() {
   const session = await getCachedSession();
   if (!session) return null;
 
-  const allowedRoles = ["ADMIN", "SALES"];
-  const isAdmin = allowedRoles.includes(session.user.role);
-  if (!isAdmin) return null;
+  if (!isInternalStaff(session.user.role)) return null;
 
   return <AdminSidebar user={session.user} />;
 }

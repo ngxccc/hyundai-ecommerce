@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
@@ -33,18 +32,7 @@ export async function CategoriesSection() {
               key={cat.id}
               className="group focus-visible:ring-primary relative flex h-[160px] flex-col justify-end overflow-hidden rounded-xl bg-zinc-900 p-5 shadow-xs transition-all duration-300 outline-none hover:shadow-lg focus-visible:ring-2 md:h-[180px]"
             >
-              {cat.image && cat.image !== "" ? (
-                <Image
-                  alt={cat.description ?? cat.name}
-                  src={cat.image}
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 20vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-900 to-zinc-800" />
-              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-900 to-zinc-800" />
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 

@@ -1,23 +1,25 @@
-import { notFound } from "next/navigation";
-import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
-import {
-  WarehouseForm,
-  WarehouseHeader,
-} from "@/features/warehouses/components";
+import { Suspense } from "react";
 import { warehousesApi } from "@/features/warehouses/api/warehouses.api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
+import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import type { Metadata } from "next";
+import { WarehouseForm } from "@/features/warehouses/components/warehouse-form";
+import { CenteredSpinner } from "@/components/common";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: string; id: string }>;
 }): Promise<Metadata> {
   const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({ locale, namespace: "adminWarehouseForm" });
+  const t = await getTranslations({
+    locale,
+    namespace: "adminWarehouseForm",
+  });
 
   return {
     title: t("editTitle"),
@@ -27,41 +29,44 @@ export async function generateMetadata({
 export default async function EditWarehousePage({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ id: string }>;
+}) {
+  const [tNav, tForm] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminWarehouseForm"),
+  ]);
+
+  return (
+    <div className="flex w-full flex-col gap-6">
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tNav("warehouses"), href: "/warehouses" },
+          { label: tForm("editTitle") },
+        ]}
+      />
+
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <EditWarehouseContent params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function EditWarehouseContent({
+  params,
+}: {
+  params: Promise<{ id: string }>;
 }) {
   await connection();
   const { id } = await params;
 
   const { data: res } = await warehousesApi.getById(id);
   const warehouse = res?.data;
+
   if (!warehouse) {
     notFound();
   }
 
-  const tNav = await getTranslations("adminDashboard.nav");
-  const tForm = await getTranslations("adminWarehouseForm");
-  const tHeader = await getTranslations("adminWarehouses.header");
-
-  const breadcrumbs = (
-    <AdminBreadcrumbs
-      items={[
-        { label: tNav("overview"), href: "/" },
-        { label: tHeader("title"), href: "/warehouses" },
-        { label: tForm("editTitle") },
-      ]}
-    />
-  );
-
-  return (
-    <>
-      <WarehouseHeader
-        title={tForm("editTitle")}
-        description={tForm("editDescription")}
-        showAddButton={false}
-      />
-      <div className="mx-auto flex w-full flex-col gap-2 p-2">
-        <WarehouseForm initialData={warehouse} breadcrumbs={breadcrumbs} />
-      </div>
-    </>
-  );
+  return <WarehouseForm initialData={warehouse} />;
 }

@@ -124,7 +124,7 @@ export async function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
                       href={`/orders/${order.id}`}
                       className="hover:text-primary transition-colors"
                     >
-                      #{order.id.slice(-6).toUpperCase()}
+                      {order.orderNumber ?? `#${order.id.slice(0, 8)}`}
                     </Link>
                   </TableCell>
                   <TableCell>

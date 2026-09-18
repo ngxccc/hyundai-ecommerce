@@ -1,16 +1,16 @@
 import { Suspense } from "react";
-import {
-  WarehouseHeader,
-  WarehouseGrid,
-} from "@/features/warehouses/components";
-import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
+import { WarehouseHeader } from "@/features/warehouses/components";
+import { DataTableSearchInput } from "@/components/common/data-table-search-input";
 import { warehousesApi } from "@/features/warehouses/api/warehouses.api";
+import { WarehouseTable } from "@/features/warehouses/components/warehouse-table";
+import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
 import type { AdminWarehouse } from "@/types/api";
 import { getTranslations } from "next-intl/server";
 import { type Locale } from "next-intl";
 import { connection } from "next/server";
 import type { Metadata } from "next";
 import { CenteredSpinner } from "@/components/common";
+
 export async function generateMetadata({
   params,
 }: {
@@ -21,7 +21,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "adminDashboard.nav" });
 
   return {
-    title: t("warehouses") || "Warehouses",
+    title: t("warehouses"),
   };
 }
 
@@ -40,7 +40,7 @@ export default async function AdminWarehousesPage({
       <AdminBreadcrumbs
         items={[
           { label: tNav("overview"), href: "/" },
-          { label: tHeader("title") },
+          { label: tNav("warehouses") },
         ]}
       />
 
@@ -51,7 +51,10 @@ export default async function AdminWarehousesPage({
       />
 
       <Suspense fallback={<CenteredSpinner variant="content" />}>
-        <WarehousesContent searchParams={searchParams} />
+        <WarehousesContent
+          searchParams={searchParams}
+          searchPlaceholder={tHeader("searchPlaceholder")}
+        />
       </Suspense>
     </div>
   );
@@ -59,8 +62,10 @@ export default async function AdminWarehousesPage({
 
 async function WarehousesContent({
   searchParams,
+  searchPlaceholder,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchPlaceholder: string;
 }) {
   await connection();
   const { data: res } = await warehousesApi.list();
@@ -83,7 +88,8 @@ async function WarehousesContent({
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <WarehouseGrid warehouses={filteredWarehouses} />
+      <DataTableSearchInput placeholder={searchPlaceholder} />
+      <WarehouseTable warehouses={filteredWarehouses} />
     </div>
   );
 }

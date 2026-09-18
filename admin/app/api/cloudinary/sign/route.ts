@@ -1,3 +1,4 @@
+import { isInternalStaff } from "@/lib/rbac";
 import { env } from "@/env";
 import { v2 as cloudinary } from "cloudinary";
 import { type NextRequest } from "next/server";
@@ -21,8 +22,7 @@ export async function POST(request: NextRequest) {
   try {
     // 1. Session and role check
     const session = await getCachedSession();
-    const allowedRoles = ["ADMIN", "SALES"];
-    if (!session?.user.role || !allowedRoles.includes(session.user.role)) {
+    if (!isInternalStaff(session?.user.role)) {
       return jsonError({
         status: HTTP_STATUS.UNAUTHORIZED,
         detail: t("unauthorized"),

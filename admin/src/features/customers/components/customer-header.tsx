@@ -15,8 +15,7 @@ export const CustomerHeader = ({ title, description }: CustomerHeaderProps) => {
   const pathname = usePathname();
 
   const isTiersActive = pathname.includes("/tiers");
-  const isDirectoryActive =
-    pathname === "/customers" || pathname === "/customers/";
+  const isDirectoryActive = !isTiersActive;
 
   return (
     <div className="flex flex-col gap-4 pb-1">

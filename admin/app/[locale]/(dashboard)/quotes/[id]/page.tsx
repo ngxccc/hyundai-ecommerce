@@ -1,26 +1,27 @@
-import { BrandHeader } from "@/features/brands/components";
+import { Suspense } from "react";
 import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
-import { QuoteHeader, QuotePricingCockpit } from "@/features/quotes/components";
+import { QuoteHeader } from "@/features/quotes/components";
+import { QuotePricingCockpit } from "@/features/quotes/components/quote-pricing-cockpit";
 import { quotesApi } from "@/features/quotes/api/quotes.api";
-import { requireAuth } from "@/lib/action-auth";
 import type { Locale } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { requireAuth } from "@/lib/action-auth";
 import { connection } from "next/server";
 import type { Metadata } from "next";
+import { CenteredSpinner } from "@/components/common";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; id: string }>;
 }): Promise<Metadata> {
-  const { locale: rawLocale, id } = await params;
+  const { locale: rawLocale } = await params;
   const locale = rawLocale as Locale;
   const t = await getTranslations({ locale, namespace: "adminQuotes" });
-  const shortId = id.length > 8 ? id.slice(0, 8) : id;
 
   return {
-    title: `${t("title")} #${shortId}`,
+    title: t("title"),
   };
 }
 
@@ -29,42 +30,52 @@ export default async function AdminQuoteDetailPage({
 }: {
   params: Promise<{ locale: string; id: string }>;
 }) {
+  const [tNav, tHeader] = await Promise.all([
+    getTranslations("adminDashboard.nav"),
+    getTranslations("adminQuotes"),
+  ]);
+
+  return (
+    <div className="flex w-full flex-col gap-6">
+      {/* 1. Breadcrumbs consistently on top */}
+      <AdminBreadcrumbs
+        items={[
+          { label: tNav("overview"), href: "/" },
+          { label: tHeader("title"), href: "/quotes" },
+          { label: tHeader("detail") },
+        ]}
+      />
+
+      {/* 2. Dynamic content isolated inside Suspense with CenteredSpinner */}
+      <Suspense fallback={<CenteredSpinner variant="content" />}>
+        <QuoteDetailContent params={params} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function QuoteDetailContent({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   await connection();
   const { id } = await params;
   await requireAuth();
-  const tNav = await getTranslations("adminDashboard.nav");
-  const tHeader = await getTranslations("adminQuotes");
 
   const { data: quoteRes } = await quotesApi.getById(id);
   const quote = quoteRes?.data;
   if (!quote) {
     notFound();
   }
-  const displayId =
-    quote.quoteNumber ?? (id.length > 8 ? `#${id.slice(0, 8)}` : id);
 
   return (
-    <>
-      <BrandHeader
-        title={`${tHeader("title")} ${displayId}`}
-        description={tHeader("description")}
-        showAddButton={false}
-      />
+    <div className="flex w-full flex-col gap-6">
+      <QuoteHeader quote={quote} />
 
-      <div className="mx-auto flex w-full flex-col gap-6 p-4">
-        <AdminBreadcrumbs
-          items={[
-            { label: tNav("overview"), href: "/" },
-            { label: "Báo giá", href: "/quotes" },
-            { label: displayId },
-          ]}
-        />
-        <QuoteHeader quote={quote} />
-
-        <div className="w-full">
-          <QuotePricingCockpit quote={quote} />
-        </div>
+      <div className="w-full">
+        <QuotePricingCockpit quote={quote} />
       </div>
-    </>
+    </div>
   );
 }

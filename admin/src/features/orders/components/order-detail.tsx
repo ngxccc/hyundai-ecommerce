@@ -25,9 +25,8 @@ import {
   Undo2,
   CheckCircle2,
 } from "lucide-react";
-import type { AdminOrder } from "@/types/api";
+import type { AdminOrder, UserRole } from "@/types/api";
 import { updateOrderStatusAction, verifyCashPaymentAction } from "../actions";
-import type { UserRole } from "@/lib/action-auth";
 import { formatCurrency } from "@/lib/utils";
 import {
   Stepper,
@@ -46,7 +45,7 @@ interface OrderDetailProps {
     | {
         id: string;
         role: UserRole;
-        name: string;
+        fullName: string;
       }
     | undefined;
 }

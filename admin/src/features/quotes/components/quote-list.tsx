@@ -62,16 +62,18 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
   }, [debouncedSearchTerm, handleFilterChange, searchParams]);
 
   const getStatusBadgeClass = (status: string) => {
-    switch (status) {
-      case "pending_review":
+    switch (status.toUpperCase()) {
+      case "DRAFT":
+        return "bg-muted text-muted-foreground border-transparent";
+      case "SUBMITTED":
         return "bg-yellow-100 text-yellow-700 border-transparent dark:bg-yellow-900/30 dark:text-yellow-400";
-      case "negotiating":
+      case "NEGOTIATING":
         return "bg-blue-100 text-blue-700 border-transparent dark:bg-blue-900/30 dark:text-blue-400";
-      case "approved":
+      case "APPROVED":
         return "bg-green-100 text-green-700 border-transparent dark:bg-green-900/30 dark:text-green-400";
-      case "rejected":
+      case "REJECTED":
         return "bg-red-100 text-red-700 border-transparent dark:bg-red-900/30 dark:text-red-400";
-      case "expired":
+      case "EXPIRED":
         return "bg-gray-100 text-gray-700 border-transparent dark:bg-gray-900/30 dark:text-gray-400";
       default:
         return "bg-secondary text-secondary-foreground border-transparent";
@@ -79,16 +81,18 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
   };
 
   const getStatusLabel = (status: string) => {
-    switch (status) {
-      case "pending_review":
-        return t("statusPendingReview");
-      case "negotiating":
+    switch (status.toUpperCase()) {
+      case "DRAFT":
+        return t("statusDraft");
+      case "SUBMITTED":
+        return t("statusSubmitted");
+      case "NEGOTIATING":
         return t("statusNegotiating");
-      case "approved":
+      case "APPROVED":
         return t("statusApproved");
-      case "rejected":
+      case "REJECTED":
         return t("statusRejected");
-      case "expired":
+      case "EXPIRED":
         return t("statusExpired");
       default:
         return status;
@@ -144,7 +148,7 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
               variant={activeStatus === status ? "default" : "ghost"}
               size="sm"
               onClick={() => handleFilterChange("status", status)}
-              className="h-8 text-xs font-medium capitalize"
+              className="h-8 text-xs font-medium"
             >
               {status === "all" ? t("allStatuses") : getStatusLabel(status)}
             </Button>
@@ -184,8 +188,8 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
               <TableBody>
                 {quotes.map((quote) => (
                   <TableRow key={quote.id}>
-                    <TableCell className="font-mono text-xs font-semibold">
-                      #{quote.id.slice(0, 8)}...
+                    <TableCell className="text-primary font-mono text-xs font-semibold">
+                      {quote.quoteNumber ?? `#${quote.id.slice(0, 8)}`}
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
@@ -227,8 +231,8 @@ export const QuoteList = ({ quotes }: QuoteListProps) => {
             {quotes.map((quote) => (
               <Card key={quote.id} size="dense" className="p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground font-mono text-xs font-bold">
-                    #{quote.id.slice(0, 8)}...
+                  <span className="text-primary font-mono text-xs font-bold">
+                    {quote.quoteNumber ?? `#${quote.id.slice(0, 8)}`}
                   </span>
                   <Badge className={getStatusBadgeClass(quote.status)}>
                     {getStatusLabel(quote.status)}

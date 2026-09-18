@@ -1,23 +1,18 @@
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { z } from "zod";
+import { USER_ROLES } from "@/types/api-enums";
 
-const adminUserSchema = z
-  .object({
-    id: z.string(),
-    email: z.string(),
-    fullName: z.string(),
-    role: z.string(),
-  })
-  .transform((data) => ({
-    id: data.id,
-    email: data.email,
-    fullName: data.fullName,
-    role: data.role,
-  }));
+export const userRoleSchema = z.enum(USER_ROLES);
+
+export const adminUserSchema = z.object({
+  id: z.string(),
+  email: z.string(),
+  fullName: z.string(),
+  role: userRoleSchema,
+});
 
 export type AdminUser = z.infer<typeof adminUserSchema>;
-
 export interface AdminSession {
   user: AdminUser;
   accessToken: string;

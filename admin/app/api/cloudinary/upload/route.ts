@@ -1,3 +1,4 @@
+import { isInternalStaff } from "@/lib/rbac";
 import type { NextRequest } from "next/server";
 import { checkRateLimitWithQueue } from "@/lib/rate-limiter";
 import { jsonSuccess, jsonError } from "@/lib/api-response";
@@ -29,8 +30,7 @@ export async function POST(req: NextRequest) {
   try {
     // 1. Session and role check
     const session = await getCachedSession();
-    const allowedRoles = ["ADMIN", "SALES"];
-    if (!session?.user.role || !allowedRoles.includes(session.user.role)) {
+    if (!isInternalStaff(session?.user.role)) {
       return jsonError({
         status: HTTP_STATUS.UNAUTHORIZED,
         detail: t("unauthorized" as never),

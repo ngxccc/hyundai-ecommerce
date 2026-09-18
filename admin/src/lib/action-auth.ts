@@ -1,8 +1,11 @@
 import { getCachedSession } from "./session";
-
-export const USER_ROLES = ["ADMIN", "SALES"] as const;
-export type UserRole = (typeof USER_ROLES)[number];
-
+import type { UserRole } from "@/types/api";
+import {
+  isInternalStaff,
+  FINANCE_ROLES,
+  SALES_OR_FINANCE_ROLES,
+  WAREHOUSE_ROLES,
+} from "./rbac";
 export type JSONContent = Record<string, unknown>;
 export class AuthError extends Error {
   public code: string;
@@ -64,8 +67,7 @@ export const requireAuth = async () => {
     throw new AuthError("UNAUTHORIZED");
   }
 
-  const allowedRoles = ["ADMIN", "SALES"];
-  if (!allowedRoles.includes(session.user.role)) {
+  if (!isInternalStaff(session.user.role)) {
     throw new AuthError("FORBIDDEN");
   }
 
@@ -79,15 +81,16 @@ export const assertRole = async (allowedRoles: UserRole[]) => {
     throw new AuthError("UNAUTHORIZED");
   }
 
-  if (!allowedRoles.includes(session.user.role as UserRole)) {
+  if (!allowedRoles.includes(session.user.role)) {
     throw new AuthError("FORBIDDEN");
   }
 
   return session;
 };
 
-export const assertFinanceRole = () => assertRole(["ADMIN"]);
+export const assertFinanceRole = () => assertRole([...FINANCE_ROLES]);
 
-export const assertSalesOrFinanceRole = () => assertRole(["ADMIN", "SALES"]);
+export const assertSalesOrFinanceRole = () =>
+  assertRole([...SALES_OR_FINANCE_ROLES]);
 
-export const assertWarehouseRole = () => assertRole(["ADMIN"]);
+export const assertWarehouseRole = () => assertRole([...WAREHOUSE_ROLES]);
