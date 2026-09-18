@@ -43,8 +43,8 @@ export function createOpenApiDocument(app: INestApplication): OpenAPIObject {
       "Warehouse stock levels, low-stock alerts, and multi-location inventory",
     )
     .addTag(
-      "cart",
-      "Shopping cart, guest cart merge, and dealer pricing calculations",
+      "cart (deprecated)",
+      "Legacy shopping cart, guest cart merge, and pricing calculations (dormant)",
     )
     .addTag(
       "quotes",
@@ -55,8 +55,8 @@ export function createOpenApiDocument(app: INestApplication): OpenAPIObject {
       "Order checkout, guest checkout, Redlock stock locking, trade credit, and auto-expiration",
     )
     .addTag(
-      "payments",
-      "PayOS payment links, dynamic VietQR, webhook signature verification, cash verification, and dealer debt repayment",
+      "payments (deprecated)",
+      "Legacy PayOS payment links, dynamic VietQR, webhook verification, and dealer debt repayment (dormant)",
     )
     .addTag("app", "System health and operational monitoring")
     .addBearerAuth(

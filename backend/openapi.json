@@ -7986,8 +7986,8 @@
       "description": "Warehouse stock levels, low-stock alerts, and multi-location inventory"
     },
     {
-      "name": "cart",
-      "description": "Shopping cart, guest cart merge, and dealer pricing calculations"
+      "name": "cart (deprecated)",
+      "description": "Legacy shopping cart, guest cart merge, and pricing calculations (dormant)"
     },
     {
       "name": "quotes",
@@ -7998,8 +7998,8 @@
       "description": "Order checkout, guest checkout, Redlock stock locking, trade credit, and auto-expiration"
     },
     {
-      "name": "payments",
-      "description": "PayOS payment links, dynamic VietQR, webhook signature verification, cash verification, and dealer debt repayment"
+      "name": "payments (deprecated)",
+      "description": "Legacy PayOS payment links, dynamic VietQR, webhook verification, and dealer debt repayment (dormant)"
     },
     {
       "name": "app",
