@@ -189,7 +189,7 @@ export const OrderList = ({ orders }: OrderListProps) => {
                 {orders.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell className="text-primary font-mono text-xs font-semibold">
-                      {order.orderNumber ?? `#${order.id.slice(0, 8)}`}
+                      {order.orderNumber}
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
@@ -234,7 +234,7 @@ export const OrderList = ({ orders }: OrderListProps) => {
               <Card key={order.id} size="dense" className="p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-primary font-mono text-xs font-bold">
-                    {order.orderNumber ?? `#${order.id.slice(0, 8)}`}
+                    {order.orderNumber}
                   </span>
                   <Badge className={getStatusBadgeClass(order.status)}>
                     {getStatusLabel(order.status)}

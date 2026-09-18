@@ -66,8 +66,7 @@ async function OrderDetailContent({
     notFound();
   }
 
-  const displayOrderCode =
-    order.orderNumber ?? (id.length > 8 ? `#${id.slice(0, 8)}` : id);
+  const displayOrderCode = order.orderNumber;
 
   return (
     <div className="flex w-full flex-col gap-6">
