@@ -125,7 +125,7 @@ export function QuoteRequestView() {
         clearQuote();
         resetAllForms();
       } else {
-        toast.error(res.error || "Request failed");
+        toast.error(res.error);
       }
     });
   };

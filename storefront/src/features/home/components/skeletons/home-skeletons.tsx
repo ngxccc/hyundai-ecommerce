@@ -20,16 +20,6 @@ export function CategoriesSectionSkeleton() {
   );
 }
 
-export function PromotionsSectionSkeleton() {
-  return (
-    <section className="bg-background pt-14">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Skeleton className="h-64 w-full rounded-2xl" />
-      </div>
-    </section>
-  );
-}
-
 export function ProductsSectionSkeleton() {
   return (
     <section className="bg-background pt-14">

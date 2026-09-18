@@ -13,15 +13,22 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await catalogApi.categories.list({ locale });
-      const categories = res?.data;
+      const { data: res, error: apiError } = await catalogApi.categories.list({
+        locale,
+      });
+      if (apiError) {
+        throw new Error(
+          `Failed to fetch categories: ${apiError.detail || "Unknown error"}`,
+        );
+      }
+      const categories = res.data;
       if (!Array.isArray(categories)) {
         return [];
       }
       return categories.map((c) => mapCategoryToStorefront(c));
     } catch (error) {
       console.error("Failed to fetch categories from backend:", error);
-      return [];
+      throw error;
     }
   },
 
@@ -31,15 +38,21 @@ export const categoryService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await catalogApi.categories.getTree({ locale });
-      const tree = res?.data;
+      const { data: res, error: apiError } =
+        await catalogApi.categories.getTree({ locale });
+      if (apiError) {
+        throw new Error(
+          `Failed to fetch category tree: ${apiError.detail || "Unknown error"}`,
+        );
+      }
+      const tree = res.data;
       if (!Array.isArray(tree)) {
         return [];
       }
       return tree.map((node) => mapCategoryTreeToStorefront(node));
     } catch (error) {
       console.error("Failed to fetch category tree from backend:", error);
-      return [];
+      throw error;
     }
   },
 

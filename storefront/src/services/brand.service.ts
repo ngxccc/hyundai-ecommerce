@@ -8,15 +8,22 @@ export const brandService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await catalogApi.brands.list({ locale });
-      const brands = res?.data;
+      const { data: res, error: apiError } = await catalogApi.brands.list({
+        locale,
+      });
+      if (apiError) {
+        throw new Error(
+          `Failed to fetch brands: ${apiError.detail || "Unknown error"}`,
+        );
+      }
+      const brands = res.data;
       if (!Array.isArray(brands)) {
         return [];
       }
       return brands.map((b) => mapBrandToStorefront(b));
     } catch (error) {
       console.error("Failed to fetch brands from backend:", error);
-      return [];
+      throw error;
     }
   },
 };

@@ -82,31 +82,32 @@ export const productService = {
             : undefined,
       };
 
-      const { data: res } = await catalogApi.products.list(queryParams);
+      const { data: res, error: apiError } =
+        await catalogApi.products.list(queryParams);
 
-      const items = res?.data ?? [];
-      const meta = res?.meta;
+      if (apiError) {
+        throw new Error(
+          `Failed to fetch products: ${apiError.detail || "Unknown error"}`,
+        );
+      }
+      if (!res.data) {
+        throw new Error("Malformed API response: missing data");
+      }
 
+      const items = res.data;
+      const meta = res.meta;
       return {
         data: items.map((p) => mapProductToStorefront(p)),
-        total: meta?.total ?? 0,
-        page: meta?.page ?? 1,
-        totalPages: meta?.totalPages ?? 0,
-        hasMore: meta?.hasNextPage ?? false,
-        nextCursor: meta?.hasNextPage ? String(meta.page + 1) : undefined,
-        prevCursor: meta?.hasPrevPage ? String(meta.page - 1) : undefined,
+        total: meta.total,
+        page: meta.page,
+        totalPages: meta.totalPages,
+        hasMore: meta.hasNextPage,
+        nextCursor: meta.hasNextPage ? String(meta.page + 1) : undefined,
+        prevCursor: meta.hasPrevPage ? String(meta.page - 1) : undefined,
       };
     } catch (error) {
       console.error("Failed to fetch products from backend:", error);
-      return {
-        data: [],
-        total: 0,
-        page: 1,
-        totalPages: 0,
-        hasMore: false,
-        nextCursor: undefined,
-        prevCursor: undefined,
-      };
+      throw error;
     }
   },
 
@@ -148,15 +149,22 @@ export const productService = {
     "use cache";
     cacheLife("hours");
     try {
-      const { data: res } = await catalogApi.products.getById(slug, {
-        locale,
-      });
-      const product = res?.data;
+      const { data: res, error: apiError } = await catalogApi.products.getById(
+        slug,
+        { locale },
+      );
+      if (apiError) {
+        if (apiError.status === 404) return null;
+        throw new Error(
+          `Failed to fetch product by slug: ${apiError.detail || "Unknown error"}`,
+        );
+      }
+      const product = res.data;
       if (!product) return null;
       return mapProductToStorefront(product);
     } catch (error) {
       console.error("Failed to fetch product by slug:", error);
-      return null;
+      throw error;
     }
   },
 
