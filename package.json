@@ -5,7 +5,11 @@
   "type": "module",
   "packageManager": "bun@1.4",
   "scripts": {
+    "check": "bun run check-types && bun run lint",
     "check-types": "bun run check-types:backend && bun run check-types:storefront && bun run check-types:admin",
+    "clean": "bun run clean:cache && bun run clean:build",
+    "clean:build": "rm -rf backend/dist admin/.next storefront/.next",
+    "clean:cache": "rm -f .eslintcache backend/.eslintcache admin/.eslintcache storefront/.eslintcache",
     "check-types:admin": "cd admin && bun run check-types",
     "check-types:backend": "cd backend && bun run check-types",
     "check-types:storefront": "cd storefront && bun run check-types",
