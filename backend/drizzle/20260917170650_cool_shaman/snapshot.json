@@ -1,7 +1,7 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "406c5b90-7e18-41bc-931e-bb53a9c6167c",
+  "id": "c49cf395-1817-4f72-a293-708e4324ffcc",
   "prevIds": ["00000000-0000-0000-0000-000000000000"],
   "ddl": [
     {
@@ -12,11 +12,12 @@
     },
     {
       "values": [
+        "INTERNAL",
+        "DEALER",
         "CONTRACTOR",
         "COMMERCIAL",
         "GOVERNMENT",
-        "END_USER",
-        "DEALER"
+        "END_USER"
       ],
       "name": "business_type",
       "entityType": "enums",
@@ -111,7 +112,7 @@
       "schema": "public"
     },
     {
-      "values": ["ADMIN", "SALES"],
+      "values": ["ADMIN", "SALES", "WAREHOUSE", "ACCOUNTANT", "CUSTOMER"],
       "name": "user_role",
       "entityType": "enums",
       "schema": "public"
@@ -614,7 +615,7 @@
       "typeSchema": "public",
       "notNull": true,
       "dimensions": 0,
-      "default": "'SALES'",
+      "default": "'CUSTOMER'",
       "generated": null,
       "identity": null,
       "name": "role",

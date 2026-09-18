@@ -124,7 +124,6 @@ export interface BrandFixtureData {
   id: string;
   name: string;
   slug: string;
-  logo: string;
   isActive: boolean;
   translations: BrandTranslationFixture[];
 }

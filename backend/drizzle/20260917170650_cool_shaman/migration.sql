@@ -1,5 +1,5 @@
 CREATE TYPE "approval_status" AS ENUM('PENDING', 'APPROVED', 'REJECTED');--> statement-breakpoint
-CREATE TYPE "business_type" AS ENUM('CONTRACTOR', 'COMMERCIAL', 'GOVERNMENT', 'END_USER', 'DEALER');--> statement-breakpoint
+CREATE TYPE "business_type" AS ENUM('INTERNAL', 'DEALER', 'CONTRACTOR', 'COMMERCIAL', 'GOVERNMENT', 'END_USER');--> statement-breakpoint
 CREATE TYPE "debt_repayment_status" AS ENUM('PENDING', 'COMPLETED', 'FAILED');--> statement-breakpoint
 CREATE TYPE "event_type" AS ENUM('SEND_QUOTE_EMAIL', 'SEND_MAIL', 'SEND_ZALO_ZNS', 'ORDER_CREATED', 'PAYMENT_RECEIVED', 'DEALER_APPROVAL_REQUIRED');--> statement-breakpoint
 CREATE TYPE "lead_status" AS ENUM('NEW', 'CONTACTING', 'SURVEY_SCHEDULED', 'QUOTED', 'CONVERTED', 'REJECTED', 'LOST');--> statement-breakpoint
@@ -11,7 +11,7 @@ CREATE TYPE "payment_status" AS ENUM('PENDING', 'COMPLETED', 'FAILED', 'REFUNDED
 CREATE TYPE "payment_transaction_status" AS ENUM('PENDING', 'COMPLETED', 'FAILED', 'CANCELLED');--> statement-breakpoint
 CREATE TYPE "payment_transaction_type" AS ENUM('FULL_PAYMENT', 'DEPOSIT', 'REMAINING', 'DEBT_REPAYMENT');--> statement-breakpoint
 CREATE TYPE "quote_status" AS ENUM('DRAFT', 'SUBMITTED', 'NEGOTIATING', 'APPROVED', 'REJECTED', 'EXPIRED');--> statement-breakpoint
-CREATE TYPE "user_role" AS ENUM('ADMIN', 'SALES');--> statement-breakpoint
+CREATE TYPE "user_role" AS ENUM('ADMIN', 'SALES', 'WAREHOUSE', 'ACCOUNTANT', 'CUSTOMER');--> statement-breakpoint
 CREATE TYPE "user_status" AS ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED', 'PENDING_VERIFICATION');--> statement-breakpoint
 CREATE TABLE "dealer_tier" (
 	"id" uuid PRIMARY KEY,
@@ -45,7 +45,7 @@ CREATE TABLE "users" (
 	"phone_number" varchar(20) NOT NULL,
 	"avatar_url" text,
 	"password_hash" text NOT NULL,
-	"role" "user_role" DEFAULT 'SALES'::"user_role" NOT NULL,
+	"role" "user_role" DEFAULT 'CUSTOMER'::"user_role" NOT NULL,
 	"status" "user_status" DEFAULT 'ACTIVE'::"user_status" NOT NULL,
 	"email_verified" boolean DEFAULT false NOT NULL,
 	"dealer_tier_id" uuid,

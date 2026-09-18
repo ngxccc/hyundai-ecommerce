@@ -3,7 +3,6 @@
     "id": "019de188-641f-768f-8fe7-da0964943808",
     "name": "Hyundai",
     "slug": "hyundai",
-    "logo": "https://cdn.example.com/hyundai.png",
     "isActive": true,
     "translations": [
       {
@@ -20,7 +19,6 @@
     "id": "019de188-642a-71bf-8082-ec510823ed3c",
     "name": "Mitsubishi",
     "slug": "mitsubishi",
-    "logo": "https://cdn.example.com/mitsubishi.png",
     "isActive": true,
     "translations": [
       {
@@ -37,7 +35,6 @@
     "id": "019de188-642a-71bf-8082-f37ae97f09e4",
     "name": "Kubota",
     "slug": "kubota",
-    "logo": "https://cdn.example.com/kubota.png",
     "isActive": true,
     "translations": [
       {

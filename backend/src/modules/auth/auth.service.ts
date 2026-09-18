@@ -105,6 +105,8 @@ export class AuthService {
           fullName: dto.fullName,
           phoneNumber: dto.phoneNumber,
           passwordHash,
+          role: "CUSTOMER",
+          businessType: "END_USER",
           verificationToken: sha256(verificationToken),
           verificationExpiresAt,
           status,
