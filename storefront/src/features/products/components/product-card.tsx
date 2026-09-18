@@ -21,34 +21,26 @@ interface ProductCardProps {
   index: number;
 }
 
-const formatSpecs = (
-  specs: StorefrontProduct["specs"],
+const formatProductSpecs = (
+  product: StorefrontProduct,
   tProduct: (key: string) => string,
 ): string[] => {
-  if (typeof specs !== "object") return [];
-  const specsObj = specs as Record<
-    string,
-    string | number | boolean | null | undefined
-  >;
-
   const specsArray: string[] = [];
 
-  const rawPower = specsObj.power ?? specsObj.powerKw ?? specsObj.powerKva;
-  if (typeof rawPower === "number" || typeof rawPower === "string") {
-    specsArray.push(`${rawPower}kW`);
+  const rawPower = product.powerKw ?? product.powerKva;
+  if (rawPower) {
+    const num = parseFloat(rawPower);
+    specsArray.push(`${isNaN(num) ? rawPower : num}kW`);
   }
 
-  const fuelType = specsObj.fuelType;
-  if (typeof fuelType === "string" && fuelType.trim().length > 0) {
-    specsArray.push(tProduct(`fuelTypes.${fuelType}`));
+  if (product.fuelType) {
+    specsArray.push(tProduct(`fuelTypes.${product.fuelType}`));
   }
 
-  const phase = specsObj.phase;
-  if (typeof specsObj.phase === "string") {
-    if (phase === "1phase" || phase === "3phase") {
-      specsArray.push(tProduct(`phases.${phase}`));
-    }
+  if (product.phase === "1phase" || product.phase === "3phase") {
+    specsArray.push(tProduct(`phases.${product.phase}`));
   }
+
   return specsArray;
 };
 
@@ -88,9 +80,12 @@ export function ProductCard({ product, index }: ProductCardProps) {
     );
   };
 
-  const specsList = formatSpecs(product.specs, (key) =>
+  const specsList = formatProductSpecs(product, (key) =>
     tProduct(key as Parameters<typeof tProduct>[0]),
   );
+  const model = product.specSheet
+    ?.flatMap((g) => g.items)
+    .find((i) => i.key === "model")?.value;
 
   return (
     <Card
@@ -109,12 +104,11 @@ export function ProductCard({ product, index }: ProductCardProps) {
             preload={index < 3}
             showText
           />
-          {typeof product.specs.model === "string" &&
-            product.specs.model.trim().length > 0 && (
-              <Badge className="absolute top-3 left-3 z-10 rounded-sm bg-black/75 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-md">
-                {tHome("model")}: {product.specs.model}
-              </Badge>
-            )}
+          {model && (
+            <Badge className="absolute top-3 left-3 z-10 rounded-sm bg-black/75 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-md">
+              {tHome("model")}: {model}
+            </Badge>
+          )}
         </CardHeader>
       </Link>
 

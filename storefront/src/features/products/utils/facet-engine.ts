@@ -44,10 +44,9 @@ export function computeFacets(params: ComputeFacetsParams): FacetStatus {
     const matchCat = matchesCategory(p, activeCategoryIds);
     const matchBrand = matchesBrands(p, selectedBrandIds);
     const matchFuel =
-      activeFilters.fuelType === null ||
-      p.specs?.fuelType === activeFilters.fuelType;
+      activeFilters.fuelType === null || p.fuelType === activeFilters.fuelType;
     const matchPhase =
-      activeFilters.phase === null || p.specs?.phase === activeFilters.phase;
+      activeFilters.phase === null || p.phase === activeFilters.phase;
     const matchBaseSpecs = matchesSpecsBase(p, activeFilters);
     const matchSearchQuery = matchesSearch(p, activeFilters.q);
 
@@ -92,7 +91,7 @@ export function computeFacets(params: ComputeFacetsParams): FacetStatus {
       return;
     }
     result.fuelTypes[f] = matchStates.some(
-      (m) => m.product.specs?.fuelType === f && isMatchExcept(m, "fuelType"),
+      (m) => m.product.fuelType === f && isMatchExcept(m, "fuelType"),
     );
   });
 
@@ -102,7 +101,7 @@ export function computeFacets(params: ComputeFacetsParams): FacetStatus {
       return;
     }
     result.phases[ph] = matchStates.some(
-      (m) => m.product.specs?.phase === ph && isMatchExcept(m, "phase"),
+      (m) => m.product.phase === ph && isMatchExcept(m, "phase"),
     );
   });
 
@@ -165,20 +164,15 @@ function matchesSpecsBase(
   product: StorefrontFilterMetadata,
   activeFilters: ProductActiveFilters,
 ) {
-  const specs = product.specs;
   const minPower = activeFilters.minPower;
   const maxPower = activeFilters.maxPower;
 
   if (minPower !== null || maxPower !== null) {
-    if (!specs) return false;
-    const powerVal =
-      typeof specs.power === "number"
-        ? specs.power
-        : typeof specs.powerKva === "number"
-          ? specs.powerKva
-          : typeof specs.powerKw === "number"
-            ? specs.powerKw
-            : null;
+    const powerVal = product.powerKva
+      ? parseFloat(product.powerKva)
+      : product.powerKw
+        ? parseFloat(product.powerKw)
+        : null;
 
     if (minPower !== null && (powerVal === null || powerVal < minPower)) {
       return false;
@@ -188,28 +182,21 @@ function matchesSpecsBase(
     }
   }
 
-  if (activeFilters.voltage !== null) {
-    if (!specs) return false;
-    const voltageVal = typeof specs.voltage === "number" ? specs.voltage : null;
-    if (voltageVal !== activeFilters.voltage) {
+  if (activeFilters.voltage !== null && product.voltage) {
+    const voltageVal = parseInt(product.voltage.replace(/[^\d]/g, ""), 10);
+    if (!isNaN(voltageVal) && voltageVal !== activeFilters.voltage) {
       return false;
     }
   }
 
-  if (activeFilters.engineBrand) {
-    if (!specs) return false;
-    const engineBrandVal =
-      typeof specs.engineBrand === "string" ? specs.engineBrand : "";
-    const pEngine = engineBrandVal.toLowerCase();
+  if (activeFilters.engineBrand && product.engineBrand) {
+    const pEngine = product.engineBrand.toLowerCase();
     const filterEngine = activeFilters.engineBrand.toLowerCase();
     if (!pEngine.includes(filterEngine)) return false;
   }
 
-  if (activeFilters.alternatorBrand) {
-    if (!specs) return false;
-    const alternatorBrandVal =
-      typeof specs.alternatorBrand === "string" ? specs.alternatorBrand : "";
-    const pAlt = alternatorBrandVal.toLowerCase();
+  if (activeFilters.alternatorBrand && product.alternatorBrand) {
+    const pAlt = product.alternatorBrand.toLowerCase();
     const filterAlt = activeFilters.alternatorBrand.toLowerCase();
     if (!pAlt.includes(filterAlt)) return false;
   }
@@ -224,10 +211,10 @@ function matchesSearch(
   if (!q) return true;
   const searchLower = q.toLowerCase();
   const nameMatch = product.name.toLowerCase().includes(searchLower);
-  const modelVal =
-    typeof product.specs?.model === "string" ? product.specs.model : "";
-  const modelMatch = modelVal.toLowerCase().includes(searchLower);
-  return nameMatch || modelMatch;
+  const slugMatch = product.slug
+    ? product.slug.toLowerCase().includes(searchLower)
+    : false;
+  return nameMatch || slugMatch;
 }
 
 function isMatchExcept(

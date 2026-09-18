@@ -32,9 +32,17 @@ export interface StorefrontCatalogMetadata {
 export interface StorefrontFilterMetadata {
   id: string;
   name: string;
+  slug?: string | null;
   categoryId: string | null;
   brandId: string | null;
-  specs: Record<string, unknown> | null;
+  powerKva?: string | null;
+  powerKw?: string | null;
+  phase?: string | null;
+  voltage?: string | null;
+  fuelType?: string | null;
+  canopyType?: string | null;
+  engineBrand?: string | null;
+  alternatorBrand?: string | null;
 }
 
 export function mapProductToStorefront(dto: ApiProduct): StorefrontProduct {

@@ -9,7 +9,6 @@ import type { Metadata } from "next";
 import { ProductImage } from "@/components";
 import { notFound } from "next/navigation";
 import type { Locale } from "next-intl";
-import { FUEL_TYPES, PHASES } from "@/features/products/types/catalog";
 import { AddToQuoteButton } from "@/features/quote";
 
 interface ProductPageParams {
@@ -17,17 +16,12 @@ interface ProductPageParams {
   slug: string;
 }
 
-const formatSpecs = (specs: StorefrontProduct["specs"]): string[] => {
-  if (typeof specs !== "object") return [];
-  const specsObj = specs as Record<
-    string,
-    string | number | boolean | null | undefined
-  >;
+const formatProductSpecs = (product: StorefrontProduct): string[] => {
   const specsArray: string[] = [];
-  if (specsObj.power) specsArray.push(`${String(specsObj.power)}kW`);
-  if (typeof specsObj.fuelType === "string") {
-    specsArray.push(specsObj.fuelType);
-  }
+  const rawPower = product.powerKw ?? product.powerKva;
+  if (rawPower) specsArray.push(`${rawPower}kW`);
+  if (product.fuelType) specsArray.push(product.fuelType);
+  if (product.phase) specsArray.push(product.phase);
   return specsArray;
 };
 export async function generateStaticParams(): Promise<ProductPageParams[]> {
@@ -64,30 +58,9 @@ export async function generateMetadata({
 
   return {
     title: product.name,
-    description: formatSpecs(product.specs).join(" • "),
+    description: formatProductSpecs(product).join(" • "),
   };
 }
-
-const ALLOWED_SPEC_KEYS = new Set([
-  "model",
-  "power",
-  "voltage",
-  "frequency",
-  "phase",
-  "fuelType",
-  "warranty",
-  "weight",
-  "engineBrand",
-  "startingSystem",
-  "coolingSystem",
-  "fuelConsumption",
-  "fuelTankCapacity",
-  "alternatorBrand",
-]);
-
-const ALLOWED_FUEL_TYPES = new Set<string>(FUEL_TYPES);
-const ALLOWED_PHASES = new Set<string>(PHASES);
-
 export default function ProductDetailsPage({
   params,
 }: {
@@ -132,13 +105,15 @@ async function ProductDetailsPageContent({
         <h1 className="text-foreground text-2xl font-bold sm:text-3xl">
           {product.name}
         </h1>
-        <p className="text-muted-foreground text-lg">
-          {typeof product.specs.model === "string"
-            ? product.specs.model
-            : "Unknown"}
-        </p>
+        {product.specSheet && (
+          <p className="text-muted-foreground text-lg">
+            {product.specSheet
+              .flatMap((g) => g.items)
+              .find((i) => i.key === "model")?.value ?? ""}
+          </p>
+        )}
         <div className="flex flex-wrap gap-2">
-          {formatSpecs(product.specs).map((spec) => (
+          {formatProductSpecs(product).map((spec) => (
             <span
               key={`${product.id}-${spec}`}
               className="bg-muted rounded-md px-3 py-1 text-sm font-semibold"
@@ -207,41 +182,30 @@ async function ProductDetailsPageContent({
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
-              {Object.entries(
-                (product.specs as
-                  | Record<string, string | number | boolean | null | undefined>
-                  | null
-                  | undefined) ?? {},
-              ).map(([key, value]) => {
-                if (value === null || value === undefined || value === "")
-                  return null;
-
-                if (!ALLOWED_SPEC_KEYS.has(key)) return null;
-                const label = t(`specs.${key}` as never);
-
-                let displayValue = String(value);
-                if (key === "fuelType" && typeof value === "string") {
-                  displayValue = ALLOWED_FUEL_TYPES.has(value)
-                    ? t(`fuelTypes.${value}` as never)
-                    : String(value);
-                } else if (key === "phase" && typeof value === "string") {
-                  displayValue = ALLOWED_PHASES.has(value)
-                    ? t(`phases.${value}` as never)
-                    : String(value);
-                }
-
-                return (
-                  <div
-                    key={key}
-                    className="flex justify-between border-b pb-2 text-sm"
-                  >
-                    <span className="text-muted-foreground">{label}</span>
-                    <span className="text-foreground font-semibold">
-                      {displayValue}
-                    </span>
-                  </div>
-                );
-              })}
+              {product.powerKva && (
+                <div className="flex justify-between border-b pb-2 text-sm">
+                  <span className="text-muted-foreground">Công suất (kVA)</span>
+                  <span className="text-foreground font-semibold">
+                    {product.powerKva} kVA
+                  </span>
+                </div>
+              )}
+              {product.voltage && (
+                <div className="flex justify-between border-b pb-2 text-sm">
+                  <span className="text-muted-foreground">Điện áp</span>
+                  <span className="text-foreground font-semibold">
+                    {product.voltage}
+                  </span>
+                </div>
+              )}
+              {product.fuelType && (
+                <div className="flex justify-between border-b pb-2 text-sm">
+                  <span className="text-muted-foreground">Nhiên liệu</span>
+                  <span className="text-foreground font-semibold">
+                    {product.fuelType}
+                  </span>
+                </div>
+              )}
             </div>
           )}
         </div>
