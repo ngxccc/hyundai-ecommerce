@@ -48,8 +48,8 @@ export const companyLinksSchema = z.object({
 
 export const companyBankSchema = z.object({
   bankName: zSanitizedString({ min: 2, max: 100 }),
-  branchVi: zSanitizedString({ min: 2, max: 150 }),
-  branchEn: zSanitizedString({ min: 2, max: 150 }),
+  branchVi: zSanitizedString({ max: 150 }).optional(),
+  branchEn: zSanitizedString({ max: 150 }).optional(),
   accountNo: zSanitizedString({ min: 4, max: 50 }),
   accountName: zSanitizedString({ min: 2, max: 150 }),
   bin: zSanitizedString({ min: 2, max: 50 }),

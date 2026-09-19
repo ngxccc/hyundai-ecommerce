@@ -34,6 +34,7 @@ export interface SeedOptions {
 export interface SeedSummary {
   dealerTiers: number;
   users: number;
+  companySettings: number;
   brands: number;
   categories: number;
   products: number;
@@ -60,6 +61,7 @@ export type SeededUserRef = Pick<
 export interface Tier1SeedResult {
   dealerTiers: SeededDealerTierRef[];
   users: SeededUserRef[];
+  companySettings?: { id: string }[];
 }
 
 export type SeededBrandRef = Pick<Brand, "id" | "name" | "slug">;

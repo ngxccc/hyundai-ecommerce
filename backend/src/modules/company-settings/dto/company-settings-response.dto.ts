@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createZodDto } from "@/common/dto";
-import { zDate } from "@/common/schemas/zod-primitives";
+import { zCoerceDate } from "@/common/schemas/zod-primitives";
 import {
   companyAddressesSchema,
   companyBankSchema,
@@ -36,7 +36,7 @@ export const companySettingsResponseSchema = z.object({
   workingHours: companyWorkingHoursSchema,
   links: companyLinksSchema,
   bank: companyBankSchema,
-  updatedAt: zDate(),
+  updatedAt: zCoerceDate(),
 });
 
 export type CompanySettingsResponseDtoType = z.infer<

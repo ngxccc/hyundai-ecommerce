@@ -24,6 +24,7 @@ export async function seedDatabase(options: SeedOptions): Promise<SeedSummary> {
   const summary: SeedSummary = {
     dealerTiers: 0,
     users: 0,
+    companySettings: 0,
     brands: 0,
     categories: 0,
     products: 0,
@@ -44,10 +45,19 @@ export async function seedDatabase(options: SeedOptions): Promise<SeedSummary> {
 
     let tier1Result: Tier1SeedResult | undefined;
 
-    if (isScopeActive(normalizedScopes, "reference", "dealer-tiers", "users")) {
+    if (
+      isScopeActive(
+        normalizedScopes,
+        "reference",
+        "dealer-tiers",
+        "users",
+        "company-settings",
+      )
+    ) {
       tier1Result = await seedTier1Reference(options.db, normalizedScopes);
       summary.dealerTiers = tier1Result.dealerTiers.length;
       summary.users = tier1Result.users.length;
+      summary.companySettings = tier1Result.companySettings?.length ?? 0;
     }
 
     let tier2Result: Tier2SeedResult | undefined;

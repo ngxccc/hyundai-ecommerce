@@ -73,6 +73,10 @@ export async function seedTier1Reference(
       .insert(companySettings)
       .values(rawCompanySettings)
       .onConflictDoNothing();
+
+    result.companySettings = await db
+      .select({ id: companySettings.id })
+      .from(companySettings);
   }
   return result;
 }

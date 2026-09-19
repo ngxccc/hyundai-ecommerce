@@ -142,6 +142,7 @@ async function main(): Promise<void> {
     console.table({
       "Dealer Tiers (Tier 1)": { Count: summary.dealerTiers },
       "System & B2B Users (Tier 1)": { Count: summary.users },
+      "Company Settings (Tier 1)": { Count: summary.companySettings },
       "Brands (Tier 2)": { Count: summary.brands },
       "Categories (Tier 2)": { Count: summary.categories },
       "Products (Tier 2)": { Count: summary.products },
