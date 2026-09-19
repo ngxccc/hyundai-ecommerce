@@ -254,6 +254,10 @@
     },
     "filters": {
       "searchPlaceholder": "Tìm kiếm theo model hoặc tên...",
+      "filterButton": "Bộ lọc",
+      "filterTitle": "Bộ lọc nâng cao",
+      "filterDescription": "Tìm kiếm và tinh chỉnh danh sách sản phẩm.",
+      "applyFilters": "Áp dụng",
       "resetFilters": "Xoá bộ lọc",
       "allCategories": "Tất cả danh mục",
       "status": "Trạng thái",

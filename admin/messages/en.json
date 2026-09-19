@@ -254,6 +254,10 @@
     },
     "filters": {
       "searchPlaceholder": "Search model or name...",
+      "filterButton": "Filters",
+      "filterTitle": "Advanced Filters",
+      "filterDescription": "Filter and refine the product catalog.",
+      "applyFilters": "Apply",
       "resetFilters": "Reset Filters",
       "allCategories": "All Categories",
       "status": "Status",

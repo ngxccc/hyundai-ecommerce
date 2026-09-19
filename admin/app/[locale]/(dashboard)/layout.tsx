@@ -26,7 +26,7 @@ export default function DashboardLayout({
             <Separator orientation="vertical" className="mr-2 h-4" />
           </div>
         </header>
-        <div className="flex flex-1 flex-col overflow-y-auto p-1 md:p-2 lg:p-4">
+        <div className="flex flex-1 flex-col overflow-y-auto p-3 sm:p-4 md:p-5 lg:p-6">
           <div className="flex min-h-0 w-full flex-1 flex-col">{children}</div>
         </div>
       </SidebarInset>

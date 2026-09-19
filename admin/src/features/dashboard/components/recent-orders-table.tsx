@@ -51,11 +51,11 @@ export async function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
   const t = await getTranslations("adminDashboard.recentOrders");
   return (
     <Card className="gap-0 overflow-hidden py-0 shadow-sm">
-      <div className="border-border/50 bg-card flex flex-col items-start justify-between gap-4 border-b px-4 py-4 min-[400px]:flex-row sm:items-center">
+      <div className="border-border/50 bg-card flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3.5">
         <h3 className="text-foreground text-base font-semibold">
           {t("title")}
         </h3>
-        <div className="flex gap-2 sm:w-auto">
+        <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
