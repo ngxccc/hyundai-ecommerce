@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "cdn.example.com" },
     ],
   },
+  reactCompiler: true,
   cacheComponents: true,
 
   experimental: {
