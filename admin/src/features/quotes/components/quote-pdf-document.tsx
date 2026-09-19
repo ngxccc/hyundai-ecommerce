@@ -1,7 +1,6 @@
 import { Document, Page, View, Text } from "@react-pdf/renderer";
-import { companyConfig } from "@/config/company";
 import { formatCurrencyWords } from "@/lib/utils";
-import type { AdminQuote } from "@/types/api";
+import type { AdminQuote, AdminCompanySettings } from "@/types/api";
 import {
   styles,
   QuotePdfHeader,
@@ -16,6 +15,7 @@ import {
 
 export interface QuotePdfDocumentProps {
   quote: AdminQuote;
+  company: AdminCompanySettings;
   includeAppendix?: boolean;
   locale?: PdfLocale;
 }
@@ -26,10 +26,11 @@ export interface QuotePdfDocumentProps {
  */
 export const QuotePdfDocument = ({
   quote,
+  company,
   includeAppendix = true,
   locale = "vi",
 }: QuotePdfDocumentProps) => {
-  const dict = getPdfDictionary(locale);
+  const dict = getPdfDictionary(locale, company);
   const terms = quote.commercialTerms;
   const subtotal = parseFloat(quote.subtotalPrice ?? "0");
   const vatRate = quote.vatRate ?? 10;
@@ -50,7 +51,7 @@ export const QuotePdfDocument = ({
   return (
     <Document
       title={`${dict.documentTitle} ${quoteNo} - ${dict.companyName}`}
-      author={companyConfig.brandFullName}
+      author={dict.companyBrandTitle}
       subject={`${dict.documentTitle} #${quoteNo}`}
     >
       <Page size="A4" style={styles.page}>

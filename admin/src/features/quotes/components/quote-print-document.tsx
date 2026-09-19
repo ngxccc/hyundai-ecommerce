@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { AdminQuote } from "@/types/api";
+import type { AdminQuote, AdminCompanySettings } from "@/types/api";
 import { QuotePdfDocument } from "./quote-pdf-document";
 import type { PdfLocale } from "./quote-pdf";
 
@@ -29,9 +29,13 @@ const PDFViewer = dynamic(
 
 export interface QuotePrintDocumentProps {
   quote: AdminQuote;
+  company: AdminCompanySettings;
 }
 
-export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
+export const QuotePrintDocument = ({
+  quote,
+  company,
+}: QuotePrintDocumentProps) => {
   const t = useTranslations("adminQuotes");
   const activeLocale = useLocale();
   const router = useRouter();
@@ -58,6 +62,7 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
       const blob = await pdf(
         <QuotePdfDocument
           quote={quote}
+          company={company}
           includeAppendix={includeAppendix}
           locale={pdfLocale}
         />,
@@ -86,12 +91,14 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
       const blob = await pdf(
         <QuotePdfDocument
           quote={quote}
+          company={company}
           includeAppendix={includeAppendix}
           locale={pdfLocale}
         />,
       ).toBlob();
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
+      setTimeout(() => URL.revokeObjectURL(url), 300000);
     } catch (error) {
       console.error("[QuotePrintDocument] Failed to open PDF tab:", error);
       toast.error(t("printDocument.openPdfTabError"));
@@ -223,6 +230,7 @@ export const QuotePrintDocument = ({ quote }: QuotePrintDocumentProps) => {
             >
               <QuotePdfDocument
                 quote={quote}
+                company={company}
                 includeAppendix={includeAppendix}
                 locale={pdfLocale}
               />

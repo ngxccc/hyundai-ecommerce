@@ -62,13 +62,13 @@ export function Combobox({
             type="button"
             disabled={disabled}
             className={cn(
-              "border-input focus-visible:border-ring focus-visible:ring-ring/50 data-[placeholder]:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+              "border-input focus-visible:border-ring focus-visible:ring-ring/50 data-[placeholder]:text-muted-foreground dark:bg-input/30 dark:hover:bg-input/50 flex h-auto min-h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 py-2 text-left text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
               !selectedOption && "text-muted-foreground",
               triggerClassName,
             )}
             aria-expanded={open}
           >
-            <span className="truncate text-left text-sm">
+            <span className="flex-1 text-left text-sm leading-snug break-words">
               {selectedOption ? selectedOption.label : placeholder}
             </span>
             <ChevronsUpDown className="text-muted-foreground ml-2 size-4 shrink-0 opacity-50" />
@@ -78,7 +78,7 @@ export function Combobox({
         <PopoverContent
           align="start"
           sideOffset={4}
-          className="w-[var(--radix-popover-trigger-width)] max-w-sm min-w-[200px] p-0 shadow-md"
+          className="w-[var(--radix-popover-trigger-width)] min-w-[240px] p-0 shadow-md"
         >
           <Command filter={filter}>
             <CommandInput
@@ -100,7 +100,9 @@ export function Combobox({
                       }}
                       className="cursor-pointer text-xs"
                     >
-                      <span className="truncate">{opt.label}</span>
+                      <span className="flex-1 text-left leading-snug break-words">
+                        {opt.label}
+                      </span>
                       <Check
                         className={cn(
                           "ml-auto size-4",

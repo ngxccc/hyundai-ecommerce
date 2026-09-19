@@ -1,5 +1,4 @@
 import { View, Text, Image } from "@react-pdf/renderer";
-import { companyConfig } from "@/config/company";
 import type { QuoteCommercialTerms } from "@/types/api";
 import { styles, TEXT_MUTED } from "./quote-pdf.styles";
 import { generateVietQrUrl } from "./quote-pdf.helpers";
@@ -29,8 +28,11 @@ export const QuotePdfTermsBank = ({
 }: QuotePdfTermsBankProps) => {
   // Standard B2B contractual policy mandates 30% initial deposit for equipment reservation
   const depositAmount = grandTotal * 0.3;
-  const vietQrUrl = generateVietQrUrl(quoteNo, depositAmount);
-
+  const vietQrUrl = generateVietQrUrl(quoteNo, depositAmount, {
+    bin: dict.bankBin,
+    accountNo: dict.bankAccountNo,
+    qrTemplate: dict.bankQrTemplate,
+  });
   return (
     <>
       <Text style={styles.sectionHeading}>{dict.termsSectionTitle}</Text>
@@ -75,17 +77,17 @@ export const QuotePdfTermsBank = ({
               {dict.bankBeneficiaryLabel}
             </Text>
             {"\n"}
-            {companyConfig.bank.accountName}
+            {dict.bankAccountName}
           </Text>
           <Text style={styles.bankItem}>
             <Text style={styles.companyHighlight}>
               {dict.bankAccountNoLabel}{" "}
             </Text>
-            {companyConfig.bank.accountNo}
+            {dict.bankAccountNo}
           </Text>
           <Text style={styles.bankItem}>
             <Text style={styles.companyHighlight}>{dict.bankNameLabel} </Text>
-            {companyConfig.bank.bankName} ({dict.bankBranch})
+            {dict.bankName} ({dict.bankBranch})
           </Text>
           <Text style={styles.bankItem}>
             <Text style={styles.companyHighlight}>{dict.bankMemoLabel} </Text>

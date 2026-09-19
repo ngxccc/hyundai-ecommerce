@@ -74,7 +74,7 @@
     "helpdeskTitle": "Hỗ trợ Khôi phục Tài khoản Quản trị",
     "helpdeskDesc": "Đây là hệ thống quản trị nội bộ bảo mật cao. Để khôi phục mật khẩu hoặc cấp lại quyền truy cập, vui lòng liên hệ trực tiếp Bộ phận Kỹ thuật / Quản trị viên cấp cao (Super Admin).",
     "helpdeskEmail": "Email hỗ trợ: {email}",
-    "helpdeskHotline": "Hotline kỹ thuật: {hotlineHcm} (HCM) / {hotlineHn} (HN)",
+    "helpdeskHotline": "Hotline hỗ trợ: {hotline}",
     "close": "Đóng",
     "copyright": "© {year} {company}. Tất cả các quyền được bảo lưu.",
     "consoleFootnote": "Enterprise Admin Console {version} • TLS 256-bit Encrypted",
@@ -126,7 +126,8 @@
       "groups": {
         "overview": "Tổng quan",
         "catalog": "Catalog & Kho hàng",
-        "sales": "Kinh doanh & B2B"
+        "sales": "Kinh doanh & B2B",
+        "settings": "Cài đặt hệ thống"
       },
       "overview": "Bảng điều khiển",
       "products": "Sản phẩm",
@@ -136,7 +137,8 @@
       "warehouses": "Kho & Tồn kho",
       "categories": "Danh mục",
       "brands": "Thương hiệu",
-      "quotes": "Báo giá"
+      "quotes": "Báo giá",
+      "companySettings": "Thông tin công ty"
     },
     "quickSearch": "Tìm kiếm...",
     "command": {
@@ -209,6 +211,38 @@
       "light": "Sáng",
       "dark": "Tối",
       "system": "Hệ thống"
+    },
+    "settingsDialog": {
+      "title": "Cài đặt",
+      "description": "Tùy chỉnh tài khoản và giao diện cá nhân.",
+      "generalGroup": "Cài đặt chung",
+      "close": "Đóng",
+      "tabs": {
+        "profile": "Tài khoản",
+        "appearance": "Giao diện",
+        "language": "Ngôn ngữ",
+        "security": "Bảo mật"
+      },
+      "profile": {
+        "name": "Họ và tên",
+        "email": "Email",
+        "role": "Quyền hạn",
+        "badgeAdmin": "Quản trị viên"
+      },
+      "appearance": {
+        "light": "Giao diện sáng",
+        "dark": "Giao diện tối",
+        "system": "Theo hệ thống"
+      },
+      "language": {
+        "vi": "Tiếng Việt",
+        "en": "English",
+        "active": "Đang dùng",
+        "select": "Chuyển sang"
+      },
+      "security": {
+        "notice": "Hệ thống quản trị bảo mật cao. Để thay đổi mật khẩu hoặc phân quyền tài khoản, vui lòng liên hệ Super Admin."
+      }
     }
   },
   "adminProducts": {
@@ -770,6 +804,7 @@
     "warehouseNotFound": "Không tìm thấy kho",
     "updateWarehouseStockFailed": "Cập nhật tồn kho thất bại",
     "default": "Đã xảy ra lỗi không xác định",
+    "serverConnectionError": "Không thể kết nối đến máy chủ Backend. Vui lòng kiểm tra lại dịch vụ.",
     "loginFailed": "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.",
     "INVALID_CREDENTIALS": "Tài khoản hoặc mật khẩu không đúng",
     "EMAIL_NOT_VERIFIED": "Email chưa được xác minh",
@@ -1265,7 +1300,107 @@
       "downloadPdfSuccess": "Đã tạo file PDF thành công",
       "downloadPdfError": "Không thể tạo file PDF. Vui lòng thử lại.",
       "openPdfTabError": "Không thể mở file PDF trong tab mới. Vui lòng thử lại.",
-      "individualCustomer": "Khách hàng cá nhân"
+      "individualCustomer": "Khách hàng cá nhân",
+      "noCompanyTitle": "Chưa cấu hình thông tin công ty",
+      "noCompanyDescription": "Không thể xuất tài liệu báo giá vì hệ thống chưa có thông tin pháp lý và tài khoản ngân hàng để in ấn.",
+      "configureCompanyBtn": "Cấu hình thông tin công ty ngay"
     }
+  },
+  "adminCompanySettings": {
+    "metaTitle": "Cấu hình thông tin công ty | Hyundai Admin",
+    "header": {
+      "title": "Cấu hình thông tin công ty",
+      "description": "Quản lý tên pháp lý, mã số thuế, hotline, địa chỉ kho và thông tin tài khoản ngân hàng dùng chung trên toàn hệ thống."
+    },
+    "breadcrumbs": {
+      "settings": "Cài đặt hệ thống",
+      "company": "Thông tin công ty"
+    },
+    "notice": {
+      "notConfiguredTitle": "Hệ thống chưa có thông tin công ty.",
+      "notConfiguredDescription": "Vui lòng điền thông tin bên dưới và bấm Lưu thay đổi để khởi tạo dữ liệu ban đầu.",
+      "serverErrorTitle": "Không thể kết nối đến máy chủ Backend.",
+      "serverErrorDescription": "Hệ thống không thể tải dữ liệu cấu hình từ máy chủ (Port 3000). Vui lòng kiểm tra xem dịch vụ Backend đã được khởi động chưa."
+    },
+    "lastUpdated": "Lần cập nhật gần nhất:",
+    "tabs": {
+      "vi": "Tiếng Việt",
+      "en": "Tiếng Anh"
+    },
+    "sections": {
+      "legal": "Pháp lý & Thương hiệu",
+      "legalDesc": "Tên doanh nghiệp trên hợp đồng, báo giá PDF/Excel và hóa đơn thương mại.",
+      "hotlines": "Kênh Hotline & Hỗ trợ",
+      "hotlinesDesc": "Số điện thoại hiển thị trên Header, Footer, Báo giá và Nút gọi nhanh.",
+      "emails": "Hộp thư điện tử (Emails)",
+      "emailsDesc": "Địa chỉ email tiếp nhận báo giá, hỗ trợ kỹ thuật và liên hệ chung.",
+      "addresses": "Địa chỉ trụ sở & Kho hàng",
+      "addressesDesc": "Địa chỉ văn phòng giao dịch và vị trí kho xuất hàng.",
+      "workingHours": "Thời gian làm việc & Liên kết",
+      "workingHoursDesc": "Khung giờ hỗ trợ khách hàng và các kênh mạng xã hội.",
+      "bank": "Thông tin thanh toán ngân hàng",
+      "bankDesc": "Tài khoản thụ hưởng doanh nghiệp và mẫu mã QR VietQR."
+    },
+    "subsections": {
+      "projectHotline": "Hotline Dự án & Báo giá B2B",
+      "technicalHotline": "Hotline Hỗ trợ Kỹ thuật 24/7",
+      "generalHotline": "Hotline Tổng đài chung"
+    },
+    "fields": {
+      "legalNameVi": "Tên pháp lý",
+      "legalNameEn": "Tên pháp lý quốc tế",
+      "taxId": "Mã số thuế",
+      "shortName": "Tên viết tắt",
+      "brandName": "Tên thương hiệu",
+      "brandTitle": "Tiêu đề thương hiệu",
+      "brandFullName": "Tên thương hiệu đầy đủ",
+      "hotlineRaw": "Số quay tự động",
+      "hotlineDisplay": "Số hiển thị",
+      "hotlineFormatted": "Số định dạng quốc tế",
+      "hotlineLabel": "Nhãn hiển thị hotline",
+      "hotlineLabelVi": "Nhãn hotline",
+      "hotlineLabelEn": "Nhãn hotline quốc tế",
+      "salesEmail": "Email phòng Kinh doanh / Báo giá",
+      "projectEmail": "Email phòng Dự án",
+      "supportEmail": "Email Hỗ trợ Kỹ thuật & Bảo hành",
+      "generalEmail": "Email Liên hệ Chung",
+      "hqAddress": "Địa chỉ Trụ sở chính",
+      "hqVi": "Địa chỉ Trụ sở chính",
+      "hqEn": "Địa chỉ Trụ sở chính",
+      "warehouseAddress": "Địa chỉ Tổng kho",
+      "warehouseVi": "Địa chỉ Tổng kho",
+      "warehouseEn": "Địa chỉ Tổng kho",
+      "workingHours": "Thời gian làm việc",
+      "workingHoursVi": "Thời gian làm việc",
+      "workingHoursEn": "Thời gian làm việc",
+      "website": "Website chính thức",
+      "zalo": "Liên kết Zalo OA",
+      "facebook": "Liên kết Facebook Fanpage",
+      "bankName": "Tên ngân hàng thụ hưởng",
+      "selectBank": "Chọn ngân hàng thụ hưởng...",
+      "searchBank": "Tìm kiếm theo tên hoặc mã ngân hàng (VCB, MB, ACB...)",
+      "emptyBank": "Không tìm thấy ngân hàng phù hợp",
+      "branch": "Chi nhánh ngân hàng (Tùy chọn)",
+      "branchVi": "Chi nhánh ngân hàng (Tùy chọn)",
+      "branchEn": "Chi nhánh ngân hàng (Tùy chọn)",
+      "accountNo": "Số tài khoản",
+      "accountName": "Tên chủ tài khoản thụ hưởng",
+      "bin": "Mã định danh ngân hàng (BIN)",
+      "qrTemplate": "Mẫu giao diện VietQR"
+    },
+    "buttons": {
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu..."
+    },
+    "messages": {
+      "successUpdate": "Cập nhật thông tin công ty thành công!",
+      "error": "Không thể cập nhật cấu hình công ty",
+      "unexpectedError": "Đã xảy ra lỗi khi gửi yêu cầu cập nhật"
+    }
+  },
+  "errorPage": {
+    "title": "Đã xảy ra lỗi ngoài ý muốn!",
+    "description": "Không thể kết nối đến máy chủ hoặc đã phát sinh lỗi trong quá trình tải dữ liệu. Vui lòng thử lại hoặc kiểm tra dịch vụ máy chủ.",
+    "retryButton": "Thử lại"
   }
 }

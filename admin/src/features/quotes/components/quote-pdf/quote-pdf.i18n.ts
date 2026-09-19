@@ -1,4 +1,4 @@
-import { companyConfig } from "@/config/company";
+import type { AdminCompanySettings } from "@/types/api";
 
 export type PdfLocale = "vi" | "en";
 
@@ -15,8 +15,18 @@ export interface QuotePdfDictionary {
   websiteLabel: string;
   officePrefix: string;
   companyName: string;
+  companyBrandTitle: string;
   companyAddress: string;
+  companyHotline: string;
+  companyEmail: string;
+  companyTaxId: string;
+  companyWebsite: string;
+  bankName: string;
   bankBranch: string;
+  bankAccountNo: string;
+  bankAccountName: string;
+  bankBin: string;
+  bankQrTemplate: string;
 
   // Customer Card
   customerSectionTitle: string;
@@ -101,8 +111,134 @@ export interface QuotePdfDictionary {
   footerPage: (page: number | string, total: number | string) => string;
 }
 
-const DICTIONARIES: Record<PdfLocale, QuotePdfDictionary> = {
-  vi: {
+/**
+ * Resolves the quotation PDF localization dictionary for the requested locale and company configuration.
+ *
+ * @param locale - Supported language code ("vi" | "en")
+ * @param company - Dynamic company configuration from database
+ * @returns Localized dictionary strings
+ */
+export function getPdfDictionary(
+  locale: string | null | undefined,
+  company: AdminCompanySettings,
+): QuotePdfDictionary {
+  const comp = company;
+  const norm = (locale ?? "vi").toLowerCase();
+  const isEn = norm.startsWith("en");
+
+  if (isEn) {
+    return {
+      documentTitle: "EQUIPMENT QUOTATION",
+      quoteNumberLabel: "Quotation No.",
+      issueDateLabel: "Issue Date",
+      validityLabel: "Validity",
+      validityDaysUnit: "days",
+      validityUntilPrefix: "until",
+      hotlineLabel: "Hotline",
+      emailLabel: "Email",
+      taxIdLabel: "Tax ID",
+      websiteLabel: "Website",
+      officePrefix: "Office",
+      companyName: comp.legalNameEn,
+      companyBrandTitle: comp.brandTitle,
+      companyAddress: comp.addresses.headquarters.en,
+      companyHotline: comp.hotlines.project.display,
+      companyEmail: comp.emails.support,
+      companyTaxId: comp.taxId,
+      companyWebsite: comp.links.website,
+      bankName: comp.bank.bankName,
+      bankBranch: comp.bank.branchEn,
+      bankAccountNo: comp.bank.accountNo,
+      bankAccountName: comp.bank.accountName,
+      bankBin: comp.bank.bin,
+      bankQrTemplate: comp.bank.qrTemplate,
+
+      customerSectionTitle: "CUSTOMER",
+      attentionLabel: "Attention",
+      phoneLabel: "Phone",
+      companyLabel: "Company",
+      individualCustomer: "Retail Customer",
+      deliveryAddressLabel: "Delivery Location",
+      defaultDeliveryAddress: "Buyer's designated warehouse or project site",
+
+      itemsSectionTitle: "I. EQUIPMENT LIST & PRICING DETAILS",
+      colIndex: "#",
+      colItemName: "Item Description",
+      colModel: "Model",
+      colUnit: "Unit",
+      colQuantity: "Qty",
+      colUnitPrice: "Unit Price (VND)",
+      colTotalPrice: "Total Price (VND)",
+      discountBadge: (discount, original) =>
+        `Incl. ${discount}% Disc. (List: ${original})`,
+      subtotalLabel: "Subtotal before VAT:",
+      vatLabel: (rate) => `Value Added Tax (VAT ${rate}%):`,
+      grandTotalLabel: "GRAND TOTAL AMOUNT:",
+      amountInWordsLabel: "Amount in words:",
+
+      termsSectionTitle: "II. COMMERCIAL TERMS & PAYMENT DETAILS",
+      termDeliveryTimeLabel: "1. Delivery Lead Time:",
+      termDeliveryTimeDefault:
+        "Within 01 - 03 business days upon initial deposit receipt.",
+      termDeliveryLocationLabel: "2. Delivery & Commissioning:",
+      termDeliveryLocationDefault:
+        "Delivered and commissioned on-site at Buyer's location.",
+      termPaymentScheduleLabel: "3. Payment Milestones:",
+      termPaymentScheduleDefault:
+        "30% initial contract deposit, 70% remaining balance prior to handover.",
+      termWarrantyLabel: "4. Warranty Policy:",
+      termWarrantyDefault: `12 months or 1,000 running hours official manufacturer warranty under ${comp.brandName} standards.`,
+      termTechnicalNotesLabel: "5. Technical Notes:",
+      bankBoxTitle: "BANK ACCOUNT DETAILS",
+      bankBeneficiaryLabel: "Beneficiary:",
+      bankAccountNoLabel: "Account No.:",
+      bankNameLabel: "Bank:",
+      bankMemoLabel: "Memo:",
+      bankQrCaption:
+        "Scan VietQR with any mobile banking app for instant deposit transfer",
+
+      signBuyerTitle: "BUYER REPRESENTATIVE",
+      signBuyerSubtitle: "(Signature, Full Name & Company Stamp)",
+      signPreparerTitle: "QUOTATION PREPARER",
+      signPreparerSubtitle: "(Signature & Full Name)",
+      signPreparerRole: "Commercial Executive",
+      signSellerTitle: "SELLER REPRESENTATIVE",
+      signSellerRole: "MANAGING DIRECTOR / LEGAL REPRESENTATIVE",
+
+      appendixHeading: "APPENDIX: TECHNICAL SPECIFICATIONS",
+      appendixSubtitle: (quoteNo) =>
+        `Attached to Quotation No.: ${quoteNo} | Genuine ${comp.brandName} Quality Standards`,
+      specRatedOutput: "Rated Output:",
+      specVoltageFreq: "Voltage / Frequency:",
+      specPhasePowerFactor: "Phase / Power Factor:",
+      specFuelConsumption: "Fuel & Consumption:",
+      specFuelTank: "Fuel Tank Capacity:",
+      specEngine: "Engine:",
+      specAlternator: "Alternator:",
+      specNoiseLevel: "Noise Level:",
+      specDimensions: "Dimensions (L x W x H):",
+      specDryWeight: "Dry Weight:",
+      specStandardPower: "Standard",
+      specStandardChassis: "Integrated skid base",
+      specStandardFuel: "Standard",
+
+      specTopology: "Topology / Tech:",
+      specTopologyDefault: "True Online Double Conversion (DSP Control)",
+      specInputOutput: "Input / Output Voltage:",
+      specTransferTime: "Transfer Time:",
+      specTransferTimeZero: "0 ms (Zero Transfer Time)",
+      specBatteryType: "Battery Type:",
+      specBatteryDefault: "Maintenance-Free Sealed AGM-VRLA",
+
+      footerDocument: (quoteNo) =>
+        `${comp.brandFullName} - Quotation #${quoteNo}`,
+      footerAppendix: (quoteNo) =>
+        `${comp.brandFullName} - Technical Appendix #${quoteNo}`,
+      footerPage: (page, total) => `Page ${page} of ${total}`,
+    };
+  }
+
+  return {
     documentTitle: "BẢNG BÁO GIÁ THIẾT BỊ",
     quoteNumberLabel: "Số báo giá",
     issueDateLabel: "Ngày phát hành",
@@ -114,9 +250,19 @@ const DICTIONARIES: Record<PdfLocale, QuotePdfDictionary> = {
     taxIdLabel: "MST",
     websiteLabel: "Website",
     officePrefix: "VP",
-    companyName: companyConfig.legalNameVi,
-    companyAddress: companyConfig.addresses.headquarters.vi,
-    bankBranch: companyConfig.bank.branchVi,
+    companyName: comp.legalNameVi,
+    companyBrandTitle: comp.brandTitle,
+    companyAddress: comp.addresses.headquarters.vi,
+    companyHotline: comp.hotlines.project.display,
+    companyEmail: comp.emails.support,
+    companyTaxId: comp.taxId,
+    companyWebsite: comp.links.website,
+    bankName: comp.bank.bankName,
+    bankBranch: comp.bank.branchVi,
+    bankAccountNo: comp.bank.accountNo,
+    bankAccountName: comp.bank.accountName,
+    bankBin: comp.bank.bin,
+    bankQrTemplate: comp.bank.qrTemplate,
 
     customerSectionTitle: "KHÁCH HÀNG",
     attentionLabel: "Người nhận",
@@ -152,7 +298,7 @@ const DICTIONARIES: Record<PdfLocale, QuotePdfDictionary> = {
     termPaymentScheduleDefault:
       "Tạm ứng 30% khi ký hợp đồng, 70% còn lại trước khi bàn giao.",
     termWarrantyLabel: "4. Chính sách bảo hành:",
-    termWarrantyDefault: `Bảo hành chính hãng 12 tháng hoặc 1.000 giờ chạy theo tiêu chuẩn ${companyConfig.brandName}.`,
+    termWarrantyDefault: `Bảo hành chính hãng 12 tháng hoặc 1.000 giờ chạy theo tiêu chuẩn ${comp.brandName}.`,
     termTechnicalNotesLabel: "5. Ghi chú kỹ thuật:",
     bankBoxTitle: "TÀI KHOẢN THANH TOÁN",
     bankBeneficiaryLabel: "Đơn vị thụ hưởng:",
@@ -172,7 +318,7 @@ const DICTIONARIES: Record<PdfLocale, QuotePdfDictionary> = {
 
     appendixHeading: "PHỤ LỤC: THÔNG SỐ KỸ THUẬT THIẾT BỊ",
     appendixSubtitle: (quoteNo) =>
-      `Kèm theo Báo giá số: ${quoteNo} | Tiêu chuẩn chất lượng chính hãng ${companyConfig.brandName}`,
+      `Kèm theo Báo giá số: ${quoteNo} | Tiêu chuẩn chất lượng chính hãng ${comp.brandName}`,
     specRatedOutput: "Công suất định mức:",
     specVoltageFreq: "Điện áp / Tần số:",
     specPhasePowerFactor: "Số pha / Hệ số:",
@@ -195,122 +341,9 @@ const DICTIONARIES: Record<PdfLocale, QuotePdfDictionary> = {
     specBatteryType: "Ắc quy / Lưu điện:",
     specBatteryDefault: "Ắc quy AGM-VRLA chuyên dụng kín khí",
 
-    footerDocument: (quoteNo) =>
-      `${companyConfig.brandFullName} - Báo giá #${quoteNo}`,
+    footerDocument: (quoteNo) => `${comp.brandFullName} - Báo giá #${quoteNo}`,
     footerAppendix: (quoteNo) =>
-      `${companyConfig.brandFullName} - Phụ lục Kỹ thuật #${quoteNo}`,
+      `${comp.brandFullName} - Phụ lục Kỹ thuật #${quoteNo}`,
     footerPage: (page, total) => `Trang ${page} / ${total}`,
-  },
-  en: {
-    documentTitle: "EQUIPMENT QUOTATION",
-    quoteNumberLabel: "Quotation No.",
-    issueDateLabel: "Issue Date",
-    validityLabel: "Validity",
-    validityDaysUnit: "days",
-    validityUntilPrefix: "until",
-    hotlineLabel: "Hotline",
-    emailLabel: "Email",
-    taxIdLabel: "Tax ID",
-    websiteLabel: "Website",
-    officePrefix: "Office",
-    companyName: companyConfig.legalNameEn,
-    companyAddress: companyConfig.addresses.headquarters.en,
-    bankBranch: companyConfig.bank.branchEn,
-
-    customerSectionTitle: "CUSTOMER",
-    attentionLabel: "Attention",
-    phoneLabel: "Phone",
-    companyLabel: "Company",
-    individualCustomer: "Individual Customer",
-    deliveryAddressLabel: "Delivery Address",
-    defaultDeliveryAddress: "Buyer's jobsite or warehouse",
-
-    itemsSectionTitle: "I. EQUIPMENT SCHEDULE & PRICING DETAILS",
-    colIndex: "No.",
-    colItemName: "Item Description",
-    colModel: "Model Code",
-    colUnit: "Unit",
-    colQuantity: "Qty",
-    colUnitPrice: "Unit Price (VND)",
-    colTotalPrice: "Total Amount (VND)",
-    discountBadge: (discount, original) =>
-      `Incl. ${discount}% discount (Original: ${original})`,
-    subtotalLabel: "Subtotal (Excl. VAT):",
-    vatLabel: (rate) => `Value Added Tax (VAT ${rate}%):`,
-    grandTotalLabel: "GRAND TOTAL AMOUNT:",
-    amountInWordsLabel: "In words:",
-
-    termsSectionTitle: "II. COMMERCIAL TERMS & PAYMENT DETAILS",
-    termDeliveryTimeLabel: "1. Delivery Schedule:",
-    termDeliveryTimeDefault:
-      "Within 01 - 03 working days from receipt of advance deposit.",
-    termDeliveryLocationLabel: "2. Delivery Location:",
-    termDeliveryLocationDefault:
-      "Delivered and commissioned at Buyer's designated jobsite.",
-    termPaymentScheduleLabel: "3. Payment Terms:",
-    termPaymentScheduleDefault:
-      "30% advance upon contract signing, 70% prior to official handover.",
-    termWarrantyLabel: "4. Warranty Policy:",
-    termWarrantyDefault: `12 months or 1,000 running hours official manufacturer warranty under ${companyConfig.brandName} standards.`,
-    termTechnicalNotesLabel: "5. Technical Notes:",
-    bankBoxTitle: "BANK ACCOUNT DETAILS",
-    bankBeneficiaryLabel: "Beneficiary:",
-    bankAccountNoLabel: "Account No:",
-    bankNameLabel: "Bank:",
-    bankMemoLabel: "Reference Memo:",
-    bankQrCaption: "Scan VietQR via Mobile Banking for instant deposit payment",
-
-    signBuyerTitle: "BUYER REPRESENTATIVE",
-    signBuyerSubtitle: "(Sign, print full name & stamp)",
-    signPreparerTitle: "PREPARED BY",
-    signPreparerSubtitle: "(Sign & print full name)",
-    signPreparerRole: "Sales Specialist",
-    signSellerTitle: "SELLER REPRESENTATIVE",
-    signSellerRole: "MANAGING DIRECTOR / LEGAL REPRESENTATIVE",
-
-    appendixHeading: "APPENDIX: TECHNICAL SPECIFICATIONS",
-    appendixSubtitle: (quoteNo) =>
-      `Attached to Quotation No.: ${quoteNo} | Genuine ${companyConfig.brandName} Quality Standards`,
-    specRatedOutput: "Rated Output:",
-    specVoltageFreq: "Voltage / Frequency:",
-    specPhasePowerFactor: "Phase / Power Factor:",
-    specFuelConsumption: "Fuel & Consumption:",
-    specFuelTank: "Fuel Tank Capacity:",
-    specEngine: "Engine:",
-    specAlternator: "Alternator:",
-    specNoiseLevel: "Noise Level:",
-    specDimensions: "Dimensions (L x W x H):",
-    specDryWeight: "Dry Weight:",
-    specStandardPower: "Standard",
-    specStandardChassis: "Integrated skid base",
-    specStandardFuel: "Standard",
-
-    specTopology: "Topology / Tech:",
-    specTopologyDefault: "True Online Double Conversion (DSP Control)",
-    specInputOutput: "Input / Output Voltage:",
-    specTransferTime: "Transfer Time:",
-    specTransferTimeZero: "0 ms (Zero Transfer Time)",
-    specBatteryType: "Battery Type:",
-    specBatteryDefault: "Maintenance-Free Sealed AGM-VRLA",
-
-    footerDocument: (quoteNo) =>
-      `${companyConfig.brandFullName} - Quotation #${quoteNo}`,
-    footerAppendix: (quoteNo) =>
-      `${companyConfig.brandFullName} - Technical Appendix #${quoteNo}`,
-    footerPage: (page, total) => `Page ${page} of ${total}`,
-  },
-};
-
-/**
- * Resolves the quotation PDF localization dictionary for the requested locale.
- *
- * @param locale - Supported language code ("vi" | "en")
- * @returns Localized dictionary strings
- */
-export function getPdfDictionary(locale?: string | null): QuotePdfDictionary {
-  const norm = (locale ?? "vi").toLowerCase();
-  if (norm.startsWith("en")) {
-    return DICTIONARIES.en;
-  }
-  return DICTIONARIES.vi;
+  };
 }

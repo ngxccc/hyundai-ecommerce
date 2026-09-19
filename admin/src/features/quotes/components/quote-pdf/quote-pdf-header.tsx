@@ -1,5 +1,4 @@
 import { View, Text } from "@react-pdf/renderer";
-import { companyConfig } from "@/config/company";
 import { styles } from "./quote-pdf.styles";
 import { formatDateVn, resolveExpirationDate } from "./quote-pdf.helpers";
 import type { QuotePdfDictionary } from "./quote-pdf.i18n";
@@ -32,22 +31,20 @@ export const QuotePdfHeader = ({
   return (
     <View style={styles.headerRow}>
       <View style={styles.logoSection}>
-        <Text style={styles.companyBrand}>{companyConfig.brandTitle}</Text>
+        <Text style={styles.companyBrand}>{dict.companyBrandTitle}</Text>
         <Text style={styles.companyName}>{dict.companyName}</Text>
         <Text style={styles.companyDetails}>
           {dict.officePrefix}: {dict.companyAddress}
         </Text>
         <Text style={styles.companyDetails}>
           {dict.hotlineLabel}:{" "}
-          <Text style={styles.companyHighlight}>
-            {companyConfig.hotlines.project.display}
-          </Text>{" "}
-          | {dict.emailLabel}: {companyConfig.emails.support}
+          <Text style={styles.companyHighlight}>{dict.companyHotline}</Text> |{" "}
+          {dict.emailLabel}: {dict.companyEmail}
         </Text>
         <Text style={styles.companyDetails}>
           {dict.taxIdLabel}:{" "}
-          <Text style={styles.companyHighlight}>{companyConfig.taxId}</Text> |{" "}
-          {dict.websiteLabel}: {companyConfig.links.website}
+          <Text style={styles.companyHighlight}>{dict.companyTaxId}</Text> |{" "}
+          {dict.websiteLabel}: {dict.companyWebsite}
         </Text>
       </View>
 

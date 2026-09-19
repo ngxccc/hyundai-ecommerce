@@ -124,6 +124,20 @@ export const adminLoginAction = async (input: AdminLoginForm) => {
       return { success: false as const, error: error.problem.detail };
     }
 
+    if (
+      error instanceof Error &&
+      (error.message.includes("fetch failed") ||
+        error.message.includes("ECONNREFUSED") ||
+        error.message.includes("connect ECONNREFUSED") ||
+        ("code" in error &&
+          (error as { code?: string }).code === "ECONNREFUSED"))
+    ) {
+      return {
+        success: false as const,
+        error: t("serverConnectionError"),
+      };
+    }
+
     return {
       success: false as const,
       error: getActionErrorMessage(

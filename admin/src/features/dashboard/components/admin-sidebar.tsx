@@ -1,19 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-import {
-  LogOut,
-  User,
-  Settings,
-  Globe,
-  Palette,
-  Search,
-  ChevronsUpDown,
-} from "lucide-react";
+import { LogOut, Settings, Search, ChevronsUpDown } from "lucide-react";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
-import { useTheme } from "next-themes";
 import { useAdminNavGroups } from "../hooks/use-admin-nav";
 import { toast } from "@/components/ui/sonner";
 import {
@@ -38,41 +30,38 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuPortal,
-  DropdownMenuSubContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
 import { adminLogoutAction } from "@/features/auth/actions/admin-logout.action";
 import type { AdminUser } from "@/lib/session";
 import { Badge } from "@/components/ui/badge";
-import { AdminCommandDialog } from "./admin-command-dialog";
+const AdminCommandDialog = dynamic(
+  () => import("./admin-command-dialog").then((mod) => mod.AdminCommandDialog),
+  { ssr: false },
+);
 
+const AdminSettingsDialog = dynamic(
+  () =>
+    import("./admin-settings-dialog").then((mod) => mod.AdminSettingsDialog),
+  { ssr: false },
+);
 interface AdminSidebarProps {
   user: AdminUser;
 }
 export const AdminSidebar = ({ user }: AdminSidebarProps) => {
   const t = useTranslations("adminDashboard");
-  const pathname = usePathname();
   const router = useRouter();
-  const locale = useLocale();
-  const { theme, setTheme } = useTheme();
+  const pathname = usePathname();
   const { state, isMobile } = useSidebar();
   const isCollapsed = state === "collapsed" && !isMobile;
   const navGroups = useAdminNavGroups();
   const [commandOpen, setCommandOpen] = useState(false);
-  const handleLanguageChange = (newLocale: string) => {
-    router.replace(pathname, { locale: newLocale as "vi" | "en" });
-  };
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
       await adminLogoutAction();
       toast.success(t("logoutSuccess"));
-      const loginPath = locale === "vi" ? "/login" : `/${locale}/login`;
-      window.location.href = loginPath;
+      router.replace("/login");
     } catch {
       toast.error(t("logoutError"));
     }
@@ -231,71 +220,13 @@ export const AdminSidebar = ({ user }: AdminSidebarProps) => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile" className="flex items-center">
-                      <User className="mr-2 size-4" />
-                      <span>{t("userMenu.profile")}</span>
-                    </Link>
+                  <DropdownMenuItem
+                    onClick={() => setSettingsOpen(true)}
+                    className="flex cursor-pointer items-center"
+                  >
+                    <Settings className="mr-2 size-4" />
+                    <span>{t("userMenu.settings")}</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings" className="flex items-center">
-                      <Settings className="mr-2 size-4" />
-                      <span>{t("userMenu.settings")}</span>
-                    </Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
-
-                  {/* Theme Switcher Submenu */}
-                  <DropdownMenuSub>
-                    <DropdownMenuSubTrigger>
-                      <Palette className="mr-2 size-4" />
-                      <span>{t("userMenu.theme")}</span>
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuPortal>
-                      <DropdownMenuSubContent>
-                        <DropdownMenuRadioGroup
-                          value={theme ?? "system"}
-                          onValueChange={setTheme}
-                        >
-                          <DropdownMenuRadioItem value="light">
-                            {t("userMenu.light")}
-                          </DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="dark">
-                            {t("userMenu.dark")}
-                          </DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="system">
-                            {t("userMenu.system")}
-                          </DropdownMenuRadioItem>
-                        </DropdownMenuRadioGroup>
-                      </DropdownMenuSubContent>
-                    </DropdownMenuPortal>
-                  </DropdownMenuSub>
-
-                  {/* Language Switcher Submenu */}
-                  <DropdownMenuSub>
-                    <DropdownMenuSubTrigger>
-                      <Globe className="mr-2 size-4" />
-                      <span>{t("userMenu.language")}</span>
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuPortal>
-                      <DropdownMenuSubContent>
-                        <DropdownMenuRadioGroup
-                          value={locale}
-                          onValueChange={handleLanguageChange}
-                        >
-                          <DropdownMenuRadioItem value="vi">
-                            {t("userMenu.vietnamese")}
-                          </DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="en">
-                            {t("userMenu.english")}
-                          </DropdownMenuRadioItem>
-                        </DropdownMenuRadioGroup>
-                      </DropdownMenuSubContent>
-                    </DropdownMenuPortal>
-                  </DropdownMenuSub>
-
-                  <DropdownMenuSeparator />
 
                   <DropdownMenuItem
                     onClick={handleLogout}
@@ -314,8 +245,19 @@ export const AdminSidebar = ({ user }: AdminSidebarProps) => {
         <SidebarRail />
       </Sidebar>
 
-      {/* Interactive Command Palette Modal */}
-      <AdminCommandDialog open={commandOpen} onOpenChange={setCommandOpen} />
+      {/* Interactive Command Palette Modal (Mounted only on-demand) */}
+      {commandOpen ? (
+        <AdminCommandDialog open={commandOpen} onOpenChange={setCommandOpen} />
+      ) : null}
+
+      {/* Centralized Settings Popup Dialog (Mounted only on-demand) */}
+      {settingsOpen ? (
+        <AdminSettingsDialog
+          open={settingsOpen}
+          onOpenChange={setSettingsOpen}
+          user={user}
+        />
+      ) : null}
     </>
   );
 };

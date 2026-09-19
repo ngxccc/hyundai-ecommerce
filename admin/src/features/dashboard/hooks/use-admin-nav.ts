@@ -8,6 +8,7 @@ import {
   FolderTree,
   Warehouse,
   FileText,
+  Building2,
   type LucideIcon,
 } from "lucide-react";
 
@@ -83,6 +84,17 @@ export const useAdminNavGroups = (): NavGroup[] => {
           icon: Users,
           label: t("customers"),
           href: "/customers",
+        },
+      ],
+    },
+    {
+      id: "settings",
+      title: t("groups.settings"),
+      items: [
+        {
+          icon: Building2,
+          label: t("companySettings"),
+          href: "/settings/company",
         },
       ],
     },

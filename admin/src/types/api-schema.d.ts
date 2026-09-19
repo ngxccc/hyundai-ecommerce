@@ -873,6 +873,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/settings/company": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get company settings
+     * @description Returns company legal identity, contact hotlines, addresses, working hours, and banking details.
+     */
+    get: operations["CompanySettingsController_getSettings_v1"];
+    /**
+     * Update company settings
+     * @description Updates company legal identity, contact channels, addresses, and banking details. Restricted to administrators.
+     */
+    put: operations["CompanySettingsController_updateSettings_v1"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/orders/checkout": {
     parameters: {
       query?: never;
@@ -2167,6 +2191,142 @@ export interface components {
         | "APPROVED"
         | "REJECTED"
         | "EXPIRED";
+    };
+    CompanySettingsResponseDto: {
+      /** Format: uuid */
+      id: string;
+      legalNameVi: string;
+      legalNameEn: string;
+      shortName: string;
+      brandName: string;
+      brandTitle: string;
+      brandFullName: string;
+      taxId: string;
+      hotlines: {
+        project: {
+          raw: string;
+          display: string;
+          formatted?: string;
+          labelVi?: string;
+          labelEn?: string;
+        };
+        technical: {
+          raw: string;
+          display: string;
+          formatted?: string;
+          labelVi?: string;
+          labelEn?: string;
+        };
+        general?: {
+          raw: string;
+          display: string;
+          formatted?: string;
+          labelVi?: string;
+          labelEn?: string;
+        };
+      };
+      emails: {
+        sales: string;
+        project: string;
+        support: string;
+        general: string;
+      };
+      addresses: {
+        headquarters: {
+          vi: string;
+          en: string;
+        };
+        warehouse: {
+          vi: string;
+          en: string;
+        };
+      };
+      workingHours: {
+        vi: string;
+        en: string;
+      };
+      links: {
+        website: string;
+        zalo?: string;
+        facebook?: string;
+      };
+      bank: {
+        bankName: string;
+        branchVi: string;
+        branchEn: string;
+        accountNo: string;
+        accountName: string;
+        bin: string;
+        qrTemplate: string;
+      };
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    UpdateCompanySettingsDto: {
+      legalNameVi: string;
+      legalNameEn: string;
+      shortName: string;
+      brandName: string;
+      brandTitle: string;
+      brandFullName: string;
+      taxId: string;
+      hotlines: {
+        project: {
+          raw: string;
+          display: string;
+          formatted?: string;
+          labelVi?: string;
+          labelEn?: string;
+        };
+        technical: {
+          raw: string;
+          display: string;
+          formatted?: string;
+          labelVi?: string;
+          labelEn?: string;
+        };
+        general?: {
+          raw: string;
+          display: string;
+          formatted?: string;
+          labelVi?: string;
+          labelEn?: string;
+        };
+      };
+      emails: {
+        sales: string;
+        project: string;
+        support: string;
+        general: string;
+      };
+      addresses: {
+        headquarters: {
+          vi: string;
+          en: string;
+        };
+        warehouse: {
+          vi: string;
+          en: string;
+        };
+      };
+      workingHours: {
+        vi: string;
+        en: string;
+      };
+      links: {
+        website: string;
+        zalo?: string;
+        facebook?: string;
+      };
+      bank: {
+        bankName: string;
+        branchVi: string;
+        branchEn: string;
+        accountNo: string;
+        accountName: string;
+        bin: string;
+        qrTemplate: string;
+      };
     };
     OrderResponseDto: {
       /** Format: uuid */
@@ -7420,6 +7580,145 @@ export interface operations {
            *       "title": "Not Found",
            *       "status": 404,
            *       "detail": "Requested resource not found",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+    };
+  };
+  CompanySettingsController_getSettings_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["CompanySettingsResponseDto"];
+          };
+        };
+      };
+      /** @description Rate limit exceeded (Too Many Requests) */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/too-many-requests",
+           *       "title": "Too Many Requests",
+           *       "status": 429,
+           *       "detail": "Rate limit exceeded. Please try again later.",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+    };
+  };
+  CompanySettingsController_updateSettings_v1: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateCompanySettingsDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApiResponseDto"] & {
+            data?: components["schemas"]["CompanySettingsResponseDto"];
+          };
+        };
+      };
+      /** @description Validation failure (Bad Request) */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/bad-request",
+           *       "title": "Bad Request",
+           *       "status": 400,
+           *       "detail": "Submitted data format is invalid",
+           *       "instance": "/api/example",
+           *       "invalidParams": [
+           *         {
+           *           "name": "email",
+           *           "reason": "Invalid email address format"
+           *         }
+           *       ],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /**
+       * @description Authentication required or invalid token (Unauthorized)
+       *
+       *     Authentication required or invalid token (Unauthorized)
+       */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/unauthorized",
+           *       "title": "Unauthorized",
+           *       "status": 401,
+           *       "detail": "Unauthorized access",
+           *       "instance": "/api/example",
+           *       "invalidParams": [],
+           *       "timestamp": "2026-07-25T02:45:00.000Z"
+           *     }
+           */
+          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
+        };
+      };
+      /**
+       * @description Forbidden access (Forbidden)
+       *
+       *     Forbidden access (Forbidden)
+       */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          /**
+           * @example {
+           *       "type": "http://localhost:3000/errors/forbidden",
+           *       "title": "Forbidden",
+           *       "status": 403,
+           *       "detail": "Account suspended or inactive",
            *       "instance": "/api/example",
            *       "invalidParams": [],
            *       "timestamp": "2026-07-25T02:45:00.000Z"

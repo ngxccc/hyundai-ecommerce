@@ -337,4 +337,95 @@ export const createAdminQuoteSchema = z.object({
     .min(1, i18nZodMsg("composer.errors.emptyItems")),
 });
 export type CommercialTermsInput = z.infer<typeof commercialTermsSchema>;
+
+// Company Settings Validators
+export const hotlineChannelInputSchema = z.object({
+  raw: z.string().min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+  display: z.string().min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+  formatted: z.string().optional(),
+  labelVi: z.string().optional(),
+  labelEn: z.string().optional(),
+});
+
+export const companyHotlinesInputSchema = z.object({
+  project: hotlineChannelInputSchema,
+  technical: hotlineChannelInputSchema,
+  general: hotlineChannelInputSchema.optional(),
+});
+
+export const companyEmailsInputSchema = z.object({
+  sales: z.email(),
+  project: z.email(),
+  support: z.email(),
+  general: z.email(),
+});
+
+export const addressItemInputSchema = z.object({
+  vi: z.string().min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+  en: z.string().min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+});
+
+export const companyAddressesInputSchema = z.object({
+  headquarters: addressItemInputSchema,
+  warehouse: addressItemInputSchema,
+});
+
+export const companyWorkingHoursInputSchema = z.object({
+  vi: z.string().min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+  en: z.string().min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+});
+
+export const companyLinksInputSchema = z.object({
+  website: z.string().min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+  zalo: z.string().optional(),
+  facebook: z.string().optional(),
+});
+
+export const companyBankInputSchema = z.object({
+  bankName: z.string().min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+  branchVi: z.string().min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+  branchEn: z.string().min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+  accountNo: z
+    .string()
+    .min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+  accountName: z
+    .string()
+    .min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+  bin: z.string().min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+  qrTemplate: z
+    .string()
+    .min(1, { message: i18nZodMsg("validation.isNotEmpty") }),
+});
+
+export const updateCompanySettingsInputSchema = z.object({
+  legalNameVi: z
+    .string()
+    .min(3, { message: i18nZodMsg("validation.isNotEmpty") }),
+  legalNameEn: z
+    .string()
+    .min(3, { message: i18nZodMsg("validation.isNotEmpty") }),
+  shortName: z
+    .string()
+    .min(2, { message: i18nZodMsg("validation.isNotEmpty") }),
+  brandName: z
+    .string()
+    .min(2, { message: i18nZodMsg("validation.isNotEmpty") }),
+  brandTitle: z
+    .string()
+    .min(2, { message: i18nZodMsg("validation.isNotEmpty") }),
+  brandFullName: z
+    .string()
+    .min(2, { message: i18nZodMsg("validation.isNotEmpty") }),
+  taxId: z.string().min(10, { message: i18nZodMsg("validation.isNotEmpty") }),
+  hotlines: companyHotlinesInputSchema,
+  emails: companyEmailsInputSchema,
+  addresses: companyAddressesInputSchema,
+  workingHours: companyWorkingHoursInputSchema,
+  links: companyLinksInputSchema,
+  bank: companyBankInputSchema,
+});
+
+export type UpdateCompanySettingsInput = z.infer<
+  typeof updateCompanySettingsInputSchema
+>;
 export type CreateAdminQuoteInput = z.infer<typeof createAdminQuoteSchema>;

@@ -1,4 +1,3 @@
-import { companyConfig } from "@/config/company";
 import { TIME_IN_MS } from "@/constants/time.constant";
 
 /**
@@ -195,8 +194,12 @@ export const deduceModel = (
  * @param amount - Deposit amount in VND
  * @returns Fully qualified VietQR image URL
  */
-export const generateVietQrUrl = (quoteNo: string, amount: number): string => {
-  const { bin, accountNo, qrTemplate } = companyConfig.bank;
+export const generateVietQrUrl = (
+  quoteNo: string,
+  amount: number,
+  bank: { bin: string; accountNo: string; qrTemplate: string },
+): string => {
+  const { bin, accountNo, qrTemplate } = bank;
   const roundedAmount = Math.round(amount);
   const memo = encodeURIComponent(quoteNo);
   return `https://img.vietqr.io/image/${bin}-${accountNo}-${qrTemplate}.png?amount=${roundedAmount}&addInfo=${memo}`;

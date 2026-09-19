@@ -112,6 +112,15 @@ export type CommercialTerms = NonNullable<
 >;
 export type QuoteCommercialTerms = NonNullable<AdminQuote["commercialTerms"]>;
 
+// 8. SYSTEM & COMPANY SETTINGS
+export type AdminCompanySettings = ApiSchemas["CompanySettingsResponseDto"];
+export type UpdateAdminCompanySettings = ApiSchemas["UpdateCompanySettingsDto"];
+export type CompanyHotlines = AdminCompanySettings["hotlines"];
+export type CompanyEmails = AdminCompanySettings["emails"];
+export type CompanyAddresses = AdminCompanySettings["addresses"];
+export type CompanyWorkingHours = AdminCompanySettings["workingHours"];
+export type CompanyLinks = AdminCompanySettings["links"];
+export type CompanyBank = AdminCompanySettings["bank"];
 // 7. SPEC SHEET TYPES
 
 export * from "./product-spec";

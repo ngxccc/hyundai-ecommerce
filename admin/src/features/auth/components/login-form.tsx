@@ -36,18 +36,25 @@ import {
 } from "@/components/ui/dialog";
 import { adminLoginAction } from "../actions/admin-login.action";
 import { useRouter } from "@/i18n/routing";
-import { toast } from "@/components/ui/sonner";
 import { COMPANY_CONFIG } from "@/constants";
 
 const REMEMBER_KEY = "hyundai_admin_email";
 
-export const LoginForm = () => {
+export interface LoginFormProps {
+  supportEmail?: string;
+  supportHotline?: string;
+}
+
+export const LoginForm = ({
+  supportEmail = COMPANY_CONFIG.SUPPORT_EMAIL,
+  supportHotline = COMPANY_CONFIG.HOTLINES.HCM,
+}: LoginFormProps) => {
   const t = useTranslations("login");
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
   const [helpdeskOpen, setHelpdeskOpen] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const router = useRouter();
-
   const form = useForm<LoginFormInput>({
     resolver: translatedZodResolver(loginSchema, t),
     defaultValues: {
@@ -71,6 +78,7 @@ export const LoginForm = () => {
   }, [form]);
 
   const onSubmit = (data: LoginFormInput) => {
+    setFormError(null);
     startTransition(async () => {
       try {
         const result = await adminLoginAction(data);
@@ -91,7 +99,7 @@ export const LoginForm = () => {
             return;
           }
           if ("error" in result && result.error) {
-            toast.error(result.error);
+            setFormError(result.error);
           }
           return;
         }
@@ -111,7 +119,7 @@ export const LoginForm = () => {
         router.refresh();
       } catch (err) {
         console.warn("Login submit error: ", err);
-        toast.error(t("errorMessage"));
+        setFormError(t("errorMessage"));
       }
     });
   };
@@ -150,6 +158,16 @@ export const LoginForm = () => {
       <CardContent className="p-0 pt-4">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {/* Inline Error Alert */}
+            {formError ? (
+              <div
+                role="alert"
+                className="border-destructive/30 bg-destructive/10 text-destructive flex items-start gap-2.5 rounded-lg border p-3 text-xs"
+              >
+                <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />
+                <span className="leading-relaxed font-medium">{formError}</span>
+              </div>
+            ) : null}
             {/* Email Field */}
             <FormField
               control={form.control}
@@ -268,7 +286,7 @@ export const LoginForm = () => {
                       <Mail className="text-muted-foreground size-3.5" />
                       <span>
                         {t("helpdeskEmail", {
-                          email: COMPANY_CONFIG.SUPPORT_EMAIL,
+                          email: supportEmail,
                         })}
                       </span>
                     </div>
@@ -276,8 +294,7 @@ export const LoginForm = () => {
                       <ShieldAlert className="text-muted-foreground size-3.5" />
                       <span>
                         {t("helpdeskHotline", {
-                          hotlineHcm: COMPANY_CONFIG.HOTLINES.HCM,
-                          hotlineHn: COMPANY_CONFIG.HOTLINES.HN,
+                          hotline: supportHotline,
                         })}
                       </span>
                     </div>
