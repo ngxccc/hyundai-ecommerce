@@ -51,10 +51,7 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
     return initial;
   });
 
-  const isFinalized =
-    quote.status === QUOTE_STATUS.APPROVED ||
-    quote.status === QUOTE_STATUS.REJECTED ||
-    quote.status === QUOTE_STATUS.EXPIRED;
+  const isNegotiating = quote.status === QUOTE_STATUS.NEGOTIATING;
 
   const handleInputChange = (itemId: string, val: string) => {
     setInputValues((prev) => ({
@@ -64,9 +61,9 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
   };
 
   const handlePriceUpdate = (itemId: string, savedValue: string | null) => {
+    if (!isNegotiating) return;
     const rawVal = inputValues[itemId];
     if (!rawVal) return;
-
     // If empty string and there was no agreed price, do nothing
     if (rawVal.trim() === "" && savedValue === null) {
       return;
@@ -177,7 +174,7 @@ export const QuotePricingCockpit = ({ quote }: QuotePricingCockpitProps) => {
                       : "—"}
                   </TableCell>
                   <TableCell className="text-right">
-                    {isFinalized ? (
+                    {!isNegotiating ? (
                       <span className="text-primary font-bold">
                         {item.agreedPrice
                           ? formatCurrency(item.agreedPrice)
