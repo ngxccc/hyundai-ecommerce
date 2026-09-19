@@ -33,7 +33,13 @@ const getBaseUrl = (): string => {
   return trimmed;
 };
 
-const PUBLIC_PREFIXES = ["/products", "/categories", "/brands", "/leads"];
+const PUBLIC_PREFIXES = [
+  "/products",
+  "/categories",
+  "/brands",
+  "/leads",
+  "/settings",
+];
 
 const authMiddleware: Middleware = {
   async onRequest({ request }) {

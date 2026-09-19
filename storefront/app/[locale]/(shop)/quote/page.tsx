@@ -1,12 +1,23 @@
+import { getTranslations } from "next-intl/server";
+import { getCompanySettings } from "@/features/settings/api/company-settings.api";
 import { QuoteRequestView } from "@/features/quote/components/quote-request-view";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Yêu cầu báo giá B2B | Hyundai Nhật Năng",
-  description:
-    "Gửi danh sách sản phẩm thiết bị, máy phát điện và xe thương mại Hyundai cần báo giá nhanh chóng và chính xác.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: "vi" | "en" }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "Quote" });
 
-export default function QuotePage() {
-  return <QuoteRequestView />;
+  return {
+    title: `${t("title")} | Hyundai Nhật Năng`,
+    description: t("subtitle"),
+  };
+}
+
+export default async function QuotePage() {
+  const company = await getCompanySettings();
+  return <QuoteRequestView company={company} />;
 }

@@ -1,11 +1,13 @@
 import { CopyrightYear } from "./copyright-year";
 import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
-import { companyConfig } from "@/config/company";
+import { getCompanySettings } from "@/features/settings/api/company-settings.api";
 
 export async function Footer() {
-  const t = await getTranslations("HomePage");
-
+  const [t, company] = await Promise.all([
+    getTranslations("HomePage"),
+    getCompanySettings(),
+  ]);
   return (
     <footer className="bg-muted/20 mt-10 border-t pt-14 pb-4 lg:mt-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -61,30 +63,36 @@ export async function Footer() {
               {t("footer.contactTitle")}
             </div>
             <ul className="text-muted-foreground space-y-2.5 text-sm">
-              <li>
-                <a
-                  href={`tel:${companyConfig.hotlines.project.raw}`}
-                  className="hover:text-primary transition-colors"
-                >
-                  {companyConfig.hotlines.project.display} (Dự án)
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`tel:${companyConfig.hotlines.technical.raw}`}
-                  className="hover:text-primary transition-colors"
-                >
-                  {companyConfig.hotlines.technical.display} (Kỹ thuật)
-                </a>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${companyConfig.emails.project}`}
-                  className="hover:text-primary transition-colors"
-                >
-                  {companyConfig.emails.project}
-                </a>
-              </li>
+              {company.hotlines.project.raw ? (
+                <li>
+                  <a
+                    href={`tel:${company.hotlines.project.raw}`}
+                    className="hover:text-primary transition-colors"
+                  >
+                    {company.hotlines.project.display} (Dự án)
+                  </a>
+                </li>
+              ) : null}
+              {company.hotlines.technical.raw ? (
+                <li>
+                  <a
+                    href={`tel:${company.hotlines.technical.raw}`}
+                    className="hover:text-primary transition-colors"
+                  >
+                    {company.hotlines.technical.display} (Kỹ thuật)
+                  </a>
+                </li>
+              ) : null}
+              {company.emails.project ? (
+                <li>
+                  <a
+                    href={`mailto:${company.emails.project}`}
+                    className="hover:text-primary transition-colors"
+                  >
+                    {company.emails.project}
+                  </a>
+                </li>
+              ) : null}
               <li className="pt-1 text-xs">{t("footer.workingHours")}</li>
             </ul>
           </div>

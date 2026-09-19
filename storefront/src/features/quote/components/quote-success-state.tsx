@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
-import { companyConfig } from "@/config/company";
+import type { StorefrontCompanySettings } from "@/types/api";
 import {
   CheckCircle2,
   PhoneCall,
@@ -15,19 +15,19 @@ import {
 interface QuoteSuccessStateProps {
   quoteNumber: string;
   customerName: string;
+  company: StorefrontCompanySettings;
   onReset?: () => void;
 }
-
 /**
  * Rendered upon successful submission of a B2B quote request.
  */
 export function QuoteSuccessState({
   quoteNumber,
   customerName,
+  company,
   onReset,
 }: QuoteSuccessStateProps) {
   const t = useTranslations("Quote");
-
   return (
     <div className="mx-auto max-w-2xl px-4 py-16 text-center">
       {/* Brand-consistent success icon */}
@@ -57,7 +57,7 @@ export function QuoteSuccessState({
             <span>
               {t("hotline")}{" "}
               <strong className="text-foreground">
-                {companyConfig.hotlines.project.display}
+                {company.hotlines.project.display}
               </strong>
             </span>
           </div>
@@ -66,7 +66,7 @@ export function QuoteSuccessState({
             <span>
               {t("emailSales")}{" "}
               <strong className="text-foreground">
-                {companyConfig.emails.sales}
+                {company.emails.sales}
               </strong>
             </span>
           </div>

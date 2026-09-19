@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useQuoteStore } from "@/features/quote";
 import { useIsClient } from "@/hooks/useIsClient";
 import { normalizePriceString } from "@/lib/utils";
+import type { StorefrontCompanySettings } from "@/types/api";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -33,10 +34,14 @@ const INITIAL_ADDRESS: AddressState = {
   streetAddress: "",
 };
 
+export interface QuoteRequestViewProps {
+  company: StorefrontCompanySettings;
+}
+
 /**
  * Main B2B Quote Request view container orchestrating state, line items, and contact submission.
  */
-export function QuoteRequestView() {
+export function QuoteRequestView({ company }: QuoteRequestViewProps) {
   const t = useTranslations("Quote");
   const isMounted = useIsClient();
   const items = useQuoteStore((s) => s.items);
@@ -141,6 +146,7 @@ export function QuoteRequestView() {
       <QuoteSuccessState
         quoteNumber={submittedQuote.quoteNumber}
         customerName={submittedQuote.customerName}
+        company={company}
         onReset={handleReset}
       />
     );

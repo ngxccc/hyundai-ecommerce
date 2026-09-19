@@ -87,7 +87,19 @@ export type CommercialTerms = NonNullable<
 export type QuoteCommercialTerms = NonNullable<ApiQuote["commercialTerms"]>;
 
 // ============================================================================
-// 6. SPEC SHEET TYPES
+// 6. SYSTEM & COMPANY SETTINGS
 // ============================================================================
 
+export type StorefrontCompanySettings =
+  ApiSchemas["CompanySettingsResponseDto"];
+export type CompanyHotlines = StorefrontCompanySettings["hotlines"];
+export type CompanyEmails = StorefrontCompanySettings["emails"];
+export type CompanyAddresses = StorefrontCompanySettings["addresses"];
+export type CompanyWorkingHours = StorefrontCompanySettings["workingHours"];
+export type CompanyLinks = StorefrontCompanySettings["links"];
+export type CompanyBank = StorefrontCompanySettings["bank"];
+
+// ============================================================================
+// 7. SPEC SHEET TYPES
+// ============================================================================
 export * from "./product-spec";
