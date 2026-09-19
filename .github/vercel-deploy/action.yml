@@ -39,5 +39,5 @@ runs:
       shell: bash
 
     - name: Deploy Project Artifacts to Vercel
-      run: bunx vercel deploy --prebuilt --prod --token=${{ inputs.vercel_token }}
+      run: bunx vercel deploy --prebuilt --archive=tgz --prod --token=${{ inputs.vercel_token }}
       shell: bash
