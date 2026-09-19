@@ -3,14 +3,14 @@ import type {
   Brand,
   Category,
   DealerTier,
+  NewDealerTier,
+  NewWarehouse,
   Order,
   Payment,
   Product,
   Quote,
   User,
   Warehouse,
-  dealerTiers,
-  warehouses,
 } from "@/database/schemas";
 import type {
   ProductSpecSheet,
@@ -95,7 +95,7 @@ export interface Tier3SeedResult {
   orderItemsCount: number;
 }
 
-export type DealerTierFixtureData = typeof dealerTiers.$inferInsert;
+export type DealerTierFixtureData = NewDealerTier;
 
 export interface UserFixtureData {
   id: string;
@@ -142,7 +142,7 @@ export interface CategoryFixtureData {
   translations: CategoryTranslationFixture[];
 }
 
-export type WarehouseFixtureData = typeof warehouses.$inferInsert;
+export type WarehouseFixtureData = NewWarehouse;
 
 export interface ProductTranslationFixture {
   locale: string;

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, mock } from "bun:test";
 import type { Response } from "express";
 import { QuotesController } from "./quotes.controller";
 import type { QuotesService } from "./quotes.service";
+import type { QuoteExcelService } from "./services/quote-excel.service";
 import type {
   AdminQuoteResponseDto,
   CreateAdminQuoteDto,
@@ -129,7 +130,7 @@ describe("QuotesController", () => {
     mockQuotesService.clearAll();
     controller = new QuotesController(
       mockQuotesService as unknown as QuotesService,
-      mockExcelService,
+      mockExcelService as unknown as QuoteExcelService,
     );
   });
 

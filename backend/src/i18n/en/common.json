@@ -3,5 +3,6 @@
   "INVALID_INPUT": "Submitted data format is invalid",
   "RESOURCE_CONFLICT": "A resource conflict occurred. Please retry your request.",
   "GATEWAY_TIMEOUT": "The database or downstream service timed out. Please retry.",
-  "FORBIDDEN": "You are not authorized to perform this action"
+  "FORBIDDEN": "You are not authorized to perform this action",
+  "SETTINGS_NOT_FOUND": "Company settings are not configured in the system"
 }

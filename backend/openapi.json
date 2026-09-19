@@ -6325,6 +6325,164 @@
         "tags": ["quotes"]
       }
     },
+    "/api/v1/settings/company": {
+      "get": {
+        "description": "Returns company legal identity, contact hotlines, addresses, working hours, and banking details.",
+        "operationId": "CompanySettingsController_getSettings_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CompanySettingsResponseDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded (Too Many Requests)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/too-many-requests",
+                  "title": "Too Many Requests",
+                  "status": 429,
+                  "detail": "Rate limit exceeded. Please try again later.",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get company settings",
+        "tags": ["settings/company"]
+      },
+      "put": {
+        "description": "Updates company legal identity, contact channels, addresses, and banking details. Restricted to administrators.",
+        "operationId": "CompanySettingsController_updateSettings_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCompanySettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponseDto"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/CompanySettingsResponseDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failure (Bad Request)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/bad-request",
+                  "title": "Bad Request",
+                  "status": 400,
+                  "detail": "Submitted data format is invalid",
+                  "instance": "/api/example",
+                  "invalidParams": [
+                    {
+                      "name": "email",
+                      "reason": "Invalid email address format"
+                    }
+                  ],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or invalid token (Unauthorized)\n\nAuthentication required or invalid token (Unauthorized)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/unauthorized",
+                  "title": "Unauthorized",
+                  "status": 401,
+                  "detail": "Unauthorized access",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden access (Forbidden)\n\nForbidden access (Forbidden)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
+                },
+                "example": {
+                  "type": "http://localhost:3000/errors/forbidden",
+                  "title": "Forbidden",
+                  "status": 403,
+                  "detail": "Account suspended or inactive",
+                  "instance": "/api/example",
+                  "invalidParams": [],
+                  "timestamp": "2026-07-25T02:45:00.000Z"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update company settings",
+        "tags": ["settings/company"]
+      }
+    },
     "/api/v1/orders/checkout": {
       "post": {
         "deprecated": true,
@@ -11731,6 +11889,458 @@
           }
         },
         "required": ["orderId", "orderNumber", "quoteId", "status"]
+      },
+      "CompanySettingsResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "legalNameVi": {
+            "type": "string"
+          },
+          "legalNameEn": {
+            "type": "string"
+          },
+          "shortName": {
+            "type": "string"
+          },
+          "brandName": {
+            "type": "string"
+          },
+          "brandTitle": {
+            "type": "string"
+          },
+          "brandFullName": {
+            "type": "string"
+          },
+          "taxId": {
+            "type": "string"
+          },
+          "hotlines": {
+            "type": "object",
+            "properties": {
+              "project": {
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "type": "string"
+                  },
+                  "display": {
+                    "type": "string"
+                  },
+                  "formatted": {
+                    "type": "string"
+                  },
+                  "labelVi": {
+                    "type": "string"
+                  },
+                  "labelEn": {
+                    "type": "string"
+                  }
+                },
+                "required": ["raw", "display"]
+              },
+              "technical": {
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "type": "string"
+                  },
+                  "display": {
+                    "type": "string"
+                  },
+                  "formatted": {
+                    "type": "string"
+                  },
+                  "labelVi": {
+                    "type": "string"
+                  },
+                  "labelEn": {
+                    "type": "string"
+                  }
+                },
+                "required": ["raw", "display"]
+              },
+              "general": {
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "type": "string"
+                  },
+                  "display": {
+                    "type": "string"
+                  },
+                  "formatted": {
+                    "type": "string"
+                  },
+                  "labelVi": {
+                    "type": "string"
+                  },
+                  "labelEn": {
+                    "type": "string"
+                  }
+                },
+                "required": ["raw", "display"]
+              }
+            },
+            "required": ["project", "technical"]
+          },
+          "emails": {
+            "type": "object",
+            "properties": {
+              "sales": {
+                "type": "string"
+              },
+              "project": {
+                "type": "string"
+              },
+              "support": {
+                "type": "string"
+              },
+              "general": {
+                "type": "string"
+              }
+            },
+            "required": ["sales", "project", "support", "general"]
+          },
+          "addresses": {
+            "type": "object",
+            "properties": {
+              "headquarters": {
+                "type": "object",
+                "properties": {
+                  "vi": {
+                    "type": "string"
+                  },
+                  "en": {
+                    "type": "string"
+                  }
+                },
+                "required": ["vi", "en"]
+              },
+              "warehouse": {
+                "type": "object",
+                "properties": {
+                  "vi": {
+                    "type": "string"
+                  },
+                  "en": {
+                    "type": "string"
+                  }
+                },
+                "required": ["vi", "en"]
+              }
+            },
+            "required": ["headquarters", "warehouse"]
+          },
+          "workingHours": {
+            "type": "object",
+            "properties": {
+              "vi": {
+                "type": "string"
+              },
+              "en": {
+                "type": "string"
+              }
+            },
+            "required": ["vi", "en"]
+          },
+          "links": {
+            "type": "object",
+            "properties": {
+              "website": {
+                "type": "string"
+              },
+              "zalo": {
+                "type": "string"
+              },
+              "facebook": {
+                "type": "string"
+              }
+            },
+            "required": ["website"]
+          },
+          "bank": {
+            "type": "object",
+            "properties": {
+              "bankName": {
+                "type": "string"
+              },
+              "branchVi": {
+                "type": "string"
+              },
+              "branchEn": {
+                "type": "string"
+              },
+              "accountNo": {
+                "type": "string"
+              },
+              "accountName": {
+                "type": "string"
+              },
+              "bin": {
+                "type": "string"
+              },
+              "qrTemplate": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "bankName",
+              "branchVi",
+              "branchEn",
+              "accountNo",
+              "accountName",
+              "bin",
+              "qrTemplate"
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "legalNameVi",
+          "legalNameEn",
+          "shortName",
+          "brandName",
+          "brandTitle",
+          "brandFullName",
+          "taxId",
+          "hotlines",
+          "emails",
+          "addresses",
+          "workingHours",
+          "links",
+          "bank",
+          "updatedAt"
+        ]
+      },
+      "UpdateCompanySettingsDto": {
+        "type": "object",
+        "properties": {
+          "legalNameVi": {
+            "type": "string"
+          },
+          "legalNameEn": {
+            "type": "string"
+          },
+          "shortName": {
+            "type": "string"
+          },
+          "brandName": {
+            "type": "string"
+          },
+          "brandTitle": {
+            "type": "string"
+          },
+          "brandFullName": {
+            "type": "string"
+          },
+          "taxId": {
+            "type": "string",
+            "pattern": "^\\d{10}(-\\d{3})?$"
+          },
+          "hotlines": {
+            "type": "object",
+            "properties": {
+              "project": {
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "type": "string"
+                  },
+                  "display": {
+                    "type": "string"
+                  },
+                  "formatted": {
+                    "type": "string"
+                  },
+                  "labelVi": {
+                    "type": "string"
+                  },
+                  "labelEn": {
+                    "type": "string"
+                  }
+                },
+                "required": ["raw", "display"]
+              },
+              "technical": {
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "type": "string"
+                  },
+                  "display": {
+                    "type": "string"
+                  },
+                  "formatted": {
+                    "type": "string"
+                  },
+                  "labelVi": {
+                    "type": "string"
+                  },
+                  "labelEn": {
+                    "type": "string"
+                  }
+                },
+                "required": ["raw", "display"]
+              },
+              "general": {
+                "type": "object",
+                "properties": {
+                  "raw": {
+                    "type": "string"
+                  },
+                  "display": {
+                    "type": "string"
+                  },
+                  "formatted": {
+                    "type": "string"
+                  },
+                  "labelVi": {
+                    "type": "string"
+                  },
+                  "labelEn": {
+                    "type": "string"
+                  }
+                },
+                "required": ["raw", "display"]
+              }
+            },
+            "required": ["project", "technical"]
+          },
+          "emails": {
+            "type": "object",
+            "properties": {
+              "sales": {
+                "type": "string"
+              },
+              "project": {
+                "type": "string"
+              },
+              "support": {
+                "type": "string"
+              },
+              "general": {
+                "type": "string"
+              }
+            },
+            "required": ["sales", "project", "support", "general"]
+          },
+          "addresses": {
+            "type": "object",
+            "properties": {
+              "headquarters": {
+                "type": "object",
+                "properties": {
+                  "vi": {
+                    "type": "string"
+                  },
+                  "en": {
+                    "type": "string"
+                  }
+                },
+                "required": ["vi", "en"]
+              },
+              "warehouse": {
+                "type": "object",
+                "properties": {
+                  "vi": {
+                    "type": "string"
+                  },
+                  "en": {
+                    "type": "string"
+                  }
+                },
+                "required": ["vi", "en"]
+              }
+            },
+            "required": ["headquarters", "warehouse"]
+          },
+          "workingHours": {
+            "type": "object",
+            "properties": {
+              "vi": {
+                "type": "string"
+              },
+              "en": {
+                "type": "string"
+              }
+            },
+            "required": ["vi", "en"]
+          },
+          "links": {
+            "type": "object",
+            "properties": {
+              "website": {
+                "type": "string"
+              },
+              "zalo": {
+                "type": "string"
+              },
+              "facebook": {
+                "type": "string"
+              }
+            },
+            "required": ["website"]
+          },
+          "bank": {
+            "type": "object",
+            "properties": {
+              "bankName": {
+                "type": "string"
+              },
+              "branchVi": {
+                "type": "string"
+              },
+              "branchEn": {
+                "type": "string"
+              },
+              "accountNo": {
+                "type": "string"
+              },
+              "accountName": {
+                "type": "string"
+              },
+              "bin": {
+                "type": "string"
+              },
+              "qrTemplate": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "bankName",
+              "branchVi",
+              "branchEn",
+              "accountNo",
+              "accountName",
+              "bin",
+              "qrTemplate"
+            ]
+          }
+        },
+        "required": [
+          "legalNameVi",
+          "legalNameEn",
+          "shortName",
+          "brandName",
+          "brandTitle",
+          "brandFullName",
+          "taxId",
+          "hotlines",
+          "emails",
+          "addresses",
+          "workingHours",
+          "links",
+          "bank"
+        ]
       },
       "OrderResponseDto": {
         "type": "object",

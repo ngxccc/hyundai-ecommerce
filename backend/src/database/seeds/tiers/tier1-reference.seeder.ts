@@ -1,5 +1,10 @@
 import type { DrizzleDB } from "@/database/database.module";
-import { dealerTiers, users } from "@/database/schemas";
+import {
+  companySettings,
+  dealerTiers,
+  users,
+  type NewCompanySetting,
+} from "@/database/schemas";
 import {
   getSeedPasswordHash,
   isScopeActive,
@@ -12,6 +17,7 @@ import type {
 } from "../types/seed.type";
 import dealerTiersFixture from "../fixtures/reference/dealer-tiers.json";
 import usersFixture from "../fixtures/reference/users.json";
+import companySettingsFixture from "../fixtures/reference/company-settings.json";
 
 export async function seedTier1Reference(
   db: DrizzleDB,
@@ -59,6 +65,14 @@ export async function seedTier1Reference(
       })
       .from(users);
   }
-
+  // 3. Seed Company Settings
+  if (isScopeActive(scopes, "reference", "company-settings")) {
+    const rawCompanySettings =
+      companySettingsFixture as unknown as NewCompanySetting[];
+    await db
+      .insert(companySettings)
+      .values(rawCompanySettings)
+      .onConflictDoNothing();
+  }
   return result;
 }

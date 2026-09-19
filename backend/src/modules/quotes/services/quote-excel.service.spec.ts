@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test } from "bun:test";
 import { Workbook } from "exceljs";
 import { QuoteExcelService } from "./quote-excel.service";
+import type { CompanySettingsService } from "@/modules/company-settings/company-settings.service";
 import type { QuoteResponseDto } from "../dto/quote-response.dto";
 
 describe("QuoteExcelService", () => {
@@ -66,9 +67,66 @@ describe("QuoteExcelService", () => {
   };
 
   beforeEach(() => {
-    service = new QuoteExcelService();
+    const mockCompanyService = {
+      getSettings: () =>
+        Promise.resolve({
+          id: "019de1a0-0000-7000-8000-000000000099",
+          legalNameVi: "CÔNG TY TNHH THIẾT BỊ CÔNG NGHỆ NHẬT NĂNG",
+          legalNameEn: "NHAT NANG TECHNOLOGY EQUIPMENT CO., LTD",
+          shortName: "Hyundai Nhật Năng",
+          brandName: "Hyundai",
+          brandTitle: "HYUNDAI POWER PRODUCTS",
+          brandFullName: "Hyundai Power Products Vietnam",
+          taxId: "0316447814",
+          hotlines: {
+            project: {
+              raw: "0901497771",
+              display: "0901 49 7771",
+              formatted: "0901.49.7771",
+            },
+            technical: {
+              raw: "0982890698",
+              display: "0982 89 0698",
+              formatted: "0982.89.0698",
+            },
+          },
+          emails: {
+            sales: "sales@hyundainhatnang.vn",
+            project: "duan@hyundainhatnang.com",
+            support: "hyundaipowerproducts.vn@gmail.com",
+            general: "contact@hyundainhatnang.vn",
+          },
+          addresses: {
+            headquarters: {
+              vi: "310/61 Đường Chiến Lược, P. Bình Trị Đông A, Q. Bình Tân, TP. Hồ Chí Minh",
+              en: "310/61 Chien Luoc Street, Binh Tri Dong A Ward, Binh Tan District, HCMC",
+            },
+            warehouse: {
+              vi: "Tổng kho KCN Sóng Thần 2, TP. Dĩ An, Tỉnh Bình Dương",
+              en: "Song Than 2 IP Warehouse",
+            },
+          },
+          workingHours: {
+            vi: "Thứ 2 - Thứ 7: 08:00 - 17:30",
+            en: "Mon - Sat: 08:00 - 17:30",
+          },
+          links: {
+            website: "https://hyundainhatnang.vn",
+          },
+          bank: {
+            bankName: "VietinBank",
+            branchVi: "Chi nhánh Tây Sài Gòn",
+            branchEn: "Tay Sai Gon Branch",
+            accountNo: "113002859999",
+            accountName: "CÔNG TY TNHH THIẾT BỊ CÔNG NGHỆ NHẬT NĂNG",
+            bin: "vietinbank",
+            qrTemplate: "qr_only",
+          },
+          updatedAt: new Date("2026-01-01T00:00:00.000Z"),
+        }),
+    } as unknown as CompanySettingsService;
+    service = new QuoteExcelService(mockCompanyService);
   });
-
   describe("generateQuoteExcelWorkbook()", () => {
     describe("when provided with a valid B2B quote", () => {
       test("should generate a valid Excel spreadsheet buffer with worksheets and metadata", async () => {
@@ -92,16 +150,40 @@ describe("QuoteExcelService", () => {
         const titleCell = worksheet?.getCell(1, 1);
         expect(titleCell?.value).toBe("HYUNDAI POWER PRODUCTS - NHẬT NĂNG");
 
-        // Verify quote number exists in worksheet
+        // Verify quote number and dynamic company metadata exist in worksheet
         let quoteNumberFound = false;
+        let legalNameFound = false;
+        let taxIdFound = false;
+        let hotlineFound = false;
         worksheet?.eachRow((row) => {
           row.eachCell((cell) => {
+            const strVal =
+              typeof cell.value === "string"
+                ? cell.value
+                : typeof cell.value === "number"
+                  ? String(cell.value)
+                  : "";
             if (cell.value === mockQuote.quoteNumber) {
               quoteNumberFound = true;
+            }
+            if (strVal.includes("CÔNG TY TNHH THIẾT BỊ CÔNG NGHỆ NHẬT NĂNG")) {
+              legalNameFound = true;
+            }
+            if (strVal.includes("0316447814")) {
+              taxIdFound = true;
+            }
+            if (
+              strVal.includes("0901.49.7771") ||
+              strVal.includes("0901 49 7771")
+            ) {
+              hotlineFound = true;
             }
           });
         });
         expect(quoteNumberFound).toBe(true);
+        expect(legalNameFound).toBe(true);
+        expect(taxIdFound).toBe(true);
+        expect(hotlineFound).toBe(true);
       });
     });
   });

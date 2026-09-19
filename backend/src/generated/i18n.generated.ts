@@ -51,6 +51,7 @@ export type I18nTranslations = {
         "RESOURCE_CONFLICT": string;
         "GATEWAY_TIMEOUT": string;
         "FORBIDDEN": string;
+        "SETTINGS_NOT_FOUND": string;
     };
     "leads": {
         "PRODUCTS_NOT_FOUND": string;

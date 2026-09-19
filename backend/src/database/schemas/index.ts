@@ -14,4 +14,5 @@ export * from "./quotes.schema";
 export * from "./payments.schema";
 export * from "./outbox.schema";
 export * from "./leads.schema";
+export * from "./company-settings.schema";
 export * from "./relations";

@@ -29,6 +29,7 @@ import { QuotesModule } from "./modules/quotes/quotes.module";
 import { OrdersModule } from "./modules/orders/orders.module";
 import { PaymentsModule } from "./modules/payments/payments.module";
 import { AnalyticsModule } from "./modules/analytics/analytics.module";
+import { CompanySettingsModule } from "./modules/company-settings/company-settings.module";
 import { AppController } from "./app.controller";
 import { parseRedisOptions } from "./config/redis.config";
 import { ZodValidationPipe } from "./common/pipes/zod-validation.pipe";
@@ -108,6 +109,7 @@ const getRedisOptions = () =>
     OrdersModule,
     PaymentsModule,
     AnalyticsModule,
+    CompanySettingsModule,
   ],
   controllers: [AppController],
   providers: [

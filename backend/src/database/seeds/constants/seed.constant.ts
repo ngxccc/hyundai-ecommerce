@@ -25,6 +25,7 @@ export const SEED_SCOPES = [
   "reference",
   "dealer-tiers",
   "users",
+  "company-settings",
   "catalog",
   "brands",
   "categories",

@@ -3,5 +3,6 @@
   "INVALID_INPUT": "Dữ liệu gửi lên không đúng định dạng",
   "RESOURCE_CONFLICT": "Đã xảy ra xung đột dữ liệu. Vui lòng thử lại yêu cầu.",
   "GATEWAY_TIMEOUT": "Yêu cầu cơ sở dữ liệu đã hết thời gian chờ. Vui lòng thử lại.",
-  "FORBIDDEN": "Bạn không có quyền thực hiện thao tác này"
+  "FORBIDDEN": "Bạn không có quyền thực hiện thao tác này",
+  "SETTINGS_NOT_FOUND": "Chưa có thông tin cấu hình công ty trong hệ thống"
 }

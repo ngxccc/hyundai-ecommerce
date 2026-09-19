@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
   UnprocessableEntityException,
@@ -86,6 +87,16 @@ export class I18nUnauthorizedException extends UnauthorizedException {
 }
 
 export class I18nUnprocessableEntityException extends UnprocessableEntityException {
+  constructor(
+    keyOrPayload: I18nKeyOrPayload,
+    args?: Record<string, unknown>,
+    code?: string,
+  ) {
+    super(normalizePayload(keyOrPayload, args, code));
+  }
+}
+
+export class I18nInternalServerErrorException extends InternalServerErrorException {
   constructor(
     keyOrPayload: I18nKeyOrPayload,
     args?: Record<string, unknown>,

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Workbook, type Borders } from "exceljs";
 import { numberToVietnameseWords } from "@/common/utils/number-to-words.util";
-import { companyConfig } from "@/config/company.config";
+import { CompanySettingsService } from "@/modules/company-settings/company-settings.service";
 import type { QuoteResponseDto } from "../dto/quote-response.dto";
 
 /**
@@ -15,6 +15,10 @@ const rn = (rowOrNum: { number: number } | number): string =>
  */
 @Injectable()
 export class QuoteExcelService {
+  constructor(
+    private readonly companySettingsService: CompanySettingsService,
+  ) {}
+
   /**
    * Generates a corporate Excel spreadsheet (.xlsx) for a quote using ExcelJS.
    *
@@ -26,6 +30,10 @@ export class QuoteExcelService {
     workbook.creator = "Hyundai Power Products Vietnam - Nhat Nang";
     workbook.created = new Date();
     workbook.modified = new Date();
+
+    const company = await this.companySettingsService.getSettings();
+    const projectHotline =
+      company.hotlines.project.formatted ?? company.hotlines.project.display;
 
     const sheetName = (quote.quoteNumber ?? "Bao_Gia")
       .replace(/[/\\?*:[\]]/g, "_")
@@ -88,7 +96,7 @@ export class QuoteExcelService {
     };
     titleRow1.alignment = { vertical: "middle", horizontal: "left" };
 
-    const titleRow2 = worksheet.addRow([companyConfig.legalNameVi]);
+    const titleRow2 = worksheet.addRow([company.legalNameVi]);
     worksheet.mergeCells(`A${rn(titleRow2)}:H${rn(titleRow2)}`);
     titleRow2.getCell(1).font = {
       name: "Arial",
@@ -98,7 +106,7 @@ export class QuoteExcelService {
     };
 
     const titleRow3 = worksheet.addRow([
-      `Địa chỉ: ${companyConfig.addresses.headquarters.vi} | Hotline: ${companyConfig.hotlines.project.formatted} | MST: ${companyConfig.taxId}`,
+      `Địa chỉ: ${company.addresses.headquarters.vi} | Hotline: ${projectHotline} | MST: ${company.taxId}`,
     ]);
     worksheet.mergeCells(`A${rn(titleRow3)}:H${rn(titleRow3)}`);
     titleRow3.getCell(1).font = {
