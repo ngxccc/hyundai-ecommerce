@@ -1,0 +1,151 @@
+{
+  "pagination": {
+    "totalCount": "Total {total} {label}",
+    "previous": "Previous",
+    "next": "Next",
+    "rowsPerPage": "Rows per page"
+  },
+  "cloudinary": {
+    "signFailed": "Failed to sign upload request",
+    "noFileProvided": "No file provided",
+    "noUrlProvided": "No URL provided",
+    "unsupportedContentType": "Unsupported content type",
+    "uploadFailed": "Upload failed",
+    "tooManyRequests": "Too many requests. Please try again later.",
+    "rateLimitExceeded": "Rate limit exceeded. Please wait before trying again.",
+    "unauthorized": "Unauthorized access. Admin privileges required.",
+    "invalidFolder": "Invalid folder prefix path traversal risk",
+    "fileTooLarge": "File is too large, maximum 10MB",
+    "invalidMimeType": "Invalid file type. Only image uploads are allowed.",
+    "ssrfDetected": "Invalid upload source URL detected."
+  },
+  "editor": {
+    "editor": {
+      "image": {
+        "dialog": {
+          "title": "Insert Image",
+          "tab": {
+            "upload": "Upload",
+            "url": "From URL",
+            "uploadCrop": "Upload & Crop"
+          },
+          "placeholder": "https://...",
+          "button": {
+            "apply": "Apply"
+          }
+        },
+        "tooltip": "Insert Image"
+      },
+      "link": {
+        "dialog": {
+          "inline": "Display inline"
+        }
+      },
+      "imageUpload": {
+        "alt": "Alternative text",
+        "uploading": "Uploading...",
+        "cancel": "Cancel",
+        "crop": "Crop"
+      },
+      "upload": {
+        "error": "Error uploading image",
+        "tooLarge": "File is too large",
+        "invalidMime": "Invalid file type"
+      }
+    }
+  },
+  "errors": {
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden: Admin access required",
+    "createBrandFailed": "Failed to create brand",
+    "updateBrandFailed": "Failed to update brand",
+    "deleteBrandFailed": "Failed to delete brand",
+    "createCategoryFailed": "Failed to create category",
+    "updateCategoryFailed": "Failed to update category",
+    "deleteCategoryFailed": "Failed to delete category",
+    "createProductFailed": "Failed to create product. The slug might already be in use.",
+    "updateProductFailed": "Failed to update product. The slug might already be in use.",
+    "deleteProductFailed": "Failed to delete product",
+    "productNotFound": "Product not found or already deleted",
+    "createWarehouseFailed": "Failed to create warehouse",
+    "updateWarehouseFailed": "Failed to update warehouse",
+    "deleteWarehouseFailed": "Failed to delete warehouse",
+    "warehouseNotFound": "Warehouse not found",
+    "updateWarehouseStockFailed": "Failed to update warehouse stock",
+    "default": "An unexpected error occurred",
+    "serverConnectionError": "Cannot connect to the Backend API server. Please check the service status.",
+    "loginFailed": "Login failed. Please verify your credentials.",
+    "INVALID_CREDENTIALS": "Invalid credentials",
+    "EMAIL_NOT_VERIFIED": "Email not verified",
+    "ACCOUNT_LOCKED": "Account locked",
+    "INTERNAL_SERVER_ERROR": "Internal server error",
+    "createDealerTierFailed": "Failed to create dealer discount tier",
+    "updateCustomerFailed": "Failed to update B2B customer configuration",
+    "updateOrderStatusFailed": "Failed to update order status",
+    "validationError": "Validation error",
+    "orderNotFound": "Order not found",
+    "rateLimitExceeded": "Rate limit exceeded. Please wait before trying again.",
+    "createQuoteFailed": "Failed to create quote",
+    "createShippingBidFailed": "Failed to create shipping bid",
+    "approveDealerOrderFailed": "Failed to approve dealer order",
+    "verifyCashPaymentFailed": "Failed to verify cash payment",
+    "approveOrderCancellationFailed": "Failed to approve order cancellation",
+    "quoteNotFound": "Quote not found",
+    "quoteAlreadyApproved": "Quote already approved",
+    "quoteNotEditableOrConvertible": "Quote is not editable or convertible",
+    "createOrderFailed": "Failed to create order",
+    "lockAcquisitionFailed": "Request is being processed, please try again in a moment",
+    "userNotFound": "User not found",
+    "insufficientCreditLimit": "Insufficient credit limit",
+    "createPaymentFailed": "Failed to create payment",
+    "createPaymentTransactionFailed": "Failed to create payment transaction",
+    "paymentTransactionNotFound": "Payment transaction not found",
+    "shippingBidNotFound": "Shipping bid not found",
+    "searchProductsFailed": "Failed to search products",
+    "brandNotFound": "Brand not found",
+    "categoryNotFound": "Category not found",
+    "validation": {
+      "slugExists": "Slug already exists"
+    }
+  },
+  "notFound": {
+    "status": "Status: Terminal",
+    "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
+    "errorMessage": "Connection to this partition has been lost. The generator data or page you are looking for does not exist on the system.",
+    "actions": {
+      "home": {
+        "tag": "Return to Main",
+        "title": "Back to Home",
+        "description": "Reconnect with the control center and industrial generator catalog.",
+        "button": "Reboot"
+      },
+      "support": {
+        "tag": "Direct Protocol",
+        "title": "Technical Support",
+        "description": "Establish a secure communication channel with our engineering team via Zalo or Hotline.",
+        "button": "Open Connection"
+      }
+    }
+  },
+  "forbidden": {
+    "status": "403 Forbidden",
+    "errorMessage": "Staff area only. Click here to return to the shopping page.",
+    "button": "Return to Storefront"
+  },
+  "errorPage": {
+    "title": "Something went wrong!",
+    "status": "SYSTEM ERROR",
+    "description": "Unable to connect to the server or an unexpected error occurred while processing data. Please try again or return to the dashboard.",
+    "retryButton": "Try again",
+    "homeButton": "Back to Dashboard",
+    "technicalDetails": "Technical Error Details",
+    "digest": "Error Digest: {digest}"
+  },
+  "adminMetadata": {
+    "titleTemplate": "%s | Admin Portal",
+    "defaultTitle": "Dashboard | Admin Portal",
+    "description": "Hyundai Nhat Nang Admin Portal for managing products, orders, and customers.",
+    "dashboard": "Overview",
+    "products": "Product Management"
+  }
+}

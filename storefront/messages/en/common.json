@@ -1,0 +1,92 @@
+{
+  "Common": {
+    "noImage": "No Image"
+  },
+  "Metadata": {
+    "title": "Hyundai Nhat Nang | Genuine Generators",
+    "cartTitle": "Shopping Cart",
+    "cartDescription": "Manage your shopping cart and request quotes.",
+    "portalTitle": "Customer Portal",
+    "portalDescription": "Manage your account profile, change password, B2B debt, and address book."
+  },
+  "errors": {
+    "loginFailed": "Login failed",
+    "registerFailed": "Registration failed",
+    "INVALID_CREDENTIALS": "Invalid credentials",
+    "EMAIL_NOT_VERIFIED": "Email not verified",
+    "ACCOUNT_LOCKED": "Account locked",
+    "INTERNAL_SERVER_ERROR": "Internal server error",
+    "RATE_LIMIT_EXCEEDED": "Too many requests. Please wait and try again.",
+    "rateLimitExceeded": "Rate limit exceeded. Please wait before trying again.",
+    "createCartFailed": "Failed to create cart",
+    "invalidQuantity": "Invalid quantity",
+    "productNotFound": "Product not found",
+    "productIsQuoteOnly": "This product is quote-only",
+    "insufficientStock": "Quantity exceeds available stock",
+    "addToCartFailed": "Failed to add to cart",
+    "unauthorized": "Unauthorized",
+    "orderNotFound": "Order not found",
+    "invalidOrderCode": "Invalid order code",
+    "orderAlreadyPaid": "Order is already paid",
+    "invalidStatusTransition": "Invalid order status transition",
+    "orderCancelled": "Order cancelled successfully.",
+    "cancellationRequested": "Order cancellation request submitted and pending sales approval.",
+    "forbidden": "Access denied",
+    "invalidAmount": "Invalid repayment amount",
+    "checkoutFailed": "Checkout failed",
+    "updateCartFailed": "Failed to update cart",
+    "removeFromCartFailed": "Failed to remove item from cart",
+    "mergeCartFailed": "Failed to merge cart",
+    "cartEmpty": "Cart is empty",
+    "cartChanged": "Your cart has changed. Please review it before checking out.",
+    "missingRequiredFields": "Missing required fields",
+    "invalidPaymentOption": "Invalid payment option",
+    "invalidPaymentMethod": "Invalid payment method",
+    "invalidProductInCart": "Invalid product in cart",
+    "payosLinkCreationFailed": "PayOS link creation failed",
+    "paymentGatewayConnectionFailed": "Payment gateway connection failed",
+    "internalServerError": "Internal server error",
+    "lockAcquisitionFailed": "Request is being processed, please try again in a moment",
+    "userNotFound": "User not found",
+    "insufficientCreditLimit": "Insufficient credit limit",
+    "createPaymentFailed": "Failed to create payment",
+    "createPaymentTransactionFailed": "Failed to create payment transaction",
+    "paymentTransactionNotFound": "Payment transaction not found",
+    "shippingBidNotFound": "Shipping bid not found",
+    "brandNotFound": "Brand not found",
+    "categoryNotFound": "Category not found",
+    "addressNotFound": "Address not found",
+    "createAddressFailed": "Failed to create address",
+    "updateAddressFailed": "Failed to update address",
+    "deleteAddressFailed": "Failed to delete address",
+    "updateFailed": "Failed to update. Please try again.",
+    "passwordChangeFailed": "Failed to change password. Please try again.",
+    "validation": {
+      "slugExists": "Slug already exists"
+    }
+  },
+  "NotFound": {
+    "status": "Status: Terminal",
+    "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
+    "errorMessage": "Connection to this partition has been lost. The generator data or page you are looking for does not exist on the system.",
+    "actions": {
+      "home": {
+        "tag": "Return to Main",
+        "title": "Back to Home",
+        "description": "Reconnect with the control center and industrial generator catalog.",
+        "button": "Reboot"
+      },
+      "support": {
+        "tag": "Direct Protocol",
+        "title": "Technical Support",
+        "description": "Establish a secure communication channel with our engineering team via Zalo or Hotline.",
+        "button": "Open Connection"
+      }
+    }
+  },
+  "ErrorPage": {
+    "title": "Something went wrong!",
+    "description": "An unexpected error occurred while rendering this section. Please try again or contact support if the issue persists.",
+    "retryButton": "Try again"
+  }
+}

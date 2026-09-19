@@ -10,7 +10,7 @@
     "lint": "eslint . --fix --cache --cache-location .eslintcache",
     "start": "doppler run -- next start -p 3001",
     "test": "bun test src/ app/",
-    "typegen:i18n": "bun -e 'import fn from \"./node_modules/next-intl/dist/esm/development/plugin/declaration/createMessagesDeclaration.js\"; fn([\"./messages/vi.json\"]);'",
+    "typegen:i18n": "bun -e 'import fs from \"node:fs\"; import fn from \"./node_modules/next-intl/dist/esm/development/plugin/declaration/createMessagesDeclaration.js\"; const files = fs.readdirSync(\"./messages/vi\").filter(f => f.endsWith(\".json\")).map(f => `./messages/vi/${f}`); fn(files);'",
     "types:pull": "doppler run -- bun scripts/pull-openapi-types.ts"
   },
   "dependencies": {

@@ -1,0 +1,90 @@
+{
+  "adminBrands": {
+    "header": {
+      "searchPlaceholder": "Search brands...",
+      "addBrand": "Add Brand",
+      "title": "Brands",
+      "description": "Manage all brands."
+    },
+    "card": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Brand deleted successfully",
+      "deleteError": "Failed to delete brand"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete?",
+        "description": "Brand \"{brandName}\" will be removed. This action cannot be undone.",
+        "cancel": "Cancel",
+        "deleting": "Deleting...",
+        "confirm": "Delete Brand"
+      }
+    }
+  },
+  "adminBrandForm": {
+    "title": "Add Brand",
+    "description": "Enter details for the new brand.",
+    "editTitle": "Edit Brand",
+    "editDescription": "Edit brand information.",
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save",
+      "addUrl": "Add URL"
+    },
+    "sections": {
+      "general": "General Information",
+      "media": "Media"
+    },
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "description": "Description",
+      "isActive": "Active",
+      "logo": "Logo URL",
+      "dragDropImage": "Drag and drop image here",
+      "orClickToSelect": "or click to select file",
+      "orEnterUrl": "Or enter image URL directly"
+    },
+    "placeholders": {
+      "name": "e.g. Hyundai",
+      "slug": "e.g. hyundai",
+      "description": "Brand description...",
+      "logo": "https://..."
+    },
+    "messages": {
+      "successCreate": "Brand created successfully",
+      "successUpdate": "Brand updated successfully",
+      "error": "An error occurred",
+      "maxImagesReached": "You can only add 1 image until you remove the current one."
+    },
+    "validation": {
+      "slugExists": "Slug already exists",
+      "nameRequired": "Please enter a brand name",
+      "slugRequired": "Please enter a slug",
+      "invalidUrl": "Invalid URL format"
+    }
+  },
+  "adminBrandTable": {
+    "columns": {
+      "name": "Name",
+      "slug": "Slug",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "empty": "No brands found."
+  }
+}

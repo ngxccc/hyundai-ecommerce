@@ -1,0 +1,129 @@
+{
+  "adminDashboard": {
+    "title": "Hyundai Nhat Nang",
+    "logoutSuccess": "Logged out successfully",
+    "logoutError": "Logout failed",
+    "nav": {
+      "groups": {
+        "overview": "Overview",
+        "catalog": "Catalog & Inventory",
+        "sales": "Sales & B2B",
+        "settings": "System Settings"
+      },
+      "overview": "Dashboard",
+      "products": "Products",
+      "orders": "Orders",
+      "customers": "Customers",
+      "dealerTiers": "Dealer Tiers",
+      "warehouses": "Warehouses & Stock",
+      "categories": "Categories",
+      "brands": "Brands",
+      "quotes": "Quotes",
+      "companySettings": "Company Profile"
+    },
+    "quickSearch": "Search...",
+    "command": {
+      "searchPlaceholder": "Search pages, products or quick actions...",
+      "navigate": "Navigate",
+      "select": "Open",
+      "close": "Close",
+      "noResults": "No results found."
+    },
+    "header": {
+      "title": "Overview",
+      "description": "Track your business performance.",
+      "searchPlaceholder": "Search...",
+      "createReport": "Create Report"
+    },
+    "metrics": {
+      "totalRevenue": "Total Revenue",
+      "totalOrders": "Total Orders",
+      "averageOrderValue": "Avg. Order Value",
+      "newCustomers": "New Customers"
+    },
+    "chart": {
+      "title": "Revenue & Trends",
+      "subtitle": "Analyze revenue and order volume over time",
+      "revenue": "Revenue",
+      "orders": "Orders",
+      "range7d": "7 days",
+      "range30d": "30 days",
+      "range12m": "12 months",
+      "categoryDistribution": "Category Distribution",
+      "categorySubtitle": "Revenue share contribution by product category",
+      "noCategoryData": "No category revenue data available."
+    },
+    "topProducts": {
+      "title": "Top Selling Products",
+      "viewAll": "View All",
+      "sold": "Sold: {count}",
+      "noProducts": "No top selling products data available."
+    },
+    "recentOrders": {
+      "title": "Recent Orders",
+      "filter": "Filter",
+      "export": "Export",
+      "viewAll": "View All Orders",
+      "noOrders": "No recent orders found.",
+      "columns": {
+        "orderId": "Order ID",
+        "customer": "Customer",
+        "product": "Product",
+        "date": "Date",
+        "total": "Total",
+        "status": "Status"
+      },
+      "status": {
+        "completed": "Completed",
+        "processing": "Processing",
+        "shipping": "Shipping",
+        "cancelled": "Cancelled"
+      }
+    },
+    "userMenu": {
+      "myAccount": "My Account",
+      "profile": "Profile",
+      "settings": "Settings",
+      "language": "Language",
+      "vietnamese": "Vietnamese",
+      "english": "English",
+      "logout": "Logout",
+      "theme": "Appearance",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "settingsDialog": {
+      "title": "Settings",
+      "description": "Personal account and workspace preferences.",
+      "generalGroup": "General",
+      "close": "Close",
+      "tabs": {
+        "profile": "Account",
+        "appearance": "Appearance",
+        "language": "Language",
+        "security": "Security"
+      },
+      "profile": {
+        "name": "Full Name",
+        "email": "Email",
+        "role": "Role",
+        "badgeAdmin": "Administrator"
+      },
+      "appearance": {
+        "light": "Light Mode",
+        "dark": "Dark Mode",
+        "system": "System Sync"
+      },
+      "language": {
+        "vi": "Tiếng Việt",
+        "en": "English",
+        "active": "Current",
+        "select": "Select"
+      },
+      "security": {
+        "notice": "Secured enterprise console. Contact Super Admin to update credentials or permissions."
+      }
+    }
+  }
+}

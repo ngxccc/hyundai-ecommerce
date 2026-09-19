@@ -1,0 +1,151 @@
+{
+  "pagination": {
+    "totalCount": "Tổng cộng {total} {label}",
+    "previous": "Trước",
+    "next": "Sau",
+    "rowsPerPage": "Hiển thị"
+  },
+  "cloudinary": {
+    "signFailed": "Không thể ký yêu cầu tải lên",
+    "noFileProvided": "Không có file nào được cung cấp",
+    "noUrlProvided": "Không có đường dẫn URL nào được cung cấp",
+    "unsupportedContentType": "Định dạng nội dung không được hỗ trợ",
+    "uploadFailed": "Tải lên thất bại",
+    "tooManyRequests": "Quá nhiều yêu cầu. Vui lòng thử lại sau.",
+    "rateLimitExceeded": "Vượt quá giới hạn lượt yêu cầu. Vui lòng đợi trước khi thử lại.",
+    "unauthorized": "Truy cập không được phép. Yêu cầu quyền Admin.",
+    "invalidFolder": "Thư mục không hợp lệ, phát hiện nguy cơ tấn công đường dẫn.",
+    "fileTooLarge": "Kích thước tệp quá lớn, tối đa 10MB.",
+    "invalidMimeType": "Định dạng tệp không hợp lệ. Chỉ cho phép tải lên hình ảnh.",
+    "ssrfDetected": "Phát hiện URL nguồn tải lên không hợp lệ."
+  },
+  "editor": {
+    "editor": {
+      "image": {
+        "dialog": {
+          "title": "Chèn hình ảnh",
+          "tab": {
+            "upload": "Tải lên",
+            "url": "Từ URL",
+            "uploadCrop": "Tải lên & Cắt ảnh"
+          },
+          "placeholder": "https://...",
+          "button": {
+            "apply": "Áp dụng"
+          }
+        },
+        "tooltip": "Chèn hình ảnh"
+      },
+      "link": {
+        "dialog": {
+          "inline": "Hiển thị cùng dòng"
+        }
+      },
+      "imageUpload": {
+        "alt": "Văn bản thay thế",
+        "uploading": "Đang tải lên...",
+        "cancel": "Hủy",
+        "crop": "Cắt ảnh"
+      },
+      "upload": {
+        "error": "Lỗi khi tải ảnh lên",
+        "tooLarge": "Dung lượng file quá lớn",
+        "invalidMime": "Định dạng file không hợp lệ"
+      }
+    }
+  },
+  "errors": {
+    "unauthorized": "Không có quyền truy cập",
+    "forbidden": "Bị từ chối: Yêu cầu quyền quản trị",
+    "createBrandFailed": "Thêm thương hiệu thất bại",
+    "updateBrandFailed": "Cập nhật thương hiệu thất bại",
+    "deleteBrandFailed": "Xóa thương hiệu thất bại",
+    "createCategoryFailed": "Thêm danh mục thất bại",
+    "updateCategoryFailed": "Cập nhật danh mục thất bại",
+    "deleteCategoryFailed": "Xóa danh mục thất bại",
+    "createProductFailed": "Tạo sản phẩm thất bại. Đường dẫn có thể đã được sử dụng.",
+    "updateProductFailed": "Cập nhật sản phẩm thất bại. Đường dẫn có thể đã được sử dụng.",
+    "deleteProductFailed": "Xóa sản phẩm thất bại",
+    "productNotFound": "Không tìm thấy sản phẩm hoặc đã bị xóa",
+    "createWarehouseFailed": "Tạo kho thất bại",
+    "updateWarehouseFailed": "Cập nhật kho thất bại",
+    "deleteWarehouseFailed": "Xóa kho thất bại",
+    "warehouseNotFound": "Không tìm thấy kho",
+    "updateWarehouseStockFailed": "Cập nhật tồn kho thất bại",
+    "default": "Đã xảy ra lỗi không xác định",
+    "serverConnectionError": "Không thể kết nối đến máy chủ Backend. Vui lòng kiểm tra lại dịch vụ.",
+    "loginFailed": "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.",
+    "INVALID_CREDENTIALS": "Tài khoản hoặc mật khẩu không đúng",
+    "EMAIL_NOT_VERIFIED": "Email chưa được xác minh",
+    "ACCOUNT_LOCKED": "Tài khoản đã bị khóa",
+    "INTERNAL_SERVER_ERROR": "Lỗi hệ thống",
+    "createDealerTierFailed": "Tạo phân hạng đại lý thất bại",
+    "updateCustomerFailed": "Cập nhật cấu hình B2B khách hàng thất bại",
+    "updateOrderStatusFailed": "Cập nhật trạng thái đơn hàng thất bại",
+    "validationError": "Dữ liệu không hợp lệ",
+    "orderNotFound": "Không tìm thấy đơn đặt hàng",
+    "rateLimitExceeded": "Vượt quá giới hạn lượt yêu cầu. Vui lòng đợi trước khi thử lại.",
+    "createQuoteFailed": "Tạo báo giá thất bại",
+    "quoteNotFound": "Không tìm thấy báo giá",
+    "quoteAlreadyApproved": "Báo giá đã được phê duyệt trước đó",
+    "quoteNotEditableOrConvertible": "Báo giá không thể chỉnh sửa hoặc chuyển đổi",
+    "createOrderFailed": "Tạo đơn hàng thất bại",
+    "createShippingBidFailed": "Tạo giá vận chuyển thất bại",
+    "approveDealerOrderFailed": "Phê duyệt đơn hàng đại lý thất bại",
+    "verifyCashPaymentFailed": "Xác nhận thanh toán tiền mặt thất bại",
+    "approveOrderCancellationFailed": "Phê duyệt hủy đơn hàng thất bại",
+    "lockAcquisitionFailed": "Yêu cầu đang được xử lý, vui lòng thử lại sau giây lát",
+    "userNotFound": "Không tìm thấy người dùng",
+    "insufficientCreditLimit": "Hạn mức tín dụng không đủ",
+    "createPaymentFailed": "Tạo thông tin thanh toán thất bại",
+    "createPaymentTransactionFailed": "Tạo giao dịch thanh toán thất bại",
+    "paymentTransactionNotFound": "Không tìm thấy giao dịch thanh toán",
+    "shippingBidNotFound": "Không tìm thấy báo giá vận chuyển",
+    "searchProductsFailed": "Tìm kiếm sản phẩm thất bại",
+    "brandNotFound": "Không tìm thấy thương hiệu",
+    "categoryNotFound": "Không tìm thấy danh mục",
+    "validation": {
+      "slugExists": "Đường dẫn đã tồn tại"
+    }
+  },
+  "notFound": {
+    "status": "Status: Terminal",
+    "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
+    "errorMessage": "Kết nối đến phân vùng này đã bị ngắt. Dữ liệu máy phát điện hoặc trang bạn tìm kiếm không tồn tại trên hệ thống.",
+    "actions": {
+      "home": {
+        "tag": "Return to Main",
+        "title": "Về Trang Chủ",
+        "description": "Kết nối lại với trung tâm điều khiển và danh mục máy phát điện công nghiệp.",
+        "button": "Khởi động lại"
+      },
+      "support": {
+        "tag": "Direct Protocol",
+        "title": "Hỗ trợ Kỹ thuật",
+        "description": "Thiết lập kênh liên lạc bảo mật với đội ngũ kỹ sư của chúng tôi qua Zalo hoặc Hotline.",
+        "button": "Mở kết nối"
+      }
+    }
+  },
+  "forbidden": {
+    "status": "403 Không có quyền truy cập",
+    "errorMessage": "Khu vực dành cho nhân viên. Bấm vào đây để quay lại trang mua sắm",
+    "button": "Về trang mua sắm"
+  },
+  "errorPage": {
+    "title": "Đã xảy ra sự cố!",
+    "status": "LỖI HỆ THỐNG",
+    "description": "Không thể kết nối đến máy chủ hoặc đã phát sinh lỗi trong quá trình xử lý dữ liệu. Vui lòng thử lại hoặc quay về trang chủ quản trị.",
+    "retryButton": "Thử lại ngay",
+    "homeButton": "Về trang tổng quan",
+    "technicalDetails": "Chi tiết lỗi kỹ thuật",
+    "digest": "Mã định danh lỗi: {digest}"
+  },
+  "adminMetadata": {
+    "titleTemplate": "%s | Admin Portal",
+    "defaultTitle": "Tổng quan | Admin Portal",
+    "description": "Cổng quản trị Hyundai Nhật Năng - Quản lý sản phẩm, đơn hàng và khách hàng.",
+    "dashboard": "Tổng quan",
+    "products": "Quản lý sản phẩm"
+  }
+}

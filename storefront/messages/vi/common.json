@@ -1,0 +1,92 @@
+{
+  "Common": {
+    "noImage": "Không có ảnh"
+  },
+  "Metadata": {
+    "title": "Hyundai Nhật Năng | Máy Phát Điện Chính Hãng",
+    "cartTitle": "Giỏ hàng",
+    "cartDescription": "Quản lý giỏ hàng của bạn và yêu cầu báo giá.",
+    "portalTitle": "Cổng thông tin khách hàng",
+    "portalDescription": "Quản lý thông tin tài khoản, đổi mật khẩu, công nợ B2B và sổ địa chỉ."
+  },
+  "errors": {
+    "loginFailed": "Đăng nhập thất bại",
+    "registerFailed": "Đăng ký thất bại",
+    "INVALID_CREDENTIALS": "Tài khoản hoặc mật khẩu không đúng",
+    "EMAIL_NOT_VERIFIED": "Email chưa được xác minh",
+    "ACCOUNT_LOCKED": "Tài khoản đã bị khóa",
+    "INTERNAL_SERVER_ERROR": "Lỗi hệ thống",
+    "RATE_LIMIT_EXCEEDED": "Quá nhiều yêu cầu. Vui lòng đợi và thử lại sau.",
+    "rateLimitExceeded": "Vượt quá giới hạn lượt yêu cầu. Vui lòng đợi trước khi thử lại.",
+    "createCartFailed": "Tạo giỏ hàng thất bại",
+    "invalidQuantity": "Số lượng không hợp lệ",
+    "productNotFound": "Không tìm thấy sản phẩm",
+    "productIsQuoteOnly": "Sản phẩm này chỉ nhận báo giá",
+    "insufficientStock": "Số lượng vượt quá tồn kho khả dụng",
+    "addToCartFailed": "Thêm vào giỏ hàng thất bại",
+    "unauthorized": "Chưa đăng nhập",
+    "orderNotFound": "Không tìm thấy đơn hàng",
+    "invalidOrderCode": "Mã đơn hàng không hợp lệ",
+    "orderAlreadyPaid": "Đơn hàng đã được thanh toán",
+    "invalidStatusTransition": "Chuyển đổi trạng thái đơn hàng không hợp lệ",
+    "orderCancelled": "Đơn hàng đã được hủy thành công.",
+    "cancellationRequested": "Yêu cầu hủy đơn hàng đã được gửi và đang chờ Sales duyệt.",
+    "forbidden": "Không có quyền thực hiện hành động này",
+    "invalidAmount": "Số tiền thanh toán không hợp lệ",
+    "checkoutFailed": "Thanh toán thất bại",
+    "updateCartFailed": "Cập nhật giỏ hàng thất bại",
+    "removeFromCartFailed": "Xóa sản phẩm khỏi giỏ hàng thất bại",
+    "mergeCartFailed": "Gộp giỏ hàng thất bại",
+    "cartEmpty": "Giỏ hàng trống",
+    "cartChanged": "Giỏ hàng của bạn đã thay đổi. Vui lòng kiểm tra lại trước khi thanh toán.",
+    "missingRequiredFields": "Thiếu các trường bắt buộc",
+    "invalidPaymentOption": "Lựa chọn thanh toán không hợp lệ",
+    "invalidPaymentMethod": "Phương thức thanh toán không hợp lệ",
+    "invalidProductInCart": "Sản phẩm trong giỏ hàng không hợp lệ",
+    "payosLinkCreationFailed": "Tạo liên kết thanh toán PayOS thất bại",
+    "paymentGatewayConnectionFailed": "Kết nối cổng thanh toán thất bại",
+    "internalServerError": "Lỗi hệ thống",
+    "lockAcquisitionFailed": "Yêu cầu đang được xử lý, vui lòng thử lại sau giây lát",
+    "userNotFound": "Không tìm thấy người dùng",
+    "insufficientCreditLimit": "Hạn mức tín dụng không đủ",
+    "createPaymentFailed": "Tạo thông tin thanh toán thất bại",
+    "createPaymentTransactionFailed": "Tạo giao dịch thanh toán thất bại",
+    "paymentTransactionNotFound": "Không tìm thấy giao dịch thanh toán",
+    "shippingBidNotFound": "Không tìm thấy báo giá vận chuyển",
+    "brandNotFound": "Không tìm thấy thương hiệu",
+    "categoryNotFound": "Không tìm thấy danh mục",
+    "addressNotFound": "Không tìm thấy địa chỉ",
+    "createAddressFailed": "Tạo địa chỉ thất bại",
+    "updateAddressFailed": "Cập nhật địa chỉ thất bại",
+    "deleteAddressFailed": "Xóa địa chỉ thất bại",
+    "updateFailed": "Cập nhật thất bại. Vui lòng thử lại.",
+    "passwordChangeFailed": "Đổi mật khẩu thất bại. Vui lòng thử lại.",
+    "validation": {
+      "slugExists": "Đường dẫn đã tồn tại"
+    }
+  },
+  "NotFound": {
+    "status": "Status: Terminal",
+    "errorCode": "SYSTEM_ERROR: PATH_NOT_FOUND",
+    "errorMessage": "Kết nối đến phân vùng này đã bị ngắt. Dữ liệu máy phát điện hoặc trang bạn tìm kiếm không tồn tại trên hệ thống.",
+    "actions": {
+      "home": {
+        "tag": "Return to Main",
+        "title": "Về Trang Chủ",
+        "description": "Kết nối lại với trung tâm điều khiển và danh mục máy phát điện công nghiệp.",
+        "button": "Khởi động lại"
+      },
+      "support": {
+        "tag": "Direct Protocol",
+        "title": "Hỗ trợ Kỹ thuật",
+        "description": "Thiết lập kênh liên lạc bảo mật với đội ngũ kỹ sư của chúng tôi qua Zalo hoặc Hotline.",
+        "button": "Mở kết nối"
+      }
+    }
+  },
+  "ErrorPage": {
+    "title": "Đã xảy ra lỗi ngoài ý muốn!",
+    "description": "Một lỗi hệ thống đã phát sinh trong lúc xử lý phần nội dung này. Xin vui lòng thử lại hoặc liên hệ hỗ trợ kỹ thuật nếu sự cố tiếp tục diễn ra.",
+    "retryButton": "Thử lại"
+  }
+}

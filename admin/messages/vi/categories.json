@@ -1,0 +1,96 @@
+{
+  "adminCategories": {
+    "header": {
+      "searchPlaceholder": "Tìm kiếm danh mục...",
+      "addCategory": "Thêm danh mục",
+      "title": "Danh mục",
+      "description": "Quản lý danh sách danh mục."
+    },
+    "card": {
+      "status": {
+        "active": "Hoạt động",
+        "inactive": "Vô hiệu"
+      },
+      "actions": {
+        "edit": "Sửa",
+        "delete": "Xóa"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Xóa danh mục thành công",
+      "deleteError": "Không thể xóa danh mục"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Bạn có chắc chắn muốn xóa?",
+        "description": "Danh mục \"{categoryName}\" sẽ bị xóa. Hành động này không thể hoàn tác.",
+        "cancel": "Hủy",
+        "deleting": "Đang xóa...",
+        "confirm": "Xóa danh mục"
+      }
+    }
+  },
+  "adminCategoryForm": {
+    "title": "Thêm danh mục",
+    "description": "Nhập thông tin chi tiết cho danh mục mới vào hệ thống.",
+    "editTitle": "Sửa danh mục",
+    "editDescription": "Chỉnh sửa các thông tin của danh mục.",
+    "buttons": {
+      "cancel": "Hủy",
+      "create": "Thêm",
+      "save": "Lưu",
+      "addUrl": "Thêm URL"
+    },
+    "sections": {
+      "general": "Thông tin chung",
+      "media": "Hình ảnh"
+    },
+    "fields": {
+      "name": "Tên",
+      "slug": "Đường dẫn",
+      "parentId": "Danh mục cha",
+      "description": "Mô tả",
+      "isActive": "Hoạt động",
+      "image": "URL Hình ảnh",
+      "dragDropImage": "Kéo thả ảnh vào đây",
+      "orClickToSelect": "hoặc click để chọn file",
+      "orEnterUrl": "Hoặc nhập trực tiếp URL ảnh"
+    },
+    "placeholders": {
+      "name": "Máy phát điện",
+      "slug": "may-phat-dien",
+      "parentId": "Chọn danh mục",
+      "description": "Mô tả danh mục...",
+      "image": "https://..."
+    },
+    "labels": {
+      "none": "Không có"
+    },
+    "messages": {
+      "successCreate": "Thêm danh mục thành công",
+      "successUpdate": "Cập nhật danh mục thành công",
+      "error": "Đã xảy ra lỗi",
+      "maxImagesReached": "Bạn chỉ có thể thêm 1 hình ảnh cho đến khi xóa ảnh hiện tại."
+    },
+    "validation": {
+      "slugExists": "Slug đã tồn tại",
+      "nameRequired": "Vui lòng nhập tên danh mục",
+      "slugRequired": "Vui lòng nhập đường dẫn",
+      "invalidUrl": "Đường dẫn URL không hợp lệ",
+      "invalidParent": "Danh mục cha không hợp lệ"
+    }
+  },
+  "adminCategoryTable": {
+    "columns": {
+      "name": "Tên",
+      "slug": "Slug",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "status": {
+      "active": "Hoạt động",
+      "inactive": "Vô hiệu"
+    },
+    "empty": "Không tìm thấy danh mục nào."
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "adminCategories": {
+    "header": {
+      "searchPlaceholder": "Search categories...",
+      "addCategory": "Add Category",
+      "title": "Categories",
+      "description": "Manage all categories."
+    },
+    "card": {
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Category deleted successfully",
+      "deleteError": "Failed to delete category"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete?",
+        "description": "Category \"{categoryName}\" will be removed. This action cannot be undone.",
+        "cancel": "Cancel",
+        "deleting": "Deleting...",
+        "confirm": "Delete Category"
+      }
+    }
+  },
+  "adminCategoryForm": {
+    "title": "Add Category",
+    "description": "Enter details for the new category.",
+    "editTitle": "Edit Category",
+    "editDescription": "Edit category information.",
+    "buttons": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save",
+      "addUrl": "Add URL"
+    },
+    "sections": {
+      "general": "General Information",
+      "media": "Media"
+    },
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "parentId": "Parent Category",
+      "description": "Description",
+      "isActive": "Active",
+      "image": "Image URL",
+      "dragDropImage": "Drag and drop image here",
+      "orClickToSelect": "or click to select file",
+      "orEnterUrl": "Or enter image URL directly"
+    },
+    "placeholders": {
+      "name": "e.g. Generators",
+      "slug": "e.g. generators",
+      "parentId": "Select a category",
+      "description": "Category description...",
+      "image": "https://..."
+    },
+    "labels": {
+      "none": "None"
+    },
+    "messages": {
+      "successCreate": "Category created successfully",
+      "successUpdate": "Category updated successfully",
+      "error": "An error occurred",
+      "maxImagesReached": "You can only add 1 image until you remove the current one."
+    },
+    "validation": {
+      "slugExists": "Slug already exists",
+      "nameRequired": "Please enter a category name",
+      "slugRequired": "Please enter a slug",
+      "invalidUrl": "Invalid URL format",
+      "invalidParent": "Invalid parent category"
+    }
+  },
+  "adminCategoryTable": {
+    "columns": {
+      "name": "Name",
+      "slug": "Slug",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "empty": "No categories found."
+  }
+}

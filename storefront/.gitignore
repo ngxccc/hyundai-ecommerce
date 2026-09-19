@@ -13,6 +13,7 @@ next-env.d.ts
 # TypeScript & ESLint
 *.tsbuildinfo
 .eslintcache
+messages/**/*.d.json.ts
 messages/*.d.json.ts
 
 # Testing & Coverage

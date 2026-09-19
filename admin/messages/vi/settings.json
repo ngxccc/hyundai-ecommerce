@@ -1,0 +1,94 @@
+{
+  "adminCompanySettings": {
+    "metaTitle": "Cấu hình thông tin công ty | Hyundai Admin",
+    "header": {
+      "title": "Cấu hình thông tin công ty",
+      "description": "Quản lý tên pháp lý, mã số thuế, hotline, địa chỉ kho và thông tin tài khoản ngân hàng dùng chung trên toàn hệ thống."
+    },
+    "breadcrumbs": {
+      "settings": "Cài đặt hệ thống",
+      "company": "Thông tin công ty"
+    },
+    "notice": {
+      "notConfiguredTitle": "Hệ thống chưa có thông tin công ty.",
+      "notConfiguredDescription": "Vui lòng điền thông tin bên dưới và bấm Lưu thay đổi để khởi tạo dữ liệu ban đầu.",
+      "serverErrorTitle": "Không thể kết nối đến máy chủ Backend.",
+      "serverErrorDescription": "Hệ thống không thể tải dữ liệu cấu hình từ máy chủ (Port 3000). Vui lòng kiểm tra xem dịch vụ Backend đã được khởi động chưa."
+    },
+    "lastUpdated": "Lần cập nhật gần nhất:",
+    "tabs": {
+      "vi": "Tiếng Việt",
+      "en": "Tiếng Anh"
+    },
+    "sections": {
+      "legal": "Pháp lý & Thương hiệu",
+      "legalDesc": "Tên doanh nghiệp trên hợp đồng, báo giá PDF/Excel và hóa đơn thương mại.",
+      "hotlines": "Kênh Hotline & Hỗ trợ",
+      "hotlinesDesc": "Số điện thoại hiển thị trên Header, Footer, Báo giá và Nút gọi nhanh.",
+      "emails": "Hộp thư điện tử (Emails)",
+      "emailsDesc": "Địa chỉ email tiếp nhận báo giá, hỗ trợ kỹ thuật và liên hệ chung.",
+      "addresses": "Địa chỉ trụ sở & Kho hàng",
+      "addressesDesc": "Địa chỉ văn phòng giao dịch và vị trí kho xuất hàng.",
+      "workingHours": "Thời gian làm việc & Liên kết",
+      "workingHoursDesc": "Khung giờ hỗ trợ khách hàng và các kênh mạng xã hội.",
+      "bank": "Thông tin thanh toán ngân hàng",
+      "bankDesc": "Tài khoản thụ hưởng doanh nghiệp và mẫu mã QR VietQR."
+    },
+    "subsections": {
+      "projectHotline": "Hotline Dự án & Báo giá B2B",
+      "technicalHotline": "Hotline Hỗ trợ Kỹ thuật 24/7",
+      "generalHotline": "Hotline Tổng đài chung"
+    },
+    "fields": {
+      "legalNameVi": "Tên pháp lý",
+      "legalNameEn": "Tên pháp lý quốc tế",
+      "taxId": "Mã số thuế",
+      "shortName": "Tên viết tắt",
+      "brandName": "Tên thương hiệu",
+      "brandTitle": "Tiêu đề thương hiệu",
+      "brandFullName": "Tên thương hiệu đầy đủ",
+      "hotlineRaw": "Số quay tự động",
+      "hotlineDisplay": "Số hiển thị",
+      "hotlineFormatted": "Số định dạng quốc tế",
+      "hotlineLabel": "Nhãn hiển thị hotline",
+      "hotlineLabelVi": "Nhãn hotline",
+      "hotlineLabelEn": "Nhãn hotline quốc tế",
+      "salesEmail": "Email phòng Kinh doanh / Báo giá",
+      "projectEmail": "Email phòng Dự án",
+      "supportEmail": "Email Hỗ trợ Kỹ thuật & Bảo hành",
+      "generalEmail": "Email Liên hệ Chung",
+      "hqAddress": "Địa chỉ Trụ sở chính",
+      "hqVi": "Địa chỉ Trụ sở chính",
+      "hqEn": "Địa chỉ Trụ sở chính",
+      "warehouseAddress": "Địa chỉ Tổng kho",
+      "warehouseVi": "Địa chỉ Tổng kho",
+      "warehouseEn": "Địa chỉ Tổng kho",
+      "workingHours": "Thời gian làm việc",
+      "workingHoursVi": "Thời gian làm việc",
+      "workingHoursEn": "Thời gian làm việc",
+      "website": "Website chính thức",
+      "zalo": "Liên kết Zalo OA",
+      "facebook": "Liên kết Facebook Fanpage",
+      "bankName": "Tên ngân hàng thụ hưởng",
+      "selectBank": "Chọn ngân hàng thụ hưởng...",
+      "searchBank": "Tìm kiếm theo tên hoặc mã ngân hàng (VCB, MB, ACB...)",
+      "emptyBank": "Không tìm thấy ngân hàng phù hợp",
+      "branch": "Chi nhánh ngân hàng (Tùy chọn)",
+      "branchVi": "Chi nhánh ngân hàng (Tùy chọn)",
+      "branchEn": "Chi nhánh ngân hàng (Tùy chọn)",
+      "accountNo": "Số tài khoản",
+      "accountName": "Tên chủ tài khoản thụ hưởng",
+      "bin": "Mã định danh ngân hàng (BIN)",
+      "qrTemplate": "Mẫu giao diện VietQR"
+    },
+    "buttons": {
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu..."
+    },
+    "messages": {
+      "successUpdate": "Cập nhật thông tin công ty thành công!",
+      "error": "Không thể cập nhật cấu hình công ty",
+      "unexpectedError": "Đã xảy ra lỗi khi gửi yêu cầu cập nhật"
+    }
+  }
+}

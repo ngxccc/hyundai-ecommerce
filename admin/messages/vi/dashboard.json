@@ -1,0 +1,129 @@
+{
+  "adminDashboard": {
+    "title": "Hyundai Nhật Năng",
+    "logoutSuccess": "Đăng xuất thành công",
+    "logoutError": "Đăng xuất thất bại",
+    "nav": {
+      "groups": {
+        "overview": "Tổng quan",
+        "catalog": "Catalog & Kho hàng",
+        "sales": "Kinh doanh & B2B",
+        "settings": "Cài đặt hệ thống"
+      },
+      "overview": "Bảng điều khiển",
+      "products": "Sản phẩm",
+      "orders": "Đơn hàng",
+      "customers": "Khách hàng",
+      "dealerTiers": "Phân hạng đại lý",
+      "warehouses": "Kho & Tồn kho",
+      "categories": "Danh mục",
+      "brands": "Thương hiệu",
+      "quotes": "Báo giá",
+      "companySettings": "Thông tin công ty"
+    },
+    "quickSearch": "Tìm kiếm...",
+    "command": {
+      "searchPlaceholder": "Tìm trang, sản phẩm hoặc thao tác nhanh...",
+      "navigate": "Di chuyển",
+      "select": "Mở",
+      "close": "Đóng",
+      "noResults": "Không tìm thấy kết quả phù hợp."
+    },
+    "header": {
+      "title": "Tổng quan",
+      "description": "Theo dõi hiệu suất kinh doanh của bạn.",
+      "searchPlaceholder": "Tìm kiếm...",
+      "createReport": "Tạo báo cáo"
+    },
+    "metrics": {
+      "totalRevenue": "Tổng doanh thu",
+      "totalOrders": "Tổng đơn hàng",
+      "averageOrderValue": "Giá trị trung bình đơn",
+      "newCustomers": "Khách hàng mới"
+    },
+    "chart": {
+      "title": "Doanh thu & Xu hướng",
+      "subtitle": "Phân tích doanh thu và số lượng đơn hàng theo thời gian",
+      "revenue": "Doanh thu",
+      "orders": "Đơn hàng",
+      "range7d": "7 ngày",
+      "range30d": "30 ngày",
+      "range12m": "12 tháng",
+      "categoryDistribution": "Cơ cấu theo danh mục",
+      "categorySubtitle": "Tỷ trọng đóng góp doanh thu theo nhóm sản phẩm",
+      "noCategoryData": "Chưa có dữ liệu cơ cấu doanh thu danh mục."
+    },
+    "topProducts": {
+      "title": "Sản phẩm bán chạy",
+      "viewAll": "Xem tất cả",
+      "sold": "Đã bán: {count}",
+      "noProducts": "Chưa có dữ liệu sản phẩm bán chạy."
+    },
+    "recentOrders": {
+      "title": "Đơn hàng gần đây",
+      "filter": "Lọc",
+      "export": "Xuất",
+      "viewAll": "Xem tất cả đơn hàng",
+      "noOrders": "Chưa có đơn hàng nào gần đây.",
+      "columns": {
+        "orderId": "Mã Đơn",
+        "customer": "Khách Hàng",
+        "product": "Sản Phẩm",
+        "date": "Ngày Đặt",
+        "total": "Tổng Tiền",
+        "status": "Trạng Thái"
+      },
+      "status": {
+        "completed": "Hoàn thành",
+        "processing": "Đang xử lý",
+        "shipping": "Đang giao",
+        "cancelled": "Đã hủy"
+      }
+    },
+    "userMenu": {
+      "myAccount": "Tài khoản của tôi",
+      "profile": "Hồ sơ cá nhân",
+      "settings": "Cài đặt",
+      "language": "Ngôn ngữ",
+      "vietnamese": "Tiếng Việt",
+      "english": "Tiếng Anh",
+      "logout": "Đăng xuất",
+      "theme": "Giao diện",
+      "light": "Sáng",
+      "dark": "Tối",
+      "system": "Hệ thống"
+    },
+    "settingsDialog": {
+      "title": "Cài đặt",
+      "description": "Tùy chỉnh tài khoản và giao diện cá nhân.",
+      "generalGroup": "Cài đặt chung",
+      "close": "Đóng",
+      "tabs": {
+        "profile": "Tài khoản",
+        "appearance": "Giao diện",
+        "language": "Ngôn ngữ",
+        "security": "Bảo mật"
+      },
+      "profile": {
+        "name": "Họ và tên",
+        "email": "Email",
+        "role": "Quyền hạn",
+        "badgeAdmin": "Quản trị viên"
+      },
+      "appearance": {
+        "light": "Giao diện sáng",
+        "dark": "Giao diện tối",
+        "system": "Theo hệ thống"
+      },
+      "language": {
+        "vi": "Tiếng Việt",
+        "en": "English",
+        "active": "Đang dùng",
+        "select": "Chuyển sang"
+      },
+      "security": {
+        "notice": "Hệ thống quản trị bảo mật cao. Để thay đổi mật khẩu hoặc phân quyền tài khoản, vui lòng liên hệ Super Admin."
+      }
+    }
+  }
+}

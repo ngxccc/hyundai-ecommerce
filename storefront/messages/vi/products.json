@@ -1,0 +1,75 @@
+{
+  "Catalog": {
+    "title": "Tất cả sản phẩm",
+    "search_placeholder": "Tìm kiếm sản phẩm...",
+    "search_results": "Tìm kiếm cho: \"{query}\" ({count} kết quả)",
+    "showing_products": "Hiển thị {count} sản phẩm",
+    "unknown": "Không xác định",
+    "no_products": "Không tìm thấy sản phẩm nào phù hợp.",
+    "sidebar": {
+      "search": "Tìm kiếm",
+      "min_power": "Công suất tối thiểu",
+      "max_power": "Công suất tối đa",
+      "filters": "Bộ lọc",
+      "categories": "Danh mục",
+      "brands": "Thương hiệu",
+      "power_range": "Dải công suất (kW)",
+      "fuel_type": "Loại nhiên liệu",
+      "phase": "Số pha",
+      "voltage": "Điện áp (V)",
+      "engine_brand": "Thương hiệu động cơ",
+      "alternator_brand": "Thương hiệu đầu phát",
+      "clear_all": "Xoá bộ lọc",
+      "active_filters": "Bộ lọc đang chọn",
+      "apply": "Xem sản phẩm",
+      "placeholder_min": "Tối thiểu",
+      "placeholder_max": "Tối đa",
+      "placeholder_voltage": "220, 380",
+      "placeholder_engine_brand": "Hyundai, Cummins",
+      "placeholder_alternator_brand": "Stamford, Mecc Alte",
+      "expand_category": "Mở rộng danh mục",
+      "collapse_category": "Thu gọn danh mục"
+    },
+    "sort": {
+      "label": "Sắp xếp theo",
+      "newest": "Mới nhất",
+      "priceAsc": "Giá: Thấp đến Cao",
+      "priceDesc": "Giá: Cao đến Thấp"
+    },
+    "pagination": {
+      "previous": "Trang trước",
+      "next": "Trang sau",
+      "first": "Về trang đầu",
+      "last": "Đến trang cuối"
+    }
+  },
+  "ProductDetails": {
+    "contactForQuote": "Liên hệ báo giá",
+    "detailedSpecs": "Thông số kỹ thuật chi tiết",
+    "specs": {
+      "model": "Model",
+      "power": "Công suất (kW)",
+      "voltage": "Điện áp (V)",
+      "frequency": "Tần số (Hz)",
+      "phase": "Số pha",
+      "fuelType": "Nhiên liệu",
+      "warranty": "Bảo hành (tháng)",
+      "weight": "Trọng lượng (kg)",
+      "engineBrand": "Động cơ",
+      "startingSystem": "Khởi động",
+      "coolingSystem": "Làm mát",
+      "fuelConsumption": "Tiêu hao (L/h)",
+      "fuelTankCapacity": "Bình nhiên liệu (L)",
+      "alternatorBrand": "Đầu phát"
+    },
+    "fuelTypes": {
+      "gasoline": "Xăng",
+      "diesel": "Diesel",
+      "gas": "Gas"
+    },
+    "phases": {
+      "1phase": "1 Pha",
+      "3phase": "3 Pha"
+    }
+  }
+}

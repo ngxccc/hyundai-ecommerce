@@ -1,0 +1,94 @@
+{
+  "adminCompanySettings": {
+    "metaTitle": "Company Settings | Hyundai Admin",
+    "header": {
+      "title": "Company Settings",
+      "description": "Manage corporate legal name, tax ID, hotlines, warehouse locations, and bank account details used across the system."
+    },
+    "breadcrumbs": {
+      "settings": "System Settings",
+      "company": "Company Info"
+    },
+    "notice": {
+      "notConfiguredTitle": "Company settings are not initialized yet.",
+      "notConfiguredDescription": "Please fill out the information below and click Save Changes to initialize corporate data.",
+      "serverErrorTitle": "Cannot connect to Backend API server.",
+      "serverErrorDescription": "The system could not load company settings from the backend service (Port 3000). Please verify that the Backend service is running."
+    },
+    "lastUpdated": "Last updated:",
+    "tabs": {
+      "vi": "Vietnamese",
+      "en": "English"
+    },
+    "sections": {
+      "legal": "Legal & Brand Identity",
+      "legalDesc": "Corporate name shown on contracts, PDF/Excel quotation documents, and commercial invoices.",
+      "hotlines": "Hotlines & Contact Channels",
+      "hotlinesDesc": "Phone numbers displayed on Header, Footer, Quotations, and Quick Dial actions.",
+      "emails": "Electronic Mailboxes (Emails)",
+      "emailsDesc": "Email addresses for receiving quotations, technical support, and general inquiries.",
+      "addresses": "Headquarters & Warehouse Addresses",
+      "addressesDesc": "Corporate office location and dispatch warehouse facilities.",
+      "workingHours": "Working Hours & Links",
+      "workingHoursDesc": "Customer support operating schedule and official social links.",
+      "bank": "Bank Payment Information",
+      "bankDesc": "Corporate beneficiary bank account and VietQR display template."
+    },
+    "subsections": {
+      "projectHotline": "B2B Projects & Quotation Hotline",
+      "technicalHotline": "24/7 Technical Support Hotline",
+      "generalHotline": "General Switchboard Hotline"
+    },
+    "fields": {
+      "legalNameVi": "Legal Name (VI)",
+      "legalNameEn": "Legal Name (EN)",
+      "taxId": "Tax ID",
+      "shortName": "Short Name",
+      "brandName": "Brand Name",
+      "brandTitle": "Header Brand Title",
+      "brandFullName": "Brand Full Name",
+      "hotlineRaw": "Dial Number",
+      "hotlineDisplay": "Display Number",
+      "hotlineFormatted": "International Number",
+      "hotlineLabel": "Hotline Label",
+      "hotlineLabelVi": "Hotline Label (VI)",
+      "hotlineLabelEn": "Hotline Label (EN)",
+      "salesEmail": "Sales & Quotation Email",
+      "projectEmail": "Project Email",
+      "supportEmail": "Technical Support Email",
+      "generalEmail": "General Inquiries Email",
+      "hqAddress": "Headquarters Address",
+      "hqVi": "Headquarters Address",
+      "hqEn": "Headquarters Address",
+      "warehouseAddress": "Warehouse Address",
+      "warehouseVi": "Warehouse Address",
+      "warehouseEn": "Warehouse Address",
+      "workingHours": "Working Hours",
+      "workingHoursVi": "Working Hours",
+      "workingHoursEn": "Working Hours",
+      "website": "Official Website",
+      "zalo": "Zalo OA Link",
+      "facebook": "Facebook Fanpage Link",
+      "bankName": "Beneficiary Bank Name",
+      "selectBank": "Select beneficiary bank...",
+      "searchBank": "Search bank by name or code (VCB, MB, ACB...)",
+      "emptyBank": "No matching bank found",
+      "branch": "Branch (Optional)",
+      "branchVi": "Branch (Optional)",
+      "branchEn": "Branch (Optional)",
+      "accountNo": "Account Number",
+      "accountName": "Account Name",
+      "bin": "Bank BIN Code",
+      "qrTemplate": "VietQR Template"
+    },
+    "buttons": {
+      "save": "Save Changes",
+      "saving": "Saving..."
+    },
+    "messages": {
+      "successUpdate": "Company settings updated successfully!",
+      "error": "Failed to update company settings",
+      "unexpectedError": "An unexpected error occurred while saving company settings"
+    }
+  }
+}

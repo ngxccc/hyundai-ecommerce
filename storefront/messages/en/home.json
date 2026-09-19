@@ -1,0 +1,101 @@
+{
+  "HomePage": {
+    "brand": "HYUNDAI",
+    "branchName": "Nhat Nang",
+    "nav": {
+      "products": "Products",
+      "solutions": "Solutions",
+      "services": "Services",
+      "logout": "Logout"
+    },
+    "header": {
+      "support": "24/7 Support",
+      "requestQuote": "Request a Quote",
+      "login": "Login",
+      "register": "Register",
+      "myAccount": "My Account"
+    },
+    "hero": {
+      "badge": "Heavy-Duty Series",
+      "titleLine1": "Uninterruptible",
+      "titleLine2": "Power Supply.",
+      "description": "Ensure continuous business operations with Hyundai industrial generators. Designed for absolute reliability in harsh conditions.",
+      "primaryCta": "Explore Generators",
+      "secondaryCta": "Consultation",
+      "imageAlt": "Hyundai Industrial Generator System"
+    },
+    "categories": {
+      "title": "MAIN CATEGORIES",
+      "subtitle": "Technical Expertise"
+    },
+    "promos": {
+      "badge": "Seasonal Promo",
+      "title": "SUMMER 2026",
+      "subtitle": "PRECISION PROMOTION PROGRAM",
+      "desc": "Upgrade your infrastructure and save 20% on all industrial units. Limited time offer.",
+      "discount": "-20%",
+      "cta": "Learn More"
+    },
+    "products": {
+      "title": "Featured Equipment",
+      "subtitle": "Genuine Hyundai Industrial Generators & UPS",
+      "buyNowCta": "Buy Now",
+      "model": "Model",
+      "contactPrice": "Contact",
+      "requestQuoteCta": "Request Quote"
+    },
+    "news": {
+      "title": "TECHNICAL INSIGHTS",
+      "subtitle": "Expert Knowledge",
+      "viewAll": "View All Articles",
+      "article1": {
+        "category": "Maintenance",
+        "title": "How to Maximize Your Generator's Lifespan by 40%",
+        "desc": "Proper oil filtration and cooling systems are the backbone of industrial power durability...",
+        "date": "Nov 12, 2026 • 5 min read"
+      },
+      "article2": {
+        "category": "Innovation",
+        "title": "Going Hybrid: Integrating Solar with Diesel Backup",
+        "desc": "Reducing your carbon footprint while maintaining 100% uptime is no longer a dream...",
+        "date": "Oct 28, 2026 • 8 min read"
+      }
+    },
+    "trust": {
+      "warranty": {
+        "title": "Certified Warranty",
+        "desc": "Official 2-year manufacturer warranty for all industrial and residential Hyundai power units."
+      },
+      "support": {
+        "title": "24/7 Technical Support",
+        "desc": "Our expert engineers are always on standby for critical infrastructure emergency support."
+      },
+      "dealer": {
+        "title": "Authorized Dealer",
+        "desc": "Direct connection with Hyundai Power Vietnam, ensuring genuine parts and reasonable prices."
+      }
+    },
+    "footer": {
+      "companyName": "HYUNDAI NHAT NANG JOINT STOCK COMPANY",
+      "description": "Authorized distributor of Hyundai industrial generators and UPS systems in Vietnam.",
+      "taxId": "Tax Code: 0314896258",
+      "headquartersTitle": "Headquarters & Warehouses",
+      "headquarters": "HQ: 6th Floor, Licogi 13 Tower, 164 Khuat Duy Tien, Thanh Xuan, Hanoi",
+      "branchHcm": "Southern Branch: 36 Dang Tat, Tan Dinh Ward, District 1, Ho Chi Minh City",
+      "warehouse": "Central Warehouse: Dai Tu Industrial Zone, 386 Nguyen Van Linh, Long Bien, Hanoi",
+      "servicesTitle": "Engineering & Services",
+      "service1": "Load Survey & Capacity Calculation",
+      "service2": "Generator Room & ATS Installation",
+      "service3": "Periodic Maintenance & Genuine Parts",
+      "service4": "24/7 Nationwide Emergency Support",
+      "contactTitle": "Project Inquiries & Hotline",
+      "hotlineSales": "Project Hotline: 0901 49 7771",
+      "hotlineTech": "Technical Support: 0982 89 0698",
+      "email": "Email: duan@hyundainhatnang.com",
+      "workingHours": "Office Hours: 08:00 - 17:30 (Mon - Sat)",
+      "allRightsReserved": "All rights reserved.",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service"
+    }
+  }
+}

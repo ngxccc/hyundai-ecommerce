@@ -1,0 +1,101 @@
+{
+  "HomePage": {
+    "brand": "HYUNDAI",
+    "branchName": "Nhật Năng",
+    "nav": {
+      "products": "Sản phẩm",
+      "solutions": "Giải pháp",
+      "services": "Dịch vụ",
+      "logout": "Đăng xuất"
+    },
+    "header": {
+      "support": "Hỗ trợ 24/7",
+      "requestQuote": "Yêu cầu báo giá",
+      "login": "Đăng nhập",
+      "register": "Đăng ký",
+      "myAccount": "Tài khoản"
+    },
+    "hero": {
+      "badge": "Dòng tải nặng",
+      "titleLine1": "Nguồn điện",
+      "titleLine2": "không gián đoạn.",
+      "description": "Đảm bảo hoạt động liên tục cho doanh nghiệp với máy phát điện công nghiệp Hyundai. Được thiết kế để đạt độ tin cậy tuyệt đối trong điều kiện khắc nghiệt.",
+      "primaryCta": "Khám phá máy phát điện",
+      "secondaryCta": "Tư vấn",
+      "imageAlt": "Hệ thống máy phát điện công nghiệp Hyundai"
+    },
+    "categories": {
+      "title": "HẠNG MỤC CHÍNH",
+      "subtitle": "Chuyên môn kỹ thuật"
+    },
+    "promos": {
+      "badge": "Khuyến mại mùa",
+      "title": "MÙA HÈ 2026",
+      "subtitle": "CHƯƠNG TRÌNH KHUYẾN MẠI PRECISION",
+      "desc": "Nâng cấp cơ sở hạ tầng của bạn với tiết kiệm 20% cho tất cả các đơn vị công nghiệp. Thời gian hạn chế.",
+      "discount": "-20%",
+      "cta": "Tìm hiểu thêm"
+    },
+    "products": {
+      "title": "Sản phẩm nổi bật",
+      "subtitle": "Máy phát điện & Bộ lưu điện chính hãng Hyundai",
+      "buyNowCta": "Mua ngay",
+      "model": "Model",
+      "contactPrice": "Liên hệ",
+      "requestQuoteCta": "Yêu cầu báo giá"
+    },
+    "news": {
+      "title": "HIỂU BIẾT KỸ THUẬT",
+      "subtitle": "Kiến thức chuyên gia",
+      "viewAll": "Xem tất cả bài viết",
+      "article1": {
+        "category": "Bảo trì",
+        "title": "Cách tối đa hóa tuổi thọ máy phát của bạn thêm 40%",
+        "desc": "Các hệ thống lọc và làm mát dầu thích hợp là xương sống của độ bền điện lực công nghiệp...",
+        "date": "12 tháng 11, 2026 • 5 phút đọc"
+      },
+      "article2": {
+        "category": "Cải tiến",
+        "title": "Chuyển hướng sang hybrid: Tích hợp năng lượng mặt trời với sao lưu diesel",
+        "desc": "Giảm dấu chân carbon trong khi duy trì 100% thời gian hoạt động không còn là giấc mơ...",
+        "date": "28 tháng 10, 2026 • 8 phút đọc"
+      }
+    },
+    "trust": {
+      "warranty": {
+        "title": "Bảo hành được chứng nhận",
+        "desc": "Bảo hành nhà sản xuất chính thức 2 năm cho tất cả các đơn vị điện Hyundai công nghiệp và dân dụng."
+      },
+      "support": {
+        "title": "Hỗ trợ kỹ thuật 24/7",
+        "desc": "Các kỹ sư chuyên gia của chúng tôi luôn sẵn sàng hỗ trợ khẩn cấp cơ sở hạ tầng quan trọng."
+      },
+      "dealer": {
+        "title": "Nhà phân phối được uỷ quyền",
+        "desc": "Kết nối trực tiếp với Hyundai Power Vietnam, đảm bảo phụ tùng chính hãng và giá hợp lý."
+      }
+    },
+    "footer": {
+      "companyName": "CÔNG TY CỔ PHẦN HYUNDAI NHẬT NĂNG",
+      "description": "Nhà phân phối ủy quyền chính thức máy phát điện công nghiệp và bộ lưu điện UPS Hyundai tại Việt Nam.",
+      "taxId": "Mã số thuế: 0314896258",
+      "headquartersTitle": "Trụ sở & Tổng kho",
+      "headquarters": "Trụ sở chính: Tầng 6, Tòa nhà Licogi 13, 164 Khuất Duy Tiến, Thanh Xuân, Hà Nội",
+      "branchHcm": "Chi nhánh miền Nam: 36 Đặng Tất, Phường Tân Định, Quận 1, TP. Hồ Chi Minh",
+      "warehouse": "Tổng kho kỹ thuật: KCN Đài Tư, 386 Nguyễn Văn Linh, Long Biên, Hà Nội",
+      "servicesTitle": "Dịch vụ & Kỹ thuật",
+      "service1": "Khảo sát tải & Tính toán công suất",
+      "service2": "Thi công phòng máy & Tủ chuyển nguồn ATS",
+      "service3": "Bảo dưỡng định kỳ & Thay thế phụ tùng",
+      "service4": "Ứng cứu sự cố điện 24/7 toàn quốc",
+      "contactTitle": "Kênh Dự án & Hotline",
+      "hotlineSales": "Hotline Dự án: 0901 49 7771",
+      "hotlineTech": "Hỗ trợ Kỹ thuật: 0982 89 0698",
+      "email": "Email: duan@hyundainhatnang.com",
+      "workingHours": "Giờ làm việc: 08:00 - 17:30 (Thứ 2 - Thứ 7)",
+      "allRightsReserved": "Bảo lưu mọi quyền.",
+      "privacyPolicy": "Chính sách quyền riêng tư",
+      "termsOfService": "Điều khoản dịch vụ"
+    }
+  }
+}

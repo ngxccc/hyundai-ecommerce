@@ -12,12 +12,29 @@ export default getRequestConfig(async ({ locale }) => {
   // Fallback to default locale if requested locale is invalid
   const resolvedLocale = isValidLocale(locale) ? locale : routing.defaultLocale;
 
+  interface MessageModule {
+    default: Record<string, unknown>;
+  }
+
+  // Load modular messages concurrently and merge
+  const [common, home, auth, products, quote, orders] = (await Promise.all([
+    import(`../../messages/${resolvedLocale}/common.json`),
+    import(`../../messages/${resolvedLocale}/home.json`),
+    import(`../../messages/${resolvedLocale}/auth.json`),
+    import(`../../messages/${resolvedLocale}/products.json`),
+    import(`../../messages/${resolvedLocale}/quote.json`),
+    import(`../../messages/${resolvedLocale}/orders.json`),
+  ])) as MessageModule[];
+
   return {
     locale: resolvedLocale,
-    messages: (
-      (await import(`../../messages/${resolvedLocale}.json`)) as {
-        default: Record<string, string>;
-      }
-    ).default,
+    messages: {
+      ...common.default,
+      ...home.default,
+      ...auth.default,
+      ...products.default,
+      ...quote.default,
+      ...orders.default,
+    },
   };
 });

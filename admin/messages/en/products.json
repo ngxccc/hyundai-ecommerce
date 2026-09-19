@@ -1,0 +1,321 @@
+{
+  "adminProducts": {
+    "header": {
+      "title": "Products",
+      "description": "Manage your product catalog.",
+      "searchPlaceholder": "Search products...",
+      "addProduct": "Add New Product"
+    },
+    "filters": {
+      "searchPlaceholder": "Search model or name...",
+      "filterButton": "Filters",
+      "filterTitle": "Advanced Filters",
+      "filterDescription": "Filter and refine the product catalog.",
+      "applyFilters": "Apply",
+      "resetFilters": "Reset Filters",
+      "allCategories": "All Categories",
+      "status": "Status",
+      "brand": "Brand",
+      "fuelType": "Fuel Type",
+      "phase": "Phase",
+      "quoteOnly": "Quote Only",
+      "engineBrand": "Engine Brand...",
+      "alternatorBrand": "Alternator Brand...",
+      "minPower": "Min Power (kW)...",
+      "maxPower": "Max Power (kW)...",
+      "voltage": "Voltage (V)...",
+      "allBrands": "All Brands",
+      "allFuels": "All Fuels",
+      "allPhases": "All Phases",
+      "categoryOptions": {
+        "generator": "Generators",
+        "ups": "Power Stations",
+        "industrial": "Industrial Machines"
+      },
+      "brandOptions": {
+        "hyundai": "Hyundai",
+        "mitsubishi": "Mitsubishi",
+        "perkins": "Perkins"
+      },
+      "statusOptions": {
+        "active": "Active",
+        "outOfStock": "Out of Stock"
+      },
+      "fuelOptions": {
+        "diesel": "Diesel",
+        "gasoline": "Gasoline",
+        "gas": "Gas"
+      },
+      "phaseOptions": {
+        "1phase": "1 Phase",
+        "3phase": "3 Phase"
+      }
+    },
+    "card": {
+      "stock": "Stock: {count}",
+      "status": {
+        "active": "In Stock",
+        "outOfStock": "Out of Stock"
+      },
+      "contact": "Contact",
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "inventory": "Inventory",
+        "addToQuote": "Add to Quote",
+        "addedToQuoteSuccess": "Added {name} to quote draft",
+        "viewQuoteDraft": "View Quote"
+      }
+    },
+    "messages": {
+      "deleteSuccess": "Product deleted successfully",
+      "deleteError": "Failed to delete product"
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure you want to delete?",
+        "description": "Product \"{productName}\" will be removed. This action cannot be undone.",
+        "cancel": "Cancel",
+        "deleting": "Deleting...",
+        "confirm": "Delete Product"
+      }
+    },
+    "pagination": {
+      "showing": "Showing {start}-{end} of {total} products",
+      "showingCursor": "Showing product list"
+    }
+  },
+  "adminProductForm": {
+    "title": "Add New Product",
+    "description": "Enter detailed generator specifications into the system.",
+    "editTitle": "Edit Product",
+    "editDescription": "Edit generator details and technical specifications.",
+    "tabs": {
+      "vi": "Vietnamese",
+      "en": "English"
+    },
+    "placeholders": {
+      "model": "e.g., DHY8000SE",
+      "power": "e.g., 6.0",
+      "voltage": "e.g., 230",
+      "frequency": "e.g., 50",
+      "ratedCurrent": "e.g., 26",
+      "powerFactor": "e.g., 1.0",
+      "warranty": "e.g., 12",
+      "engine": "e.g., Hyundai D400",
+      "engineBrand": "e.g., Hyundai",
+      "coolingSystem": "e.g., Air-cooled",
+      "startingSystem": "e.g., Electric Start",
+      "fuelConsumption": "e.g., 1.5",
+      "fuelTankCapacity": "e.g., 15",
+      "alternator": "e.g., Brushed",
+      "alternatorBrand": "e.g., Hyundai",
+      "weight": "e.g., 150",
+      "length": "e.g., 900",
+      "width": "e.g., 520",
+      "height": "e.g., 700",
+      "noiseLevel": "e.g., 72"
+    },
+    "fields": {
+      "name": "Product Name",
+      "namePlaceholder": "Enter product name...",
+      "slug": "URL Slug",
+      "slugPlaceholder": "product-name",
+      "price": "Price",
+      "pricePlaceholder": "15.000.000",
+      "description": "Detailed Description",
+      "descriptionPlaceholder": "Enter detailed product description...",
+      "shortDescription": "Short Description",
+      "shortDescriptionPlaceholder": "Enter concise product summary...",
+      "images": "Images",
+      "imagesPlaceholder": "https://...",
+      "addImage": "Add Image URL",
+      "removeImage": "Remove",
+      "brand": "Brand",
+      "brandPlaceholder": "Select Brand",
+      "noBrandsFound": "No brands found",
+      "category": "Category",
+      "categoryPlaceholder": "Select Category",
+      "specs": "Technical Specifications",
+      "specKey": "Spec Name",
+      "specValue": "Value",
+      "addSpec": "Add Spec",
+      "removeSpec": "Remove",
+      "specs_general": "General Info",
+      "specs_engine": "Engine & Alternator",
+      "specs_fuel": "Fuel & Cooling",
+      "specs_dimensions": "Dimensions & Weight",
+      "specs_electrical": "Electrical Specs",
+      "model": "Model",
+      "power": "Power",
+      "voltage": "Voltage",
+      "frequency": "Frequency",
+      "phase": "Phase",
+      "engine": "Engine",
+      "engineBrand": "Engine Brand",
+      "alternator": "Alternator",
+      "alternatorBrand": "Alternator Brand",
+      "fuelType": "Fuel Type",
+      "fuelConsumption": "Fuel Consumption",
+      "fuelTankCapacity": "Fuel Tank Capacity",
+      "weight": "Weight",
+      "dimensions": "Dimensions (LxWxH)",
+      "length": "Length",
+      "width": "Width",
+      "height": "Height",
+      "noiseLevel": "Noise Level",
+      "warranty": "Warranty",
+      "ratedCurrent": "Rated Current",
+      "powerFactor": "Power Factor",
+      "startingSystem": "Starting System",
+      "coolingSystem": "Cooling System",
+      "isQuoteOnly": "Quote Only",
+      "selectPhase": "Select Phase",
+      "selectFuel": "Select Fuel Type",
+      "dragDropImage": "Drag and drop images here",
+      "orClickToSelect": "or click to select file",
+      "orEnterUrl": "Or enter image URL",
+      "categoryGroup": "Classification",
+      "noCategoriesFound": "No categories found",
+      "powerKva": "Prime Power (kVA)",
+      "powerKw": "Prime Power (kW)",
+      "standbyPowerKva": "Standby Power (kVA)",
+      "canopyType": "Canopy Type",
+      "selectCanopy": "Select canopy type",
+      "startMethod": "Start Method",
+      "selectStartMethod": "Select start method",
+      "productType": "Product Type",
+      "selectProductType": "Select product type",
+      "upsTopology": "UPS Topology",
+      "selectTopology": "Select topology",
+      "upsBatteryType": "UPS Battery Type",
+      "selectBattery": "Select battery type",
+      "facetedTitle": "Faceted & Search Attributes",
+      "specSheetTitle": "Detailed Specification Sheet",
+      "selectTemplate": "Select Template...",
+      "addGroup": "Add Spec Group",
+      "deleteGroup": "Delete Group",
+      "groupTitlePlaceholder": "e.g. Engine, Alternator...",
+      "emptySpecSheetTitle": "No specifications added yet",
+      "emptySpecSheetDescription": "Select a template above to autofill or click \"Add Spec Group\" to create custom specs.",
+      "createFirstGroup": "Create First Group",
+      "colParamName": "Parameter Name",
+      "colParamValue": "Value",
+      "colParamUnit": "Unit",
+      "colParamDelete": "Delete",
+      "paramNamePlaceholder": "e.g. Prime Power",
+      "paramValuePlaceholder": "e.g. 50 or Cummins",
+      "paramUnitPlaceholder": "e.g. kVA, kW...",
+      "addItem": "Add spec to this group"
+    },
+    "templateOptions": {
+      "industrial_diesel": "Industrial Diesel Generator 1500rpm",
+      "diesel_standby": "Standby Diesel Generator 3000rpm",
+      "gasoline_portable": "Portable Gasoline Generator",
+      "ups_online": "Online Double Conversion UPS"
+    },
+    "productTypeOptions": {
+      "generator": "Generator",
+      "ups": "Uninterruptible Power Supply",
+      "ats": "ATS / Electrical Panel",
+      "accessory": "Accessories & Spare Parts"
+    },
+    "canopyOptions": {
+      "silent": "Soundproof",
+      "super_silent": "Super Silent",
+      "open_frame": "Open Frame",
+      "closed_case": "Closed Case",
+      "tower": "Tower",
+      "rackmount": "Rackmount"
+    },
+    "startOptions": {
+      "electric": "Electric Start",
+      "recoil": "Recoil Start",
+      "remote": "Remote Start",
+      "auto_ats": "Auto ATS"
+    },
+    "topologyOptions": {
+      "online_double_conversion": "Online Double Conversion",
+      "line_interactive": "Line-Interactive",
+      "offline": "Offline"
+    },
+    "batteryOptions": {
+      "internal": "Internal Battery",
+      "external": "External Battery"
+    },
+    "categoryOptions": {
+      "diesel": "Diesel Generator",
+      "gasoline": "Gasoline Generator",
+      "parts": "Spare Parts"
+    },
+    "fuelOptions": {
+      "diesel": "Diesel",
+      "gasoline": "Gasoline",
+      "gas": "Gas"
+    },
+    "phaseOptions": {
+      "1phase": "1 Phase",
+      "3phase": "3 Phase",
+      "multi_phase": "Multi-Phase"
+    },
+    "buttons": {
+      "submit": "Save Product",
+      "submitting": "Saving...",
+      "cancel": "Cancel",
+      "addUrl": "Add URL"
+    },
+    "messages": {
+      "successCreate": "Product created successfully!",
+      "successUpdate": "Product updated successfully!",
+      "error": "An error occurred, please try again."
+    },
+    "validation": {
+      "nameRequired": "Product name is required",
+      "slugRequired": "URL slug is required",
+      "priceRequired": "Price is required",
+      "categoryRequired": "Please select a category",
+      "brandRequired": "Please select a brand",
+      "imagesRequired": "Please upload at least 1 image",
+      "powerKvaRequired": "Please enter power rating (kVA)",
+      "invalidUrl": "Must be a valid URL",
+      "invalidBrand": "Invalid brand selected",
+      "invalidCategory": "Invalid category selected",
+      "specKeyRequired": "Spec name is required",
+      "specValueRequired": "Spec value is required",
+      "invalidNumber": "Must be a valid number"
+    }
+  },
+  "adminInventory": {
+    "title": "Inventory Management",
+    "description": "Manage stock for product: {name}",
+    "tableTitle": "Warehouse Stock",
+    "tableDescription": "Set product stock quantities for each warehouse.",
+    "table": {
+      "warehouse": "Warehouse",
+      "status": "Status",
+      "stock": "Stock Quantity",
+      "minStock": "Min Stock Warning",
+      "actions": "Actions"
+    },
+    "status": {
+      "inStock": "In Stock",
+      "lowStock": "Low Stock",
+      "inactive": "Inactive",
+      "outOfStock": "Out of Stock"
+    },
+    "buttons": {
+      "save": "Save",
+      "saving": "Saving..."
+    },
+    "empty": "No warehouses found.",
+    "messages": {
+      "successSave": "Stock updated successfully.",
+      "errorSave": "Failed to update stock."
+    },
+    "errors": {
+      "invalidStock": "Invalid stock quantity",
+      "invalidMinStockWarning": "Invalid min stock warning",
+      "updateWarehouseStockFailed": "Failed to update warehouse stock in database"
+    }
+  }
+}
