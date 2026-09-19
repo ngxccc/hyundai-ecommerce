@@ -61,13 +61,13 @@ export function AdminSettingsDialog({
       >
         <DialogTitle className="sr-only">{t("title")}</DialogTitle>
 
-        {/* Left Sidebar Menu */}
-        <aside className="bg-muted/15 flex w-full shrink-0 flex-col justify-between border-b p-3.5 sm:w-45 sm:border-r sm:border-b-0">
-          <div className="space-y-3">
-            <span className="text-muted-foreground/70 px-2.5 text-[10px] font-semibold tracking-wider uppercase">
+        {/* Navigation Menu: Horizontal tabs on mobile, vertical sidebar on desktop */}
+        <aside className="bg-muted/15 flex w-full shrink-0 flex-col border-b p-2 sm:w-45 sm:border-r sm:border-b-0 sm:p-3.5">
+          <div className="space-y-2 sm:space-y-3">
+            <span className="text-muted-foreground/70 hidden px-2.5 text-[10px] font-semibold tracking-wider uppercase sm:block">
               {t("generalGroup")}
             </span>
-            <nav className="space-y-0.5">
+            <nav className="flex items-center gap-1 overflow-x-auto px-1 py-0.5 sm:flex-col sm:items-stretch sm:gap-0.5 sm:overflow-x-visible sm:px-0 sm:py-0">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.key;
@@ -79,7 +79,7 @@ export function AdminSettingsDialog({
                     size="sm"
                     onClick={() => setActiveTab(item.key)}
                     className={cn(
-                      "h-8 w-full cursor-pointer justify-start gap-2 rounded-lg px-2.5 text-xs font-medium",
+                      "h-8 shrink-0 cursor-pointer justify-start gap-1.5 rounded-lg px-2.5 text-xs font-medium sm:w-full sm:gap-2",
                       isActive
                         ? "bg-accent text-accent-foreground font-semibold shadow-2xs"
                         : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",

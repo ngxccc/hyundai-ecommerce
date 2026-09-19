@@ -51,7 +51,7 @@ export const AdminSidebar = ({ user }: AdminSidebarProps) => {
   const t = useTranslations("adminDashboard");
   const router = useRouter();
   const pathname = usePathname();
-  const { state, isMobile } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
   const isCollapsed = state === "collapsed" && !isMobile;
   const navGroups = useAdminNavGroups();
   const [commandOpen, setCommandOpen] = useState(false);
@@ -149,7 +149,12 @@ export const AdminSidebar = ({ user }: AdminSidebarProps) => {
                               : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground font-medium"
                           }
                         >
-                          <Link href={item.href}>
+                          <Link
+                            href={item.href}
+                            onClick={() => {
+                              if (isMobile) setOpenMobile(false);
+                            }}
+                          >
                             <item.icon className="size-4 shrink-0" />
                             {!isCollapsed && <span>{item.label}</span>}
                           </Link>
