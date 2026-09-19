@@ -1,3 +1,4 @@
+import { cacheLife, cacheTag } from "next/cache";
 import { api } from "@/lib/api-client";
 import type { StorefrontCompanySettings } from "@/types/api";
 
@@ -45,10 +46,14 @@ export const companySettingsApi = {
 
 /**
  * Server-side helper to fetch company settings directly from backend with safe empty fallback.
+ * Integrates with Next.js 16 "use cache" for build-time and runtime pre-rendering.
  *
  * @returns Active company settings from database or empty structure
  */
 export async function getCompanySettings(): Promise<StorefrontCompanySettings> {
+  "use cache";
+  cacheLife("days");
+  cacheTag("company-settings");
   try {
     const { data } = await companySettingsApi.get();
     if (data?.data) {

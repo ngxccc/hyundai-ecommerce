@@ -5,55 +5,13 @@ import { getTranslations } from "next-intl/server";
 import type { Locale } from "next-intl";
 import { CenteredSpinner } from "@/components/common";
 import { AdminBreadcrumbs } from "@/components/common/admin-breadcrumbs";
-import { companySettingsApi } from "@/features/settings/api/company-settings.api";
+import {
+  companySettingsApi,
+  EMPTY_COMPANY_SETTINGS,
+} from "@/features/settings/api/company-settings.api";
 import { CompanySettingsHeader } from "@/features/settings/components/company-settings-header";
 import { CompanySettingsForm } from "@/features/settings/components/company-settings-form";
-import type { AdminCompanySettings } from "@/types/api";
 import { AlertCircle } from "lucide-react";
-
-const EMPTY_COMPANY_SETTINGS: AdminCompanySettings = {
-  id: "019de1a0-0000-7000-8000-000000000099",
-  legalNameVi: "",
-  legalNameEn: "",
-  shortName: "",
-  brandName: "",
-  brandTitle: "",
-  brandFullName: "",
-  taxId: "",
-  hotlines: {
-    project: {
-      raw: "",
-      display: "",
-      formatted: "",
-      labelVi: "Dự án & Báo giá B2B",
-      labelEn: "B2B Projects & Quotation",
-    },
-    technical: {
-      raw: "",
-      display: "",
-      formatted: "",
-      labelVi: "Hỗ trợ Kỹ thuật 24/7",
-      labelEn: "24/7 Technical Support",
-    },
-  },
-  emails: { sales: "", project: "", support: "", general: "" },
-  addresses: {
-    headquarters: { vi: "", en: "" },
-    warehouse: { vi: "", en: "" },
-  },
-  workingHours: { vi: "", en: "" },
-  links: { website: "", zalo: "", facebook: "" },
-  bank: {
-    bankName: "",
-    branchVi: "",
-    branchEn: "",
-    accountNo: "",
-    accountName: "",
-    bin: "",
-    qrTemplate: "qr_only",
-  },
-  updatedAt: new Date().toISOString(),
-};
 
 export async function generateMetadata({
   params,
