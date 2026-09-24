@@ -315,10 +315,9 @@ describe("OrdersService", () => {
         };
 
         mockDb.setSelectResultsQueue([
-          [mockOrderRecord], // findById current
-          [mockOrderItemRecord], // findById current items
-          [updatedRecord], // findById updated
-          [mockOrderItemRecord], // findById updated items
+          [mockOrderRecord], // 0: tx select orders FOR UPDATE
+          [updatedRecord], // 1: findById select orders (after commit)
+          [mockOrderItemRecord], // 2: findById select items
         ]);
 
         const result = await service.updateStatus(
@@ -407,6 +406,33 @@ describe("OrdersService", () => {
 
         expect(count).toBe(1);
       });
+    });
+  });
+
+  describe("when concurrent conflicting status updates occur", () => {
+    test("should reject conflicting concurrent transition and maintain state machine invariant", async () => {
+      const initialOrder = { ...mockOrderRecord, status: "PENDING" as const };
+
+      mockDb.setSelectResultsQueue([
+        [initialOrder], // Req A: tx select orders FOR UPDATE (PENDING)
+        [{ ...mockOrderRecord, status: "CANCELLED" as const }], // Req B: tx select orders FOR UPDATE (reads CANCELLED after A commits)
+        [mockOrderItemRecord], // Req A: tx select orderItems
+        [{ warehouseId: "wh-1", stock: 4 }], // Req A: tx select warehouseStocks
+        [{ ...mockOrderRecord, status: "CANCELLED" as const }], // Req A: findById select orders
+        [mockOrderItemRecord], // Req A: findById select orderItems
+      ]);
+
+      const reqA = service.updateStatus(mockOrderRecord.id, "CANCELLED");
+      const reqB = service.updateStatus(mockOrderRecord.id, "PROCESSING");
+
+      const [resA, resB] = await Promise.allSettled([reqA, reqB]);
+
+      const fulfilled = [resA, resB].filter((r) => r.status === "fulfilled");
+      const rejected = [resA, resB].filter((r) => r.status === "rejected");
+
+      expect(fulfilled.length).toBe(1);
+      expect(rejected.length).toBe(1);
+      expect(rejected[0]?.reason).toBeInstanceOf(UnprocessableEntityException);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Optional } from "@nestjs/common";
 import {
   I18nBadRequestException,
   I18nForbiddenException,
@@ -38,6 +38,8 @@ import type {
   OrderResponseDto,
   VerifyCashPaymentDto,
 } from "./dto";
+import type { SentryService } from "@/common/services/sentry.service";
+import { SENTRY_BREADCRUMB_CATEGORY } from "@/common/constants/sentry.constant";
 
 /**
  * Valid state transitions for order lifecycle.
@@ -52,7 +54,10 @@ const VALID_ORDER_TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
 
 @Injectable()
 export class OrdersService {
-  constructor(@Inject(DATABASE_CONNECTION) private readonly db: DrizzleDB) {}
+  constructor(
+    @Inject(DATABASE_CONNECTION) private readonly db: DrizzleDB,
+    @Optional() private readonly sentryService?: SentryService,
+  ) {}
 
   /**
    * Places a retail order for guest customers without requiring prior account registration.
@@ -118,7 +123,7 @@ export class OrdersService {
           })
           .where(eq(products.id, item.productId));
 
-        const stocks = await tx
+        const availableStocks = await tx
           .select()
           .from(warehouseStocks)
           .where(
@@ -127,23 +132,30 @@ export class OrdersService {
               sql`${warehouseStocks.stock} > 0`,
             ),
           )
-          .for("update")
-          .limit(1);
+          .orderBy(desc(warehouseStocks.stock))
+          .for("update");
 
-        if (stocks.length > 0 && stocks[0]) {
+        let remainingToDeduct = item.quantity;
+
+        for (const wStock of availableStocks) {
+          if (remainingToDeduct <= 0) break;
+
+          const deductQty = Math.min(wStock.stock, remainingToDeduct);
+
           await tx
             .update(warehouseStocks)
             .set({
-              stock: sql`GREATEST(0, ${warehouseStocks.stock} - ${item.quantity})`,
+              stock: sql`${warehouseStocks.stock} - ${deductQty}`,
             })
             .where(
               and(
-                eq(warehouseStocks.warehouseId, stocks[0].warehouseId),
+                eq(warehouseStocks.warehouseId, wStock.warehouseId),
                 eq(warehouseStocks.productId, item.productId),
               ),
             );
-        }
 
+          remainingToDeduct -= deductQty;
+        }
         const [productTrans] = await tx
           .select({ name: productTranslations.name })
           .from(productTranslations)
@@ -307,7 +319,7 @@ export class OrdersService {
           })
           .where(eq(products.id, item.productId));
 
-        const stocks = await tx
+        const availableStocks = await tx
           .select()
           .from(warehouseStocks)
           .where(
@@ -316,22 +328,31 @@ export class OrdersService {
               sql`${warehouseStocks.stock} > 0`,
             ),
           )
-          .for("update")
-          .limit(1);
+          .orderBy(desc(warehouseStocks.stock))
+          .for("update");
 
-        if (stocks.length > 0 && stocks[0]) {
+        let remainingToDeduct = item.quantity;
+
+        for (const wStock of availableStocks) {
+          if (remainingToDeduct <= 0) break;
+
+          const deductQty = Math.min(wStock.stock, remainingToDeduct);
+
           await tx
             .update(warehouseStocks)
             .set({
-              stock: sql`GREATEST(0, ${warehouseStocks.stock} - ${item.quantity})`,
+              stock: sql`${warehouseStocks.stock} - ${deductQty}`,
             })
             .where(
               and(
-                eq(warehouseStocks.warehouseId, stocks[0].warehouseId),
+                eq(warehouseStocks.warehouseId, wStock.warehouseId),
                 eq(warehouseStocks.productId, item.productId),
               ),
             );
+
+          remainingToDeduct -= deductQty;
         }
+
         const [productTrans] = await tx
           .select({ name: productTranslations.name })
           .from(productTranslations)
@@ -720,31 +741,40 @@ export class OrdersService {
     adminUserId?: string,
     note?: string | null,
   ): Promise<OrderResponseDto> {
-    const current = await this.findById(id);
-    return this.applyStatusTransition(current, newStatus, adminUserId, note);
-  }
+    await this.db.transaction(async (tx) => {
+      const [order] = await tx
+        .select()
+        .from(orders)
+        .where(eq(orders.id, id))
+        .for("update")
+        .limit(1);
 
-  private async applyStatusTransition(
-    current: OrderResponseDto,
-    newStatus: OrderStatus,
-    adminUserId?: string,
-    note?: string | null,
-  ): Promise<OrderResponseDto> {
-    if (current.status === newStatus) {
-      return current;
-    }
+      if (!order) {
+        throw new I18nNotFoundException("orders.ORDER_NOT_FOUND");
+      }
 
-    const allowed = VALID_ORDER_TRANSITIONS[current.status];
-    if (!allowed.includes(newStatus)) {
-      throw new I18nUnprocessableEntityException(
-        "orders.INVALID_STATUS_TRANSITION",
-      );
-    }
+      if (order.status === newStatus) {
+        return;
+      }
 
-    const updatedOrder = await this.db.transaction(async (tx) => {
-      // Restock physical and cached warehouse inventory when cancelling an active order.
+      const allowed = VALID_ORDER_TRANSITIONS[order.status];
+      if (!allowed.includes(newStatus)) {
+        throw new I18nUnprocessableEntityException(
+          "orders.INVALID_STATUS_TRANSITION",
+        );
+      }
+
       if (newStatus === "CANCELLED") {
-        for (const item of current.items) {
+        const items = await tx
+          .select()
+          .from(orderItems)
+          .where(eq(orderItems.orderId, id));
+
+        const sortedItems = [...items].sort((a, b) =>
+          a.productId.localeCompare(b.productId),
+        );
+
+        for (const item of sortedItems) {
           await tx
             .update(products)
             .set({
@@ -777,8 +807,8 @@ export class OrdersService {
         await tx.insert(outboxEvents).values({
           eventType: OUTBOX_EVENT_TYPE.ORDER_CANCELLED,
           payload: {
-            orderId: current.id,
-            orderNumber: current.orderNumber,
+            orderId: order.id,
+            orderNumber: order.orderNumber,
             reason: note ?? "Status updated to CANCELLED",
           },
         });
@@ -786,33 +816,22 @@ export class OrdersService {
         await tx.insert(outboxEvents).values({
           eventType: OUTBOX_EVENT_TYPE.ORDER_CONFIRMED,
           payload: {
-            orderId: current.id,
-            orderNumber: current.orderNumber,
+            orderId: order.id,
+            orderNumber: order.orderNumber,
           },
         });
       }
 
-      const [updated] = await tx
+      await tx
         .update(orders)
         .set({
           status: newStatus,
-          approvedBy: adminUserId ?? current.approvedBy,
-          note: note !== undefined ? note : current.note,
+          approvedBy: adminUserId ?? order.approvedBy,
+          note: note !== undefined ? note : order.note,
         })
-        .where(eq(orders.id, current.id))
-        .returning();
-
-      return updated;
+        .where(eq(orders.id, order.id));
     });
-
-    current.status = newStatus;
-    current.approvedBy =
-      updatedOrder?.approvedBy ?? adminUserId ?? current.approvedBy;
-    current.note =
-      updatedOrder?.note ?? (note !== undefined ? note : current.note);
-    current.updatedAt = updatedOrder?.updatedAt ?? new Date();
-
-    return current;
+    return this.findById(id);
   }
 
   /**
@@ -850,12 +869,7 @@ export class OrdersService {
       throw new I18nBadRequestException("orders.ORDER_CANNOT_BE_CANCELLED");
     }
 
-    return this.applyStatusTransition(
-      current,
-      "CANCELLED",
-      currentUser?.sub,
-      note,
-    );
+    return this.updateStatus(id, "CANCELLED", currentUser?.sub, note);
   }
 
   /**
@@ -878,11 +892,23 @@ export class OrdersService {
         ),
       );
 
+    let expiredCount = 0;
+
     for (const item of expiredList) {
-      await this.cancelOrder(item.id, "Auto-expired: Payment timeout");
+      try {
+        await this.cancelOrder(item.id, "Auto-expired: Payment timeout");
+        expiredCount++;
+      } catch (err) {
+        this.sentryService?.addBreadcrumb({
+          category: SENTRY_BREADCRUMB_CATEGORY.OUTBOX,
+          message: `Failed to auto-expire order [${item.id}]: ${err instanceof Error ? err.message : "Unknown error"}`,
+          level: "warning",
+          data: { orderId: item.id },
+        });
+      }
     }
 
-    return expiredList.length;
+    return expiredCount;
   }
 
   /**
@@ -900,29 +926,31 @@ export class OrdersService {
     dto: VerifyCashPaymentDto,
     adminUserId: string,
   ): Promise<OrderResponseDto> {
-    const [order] = await this.db
-      .select()
-      .from(orders)
-      .where(eq(orders.id, orderId))
-      .limit(1);
-
-    if (!order) {
-      throw new I18nNotFoundException("orders.ORDER_NOT_FOUND");
-    }
-
-    if (order.status === "CANCELLED") {
-      throw new I18nBadRequestException("orders.ORDER_CANNOT_BE_CANCELLED");
-    }
-
-    if (order.paymentStatus === "FULLY_PAID") {
-      throw new I18nBadRequestException("payments.ORDER_ALREADY_PAID");
-    }
-
-    const cashAmountNum = Number(dto.amount);
-    const formattedAmount = cashAmountNum.toFixed(2);
-    const newStatus = order.status === "PENDING" ? "PROCESSING" : order.status;
-
     await this.db.transaction(async (tx) => {
+      const [order] = await tx
+        .select()
+        .from(orders)
+        .where(eq(orders.id, orderId))
+        .for("update")
+        .limit(1);
+
+      if (!order) {
+        throw new I18nNotFoundException("orders.ORDER_NOT_FOUND");
+      }
+
+      if (order.status === "CANCELLED") {
+        throw new I18nBadRequestException("orders.ORDER_ALREADY_CANCELLED");
+      }
+
+      if (order.paymentStatus === "FULLY_PAID") {
+        throw new I18nBadRequestException("payments.ORDER_ALREADY_PAID");
+      }
+
+      const cashAmountNum = Number(dto.amount);
+      const formattedAmount = cashAmountNum.toFixed(2);
+      const newStatus =
+        order.status === "PENDING" ? "PROCESSING" : order.status;
+
       await tx.insert(paymentTransactions).values({
         orderId: order.id,
         amount: formattedAmount,
@@ -993,6 +1021,6 @@ export class OrdersService {
       });
     });
 
-    return this.findById(order.id);
+    return this.findById(orderId);
   }
 }
