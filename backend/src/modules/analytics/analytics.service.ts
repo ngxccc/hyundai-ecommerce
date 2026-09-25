@@ -32,6 +32,9 @@ import {
   getYearBounds,
   toSafeNumber,
 } from "./analytics.constant";
+import type { SentryService } from "@/common/services/sentry.service";
+import { SENTRY_BREADCRUMB_CATEGORY } from "@/common/constants/sentry.constant";
+import { getErrorMessage } from "@/common/utils/error.util";
 
 const viCategoryTranslations = aliasedTable(
   categoryTranslations,
@@ -57,15 +60,30 @@ export class AnalyticsService implements OnModuleDestroy {
     private readonly db: DrizzleDB,
     @Optional()
     redisClient?: Redis,
+    @Optional() private readonly sentryService?: SentryService,
   ) {
     if (redisClient) {
       this.redisClient = redisClient;
     } else if (env.NODE_ENV !== "test") {
       try {
         this.redisClient = createRedisClient();
-        this.redisClient.on("error", () => undefined);
-      } catch {
-        // Fail-open strategy: proceed with un-cached PostgreSQL execution if Redis fails to initialize.
+        this.redisClient.on("error", (error) =>
+          this.sentryService?.addBreadcrumb({
+            category: SENTRY_BREADCRUMB_CATEGORY.REDIS,
+            message: `Analytics Redis runtime error: ${error.message}`,
+            level: "warning",
+          }),
+        );
+      } catch (error) {
+        this.sentryService?.addBreadcrumb({
+          category: SENTRY_BREADCRUMB_CATEGORY.REDIS,
+          message: `Analytics Redis clien initialization failed: ${getErrorMessage(error)}`,
+          level: "warning",
+          data: {
+            service: "AnalyticsService",
+            enviroment: env.NODE_ENV,
+          },
+        });
       }
     }
   }

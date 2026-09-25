@@ -85,13 +85,8 @@ export const productService = {
       const { data: res, error: apiError } =
         await catalogApi.products.list(queryParams);
 
-      if (apiError) {
-        throw new Error(
-          `Failed to fetch products: ${apiError.detail || "Unknown error"}`,
-        );
-      }
-      if (!res.data) {
-        throw new Error("Malformed API response: missing data");
+      if (apiError || !res.data) {
+        return { data: [], total: 0, page: 0, totalPages: 0, hasMore: false };
       }
 
       const items = res.data;
@@ -106,8 +101,8 @@ export const productService = {
         prevCursor: meta.hasPrevPage ? String(meta.page - 1) : undefined,
       };
     } catch (error) {
-      console.error("Failed to fetch products from backend:", error);
-      throw error;
+      console.warn("Failed to fetch products from backend:", error);
+      return { data: [], total: 0, page: 0, totalPages: 0, hasMore: false };
     }
   },
 

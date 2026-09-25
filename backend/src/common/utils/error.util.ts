@@ -107,3 +107,7 @@ export function isPostgresErrorCode(
   const details = extractDatabaseErrorDetails(error);
   return details.code === targetCode;
 }
+
+export function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}

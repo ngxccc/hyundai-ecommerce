@@ -3,10 +3,10 @@ updates:
   - package-ecosystem: "bun"
     directory: "/"
     schedule:
-      interval: "daily"          # Kiểm tra update mỗi ngày
-    ignore:
-      - dependency-name: "eslint" # không cho update eslint
-        update-types: ["version-update:semver-major"]
+      interval: "daily" # Kiểm tra update mỗi ngày
+    # ignore:
+    #   - dependency-name: "eslint"
+    #     update-types: ["version-update:semver-major"]
     open-pull-requests-limit: 12 # Giới hạn số PR mở cùng lúc
     groups:
       security-updates:
@@ -24,7 +24,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"         # Actions update ít hơn, tránh lạm dụng
+      interval: "weekly" # Actions update ít hơn, tránh lạm dụng
     open-pull-requests-limit: 5
 
   # ── (Tùy chọn) Nếu sau này bạn dùng Docker ──
