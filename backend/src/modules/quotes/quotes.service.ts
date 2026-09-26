@@ -391,6 +391,12 @@ export class QuotesService {
       .where(whereClause);
 
     const total = totalRecord?.count ?? 0;
+    if (total === 0) {
+      return {
+        items: [],
+        meta: buildPaginationMeta(total, page, limit),
+      };
+    }
 
     const quoteRecords = await this.db
       .select({
@@ -403,14 +409,9 @@ export class QuotesService {
       .orderBy(desc(quotes.createdAt))
       .limit(limit)
       .offset(offset);
-    if (quoteRecords.length === 0) {
-      return {
-        items: [],
-        meta: buildPaginationMeta(total, page, limit),
-      };
-    }
 
     const quoteIds = quoteRecords.map((q) => q.id);
+    // remove duplicate user id with Set
     const userIds = [
       ...new Set(
         quoteRecords
@@ -458,25 +459,15 @@ export class QuotesService {
         : Promise.resolve([]),
     ]);
 
-    const itemsByQuoteId = new Map<
-      string,
-      ((typeof allItemRecords)[number]["item"] & {
-        product: (typeof allItemRecords)[number]["product"] | null;
-      })[]
-    >();
-    for (const { item, product } of allItemRecords) {
-      const list = itemsByQuoteId.get(item.quoteId) ?? [];
-      list.push({
+    // in-memory hash map join
+    const itemsByQuoteId = Map.groupBy(
+      allItemRecords.map(({ item, product }) => ({
         ...item,
-        product: product?.id ? product : null,
-      });
-      itemsByQuoteId.set(item.quoteId, list);
-    }
-
-    const usersById = new Map<string, (typeof allUsers)[number]>();
-    for (const u of allUsers) {
-      usersById.set(u.id, u);
-    }
+        product,
+      })),
+      (i) => i.quoteId,
+    );
+    const usersById = new Map(allUsers.map((u) => [u.id, u]));
 
     const items: AdminQuoteResponseDto[] = quoteRecords.map((quote) => {
       const itemsList = itemsByQuoteId.get(quote.id) ?? [];
