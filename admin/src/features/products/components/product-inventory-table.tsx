@@ -32,7 +32,7 @@ export const ProductInventoryTable = ({
   const t = useTranslations("adminInventory");
 
   // Sort warehouses so active ones are first
-  const sortedWarehouses = [...warehouses].sort((a, b) => {
+  const sortedWarehouses = warehouses.toSorted((a, b) => {
     if (a.isActive === b.isActive) return a.nameVi.localeCompare(b.nameVi);
     return a.isActive ? -1 : 1;
   });

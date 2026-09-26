@@ -207,15 +207,9 @@ export function ProductFilters({
   ]);
 
   const handleBrandChange = (brandSlug: string, checked: boolean) => {
-    let newBrands = [...selectedBrands];
-    if (checked) {
-      if (!newBrands.includes(brandSlug)) {
-        newBrands.push(brandSlug);
-      }
-    } else {
-      newBrands = newBrands.filter((b) => b !== brandSlug);
-    }
-    updateFilters({ brand: newBrands.length > 0 ? newBrands.join(",") : null });
+    const next = new Set(selectedBrands);
+    next[checked ? "add" : "delete"](brandSlug);
+    updateFilters({ brand: next.size > 0 ? [...next].join(",") : null });
   };
 
   // Only keep brands that exist in the database (count > 0)

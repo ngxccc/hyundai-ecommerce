@@ -99,13 +99,13 @@ export const useQuoteDraftStore = create<AdminQuoteDraftState>()(
           );
 
           if (existingIndex > -1) {
-            const updatedItems = [...state.items];
-            const existingItem = updatedItems[existingIndex];
-            updatedItems[existingIndex] = {
-              ...existingItem,
-              quantity: existingItem.quantity + quantity,
+            const existringItem = state.items[existingIndex];
+            return {
+              items: state.items.with(existingIndex, {
+                ...existringItem,
+                quantity: existringItem.quantity + quantity,
+              }),
             };
-            return { items: updatedItems };
           }
 
           // Extract equipment specifications for quote display and technical appendix

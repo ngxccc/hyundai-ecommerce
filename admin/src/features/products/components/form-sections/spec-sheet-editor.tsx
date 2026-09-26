@@ -41,7 +41,7 @@ export const SpecSheetEditor = ({ form }: SpecSheetEditorProps) => {
     const opt = SPEC_TEMPLATE_OPTIONS.find((o) => o.id === templateId);
     if (!opt) return;
 
-    const cloned = JSON.parse(JSON.stringify(opt.template)) as ProductSpecSheet;
+    const cloned = structuredClone(opt.template);
     updateSpecSheet(cloned);
     setSelectedTemplate(templateId);
   };
