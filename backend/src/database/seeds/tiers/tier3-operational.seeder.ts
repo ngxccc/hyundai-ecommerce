@@ -4,7 +4,6 @@ import {
   orders,
   payments,
   quoteItems,
-  quoteMessages,
   quotes,
   shippingBids,
 } from "@/database/schemas";
@@ -33,30 +32,28 @@ export async function seedTier3Operational(
   // 1. Seed Quotes & Items
   if (isScopeActive(scopes, "operational", "quotes")) {
     const quotesList = quotesFixture as unknown as QuoteFixtureData[];
-    const quoteTableData = quotesList.map(
-      ({ items: _items, messages: _msgs, ...quote }) => {
-        const validityDays = quote.commercialTerms?.validityDays ?? 15;
-        const expirationDate = quote.expirationDate
-          ? new Date(quote.expirationDate)
-          : new Date(Date.now() + validityDays * 24 * 60 * 60 * 1000);
+    const quoteTableData = quotesList.map(({ items: _items, ...quote }) => {
+      const validityDays = quote.commercialTerms?.validityDays ?? 15;
+      const expirationDate = quote.expirationDate
+        ? new Date(quote.expirationDate)
+        : new Date(Date.now() + validityDays * 24 * 60 * 60 * 1000);
 
-        return {
-          ...quote,
-          commercialTerms: quote.commercialTerms ?? {
-            validityDays: 15,
-            paymentSchedule:
-              "Tạm ứng 30% khi ký hợp đồng, 70% còn lại trước khi bàn giao.",
-            deliveryTime:
-              "Trong vòng 01 - 03 ngày làm việc kể từ ngày nhận tiền tạm ứng.",
-            deliveryLocation:
-              "Giao hàng và hướng dẫn vận hành tại chân công trình Bên Mua.",
-            warrantyTerms:
-              "Bảo hành chính hãng 12 tháng hoặc 1.000 giờ chạy theo tiêu chuẩn Hyundai.",
-          },
-          expirationDate,
-        };
-      },
-    );
+      return {
+        ...quote,
+        commercialTerms: quote.commercialTerms ?? {
+          validityDays: 15,
+          paymentSchedule:
+            "Tạm ứng 30% khi ký hợp đồng, 70% còn lại trước khi bàn giao.",
+          deliveryTime:
+            "Trong vòng 01 - 03 ngày làm việc kể từ ngày nhận tiền tạm ứng.",
+          deliveryLocation:
+            "Giao hàng và hướng dẫn vận hành tại chân công trình Bên Mua.",
+          warrantyTerms:
+            "Bảo hành chính hãng 12 tháng hoặc 1.000 giờ chạy theo tiêu chuẩn Hyundai.",
+        },
+        expirationDate,
+      };
+    });
     await db.insert(quotes).values(quoteTableData).onConflictDoNothing();
 
     const quoteItemData = quotesList.flatMap((q) =>
@@ -77,20 +74,6 @@ export async function seedTier3Operational(
     if (quoteItemData.length > 0) {
       await db.insert(quoteItems).values(quoteItemData).onConflictDoNothing();
       result.quoteItemsCount = quoteItemData.length;
-    }
-
-    const quoteMessageData = quotesList.flatMap((q) =>
-      q.messages.map((msg) => ({
-        quoteId: q.id,
-        senderId: msg.senderId,
-        message: msg.message,
-      })),
-    );
-    if (quoteMessageData.length > 0) {
-      await db
-        .insert(quoteMessages)
-        .values(quoteMessageData)
-        .onConflictDoNothing();
     }
 
     result.quotes = await db

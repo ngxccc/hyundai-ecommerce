@@ -23,13 +23,12 @@ import {
   products,
   productTranslations,
   quoteItems,
-  quoteMessages,
   quotes,
 } from "@/database/schemas";
 import type { components } from "../generated/api-schema";
+import { eq } from "drizzle-orm";
 
 type QuoteData = components["schemas"]["AdminQuoteResponseDto"];
-type QuoteMessageData = components["schemas"]["QuoteMessageResponseDto"];
 type ApproveToOrderData = components["schemas"]["ApproveToOrderResponseDto"];
 
 interface GenericSuccessResponse<T> {
@@ -58,7 +57,6 @@ describe("Quotes Module Integration", () => {
   }, 30000);
 
   beforeEach(async () => {
-    await db.delete(quoteMessages);
     await db.delete(quoteItems);
     await db.delete(orderItems);
     await db.delete(orders);
@@ -173,12 +171,15 @@ describe("Quotes Module Integration", () => {
   });
 
   describe("Quote Negotiation Timeline & State Machine", () => {
-    it("should advance SUBMITTED quote to NEGOTIATING upon message, allow item price adjustments, and export Excel", async () => {
-      const { authHeader: adminAuth, user: adminUser } =
-        await createAuthenticatedUser(db, jwtService, {
+    it("should advance SUBMITTED quote to NEGOTIATING, allow item price adjustments, and export Excel", async () => {
+      const { authHeader: adminAuth } = await createAuthenticatedUser(
+        db,
+        jwtService,
+        {
           email: "admin.negotiate@hyundai-nhatnang.vn",
           role: "ADMIN",
-        });
+        },
+      );
 
       // 1. Submit RFQ (status: SUBMITTED)
       const rfqRes = await request(getHttpServer())
@@ -204,19 +205,13 @@ describe("Quotes Module Integration", () => {
         (rfqRes.body as unknown as GenericSuccessResponse<QuoteData>).data
           .items[0]?.id ?? "";
 
-      // 2. Admin sends negotiation message -> Quote MUST transition to NEGOTIATING
-      const msgRes = await request(getHttpServer())
-        .post(`/api/v1/quotes/${quoteId}/messages`)
+      // 2. Admin transitions quote status to NEGOTIATING
+      const statusRes = await request(getHttpServer())
+        .patch(`/api/v1/quotes/${quoteId}/status`)
         .set(adminAuth)
-        .send({
-          message: "Chào chị, chúng tôi có thể hỗ trợ mức giá 14.500.000 VNĐ.",
-        });
+        .send({ status: "NEGOTIATING" });
 
-      expect(msgRes.status).toBe(201);
-      const msgData = (
-        msgRes.body as unknown as GenericSuccessResponse<QuoteMessageData>
-      ).data;
-      expect(msgData.sender?.id).toBe(adminUser.id);
+      expect(statusRes.status).toBe(200);
 
       // Verify quote status is now NEGOTIATING
       const quoteDetailRes = await request(getHttpServer())
@@ -227,8 +222,6 @@ describe("Quotes Module Integration", () => {
         quoteDetailRes.body as unknown as GenericSuccessResponse<QuoteData>
       ).data;
       expect(detailedQuote.status).toBe("NEGOTIATING");
-      expect(detailedQuote.messages?.length).toBe(1);
-
       // 3. Admin updates agreed price for line item to 14,500,000
       const updatePriceRes = await request(getHttpServer())
         .put(`/api/v1/quotes/${quoteId}/items/${itemId}/price`)
@@ -366,6 +359,68 @@ describe("Quotes Module Integration", () => {
         .set(adminAuth);
 
       expect(doubleConvertRes.status).toBe(400);
+    }, 25000);
+
+    it("should strictly prevent double-appproval when 2 admins approve simultaneously using FOR UPDATE", async () => {
+      const { authHeader: admin1Auth } = await createAuthenticatedUser(
+        db,
+        jwtService,
+        { email: "admin1@hyundai.vn", role: "ADMIN" },
+      );
+      const { authHeader: admin2Auth } = await createAuthenticatedUser(
+        db,
+        jwtService,
+        { email: "admin2@hyundai.vn", role: "ADMIN" },
+      );
+      const { user: customerUser } = await createAuthenticatedUser(
+        db,
+        jwtService,
+        { email: "customer@dealer.vn", role: "SALES" },
+      );
+
+      const quoteRes = await request(getHttpServer())
+        .post("/api/v1/quotes/admin")
+        .set(admin1Auth)
+        .send({
+          userId: customerUser.id,
+          customerName: "Đại lý Hyundai",
+          customerPhone: "0911223344",
+          shippingAddress: "Kho Đà Nẵng",
+          vatRate: 10,
+          items: [
+            {
+              isCustomItem: true,
+              itemName: "Máy phát điện Công nghiệp 50kVA",
+              quantity: 1,
+              unitPrice: 150000000,
+              discountPercent: 0,
+            },
+          ],
+        });
+
+      const quoteId = (quoteRes.body as GenericSuccessResponse<QuoteData>).data
+        .id;
+
+      const [res1, res2] = await Promise.all([
+        request(getHttpServer())
+          .post(`/api/v1/quotes/${quoteId}/approve-to-order`)
+          .set(admin1Auth),
+        request(getHttpServer())
+          .post(`/api/v1/quotes/${quoteId}/approve-to-order`)
+          .set(admin2Auth),
+      ]);
+
+      const statusCodes = [res1.status, res2.status];
+
+      expect(statusCodes).toContain(200);
+      expect(statusCodes).toContain(400);
+
+      const createdOrders = await db
+        .select({ id: orders.id })
+        .from(orders)
+        .where(eq(orders.userId, customerUser.id));
+
+      expect(createdOrders.length).toBe(1);
     }, 25000);
   });
 });

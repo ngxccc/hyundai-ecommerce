@@ -9,7 +9,7 @@ import { products, productTranslations } from "./product.schema";
 import { warehouses, warehouseStocks } from "./warehouse.schema";
 import { carts, cartItems } from "./cart.schema";
 import { orders, orderItems, shippingBids } from "./order.schema";
-import { quotes, quoteItems, quoteMessages } from "./quotes.schema";
+import { quotes, quoteItems } from "./quotes.schema";
 import {
   debtRepayments,
   payments,
@@ -39,7 +39,6 @@ export const schemaRelations = defineRelations(
     shippingBids,
     quotes,
     quoteItems,
-    quoteMessages,
     payments,
     debtRepayments,
     paymentTransactions,
@@ -70,7 +69,6 @@ export const schemaRelations = defineRelations(
       orders: r.many.orders(),
       userAddresses: r.many.userAddresses(),
       quotes: r.many.quotes(),
-      quoteMessages: r.many.quoteMessages(),
       verifiedTransactions: r.many.paymentTransactions(),
       creditLimitHistory: r.many.creditLimitHistory({
         alias: "userCreditLimitHistory",
@@ -251,7 +249,6 @@ export const schemaRelations = defineRelations(
         to: r.users.id,
       }),
       items: r.many.quoteItems(),
-      messages: r.many.quoteMessages(),
       order: r.one.orders({
         from: r.quotes.orderId,
         to: r.orders.id,
@@ -267,19 +264,6 @@ export const schemaRelations = defineRelations(
       product: r.one.products({
         from: r.quoteItems.productId,
         to: r.products.id,
-      }),
-    },
-
-    quoteMessages: {
-      quote: r.one.quotes({
-        from: r.quoteMessages.quoteId,
-        to: r.quotes.id,
-        optional: false,
-      }),
-      sender: r.one.users({
-        from: r.quoteMessages.senderId,
-        to: r.users.id,
-        optional: false,
       }),
     },
 

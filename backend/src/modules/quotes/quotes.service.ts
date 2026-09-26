@@ -1,17 +1,12 @@
 import { Inject, Injectable } from "@nestjs/common";
 import {
   I18nBadRequestException,
-  I18nForbiddenException,
   I18nNotFoundException,
   I18nUnprocessableEntityException,
 } from "@/common/exceptions";
 import { DATABASE_CONNECTION } from "@/database/database.module";
 import type { DrizzleDB } from "@/database/database.module";
-import {
-  quotes,
-  quoteItems,
-  quoteMessages,
-} from "@/database/schemas/quotes.schema";
+import { quotes, quoteItems } from "@/database/schemas/quotes.schema";
 import {
   products,
   productTranslations,
@@ -36,7 +31,6 @@ import {
   buildPaginationMeta,
   type PaginationMetaDto,
 } from "@/common/dto/pagination-meta.dto";
-import type { JwtPayload } from "@/common/decorators/current-user.decorator";
 import type { QuoteStatus } from "@/database/schemas/enums.schema";
 import type {
   AdminQuoteItemInputDto,
@@ -44,7 +38,6 @@ import type {
   ApproveToOrderResponseDto,
   CreateAdminQuoteDto,
   CreateQuoteDto,
-  QuoteMessageResponseDto,
   QuoteQueryDto,
   RfqResponseDto,
 } from "./dto";
@@ -349,7 +342,6 @@ export class QuotesService {
             ? (productsMap.get(item.productId) ?? null)
             : null,
         })),
-        messages: [],
         user: userSummary,
       };
     });
@@ -427,7 +419,7 @@ export class QuotesService {
       ),
     ];
 
-    const [allItemRecords, allMessageRecords, allUsers] = await Promise.all([
+    const [allItemRecords, allUsers] = await Promise.all([
       this.db
         .select({
           item: adminQuoteItemColumns,
@@ -451,27 +443,6 @@ export class QuotesService {
           ),
         )
         .where(inArray(quoteItems.quoteId, quoteIds)),
-      this.db
-        .select({
-          message: {
-            id: quoteMessages.id,
-            quoteId: quoteMessages.quoteId,
-            senderId: quoteMessages.senderId,
-            message: quoteMessages.message,
-            createdAt: quoteMessages.createdAt,
-            updatedAt: quoteMessages.updatedAt,
-          },
-          sender: {
-            id: users.id,
-            fullName: users.fullName,
-            email: users.email,
-            role: users.role,
-          },
-        })
-        .from(quoteMessages)
-        .leftJoin(users, eq(quoteMessages.senderId, users.id))
-        .where(inArray(quoteMessages.quoteId, quoteIds))
-        .orderBy(desc(quoteMessages.createdAt)),
 
       userIds.length > 0
         ? this.db
@@ -502,21 +473,6 @@ export class QuotesService {
       itemsByQuoteId.set(item.quoteId, list);
     }
 
-    const messagesByQuoteId = new Map<
-      string,
-      ((typeof allMessageRecords)[number]["message"] & {
-        sender: (typeof allMessageRecords)[number]["sender"] | null;
-      })[]
-    >();
-    for (const { message, sender } of allMessageRecords) {
-      const list = messagesByQuoteId.get(message.quoteId) ?? [];
-      list.push({
-        ...message,
-        sender: sender?.id ? sender : null,
-      });
-      messagesByQuoteId.set(message.quoteId, list);
-    }
-
     const usersById = new Map<string, (typeof allUsers)[number]>();
     for (const u of allUsers) {
       usersById.set(u.id, u);
@@ -524,7 +480,6 @@ export class QuotesService {
 
     const items: AdminQuoteResponseDto[] = quoteRecords.map((quote) => {
       const itemsList = itemsByQuoteId.get(quote.id) ?? [];
-      const messagesList = messagesByQuoteId.get(quote.id) ?? [];
       const userSummary = quote.userId
         ? (usersById.get(quote.userId) ?? null)
         : null;
@@ -532,7 +487,6 @@ export class QuotesService {
       return {
         ...quote,
         items: itemsList,
-        messages: messagesList,
         user: userSummary,
       };
     });
@@ -591,33 +545,6 @@ export class QuotesService {
       product: product?.id ? product : null,
     }));
 
-    const messageRecords = await this.db
-      .select({
-        message: {
-          id: quoteMessages.id,
-          quoteId: quoteMessages.quoteId,
-          senderId: quoteMessages.senderId,
-          message: quoteMessages.message,
-          createdAt: quoteMessages.createdAt,
-          updatedAt: quoteMessages.updatedAt,
-        },
-        sender: {
-          id: users.id,
-          fullName: users.fullName,
-          email: users.email,
-          role: users.role,
-        },
-      })
-      .from(quoteMessages)
-      .leftJoin(users, eq(quoteMessages.senderId, users.id))
-      .where(eq(quoteMessages.quoteId, id))
-      .orderBy(desc(quoteMessages.createdAt));
-
-    const messages = messageRecords.map(({ message, sender }) => ({
-      ...message,
-      sender: sender?.id ? sender : null,
-    }));
-
     let userSummary = null;
     if (quote.userId) {
       const [u] = await this.db
@@ -638,7 +565,6 @@ export class QuotesService {
     return {
       ...quote,
       items,
-      messages,
       user: userSummary,
     };
   }
@@ -763,80 +689,6 @@ export class QuotesService {
   }
 
   /**
-   * Posts negotiation timeline message and automatically advances SUBMITTED quotes to NEGOTIATING.
-   *
-   * @param quoteId - Parent quote UUID.
-   * @param senderId - Authenticated sender UUID.
-   * @param message - Message body content.
-   * @param currentUser - Authenticated user context.
-   * @returns Persisted quote message record.
-   */
-  async sendMessage(
-    quoteId: string,
-    senderId: string,
-    message: string,
-    currentUser?: JwtPayload,
-  ): Promise<QuoteMessageResponseDto> {
-    const quote = await this.findById(quoteId);
-
-    // Enforce authorization: Admin, Sales, or the owning customer can message
-    if (
-      currentUser &&
-      currentUser.role !== "ADMIN" &&
-      currentUser.role !== "SALES" &&
-      quote.userId !== currentUser.sub
-    ) {
-      throw new I18nForbiddenException("quotes.FORBIDDEN_NEGOTIATION");
-    }
-
-    return await this.db.transaction(async (tx) => {
-      const [newMessage] = await tx
-        .insert(quoteMessages)
-        .values({
-          quoteId,
-          senderId,
-          message,
-        })
-        .returning();
-
-      if (!newMessage) {
-        throw new I18nBadRequestException("quotes.MESSAGE_RECORD_FAILED");
-      }
-
-      // Auto-advance quote status from SUBMITTED to NEGOTIATING upon first negotiation dialogue
-      if (quote.status === "SUBMITTED") {
-        await tx
-          .update(quotes)
-          .set({
-            status: "NEGOTIATING",
-          })
-          .where(eq(quotes.id, quoteId));
-      }
-
-      const [senderRecord] = await tx
-        .select({
-          id: users.id,
-          fullName: users.fullName,
-          email: users.email,
-          role: users.role,
-        })
-        .from(users)
-        .where(eq(users.id, senderId))
-        .limit(1);
-
-      return {
-        id: newMessage.id,
-        quoteId: newMessage.quoteId,
-        senderId: newMessage.senderId,
-        message: newMessage.message,
-        sender: senderRecord ?? null,
-        createdAt: newMessage.createdAt,
-        updatedAt: newMessage.updatedAt,
-      };
-    });
-  }
-
-  /**
    * Approves a quotation and atomically converts it into a pending order.
    *
    * @param quoteId - Parent quote UUID.
@@ -845,19 +697,19 @@ export class QuotesService {
    */
   async approveAndConvertToOrder(
     quoteId: string,
-    adminUserId: string,
+    _adminUserId: string,
   ): Promise<ApproveToOrderResponseDto> {
     return await this.db.transaction(async (tx) => {
       const [quote] = await tx
         .select(adminQuoteColumns)
         .from(quotes)
         .where(eq(quotes.id, quoteId))
-        .limit(1);
+        .limit(1)
+        .for("update");
 
       if (!quote) {
         throw new I18nNotFoundException("quotes.QUOTE_NOT_FOUND");
       }
-
       if (quote.status === "APPROVED") {
         throw new I18nBadRequestException("quotes.QUOTE_ALREADY_CONVERTED");
       }
@@ -949,12 +801,6 @@ export class QuotesService {
           totalQuotedPrice: totalAmountDecimal.toFixed(2),
         })
         .where(eq(quotes.id, quoteId));
-
-      await tx.insert(quoteMessages).values({
-        quoteId,
-        senderId: adminUserId,
-        message: `[HỆ THỐNG] Báo giá đã được phê duyệt và chuyển thành đơn hàng #${newOrder.id}`,
-      });
 
       return {
         orderId: newOrder.id,

@@ -9,7 +9,6 @@ import type {
   CreateQuoteDto,
   QuoteQueryDto,
   RfqResponseDto,
-  SendQuoteMessageDto,
   UpdateQuoteItemPriceDto,
   UpdateQuoteStatusDto,
 } from "./dto";
@@ -41,12 +40,10 @@ describe("QuotesController", () => {
     createdAt: new Date("2026-09-04T08:00:00.000Z"),
     updatedAt: new Date("2026-09-04T08:00:00.000Z"),
     items: [],
-    messages: [],
     user: null,
   };
 
   const mockAdminId = "018f3a5e-7a2e-7b56-b74c-419b4eb14b9c";
-  const mockUserId = "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b";
   const mockOrderId = "018f3a5e-7a2e-7b56-b74c-419b4eb14b9f";
   const mockRfqResponse: RfqResponseDto = {
     id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9a",
@@ -91,16 +88,6 @@ describe("QuotesController", () => {
       (_quoteId: string, _itemId: string, _agreedPrice: string) =>
         Promise.resolve(mockQuote),
     ),
-    sendMessage: mock((_quoteId: string, _senderId: string, _message: string) =>
-      Promise.resolve({
-        id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9d",
-        quoteId: mockQuote.id,
-        senderId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
-        message: "Tin nhắn",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }),
-    ),
     approveAndConvertToOrder: mock((_quoteId: string, _adminId: string) =>
       Promise.resolve({
         orderId: mockOrderId,
@@ -115,7 +102,6 @@ describe("QuotesController", () => {
       this.findById.mockClear();
       this.updateStatus.mockClear();
       this.updateItemPrice.mockClear();
-      this.sendMessage.mockClear();
       this.approveAndConvertToOrder.mockClear();
     },
   };
@@ -264,37 +250,6 @@ describe("QuotesController", () => {
           "95000000.00",
         );
         expect(result.success).toBe(true);
-      });
-    });
-  });
-
-  describe("POST /quotes/:id/messages", () => {
-    describe("when posting negotiation timeline message", () => {
-      test("should return wrapped created message", async () => {
-        const dto: SendQuoteMessageDto = { message: "Tin nhắn thảo luận" };
-
-        const result = await controller.sendMessage(
-          mockQuote.id,
-          {
-            sub: mockUserId,
-            email: "user@example.com",
-            role: "ADMIN",
-          },
-          dto,
-        );
-
-        expect(mockQuotesService.sendMessage).toHaveBeenCalledWith(
-          mockQuote.id,
-          mockUserId,
-          "Tin nhắn thảo luận",
-          {
-            sub: mockUserId,
-            email: "user@example.com",
-            role: "ADMIN",
-          },
-        );
-        expect(result.success).toBe(true);
-        expect(result.data.id).toBe("018f3a5e-7a2e-7b56-b74c-419b4eb14b9d");
       });
     });
   });

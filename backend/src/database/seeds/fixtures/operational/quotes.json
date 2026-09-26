@@ -28,12 +28,6 @@
         "finalUnitPrice": "220500000.00",
         "totalPrice": "220500000.00"
       }
-    ],
-    "messages": [
-      {
-        "senderId": "019de1a0-1234-71bf-8082-ec510823ed3c",
-        "message": "Chào admin, bên mình cần báo giá kèm chi phí lắp đặt tủ ATS tại xưởng."
-      }
     ]
   },
   {
@@ -65,12 +59,6 @@
         "finalUnitPrice": "80750000.00",
         "totalPrice": "80750000.00"
       }
-    ],
-    "messages": [
-      {
-        "senderId": "019de1a0-5678-71bf-8082-f37ae97f09e4",
-        "message": "Đã chốt giá theo chiết khấu đại lý Bạc, vui lòng duyệt đơn giúp mình."
-      }
     ]
   },
   {
@@ -101,12 +89,6 @@
         "discountPercent": "0.00",
         "finalUnitPrice": "42000000.00",
         "totalPrice": "42000000.00"
-      }
-    ],
-    "messages": [
-      {
-        "senderId": "019de1a0-9012-735c-8639-3e1d67c3f6c5",
-        "message": "Cần hóa đơn VAT tên hộ kinh doanh."
       }
     ]
   }
