@@ -1,12 +1,13 @@
 ---
 name: prohibit-db-mutating-scripts
-description: "Block running database migration, push, seed, baseline, and reset scripts without explicit user permission"
+description: "Require human permission before executing database migrations, pushes, baseline, resets, or seeding scripts"
 condition: "(?:\\b(?:db:(?:migrate|push|seed|reset-schema|baseline)|drizzle-kit\\s+(?:migrate|push|drop)|scripts/reset-db\\.ts|src/database/seeds/index\\.ts)\\b)"
 scope: "tool:bash(*)"
 ---
 
-# Prohibit Database Mutating & Seed Scripts
+# Database Mutating Scripts
 
-- **No Autonomous DB Mutations**: AI agents MUST NEVER autonomously run database schema mutations, migrations, pushes, baseline injections, resets, or seeding scripts (`db:migrate`, `db:push`, `db:seed`, `db:reset-schema`, `db:baseline`, `drizzle-kit migrate`, `drizzle-kit push`).
-- **Human Authority for Database State**: Any execution that alters database tables, drops columns, resets schemas, or injects seed data directly impacts shared developer or test databases and MUST be executed manually by the human developer.
-- **Allowed DB Commands**: Non-destructive read-only tooling or schema generation commands (such as `bun run db:generate` or `bun run openapi:generate`) are permitted when generating static artifacts.
+Database state changes require explicit human confirmation:
+
+1. **Human Authority**: AI MUST NOT run database migrations, schema pushes, baseline resets, or seeds (`db:migrate`, `db:push`, `db:seed`, `drizzle-kit migrate/push/drop`, `reset-db.ts`).
+2. **Permitted Non-Destructive Tooling**: Static code/schema generators (`bun run db:generate`, `bun run openapi:generate`) are permitted without prior confirmation.
