@@ -118,38 +118,6 @@ export async function updateQuoteItemPriceAction(
   }
 }
 
-export async function sendAdminNegotiationMessageAction(
-  quoteId: string,
-  message: string,
-) {
-  const t = await getTranslations("errors");
-  if (!isValidIdentifier(quoteId)) {
-    return { success: false as const, error: t("default") };
-  }
-  try {
-    const { data, error } = await quotesApi.sendMessage(quoteId, { message });
-    const res = data?.data;
-    if (error || !res) {
-      throw new ApiClientError(
-        error?.detail ?? t("default"),
-        error?.status ?? 400,
-        error,
-      );
-    }
-    revalidatePath(`/quotes/${quoteId}`);
-    return { success: true as const, data: res };
-  } catch (error) {
-    console.error("[sendAdminNegotiationMessageAction] Error:", error);
-    if (error instanceof ApiClientError && error.problem?.detail) {
-      return { success: false as const, error: error.problem.detail };
-    }
-    return {
-      success: false as const,
-      error: t("default"),
-    };
-  }
-}
-
 export async function createAdminQuoteAction(rawInput: CreateAdminQuoteInput) {
   const t = await getTranslations("errors");
   const parsed = createAdminQuoteSchema.safeParse(rawInput);

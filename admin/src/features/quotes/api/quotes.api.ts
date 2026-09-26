@@ -6,7 +6,6 @@
 import { api } from "@/lib/api-client";
 import type {
   AdminCreateAdminQuote,
-  AdminSendQuoteMessage,
   AdminUpdateQuoteItemPrice,
   AdminUpdateQuoteStatus,
   QuoteQueryParams,
@@ -69,18 +68,6 @@ export const quotesApi = {
   ) =>
     api.PUT("/api/v1/quotes/{id}/items/{itemId}/price", {
       params: { path: { id: quoteId, itemId } },
-      body,
-    }),
-
-  /**
-   * Posts a negotiation message to a quote thread.
-   *
-   * @param quoteId Quote UUID
-   * @param body Message text payload
-   */
-  sendMessage: (quoteId: string, body: AdminSendQuoteMessage) =>
-    api.POST("/api/v1/quotes/{id}/messages", {
-      params: { path: { id: quoteId } },
       body,
     }),
 

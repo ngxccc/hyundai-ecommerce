@@ -99,11 +99,9 @@ export type AdminVerifyCashPayment = ApiSchemas["VerifyCashPaymentDto"];
 export type AdminQuote = ApiSchemas["AdminQuoteResponseDto"];
 export type AdminCreateAdminQuote = ApiSchemas["CreateAdminQuoteDto"];
 export type AdminQuoteItem = AdminQuote["items"][number];
-export type AdminQuoteMessage = NonNullable<AdminQuote["messages"]>[number];
 export type QuoteStatus = ApiSchemas["AdminQuoteResponseDto"]["status"];
 export type AdminUpdateQuoteStatus = ApiSchemas["UpdateQuoteStatusDto"];
 export type AdminUpdateQuoteItemPrice = ApiSchemas["UpdateQuoteItemPriceDto"];
-export type AdminSendQuoteMessage = ApiSchemas["SendQuoteMessageDto"];
 export type QuoteQueryParams = NonNullable<
   ApiPaths["/api/v1/quotes"]["get"]["parameters"]["query"]
 >;
