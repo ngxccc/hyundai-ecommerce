@@ -92,7 +92,7 @@ export class OrdersService {
       >();
 
       // Sort items deterministically by productId to prevent database deadlocks across concurrent transactions.
-      const sortedItems = [...dto.items].sort((a, b) =>
+      const sortedItems = dto.items.toSorted((a, b) =>
         a.productId.localeCompare(b.productId),
       );
 
@@ -284,7 +284,7 @@ export class OrdersService {
       >();
 
       // Sort items deterministically by productId to prevent database deadlocks across concurrent transactions.
-      const sortedItems = [...dto.items].sort((a, b) =>
+      const sortedItems = dto.items.toSorted((a, b) =>
         a.productId.localeCompare(b.productId),
       );
 
@@ -683,39 +683,22 @@ export class OrdersService {
         : Promise.resolve([]),
     ]);
 
-    const itemsByOrderId = new Map<string, typeof allItems>();
-    for (const record of allItems) {
-      const list = itemsByOrderId.get(record.item.orderId) ?? [];
-      list.push(record);
-      itemsByOrderId.set(record.item.orderId, list);
-    }
-
-    const usersById = new Map<string, (typeof allUsers)[number]>();
-    for (const u of allUsers) {
-      usersById.set(u.id, u);
-    }
+    const itemsByOrderId = Map.groupBy(
+      allItems.map(({ item, product }) => ({ ...item, product })),
+      (i) => i.orderId,
+    );
+    const usersById = new Map(allUsers.map((u) => [u.id, u]));
 
     const fullItems = orderList.map((order) => {
       const orderItemsList = itemsByOrderId.get(order.id) ?? [];
-      const userRecord = order.userId ? usersById.get(order.userId) : null;
+      const userRecord = order.userId
+        ? (usersById.get(order.userId) ?? null)
+        : null;
 
       return {
         ...order,
-        items: orderItemsList.map((r) => ({
-          ...r.item,
-          product: r.product?.id ? r.product : null,
-        })),
-        user: userRecord
-          ? {
-              id: userRecord.id,
-              email: userRecord.email,
-              fullName: userRecord.fullName,
-              phoneNumber: userRecord.phoneNumber,
-              companyName: userRecord.companyName,
-              role: userRecord.role,
-              dealerTier: userRecord.dealerTier ?? undefined,
-            }
-          : null,
+        items: orderItemsList,
+        user: userRecord,
       };
     });
     return {
@@ -770,7 +753,7 @@ export class OrdersService {
           .from(orderItems)
           .where(eq(orderItems.orderId, id));
 
-        const sortedItems = [...items].sort((a, b) =>
+        const sortedItems = items.toSorted((a, b) =>
           a.productId.localeCompare(b.productId),
         );
 

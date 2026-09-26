@@ -43,23 +43,13 @@ export class BrandsService {
       .from(brandTranslations)
       .where(inArray(brandTranslations.brandId, brandIds));
 
-    const transMap = new Map<string, Map<string, BrandTranslation>>();
-    const allTransMap = new Map<string, BrandTranslation[]>();
-    for (const row of translationRows) {
-      let brandMap = transMap.get(row.brandId);
-      let brandList = allTransMap.get(row.brandId);
-      if (!brandMap) {
-        brandMap = new Map();
-        transMap.set(row.brandId, brandMap);
-      }
-      if (!brandList) {
-        brandList = [];
-        allTransMap.set(row.brandId, brandList);
-      }
-      brandMap.set(row.locale, row);
-      brandList.push(row);
-    }
-
+    const allTransMap = Map.groupBy(translationRows, (r) => r.brandId);
+    const transMap = new Map(
+      [...allTransMap.entries()].map(([id, rows]) => [
+        id,
+        new Map(rows.map((r) => [r.locale, r])),
+      ]),
+    );
     return records.map((r) =>
       this.mapBrandToDto(r, transMap.get(r.id), allTransMap.get(r.id), locale),
     );

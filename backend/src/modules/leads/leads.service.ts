@@ -149,28 +149,27 @@ export class LeadsService {
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-    const [totalCountResult, allLeads] = await Promise.all([
-      this.db
-        .select({ count: sql<number>`cast(count(*) as int)` })
-        .from(leads)
-        .where(whereClause),
-      this.db
-        .select()
-        .from(leads)
-        .where(whereClause)
-        .orderBy(desc(leads.createdAt))
-        .limit(limit)
-        .offset(offset),
-    ]);
+    const [totalCount] = await this.db
+      .select({ count: sql<number>`cast(count(*) as int)` })
+      .from(leads)
+      .where(whereClause);
 
-    const total = totalCountResult[0]?.count ?? 0;
+    const total = totalCount?.count ?? 0;
 
-    if (allLeads.length === 0) {
+    if (total === 0) {
       return {
         items: [],
         meta: buildPaginationMeta(total, page, limit),
       };
     }
+
+    const allLeads = await this.db
+      .select()
+      .from(leads)
+      .where(whereClause)
+      .orderBy(desc(leads.createdAt))
+      .limit(limit)
+      .offset(offset);
 
     const leadIds = allLeads.map((l) => l.id);
     const allItems = await this.db
@@ -178,13 +177,7 @@ export class LeadsService {
       .from(leadItems)
       .where(inArray(leadItems.leadId, leadIds));
 
-    const itemsByLeadId = new Map<string, (typeof leadItems.$inferSelect)[]>();
-    for (const item of allItems) {
-      const list = itemsByLeadId.get(item.leadId) ?? [];
-      list.push(item);
-      itemsByLeadId.set(item.leadId, list);
-    }
-
+    const itemsByLeadId = Map.groupBy(allItems, (i) => i.leadId);
     return {
       items: allLeads.map((l) =>
         this.mapLeadToResponseDto(l, itemsByLeadId.get(l.id) ?? []),

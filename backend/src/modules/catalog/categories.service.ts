@@ -43,22 +43,13 @@ export class CategoriesService {
       .from(categoryTranslations)
       .where(inArray(categoryTranslations.categoryId, categoryIds));
 
-    const transMap = new Map<string, Map<string, CategoryTranslation>>();
-    const allTransMap = new Map<string, CategoryTranslation[]>();
-    for (const row of translationRows) {
-      let catMap = transMap.get(row.categoryId);
-      let catList = allTransMap.get(row.categoryId);
-      if (!catMap) {
-        catMap = new Map();
-        transMap.set(row.categoryId, catMap);
-      }
-      if (!catList) {
-        catList = [];
-        allTransMap.set(row.categoryId, catList);
-      }
-      catMap.set(row.locale, row);
-      catList.push(row);
-    }
+    const allTransMap = Map.groupBy(translationRows, (r) => r.categoryId);
+    const transMap = new Map(
+      [...allTransMap.entries()].map(([id, rows]) => [
+        id,
+        new Map(rows.map((r) => [r.locale, r])),
+      ]),
+    );
 
     return records.map((r) =>
       this.mapCategoryToDto(

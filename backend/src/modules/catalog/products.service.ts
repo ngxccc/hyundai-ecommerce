@@ -281,23 +281,13 @@ export class ProductsService {
         ),
       );
 
-    const transMap = new Map<string, Map<string, ProductTranslation>>();
-    const allTransMap = new Map<string, ProductTranslation[]>();
-
-    for (const row of translationRows) {
-      let pMap = transMap.get(row.productId);
-      let pList = allTransMap.get(row.productId);
-      if (!pMap) {
-        pMap = new Map();
-        transMap.set(row.productId, pMap);
-      }
-      if (!pList) {
-        pList = [];
-        allTransMap.set(row.productId, pList);
-      }
-      pMap.set(row.locale, row);
-      pList.push(row);
-    }
+    const allTransMap = Map.groupBy(translationRows, (r) => r.productId);
+    const transMap = new Map(
+      [...allTransMap.entries()].map(([id, rows]) => [
+        id,
+        new Map(rows.map((r) => [r.locale, r])),
+      ]),
+    );
 
     const items = records.map((r) =>
       mapProductRow(
