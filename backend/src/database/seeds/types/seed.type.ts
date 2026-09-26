@@ -212,11 +212,6 @@ export type QuoteFixtureItem =
       productId?: null;
     });
 
-export interface QuoteFixtureMessage {
-  senderId: string;
-  message: string;
-}
-
 export interface QuoteFixtureData {
   id: string;
   quoteNumber: string;
@@ -236,7 +231,6 @@ export interface QuoteFixtureData {
   commercialTerms?: Quote["commercialTerms"];
   expirationDate?: string | Date | null;
   items: QuoteFixtureItem[];
-  messages: QuoteFixtureMessage[];
 }
 
 export interface OrderFixtureItem {

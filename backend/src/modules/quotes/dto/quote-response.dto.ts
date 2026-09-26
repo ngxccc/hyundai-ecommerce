@@ -42,23 +42,6 @@ export const quoteItemResponseSchema = z.object({
   updatedAt: zCoerceDate(),
 });
 
-export const quoteMessageSenderSchema = z.object({
-  id: z.uuid(),
-  fullName: z.string(),
-  email: z.string(),
-  role: z.string(),
-});
-
-export const quoteMessageResponseSchema = z.object({
-  id: z.uuid(),
-  quoteId: z.uuid(),
-  senderId: z.uuid().nullable(),
-  message: z.string(),
-  sender: quoteMessageSenderSchema.nullable().optional(),
-  createdAt: zCoerceDate(),
-  updatedAt: zCoerceDate(),
-});
-
 export const quoteUserSummarySchema = z.object({
   id: z.uuid(),
   fullName: z.string(),
@@ -94,7 +77,6 @@ export const adminQuoteResponseSchema = z.object({
   createdAt: zCoerceDate(),
   updatedAt: zCoerceDate(),
   items: z.array(quoteItemResponseSchema),
-  messages: z.array(quoteMessageResponseSchema).optional(),
   user: quoteUserSummarySchema.nullable().optional(),
 });
 
@@ -163,12 +145,6 @@ export class QuoteItemProductSummaryDto extends createZodDto(
 ) {}
 export class QuoteItemResponseDto extends createZodDto(
   quoteItemResponseSchema,
-) {}
-export class QuoteMessageSenderDto extends createZodDto(
-  quoteMessageSenderSchema,
-) {}
-export class QuoteMessageResponseDto extends createZodDto(
-  quoteMessageResponseSchema,
 ) {}
 export class QuoteUserSummaryDto extends createZodDto(quoteUserSummarySchema) {}
 

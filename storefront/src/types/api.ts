@@ -79,7 +79,6 @@ export type OrderStatus = ApiSchemas["OrderResponseDto"]["status"];
 export type ApiQuote = ApiSchemas["AdminQuoteResponseDto"];
 export type ApiCreateQuote = ApiSchemas["CreateQuoteDto"];
 export type ApiQuoteItem = ApiQuote["items"][number];
-export type ApiQuoteMessage = NonNullable<ApiQuote["messages"]>[number];
 export type QuoteStatus = ApiSchemas["AdminQuoteResponseDto"]["status"];
 export type CommercialTerms = NonNullable<
   ApiSchemas["CreateAdminQuoteDto"]["commercialTerms"]

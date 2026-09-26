@@ -245,29 +245,10 @@ describe("QuotesService", () => {
 
   describe("findById()", () => {
     describe("when quote exists in database", () => {
-      test("should return quote with joined items and messages", async () => {
+      test("should return quote with joined items", async () => {
         mockDb.setSelectResultsQueue([
           [mockQuoteRecord], // quote
           [mockItemRecord], // items
-          [
-            {
-              message: {
-                id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9d",
-                quoteId: mockQuoteRecord.id,
-                senderId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
-                message: "Test message",
-                createdAt: new Date(),
-                updatedAt: new Date(),
-              },
-              sender: {
-                id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
-                fullName: "Admin",
-                email: "admin@test.com",
-                role: "ADMIN",
-              },
-            },
-          ],
-          [], // user
         ]);
 
         const result = await service.findById(mockQuoteRecord.id);
@@ -291,14 +272,12 @@ describe("QuotesService", () => {
     describe("when valid state machine transition is requested", () => {
       test("should update quote status to SUBMITTED", async () => {
         mockDb.setSelectResultsQueue([
-          [mockQuoteRecord], // initial findById
+          [mockQuoteRecord], // initial findById quote
           [mockItemRecord], // items
-          [], // messages
           [], // user
           [mockQuoteRecord], // update returning
           [{ ...mockQuoteRecord, status: "SUBMITTED" }], // subsequent findById
           [mockItemRecord], // items
-          [], // messages
           [], // user
         ]);
 
@@ -334,13 +313,11 @@ describe("QuotesService", () => {
         mockDb.setSelectResultsQueue([
           [mockQuoteRecord], // findById
           [mockItemRecord], // items
-          [], // messages
           [], // user
           [mockItemRecord.item], // select item inside transaction
           [mockItemRecord.item], // select all items inside transaction
           [mockQuoteRecord], // findById after update
           [mockItemRecord], // items
-          [], // messages
           [], // user
         ]);
 
@@ -369,46 +346,6 @@ describe("QuotesService", () => {
             "95000000.00",
           ),
         ).rejects.toThrow(BadRequestException);
-      });
-    });
-  });
-
-  describe("sendMessage()", () => {
-    describe("when sending message on a SUBMITTED quote", () => {
-      test("should record message and advance status to NEGOTIATING", async () => {
-        const mockMessage = {
-          id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9d",
-          quoteId: mockQuoteRecord.id,
-          senderId: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
-          message: "Xin hỏi có chiết khấu thêm không?",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-
-        mockDb.setSelectResultsQueue([
-          [{ ...mockQuoteRecord, status: "SUBMITTED" }], // findById
-          [mockItemRecord], // items
-          [], // messages
-          [], // user
-          [mockMessage], // insert quoteMessages returning
-          [
-            {
-              id: "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
-              fullName: "Nguyễn Văn A",
-              email: "a@gmail.com",
-              role: "SALES",
-            },
-          ], // select sender
-        ]);
-
-        const result = await service.sendMessage(
-          mockQuoteRecord.id,
-          "018f3a5e-7a2e-7b56-b74c-419b4eb14b9b",
-          "Xin hỏi có chiết khấu thêm không?",
-        );
-
-        expect(result).toBeDefined();
-        expect(result.message).toBe("Xin hỏi có chiết khấu thêm không?");
       });
     });
   });

@@ -76,27 +76,7 @@ export const quoteItems = snakeCase.table(
   ],
 );
 
-export const quoteMessages = snakeCase.table(
-  "quote_message",
-  {
-    ...baseEntity,
-    quoteId: uuid()
-      .notNull()
-      .references(() => quotes.id, { onDelete: "cascade" }),
-    senderId: uuid()
-      .notNull()
-      .references(() => users.id, { onDelete: "restrict" }),
-    message: text().notNull(),
-  },
-  (table) => [
-    index("quote_message_quote_idx").on(table.quoteId),
-    index("quote_message_sender_idx").on(table.senderId),
-  ],
-);
-
 export type Quote = typeof quotes.$inferSelect;
 export type NewQuote = typeof quotes.$inferInsert;
 export type QuoteItem = typeof quoteItems.$inferSelect;
 export type NewQuoteItem = typeof quoteItems.$inferInsert;
-export type QuoteMessage = typeof quoteMessages.$inferSelect;
-export type NewQuoteMessage = typeof quoteMessages.$inferInsert;

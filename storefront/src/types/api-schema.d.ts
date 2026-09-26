@@ -822,23 +822,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/v1/quotes/{id}/messages": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Post a message to quote negotiation timeline */
-    post: operations["QuotesController_sendMessage_v1"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/v1/quotes/{id}/approve-to-order": {
     parameters: {
       query?: never;
@@ -2082,25 +2065,6 @@ export interface components {
         /** Format: date-time */
         updatedAt: string;
       }[];
-      messages?: {
-        /** Format: uuid */
-        id: string;
-        /** Format: uuid */
-        quoteId: string;
-        senderId: string | null;
-        message: string;
-        sender?: {
-          /** Format: uuid */
-          id: string;
-          fullName: string;
-          email: string;
-          role: string;
-        } | null;
-        /** Format: date-time */
-        createdAt: string;
-        /** Format: date-time */
-        updatedAt: string;
-      }[];
       user?: {
         /** Format: uuid */
         id: string;
@@ -2154,28 +2118,6 @@ export interface components {
     };
     UpdateQuoteItemPriceDto: {
       agreedPrice: string;
-    };
-    QuoteMessageResponseDto: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      quoteId: string;
-      senderId: string | null;
-      message: string;
-      sender?: {
-        /** Format: uuid */
-        id: string;
-        fullName: string;
-        email: string;
-        role: string;
-      } | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    SendQuoteMessageDto: {
-      message: string;
     };
     ApproveToOrderResponseDto: {
       /** Format: uuid */
@@ -2252,8 +2194,8 @@ export interface components {
       };
       bank: {
         bankName: string;
-        branchVi: string;
-        branchEn: string;
+        branchVi?: string;
+        branchEn?: string;
         accountNo: string;
         accountName: string;
         bin: string;
@@ -2320,8 +2262,8 @@ export interface components {
       };
       bank: {
         bankName: string;
-        branchVi: string;
-        branchEn: string;
+        branchVi?: string;
+        branchEn?: string;
         accountNo: string;
         accountName: string;
         bin: string;
@@ -7195,119 +7137,6 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["ApiResponseDto"] & {
             data?: components["schemas"]["AdminQuoteResponseDto"];
-          };
-        };
-      };
-      /** @description Validation failure (Bad Request) */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          /**
-           * @example {
-           *       "type": "http://localhost:3000/errors/bad-request",
-           *       "title": "Bad Request",
-           *       "status": 400,
-           *       "detail": "Submitted data format is invalid",
-           *       "instance": "/api/example",
-           *       "invalidParams": [
-           *         {
-           *           "name": "email",
-           *           "reason": "Invalid email address format"
-           *         }
-           *       ],
-           *       "timestamp": "2026-07-25T02:45:00.000Z"
-           *     }
-           */
-          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
-        };
-      };
-      /** @description Authentication required or invalid token (Unauthorized) */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          /**
-           * @example {
-           *       "type": "http://localhost:3000/errors/unauthorized",
-           *       "title": "Unauthorized",
-           *       "status": 401,
-           *       "detail": "Unauthorized access",
-           *       "instance": "/api/example",
-           *       "invalidParams": [],
-           *       "timestamp": "2026-07-25T02:45:00.000Z"
-           *     }
-           */
-          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
-        };
-      };
-      /** @description Forbidden access (Forbidden) */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          /**
-           * @example {
-           *       "type": "http://localhost:3000/errors/forbidden",
-           *       "title": "Forbidden",
-           *       "status": 403,
-           *       "detail": "Account suspended or inactive",
-           *       "instance": "/api/example",
-           *       "invalidParams": [],
-           *       "timestamp": "2026-07-25T02:45:00.000Z"
-           *     }
-           */
-          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
-        };
-      };
-      /** @description Resource not found (Not Found) */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          /**
-           * @example {
-           *       "type": "http://localhost:3000/errors/not-found",
-           *       "title": "Not Found",
-           *       "status": 404,
-           *       "detail": "Requested resource not found",
-           *       "instance": "/api/example",
-           *       "invalidParams": [],
-           *       "timestamp": "2026-07-25T02:45:00.000Z"
-           *     }
-           */
-          "application/problem+json": components["schemas"]["Rfc9457ErrorResponseDto"];
-        };
-      };
-    };
-  };
-  QuotesController_sendMessage_v1: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Quote UUID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SendQuoteMessageDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApiResponseDto"] & {
-            data?: components["schemas"]["QuoteMessageResponseDto"];
           };
         };
       };

@@ -5968,143 +5968,6 @@
         "tags": ["quotes"]
       }
     },
-    "/api/v1/quotes/{id}/messages": {
-      "post": {
-        "operationId": "QuotesController_sendMessage_v1",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "Quote UUID",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SendQuoteMessageDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ApiResponseDto"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "$ref": "#/components/schemas/QuoteMessageResponseDto"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation failure (Bad Request)",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
-                },
-                "example": {
-                  "type": "http://localhost:3000/errors/bad-request",
-                  "title": "Bad Request",
-                  "status": 400,
-                  "detail": "Submitted data format is invalid",
-                  "instance": "/api/example",
-                  "invalidParams": [
-                    {
-                      "name": "email",
-                      "reason": "Invalid email address format"
-                    }
-                  ],
-                  "timestamp": "2026-07-25T02:45:00.000Z"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication required or invalid token (Unauthorized)",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
-                },
-                "example": {
-                  "type": "http://localhost:3000/errors/unauthorized",
-                  "title": "Unauthorized",
-                  "status": 401,
-                  "detail": "Unauthorized access",
-                  "instance": "/api/example",
-                  "invalidParams": [],
-                  "timestamp": "2026-07-25T02:45:00.000Z"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden access (Forbidden)",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
-                },
-                "example": {
-                  "type": "http://localhost:3000/errors/forbidden",
-                  "title": "Forbidden",
-                  "status": 403,
-                  "detail": "Account suspended or inactive",
-                  "instance": "/api/example",
-                  "invalidParams": [],
-                  "timestamp": "2026-07-25T02:45:00.000Z"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found (Not Found)",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Rfc9457ErrorResponseDto"
-                },
-                "example": {
-                  "type": "http://localhost:3000/errors/not-found",
-                  "title": "Not Found",
-                  "status": 404,
-                  "detail": "Requested resource not found",
-                  "instance": "/api/example",
-                  "invalidParams": [],
-                  "timestamp": "2026-07-25T02:45:00.000Z"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Post a message to quote negotiation timeline",
-        "tags": ["quotes"]
-      }
-    },
     "/api/v1/quotes/{id}/approve-to-order": {
       "post": {
         "operationId": "QuotesController_approveToOrder_v1",
@@ -11453,82 +11316,6 @@
               ]
             }
           },
-          "messages": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "format": "uuid",
-                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                },
-                "quoteId": {
-                  "type": "string",
-                  "format": "uuid",
-                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                },
-                "senderId": {
-                  "anyOf": [
-                    {
-                      "type": "string",
-                      "format": "uuid",
-                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
-                },
-                "message": {
-                  "type": "string"
-                },
-                "sender": {
-                  "anyOf": [
-                    {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "format": "uuid",
-                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                        },
-                        "fullName": {
-                          "type": "string"
-                        },
-                        "email": {
-                          "type": "string"
-                        },
-                        "role": {
-                          "type": "string"
-                        }
-                      },
-                      "required": ["id", "fullName", "email", "role"]
-                    },
-                    {
-                      "type": "null"
-                    }
-                  ]
-                },
-                "createdAt": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "updatedAt": {
-                  "type": "string",
-                  "format": "date-time"
-                }
-              },
-              "required": [
-                "id",
-                "quoteId",
-                "senderId",
-                "message",
-                "createdAt",
-                "updatedAt"
-              ]
-            }
-          },
           "user": {
             "anyOf": [
               {
@@ -11778,88 +11565,6 @@
         },
         "required": ["agreedPrice"]
       },
-      "QuoteMessageResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "quoteId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "senderId": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "message": {
-            "type": "string"
-          },
-          "sender": {
-            "anyOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string",
-                    "format": "uuid",
-                    "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-                  },
-                  "fullName": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string"
-                  },
-                  "role": {
-                    "type": "string"
-                  }
-                },
-                "required": ["id", "fullName", "email", "role"]
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "required": [
-          "id",
-          "quoteId",
-          "senderId",
-          "message",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "SendQuoteMessageDto": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
-          }
-        },
-        "required": ["message"]
-      },
       "ApproveToOrderResponseDto": {
         "type": "object",
         "properties": {
@@ -12052,7 +11757,8 @@
             "type": "object",
             "properties": {
               "website": {
-                "type": "string"
+                "type": "string",
+                "minLength": 1
               },
               "zalo": {
                 "type": "string"
@@ -12090,8 +11796,6 @@
             },
             "required": [
               "bankName",
-              "branchVi",
-              "branchEn",
               "accountNo",
               "accountName",
               "bin",
@@ -12279,7 +11983,8 @@
             "type": "object",
             "properties": {
               "website": {
-                "type": "string"
+                "type": "string",
+                "minLength": 1
               },
               "zalo": {
                 "type": "string"
@@ -12317,8 +12022,6 @@
             },
             "required": [
               "bankName",
-              "branchVi",
-              "branchEn",
               "accountNo",
               "accountName",
               "bin",

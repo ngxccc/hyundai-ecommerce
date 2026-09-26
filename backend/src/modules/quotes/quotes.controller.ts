@@ -32,10 +32,7 @@ import {
 import type { PaginationMetaDto } from "@/common/dto/pagination-meta.dto";
 import { Throttle } from "@nestjs/throttler";
 import type { Response } from "express";
-import {
-  CurrentUser,
-  type JwtPayload,
-} from "@/common/decorators/current-user.decorator";
+import { CurrentUser } from "@/common/decorators/current-user.decorator";
 import { apiSuccess, type ApiResponse } from "@/common/utils/api-response.util";
 import { QUOTE_ROUTES } from "./quote.routes";
 import { QuotesService } from "./quotes.service";
@@ -45,10 +42,8 @@ import {
   ApproveToOrderResponseDto,
   CreateAdminQuoteDto,
   CreateQuoteDto,
-  QuoteMessageResponseDto,
   QuoteQueryDto,
   RfqResponseDto,
-  SendQuoteMessageDto,
   UpdateQuoteItemPriceDto,
   UpdateQuoteStatusDto,
 } from "./dto";
@@ -193,36 +188,6 @@ export class QuotesController {
       dto.agreedPrice,
     );
     return apiSuccess(quote);
-  }
-
-  /**
-   * Posts a negotiation timeline message, automatically advancing SUBMITTED quotes to NEGOTIATING.
-   *
-   * @param quoteId - Parent quote UUID.
-   * @param senderId - Authenticated sender UUID.
-   * @param dto - Negotiation message body.
-   * @returns Recorded timeline message.
-   */
-  @Post(QUOTE_ROUTES.MESSAGES)
-  @HttpCode(HttpStatus.CREATED)
-  @ApiAuth()
-  @ApiOperation({ summary: "Post a message to quote negotiation timeline" })
-  @ApiParam({ name: "id", description: "Quote UUID" })
-  @ApiCreatedResponseGeneric(QuoteMessageResponseDto)
-  @ApiBadRequestResponseRfc9457()
-  @ApiNotFoundResponseRfc9457()
-  async sendMessage(
-    @Param("id", ParseUUIDPipe) quoteId: string,
-    @CurrentUser() currentUser: JwtPayload,
-    @Body() dto: SendQuoteMessageDto,
-  ) {
-    const message = await this.quotesService.sendMessage(
-      quoteId,
-      currentUser.sub,
-      dto.message,
-      currentUser,
-    );
-    return apiSuccess(message);
   }
 
   /**
